@@ -1,0 +1,96 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "core-20261121-125657-ab10302",
+  "track": "core",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "clump2 EN, FX2, D: added mass of the correction against M V^2/2 for four cluster models; flux balance of the correction without interpolation across the edge; metric at the particles of TC from its restart files (no step: time/nlim=0), with the processor executable of source commit cbe1e3ef",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "bash",
+    "tracks/core/analysis/clump2/run_d.sh"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "ab10302f702155ece2267297775fab263b615ee7",
+    "branch": "core/clump-table",
+    "dirty": false,
+    "merge_base_main": "4f50dadd449682c2669cbe40564981146bdbb81e",
+    "worktree": "wt/core-clump2"
+  },
+  "code": {
+    "core_tag": "core-v0.5",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "fe2d5333e70ee5ad6567152e8950edfb4ee7073f15ceb5a81e06139bca8a75c5",
+    "machine_file_sha256": "ff43e1ea60c663b4f58c82e24e881f01f64f6d134930f4450f711f6fb409e69b",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/core-clump2/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/tmp/clump2/exe_cbe1e3ef/athena_cpu",
+      "role": "input",
+      "sha256": "97a749c0bcf81a2a0496948d932fda96752483e0d5dc7377aae111e7a2c00e36",
+      "bytes": 246716784,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "tracks/core/analysis/clump2/run_d.sh",
+      "role": "argv",
+      "sha256": "6102055c7479c08dd61eaf2549003a6e23fa61bd524030155b84a37a3104003f",
+      "bytes": 970,
+      "tracked": true
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 1,
+    "walltime_s": 313.312,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/core/core-20261121-125657-ab10302",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": "c0a39d46acad02bbe28965d380371e69d7442331e5852640076b5ef8ce6245e2",
+    "bytes": 1024391296,
+    "files": 33
+  },
+  "status": "completed",
+  "exit_code": 0,
+  "registered": "2026-11-21T12:56:58Z",
+  "started": "2026-11-21T12:56:59Z",
+  "ended": "2026-11-21T13:02:12Z",
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 40.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 6.1535,
+    "gpu_hours_reserved": 1.0,
+    "gpu_hours_without_gate": 5.8713,
+    "cores_busy": 0,
+    "runs": 1417,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
+  },
+  "finished": "2026-11-21T13:02:46Z"
+}

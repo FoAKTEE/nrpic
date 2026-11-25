@@ -55,6 +55,8 @@ def main():
     ap.add_argument("--out", default=os.environ.get("NRPIC_RUN_DIR"))
     ap.add_argument("--cases", default="regress_cf,cf_table_regress,by_static,jeans")
     a = ap.parse_args()
+    # the runs change the working directory: executables by absolute path
+    a.base, a.new = os.path.abspath(a.base), os.path.abspath(a.new)
     top = a.out
     ic = os.path.join(top, "ic")
     os.makedirs(ic, exist_ok=True)

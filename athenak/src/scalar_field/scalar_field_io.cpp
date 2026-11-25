@@ -56,6 +56,11 @@ void IoFatal(const std::string &msg) {
 void ScalarField::Startup(bool res_flag) {
   Mesh *pm = pmy_pack->pmesh;
   NoiseSetup(res_flag);
+  // R and Pi_R of the mesh path at t*, from the slice as written (a restart reads them)
+  if (!res_flag && nopt.on && nopt.mesh_r) {
+    NoiseMeshInit();
+    NoiseMeshExchange();
+  }
   z4c::Z4c *pz4c = pmy_pack->pz4c;
   pz4c->Z4cToADM(pmy_pack);
   switch (pm->mb_indcs.ng) {

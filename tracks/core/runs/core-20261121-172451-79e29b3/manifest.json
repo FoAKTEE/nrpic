@@ -1,0 +1,113 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "core-20261121-172451-79e29b3",
+  "track": "core",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "gauge-2 processor tests T1 (vacuum identity on a coarse mesh), T2 (homogeneous universe), T3 (expanding ball L1 at cells 1 M; first pass new against release, restricted to matter); predictions in journal entry 4; repeats core-20261121-172332-7167b70, which failed at once on a relative path",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "python3",
+    "tracks/core/analysis/gauge2/ptests.py",
+    "--new",
+    ".work/build_cpu_g2/src/athena",
+    "--rel",
+    "/data/haiyangw/nrpic/.work/build_cpu_v06/src/athena",
+    "--out",
+    "$NRPIC_RUN_DIR",
+    "--threads",
+    "1",
+    "--jobs",
+    "6"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "79e29b34738bdad205c0fe577684e17ce3b0e40b",
+    "branch": "core/gauge-2",
+    "dirty": false,
+    "merge_base_main": "9aa744050b6dd76e8847e202b1b6f245a0cda107",
+    "worktree": "wt/core-s1"
+  },
+  "code": {
+    "core_tag": "core-v0.6",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "072b3623a0133e6f3308c4cfd1b4d318b6447fc5ce5ceccbe61e331df579ce4a",
+    "machine_file_sha256": "a832a4793e95a65c88ac1e0cca66ddc9afee09efde7423f554e8207e6c7b2148",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/core-s1/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": ".work/build_cpu_g2/src/athena",
+      "role": "input",
+      "sha256": "dd3bb6ce93afb0a51bf562d7bbb6703154c261db15c2b087f4435c290a37451a",
+      "bytes": 266256312,
+      "tracked": false
+    },
+    {
+      "path": "/data/haiyangw/nrpic/.work/build_cpu_v06/src/athena",
+      "role": "input",
+      "sha256": "91fc59b3920e3c9b2b308fda904bd1abe4c28426c26383c36854f2307e1a704c",
+      "bytes": 266226624,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "tracks/core/analysis/gauge2/ptests.py",
+      "role": "argv",
+      "sha256": "a8c846956b71370da1d7777caa2b924d0386b3496665e24cc34e0070241093d7",
+      "bytes": 15579,
+      "tracked": true
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 6,
+    "walltime_s": 1428.805,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/core/core-20261121-172451-79e29b3",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": "1473537adc9c86e628fc0d95fb3381807a07263d52ff57fd259517fd52aa1de9",
+    "bytes": 742132658,
+    "files": 210
+  },
+  "status": "completed",
+  "exit_code": 0,
+  "registered": "2026-11-21T17:24:53Z",
+  "started": "2026-11-21T17:24:53Z",
+  "ended": "2026-11-21T17:48:42Z",
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 40.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 6.6734,
+    "gpu_hours_reserved": 0.95,
+    "gpu_hours_without_gate": 5.8713,
+    "cores_busy": 0,
+    "runs": 1449,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
+  },
+  "finished": "2026-11-21T17:51:37Z"
+}

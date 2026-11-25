@@ -10,6 +10,7 @@
 #include <iomanip>    // std::setprecision()
 #include <limits>
 #include <algorithm>
+#include <cstdio>     // std::snprintf
 #include <cstdlib>
 #include <string> // string
 
@@ -31,6 +32,7 @@
 #include "scalar_field/scalar_field.hpp"
 #include "gravity/gravity.hpp"
 #include "utils/utils.hpp"
+#include "utils/term_signal.hpp"
 
 #if MPI_PARALLEL_ENABLED
 #include <mpi.h>
@@ -560,8 +562,10 @@ void Driver::Execute(Mesh *pmesh, ParameterInput *pin, Outputs *pout, bool wdfla
     }
     // guard of the NRPIC module: stop when the spacetime fields are not finite
     const bool guard_stop = nrpic::GuardCheck(pmesh);   // initial data
+    // the last condition: stop after the cycle in progress when SIGTERM was received
+    // (utils/term_signal.hpp); asked only when no other condition ends the run
     while (!guard_stop && (pmesh->time < tlim) && (pmesh->ncycle < nlim || nlim < 0) &&
-           (elapsed_time < wall_time)) {
+           (elapsed_time < wall_time) && !term_signal::Check()) {
       if (global_variable::my_rank == 0) {OutputCycleDiagnostics(pmesh);}
       if (wdflag) {WatchDog(0);}
 
@@ -666,6 +670,7 @@ void Driver::Execute(Mesh *pmesh, ParameterInput *pin, Outputs *pout, bool wdfla
 //!  and printing diagnostic messages
 
 void Driver::Finalize(Mesh *pmesh, ParameterInput *pin, Outputs *pout) {
+  Kokkos::Timer out_timer;   // time of the final outputs (reported after SIGTERM)
   // cycle through output Types and load data / write files
   //  This design allows for asynchronous outputs to implemented in the future.
   for (auto &out : pout->pout_list) {
@@ -679,6 +684,9 @@ void Driver::Finalize(Mesh *pmesh, ParameterInput *pin, Outputs *pout) {
     // restart file) is unchanged.  No writer uses the interval for anything else.
     // Compared in single precision, as in Driver::Execute.
     auto &opar = out->out_params;
+    // A run stopped by SIGTERM has the grace period of the batch system and no more:
+    // it writes its restart outputs and nothing else (utils/term_signal.hpp).
+    if (term_signal::Stopped() && opar.file_type.compare("rst") != 0) { continue; }
     const Real dt_saved = opar.dt;
     const bool off_schedule = (opar.dt > 0.0) && (opar.last_time >= 0.0) &&
         (static_cast<float>(pmesh->time) < static_cast<float>(opar.last_time + opar.dt));
@@ -688,8 +696,10 @@ void Driver::Finalize(Mesh *pmesh, ParameterInput *pin, Outputs *pout) {
     opar.dt = dt_saved;
   }
 
+  const double out_seconds = out_timer.seconds();
+
   // call any problem specific functions to do work after main loop
-  if (pmesh->pgen->pgen_final_func != nullptr) {
+  if (pmesh->pgen->pgen_final_func != nullptr && !term_signal::Stopped()) {
     (pmesh->pgen->pgen_final_func)(pin, pmesh);
   }
 
@@ -712,6 +722,20 @@ void Driver::Finalize(Mesh *pmesh, ParameterInput *pin, Outputs *pout) {
         std::cout << std::endl << "Terminating on time limit" << std::endl;
       } else if (nrpic::GuardExitStatus() != 0) {
         std::cout << std::endl << "Terminating on the NRPIC guard" << std::endl;
+      } else if (term_signal::Stopped()) {
+        int nrst = 0;
+        for (auto &out : pout->pout_list) {
+          if (out->out_params.file_type.compare("rst") == 0) { ++nrst; }
+        }
+        char secs[32];   // formatted here: the state of std::cout is left as it is
+        std::snprintf(secs, sizeof(secs), "%.3f", term_signal::SecondsSinceSignal());
+        char wsec[32];
+        std::snprintf(wsec, sizeof(wsec), "%.3f", out_seconds);
+        std::cout << std::endl << "Terminating on signal SIGTERM" << std::endl
+                  << "restart outputs written after the cycle in progress: " << nrst
+                  << " in " << wsec << " s, done " << secs
+                  << " s after the signal reached rank 0; exit status "
+                  << term_signal::ExitStatus() << std::endl;
       } else {
         std::cout << std::endl << "Terminating on wall clock limit" << std::endl;
       }
