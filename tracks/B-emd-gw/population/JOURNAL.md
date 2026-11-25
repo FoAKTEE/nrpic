@@ -765,3 +765,26 @@ mesh holds shells 33-64 k_f that ng = 64 does not; restricted to |k| <= 32 k_f t
 within 10 per cent of 1 at a = 9.8-39 in both gauges, and more than half of the GR estimate at
 a = 9.8 lies above 32 k_f. Refuted if the ratio over |k| <= 32 k_f exceeds 1.3 at a = 9.8 (then
 the two estimates differ in the source itself: normalisation, velocities or potential).
+
+## 2026-11-25 09:18 PST (lead of batch 21): NB1 outcome
+
+First band run B-20261125-170051-49ada01 compared unlike units (the Newtonian shell spectra of
+`analyze.py` are a^4 rho_qs, not Omega); fixed in `n4_band.py` (divided by a rho_c), kept on record
+as a defective analysis. Rerun B-20261125-170116-0b635a0, figure `fig_n4_band.png` in its run
+directory looked at (left: shell spectra at a = 19.4 and 97.5; right: band ratios). [VERIFIED by
+it]
+- NB1 REFUTED. The GR particles' quasi-static measure holds nothing above 8 k_f before a = 40 (the
+  band sums over |k| <= 8, 16, 32 and over all shells agree to 1e-3; fraction above 32 k_f 0.000 to
+  a = 39), so the early N4 excess is not the grid. Over |k| <= 32 k_f the ratio GR/Newton is 3.38
+  (a = 4.9), 1.85 (9.8), 1.37 (19.4), 1.16 (39.1) in the zero-shift gauge, the Gamma driver within
+  1 per cent of it to a = 19 (predicted within 10 per cent of 1; refuted above 1.3 at a = 9.8).
+  The left panel shows the two spectra with the same shape at a = 19.4, the GR one higher by a
+  factor uniform in k: a time-dependent normalisation of one estimator, not a difference of
+  physics, since the GR metric itself agrees with the Newtonian particles' estimate to 1-11 per
+  cent at a = 4-36 (N4 entry above). After a = 60 the Gamma-driver ratio grows in the high shells
+  (1.48 over |k| <= 32 at a = 68, 1.71 at 97.5) and the zero-shift one less (1.15, 1.23).
+- [TO VERIFY] cause: one snapshot through both estimators (`hqs_particles` of `analyze_gr.py` and
+  `TTBox.source` of `analyze.py`) on the same GR particle file at a = 5 and 20 decides between the
+  velocity convention of the GR snapshot (u, W, factors of a) and the potential term. Until then
+  the GR-particle Omega_qs of analyze_gr.py (A1-A3, GD3 "particles' estimate") is not used as a
+  reference; the metric's corrected Omega_qs and the Newtonian particles' estimate are.
