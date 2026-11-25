@@ -25,7 +25,7 @@ import sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import v2lib  # noqa: E402
 
-WT = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), *[".."] * 5))
+WT = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), *[".."] * 6))
 V1 = os.path.join(WT, "tracks", "kb", "stage", "KB-G3", "verifier", "verdicts")
 C3 = os.path.join(WT, "tracks", "kb", "claims3", "SAMPLE_VERDICTS.tsv")
 ALLOC = {"P": 14, "M": 13, "Q": 13}

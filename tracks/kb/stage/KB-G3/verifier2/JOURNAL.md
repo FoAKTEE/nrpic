@@ -62,3 +62,10 @@ Predictions (what would refute each in brackets):
 - P6 C4, C6, C7: package documents present; the failed run kb-20261124-233445-89478ae has a
   manifest with status failed; STATUS/JOURNAL/HANDOFF last changed in the batch-15 lead commit.
   [Refuted by a missing document, manifest or a stale file.]
+
+## Entry 2 (2026-11-25 04:13 UTC): failed run, my path error
+
+Run kb-20261125-041256-d4741a7 failed (exit 1) before the draw: `draw.py` built the worktree
+root with five `..` instead of six and did not find the first verifier's verdict files. No
+sample was drawn (the error is before the random generator). Fixed to six; the same command is
+run again.
