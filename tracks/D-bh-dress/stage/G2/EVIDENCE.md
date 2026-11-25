@@ -59,9 +59,21 @@ Card runs of the follow-ups (release core-v0.6, chains; continued in place by th
 | FK ES-FLK (N; excision to 6.4 M) | `g2long/inputs/esflk.athinput` | D-20261123-022725-a553496 | 400 M, closed by hand | 2.70 | fk_compare D-20261125-115637-7ee26c1, esf_criteria D-20261125-115647-fd2f3f7 (L, L) |
 | FF4 ES-FL4 (growth M/4) | `g2long/inputs/esfl4.athinput` | D-20261123-022727-1c17e73 | 500 M, closed | 1.34 | esf_criteria D-20261125-121034-8f82998 (control V-1L), D-20261125-121123-143a007 (control V-1L4, L) |
 | FN4 ES-FLK4N (4N) | `g2long/inputs/esflk4n.athinput` | D-20261124-134157-b17938b | 400 M, closed by hand | 3.19 | np_partial D-20261125-115729-011d028 (L), esf_criteria D-20261125-122827-c5735f8, xc_plane D-20261125-122849-43db157 (L) |
-| FNQ ES-FLKQ (N/4) | `g2long/inputs/esflkq.athinput` | D-20261124-172725-2f426b6 | running (q0010, job 5279), ~177 M at 04:11 | - | np_partial (partial, cut at 125 M) |
+| FNQ ES-FLKQ (N/4) | `g2long/inputs/esflkq.athinput` | D-20261124-172725-2f426b6 | running (q0010; 353 M at 08:00, next job 5293 pending) | - | np_partial (partial, cut at 125 M); region_norms D-20261125-160355-bda7e38 (to 350 M, L) |
 | FE4 ES-1L4 (null test M/4) | `g2long/inputs/es1l4.athinput` | D-20261123-022726-1b133af | 300 M, closed | 0.83 | judge_conv D-20261125-122227-3eb563a (L): P5 refuted |
 | FL16 ES-FL16 (growth M/16) | `g2long/inputs/esfl16.athinput` | D-20261124-172745-72472ed | waiting (q0011) | - | L1-L5 |
 
 Analysis tools added in batch 17: `g2long/tools/fk_compare.py`, `g2long/tools/np_partial.py`,
 `g2long/tools/close_by_hand.py` (closes chain manifests with `continuations` through nrpic-run's own code).
+
+Batch 20 (lead, processors only; g2long entries 23-24; every figure looked at by the lead, L):
+
+| Reading | Run id | What it establishes |
+|---|---|---|
+| horizon searches (decision 0040 item 3) | hz_check D-20261125-160142-b1c51b5; figure of record D-20261125-160241-2b7ba3b (L); failed attempt D-20261125-160123-f86d73c | no failed search (NaN or bit-identical repeat) after 20 M in 13 summaries; plateaus found; no removal reads a failed line; N 2.28e-4 / 1.99e-4 / 4.57e-3 unchanged; FP/FP-ext 36 probes found; four V-1L dumps match core's status-file search bit for bit (core-20261125-144142-5858c3d). Every D run was made WITHOUT `<fastflow> diagnostics` |
+| region norms (C3, C11) | region_norms D-20261125-160355-bda7e38 (L) | FN4 shells 0.52-0.82 of the plane norms; FNQ/FN4 = 3.4-4.4 on [1.2 r_AH, 30 M] at 50-300 M (particle noise); [30, 60] M deterministic to 150 M |
+| D4 split at 219 M (C8) | d4_timing D-20261125-160450-9326390 (L) | FK = ES-FL before 219 M (no early removal); FK's early removals after 235 M; FN4 3.4 per cent early from 170 M |
+| rerun script (C6) | stage/G2/rerun_g2.py; test rerun D-20261125-160651-29a730e | xc_plane.json byte-identical to D-20261125-122849-43db157 |
+
+Analysis tools added in batch 20: `g2long/tools/hz_check.py`, `g2long/tools/region_norms.py`,
+`g2long/tools/d4_timing.py`, `stage/G2/rerun_g2.py`.

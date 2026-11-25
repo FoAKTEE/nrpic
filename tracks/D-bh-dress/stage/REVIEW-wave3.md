@@ -509,3 +509,36 @@ M/4), P6, P11, P13, P12's failure with the M/8 control, FF4's D3 at early times,
 3. Keep q0010 (FNQ) and q0011 (FL16); add no queue entry: everything else missing for G2 is processor and
    writing work (OPEN.md section 1).
 4. G2 stays on plain 1+log; `lapse_leak_hole` is a G3 matter, with the mitigated vacuum control beside it.
+
+## 21. Lead session of batch 20 (2026-11-25 07:54 PST on, Opus; processors only)
+
+No helper package finished since batch 17; nothing stranded in the worktree (git status clean after the
+merge of main). The lead's own readings, predictions first (g2long entry 23, committed acf204b81 before any
+of the runs), outcomes in entry 24, each figure looked at:
+- H, decision 0040 item 3 (horizon status). No D input sets `<fastflow> diagnostics` and no status file
+  exists: every D run was made without the diagnostics. Recheck by the failure signature that the source
+  fixes (NaN until a surface is accepted in a process, else a bit-identical repeat; fastflow.cpp:228-231,
+  455-474, 777, 915-935, read by the lead): CONFIRMED that no G2 number rests on a failed search (none after
+  20 M in 13 summaries; the V-1L/V-1L16 plateaus are found surfaces; N unchanged at 2.28e-4, 1.99e-4,
+  4.57e-3; no removal reads a failed line); the FP/FP-ext tight re-searches are found (36 probes; four
+  match core's status-file run bit for bit). NOT CONFIRMED by a status file for the production runs
+  themselves: the signature argument stands in for it [VERIFIED by reading, not by a run with the
+  diagnostics].
+- R, FN4/FNQ region norms: CONFIRMED particle noise on [1.2 r_AH, 30 M] (ratio 3.4-4.4 for 16x particles);
+  R1 failed as written on one NaN (empty horizon sphere at t = 0), harmless.
+- T, D4: CONFIRMED that FK and ES-FL are identical before 219 M and that FK's early removals all lie after
+  235 M; NOT explained why excision then removes dust up to 0.36-0.66 M of proper time before the exact
+  LTB crossing, nor why the onset is earlier at 4N ([TO VERIFY]; no criterion depends on it).
+- C6: rerun_g2.py written and tested on one analysis (byte-identical json).
+- FNQ (q0010) has not ended (353 M of 400; job 5293 pending): not closed (task item 5 waits).
+
+## 22. Lead's decisions of batch 20
+
+1. Ruling 0039 item 4: the mesh leg of the null test is stated with two members (M/8, M/16) and no order;
+   no M/12 member is queued (no error above the converged-finder floor for a third member to order; up to
+   4 card-hours in a tight week; cards held). C2's text says so.
+2. Beside every horizon number of the package: "run without `<fastflow> diagnostics`; failed searches by
+   signature: none after 20 M (hz_check D-20261125-160142-b1c51b5)". New D inputs set `<fastflow>
+   diagnostics = true`; with core-v0.8 also `polish_iterations_0 = 100`, `mass_tol_0 = 1e-5` (core's
+   finder_stop.md) once core has judged its card check (q0049).
+3. No new queue entry; q0010 (FNQ) and q0011 (FL16) kept.
