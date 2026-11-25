@@ -7,7 +7,8 @@ make_repo(name) builds, under <main checkout>/scratch/harness/<name>-<UTC>-<pid>
   repo/wt/<ID>     linked worktrees on track/<ID>, core/nrpic, kb/main (as decision 0001)
   fakebin/         fake sbatch, squeue, sacct, scancel, srun, nvidia-smi and a fake athena, so that
                    scripts/gpu_batch.sh and scripts/submit_chain.sh run end to end with no card used
-                   (`sbatch --hold` makes a job that squeue lists as PENDING; every other job is RUNNING)
+                   (`sbatch --hold` makes a job that squeue lists as PENDING; every other job is RUNNING;
+                   squeue renders -o %i %j %T %Z, the working directory being sbatch's -D or its cwd)
 The machine file of the scratch repository puts fakebin/ first on PATH and points NRPIC_GPU_EXE at
 the fake athena. Nothing here touches the live branches or worktrees.
 """
@@ -48,7 +49,7 @@ FAKE_SBATCH = r'''#!/usr/bin/python3 -I
 import os, subprocess, sys
 STATE = "@STATE@"
 args = sys.argv[1:]
-two = {"-p", "-c", "-t", "-J", "-o", "-e", "-n", "-N", "-A", "--partition"}
+two = {"-p", "-c", "-t", "-J", "-o", "-e", "-n", "-N", "-A", "-D", "--partition"}
 opts, i = {}, 0
 while i < len(args) and args[i].startswith("-"):
     a = args[i]
@@ -79,13 +80,15 @@ p = subprocess.Popen(["bash", "-c", wrapper, script] + sargs, stdin=subprocess.D
                      stdout=open(out, "w"), stderr=subprocess.STDOUT, env=env, start_new_session=True)
 if "--hold" in opts or "-H" in opts:              # listed as PENDING (its process runs all the same)
     open(os.path.join(jd, "pending"), "w").close()
+# the job's working directory (squeue %Z): -D / --chdir, else where sbatch was called
+open(os.path.join(jd, "workdir"), "w").write(os.path.abspath(opts.get("-D") or opts.get("--chdir") or os.getcwd()))
 open(os.path.join(jd, "pid"), "w").write(str(p.pid))
 open(os.path.join(jd, "name"), "w").write(env["SLURM_JOB_NAME"])
 print(jid if "--parsable" in opts else f"Submitted batch job {jid}")
 '''
 
 FAKE_SQUEUE = r'''#!/usr/bin/python3 -I
-import os, sys
+import os, re, sys
 STATE = "@STATE@"
 args = sys.argv[1:]
 jobs = [args[args.index("-j") + 1]] if "-j" in args else (sorted(os.listdir(STATE)) if os.path.isdir(STATE) else [])
@@ -98,15 +101,22 @@ def alive(j):
     except OSError:
         return False
 live = [j for j in jobs if j.isdigit() and alive(j)]
+def read(j, f):
+    try:
+        return open(os.path.join(STATE, j, f)).read()
+    except OSError:
+        return ""
 def state(j):
     return "PENDING" if os.path.exists(os.path.join(STATE, j, "pending")) else "RUNNING"
+fields = {"i": lambda j: j, "j": lambda j: read(j, "name"), "T": state, "Z": lambda j: read(j, "workdir")}
+fmt = args[args.index("-o") + 1] if "-o" in args else None     # %i %j %T %Z, with optional widths (%.18i)
 if "-h" not in args:
     print("JOBID NAME STATE")
 for j in live:
-    if "%T" in args:
-        print(state(j))
+    if fmt is None:
+        print(j, read(j, "name"), state(j))
     else:
-        print(j, open(os.path.join(STATE, j, "name")).read(), state(j))
+        print(re.sub(r"%\.?\d*([A-Za-z])", lambda m: fields.get(m.group(1), lambda j: "")(j), fmt))
 '''
 
 FAKE_SACCT = r'''#!/usr/bin/python3 -I
