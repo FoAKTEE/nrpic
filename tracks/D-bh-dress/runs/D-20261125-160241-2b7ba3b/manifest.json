@@ -1,0 +1,113 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "D-20261125-160241-2b7ba3b",
+  "track": "D-bh-dress",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "g2long entry 23 test H, figure of record (same reading as D-20261125-160142-b1c51b5, figure redrawn: null-test plateaus from 20 M, every failed search by time)",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "python3",
+    "tracks/D-bh-dress/g2long/tools/hz_check.py",
+    "--out",
+    "$NRPIC_RUN_DIR",
+    "V-1L=/data/haiyangw/nrpic/scratch/D-bh-dress/D-20261121-203124-a34cf1f:v1l",
+    "ES-1L=/data/haiyangw/nrpic/scratch/D-bh-dress/D-20261121-203131-8ee2a49:es1l",
+    "V-1L16=/data/haiyangw/nrpic/scratch/D-bh-dress/D-20261121-203151-37e7b2d:v1l16",
+    "ES-1L16=/data/haiyangw/nrpic/scratch/D-bh-dress/D-20261121-203151-59c54fb:es1l16",
+    "V-1L4=/data/haiyangw/nrpic/scratch/D-bh-dress/D-20261123-022715-ab5d983:v1l4",
+    "ES-1L4=/data/haiyangw/nrpic/scratch/D-bh-dress/D-20261123-022726-1b133af:es1l4",
+    "ES-FL=/data/haiyangw/nrpic/scratch/D-bh-dress/D-20261121-203150-15f2bad:esfl",
+    "FF4=/data/haiyangw/nrpic/scratch/D-bh-dress/D-20261123-022727-1c17e73:esfl4",
+    "FK=/data/haiyangw/nrpic/scratch/D-bh-dress/D-20261123-022725-a553496:esflk",
+    "FN4=/data/haiyangw/nrpic/scratch/D-bh-dress/D-20261124-134157-b17938b:esflk4n",
+    "FNQ=/data/haiyangw/nrpic/scratch/D-bh-dress/D-20261124-172725-2f426b6:esflkq",
+    "V-1B=/data/haiyangw/nrpic/scratch/D-bh-dress/D-20261120-222625-63abd72:v1b",
+    "ES-1=/data/haiyangw/nrpic/scratch/D-bh-dress/D-20261115-172726-60ba4c2:es",
+    "--pair",
+    "ES-1L=V-1L",
+    "--pair",
+    "ES-1L16=V-1L16",
+    "--pair",
+    "ES-1L4=V-1L4",
+    "--probes",
+    "/data/haiyangw/nrpic/scratch/D-bh-dress/D-20261124-130935-fdca920/fp",
+    "/data/haiyangw/nrpic/scratch/D-bh-dress/D-20261124-140606-286a302/fpx",
+    "--core",
+    "/data/haiyangw/nrpic/scratch/core/core-20261125-144142-5858c3d"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "2b7ba3b71d807cde94ca8efa610bea7026480693",
+    "branch": "track/D-bh-dress",
+    "dirty": false,
+    "merge_base_main": "c2154334a0f77a0f485c135951bf4dd6306d8889",
+    "worktree": "wt/D-bh-dress"
+  },
+  "code": {
+    "core_tag": "core-v0.7",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "b7f7695d8e9720758c144dd9c0f272ce4fba8b46f921750462326664310fad51",
+    "machine_file_sha256": "ff4e45b0fd5bf6bee4bf1084a282d72b9adf66f4a455f4e937d9884a1fb07535",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/D-bh-dress/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "tracks/D-bh-dress/g2long/tools/hz_check.py",
+      "role": "argv",
+      "sha256": "038720211eca6570af8b8098d2a14f06145fd34bae43b73e213ec39979ebef97",
+      "bytes": 11365,
+      "tracked": true
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 1,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/D-bh-dress/D-20261125-160241-2b7ba3b",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-25T16:02:41Z",
+  "started": null,
+  "ended": null,
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 40.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 25.5109,
+    "gpu_hours_reserved": 7.8667,
+    "gpu_hours_without_gate": 0.0,
+    "cores_busy": 0,
+    "runs": 307,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md + 0026-cards-loaded-allotment-cost.md + 0031-level2-branch-and-ablation.md + 0032-new-account-preemption-allotments.md + 0038-track-e-g2-signed-g3-scope.md"
+  }
+}
