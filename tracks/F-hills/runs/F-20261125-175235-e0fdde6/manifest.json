@@ -1,0 +1,109 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "F-20261125-175235-e0fdde6",
+  "track": "F-hills",
+  "gate": "G1",
+  "kind": "scouting",
+  "purpose": "G1 verifier (C18, batch 22), reference pass: readers tested on analytic cases (P0); passage A + A2 cut at 96.2285 M and to the live record with own Newtonian reference and the heavy hole's two finder branches (P1-P7); mesh members, P1, horizon scan by failure signature (P8, P9); supersedes F-20261125-175038-4719d4a and F-20261125-175132-e7c6c68",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "bash",
+    "tracks/F-hills/stage/G1/verifier/scripts/run_all.sh",
+    "$NRPIC_RUN_DIR"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "e0fdde655fc178985caa14463ba53a6b260ae331",
+    "branch": "track/F-hills",
+    "dirty": false,
+    "package": [
+      "tracks/F-hills/stage/G1/verifier"
+    ],
+    "outside_package": {
+      "count": 0,
+      "first": []
+    },
+    "merge_base_main": "17cee82aa8aa267ead5d77a82819994d6018c7dc",
+    "worktree": "wt/F-hills"
+  },
+  "code": {
+    "core_tag": "core-v0.7",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "b7f7695d8e9720758c144dd9c0f272ce4fba8b46f921750462326664310fad51",
+    "machine_file_sha256": "ff4e45b0fd5bf6bee4bf1084a282d72b9adf66f4a455f4e937d9884a1fb07535",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/F-hills/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "tracks/F-hills/binary_conv/inputs/p1b_R16n.athinput",
+      "role": "input",
+      "sha256": "6c3a8642428c1215ba959e925dade7bb986a40c1631295822c254f516f9c393e",
+      "bytes": 3224,
+      "tracked": true
+    },
+    {
+      "path": "tracks/F-hills/binary_conv/inputs/bin_m16.athinput",
+      "role": "input",
+      "sha256": "179a4e9aae8c6c4c6884af62bf12b4076759a4f82d6ccab2c5ee262e0ee00557",
+      "bytes": 3436,
+      "tracked": true
+    },
+    {
+      "path": "tracks/F-hills/stage/G1/verifier/scripts/run_all.sh",
+      "role": "argv",
+      "sha256": "7442ccdf069162b6fde6bb2cd19851eb83c83d3d1753be9ebe9c4e25f889d0e7",
+      "bytes": 704,
+      "tracked": true
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 1,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/F-hills/F-20261125-175235-e0fdde6",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-25T17:52:35Z",
+  "started": null,
+  "ended": null,
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 60.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 30.1853,
+    "gpu_hours_reserved": 18.6833,
+    "gpu_hours_without_gate": 0.0,
+    "cores_busy": 0,
+    "runs": 260,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md + 0026-cards-loaded-allotment-cost.md + 0031-level2-branch-and-ablation.md + 0032-new-account-preemption-allotments.md + 0038-track-e-g2-signed-g3-scope.md + 0039-rulings-after-batch-17.md"
+  }
+}
