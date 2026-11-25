@@ -455,3 +455,21 @@ Not done (outside this session's aim): judging and closing processor run A-20261
 - Inbox: eight info messages acknowledged (kb sources, core step limit dt_gauge and its refined-deck
   result, SIGTERM restarts, release v0.7). Outbox: request to orch (oblate/prolate row, C18 verifier).
 - Not done: K4; closing A-20261124-132016-ecf12c3 (G3); threshold_ball/README.md.
+
+## 2026-11-25 07:04-07:25 PST, lead of batch 19 (about an hour asked)
+
+- Merged main; read decisions 0039, 0040, the orch note on the finder's summary file and the fresh verifier's
+  report stage/G2/VERIFIER-C18.md.
+- C18: predictions P12a-d written and committed before the analysis (threshold_ball entry 12); registered
+  analysis c18_answer.py (A-20261125-151126-7f79a83; two failed first attempts kept: a member without a status
+  file, then the figure). P12a, P12b hold; P12c, P12d refuted. The verifier is right on the masses: README
+  medians near threshold lie outside the bracket the tracked particles allow; A medians were built on repeated
+  summary rows. READMEs of conv_ball and threshold_ball corrected; CHECKLIST C1 (time measure), C2, C7, C8, C18.
+- K4 closed (nrpic-run finish) and judged (A-20261125-150851-5545f8e, fig_k4.png): K4a-c hold. Noted that
+  0039 item 2(c) calls K4 the smoothed-edge test; it is not; C3 stays FAILED; request to orch.
+- A2: decided that S1L serves (prediction written first, periodic_threshold JOURNAL 07:15 PST); analysis
+  a2_crossing.py (A-20261125-151629-bb77171, clocks added A-20261125-151715-66f198f): z first (holds), time
+  refuted (6.1-6.4 t_H against [3.4, 5.0]).
+- Stage G2: collect, verify, report; REVIEW-wave3 section 9; OPEN.md rewritten. Inbox: 4 acknowledged. Outbox:
+  info c18-answered-k4-a2, request c3-smoothed-edge-test.
+- Not done: Newtonian control of A2; smoothed-edge test; reading P0L6 and Szekeres (still in the queue).

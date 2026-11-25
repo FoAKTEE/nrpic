@@ -1,6 +1,6 @@
 # RISKS of A-emd-pbh
 
-State 2026-11-24 (lead, batch 11; rows 27-28 updated, 31-35 new; first written 2026-11-15). Likelihood and effect:
+State 2026-11-25 (lead, batch 19; rows 37-39 new; first written 2026-11-15). Likelihood and effect:
 H high, M medium, L low [JUDGEMENT]. Sources: `scope/SCOPE.md` sections 8 and 10.9,
 `gauge/GAUGE.md`, `stage/REVIEW-wave2.md`, `stage/REVIEW-wave3.md`, `stage/G1/GATE_REVIEW.md`,
 core's messages of 2026-11-20/21, the helpers' journals. "Realized" means a run showed it;
@@ -44,3 +44,6 @@ core's messages of 2026-11-20/21, the helpers' journals. "Realized" means a run 
 | 34 | Preemption eats chain segments: C-d0.42 closed FAILED at t = 42 of 51 after nine SIGTERMs, S1L at 66 of 220 (2026-11-23) | realized | L-M: runs look failed while only cut | chain/events.log | continue in place from the newest restart (journals 2026-11-24), restart dt lowered; MAX_SEGMENTS with margin |
 | 35 | Line-based Misner-Sharp mass near the centre unreliable (innermost 1-4 cells: compactness 96 at t = 0 on P0L's line) | certain | M: F1's central mass deficit may be the line's | | judge only points resolved by >= 8 cells; field dumps of a uniform member if needed |
 | 36 | Prediction bounds below the resolution of the measure: T4 asked ddet to halve below one search interval (0.0625 coordinate on M/32), and dmmed is a median over windows that differ between meshes (threshold_ball entry 11) | realized | L: a refuted prediction that tests nothing; future mesh predictions use common times (t4_common.py) and bounds above the search quantum |
+| 37 | The finder's summary file repeats the last accepted surface after a failed search (decision 0040 item 3); A's mass medians on M/16 were built on 14 such repeats (A-20261125-151126-7f79a83) | realized | M: wrong numbers in a gate package | horizon_status_0.txt beside every finder reading | readers count finds only from the status file; runs without `<fastflow> diagnostics` say so beside the number; every new deck sets diagnostics = true |
+| 38 | The exact horizon mass on the code's slice is resolved only to the spacing of the tracked particles near the core edge (bracket width 1e-3 to 1e-2 relative; VERIFIER-C18 5f) | certain | M: mass errors near threshold and on M/64 not measurable below that | bracket width in c18_answer.py | quote brackets, not medians; for G3 a denser tracked set near the core edge, or the line Misner-Sharp mass at the exact label |
+| 39 | The first shell crossing of the triaxial peak S1L lags the first-order Zel'dovich time by a factor 1.5 on every clock (A2, A-20261125-151715-66f198f); Newtonian ellipsoidal collapse would lead it | realized | H for the threshold line in the box if the lag is a code or data defect | min neighbour separation against 1 - 0.064 a | Newtonian-mode control of the same particles on processors (next session) before any phase-1 production run |
