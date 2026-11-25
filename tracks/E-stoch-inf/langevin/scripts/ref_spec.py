@@ -30,6 +30,7 @@ NREAL = int(sys.argv[2]) if len(sys.argv) > 2 else 1_000_000
 CH = 16
 NLAT = int(os.environ.get("NRPIC_REF_NLAT", "64"))   # |n| <= 64 on the 256^3 lattice (32: the 128^3 band)
 TAG = "" if NLAT == 64 else f"_n{NLAT}"             # output names of another band never overwrite the 256 band
+TAG += os.environ.get("NRPIC_REF_SUFFIX", "")      # e.g. _binfix (batch 19): a corrected rerun never overwrites the earlier file
 SIGMAS = (1.0, 0.1, 0.01)
 
 
@@ -65,7 +66,9 @@ def lattice_factor_fn(sigma):
     """Variance factor (lattice shell density / continuum) as a function of N."""
     nn, cnt = linear.lattice_shell_counts(NLAT)
     edges = np.arange(0.0, np.log(NLAT) + 0.05 + 1e-9, 0.05)
-    lo, hi = np.exp(edges[:-1]), np.exp(edges[1:])
+    # The upper edge of the last bin is cut at NLAT (batch 19, g3/scope_review B1): the band ends at
+    # ln NLAT, so a bin volume counted to exp(edges[-1]) > NLAT gave a factor 0.28 instead of 0.93 (NLAT 32).
+    lo, hi = np.exp(edges[:-1]), np.minimum(np.exp(edges[1:]), float(NLAT))
     C = np.bincount(np.clip(np.searchsorted(edges, np.log(nn), side="right") - 1, 0, len(lo) - 1),
                     weights=cnt, minlength=len(lo))
     r = C / (4 * np.pi / 3 * (hi ** 3 - lo ** 3))
@@ -181,6 +184,10 @@ def main():
                 d = (x - x.mean()) / sig_lin
                 st["tail_gt"] = {str(k): float(np.mean(d > k)) for k in (1, 2, 3, 4, 5, 6)}
                 st["tail_lt"] = {str(k): float(np.mean(d < -k)) for k in (1, 2, 3, 4, 5, 6)}
+                if latt:   # standardised with the lattice sigma as well (scope review B1)
+                    dl = (x - x.mean()) / np.sqrt(out["linear"]["var_lattice_Ne"])
+                    st["tail_gt_latsig"] = {str(k): float(np.mean(dl > k)) for k in (1, 2, 3, 4, 5, 6)}
+                    st["tail_lt_latsig"] = {str(k): float(np.mean(dl < -k)) for k in (1, 2, 3, 4, 5, 6)}
                 qs = [1e-5, 1e-4, 1e-3, 1e-2, 0.5, 0.99, 0.999, 0.9999, 1 - 1e-5]
                 st["quantiles_dN"] = dict(zip(map(str, qs), np.quantile(x - x.mean(), qs)))
             rec[lab] = st
@@ -200,6 +207,10 @@ def main():
                         for name, *_ in VARIANTS if name != "classical"}
     out["ratios_Ne"]["s0.01_lattice"]["var_over_lattice_lin"] = (out["s0.01_lattice"]["Ne"]["var"]
                                                                 / out["linear"]["var_lattice_Ne"])
+    # variance gate of SCOPE 4d.3 as amended in batch 19: within three standard errors of the lattice sum
+    _g = out["ratios_Ne"]["s0.01_lattice"]
+    _g["se_over_lattice_lin"] = out["s0.01_lattice"]["Ne"]["se_var"] / out["linear"]["var_lattice_Ne"]
+    _g["gate_within_3se"] = bool(abs(_g["var_over_lattice_lin"] - 1) <= 3 * _g["se_over_lattice_lin"])
     print("ratios", out["ratios_Ne"], flush=True)
 
     # ---- figure 1: background, noise amplitude, linear band spectrum
