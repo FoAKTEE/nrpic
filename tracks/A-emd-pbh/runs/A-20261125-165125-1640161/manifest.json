@@ -1,0 +1,94 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "A-20261125-165125-1640161",
+  "track": "A-emd-pbh",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "A2 control AZ2: first crossing of N-f (S1L particle file as it is under Newton) with a2_crossing.py --clock newton, and the comparison GR / N-z / N-f on one clock",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "bash",
+    "-c",
+    "OMP_NUM_THREADS=1 python -I tracks/A-emd-pbh/periodic_threshold/scripts/a2_crossing.py --run /data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261125-160633-e38d321/N-f --clock newton --label 'N-f (Newton, GR file)' --out \"$NRPIC_RUN_DIR/N-f\" > \"$NRPIC_RUN_DIR/N-f.log\" 2>&1 && OMP_NUM_THREADS=1 python -I tracks/A-emd-pbh/periodic_threshold/scripts/a2_compare.py --gr /data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261125-151629-bb77171/a2.json --member 'N-z (Newton)=/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261125-162905-d0ef1d7/a2.json' --member \"N-f (Newton, GR file)=$NRPIC_RUN_DIR/N-f/a2.json\" --out \"$NRPIC_RUN_DIR\""
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "16401612f8d37b687291f7f508cfadf1504345ca",
+    "branch": "track/A-emd-pbh",
+    "dirty": false,
+    "package": [
+      "tracks/A-emd-pbh/periodic_threshold"
+    ],
+    "outside_package": {
+      "count": 4,
+      "first": [
+        " M tracks/A-emd-pbh/JOURNAL.md",
+        " M tracks/A-emd-pbh/STATUS.md",
+        " M tracks/A-emd-pbh/stage/G2/VERIFY_RESULTS.json",
+        " M tracks/A-emd-pbh/stage/G2/VERIFY_RESULTS.md"
+      ]
+    },
+    "merge_base_main": "c2154334a0f77a0f485c135951bf4dd6306d8889",
+    "worktree": "wt/A-emd-pbh"
+  },
+  "code": {
+    "core_tag": "core-v0.7",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "b7f7695d8e9720758c144dd9c0f272ce4fba8b46f921750462326664310fad51",
+    "machine_file_sha256": "ff4e45b0fd5bf6bee4bf1084a282d72b9adf66f4a455f4e937d9884a1fb07535",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/A-emd-pbh/.venv"
+  },
+  "input": null,
+  "inputs": [],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 1,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/A-emd-pbh/A-20261125-165125-1640161",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-25T16:51:26Z",
+  "started": null,
+  "ended": null,
+  "parents": [
+    "A-20261125-160633-e38d321"
+  ],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 60.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 21.3864,
+    "gpu_hours_reserved": 9.8333,
+    "gpu_hours_without_gate": 0.1686,
+    "cores_busy": 9,
+    "runs": 287,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md + 0026-cards-loaded-allotment-cost.md + 0031-level2-branch-and-ablation.md + 0032-new-account-preemption-allotments.md + 0038-track-e-g2-signed-g3-scope.md"
+  }
+}
