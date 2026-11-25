@@ -97,30 +97,62 @@
     "nodes": 1,
     "gpus": 1,
     "cores": 1,
-    "walltime_s": null,
+    "walltime_s": 30055.0,
     "wall_limit": null,
     "segments_max": 13,
     "gpu_hours_requested": 12.7833,
-    "gpu_hours": null,
-    "particles": null
+    "gpu_hours": 9.2831,
+    "particles": null,
+    "gpu_hours_basis": "sum over 14 jobs of the chain: sacct ElapsedRaw for 14",
+    "gpu_seconds_by_job": {
+      "4836": 3006.0,
+      "4855": 3006.0,
+      "4868": 3006.0,
+      "4879": 3007.0,
+      "4889": 3007.0,
+      "4899": 3007.0,
+      "4907": 3006.0,
+      "4914": 3007.0,
+      "4930": 3007.0,
+      "4947": 158.0,
+      "4966": 761.0,
+      "4987": 2435.0,
+      "5008": 3006.0,
+      "5020": 0.0
+    }
   },
   "slurm": {
     "partition": "preempt",
     "job_name": "F-20261121-203156-03efdd3",
-    "job_ids": []
+    "job_ids": [
+      "4836",
+      "4855",
+      "4868",
+      "4879",
+      "4889",
+      "4899",
+      "4907",
+      "4914",
+      "4930",
+      "4947",
+      "4966",
+      "4987",
+      "5008",
+      "5020"
+    ]
   },
   "outputs": {
     "dir": "scratch/F-hills/F-20261121-203156-03efdd3",
     "sha256sums": "sha256sums.txt",
-    "sha256sums_sha256": null,
-    "bytes": null,
-    "files": null
+    "sha256sums_sha256": "c1be64aac2da389f36063cd684fa09311402c182f27eaa219fb8f98c0bb24088",
+    "bytes": 109911271977,
+    "files": 153
   },
-  "status": "submitted",
-  "exit_code": null,
+  "status": "stopped",
+  "exit_code": 1,
   "registered": "2026-11-21T20:32:40Z",
-  "started": null,
-  "ended": null,
+  "started": "2026-11-21T14:31:35-08:00",
+  "ended": "2026-11-23T13:39:37-08:00",
   "parents": [
     "F-20261121-130351-04074e1",
     "F-20261121-202021-3c4321e"
@@ -135,5 +167,6 @@
     "cores_busy": 0,
     "runs": 236,
     "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
-  }
+  },
+  "finished": "2026-11-25T17:06:16Z"
 }
