@@ -108,6 +108,29 @@ with harmonic face metric conductance
 \end{equation}
 and face flux matching (refluxing) accumulated across coarse-fine adaptive boundaries. By direct summation, this operator satisfies four algebraic guarantees simultaneously on any smooth or rough adaptive metric: constant physical fields are exact fixed points ($q_c \equiv q_0 \Rightarrow F_{c+1/2} \equiv 0$); proper-volume integrals $\sum_c \sqrt{\gamma}_c q_c \Delta V_c$ are conserved to machine precision across refinement jumps; the discrete filter is symmetric negative semi-definite (self-adjoint and $L^2(\sqrt{\gamma}\,\dd V)$-contractive) for $w_1 \le 1/4$; and pointwise positivity $q^{\rm new} \ge 0$ holds unconditionally when $w_1 \le 1/4$ because diagonal weights remain nonnegative since $\sigma_{c\pm 1/2} \le 2\sqrt{\gamma}_c$.
 
+To eliminate redundant inter-block synchronization, we also formulate an unsplit seven-point harmonic filter advancing all three axes in a single pass with isotropic face conductance $\sigma_{d\pm}$ and coupling parameter $\kappa$:
+\begin{equation}\label{eq:unsplit_mcons}
+\begin{aligned}
+q_c^{\rm new} = q_c + \frac{\kappa}{\sqrt{\gamma}_c \Delta V_c}\sum_{d=1}^{3}
+\Big[&\sigma_{d+}\Delta V_{d+}(q_{c+\hat{e}_d} - q_c) \\
+&- \sigma_{d-}\Delta V_{d-}(q_c - q_{c-\hat{e}_d})\Big],
+\end{aligned}
+\end{equation}
+which cuts ghost-cell and flux-boundary exchanges threefold and skips empty vacuum blocks using an active-block mask and cached metric determinant. Unconditional positivity holds for $\kappa \le 1/12$ (since $\sigma_{d\pm} \le 2\sqrt{\gamma}_c$ bounds the diagonal weight above $1 - 12\kappa \ge 0$), preserving exact constant states ($0.00$), self-adjointness ($1.43 \times 10^{-16}$), rotational isotropy ($2.22 \times 10^{-16}$), and two-level adaptive conservation ($5.11 \times 10^{-16}$) as verified in Fig.~\ref{fig:iter3_mcons}. Its dispersion factor $1 - 4\kappa\sum_d \sin^2(k_d\Delta x/2)$ illustrates an algorithmic trade-off: at matched second moment ($\kappa = 1/6$ or $n_{\rm f}=2\text{--}3$ passes at $\kappa = 1/12$), unsplit filtering yields $2\times\text{--}3.2\times$ higher GPU throughput on static-metric and high-PPC ($10^5$) runs, whereas directional $w_1 = 1/4$ sweeps completely annihilate axis-aligned Nyquist modes $(\pi,0,0)$ in a single pass where $\kappa = 1/12$ retains factor $2/3$.
+
+\begin{figure}[tbp]
+\centering
+\includegraphics[width=\columnwidth]{figures/fig_iter3_mcons_diagnostics.pdf}
+\caption{\label{fig:iter3_mcons}%
+Self-adjoint metric-weighted conservative filter properties on curved and adaptive meshes (Sec.~\ref{sec:method_filter}). Directional ($w_1 = 1/4$) and unsplit seven-point harmonic ($\kappa \le 1/12$) formulations both enforce constant preservation, machine-precision proper-volume conservation across refinement boundaries, and positivity.}
+\end{figure}
+
+\subsection{Quintic metric reconstruction and multi-rate subcycling}\label{sec:method_quintic_multirate}
+
+High-order symplectic particle integration exposes spatial metric interpolation error once temporal drift falls below $\sim 10^{-12}$. Replacing four-point cubic Hermite interpolation with a zero-overhead $C^2$ six-node quintic Hermite stencil (within the standard four ghost-cell width $n_g = 4$) eliminates the $\mathcal{O}(\Delta x^3)$ gradient discontinuity without allocating auxiliary B-spline coefficient arrays, saving $2.38\,\mathrm{GiB}$ of device memory on $6$-level Kerr grids while tightening static-mesh orbit errors by two to three orders of magnitude.
+
+For full $3+1$ self-gravitating evolution, throughput is governed equally by Z4c right-hand-side evaluations and conservative filter sweeps. Pairing continuous first-order proper-time integration (Scheme~A) with the three-stage strong-stability-preserving Z4c integrator (\texttt{rk3}) raises the stable CFL limit from $\nu_{\rm CFL} = 0.25$ (\texttt{rk4}) to $\nu_{\rm CFL} = 0.40\text{--}0.45$, while multi-rate kinetic subcycling advances particles once per macro-step of stride $s_{\rm m}$ using three-level quadratic metric reconstruction across substeps. Coupled linear-wave kernel tests confirm second-order accuracy ($p = 1.98$ under multi-rate \texttt{rk3} and \texttt{rk4}, vs $p = 0.99$ under frozen metrics) while cutting coupled GPU time to solution by $2.2\times\text{--}2.95\times$.
+
 \subsection{Task-list modularization and GPU kernel layout}\label{sec:method_gpu}
 
-Both kinetic branches execute within an explicit modular task list inside AthenaK: step preparation, three-level metric synchronization, fourth-order geodesic or continuum finite-volume advance, Cell-BGK relaxation, lapse excision, metric-weighted deposit filtering with adaptive boundary refluxing, and Z4c source injection. In the MFM branch, active-basis template specialization ($N_b \in \{1, 2, 4, 8\}$), mean-$\bar{h}$ spatial hash binning with symmetric gather-scatter neighbor lists, and compact plain-old-data kernel pointer packing eliminate register spills, constant-memory launch stalls, and quadratic neighbor scaling under strong shear without altering physical equations.
+Both kinetic branches execute within an explicit modular task list inside AthenaK: step preparation, three-level metric synchronization, fourth-order geodesic or continuum finite-volume advance, Cell-BGK relaxation, lapse excision, metric-weighted deposit filtering with adaptive boundary refluxing, and Z4c source injection. Boundary-only reflux storage shrinks GPU filter memory by $6{,}064\,\mathrm{MiB}$ on adaptive collapse grids, while active-basis template specialization ($N_b \in \{1, 2, 4, 8\}$), mean-$\bar{h}$ spatial hash binning with symmetric gather-scatter neighbor lists, and compact plain-old-data kernel pointer packing eliminate register spills, constant-memory launch stalls, and quadratic neighbor scaling under strong shear without altering physical equations.

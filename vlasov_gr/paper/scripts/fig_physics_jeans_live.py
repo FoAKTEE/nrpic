@@ -27,6 +27,8 @@ SCRATCH = os.environ.get(
 )
 JDIR = os.path.join(SCRATCH, "runs", "repro_wave4c", "jeans_10k_strat_mid")
 PREF = "jeans_10k_strat_mid"
+QDIR = os.path.join(SCRATCH, "runs", "repro_wave4c", "jeans_10k_qmc_hyb")
+QPREF = "jeans_10k_qmc_hyb"
 
 
 def safe_loadtxt(path: str) -> np.ndarray:
@@ -175,6 +177,38 @@ def build_npz() -> dict:
         "zh_t": zh[:, 0] if len(zh) else np.array([]),
         "zh_H": np.sqrt(np.maximum(zh[:, 3], 1e-24)) if len(zh) else np.array([]),
     }
+    if os.path.isfile(os.path.join(QDIR, f"{QPREF}.co_0.txt")):
+        qco0 = safe_loadtxt(os.path.join(QDIR, f"{QPREF}.co_0.txt"))
+        qco1 = safe_loadtxt(os.path.join(QDIR, f"{QPREF}.co_1.txt"))
+        nq = min(len(qco0), len(qco1))
+        qco0, qco1 = qco0[:nq], qco1[:nq]
+        qstr = max(1, nq // 250)
+        qco0s, qco1s = qco0[::qstr], qco1[::qstr]
+        qah0 = safe_loadtxt(os.path.join(QDIR, f"{QPREF}.horizon_summary_0.txt"))
+        qah1 = safe_loadtxt(os.path.join(QDIR, f"{QPREF}.horizon_summary_1.txt"))
+        qah0 = qah0[np.isfinite(qah0[:, 2])] if len(qah0) else qah0
+        qah1 = qah1[np.isfinite(qah1[:, 2])] if len(qah1) else qah1
+        qnh = safe_loadtxt(os.path.join(QDIR, f"{QPREF}.nrpic.hst"))
+        qstr_n = max(1, len(qnh) // 250)
+        qnh_s = qnh[::qstr_n]
+        out.update({
+            "q_co_t": qco0s[:, 1],
+            "q_co0_xyz": qco0s[:, 2:5],
+            "q_co1_xyz": qco1s[:, 2:5],
+            "q_ah0_t": qah0[:, 1] if len(qah0) else np.array([]),
+            "q_ah0_M": qah0[:, 2] if len(qah0) else np.array([]),
+            "q_ah1_t": qah1[:, 1] if len(qah1) else np.array([]),
+            "q_ah1_M": qah1[:, 2] if len(qah1) else np.array([]),
+            "q_nh_t": qnh_s[:, 0],
+            "q_nh_mexc": qnh_s[:, 17] / max(float(qnh[0, 3]), 1e-30),
+            "q_nh_amin": qnh_s[:, 15],
+        })
+        qfilt = np.max(np.abs(qnh[:, 23] - qnh[:, 8]) / np.maximum(np.abs(qnh[:, 8]), 1e-30))
+        qm0 = float(qnh[0, 3])
+        qp = np.max(np.linalg.norm(qnh[:, 5:8], axis=1)) / max(qm0, 1e-30)
+        print(f"QMC overlay: t_end={qnh[-1,0]:.3f} filt_max={qfilt:.3e} max|P|/M0={qp:.3e} "
+              f"ah0=[{qah0[0,1]:.4f}..{qah0[-1,1]:.4f}, M={qah0[0,2]:.5f}..{qah0[-1,2]:.5f}] "
+              f"ah1=[{qah1[0,1]:.4f}..{qah1[-1,1]:.4f}, M={qah1[0,2]:.5f}..{qah1[-1,2]:.5f}]", flush=True)
     os.makedirs(os.path.dirname(DATA_OUT), exist_ok=True)
     np.savez_compressed(DATA_OUT, **out)
     print(f"Saved {DATA_OUT} ({os.path.getsize(DATA_OUT)/1e3:.1f} KB), t_e={t_e:.2f}, t_l={t_l:.2f}", flush=True)
@@ -245,7 +279,14 @@ def main():
     ax = axes[1, 0]
     tc = D["co_t"]
     sep = np.linalg.norm(D["co0_xyz"] - D["co1_xyz"], axis=1)
-    l1, = ax.plot(tc, sep, color=cz.PAL["blue"], lw=1.5, label=r"Separation $|\mathbf{x}_0 - \mathbf{x}_1|$")
+    h_sep = []
+    l1, = ax.plot(tc, sep, color=cz.PAL["blue"], lw=1.5, label=r"MC+Mid $d_{AB}$")
+    h_sep.append(l1)
+    if "q_co_t" in D and len(D["q_co_t"]):
+        qsep = np.linalg.norm(D["q_co0_xyz"] - D["q_co1_xyz"], axis=1)
+        lq, = ax.plot(D["q_co_t"], qsep, color="0.12", lw=1.45, ls="--", zorder=5,
+                      label=r"QMC+GL4 $d_{AB}$")
+        h_sep.append(lq)
     ax.set_xlim(0.0, max(36.0, float(tc[-1]) * 1.02))
     ax.set_ylim(0.0, 6.8)
     ax.set_xlabel(r"Coordinate time $t\,[M]$")
@@ -253,36 +294,43 @@ def main():
     ax.tick_params(axis="y", labelcolor=cz.PAL["blue"])
 
     ax2 = ax.twinx()
-    l2, = ax2.plot(tc, np.abs(D["co0_xyz"][:, 2]), color=cz.PAL["red"], lw=1.35, ls="-", label=r"MC drift $|z_0|$")
-    l3, = ax2.plot(tc, np.abs(D["co1_xyz"][:, 2]), color=cz.PAL["orange"], lw=1.35, ls="--", label=r"MC drift $|z_1|$")
+    l2, = ax2.plot(tc, np.abs(D["co0_xyz"][:, 2]), color=cz.PAL["red"], lw=1.35, ls="-", label=r"MC kick $|z_0|$")
+    l3, = ax2.plot(tc, np.abs(D["co1_xyz"][:, 2]), color=cz.PAL["orange"], lw=1.35, ls="--", label=r"MC kick $|z_1|$")
+    h_sep.extend([l2, l3])
     ax2.set_ylim(-0.02, 0.85)
     ax2.set_ylabel(r"Out-of-plane kick $|z_{\rm BH}|\,[M]$", color=cz.PAL["red"])
     ax2.tick_params(axis="y", labelcolor=cz.PAL["red"])
     ax2.tick_params(which="both", direction="in")
-    ax.legend(handles=[l1, l2, l3], loc="center left", bbox_to_anchor=(0.02, 0.56), fontsize=6.3, frameon=False)
+    ax.legend(handles=h_sep, loc="center left", bbox_to_anchor=(0.02, 0.56), fontsize=6.1, frameon=False)
 
     # Bottom-Right: Individual AH masses M_AH,{0,1}(t) + excised mass & min lapse
     ax = axes[1, 1]
     lines = []
     if len(D["ah0_t"]):
-        lines.append(ax.plot(D["ah0_t"], D["ah0_M"], color=cz.PAL["blue"], lw=1.5, label=r"$M_{\rm AH,0}$")[0])
+        lines.append(ax.plot(D["ah0_t"], D["ah0_M"], color=cz.PAL["blue"], lw=1.5, label=r"MC $M_{\rm AH,0}$")[0])
     if len(D["ah1_t"]):
-        lines.append(ax.plot(D["ah1_t"], D["ah1_M"], color=cz.PAL["red"], lw=1.45, ls="--", label=r"$M_{\rm AH,1}$")[0])
+        lines.append(ax.plot(D["ah1_t"], D["ah1_M"], color=cz.PAL["red"], lw=1.45, ls="--", label=r"MC $M_{\rm AH,1}$")[0])
+    if "q_ah0_t" in D and len(D["q_ah0_t"]):
+        lines.append(ax.plot(D["q_ah0_t"], D["q_ah0_M"], color=cz.PAL["orange"], lw=1.7, ls="-", zorder=6,
+                             label=r"QMC $M_{\rm AH,0}$")[0])
+    if "q_ah1_t" in D and len(D["q_ah1_t"]):
+        lines.append(ax.plot(D["q_ah1_t"], D["q_ah1_M"], color="0.12", lw=1.5, ls=":", zorder=6,
+                             label=r"QMC $M_{\rm AH,1}$")[0])
     ax.axhline(0.1321, color="grey", lw=0.9, ls=":", alpha=0.7)
-    ax.text(float(tc[-1]) * 0.98, 0.1295, r"initial clump $m_A=0.132M$",
-            ha="right", va="top", fontsize=6.2, color="0.35")
+    ax.text(float(tc[-1]) * 0.98, 0.1342, r"initial clump $m_A=0.132M$",
+            ha="right", va="bottom", fontsize=6.1, color="0.35")
     ax.set_xlim(0.0, max(36.0, float(tc[-1]) * 1.02))
-    ax.set_ylim(0.10, 0.21)
+    ax.set_ylim(0.088, 0.212)
     ax.set_xlabel(r"Coordinate time $t\,[M]$")
     ax.set_ylabel(r"Apparent horizon mass $M_{\rm AH}\,[M]$")
 
     axr = ax.twinx()
     lines.append(axr.plot(D["nh_t"], D["nh_mexc"], color=cz.PAL["green"], lw=1.3, ls="-", label=r"$M_{\rm exc}/M_0$")[0])
     lines.append(axr.plot(D["nh_t"], D["nh_amin"], color="0.35", lw=1.2, ls=":", label=r"$\alpha_{\min}$")[0])
-    axr.set_ylim(-0.03, 0.95)
+    axr.set_ylim(-0.04, 1.15)
     axr.set_ylabel(r"$M_{\rm exc}/M_0,\;\alpha_{\min}$", color="0.25")
     axr.tick_params(which="both", direction="in")
-    ax.legend(handles=lines, loc="upper left", ncol=2, columnspacing=0.6, fontsize=6.3, frameon=False)
+    ax.legend(handles=lines, loc="upper left", ncol=2, columnspacing=0.55, fontsize=5.8, frameon=False)
 
     os.makedirs(os.path.dirname(FIG_OUT), exist_ok=True)
     for ext in ("pdf", "png"):
