@@ -1039,3 +1039,24 @@ fig_horizon_audit.png read):
 - So the package makes no horizon claim; the statement to carry beside every t_c is "lapse
   marker, run made without the horizon finder".
 Failed predictions of this entry: none.
+
+## 2026-11-25T16:11Z  session C-sidm lead (batch 20)  commits 8ca580f7..(this entry's commit)  runs C-20261125-155959-866b049, -160056-a5b7282, -160207-05b6db1 (closed: C-20261123-032324-938ecbd)
+
+- did: merged main (0039/0040 rulings, finish for continued runs); closed A324s1c+ with
+  `nrpic-run finish` (completed, 1.7733 card-hours); wrote predictions BA.1-BA.3, B20.1-B20.3
+  (16:02Z) and H.1 (16:08Z) before the runs; reran blockA_delta.py on the 15 block A runs and
+  wrote horizon_audit.py for decision 0040 item 3 (both registered, figures read); built the
+  decks of the mesh and gauge legs (make_decks_b20.py), smoke-tested them on processors (four
+  decks, three cycles each, all rc 0; M/16 step M/64) and queued q0055-q0058 (priority 2);
+  updated stage/G2 (checklist, OPEN.md), REVIEW-wave3 section 16, RISKS rows 3, 5, 18, 19, 23,
+  24, 25; acknowledged four messages; posted to orch (budget allotment 80).
+- found: all three N = 1e5 controls of block A collapse (534.8, 549.3, 599.99 M), not ordered by
+  compactness; no C-sidm run ever had the horizon finder; A334s3c's only restart file is at
+  t = 0 (HANDOFF of batch 17 said 28 M).
+- changed my mind about: nothing.
+- failed predictions: none this session (BA.1-BA.3, H.1 held). Failed runs: none.
+- open: q0046-q0048, q0018 (job 5297 pending), q0055-q0058 (priority 2), q0022-q0024 (5);
+  N4c not read (not ended); figures, note and a G2 verifier after the bracket and legs.
+- card-hours: none used by this session's runs (processors only: smoke 4 cores x 583 s;
+  analyses 1 core); closed this session A324s1c+ 1.7733; queued about 18.6 for the legs.
+  nrpic-run budget: G2 31.09 used (allotment shown 60; 80 by ruling 0039 item 3).
