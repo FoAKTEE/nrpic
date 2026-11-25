@@ -36,8 +36,10 @@ minutes for the ball runs; start it early, in the background). A cut chain is co
 - G1-G3 of threshold_ball entry 5 judged in batch 17 (A-20261125-120158-b76bfe3; outcome at the end of
   threshold_ball/JOURNAL.md). If `nrpic-run status` still lists A-20261124-132016-ecf12c3 or
   A-20261122-173202-f98c79f as not finished, run `harness/bin/nrpic-run finish <id>` (checksums take minutes).
-- K4 (threshold_ball entry 10; prediction written): start command at the end of threshold_ball/JOURNAL.md,
-  then k4_compare.py on its directory (registered). This is the next test of C3.
+- K4 (threshold_ball entry 10; predictions K4a-K4c written) RUNS since 04:05 PST as A-20261125-120525-8fb946e
+  (processors, detached, 6 cores; log scratch/A-emd-pbh/A-20261125-120525-8fb946e/run.log). When run.log ends
+  with exit=: `harness/bin/nrpic-run finish A-20261125-120525-8fb946e`, then k4_compare.py on its directory
+  (registered), figure looked at, outcome under entry 10. This is the next test of C3.
 
 ## Packages and what remains
 

@@ -364,3 +364,10 @@ end on C, entry 11). T7 stays on record as a prediction not tested. The data set
 - Consequence for the scan: mesh A stays outside the threshold bracket (T4's A half holds only as
   "no persistent horizon"); a mesh-A rerun with alpha_exc 0.3 would not give a persistent horizon by
   this evidence. Not queued.
+
+### Entry 10, started (batch 17, 2026-11-25 04:05 PST)
+
+K4 runs as A-20261125-120525-8fb946e (processors, detached, 6 cores: three members of 2 threads, v0.6
+threaded build, tlim 5 as in k4_floor.sh; entry 10 names t = 2-5). Predictions K4a-K4c stand as
+written. Judge with `scripts/k4_compare.py` on its directory (registered) after
+`harness/bin/nrpic-run finish A-20261125-120525-8fb946e`.

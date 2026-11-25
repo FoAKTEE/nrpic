@@ -17,7 +17,7 @@ cards:       shared queue (decision 0033): q0013 a-p0l6 (p2, in Slurm, job 5282 
                q0015 a-s1l-cont (p5, waiting); q0040 a-szk-n64-128 and q0041 a-szk-n256 (p2, added batch 17, Szekeres
                card series for C1). q0014 a-cd040 REMOVED (no G2 item waits for it). q0012 done.
 processors:  A-mesh guard stop judged (A-20261125-120158-b76bfe3): alpha_exc 0.3 passes it to t = 48.5 (G3 refuted "stops
-             like G1"); no persistent horizon on M/16 in any variant. K4 (threshold_ball entry 10) not started.
+             like G1"); no persistent horizon on M/16 in any variant. K4 (entry 10) RUNNING: A-20261125-120525-8fb946e (6 cores, detached).
 next:        1. Read q0040/q0041 (Szekeres P17-P21, analyse_code_runs.py) and q0013 (P0L6, D1-D5) when they end.
              2. C3: K4 on processors (command at the end of threshold_ball/JOURNAL.md entry 10); orch ruling on 0.1 bound.
              3. Package items without cards: threshold_ball/README.md, VERIFY list (C6), ladder schematic (C10),

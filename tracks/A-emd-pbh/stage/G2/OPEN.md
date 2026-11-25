@@ -7,7 +7,7 @@ Each item with what it lacks and the queue entry that serves it (`harness/bin/nr
 | item | lacks | queue entry / next step |
 |---|---|---|
 | C1 code paths of section 10 | (iii) Szekeres card series; (ii) the periodic LTB case P0L forms no horizon in the finder (slice traps at r ~ 0.075, under four finest cells); (iv) A's oblate/prolate row (SCOPE A2) has no run | (iii) q0040 a-szk-n64-128 and q0041 a-szk-n256 (added batch 17, p2; predictions P17-P21, szekeres entries 8, 10); (ii) q0013 a-p0l6 (in Slurm, job 5282, run A-20261125-044641-7d5bd16; predictions D1-D5); (iv) none: ask orch whether core's prolate test covers the row or A must run A2 (outbox) |
-| C3 constraints behave | FAIL: norms flat in mesh and particle number before t ~ 6 (K, K2 refuted), not localized (K3 refuted); ratio to 16 pi E above 0.1 on every member including M/64 (1.94, C-d0.42) | processor test K4 (threshold_ball entry 10; command at its end; no card); ruling of orch on the 0.1 bound (asked 2026-11-24, outbox constraint-bound-ruling) |
+| C3 constraints behave | FAIL: norms flat in mesh and particle number before t ~ 6 (K, K2 refuted), not localized (K3 refuted); ratio to 16 pi E above 0.1 on every member including M/64 (1.94, C-d0.42) | processor test K4 running (A-20261125-120525-8fb946e, threshold_ball entry 10; no card); ruling of orch on the 0.1 bound (asked 2026-11-24, outbox constraint-bound-ruling) |
 | C5 verification report | waits for C1, C3, C18 | none |
 | C6 reproducibility package | a single rerun list for G2 (threshold_ball/README.md done in batch 17) | session work, no card |
 | C10 ladder schematic | not drawn | session work (paperfig) |
