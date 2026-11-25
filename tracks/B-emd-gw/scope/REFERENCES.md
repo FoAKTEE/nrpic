@@ -118,8 +118,10 @@ original); my own reading or consequence for Track B is marked [JUDGEMENT].
   (`removed_momentum_source_mean` in `cosmo/ic/make_east.py`).
 
 ### 2501.13046 (`main.tex`)
-- Summary and features: lines 62-103 (CTTK and CTTK-hybrid, periodic boundaries,
-  scalar-field sources only in the current version). [JUDGEMENT] method reference only;
+- Summary and features: lines 66, 97, 99, 103 (CTTK and CTTK-hybrid, periodic and Bowen-York
+  data with scalar-field sources; extrapolating, reflective, periodic boundaries; kb claim 883,
+  successor of 223, kb message of 2026-11-25). The earlier remark "scalar-field sources only"
+  is not said in those words by the paper and is withdrawn. [JUDGEMENT] method reference only;
   decision 0010 rules out adopting it.
 
 ### 1505.04756 (`finalpaper.tex`)
