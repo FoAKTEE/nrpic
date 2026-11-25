@@ -67,11 +67,11 @@ def main():
     import figstyle as fs
     fs.use_style()
     fig, ax = plt.subplots(figsize=(fs.COLUMN_WIDTH, 2.8))
-    fig.subplots_adjust(left=0.2, right=0.97, bottom=0.17, top=0.95)
+    fig.subplots_adjust(left=0.2, right=0.97, bottom=0.22, top=0.95)
     for i, (k, c) in enumerate((("off", fs.PAL["blue"]), ("on", fs.PAL["red"]))):
         ax.plot([i] * len(cpu[k]), np.array(cpu[k]) / a.nlim, "o", color=c)
     ax.set_xticks([0, 1])
-    ax.set_xticklabels(["without dt_gauge", "dt_gauge = 0.9 (not binding)"])
+    ax.set_xticklabels(["without\ndt_gauge", "dt_gauge = 0.9\n(not binding)"])
     ax.set_xlim(-0.6, 1.6)
     lo = min(cpu["off"] + cpu["on"]) / a.nlim
     hi = max(cpu["off"] + cpu["on"]) / a.nlim

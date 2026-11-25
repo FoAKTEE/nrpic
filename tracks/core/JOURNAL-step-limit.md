@@ -742,3 +742,63 @@ Predictions of the second run (cases added to `term_test.py`), written before it
 - S1, S2, S1d, S0 as in the first run; the parameter dumps of the last restart files
   differ in two entries only: `<job> restart_file` and `file_number` of the restart
   output.
+
+## Entry 12 (16:20): outcomes of the second run of the tests S, of PS3, PS4, PC, and of T5a
+
+**Tests S, second run** core-20261124-234903-61e194c (serial build with the handler,
+source ae2f120; figure `fig_term_test.png` looked at: five columns, the history of the
+continued run lies on the uninterrupted one in every panel and the difference of all
+columns is zero at every record; the dotted line marks the stop; the note in the lower
+panels crosses that line in S2).
+
+- The three predictions of entry 11 held. R2 (release core-v0.6, stopped by
+  `time/nlim=26` and continued): its `tsq.cons.hst` lacks the record of t = 1.6875 and no
+  other, its mesh history has the header twice and the record of the stop twice, and
+  its tables from number 4 on are shifted by one (`Driver::Finalize` wrote every output
+  at the stop): the two differences of the first run exist in the release, at any
+  restart. S2b (stop with cycle 28): `tsq.cons.hst` byte-identical, the mesh history
+  header the only difference. The parameter dumps of the last restart files differ in
+  `<job> restart_file` and `<output3> file_number` (3 against 4; 10 against 11) and in
+  nothing else, in all five cases.
+- So, restated: a run stopped on SIGTERM and continued reproduces the uninterrupted run
+  bit for bit in its state (data of the last restart file, 5.77 MB, and `.prt`) and in
+  every output but two that any restart changes: the header lines of the mesh history
+  (repeated where the file is reopened) and, when the continuation starts one or two
+  cycles before a record is due, one record of the conservation diagnostic. Files
+  compared: 27 (0.15 MB) in S1, S1d, S0; 21 (1.15 MB) in S2, S2b. Time from the signal
+  to the prompt: 0.07 to 0.40 s.
+- What I had wrong before the test: I predicted byte identity of every file without
+  having looked at how the history writer opens its file or at what the conservation
+  diagnostic keeps between cycles.
+
+**PS3**, run core-20261124-235925-5ee2c95 (256^3 cells in 64 MeshBlocks, serial build,
+signal 2 s after the start, during the set-up): status 143, no cycle run, restart file
+of 4,204,274,044 bytes written in 3.231 s (1.30 GB/s). Predicted 3.2 GB in 3 to 15 s:
+the size was wrong (I counted one block with its ghost cells; it is 64 blocks of 72^3
+cells, 22 fields), the time is inside the range. The 166 s between the signal and the
+end are the set-up of 256^3 cells on one processor core, which is not interrupted. The
+two restart files (8.4 GB) were removed by the script after the measurement.
+
+**PS4**, run core-20261125-000250-6dc7307: `REGRESSION PASS`, twelve set-ups, 75 of 75
+items byte-identical with release core-v0.6 (`.work/build_cpu_v06`), executable
+`.work/build_cpu_sl` with the handler (source ae2f120, sha256 of the build in the
+manifest of the tests S). Held.
+
+**PC**, run core-20261125-000640-5c4b644 (the first call, core-20261125-000615-01747be,
+stopped in the summary of the test script, a key error of mine, before any judgement):
+PASS, 58 checks. Held as predicted: ten attempts cut by SIGTERM with MAX_SEGMENTS=3
+leave the chain QUEUED and uncounted, the fake executable ends by itself with its
+restart file after each forwarded signal, the resubmission comes before that, three
+counted segments end the chain with 13 sbatch calls and none after the last; the six
+scenarios of the earlier test are unchanged. Figure `fig_submit_chain.png` looked at:
+twelve rows; in rows I and L the letter of the state is partly hidden by the marker.
+
+**T5a**, run core-20261125-001339-5005deb (flat box 32^3, cfl_number 0.25, 20 steps,
+three repetitions each way, serial build of source 476fe0c, machine load 14 to 18):
+processor seconds 41.9, 42.3, 46.2 without and 42.2, 42.7, 43.8 with dt_gauge = 0.9;
+overhead 0.6 per cent of the minimum, 1.0 per cent of the median, below the scatter of
+10 per cent between repetitions; histories byte-identical. P5a (below 2 per cent on
+processors) held as far as the scatter lets it be seen. Figure `fig_time_overhead.png`
+looked at: the six points are clear, the two tick labels run into each other (the
+script now breaks them into two lines; not rerun). On a card: not measured (the card
+job q0036 has not run).
