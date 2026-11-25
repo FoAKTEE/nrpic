@@ -57,3 +57,17 @@ G3 proper (each judged when its runs exist; refutations stay on record):
 - G3-G: zeta tail statistics agree between geodesic and kdriver slicing within three paired standard
   errors; R^NR one-point sigma differs by less than 1 per cent.
 - G3-L2: level 2 moves F_pm(3) of zeta by less than 10 per cent and the skewness by less than 0.02.
+
+## entry-3 (2026-11-25 04:10 PST, lead of E, batch 17): the per-seed reader on existing USR output, predictions
+
+`read_seed.py` (variable (i), R^NR, as dumppass forms it; sigma_lin from the run's own record with the
+function of power.py) on two existing USR runs at their last dump, before the pilot exists: the
+128^3 window-scan run b_p (E-20261120-222424-0eb754b, scouting build, t = 10.0) and the 256^3
+release run seed A, s = +1 (E-20261121-211214-0377aab, core-v0.6, t = tlim). A test of the
+estimator on real output, not a G3 result (no seed of the G3 list).
+- RS1: sigma(R^NR)/sigma_lin within [0.97, 1.03] for both (U-S found the 256^3 rms 0.894 against
+  the lattice ensemble 0.89366).
+- RS2: F_+(3)/Q(3) in [0.9, 1.3], F_-(3)/Q(3) in [0.7, 1.1], skewness in [-0.01, 0.05], for both.
+- RS3: the one-point density follows the Gaussian of the linear variance down to 1e-5 within a
+  factor 1.5 (figure). Refuted outside any band: then either the reader or the linear picture of
+  the box at N_f is wrong, and G3P-3 is reconsidered before the pilot is read.
