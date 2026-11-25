@@ -202,3 +202,11 @@ other claims.
   at: WA carries all four errors; the two intervals overlap) and fig_actions.png (looked at:
   counts per write as in result.json).
 - Whole kb suite after the last tool change: 276 tests, 1 xfail, exit 0.
+
+## Entry 5, 2026-11-24 18:42 PST: W1b outcome; package closed
+
+- W1b (kb-20261125-023915-2822f6f): HELD. 2 annotate events (803, 790 -> claim 869), no label or
+  status change, others' hash unchanged.
+- Package closed: README.md (results, rerun, open, requests). No snapshot (the lead takes it). No
+  card time. Not done here: the rest of the weak class (about 543 unread claims; README "Open"),
+  the older abstract-level fulltext labels of O4, gr-qc/0608095 (not named by 0035).
