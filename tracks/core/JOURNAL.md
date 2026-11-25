@@ -2125,3 +2125,111 @@ Published: `scratch/core/exe/core_nrpic_v07/` (four executables, COMMIT, SHA256S
 checked with `sha256sum -c`, READY, branches/). Written: `RELEASE-v0.7.md` (first line
 REGRESSION PASS), changelog section core-v0.7, OPEN.md section core-v0.7, drivers
 `analysis/release/{quick_v07.py,card_v07.py,card_v07.list}`.
+
+## 2026-11-25T11:52Z (2026-11-25 03:52 PST), batch 17, session core-lead-17 (no change of athenak/src or python/nrpic)
+
+State at start: main merged (release core-v0.7 on main, tag on 5f75e5b9; merge b399f946;
+decisions 0036-0038; batch-17 spec). Worktree clean. Queue: q0028 (job 5221, chain ended
+FAILED "MAX_SEGMENTS=2 reached" after a second SIGTERM, at t = 405.25 M of 600) and q0029
+(job 5274, DONE at 600 M) are done; q0030-q0033, q0035, q0036, q0039 wait (no card job of
+core in squeue at 11:47Z: five jobs of A, B, D, F hold the cap). Pause flag absent.
+
+### Predictions, written before the runs of this session (11:52Z)
+
+- **M1** (queue marker out of the jobs; decision 0037 item 4). After the change of
+  `scripts/{gpu_run.sh,gpu_batch.sh,submit_chain.sh,_athena_job.sh}` (every variable
+  NRPIC_QUEUE_* removed at the top of each script, and from the environment `sbatch` and
+  `srun` are called with), with NRPIC_QUEUE_DISPATCH=q9001:<token> set in the caller and,
+  as a worst case, in the job's own environment: (a) no fake `sbatch` or `srun` call of
+  gpu_run.sh (BATCH=1 and blocking), gpu_batch.sh and submit_chain.sh (start, and the
+  resubmission from inside a job, after a wall-clock stop and after SIGTERM) sees the
+  variable; (b) no fake executable sees it; (c) the chain still resubmits its own next
+  segment (one sbatch per segment, chain DONE at its time limit); (d) the scripts as they
+  were before the change (HEAD 65116a08) show the variable to sbatch and to the
+  executable in the same set-up (the test can fail); (e) the 13 scenarios of
+  `scripts/tests/test_submit_chain.py` keep their outcomes, and no sbatch call or
+  executable of theirs sees the marker. Refuted by any sighting of the marker in (a),
+  (b), (e), by a chain that does not resubmit or submits twice, or by (d) showing no
+  marker (then the test proves nothing).
+- **R7** (release processor build `.work/build_cpu_v07/src/athena` against the candidate
+  `scratch/core/exe/core_nrpic_v07/athena_cpu`, `regress_v04.py`, twelve set-ups, 3
+  cores): 75 of 75 items identical, as R6 for core-v0.6 (the trees of the tag 5f75e5b9
+  and of main after merge b399f946 are the same: checked below). Refuted by one
+  differing item. The release card build `.work/build_gpu_v07/src/athena` cannot run on
+  processors (CUDA build); for it this session checks only that it was built from the
+  same tree, and names its card check as not done.
+
+### Outcomes (12:00Z-12:12Z)
+
+- **M1: HELD.** (a)-(d): run core-20261125-120211-08f4fb9 (`scripts/tests/test_queue_marker.py`,
+  fake Slurm of `harness/tests/rc_fixture.py`, TEST PASS, nine checks): with the marker
+  in the caller (and, case E, in the job), gpu_run.sh BATCH=1 (sbatch 0/1, executable 0/1
+  saw it), gpu_run.sh via srun (0/1, 0/1), gpu_batch.sh (sbatch 0/1, srun 0/2, runs
+  0/2), the chain (sbatch 0/2 at start and at the hand-over inside the job, segments 0/2,
+  STATUS DONE after two segments), in-job gpu_batch.sh and _athena_job.sh (executable
+  0/1 each). Control (d): the scripts of 367021876 in the same set-up show the marker to
+  sbatch 1/1 and 2/2 and to the executables 1/1 and 2/2, the chain's second job included
+  (the leak of decision 0037 item 4, reproduced); so the test can fail. (e): run
+  core-20261125-120145-665b6a0 (`test_submit_chain.py`, TEST PASS): the 13 scenarios keep
+  their statuses and sbatch counts, and no sbatch call or executable of any scenario saw
+  the marker. Figures `t/fig_queue_marker.png` and `fig_submit_chain.png` looked at (the
+  marker figure's title says "orange" for a colour that renders red: cosmetic). Both runs
+  registered BY HAND (`tracks/core/tools/hand_run.py`, CLAUDE.md rule 4): nrpic-run's local
+  launcher refused the first attempt ("a local run may not submit Slurm jobs ... would run
+  submit_chain.sh (in scripts/tests/test_submit_chain.py)"), although every Slurm program
+  the tests reach is a fake on PATH. Before the registered runs, two unregistered tries
+  under `scratch/core/tmp/` (the first failed its control because files written by `git
+  show >` were not executable: the test now sets the mode itself).
+- **R7: HELD.** Run core-20261125-115428-3670218: 75 of 75 items identical, classes a, b,
+  other empty, REGRESSION PASS; figure run core-20261125-120456-07a671a looked at (twelve
+  bars, one colour). The release card build was not run (CUDA build; no card job asked).
+- **Card checks q0039, q0035, q0036: NOT RUN** (waiting in the shared queue at 12:10Z;
+  five jobs of A, B, D, F held the cap). Nothing judged; no CLAUDE.md sentence sent.
+- **Provenance of E's ablation executable** (no prediction was written for it: a check of
+  identity, done before this entry was written; recorded as found): all seven run
+  directories hold the copy that ran (`batch.list.exe`, `chain/athena` with
+  `chain/nrc-*` the same inode), each hashing 468109496c82..., equal to
+  `scratch/core/exe/core_noise-level2_6ca93cba/athena_gpu`, source 6ca93cbabfe6; set 2 of
+  the published directory (d7069a4e..., source 64f150ec) replaced it in place on
+  2026-11-24 06:17 PST. Record: `tracks/core/EXE_PROVENANCE.md`, `PROVENANCE` and hard
+  links `superseded/6ca93cba/` in the published directory (`sha256sum -c` OK); answer to
+  E in the outbox.
+- **Row 4, level 3, two of six runs** (fates run core-20261125-120724-246d2a5,
+  `row4_fate.py` now takes a model whose control has not run; figure looked at: panel (a)
+  shows the 0.726875 member falling at about 338 M and the 0.73625 control at about
+  420 M, legend crowded over the curves):
+  - P10: member part HOLDS (no collapse by 300 M; 250-300 M mean 0.8916 of its
+    equilibrium lapse, its own 200-300 M offset -0.060); D and the model's side PENDING
+    (control q0030).
+  - P11: member part HOLDS (lapse < 0.3 at 338.25 M, AH 344.0 M, inside 300-420 M); the
+    30-M pairing PENDING.
+  - P12: control part HOLDS (0.73625 control: lapse < 0.3 at 421.25 M, AH 427.0 M, inside
+    320-500 M; window means 0.9124, 0.830, 0.336 over 300-450 M); member PENDING (q0031).
+  - P13: PENDING (q0032, q0033).
+  - P14: HOLDS for the control's join: first continued record (300.25 M) 0.705611 against
+    the parent's 0.706051 at 300 M, a jump of 4.4e-4 below the largest step 1.02e-3 over
+    280-300 M.
+  - P15: HOLDS on the rate: dcc9ea1 2263 s of card time ("cpu time used") for 300 M,
+    7.54 s per M, one segment. The member 597d9ca did not reach 600 M: its chain (started
+    with the chain script of core-v0.6) counted both preempted attempts and stopped at its
+    cap at 405.25 M; closed as stopped, not continued (the collapse it was to show came at
+    338.25 M). Its history holds 280.25-287.5 M twice (79 repeated times, one step back);
+    `row4_fate.py` keeps the later records, as it does for continuations (the [TO VERIFY]
+    of the batch-12 handoff).
+  - Bracket by the rule: (0.7175, 0.73625), valid, 0.726875 pending inside. What the
+    written meaning says (entry of 2026-11-24T13:05Z): P11 and P12 hold so far in their
+    halves; a model on the STABLE side of the 300-M bracket (0.73625) collapses by 421 M
+    in its control; so the 300-M bisection measures how long a model resists the common
+    inward drift [JUDGEMENT; the full reading waits for q0030-q0033]. The note
+    (`note/`, section III D, Fig. 5) is not updated: it waits for the complete level 3.
+- NEXT_SOURCE.md written (items 1-3 for the Fable session: outputs that survive a
+  restart; finder stopping rule and excision growth guard; figstyle without a date).
+
+Not done: the release card build has no check; the note was not rebuilt; inbox items
+1-10 and 14-15, 18 not answered beyond NEXT_SOURCE.md (C and F got the SIGTERM answer,
+E the provenance). Card time of this session: none. Processor time: R7 about 6 minutes on
+3 cores; tests and analyses under a minute each.
+
+Closed at 12:27Z: core-20261125-080049-dcc9ea1 completed (0.6294 card-hours, job 5274);
+core-20261124-130310-597d9ca stopped (0.8953 card-hours over jobs 5154, 5182, 5221, 5227),
+manifests committed by `nrpic-run finish`. Branch pushed.

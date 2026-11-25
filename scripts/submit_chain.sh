@@ -60,16 +60,23 @@
 #   SLURM_EXTRA (extra sbatch options), CHECK_CMD (optional shell command run after each
 #   segment that ends normally, with the rundir as $1; nonzero exit -> FAILED)
 # State, Slurm output and per-segment logs are in <rundir>/chain/.
+# The marker of the shared card queue (NRPIC_QUEUE_DISPATCH, and every other variable
+# NRPIC_QUEUE_*) is removed at the top, in every mode, so that neither the first segment
+# nor a segment that a job submits for its successor carries it, nor the executable
+# (decision 0037 item 4). The hand-over itself (one job submitting the next segment of
+# its own chain) is unchanged.
 set -uo pipefail
+for _v in $(compgen -e | grep -E '^NRPIC_QUEUE_' || true); do unset "$_v"; done; unset _v
 
 usage() { awk 'NR>1 && /^#/ {sub(/^# ?/, ""); print; next} NR>1 {exit}' "$0"; exit 1; }
 log_event() { echo "$(date '+%F %T') seg=${seg:-0} job=${SLURM_JOB_ID:-login} $*" >> "$C/events.log"; }
 set_status() { echo "$1" > "$C/STATUS"; log_event "STATUS $1${2:+ ($2)}"; }
 
-# sbatch from inside a job would otherwise inherit SLURM_* settings of the current job
+# sbatch from inside a job would otherwise inherit SLURM_* settings of the current job;
+# NRPIC_QUEUE_* is removed again here in case a caller set it after the top of the script
 clean_sbatch() {
   local unset_args=() v
-  for v in $(compgen -e | grep -E '^(SLURM_|SBATCH_)'); do unset_args+=(-u "$v"); done
+  for v in $(compgen -e | grep -E '^(SLURM_|SBATCH_|NRPIC_QUEUE_)'); do unset_args+=(-u "$v"); done
   env "${unset_args[@]}" sbatch "$@"
 }
 
