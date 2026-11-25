@@ -473,6 +473,22 @@ errors; the reference passes its variance gate (A1); the zeta reader passes Z0-Z
 4d.5 with A7 pass as written; 4d.7 reported; the slicing limitation of A8 stated; a fresh verifier
 recomputes the statistic from the dumps.
 
+A14 (2026-11-25, batch 20, lead of E; written after the smoke tests named here and before the registered runs
+read under it; A3 and A9 above stay as written) Two notes from processor work before any G3 production reading.
+(a) A9's shift: the constant shift c along the dominant noise direction failed an unregistered smoke test (the
+mean path weight of 3200 paths was 0.010 against 1: the shift is spent evenly over the window while the linear
+delta-N variance comes mostly from its last e-fold; log-weight variance c^2 W = 39). The sampler uses instead
+c(N) = c0 sqrt(p(N)/int p dN), p the share of the linear variance carried by the noise of the step at N (P_R at
+N_e of the mode entering at N times the lattice factor), so the linear delta N moves by c0 sigma and the
+log-weight variance is c0^2. The rule for c0 (median in [3.5, 4.5]), the validation at nu = 3 and the 2 per cent
+bar are A9's. Record: `../../g3/amend/JOURNAL.md` entries 7-8; script `../../langevin/scripts/ref_tilt.py`.
+(b) Z2 of A3, part (iii): a_zeta of the box contains the field's own even part as well as the map's, a_zeta =
+a_map - a_R at second order (zeta = -(d phi_1 + d phi_2)/v + a_map zeta_1^2), a shift of 2.6 per cent at a_R =
+1.84e-4 (`../../zeta/JOURNAL.md` entries 3-4), larger than (iii)'s 2 per cent bar. (iii) is judged as written and
+is expected to fail; beside it, pre-registered before the reading as (iii'): |a_zeta - (a_map - a_R)|/a_map below
+0.5 per cent with a_R measured on the same pairs. The reader judges G3 runs if Z0, Z1, Z2(i) and (iii') pass;
+that (iii) fails as written stays on record and is put to the orchestrator.
+
 ## 5. Test plan by row of brief section 10
 
 | Row (owner) | Test | Reference | Status 2026-11-15 |
