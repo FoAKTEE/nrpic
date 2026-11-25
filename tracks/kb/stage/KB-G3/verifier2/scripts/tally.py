@@ -137,10 +137,10 @@ def figures(out, d):
         ax.text(101, i, "%d/%d" % (e["right"], e["n"]), va="center", fontsize=8)
         labels.append(lab)
     ax.axvline(86.5, color="0.5", ls="--", lw=0.8)
-    ax.text(86.0, 4.45, "claims3 estimate 86.5 %", ha="right", fontsize=7, color="0.4")
+    ax.text(86.0, -0.35, "claims3 estimate 86.5 %", ha="right", va="bottom", fontsize=7, color="0.4")
     ax.set_yticks(range(len(labels)))
     ax.set_yticklabels(labels, fontsize=7)
-    ax.invert_yaxis()
+    ax.set_ylim(4.6, -0.8)
     ax.set_xlim(40, 108)
     ax.set_xlabel("right as worded [%] (Clopper-Pearson 95 %)")
     ax.set_title("KB-G3 verifier 2: sample of 40 on kb-20261125-2f97258 (seed 20261126)", fontsize=8)
@@ -159,6 +159,7 @@ def figures(out, d):
         vals = [out["item1"]["by_group"].get(g, {}).get(kname, 0) for g in groups]
         ax.barh(range(len(groups)), vals, left=left, color=c, label=kname.lower())
         left = [l + v for l, v in zip(left, vals)]
+    ax.set_xlim(0, 27)
     ax.set_yticks(range(len(groups)))
     ax.set_yticklabels([names[g] for g in groups], fontsize=8)
     ax.invert_yaxis()
