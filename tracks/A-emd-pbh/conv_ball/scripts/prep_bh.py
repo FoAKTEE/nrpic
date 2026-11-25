@@ -79,7 +79,7 @@ def main():
     if a.M != 1.0:                                   # conv_ball
         stem = (f"expball_tophat_HRb{a.HRb:.6g}_M{a.M:.6g}_dc{a.dc:g}_rm{a.rm:.6g}").replace(".", "p")
     summ = ball.summary()
-    print("model:", {k: summ[k] for k in ("H", "Rb", "M_misner_sharp", "t_i", "rest_mass", "psi_centre",
+    print("model:", {k: summ.get(k) for k in ("H", "Rb", "M_misner_sharp", "t_i", "rest_mass", "psi_centre",
                                          "max_2m_over_R", "R_at_max_2m_over_R", "delta_u", "rbar_matter")})
 
     # ------------------------------------------------------------ table
