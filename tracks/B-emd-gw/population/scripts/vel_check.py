@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """The GR and the Newtonian particles of the population box at equal t, matched by tag
-(prediction VC1, JOURNAL.md 2026-11-25 09:08): rms velocity (GR u/(a W), Newton p/a),
+(predictions VC1, VC2, JOURNAL.md 2026-11-25 09:08, 09:10): rms velocity (GR u/(a W), Newton p/a),
 their correlation, rms position difference in cells, and Omega_qs of both sets through one
 estimator (analyze.TTBox at ng = 64).
 
@@ -70,6 +70,9 @@ def main():
         # the two terms separately for the GR set: velocities zeroed
         og_phi = omega_qs(box, xg, 0*vg, mg, ag)
         on_phi = omega_qs(box, xn, 0*vn, mn, anw)
+        # VC2: GR positions with the Newtonian masses, and the spread of the masses
+        og_phi_mN = omega_qs(box, xg, 0*vg, mn, ag)
+        og_mN = omega_qs(box, xg, vg, mn, ag)
         row = {"gr_snap": ig, "newton_snap": inw, "t_GR": tg, "t_N": tn, "a_GR": ag, "a_N": anw,
                "m_ratio": float(mg.sum()/mn.sum()), "rms_v_ratio": rv, "v_corr": corr,
                "v_lsq_factor": lam, "v_residual": res,
@@ -77,7 +80,10 @@ def main():
                "dx_max_cells": float(np.sqrt((dx*dx).sum(1)).max()*NCELL/L),
                "Omega_qs_GR": og_, "Omega_qs_N": on_, "ratio": og_/on_,
                "Omega_qs_phi_only_GR": og_phi, "Omega_qs_phi_only_N": on_phi,
-               "ratio_phi_only": og_phi/on_phi, "W_max": float(W.max())}
+               "ratio_phi_only": og_phi/on_phi, "W_max": float(W.max()),
+               "ratio_phi_only_GRpos_Nmass": og_phi_mN/on_phi, "ratio_GRpos_Nmass": og_mN/on_,
+               "m_rel_spread_GR": float(mg.std()/mg.mean()), "m_rel_spread_N": float(mn.std()/mn.mean()),
+               "m_GR_over_N_rel_spread": float((mg/mn).std()/(mg/mn).mean())}
         rows.append(row)
         print(json.dumps(row))
     with open(os.path.join(a.out, "vel_check.json"), "w") as f:
@@ -100,6 +106,9 @@ def main():
                     label=r"$\Omega_{\rm qs}$, one estimator, full source")
     axs[1].semilogx(aa, [r["ratio_phi_only"] for r in rows], "s--", color=fs.SERIES[1],
                     label=r"$\Omega_{\rm qs}$, potential term only")
+    axs[1].semilogx(aa, [r["ratio_GRpos_Nmass"] for r in rows], "^:", color=fs.SERIES[2],
+                    label="GR positions and velocities, Newtonian masses")
+    axs[1].set_yscale("log")
     axs[1].axhspan(0.9, 1.1, color="0.9")
     axs[1].set_xlabel(r"$a$")
     axs[1].set_ylabel("GR particles / Newtonian particles")

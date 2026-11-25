@@ -803,3 +803,20 @@ two Omega_qs agree within 10 per cent at every epoch: the N4 excess is in the GR
 (`hqs_particles` on the 128^3 dump mesh). Refuted if the one-estimator ratio reproduces N4's
 (about 11.7, 1.9, 1.35, 1.17): then the GR particles' velocities or positions differ from the
 Newtonian ones, and the velocity ratio says which.
+
+## 2026-11-25 09:10 PST (lead of batch 21): VC1 outcome; VC2 predicted
+
+Run B-20261125-170321-cd30c0b (`vel_check.py`, 4 epochs). [VERIFIED by it]
+- VC1 REFUTED in its second part. The particle data agree: rms velocity ratio GR/Newton 1.006,
+  1.005, 1.006, 1.003 at a = 2.3, 9.0, 20.3, 36 (correlation above 0.9997, least-squares factor
+  1.003-1.006), positions within 0.0016, 0.010, 0.031, 0.079 cells rms (largest 0.73 cells at
+  a = 36), total masses equal to 4.4e-4. But through one estimator the GR set gives 11.6, 1.92,
+  1.33, 1.14 times the Newtonian Omega_qs (N4's numbers), and the potential term alone 26.1, 2.70,
+  1.55, 1.21 times: the excess is in the potential term, with positions that agree to 0.002 cells.
+- VC2 [JUDGEMENT], before the run: the GR particles carry unequal masses (the initial data weight
+  each particle by the local metric), the Newtonian ones equal masses; a mass weight constant in
+  time adds a density term that does not grow, so its share of the potential term falls with a.
+  With the GR positions and the Newtonian masses the ratio of the potential term is within 10 per
+  cent of 1 at every epoch, and the relative spread of the GR masses is of the order of the
+  density contrast at a = 2.3 (1e-3 to 1e-2) while the Newtonian masses are equal to round-off.
+  Refuted if the ratio stays above 1.3 at a = 9 with the masses exchanged.
