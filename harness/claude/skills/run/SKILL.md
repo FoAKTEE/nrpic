@@ -4,7 +4,11 @@ description: Register, start, follow and close a simulation or analysis run of t
 argument-hint: [submit|status|finish|verify|budget|stop] [args]
 ---
 Every simulation and analysis run is registered (CLAUDE.md rule 4). `harness/bin/nrpic-run` does
-it; never start athena, scripts/gpu_run.sh, gpu_batch.sh, submit_chain.sh or sbatch directly.
+it; never start athena, scripts/gpu_run.sh, gpu_batch.sh, submit_chain.sh or sbatch directly. Card runs
+are submitted only by the shared queue (decision 0033, one route, at most five jobs of the account in
+Slurm): `harness/bin/nrpic-queue add --label L -- <the nrpic-run submit arguments below>`; its
+dispatcher runs `nrpic-run submit` for you. `nrpic-run submit` with launcher batch or chain is for the
+dispatcher (called directly it refuses and prints the `nrpic-queue add` line); its `--dry-run` is open.
 
 Before: write the prediction in JOURNAL.md (expected outcome, what would refute it); commit
 everything (a dirty worktree is refused; the manifest records the commit).
@@ -13,11 +17,14 @@ Start (relative paths are relative to the worktree root):
 - On the processors: `harness/bin/nrpic-run submit --kind scouting --gate G1 --purpose "..."
   [--cores N] [--background] -- python3 tracks/<ID>/analysis/x.py ...`; the command runs in the
   worktree root with $NRPIC_RUN_DIR = scratch/<ID>/<run_id>/ for its output.
-- Several short AthenaK runs in one job on one card: `--launcher batch --list <file> [--wall
+- Several short AthenaK runs in one job on one card (through the queue): `harness/bin/nrpic-queue add
+  --label L -- --kind scouting --gate G1 --purpose "..." --launcher batch --list <file> [--wall
   00:45:00]`, lines `<name> <athinput> [athena args]` (wraps scripts/gpu_batch.sh).
-- One run longer than an hour: `--launcher chain --gpu-hours H -- <athinput> [args]` (wraps
-  scripts/submit_chain.sh; at most floor(H / 59 min) segments). The input needs a restart output
-  block.
+- One run longer than an hour (through the queue): `harness/bin/nrpic-queue add --label L -- ...
+  --launcher chain --gpu-hours H -- <athinput> [args]` (wraps scripts/submit_chain.sh; at most floor(H /
+  59 min) segments). The input needs a restart output block. `nrpic-queue status` and `list` show the
+  queue; harness/RULES.md section "Shared card queue" has the rest (--after, a wrapper that continues a
+  cut chain with --cmd, which calls `nrpic-queue check-dispatch`).
 - `--exe` defaults to the main checkout's card executable; give your own build
   (`harness/bin/nrpic-env build gpu`) only if you changed source. `--input` adds files to checksum,
   `--parent` names runs whose outputs are inputs.
