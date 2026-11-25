@@ -6,46 +6,150 @@ decision 0019 item 4). Tags that exist: core-v0.1 = 7daed19 (asymptotically flat
 core-v0.2 = 52c44eb (periodic particles and cosmological gauge; source of main a1c2237),
 core-v0.3 = 609a875 (below).
 
-## For core-v0.7: branch core/step-limit (2026-11-24, not merged yet)
+## core-v0.7 (release candidate, 2026-11-24): four source branches (decision 0035 item 4)
 
-Source commit 5c4b644f of `core/step-limit` on top of core-v0.6 (the step limit alone:
-476fe0c). Executables with READY: `/data/haiyangw/nrpic/scratch/core/exe/core_step-limit/`.
-Interface texts `tracks/core/interfaces/step_limit.md`, `preempted_runs.md`; journal
-`tracks/core/JOURNAL-step-limit.md`.
+Record: `tracks/core/RELEASE-v0.7.md` (first line: source commit and regression
+verdict; the regression table; the quick tests; the card checks that are pending).
+Source commit **5f75e5b9** (5f75e5b9cd02fee45eead0b4c3445189d8362dde) of `core/nrpic`:
+the last commit that changes `athenak/`, `python/`, `problems/`, `scripts/` or `docs/`
+(the merge of core/clump-table); later commits add records and release drivers
+(`tracks/core/`) only. Executables built from it, with READY (every new option with one
+example input), COMMIT and SHA256SUMS:
+`/data/haiyangw/nrpic/scratch/core/exe/core_nrpic_v07/` (`athena_cpu` serial,
+`athena_gpu` one A100, `athena_cpu_omp` threaded, `athena_cpu_mpi` several ranks).
 
-Input option (one): `<z4c> dt_gauge = f` (default 0 = off): the step is kept at or below
-f times the stability bound of the Runge-Kutta scheme for the Gamma-driver shift, the
-lapse with its relaxation, and the pair of conformal factor and Theta. Example
-`problems/tests/z4c_step_limit.athinput`.
+### What is merged (in this order, one merge commit per branch)
 
-Behaviour that changes without an option:
+| Branch (tip merged, source) | Merge | Capability | Switch (absent = off) | Interface document |
+|---|---|---|---|---|
+| core/noise-level2 (5c98beef, source 64f150ec; reviewed on Fable 2026-11-24, verdict "results unchanged") | da904f55 | stochastic backreaction of level 2 of arXiv:2512.14649: the curvature perturbation R and its momentum as mesh fields with local coefficients, projected onto the mode set at every stage; the same mesh form of the mode equation for levels 0 and 1; a lockstep background evolved with the equations of the mesh; per-mode records | `<scalar_field> noise_level = 2`, `noise_mode_eq = mesh`, `noise_background_eq = evolved` | `noise_level2.md` |
+| core/step-limit (3a9a3498, source 5c4b644f) | 76ac67a2 | step limit by the stability bound of the Runge-Kutta scheme for the gauge sectors (Gamma-driver shift, lapse with its relaxation, conformal factor with Theta), evaluated in every cell every cycle; restart outputs on SIGTERM; chain script | `<z4c> dt_gauge = 0.9`; the stop on SIGTERM and the start-up warning have no switch | `step_limit.md`, `preempted_runs.md` |
+| core/gauge-2 (61c8fc4d, source 984110c3) | 31ae23e6 | **a mitigation, not a cure** (decision 0025 item 3): the relaxation of the lapse (`lapse_leak`) switched off within a radius of every compact-object tracker, against the shrinking of a horizon in the coordinates that the relaxation causes on a slice with diverging normal observers | `<z4c> lapse_leak_hole = r_h` | `cosmo_gauge.md` section 9 |
+| core/clump-table (ff11719d, source 7cc6c7b9) | 5f75e5b9 | table components of `nrpic_cf` with a bulk momentum (boosted equilibrium clusters): extrinsic curvature from tabulated radial moments of the momentum density, second-order correction of psi, comoving shift; generator model `boosted` | `<problem> comp<c>_boost_file` | `moving_clusters.md` |
 
-1. A warning at start-up when `cfl_number` and the gauge allow a step above one of these
-   bounds, and when `lapse_leak` times that step is beyond the bound of the relaxed
-   lapse. Log only: no output file changes (byte regression against core-v0.6, 75 of 75).
-2. SIGTERM: the run finishes the cycle in progress, writes its restart outputs and no
-   other output, prints "Terminating on signal SIGTERM" and exits with status 143 (it
-   died at once before, with the same status and nothing written). New files
-   `utils/term_signal.{hpp,cpp}`; hooks in `main.cpp` and `driver/driver.cpp`.
+Left out: core/oblate (oblate collapse; not ready, as the task of the merge says: its
+branch holds neither core-v0.5 nor a READY for a merged state). No conflict in any of
+the four merges; `CMakeLists.txt` (three new sources of two branches) and
+`docs/FORMATS.md` (section `bst1` appended) were merged by git and read afterwards.
+core/clump-table held core-v0.5, not core-v0.6: its three source files do not overlap
+with the changes of core-v0.6.
 
-Run scripts: `scripts/submit_chain.sh`: an attempt cut by a signal before `ATHENA_WALL`
-does not count against `MAX_SEGMENTS` (`chain/uncounted`); on SIGTERM the job resubmits
-and then waits for the executable; no job is queued after the last segment, and the
-start command on a chain at its cap is refused; `MAX_TERM_IN_A_ROW` (default 20); an
-executable that answers an outside SIGTERM with a restart file is resubmitted as an
-outside kill. `scripts/cpu_run.sh`: the footer of the log is written also when the
-executable returns a non-zero status. Test `scripts/tests/test_submit_chain.py` (58
-checks).
+Maintainer's decisions at the merge (reasons in `tracks/core/JOURNAL.md`, entry of
+2026-11-25T02:12Z): core/clump-table is taken, because its one outstanding check, the
+card run M2 of its merged build, had run on 2026-11-21 and holds (judged now, run
+core-20261125-021225-382dbc7: lapse within 3.3e-15 of the run of the build before its
+merge over 50 M). `dt_gauge` stays an option (off when absent): whether it becomes the
+default waits for a survey of the tracks' puncture and horizon decks (`step_limit.md`
+section 5).
 
-Evidence: journal entries 0 to 15; byte regression against core-v0.6 with the final
-serial build, run core-20261125-000250-6dc7307, PASS. Not tested: any card run of the
-final build (queue entry q0036 is the first).
+### Behaviour that changes without an option
 
-Known limitations found on the way (for `stage/G2/OPEN.md`): the conservation record
-`<basename>.cons.hst` loses one record when a run is continued from a restart file
-written one or two cycles before the record is due (the deposits of the cycles before
-are not in the restart file; release core-v0.6 does the same); the mesh history file
-gets its header lines again at every continuation.
+1. **Stop on the termination signal** (every run; `utils/term_signal.{hpp,cpp}`, hooks in
+   `main.cpp` and `driver/driver.cpp`). A run that receives SIGTERM (preemption,
+   `scancel`, the time limit of the batch system) finishes the cycle in progress, writes
+   its restart outputs (`file_type = rst`) and no other output, skips the final function
+   of the problem generator, prints "Terminating on signal SIGTERM" and exits with
+   status 143. Before, it died at once with the same status and wrote nothing. A run
+   that receives no signal is not changed: no file of the byte regression differs (75 of
+   75 items, serial and MPI build). Under MPI the loop makes one more reduction per
+   cycle. SIGKILL still stops a run at once.
+2. **Warning at start-up** (runs with Z4c in three dimensions, integrator rk3 or rk4):
+   the stability bound of the gauge sectors is evaluated once at the first cycle, and
+   the log gets "### WARNING (Z4c step limit) ..." when `cfl_number` times the smallest
+   cell exceeds it, and a second line when `lapse_leak` times that step is beyond the
+   bound of the relaxed lapse. Log only: no output file changes, the step is not
+   touched without `dt_gauge`.
+3. `<scalar_field> noise_level = 2` was a fatal error ("not implemented") and now runs.
+   No run that worked is changed.
+4. A table component of `nrpic_cf` under `id_solve = true`: nothing new in the code, but
+   the example of the branch (`clump_table_idsolve.athinput`) now gets the multipole far
+   field that core-v0.6 switched on by default; its bytes are not those of the branch
+   executable (a core-v0.5 source). It converges as before (25 outer iterations, max|H|
+   1.7e-3 to 2.0e-12 at 32 cells, quick test).
+
+### Run scripts
+
+`scripts/submit_chain.sh` (branch core/step-limit; `preempted_runs.md` section 5):
+1. An attempt cut by a signal (SIGTERM to the job, a kill of the executable from
+   outside) before it has run for `ATHENA_WALL` does not count against `MAX_SEGMENTS`
+   (`chain/uncounted`; `--status` prints attempts, uncounted and the cap).
+2. On SIGTERM the job resubmits at once and then waits for the executable, which with
+   the handler of item 1 above writes its restart file inside the grace period (30 s on
+   anta; a 256^3 restart file of 4.2 GB takes 3.2 s, run core-20261124-235925-5ee2c95).
+3. No job is queued after the last counted segment; the chain is FAILED "MAX_SEGMENTS=N
+   reached" in that job, and the start command on such a chain is refused.
+4. `MAX_TERM_IN_A_ROW` (default 20): that many attempts in a row ended by SIGTERM fail
+   the chain.
+5. An executable with the handler that is signalled from outside the job is resubmitted
+   as the outside kill it is. **Use the script of this release with executables of this
+   release**: the script of core-v0.6 takes "status 143 with a line Terminating on" for
+   a failure (`git show core-v0.6:scripts/submit_chain.sh`, lines 268 and 282) and ends
+   the chain FAILED "athena exit status 143". A chain already running keeps the script
+   and the executable it was started with.
+Test `scripts/tests/test_submit_chain.py` (fake `sbatch`, fake executable): 58 checks
+(package run core-20261125-000640-5c4b644; repeated with the merged tree in the quick
+test). Not tested: a real preemption by Slurm.
+
+`scripts/cpu_run.sh` (commit e9527413 of `core/nrpic`, between the tags): the footer of
+the log is written also when the executable returns a non-zero status.
+
+### Input options (`tracks/core/verify/options_at.py core-v0.6 HEAD`)
+
+Seven options found by the scan, none removed; one value added to an existing option
+(`noise_level` accepts 2); two more names are built at run time and added here by
+reading the source (nine in all); four existing names of `<problem>` components gain a
+meaning for table components. Every one is read only if it is present in the input.
+
+- `<scalar_field>` (with `noise = mukhanov_sasaki`) noise_mode_eq,
+  noise_level2_background, noise_level2_laplacian, noise_background_eq,
+  noise_rmodes_dump; noise_level = 2
+- `<z4c>` dt_gauge, lapse_leak_hole
+- `<problem>` (`nrpic_cf`, component of type table, format 1) comp<c>_boost_file,
+  comp<c>_boost_shift; and for such a component the names that punctures and Gaussians
+  already had: comp<c>_p1..3, comp<c>_corr (= table), comp<c>_corr_file,
+  comp<c>_corr_axis1..3. A table of format 2 with a boost file is a fatal error.
+
+Advice that belongs with the options (from the packages): with `dt_gauge` use 0.9
+(rk4, nghost 4); a moving table cluster needs `<z4c> shift_eta` of 0.03/M to 0.1/M
+(with 2/M it moves at 0.7 v in the coordinates), and `sum m u_i` is a coordinate
+component, not a conservation monitor; `lapse_leak_hole` needs a tracker
+(`<z4c> co_<n>_type = BH` with its position) and r_h well beyond 6 M with 2 r_h inside
+the matter that needs the relaxation (16 M tested).
+
+### Files and formats added (`docs/FORMATS.md`, interface documents)
+
+`<basename>.sf.NNNNN.rmodes` (per-mode record of the mesh field R, with
+`noise_rmodes_dump`); with `noise_background_eq = evolved` one more header line in
+`<basename>.sf.NNNNN.modes` and two more lockstep values in the restart file; with R on
+the mesh the restart file of the scalar field carries two more components. Boost table
+`*.bst` (format `bst1`, new section of `docs/FORMATS.md`); generator
+`problems/ic/make_ic.py boosted` and `python/nrpic/boosted_cluster.py`. No existing
+format changes.
+
+### Evidence
+
+Byte regression against core-v0.6 on the twelve set-ups of wave 1: PASS for the serial
+build (run core-20261125-023046-30aba6c, 75 of 75 items identical) and for the MPI build
+on one rank (core-20261125-023646-eca713c). Quick tests (one example per branch against
+the branch executable, 65 of 65 files identical; combinations; SIGTERM; chain script):
+PASS, run core-20261125-023641-7a1c47d. The threaded build and the card check that is
+pending: `RELEASE-v0.7.md`. The capability tests were run by the work packages on the
+executables of their branches (run ids in each interface document; journals
+`tracks/core/JOURNAL-{noise-level2,step-limit,gauge-2,clump2}.md`; READY files copied to
+`scratch/core/exe/core_nrpic_v07/branches/`).
+
+### Known limitations carried into core-v0.7
+
+`tracks/core/stage/G2/OPEN.md` (section of core-v0.7) and the READY of the published
+executables. The most important: the merged card executable had not run on a card when
+this was written (queue entry q0039); level 2 does not support refined meshes or
+several ranks and is not tested with a lapse that varies in space or with a shift;
+`lapse_leak_hole` delays the defect of the relaxed lapse around a hole by about 100 M
+and does not remove it; `dt_gauge` is not tested with punctures, horizons, refinement
+that adapts, or several ranks; the stop on SIGTERM is not tested on several ranks, on a
+card, or under a real preemption; two older restart defects (a record of
+`<basename>.cons.hst` lost at a continuation; the header of the mesh history repeated)
+are in this release as in core-v0.6.
 
 ## core-v0.6 (release candidate, 2026-11-21): three source branches of waves 3a and 3
 
