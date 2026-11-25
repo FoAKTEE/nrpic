@@ -50,7 +50,9 @@ parameter absent from the restart file is fatal at start-up (JOURNAL batch 21, f
    EIH overlays, the remnant near M, the waveform (p1's readers); then ask the fresh G1 verifier
    (stage/G1/OPEN.md item 2 lists the material and what the verifier must know).
 3. Close the G1 package: `harness/bin/nrpic-stage collect F-hills G1`, `verify` (once with
-   `--full` before review), `report`.
+   `--full` before review), `report`. Checksum caches of A, C, P1, R16n, R8, R12 were being built
+   in the background at the end of batch 21 (`nrpic-run verify`, log
+   `scratch/F-hills/tmp/cache_warm_b21.log`; it commits nothing).
 4. Disk: A2 writes a 5.8 GB restart per M. When it has ended, keep every fifth restart file and
    the newest (delete by literal path, never through a shell variable), or ask orch.
 

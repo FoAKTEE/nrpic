@@ -1135,3 +1135,14 @@ parameter that the restart's block lacks a fatal error. So the override would st
 next start. Not done. Request to core (outbox finder-diagnostics-on-restart): read it with
 GetOrAddBoolean (default false) so later restart files carry it, or let a restart take a new
 parameter of an existing block. A2, B2, C2 stay "made without the diagnostics".
+
+### Close of batch 21 (09:15 PST)
+
+Stage G1: collect (20 items kept), verify --no-checksums (FAIL only on `runs`: A2 still
+submitted; rerun 15/15, compare 42/42, regenerate 30/30), report written. The first verify with
+checksums was started and stopped by me (pid 3658857) after it began hashing hundreds of GB; the
+checksum caches of A, C, P1, R16n, R8, R12 are being built in the background by `nrpic-run verify`
+(log scratch/F-hills/tmp/cache_warm_b21.log; read-only, commits nothing), so the `--full` pass
+before the gate review will be short. G0 is signed (coord/GATES.md); nothing to add to stage/G0.
+Card-hours used in this session: 0. Nothing submitted (cards held; q0049 unjudged). Inbox: 13
+messages acknowledged. Pushed: track/F-hills.
