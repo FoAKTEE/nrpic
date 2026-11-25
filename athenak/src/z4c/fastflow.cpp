@@ -83,6 +83,18 @@ FastFlow::FastFlow(MeshBlockPack *pmbp, ParameterInput *pin, int n):
   // Convergence parameters
   hmean_tol = pin->GetOrAddReal("fastflow", "hmean_tol_" + n_str, 100.);
   mass_tol = pin->GetOrAddReal("fastflow", "mass_tol_" + n_str, 1e-2);
+  // <fastflow> polish_iterations_<n> = N: after the mass rule is met the flow goes on for
+  // N iterations before the surface is accepted (0 when absent: the flow stops at the
+  // first iteration whose mass differs from the one before by less than mass_tol)
+  if (pin->DoesParameterExist("fastflow", "polish_iterations_" + n_str)) {
+    polish_iterations = pin->GetInteger("fastflow", "polish_iterations_" + n_str);
+    if (polish_iterations < 0) {
+      std::cout << "### FATAL ERROR in " << __FILE__ << " at line " << __LINE__
+                << std::endl << "<fastflow> polish_iterations_" << n_str
+                << " must not be negative" << std::endl;
+      exit(EXIT_FAILURE);
+    }
+  }
   find_every = pin->GetOrAddInteger("fastflow", "find_every", 1);
   // "stored": finite differences on the mesh, interpolated to the surface (original);
   // "interpolant": derivative of the interpolant of the metric at the surface points
@@ -791,6 +803,7 @@ void FastFlow::FastFlowLoop() {
   Real Sz = 0;
   Real S = 0;
   bool failed = false;
+  int polish_left = -1;         // -1 until the mass rule is met, then iterations to go
 
   if (verbose && ioproc) {
     fprintf(pofile_verbose, "\nSearching for horizon %d\n", nh);
@@ -910,15 +923,25 @@ void FastFlow::FastFlowLoop() {
       break;
     }
 
-    // End flow when mass difference is small
-    if (Kokkos::fabs(mass_prev-mass) < mass_tol) {
+    // End flow when mass difference is small, or polish_iterations later
+    if (polish_left < 0 && Kokkos::fabs(mass_prev-mass) < mass_tol) {
+      polish_left = polish_iterations;
+    }
+    if (polish_left == 0) {
       ah_found = true;
       fail_reason = 0;
       break;
     }
+    if (polish_left > 0) { --polish_left; }
 
     // Step 5: Find new spectral components.
     UpdateFlowSpectralComponents();
+  }
+  // the iteration limit ended the polishing of a surface that met the mass rule: the
+  // quantities above belong to the last surface evaluated, which is accepted
+  if (!failed && !ah_found && polish_left >= 0) {
+    ah_found = true;
+    fail_reason = 0;
   }
 
   if (ah_found) {

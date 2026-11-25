@@ -84,6 +84,8 @@ struct NrpicOptions {
                             // particle's own MeshBlock (31: no limit)
   Real alpha_exc;       // particles with interpolated lapse below this are removed
   Real ah_exc_factor;   // particles inside this fraction of a horizon radius are removed
+  Real ah_exc_max_growth = 4.0;  // ... while that radius is below this multiple of the
+                                 // starting radius of the search (<fastflow> initial_radius)
   int hist_dcycle;      // cycles between history records (0 = off)
   int traj_dcycle;      // cycles between trajectory records (0 = off)
   int cstat_dcycle;     // cycles between constraint-statistics records (0 = off)

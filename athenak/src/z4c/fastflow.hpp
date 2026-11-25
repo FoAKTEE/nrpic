@@ -69,6 +69,7 @@ class FastFlow {
   int find_every; // search for horizons every find_every cycles
   bool drvts_from_interp; // metric derivatives from the interpolant of the metric
   int flow_iterations; // number of flow iterations
+  int polish_iterations = 0;   // flow iterations after the mass rule is met
   Real flow_alpha_beta_const; // alpha & beta constants in the iteration formula
                               // Eqs. (43) & (44) of https://arxiv.org/pdf/gr-qc/9707050
   bool verbose;

@@ -74,3 +74,62 @@ and a tracker, `cons_dcycle = 4`):
 - P7 (item 3). One figure script run twice writes byte-identical PDF files with the new
   `figstyle.save`, and different ones with the old (the creation date differs when the
   two runs are at least a second apart).
+
+## Entry 2 (2026-11-25, 05:18 PST): item 2, what the source does, design, predictions
+
+Read in the source [VERIFIED by reading]: `FastFlow::FastFlowLoop` (`z4c/fastflow.cpp`)
+starts from the surface of the last successful search and ends at the first iteration
+whose mass differs from the iteration before by less than `mass_tol_<n>` (absolute; 1e-2
+when absent, 1e-5 m from `puncture_setup`). A search that starts within the tolerance of
+the last surface therefore ends at its second iteration without moving the surface more
+than one flow step: the reported surface lags the horizon until the change per step
+exceeds the tolerance. This is the reading of Track D's plateaus (request
+`finder-stopping-rule`: masses 1.3e-4 apart at `mass_tol` 1e-5, the reported mass about
+six tolerances from the converged one [numbers of Track D, not recomputed here]); six
+tolerances correspond to a contraction of about 0.86 per iteration [JUDGEMENT: geometric
+series, 1/(1 - 0.86) = 7].
+`Particles::NrpicPush` (`particles/nrpic.cpp:455`) uses a horizon for excision only while
+`rr_min < 4.0*initial_radius`.
+
+Design.
+- `<fastflow> polish_iterations_<n> = N` (0 when absent): after the mass rule is first
+  met the flow goes on for N iterations and the surface is then accepted; if
+  `flow_iterations_<n>` ends first, the last surface is accepted. Failure checks stay
+  active. A rule on the residual (summary column 9) is not added: its floor depends on
+  the cell size and the angular grid (7e-9 in D's runs), so a threshold below the floor
+  would end every search at the iteration limit; a fixed number of iterations has a
+  fixed cost.
+- `<particles> ah_exc_max_growth = g` (4 when absent): the factor of the guard.
+Both are read only when present, so that the parameter dump of runs without them keeps
+its bytes.
+
+Predictions (deck `problems/tests/finder_polish.athinput`: vacuum puncture m = 1, finest
+cells M/8, test particles, to t = 8 M, finder every 4 cycles; script
+`analysis/restart_finder/finder_test.py`; processor build):
+- P8. Deck as it is (`polish_iterations_0 = 0`) with the new executable and with the
+  release: every output byte-identical.
+- P9. Mass of the tight rule (`mass_tol` 1e-9, 4000 iterations) as reference. With
+  `mass_tol_0 = 1e-2` and `polish_iterations_0 = 100`: within 2e-5 of the reference at
+  every search (I expect below 1e-6: 0.86^100 = 3e-7 of the starting error). With
+  `mass_tol_0 = 1e-2` alone: off by more than 2e-5 at most searches (the surface hardly
+  moves once the change per iteration is below 1e-2). With the production rule 1e-5
+  alone: off by up to about 1e-4 at some searches while the horizon moves in the
+  coordinates (first 8 M of a puncture). With 30 polishing iterations: between the two
+  (0.86^30 = 1e-2). Refuted for the new rule by any search more than 2e-5 from the
+  reference, or by a search that the mass rule finds and the polished one loses.
+- P10. Guard: with `ah_exc_max_growth = 0.6` (guard at 0.6 M; the horizon starts at
+  0.5 M and grows) removals by reason 3 stop at the first search with `rr_min >= 0.6`
+  and none follows; without the option (guard at 4 M) they continue to the end; until
+  that time the two removal records are identical. With `ah_exc_max_growth = 4.0`
+  written out: every output byte-identical to the run without the option. Refuted by a
+  reason-3 removal after the guard radius is passed, or by a differing byte at 4.0.
+- P11. Track D's V-1L dumps (M/8, 100 to 450 M; `finder_probe.py`, threaded build, one
+  cycle from each dump, horizons: new rule from the stored radius, tight rule, D's
+  production rule from outside, new rule from outside): the new rule with `mass_tol`
+  1e-2 and 100 polishing iterations lies within 2e-5 of the tight rule at every dump,
+  from the stored radius and from 2 M; the production rule from outside reproduces D's
+  low plateau (about 6e-5 below). Refuted by a dump where the new rule is more than
+  2e-5 off.
+- P12. Cost: one flow iteration costs the same with or without the option, so a search
+  with N polishing iterations costs at most N iterations more; timed on processors here
+  and on a card in the card check.
