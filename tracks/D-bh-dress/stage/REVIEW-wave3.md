@@ -468,3 +468,43 @@ What is wrong and stays on record: FP4 (no mesh order of the offset), FP-ext (ii
 3. Measure the null test and its floor with the converged finder on dumps (processors), and keep the
    production finder in the card inputs for comparability with their parents.
 4. Post the finder's stopping rule to core as an interface-text request, with an optional source item.
+
+## 19. Lead session of batch 17 (2026-11-25 03:46 PST on, Opus; analysis round, decision 0038)
+
+No helper packages. The card queue ran overnight: FK (q0008) and FN4 (q0009) reached tlim, FF4 and FE4 had
+reached it on 2026-11-24, FNQ (q0010) is running, FL16 (q0011) waits. Every reading below is a registered
+run of this session against predictions written before the card runs (g2long entries 6, 10, 12, 15); the
+two new tools were run once on the data as smoke tests before their registered runs (entry 18 says so).
+
+| Item | Outcome | Evidence |
+|---|---|---|
+| FK closed | completed, 2.70 card-hours (sacct, 11 jobs); by hand: nrpic-run refuses manifests with `continuations` | D-20261123-022725-a553496, tools/close_by_hand.py |
+| P7 | HOLDS: FK = ES-FL to 1.8e-6 up to 219 M | fk_compare D-20261125-115637-7ee26c1, fk_compare.png (read) |
+| P8 | HOLDS: all 119848 dust removals by reason 3 | same |
+| P9 (mechanism) | HOLDS: FK's late (iii) medians 0.16-0.24 per cent (ES-FL 0.6), D3 after 220 M 2.88e-3 < 3e-3: the step is the end of horizon excision | same |
+| P10 | HOLDS: M_FK(399.5) 3.6e-4 below 1.4920 | same |
+| P11 | FAILED: 2.70 card-hours against 1.8-2.4 | manifest |
+| G for FK | HOLDS (50 bins, max 0.249 per cent; D2 all 760) | esf_criteria D-20261125-115647-fd2f3f7 (read) |
+| Not predicted | FK D4: 29.5 per cent removed before the exact crossing (ES-FL 0.23) [TO VERIFY] | panel (d) |
+| FF4 closed | completed, 1.34 card-hours | D-20261123-022727-1c17e73 |
+| P12 | HOLDS with the M/4 control V-1L4; FAILED with V-1L (D2 207/480); control chosen after the first reading | D-20261125-121123-143a007 (read), D-20261125-121034-8f82998 |
+| P13 | FAILED as written (M/4 t = 0 finder mass 1.0330); switch at 225.0 M holds | same |
+| P14 | HOLDS: 1.34 | manifest |
+| FN4 / FNQ (partial) | N2, N3 hold for FN4 (read whole two minutes after its chain ended, before its close); Q2 holds at 100 M; FNQ cut at 125 M | np_partial D-20261125-115729-011d028, np_partial.png (read) |
+| Relaxed lapse per G2 item | no G2 item uses it; none could be judged at its bound with the mitigation beyond ~100 M; controls named | stage/G2/OPEN.md section 2 |
+
+What I could not confirm: FN4's criterion G (N1) and XN after its close (the close by hand of 45 GB was still
+checksumming at the end of the session); FE4 (P5) and FNQ, FL16. What is wrong and stays on record: P11, P13,
+P12's failure with the M/8 control, FF4's D3 at early times, FK's D4 timing.
+
+## 20. Lead's decisions of batch 17
+
+1. Close chain manifests that carry `continuations` with tools/close_by_hand.py (nrpic-run's own chain-close
+   code; manifest committed path-limited by the lead) and ask orch whether nrpic-run finish should accept the
+   field (outbox).
+2. Judge each mesh member of the growth against the vacuum control of the same mesh (V-1L4 for M/4, V-1L for
+   M/8, V-1L16 for M/16); record the M/8-control reading beside it. The growth's mesh order is read with a
+   reference time after the t = 0 transient (L3: 20 M).
+3. Keep q0010 (FNQ) and q0011 (FL16); add no queue entry: everything else missing for G2 is processor and
+   writing work (OPEN.md section 1).
+4. G2 stays on plain 1+log; `lapse_leak_hole` is a G3 matter, with the mitigated vacuum control beside it.

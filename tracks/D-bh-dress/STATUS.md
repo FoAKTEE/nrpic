@@ -1,40 +1,40 @@
 # STATUS of D-bh-dress
 
 gate:        G0 PASS (signed 2026-11-20). G1 PASS with reservations (signed 2026-11-21,
-             coord/GATES.md). G2 in scouting: track criteria N and G met at the meshes run
-             (C7, C8); package not ready (stage/G2/STAGE_REPORT.md, OPEN.md): three-way
-             convergence waits for six card runs, note text, G2 verifier, rerun script.
-headline:    The vacuum "noise floor" of the null test (1.2e-4) is the horizon finder's
-             stopping rule, not the slice (test FP, g2long entry 14): with a converged finder
-             the vacuum horizon mass moves by at most 1.8e-5 at M/8 over 100-500 M and 3.9e-6 at
-             M/16. The bubble differs from vacuum by at most 7.3e-5 (M/8) and 5.5e-5 (M/16), with
-             no trend in time; its horizon mass dips by 4-6e-5 at 100 M at both meshes (test FE).
-last-result: g2long entries 14-17: FP D-20261124-130935-fdca920, FP-ext -140606-286a302 judged by
-             fp_analyse -172508-c847ee4; ladder schematic -172838-3a30e48; test FE
-             -173137-f358715 judged by fe_analyse -175356-0f40f1a. FNQ -172725-2f426b6 and FL16
-             -172745-72472ed registered and held.
-failed:      FP4 (the converged-finder offset changes sign over M/4, M/8, M/16: no mesh order);
-             FP-ext (ii) bound 5e-5 (7.3e-5, not refuted); FE1 and FE2 bounds (not refuted: the
-             "step" was a dip at the reference time); earlier P2, XC2 factor.
-next:        1. Finish and read FE4 (P5 + tight re-search), FF4 (P12-P14); then FK (P7-P11), FN4
-                (N1-N4, XN), FNQ (Q1-Q3, XQ), FL16 (L1-L5) as the queue runs them (HANDOFF table)
-             2. Note v3 (long runs, FP/FE, XC, ladder, mosaic); rerun script (C6)
-             3. Fresh-context G2 verifier; nrpic-stage verify G2 again without a timeout
-blockers:    the account's five Slurm slots (decision 0033): FK, FN4, FNQ, FL16 wait in the shared queue
-needs:       core: finder-stopping-rule (posted 2026-11-24), ah-excision-growth-guard; older:
-             lapse-leak-growth-data, newtonian-mode-edges, lapse-excision-criterion,
-             particle-energy-and-crossing-record item 2, accretion-diagnostics item 3,
-             spike-mass-refinement (outbox/)
-offers:      g2long/tools: probe_long.py (finder re-search of any restart dump), fp_analyse.py,
-             fe_analyse.py, xc_plane.py (exterior constraint norms from z = 0 slices),
-             slice_mosaic.py, boundary_gauge.py, judge_conv.py, schem_ladder.py;
-             flux_tools/fluxio.drop_overlaps (removal records of preempted chain segments);
-             ES-F data at 4N and N/4 (D-20261124-130942-29c5de2, -131050-ed0a535); the finding
-             that mass_tol 1e-5 leaves the reported horizon mass ~6e-5 off (all tracks)
-budget:      card-hours toward G2 (nrpic-run budget 09:32 PST, allotment raised by 0032): used
-             17.45, reserved 18.68, left 3.86. This session's card use: 0 (cards held by priority
-             jobs). Processors: FE 4 cores ~25 min, analyses 1 core, stage verify 1 core.
-card jobs:   FF4 5152, FE4 5153 ran to tlim (chain DONE; nrpic-run finish pending). FK, FN4, FNQ, FL16
-             (jobs cancelled 12:00 PST under the cap) continue in place via the shared queue, priority 2:
-             q0008 D-FK, q0009 D-FN4, q0010 D-FNQ, q0011 D-FL16 (wrapper g2long/tools/continue_chain.sh;
-             HANDOFF table). Sequencer g2long_seq3 stopped by orch; no sequencer of ours any more.
+             coord/GATES.md). G2 in scouting: track criteria N and G met at the meshes and particle
+             numbers run (C7, C8); package NOT complete (stage/G2/OPEN.md section 1): FNQ and FL16
+             on the cards, FE4 and FN4 to read, note v3, G2 verifier, rerun script.
+headline:    The step of ES-FL's (iii) medians (0.2 -> 0.6 per cent at tau_rem ~285 M) is the end of
+             horizon excision at 4 x initial_radius: FK, with excision kept on, stays at 0.16-0.24
+             per cent and its horizon mass differs from ES-FL's by 2.2e-5 at 399.5 M (P7-P10 hold,
+             g2long entry 19). Criterion G holds for FK (N), at M/4 (FF4, with its own-mesh
+             control) and, on a first reading, for FN4 (4N); FN4 agrees with FK in removed m E_K to
+             0.4 per cent and in horizon mass to 5e-4.
+last-result: fk_compare D-20261125-115637-7ee26c1; esf_criteria FK D-20261125-115647-fd2f3f7;
+             np_partial D-20261125-115729-011d028 (FN4 whole, FNQ partial to 125 M); esf_criteria FF4
+             D-20261125-121034-8f82998 (control V-1L) and D-20261125-121123-143a007 (control V-1L4).
+failed:      P11 (FK cost 2.70 card-hours, predicted 1.8-2.4); P13 as written (M/4 t = 0 finder mass
+             1.0330 spoils growth from t = 0); P12 with the M/8 control (D2 207/480; holds with the
+             M/4 control); FF4 D3 at early removals; earlier: FP4, FP-ext (ii), FE1, FE2 bounds, P2,
+             XC2 factor. Unexplained: FK's D4 (29.5 per cent removed before the exact crossing).
+next:        1. Commit FN4's close (close_by_hand running at the end of the session), then
+                esf_criteria --base esflk4n (N1) and xc_plane on ES-FLK/ES-FLK4N (XN)
+             2. Read FE4 (P5: judge_conv with ES-1L4; tight re-search of its dumps); FNQ (Q1-Q3, XQ)
+                and FL16 (L1-L5) as the queue runs them
+             3. Note v3, rerun script (C6), fresh-context G2 verifier (C17)
+blockers:    none for processor work; FNQ (q0010) and FL16 (q0011) on the shared card queue
+needs:       orch: finish-refuses-continued-chains (posted 2026-11-25); G1 reviewer run
+             D-20261121-165420-5d1c245 superseded or not (batch 11b). core: finder-stopping-rule,
+             ah-excision-growth-guard (now confirmed by FK); older: lapse-leak-growth-data,
+             newtonian-mode-edges, lapse-excision-criterion, particle-energy-and-crossing-record
+             item 2, accretion-diagnostics item 3, spike-mass-refinement (outbox/)
+offers:      g2long/tools: close_by_hand.py (closes chains continued in place), fk_compare.py,
+             np_partial.py (reads running chains up to their second-newest restart), probe_long.py,
+             fp_analyse.py, fe_analyse.py, xc_plane.py, slice_mosaic.py, judge_conv.py;
+             flux_tools/fluxio.drop_overlaps; ES-F data at 4N and N/4
+budget:      card-hours of this session's closed runs: FK 2.70, FF4 1.34 (FE4, FN4 being closed).
+             Processors: analyses on one core each (~2 min), closes (checksums) one core each.
+card jobs:   FNQ D-20261124-172725-2f426b6 running (q0010, job 5279; ~177 M of 400 at 04:11 PST);
+             FL16 D-20261124-172745-72472ed waiting (q0011, effective priority 1). No other D job.
+relaxed lapse: no G2 run uses it (decision 0025 item 3); with `lapse_leak_hole` no G2 item could be
+             judged at its bound beyond ~100 M; controls named in stage/G2/OPEN.md section 2.
