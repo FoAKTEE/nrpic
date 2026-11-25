@@ -212,3 +212,31 @@ longer waits for the horizon to grow through a radius:
   line of source].
 - P9 stays, for 17 searches up to 2 M instead of 65 up to 8 M; the run with 1e-5 and
   100 polishing iterations is dropped.
+
+## Entry 7 (2026-11-25, 05:52 PST): outcome of T5b (Track D's dumps), run core-20261125-131950-1fb387d
+
+Registered run, threaded build of commit 1fb387d8, two threads, 1695 s; eleven restart
+dumps of Track D's V-1L (vacuum puncture, cells M/8, run D-20261121-203124-a34cf1f) at
+t = 100, 150, 186.19, 200, 250, 300, 350, 373.19, 400, 450, 500 M, each continued for
+one cycle with four horizons on the grid of the run (ntheta 16, lmax 8). `probes.json`,
+`fig_finder_probe.png` (looked at: the new rule lies on the tight rule in the left
+panel; the right panel has it at 6e-9 and 4e-8, two and a half decades under the 2e-5
+line; the 1e-5 rule from outside lies 6e-5 below at every dump).
+
+- P11 HELD. New rule (`mass_tol` 1e-2, 100 polishing iterations) against the tight rule
+  (`mass_tol` 1e-9, 4000 iterations allowed, 129 used): from the radius stored in the
+  dump the mass differs by +5.9e-9 to +6.3e-9 at the eleven dumps; from 2 M outside by
+  -3.4e-8 to -4.5e-8. Both searches use 102 iterations (the mass rule at 1e-2 is met at
+  the second iteration, then 100). Track D's production rule (1e-5) from outside ends
+  after 48 to 50 iterations 6.0e-5 to 6.8e-5 below the tight rule (masses 1.000917 to
+  1.000933; D reported 1.000915 to 1.000933 for this case).
+- The tight-rule mass itself moves between 1.000979 and 1.000997 from dump to dump
+  (D: 1.000980 to 1.000998): that spread of 1.8e-5 is the slice, not the stopping rule,
+  and the new rule follows it to 6e-9.
+- Cost on processors (P12, first number): a probe (reading a 2.6 GB dump, one cycle,
+  four searches with 102 + 129 + 50 + 102 iterations) takes 270 to 303 s at two threads;
+  the searches are not timed separately here. The card cost per search comes from the
+  card check.
+- My guess of the contraction (0.86 per iteration, entry 2) was too pessimistic for the
+  late-time surface: the tight rule reaches a change below 1e-9 in 129 iterations from
+  1 M. Not measured per iteration (the verbose file was off).
