@@ -93,3 +93,53 @@ erratically (not smoothly) with the step. Refuted if the long-double floor is be
 the float64 floor below 1e-10, or if the floor scales smoothly with the step (then it is
 truncation, not rounding). The second-order change of N along the momentum alone at one spread
 is 4.2e-11 (from N_PiPi): a float64 integration of the absolute field cannot resolve it.
+
+## Entry 3 (09:30 PST): outcomes of P3-P7 (run E-20261125-172002-6890cad), before reading the lead's reader
+
+Registered run E-20261125-172002-6890cad repeats the development pass bit for bit (Z, map and
+Z1 blocks of `pairs.json` identical). Figures looked at: `fig_z0_z2.png`, `fig_fd_scan.png`,
+`fig_momentum_map.png`, `fig_relation.png`.
+
+Set-up checks: alpha - 1 at most 3.0e-13 and rms dK/K 1.8e-14 (s = 1/4), so y = -3 Pi/K is
+Pi/H_b to 1e-14; lockstep H = Friedmann H of (phi_b, Pi_b) to 1.0e-16. My FKG from the deck's
+slice at N* to ln a = 10 lands 8.6e-9 in phi (0.03 e-folds) and 4.2e-4 in Pi away from the
+lockstep record, so the end surface is taken from the lockstep state at N_f (as 4d.1 says);
+taking it from my own 15-e-fold background instead moves phi_e by 9.2e-9 but the map
+coefficients by at most 1.0e-5 (N_PiPi) and a_map by 1.7e-10: the end-surface choice does not
+matter on the attractor.
+
+- P3 (Z0) HELD: rms(O_zeta + O_R)/rms(O_R) = 3.01e-5 (s = 1/4), 3.03e-5 (s = 1/2) against the
+  bar 1e-3; slope of O_zeta on O_R = -1.0000301 and -1.0000302 (zeta = -R^NR at first order;
+  the 3.0e-5 is -H/Pi_b against the map's slope along the box's relation, 3531762 against
+  3531870).
+- P4 HELD in its parts: the box's odd parts lie on dPi = r dphi with r = 0.0132235 (both
+  amplitudes; corr 0.999999999994), residual rms 3.5e-6 of rms(O_Pi). a_map along the relation
+  = 0.00696241 (predicted 0.007, range 0.004-0.010); along the field alone 0.00696226.
+  a_zeta = 0.00676272 (s = 1/4), 0.00676271 (s = 1/2): Z2(i) differs by 1.4e-6 (bar 2 per
+  cent). Z2(iii): a_zeta/a_map - 1 = -0.0287 (FAILS the 2 per cent bar, as A14(b) expected).
+  Z2(iii'): (a_zeta - (a_map - a_R))/a_map = -0.00228 with a_R = 1.8385e-4 (passes the 0.5
+  per cent bar). The remainder -0.00228 is the momentum's own second-order part: regressing
+  N_Pi E_Pi on O_zeta^2 gives -1.674e-5 = -0.00240 of a_map, so a_zeta = a_map + a(N_phi
+  E_phi) + a(N_Pi E_Pi) = 0.0069624 - 0.0001830 - 0.0000167 = 0.0067627 closes to 1e-7.
+- P5: the map coefficients at N_f (variational, step change h -> h/2 below 6.3e-13):
+  N_phi = -3.515664e6, N_Pi = -1.225513e6 (closed estimate -1/(3 Pi_b) = -1.236855e6, 0.9 per
+  cent off as expected), N_phiphi = 1.721056e11, N_phiPi = 6.013639e10, N_PiPi = 2.098822e10.
+  Along the momentum alone the second finite-difference coefficient at eps = the box's spread
+  (6.31e-11) is off by +907 per cent in float64 and -1.19 per cent in long double (2 eps:
+  +146 and -0.37 per cent); along the field and along the relation by 1.2e-4 and 8.4e-5 in
+  float64, 1e-7 in long double. With eps up to 32 spreads the long-double estimate converges to
+  the variational value (8e-6 at 32 spreads, the remainder being the eps^2 truncation). The map
+  is analytic in Pi at fixed phi: N - (linear + quadratic) is cubic in dPi from 1 per cent to
+  100 per cent of Pi_b, both signs (`fig_momentum_map.png`, left). P5's mechanism (end-surface
+  quantisation) was wrong; P5's conclusion (an ill-conditioned finite-difference test, not a
+  property of the map) HELD.
+- P7 HELD: round-off floor of N (rms about a cubic, 41 points within +-3 spreads): long double
+  2.3e-13 to 3.3e-13, float64 4.4e-10 to 5.1e-10, for both directions and both steps (1e-3,
+  7.3e-4), not smoother with the smaller step. The second-order change of N along the momentum
+  alone at one spread is 4.2e-11: ten times below the float64 floor.
+- P6 HELD: a reader whose N_PiPi is off by 14.2 per cent changes zeta by at most 6.0e-9 sigma
+  per cell (s = 1/4; 1.2e-8 at s = 1/2), no cell crosses nu = 3 or 4; scaled to the G3 box
+  (sigma_lin = 0.494, dzeta/sigma growing like sigma) the bound on the relative change of F(3)
+  and F(4) is 5.8e-7 and 7.5e-7 (4.1e-6, 5.3e-6 for a coefficient off by 100 per cent).
+  The full members lie off the linear relation by 8.2e-5 (s = 1/4) and 1.6e-4 (s = 1/2) of
+  rms(dPi), growing with s: the even part of Pi (curvature of the trajectory), not noise.
