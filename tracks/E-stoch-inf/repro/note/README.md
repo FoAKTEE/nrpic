@@ -1,11 +1,19 @@
 # repro/note: working note on the reproduction of arXiv:2401.08530 and arXiv:2512.14649
 
 Package of Track E (decision 0028). The working note on the reproduction of both papers, written
-with the paper-writing skill: `manuscript/main.pdf` (26 pages, REVTeX, PRD style). Predictions and
+with the paper-writing skill: `manuscript/main.pdf` (32 pages, REVTeX, PRD style). Predictions and
 outcomes: `JOURNAL.md` (entries 1-4 first draft, 5-8 correction pass after the verifier, 9-11
 update pass after the continued runs, 12-15 final correction pass after VERIFIER.md section 8,
 16-18 last pass with RSF256).
-State: 2026-11-24 15:25 PST, after the last pass (batch R4). All five continued runs are in the
+State: 2026-11-24 20:05 PST, batch 15: the G2 sections of the track are in (ruling 0035 item 1):
+Sec. IV "The ultra-slow-roll lattice against criteria fixed in advance" (criteria of SCOPE 4c,
+runs at amplitudes lambda = +-1, +-1/2, +-1/4, resolution pair 256^3/320^3, window, the one failure
+of U-A4'(a) on record with the three-amplitude reading beside it as a finding after the data, the
+fresh verifier stage/G2/VERIFIER.md), Appendix F (architecture and gate timeline at G2), ledger
+Table XVI (21 rows, checks against stage/G2/VERIFIER.md), six new figures (ladder schematic, slice
+mosaic, resolution pair, even-part scaling, architecture, timeline), all from R15
+(E-20261125-035434-5ead984). JOURNAL entries 19-24.
+Earlier state: 2026-11-24 15:25 PST, after the last pass (batch R4). All five continued runs are in the
 note. RSF256 (SR 256^3 with dumps to N_f; its fourth continuation ran as queue entry q0034, run
 E-20261124-214913-5956891) came in through repro/figs (join E-20261124-225720-444aecc, pass
 E-20261124-225826-0bf3842, figure run E-20261124-230839-0e1e13a); the two rows that waited for it
@@ -135,7 +143,12 @@ give the same quantities with the check's reader.
 | **E-20261124-224228-8e20938** | R8a: reader split of the 256^3 member of Fig. 7 (`reader_split.py`; figure `fig_reader_split.png` looked at); read by `ledger.py` |
 | E-20261124-224631-730b585 | R8: final correction pass |
 | E-20261124-231835-dba3192 | R9: last pass, RSF256 in (`--rsf256`, six-row SR figure, per-cell rows); source of the committed `fig_contrast_sr.pdf`; its constraints table ran off its page |
-| **E-20261124-232241-08e1705** | R10: per-cell rows in a table of their own; source of the committed tables |
+| E-20261124-232241-08e1705 | R10: per-cell rows in a table of their own |
+| E-20261125-034431-d86678b | R11: G2 section, four new scripts, ledger rows of the USR criteria (entry 20) |
+| E-20261125-034702-3953daf | R12: halving legend in lambda (entry 21) |
+| E-20261125-034920-07b5d5b | R13: lambda in the ladder schematic (entry 22) |
+| E-20261125-035103-f18b379 | R14: lambda in the ledger caption (entry 23) |
+| **E-20261125-035434-5ead984** | R15: architecture and timeline schematics at G2; source of the committed G2 figures and of all tables |
 
 All: production, two cores, one to one and a half minutes each (R8a: under a minute), 0
 card-hours; every run_all's lattice jsons equal to the committed jsons of the figure package at
@@ -174,7 +187,7 @@ the string's new line (R9 moved seven of them; the strings were unchanged).
 
 ## Checker and pages, last run on the committed text
 
-Compile: 26 pages, no undefined references or citations, no overfull boxes. Checker with the
+Compile (batch 15, after R15): 32 pages, no undefined references or citations, no overfull boxes; the checker's hits as accepted below; pages read: 1, 9-12, 14, 30-32. Earlier: compile 26 pages, no undefined references or citations, no overfull boxes. Checker with the
 forbid list: remaining hits accepted under the guide: 5.1 (one: the verdict label "not
 reproduced", line 47), 7.6 (one: "no defect" about the reviewed code, exception 2), 7.5 and 7.7
 only in `tables/ledger.tex` and `scripts/` (exception 1), 9.3 in `scripts/` (`figstyle.py` turns

@@ -588,3 +588,24 @@ amplitudes, level 2 in the later releases; drafts looked at in scratch/E-stoch-i
 appendix "The track: architecture and gates" carries them. Prediction for R15: every figure of R14
 byte-equal; two new PNGs (fig_architecture, fig_timeline); the note compiles with no undefined
 reference, about 32 pages; the appendix figures fit their pages.
+
+## Entry 24 (2026-11-24 20:05 PST): outcome of R15 (E-20261125-035434-5ead984); close of the G2 pass
+
+R15 HELD: every PNG of R14 byte-equal; two new (fig_architecture, fig_timeline), both looked at;
+checks.json all true. The appendix first landed among the ledger tables (they float); a
+\clearpage before it puts it after them. Compile: 32 pages, no undefined reference or citation,
+no overfull box (LaTeX reports deferred floats while placing the ledger tables; every figure 1-21
+and table is typeset). Checker: hits as accepted (5.1 one verdict label; 7.6 one about the
+reviewed code; 7.5, 7.7 in scripts/ and tables/ledger.tex; 9.3 in scripts/). Pages read: 1 (abstract), 9-12 (new
+section and its four figures), 14 (discussion, summary), 30 (ledger Table XVI), 31-32 (appendix F).
+Copied into manuscript/: fig_ladder.png, fig_architecture.png, fig_timeline.png, fig_g2_mosaic.pdf,
+fig_g2_resolution.pdf, fig_g2_halving.pdf, tables/ledger.{tex,csv}, ledger_checks.json from R15.
+
+## Entry 25 (2026-11-24 20:08 PST): file size; R16
+
+With the three schematics as 300-dpi PNGs the compiled note is 5.56 MB, above the 5 MB limit of the
+pre-commit hook (the copy committed with entry 21 was 5.14 MB). The schematic scripts now also save
+a vector PDF (about 40 kB each), which pdflatex prefers to the PNG; the PNG copies leave
+manuscript/figures (they stay in the run directory for viewing). Prediction for R16: every PNG
+byte-equal to R15; three schematic PDFs; the note compiles to 32 pages with the schematics
+unchanged on the page and a PDF well below 5 MB.

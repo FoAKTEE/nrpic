@@ -96,6 +96,7 @@ def main():
         pf.rbox(ax, x0, 0.43, 1.2, 0.55, fill=col, edge="none", radius=0.12, z=3)
         pf.text(ax, x0 + 1.5, 0.70, lab, size=7.5, bold=True, ha="left")
     pf.save(fig, os.path.join(out, STEM))
+    fig.savefig(os.path.join(out, STEM + ".pdf"))   # vector copy for the note (small file)
 
 
 if __name__ == "__main__":

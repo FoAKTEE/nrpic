@@ -69,6 +69,7 @@ def main():
         ax.add_patch(pf.Circle((x0 + 0.3, 0.57), 0.25, fc=col, ec="none", zorder=4))
         pf.text(ax, x0 + 0.8, 0.57, lab, size=7.5, bold=True, ha="left")
     pf.save(fig, os.path.join(out, STEM))
+    fig.savefig(os.path.join(out, STEM + ".pdf"))   # vector copy for the note (small file)
 
 
 if __name__ == "__main__":
