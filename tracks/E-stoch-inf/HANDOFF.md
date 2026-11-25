@@ -42,10 +42,12 @@ the result, rerun run_all, compile.
 ## Next, in order
 
 1. FL256h when it has run (above).
-2. The g3 reader (`g3/read_seed.py`): R^NR via `ladder/scripts/ladder_lib.curvature`, zeta (SCOPE
-   4d.1), exceedance fractions per seed into a small npz; its two processor tests first (32^3,
-   homogeneous run and s = 1/4 run on .work/build_cpu_v07). Then read the pilot against G3P-1..3
-   and put the measured cost per seed into SCOPE 4d.8 (as a dated addition, not a rewrite).
+2. The g3 reader `g3/read_seed.py` exists for R^NR (tested on existing output, run
+   E-20261125-120930-980b18e, g3/JOURNAL entry 3: R^NR is Gaussian to one-box precision, so the
+   G3 comparison rests on zeta). Add zeta (SCOPE 4d.1 (ii)) with its two processor tests first
+   (32^3, homogeneous run and s = 1/4 run on .work/build_cpu_v07). Read the pilot with
+   `read_seed.py OUT --run b000:<run dir>/b000 ...` against G3P-1..3 and put the measured cost per
+   seed into SCOPE 4d.8 (as a dated addition, not a rewrite).
 3. G3 reference for the 128 band: 4e6 paths direct + importance sampling at nu = 4, 4.5; the model
    check of 4d.3 [TO VERIFY]; R33 (the lattice variant at 0.980 of linear).
 4. Then the full G3 set through the queue (baseline 256 seeds in batch jobs of about 20 seeds; the

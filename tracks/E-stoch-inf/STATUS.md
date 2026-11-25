@@ -20,6 +20,8 @@ last-result: Lead batch 17 (2026-11-25 03:46-04:40 PST):
                (L1-L4 hold; lattice variant 0.980, R33); three-amplitude constraint criterion over
                cN 2.0-6.6; Richardson in s^2 (128 vs 160); gauge leg lapse_kdriver = 2; level 2 as
                sensitivity; budget about 14 of 60 card-hours.
+             - g3/read_seed.py on existing USR output (E-20261125-120930-980b18e): R^NR Gaussian
+               to one-box precision (sigma/sigma_lin 1.002, 1.001; F(3)/Q(3) 1.02-1.05); zeta next.
              - Provenance of the superseded level-2 executable: kept by core at
                core_noise-level2_6ca93cba (hash equal to the seven manifests, checked); asked core
                to confirm, orch for a harness pointer.
