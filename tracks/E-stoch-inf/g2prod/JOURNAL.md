@@ -218,3 +218,20 @@ judge_g2.py's halving and floor code on that summary.
 - Q-c: U-A0, U-A1, U-A3 pass; records <|H'|/[H]> < 1e-9 and <|M|/[M]> < 0.1; even/odd rms
   (k <= 32 dk) 6.33e-5 +- 5 percent.
 A cause of the U-A4'(a) miss is named only if Q-a holds.
+
+## entry-4 (quarter-amplitude pair; lead of batch 15, 2026-11-24)
+
+### 4.0 Before judge_q runs (19:35 PST)
+
+The analysis E-20261124-233223-51b52c0 (group g2q) ended 2026-11-25T00:05Z, exit 0. The fresh
+verifier (stage/G2/VERIFIER.md 3.2, 3.4; runs E-20261125-022309-d346f12, -023609-01d8feb) has
+already recomputed the quarter pair with its own reader, so this is a reconciliation rather than a
+blind test. Expected from judge_q.py on the g2q summary (judge_g2's floor code unchanged):
+- Q-a REFUTED: the M factor at cN 6.52 from (1/2, 1/4) near 4.13 (verifier 4.127), outside
+  3.9625-4.0375; M not judged there by 4c's own rule (e_{1/4} < 3 f).
+- Q-b HOLDS: common mode at N_f for s = 1/4 near -2.07e-6 (verifier), inside [-3.3e-6, -1.7e-6];
+  the half pair gives -9.87e-6 again.
+- Q-c HOLDS: U-A0 ~1.6e-9, U-A1 ~2.5e-6, U-A3 0.998-1.0004, records 1.2e-12 and 0.025, even/odd
+  rms ~6.334e-5.
+What would show a defect of either reader: a difference from the verifier's numbers above 1e-3
+relative in any of these (both read the same dumps).
