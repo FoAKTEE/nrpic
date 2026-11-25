@@ -434,3 +434,54 @@ release differs as in entry 4. Figure looked at (same picture as entry 4). T3 (t
 punctures, 8 cycles cut at 4, threaded builds, one thread) is running as
 core-20261125-142953-bf5a228; its prediction is P5 of entry 1, with the shorter run of
 entry 3.
+
+## Entry 17 (2026-11-25, 06:44 PST): outcome of the second finder test, run core-20261125-141832-01d4aee
+
+Registered run, final threaded build (source 01d4aeeb) and release
+`core_nrpic_v07/athena_cpu_omp`, two threads, 1349 s; exit status 1 because one check
+failed. `summary.json` (`per_search`), `fig_finder_test.png` (looked at: left, the
+circles of 1e-5 with polishing lie on the crosses of the tight rule, the yellow 1e-2
+points run away to 0.95, the orange 1e-2-with-polishing triangles add points during the
+jump; middle, the searches circled as not found; right, 237 removals against none. The
+y-label of the right panel is cut off and the legend of the left panel covers points:
+both corrected in the script and the judgement run again, see below).
+
+Sixteen searches, t = 0 to 1.875 M (found or not from the status file):
+
+| rule | found | flow iterations per found search | mass against the tight rule where both found |
+|---|---|---|---|
+| tight (1e-9, 4000 allowed) | 10 | 19 to 53 | reference |
+| 1e-5 with 100 polishing iterations | 10, the same ten | 107 to 112 | within 6.3e-8 |
+| 1e-5 alone (production, also the release) | 12 | 7 to 12; 220 and 53 at the two extra ones | within 2.3e-5 at the ten |
+| 1e-2 with 100 polishing iterations | 16 | 102 to 105 | within 6.3e-8 at the ten |
+| 1e-2 alone | 16 | 2 | 7e-4 to 5.4e-2 off |
+
+- P8 HELD (8 files byte-identical to the release). P10 HELD (as in entry 14).
+- P14 HELD: the tight rule and 1e-5 with polishing are found at the same ten searches
+  and agree within 6.3e-8.
+- P15 HELD: 1e-5 with polishing reports no surface with a large residual. At the six
+  searches where it is not found (t = 0.625 to 1.0, 1.75, 1.875; reason 6, 400
+  iterations) the tight rule is not found either (4000 iterations).
+- P16 HELD (the defect I expected of the loose tolerance): 1e-2 with polishing reports
+  found at t = 0.625, 0.75, 0.875 with residuals 0.12, 1.5, 0.5. The corrected rule does
+  not help there: a change below 1e-2 per iteration is not convergence.
+- P17, first part HELD (four searches not found during the jump for both), second part
+  FAILED: from t = 1.125 on the tight rule and 1e-5 with polishing are found at five of
+  seven searches, not at t = 1.75 and 1.875. There the flow of this deck does not
+  settle below 1e-5 in 400 iterations nor below 1e-9 in 4000; 1e-5 alone gives up at
+  1.75 too and is found at 1.875 after 53 iterations. The loosely accepted surfaces at
+  those two times (1e-2 with polishing: residual 8.8e-4 and 6.8e-4, masses on the
+  falling trend) and the last surface of the strict rules differ by 1.5e-5 in mass. Why
+  the flow keeps moving at that level is not examined.
+- So: with the tolerance of `puncture_setup` the option makes the accepted masses
+  those of the tight rule (6.3e-8) and accepts nothing unconverged, at the price of two
+  searches of sixteen that the mass rule alone accepts in this transient (one of them,
+  t = 0.75, 9.8e-3 off the neighbouring masses; the other, t = 1.875, on the trend).
+  With the finder's default 1e-2 it gives the same masses where the flow converges and
+  unconverged surfaces where it does not.
+- Cost on processors (two threads, this mesh): 462.7 s for 24 312 flow iterations
+  against 290.7 s for 1963 gives 7.7 ms per flow iteration; 1e-5 with polishing: 300.4 s
+  for 3489 iterations, 6.4 ms. So 100 polishing iterations cost about 0.7 s per search
+  here (a cycle of this deck costs 4.5 s on two threads).
+- Guard: 237 removals inside the horizon without the option and with 4.0 written out,
+  none with 0.4.

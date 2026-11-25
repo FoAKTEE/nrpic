@@ -163,7 +163,7 @@ def figure(out, S, T, R, tlim):
         ax.plot(T[name][f, 1], S[name][f, 2], ls="none", marker=mk, ms=4, color=col, label=lab,
                 mfc="none")
     ax.set_xlabel("t / M"); ax.set_ylabel("horizon mass (found searches)")
-    ax.legend(loc="lower right", fontsize=6)
+    ax.legend(loc="lower left", fontsize=6)
     ax = axs[1]
     for name, col, lab, mk in sty:
         ax.semilogy(T[name][:, 1], np.maximum(T[name][:, 4], 1), color=col, marker=mk, ms=3,
@@ -181,7 +181,7 @@ def figure(out, S, T, R, tlim):
         ax.step(np.concatenate([[0.0], t, [tlim]]),
                 np.concatenate([[0], np.arange(1, len(t) + 1), [len(t)]]), where="post",
                 color=col, label=lab, ls="-" if name == "prod" else "--")
-    ax.set_xlabel("t / M"); ax.set_ylabel("particles removed inside the horizon")
+    ax.set_xlabel("t / M"); ax.set_ylabel("removed inside the horizon")
     ax.legend(loc="center right", fontsize=7)
     return fs.save(fig, os.path.join(out, "fig_finder_test"))
 
