@@ -23,14 +23,26 @@ Not read before the numbers were computed: g2prod JOURNAL entries 2-4,
 | `scripts/judge_modes.py` | V3, U-A2', U-A2n, U-A3, U-R, U-S from the caches |
 | `scripts/constraints.py` | U-A4'(a), (b), (d) and the three-amplitude reading of the halving (s = 1, 1/2, 1/4) |
 | `scripts/window_check.py` | U-W from the window scan output |
+| `scripts/extra_modes.py`, `scripts/floor3.py`, `scripts/checks2.py` | follow-ups (JOURNAL entries 2-6) |
 | `scripts/figstyle.py` | copy of `python/nrpic/figstyle.py` |
 | `fig/` | the figures of the registered runs (copies), each looked at |
 | `results/` | the JSON results of the registered runs (copies) |
 
 ## Registered runs
 
-Listed with their outcome in `JOURNAL.md` and `../VERIFIER.md`; manifests in
-`../../../runs/<run id>/manifest.json`, outputs in `scratch/E-stoch-inf/<run id>/`.
+| Run id | What | Outcome |
+|---|---|---|
+| E-20261125-022126-26671c3 | V0/V2: reader and extraction on a synthetic dump; floor formula; alpha twins | holds (JOURNAL 2) |
+| E-20261125-022137-182e82c | first reference try | stopped by me at 39 GB of dense output (failed, on record) |
+| E-20261125-022507-b13c79b | V1: own reference at every dump time | holds |
+| E-20261125-022200-68c072e | U-A0, U-A1, U-A4'(c) from the records of the 11 release runs | pass |
+| E-20261125-022232-6a83ff0 | R^NR coefficients at N_f (10 runs) and t = 0 (caches) | input of the next |
+| E-20261125-022710-0eb5db0 | V3, U-A2', U-A2n, U-A3, U-R, U-S | pass |
+| E-20261125-022612-d2d99fa | U-W from the window scan | pass |
+| E-20261125-022309-d346f12 | U-A4'(a), (b), (d); three-amplitude fields | (a) fails at one dump of M (3.9245) |
+| E-20261125-022918-f71678d | follow-up: linear and third-order parts of the odd-part error | JOURNAL 3 |
+| E-20261125-023427-6fb6400 | follow-up: even-part floor from three amplitudes | M at cN 6.52: 3.9988 with that floor |
+| E-20261125-023609-01d8feb | release against scouting at N_f; common-mode part at three amplitudes | identical; a s^2 + b |
 
 ## How to rerun
 
@@ -41,6 +53,7 @@ From the worktree root, with the worktree's `.venv`; each line is one registered
       --package $P --launcher local --cores 1 --purpose "..." -- bash -c \
       'cd tracks/E-stoch-inf/stage/G2/verifier/scripts && export OMP_NUM_THREADS=1 && python3 test_reader.py --out "$NRPIC_RUN_DIR"'
     # likewise: reference.py, records.py, constraints.py, window_check.py (1 core each);
+    # extra_modes.py and checks2.py --ref <reference run> --modes <modes_nf run>; floor3.py --cons <constraints run>;
     # modes_nf.py with --cores 2 and VERIFIER_FFT_WORKERS=2;
     # judge_modes.py --ref <reference run dir> --modes <modes_nf run dir> --out "$NRPIC_RUN_DIR"
 
@@ -49,4 +62,6 @@ min; constraints about 12 min (I/O bound, 68 GB read sequentially); window 1 min
 
 ## Requests
 
-See `../VERIFIER.md` section "Requests" (none needs card time).
+See `../VERIFIER.md` section 6: to the E lead, write g2prod entry 4 (Q-a refuted by these numbers) and point
+CHECKLIST C3/C5/C7 to it; to orch, whether the three-amplitude floor reading may stand beside the
+U-A4'(a) failure at the review. None to core; no card time.

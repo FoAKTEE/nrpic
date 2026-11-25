@@ -240,3 +240,22 @@ Two claims there are cheap to check and I had not checked them:
   s = 1/2; entry 3 Q-b predicts -2.5e-6 +- 0.4e-6 at s = 1/4). My prediction from my own
   U-A3 odd-part deficits (entry 2): -4.2e-5, -1.05e-5, -2.6e-6 (+- 10 percent), ratios 4.0 +- 0.2;
   320^3 within 2 percent of 256^3 at s = 1.
+
+## Entry 6, 2026-11-25 03:08 UTC: outcome of checks2 (run E-20261125-023609-01d8feb)
+
+- (1) holds: at N_f every one of the 22 dumped variables of U256ap and U256am equals that of
+  the scouting U256 and U256m bit for bit (max |difference| 0.0, same cycle 1702 and time).
+  So the per-run part F_s of entry 4 is not card non-determinism; it is deterministic and
+  differs between amplitudes [JUDGEMENT: rounding of O(1) fields carrying small perturbations;
+  no run separated it from other per-run parts].
+- (2) common-mode part, mean Re(O/(s p) - 1) over k <= 16 dk: -4.1068e-5 (s = 1), -9.8715e-6
+  (1/2), -2.0720e-6 (1/4), -4.1377e-5 (320^3, s = 1; 0.75 percent from 256^3). The package's
+  -4.107e-5 and -9.87e-6 are reproduced. **My s = 1/4 prediction (-2.6e-6 +- 10 percent) is
+  refuted**, and so is a pure s^2 law (ratios 4.16, 4.76): a s^2 + b with a = -4.16e-5,
+  b = +5.3e-7 fits all three to the digits (third order plus a small amplitude-independent
+  part). g2prod entry 3 Q-b (refuted outside [-3.3e-6, -1.7e-6]) is not refuted.
+- Q-a of g2prod entry 3 from my numbers: the M factor at cN 6.52 from (1/2, 1/4) with the 4c
+  floor of their odd parts is 4.127; its deviation (0.127) exceeds half that of (1, 1/2)
+  (0.038): Q-a is refuted, so by the package's own rule no "higher order in s" cause is named.
+  Q-c holds (U-A0 1.6e-9, U-A1 2.5e-6, U-A3 0.99809-1.00042, records 1.19e-12 and 2.51e-2,
+  even/odd rms k <= 32 dk 6.334e-5 against 6.33e-5).
