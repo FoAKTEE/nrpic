@@ -57,7 +57,7 @@ Predictions:
 - F5 (cost): FL128h below 0.05, FL256h at most 1.0 card-hours.
 A cause is named only if F1 and F3 hold.
 
-## entry-2 (2026-11-25 04:00 PST, lead of E, batch 17): FL128h has run; first reading; the corrected reading
+## entry-2 (2026-11-25 03:53 PST, lead of E, batch 17): FL128h has run; first reading; the corrected reading
 
 FL128h ran as E-20261125-041742-71d74fb (queue q0037, Slurm job 5245, one segment, 110 s wall, 693
 cycles to t = 8.5; 0.0308 card-hours from its finished manifest). F5 for FL128h HOLDS (below 0.05).
