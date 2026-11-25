@@ -1,6 +1,6 @@
 # Checklist: F-hills G1
 
-Collected by `harness/bin/nrpic-stage collect F-hills G1` on 2026-11-24T14:20:05Z from `coord/CHARTER.md` (last changed in a6118683) and the brief (sections 13.3 and 13.4).
+Collected by `harness/bin/nrpic-stage collect F-hills G1` on 2026-11-25T17:07:17Z from `coord/CHARTER.md` (last changed in a61186835) and the brief (sections 13.3 and 13.4).
 For each item set `status:` to PASS, FAIL or NA (OPEN until judged) and give the evidence: run ids,
 figure files, KB locators, commits. `nrpic-stage report` reads this file; the automated checks are
 in VERIFY_RESULTS.md (`nrpic-stage verify`), not here.
@@ -36,7 +36,7 @@ in VERIFY_RESULTS.md (`nrpic-stage verify`), not here.
   - evidence: [JUDGEMENT, with reservations] Constraints quantified (nr_first E2, F-20261115-173547-a02af7d, -181434-b9c8916; card smoke F-20261115-174602-c6879fe). Junk: one member E/m = 7e-5 (4e-5 to 2e-4; F-20261120-222808-b65001c, -223018-a5c0838, -223121-c921d2d); three-hole data at P1's spheres: burst 0.40-0.63e-6 M at u of about -33 M, then a steady emission of 5.0-5.4e-8 M per M; window u in [-35, 6] holds 2.3-2.8e-6 M (junk_gauge J4b F-20261121-075600-4480a13; lead L5, L5b F-20261121-155457-5f36517, -155549-4359678). Reservations (OPEN.md 5): l <= 8 only; m/8 binary spirals in numerically; steady part not identified; remeasure at P1b. 2026-11-21 batch 4a
 - [ ] **C8** One complete vacuum passage is done
   - status: FAIL
-  - evidence: P1 (F-20261119-150017-b45ec5f): binary merged at 48.8 M (m/8). P1b m/16 (run A, F-20261121-203144-b2cf16b, 11.77 card-hours): reached 61.8 M, members unmerged (s = 2.74 M), A1, A2, A4, A5 met; cut by preemption and closed as stopped. Isolated m/16 pair (R16n + B) turns at 3.12 M at 73.9 M (no merger to 107.85 M; F-20261124-130009-33bef4d), so the passage can be tested: continuation A2 on the cards (JOURNAL.md batch 11, predictions A2-1 to A2-5). 2026-11-24 batch 11
+  - evidence: NOT MET (PARTIAL). P1 (F-20261119-150017-b45ec5f): binary merged at 48.8 M (m/8; tracker s < 0.1 M at 48.79 M, common horizon accepted at 48.81 M by the failure signature, made without <fastflow> diagnostics: F-20261125-170632-5aa9786). P1b m/16: A (F-20261121-203144-b2cf16b, 11.77 card-hours, 0-61.8 M) + A2 (F-20261124-210400-902c650, chain q0001, 5.64 card-hours to 2026-11-25 06:28 PST, still running: next segment Slurm 5294 pending while the cards are held) joined to 96.23 M: tracker copies cover 0-96.23 M without a gap, recomputed stretches agree to 1e-12 M, horizon summaries, history and waveforms appended without loss (batch 21, F-20261125-170453-1175d44, fig_b21_a2_state). The pair passed its closest approach s = 2.11 M at 76.4 M without merging (A2-1 timing REFUTED: band 63-75 M); centre of mass 13.06 M from M at 96.25 M and closing at 0.24 M per M, so the passage's pericentre and the separation are still ahead (A2-2, A2-3 open; passage reader F-20261125-170646-6dd4ae4). Needs A2 to at least 170 M.
 
 ## Rulings of the orchestrator on the criteria (coord/DECISIONS; check that they apply to G1)
 
@@ -78,7 +78,7 @@ in VERIFY_RESULTS.md (`nrpic-stage verify`), not here.
   - evidence: no verifier of the G1 material yet; to be asked when the passage A2 is done (OPEN.md item 2, with the list of material)
 - [x] **C19** Null results and failed runs are on record (manifests and JOURNAL)
   - status: PASS
-  - evidence: failed and stopped runs kept with manifests and journal entries: F-20261115-173601-2fae2dc (S3/S2, slot limit), F-20261115-173606-efcbf69 (withdrawn), F-20261115-173719-923135a, F-20261119-143851-47595bd, F-20261115-174959-9e8a361 (stopped), F-20261115-174142-2a79515 (superseded), F-20261115-175542-b49d687; failed predictions on record: nr_first/JOURNAL.md (E1(b), E3 items 1, 2, 5, E4 rerun counts, E7 first-search masses), newton3/JOURNAL.md (Q1, Q3, Q4 bounds), stage/G0/JOURNAL.md (SC0d, SC2, SC6), JOURNAL.md (V4-V7 of wave 1)
+  - evidence: failed and stopped runs kept with manifests and journal entries: F-20261115-173601-2fae2dc (S3/S2, slot limit), F-20261115-173606-efcbf69 (withdrawn), F-20261115-173719-923135a, F-20261119-143851-47595bd, F-20261115-174959-9e8a361 (stopped), F-20261115-174142-2a79515 (superseded), F-20261115-175542-b49d687; failed predictions on record: nr_first/JOURNAL.md (E1(b), E3 items 1, 2, 5, E4 rerun counts, E7 first-search masses), newton3/JOURNAL.md (Q1, Q3, Q4 bounds), stage/G0/JOURNAL.md (SC0d, SC2, SC6), JOURNAL.md (V4-V7 of wave 1); batch 21: failed predictions A2-1 (timing), H2 (bands at the second digit), H4 (P1's heavy hole beyond 1 percent at t <= 0.125 M) in JOURNAL; horizon recheck of decision 0040 item 3: F-20261125-170540-aa39bea, F-20261125-170632-5aa9786 (no run of this track has the finder's status file)
 - [x] **C20** STATUS.md, JOURNAL.md and HANDOFF.md are current
   - status: PASS
   - evidence: STATUS.md, HANDOFF.md rewritten and a JOURNAL.md entry appended by the lead at the end of batch 11 (2026-11-24)

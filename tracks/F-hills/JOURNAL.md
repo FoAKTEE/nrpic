@@ -1056,3 +1056,71 @@ over the card runs whose horizon numbers enter G1 (P1, R8, R12, R16n, B, A, A2, 
   at 48.79 M (independent of the finder).
 - (H4) "No common horizon of a member with M": in P1, A, A2 and C the heavy hole's accepted
   masses stay within 1 percent of their median; no member finder reports a mass above 0.5.
+
+### Outcomes (registered analyses of this session; figures read)
+
+Runs: F-20261125-170453-1175d44 (b21_a2_state.py, fig_b21_a2_state), F-20261125-170540-aa39bea and
+F-20261125-170632-5aa9786 (b21_horizon_recheck.py, fig_b21_horizon_recheck; the second adds the
+times for H4 and supersedes the first for H4 only), F-20261125-170646-6dd4ae4 (b11_passage.py on
+A + A2 to 96.23 M and C, Newton overlaid, fig_b11_passage). All PARTIAL for A2 (data to its last
+record, 96.23 M).
+- S1 MET: each tracker of A2 (13 files: 12 kept copies + live) joins to 61.80-96.23 M with a
+  largest step of 1.953e-3 M (one step); A + A2 joined: 0-96.23 M, 49270 times, no gap.
+- S2 MET: wherever a later segment recomputed a stretch, positions at common cycles agree to
+  at most 1.1e-12 M (A) and 6.2e-14 M (A2), and exactly at the restart cycle: the restart file
+  carries the tracker state, the recomputation repeats to round-off.
+- S3 MET: horizon summaries (61.81-96.22 M), history (62-96.23 M) and the four waveforms are
+  appended across restarts; after keeping the last row per time the waveforms hold all 137
+  samples 62-96 M (160 raw rows: the overlaps).
+  => Nothing of the passage written so far is lost. The truncation of the tracker file at each
+  restart (present in core-v0.5 as in v0.7) cost nothing here because athena_resume_bc.sh copies
+  the tracker files into trk_keep/ before every start, and nrread.read_tracker_merged joins them.
+- S4 = A2-1 REFUTED (timing only): the pair's closest approach is s = 2.110 M at t = 76.37 M
+  (band 2.0-2.7 M: met; window 63-75 M: missed by 1.4 M); s > 1 M throughout (no merger to 96.23
+  M). B, the pair alone, turned at 73.9 M; the passage's tide delays the turn by about 2.5 M.
+  I name no cause beyond that comparison.
+- S5 MET: the pair's centre of mass is 13.06 M from M at 96.25 M and closing at 0.237 M per M
+  (last 5 M); its closest approach is still ahead, A2-2 stays open (not judged). Newton from the
+  same deck has m1's closest approach 12.07 M at 95.75 M and the binary unbound (E_bin > 0) by
+  about 95 M; NR's binary is still bound at 96 M (E_bin = -0.82 units) and both members are bound
+  to M (b11_passage). NR runs late against Newton, as batch 11 saw at 60 M.
+- S6 MET to the last record (A2-5 partial): member horizon drift 3.1e-5 and -8.1e-6 per M (65-95
+  M), heavy hole's mass range 6.9e-4, rms H at most 3.1e-5; no failed search by the signature.
+- H1 MET: no failed search in any member finder at m/16 or m/12 (R12, R16n + B, A + A2, C). At
+  m/8: P1 0.09-0.4 percent (at t < 2 M and 47.5-49.1 M, the merger), R8 0.6 percent (t < 0.3 M).
+- H2 REFUTED IN PART (the bands I wrote, at the second digit), the statements stand otherwise:
+  slopes over accepted searches equal those over all rows in every window (the failed searches
+  lie outside the fit windows), so no drift statement of G1 depended on a failed search. P1
+  10-40 M: 1.12e-3 and 1.65e-3 per M; R8 10-21 M: 0.92e-3 and 1.43e-3 (0.92 is below the band
+  1.0-1.7e-3 of RISKS R4); m/16 all below 3.1e-5 (MET); C 15-22 M: 1.22e-4 and 1.71e-4 (1.71
+  above the band 1.2-1.7e-4 by rounding). Wording to use from now on: m/8 0.9-1.7e-3 per M; C
+  1.2-1.7e-4 per M (to two digits).
+- H3 MET: P1 finder 0 first above 0.2 at 48.8125 M (0.26857, accepted, no failure after it),
+  finder 1 at 49.0625 M (0.26930, accepted); tracker separation below 0.1 M at 48.793 M.
+- H4 REFUTED as written, for P1 only: P1's heavy hole leaves 1 percent of its median only in the
+  first three searches (t = 0, 0.0625, 0.125 M: 0.984, the initial transient); after 1 M its
+  largest departure is 0.70 percent; A + A2 5.0e-4, C 1.2e-4. No member finder exceeds 0.27 (the
+  merged binary of P1). "No common horizon of a member with M" stands, made without diagnostics.
+
+### Decision on the passage (the task's point 2), with its prediction
+
+Choice: CONTINUE THE CHAIN AS IT IS and read it through the join; do not switch executables and
+do not rerun. Reasons: (i) S1-S3: nothing is lost and the join is exact; (ii) core's answer of
+2026-11-25 (restart-on-sigterm-answer): restart files must be read by the build that wrote them,
+and A2 writes them with core-v0.5's card build; core-restart-finder's executable is tested only
+from core-v0.7 restart files, never on a card (q0049 not run), and would put two executables into
+one passage; (iii) a rerun would spend again the 17.4 card-hours of A + A2 for the same outputs.
+Not done: no submission (cards held to 2026-11-26 morning; q0049 unjudged).
+What happens next by itself: the pending job 5294 runs segment 14 with the chain script copied
+at its submission (the old one: a preemption counts). Its successor is submitted with the chain
+script of the worktree after today's merge (commit 01747be45: attempts cut by a signal do not
+count). So 6 counted segments remain under MAX_SEGMENTS = 19.
+Prediction (refuted outside the ranges): the chain stops at its cap with its last record at
+125-140 M and A2's card time at 10-14 card-hours (5.64 now + 6 x 0.84 + preempted attempts);
+the join stays complete (S1-S3 hold at the end). The pair's centre of mass passes its closest
+approach to M before the cap (between 100 and 125 M), so A2-2 can be judged then; A2-3 (the
+separation by 170 M) cannot: it needs a continuation of about 35-45 M more (5-7 card-hours),
+which fits A2's registered 19.5 card-hours if preemptions stay below about 3 card-hours.
+At the cap: raise MAX_SEGMENTS in chain/config.sh and restart the chain through a `--cmd` queue
+entry (the script's own instruction), within A2's 19.5 card-hours; record it as a continuation in
+the manifest. Asked of orch: outbox 20261125T*__to-orch__a2-tail-plan.
