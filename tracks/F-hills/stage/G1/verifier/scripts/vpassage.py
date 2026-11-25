@@ -50,14 +50,19 @@ def binned_slope(t, m, t0, t1, w=1.0):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--out", required=True)
-    out = ap.parse_args().out
+    ap.add_argument("--t-max", type=float, default=None,
+                    help="read the NR outputs only to this time (default: to the last record)")
+    args = ap.parse_args()
+    out = args.out
+    TM = args.t_max if args.t_max is not None else np.inf
     os.makedirs(out, exist_ok=True)
-    res = {"runs": {"A": RUN_A, "A2": RUN_A2}, "deck": DECK}
+    res = {"runs": {"A": RUN_A, "A2": RUN_A2}, "deck": DECK, "t_max_requested": args.t_max}
 
     # ---------------- trackers: join A + A2 (P2) ----------------
     trk, spans = {}, {}
     for n in (0, 1, 2):
         j, ov, sp = vread.joined_tracker([RUN_A, RUN_A2], n)
+        j = j[j[:, 1] <= TM + 1e-9]
         trk[n] = j
         g = vread.gaps(j[:, 1])
         def cls(o):
@@ -86,6 +91,8 @@ def main():
     for tag, rd in (("A", RUN_A), ("A2", RUN_A2)):
         for n in (0, 1, 2):
             d = vread.read_horizon_summary(os.path.join(rd, f"hills.horizon_summary_{n}.txt"))
+            keep_ = d["t"] <= TM + 1e-9
+            d = {k_: (v_[keep_] if isinstance(v_, np.ndarray) else v_) for k_, v_ in d.items()}
             acc = ~d["failed"]
             ta, ma = d["t"][acc], d["mass"][acc]
             med = float(np.median(ma))
@@ -201,6 +208,8 @@ def main():
     # ---------------- constraint norm (P6) ----------------
     for tag, rd in (("A", RUN_A), ("A2", RUN_A2)):
         h, nraw = vread.read_hst(os.path.join(rd, "hills.z4c.user.hst"))
+        keep_ = h["time"] <= TM + 1e-9
+        h = {k_: v_[keep_] for k_, v_ in h.items()}
         rms = np.sqrt(h["H-norm2"] / h["Volume"])
         res[f"hst_{tag}"] = {"n_raw": nraw, "n_times": int(len(h["time"])), "t_first": float(h["time"][0]),
                              "t_last": float(h["time"][-1]), "rmsH_max": float(rms.max()),
@@ -216,6 +225,7 @@ def main():
             for part in ("real", "imag"):
                 p = os.path.join(rd, "waveforms", f"rpsi4_{part}_{r:04d}.txt")
                 nraw, tu = vread.read_wave_times(p)
+                tu = tu[tu <= TM + 1e-9]
                 gc = vread.grid_check(tu, tu[0], tu[-1], 0.25)
                 wf[f"{r}_{part}"] = {"n_raw": nraw, "n_unique": int(len(tu)), "t_first": float(tu[0]),
                                      "t_last": float(tu[-1]), "n_missing_on_0.25_grid": gc["n_missing"],
@@ -229,6 +239,8 @@ def main():
         pb = os.path.join(RUN_A2, "waveforms", f"rpsi4_real_{r:04d}.txt")
         ra, _ = vread.read_numeric(pa)
         rb, _ = vread.read_numeric(pb)
+        ra = ra[ra[:, 0] <= TM + 1e-9]
+        rb = rb[rb[:, 0] <= TM + 1e-9]
         la = {round(row[0], 6): row for row in ra}   # last row per time
         lb = {round(row[0], 6): row for row in rb}
         t0b = min(lb)

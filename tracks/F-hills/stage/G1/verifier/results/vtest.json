@@ -1,0 +1,78 @@
+{
+ "a_join": {
+  "times_exact": true,
+  "gap": {
+   "t_first": 0.0,
+   "t_last": 60.0,
+   "n": 30721,
+   "max_step": 0.001953125,
+   "min_step": 0.001953125,
+   "t_at_max": 0.0
+  },
+  "max_dx_vs_truth": 9.999999999177334e-07,
+  "overlaps": {
+   "seg0.txt>seg1.txt": 0.0,
+   "seg1.txt>seg2.txt": 0.0,
+   "seg1.txt>seg3.txt": 9.999999999177334e-07,
+   "seg2.txt>seg3.txt": 9.999999999177334e-07,
+   "seg3.txt>seg4.txt": 0.0
+  },
+  "pass": true
+ },
+ "b_minima": {
+  "found": [
+   [
+    1.3000000000169347,
+    1.4000000000145827
+   ],
+   [
+    36.84306350527897,
+    1.40000001347072
+   ]
+  ],
+  "expected_r": 1.4,
+  "expected_t": [
+   1.3,
+   36.843063505266926
+  ],
+  "rel_err_r": [
+   1.0416271020322452e-11,
+   9.621942924959675e-09
+  ],
+  "err_t": [
+   1.6934675883817363e-11,
+   1.2043699371133698e-11
+  ],
+  "pass": true
+ },
+ "c_newton": {
+  "note": "bounds as predicted in JOURNAL P0(c); the Kepler energy bound 1e-11 is the one that failed",
+  "kepler_return_rel": 4.9212802800377646e-11,
+  "kepler_dE_rel": 3.2244429348793346e-11,
+  "three_body_dE_rel": 1.0534317862465059e-10,
+  "three_body_dLz_rel": 3.4079405963893805e-12,
+  "pass": false
+ },
+ "d_horizon": {
+  "n_kept": 40,
+  "n_raw": 46,
+  "n_failed": 3,
+  "failed_t": [
+   0.3125,
+   0.78125,
+   0.9375
+  ],
+  "pass": true
+ },
+ "e_wave": {
+  "n_raw": 50,
+  "n_unique": 41,
+  "grid": {
+   "n_grid": 41,
+   "n_missing": 0,
+   "missing": []
+  },
+  "pass": true
+ },
+ "all_pass": false
+}
