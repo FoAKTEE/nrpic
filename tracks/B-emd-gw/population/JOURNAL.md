@@ -722,7 +722,7 @@ Added prediction [JUDGEMENT], before the runs:
   measures use different grids (the GR dumps' own mesh against ng = 64), so a departure of N4 that
   grows with a in both gauges alike is first read as the grid, not as relativity.
 
-## 2026-11-25 09:12 PST (lead of batch 21): N2-N4 outcomes; a band test of N4 predicted
+## 2026-11-25 09:00 PST (lead of batch 21): N2-N4 outcomes; a band test of N4 predicted
 
 Comparisons B-20261125-165836-70b17b6 (zero shift) and B-20261125-165845-0621554 (Gamma driver),
 `compare_newton.py`, numbers recomputed by the lead from their `compare_newton.json`. [VERIFIED by
@@ -766,7 +766,7 @@ within 10 per cent of 1 at a = 9.8-39 in both gauges, and more than half of the 
 a = 9.8 lies above 32 k_f. Refuted if the ratio over |k| <= 32 k_f exceeds 1.3 at a = 9.8 (then
 the two estimates differ in the source itself: normalisation, velocities or potential).
 
-## 2026-11-25 09:18 PST (lead of batch 21): NB1 outcome
+## 2026-11-25 09:02 PST (lead of batch 21): NB1 outcome
 
 First band run B-20261125-170051-49ada01 compared unlike units (the Newtonian shell spectra of
 `analyze.py` are a^4 rho_qs, not Omega); fixed in `n4_band.py` (divided by a rho_c), kept on record
@@ -788,3 +788,18 @@ it]
   velocity convention of the GR snapshot (u, W, factors of a) and the potential term. Until then
   the GR-particle Omega_qs of analyze_gr.py (A1-A3, GD3 "particles' estimate") is not used as a
   reference; the metric's corrected Omega_qs and the Newtonian particles' estimate are.
+
+## 2026-11-25 09:08 PST (lead of batch 21): same particles through one estimator; prediction
+
+`scripts/vel_check.py`: GR particle snapshots of B-20261123-014847-f295ab4 (pop.part.00001, 4, 7,
+10: a = 2.3, 9.0, 20.3, 36) and the Newtonian snapshots of B-20261124-172958-fc4a2cf at the same t
+(within 0.01), matched by tag: rms of the velocity v (GR u/(a W), Newton p/a) and their
+correlation, the rms position difference in cells, and Omega_qs of both particle sets through the
+SAME estimator (`analyze.TTBox`, ng = 64).
+
+Prediction [JUDGEMENT], before the run: VC1. The particle data agree (rms velocities within 5 per
+cent, correlation above 0.99, positions within 0.1 cell at a <= 20), and through one estimator the
+two Omega_qs agree within 10 per cent at every epoch: the N4 excess is in the GR path
+(`hqs_particles` on the 128^3 dump mesh). Refuted if the one-estimator ratio reproduces N4's
+(about 11.7, 1.9, 1.35, 1.17): then the GR particles' velocities or positions differ from the
+Newtonian ones, and the velocity ratio says which.
