@@ -848,3 +848,10 @@ cosmetic defect). [VERIFIED by it]
   hour of processors and is the next session's (not done here; prediction first). N4 stays FAILED
   as written, on record, with this cause; after a = 36 the same-particle ratio with equal masses is
   not yet measured.
+
+## 2026-11-25 09:24 PST (lead of batch 21): second part of N4
+
+The radiated part of N4 (the Newtonian 0.014 run's radiated box measure at a = 120 against fidL8
+at a_N = 30 times 4.014^(-7/2), within a factor 2; written 2026-11-24 05:48) was not yet judged.
+Script `scripts/n4_rad.py` reads the two committed analyses. No new prediction: N4's own bound
+applies; the side columns (rad1, switch-off) are reported without a bound.
