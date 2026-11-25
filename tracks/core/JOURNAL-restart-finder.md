@@ -276,3 +276,22 @@ its middle panel and reports its mean; that panel and that number are void. The 
 P8 to P10 do not use the column. The script is corrected (the panel shows the masses)
 and its judgement is run again on the outputs of that run, as a registered analysis.
 The interface text gets the line on what the column holds.
+
+## Entry 10 (2026-11-25, 05:55 PST): correction to entry 2 (how a search starts)
+
+Entry 2 says, marked as read in the source, that a search "starts from the surface of
+the last successful search", and builds on it a reading of Track D's plateaus (a surface
+that lags by one flow step per search). I had read the loop and not `Find`. Read now
+[VERIFIED by reading `z4c/fastflow.cpp`, `Find` and `InitialGuess`]: every search calls
+`InitialGuess`, which sets all spectral coefficients to zero and then the l = 0
+coefficient from `last_a0` (the mean radius of the last accepted surface, kept in the
+restart file) or, the first time and after a failure, from `initial_radius_<n>`; a
+horizon tied to a puncture (`use_puncture_<n>`, as `puncture_setup` writes it) starts
+instead from max(m/2, min(m, half the largest distance to another puncture)). So every
+search starts from a sphere and rebuilds the shape with as many flow steps as the
+stopping rule allows. The "lag" reading of entry 2 is withdrawn: I have no tested
+explanation of why D's run switches between two plateaus, only the measured facts (the
+rule stops early, 48 to 50 iterations, 6.0e-5 to 6.8e-5 from the converged mass; 100
+further iterations remove the offset). The option, its tests and their outcomes do not
+depend on that reading. Also read: the guard of horizon excision uses the input value
+`initial_radius_<n>` (1.0 when absent) whether or not the search starts from it.
