@@ -111,6 +111,13 @@ void ScalarField::InitialSlice(ParameterInput *pin, const Real phib0, const Real
   y0[1] = phib0;
   y0[2] = pib0;
   y0[3] = 0.0;      // a = 1: the problem generator sets psi = 1
+  if (nopt.bg_evolved) {
+    // chi_b = 1 and the K of the problem generator, -sqrt(24 pi (Pi^2/2 + V))
+    Real v0, dv0;
+    SfPotentialEval(pot, pot_tab.h_view, phib0, v0, dv0);
+    y0[4+4*nshell] = 1.0;
+    y0[5+4*nshell] = -std::sqrt(24.0*M_PI*(0.5*pib0*pib0 + v0));
+  }
 
   Real bg[8];
   NoiseBackground(y0, bg);

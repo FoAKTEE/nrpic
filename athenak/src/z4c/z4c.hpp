@@ -233,6 +233,13 @@ class Z4c {
   // of light), evaluated every cycle (z4c_newdt.cpp); 0: off
   Real dt_lightspeed = 0.0;
   Real cmax_light = 0.0;   // largest coordinate light speed of the last evaluation
+  // <z4c> dt_gauge = f > 0: the step is also kept at or below f times the stability
+  // bound of the time integrator for the gauge sectors (Gamma-driver shift, lapse with
+  // its relaxation) and for light, evaluated every cycle (z4c_newdt_gauge.cpp); 0: off.
+  // The bound is evaluated once at start-up in any case, for a warning.
+  Real dt_gauge = 0.0;
+  Real dt_gauge_bound[3] = {0.0, 0.0, 0.0};  // last bounds: shift, lapse, light
+  int dt_gauge_state = 0;                    // bit 0: reported; bits 1 to 3: sector named
 
   // geodesic grid for wave extr
   std::vector<std::unique_ptr<SphericalGrid>> spherical_grids;
@@ -272,6 +279,9 @@ class Z4c {
   TaskStatus Z4cFloorChi(Driver *pdrive, int stage);
   TaskStatus NewTimeStep(Driver *d, int stage);
   Real LightSpeedTimeStep();     // min of dx / (coordinate light speed), z4c_newdt.cpp
+  // stability bound of the gauge sectors and its use as a step limit, z4c_newdt_gauge.cpp
+  Real GaugeTimeStep(Driver *d, Real bound[3], bool leak_everywhere);
+  void GaugeStepLimit(Driver *d, Real dx_min);
   TaskStatus ApplyPhysicalBCs(Driver *d, int stage);
   TaskStatus EnforceAlgConstr(Driver *d, int stage);
 

@@ -1,0 +1,81 @@
+# Step limit of Z4c by the stability bound of the gauge sectors, <z4c> dt_gauge
+# (tracks/core/interfaces/step_limit.md).  Flat space in a periodic box of 16^3 cells
+# (dx = 0.3125) with white noise of 1e-10 on every evolved field, 1+log lapse,
+# Gamma-driver shift, Kreiss-Oliger dissipation 0.5, rk4, nghost 4, no matter.
+# With cfl_number = 1.0 and without dt_gauge the step is one cell, above the bound of
+# all three sectors (in cells: lapse 0.468, light 0.617, shift 0.647), and the noise
+# grows at the grid scale within a few tens of steps; a warning says so at start-up.
+# With dt_gauge = 0.9, as here, the step is 0.9 x 0.468 cells and the noise decays.
+# Tests T1 and T2 of tracks/core/JOURNAL-step-limit.md change one parameter each on the
+# command line (tracks/core/analysis/step_limit/run_flat.py).
+
+<comment>
+problem   = flat space with noise: step limit of the gauge sectors
+
+<job>
+basename  = flat
+
+<mesh>
+nghost    = 4
+nx1       = 16
+x1min     = -2.5
+x1max     = 2.5
+ix1_bc    = periodic
+ox1_bc    = periodic
+nx2       = 16
+x2min     = -2.5
+x2max     = 2.5
+ix2_bc    = periodic
+ox2_bc    = periodic
+nx3       = 16
+x3min     = -2.5
+x3max     = 2.5
+ix3_bc    = periodic
+ox3_bc    = periodic
+
+<meshblock>
+nx1       = 16
+nx2       = 16
+nx3       = 16
+
+<time>
+evolution  = dynamic
+integrator = rk4
+cfl_number = 1.0
+nlim       = 300
+tlim       = 1000.0
+ndiag      = 50
+
+<z4c>
+lapse_oplog     = 2.0        # 1+log: d_t alpha = -2 alpha Khat
+lapse_harmonicf = 1.0
+lapse_harmonic  = 0.0
+lapse_advect    = 1.0
+lapse_leak      = 0.0        # relaxation of the excess lapse, off (test K sets it)
+lapse_leak_alpha = 1.0
+shift_Gamma     = 0.75       # Gamma-driver
+shift_eta       = 2.0
+shift_advect    = 1.0
+diss            = 0.5
+damp_kappa1     = 0.02
+damp_kappa2     = 0.0
+excise_chi      = 0.0
+dt_gauge        = 0.9        # the step stays at or below 0.9 of the stability bound
+
+<problem>
+pgen_name  = nrpic_cosmo
+id         = flrw
+hubble     = 0.0             # flat space
+noise_amp  = 1.0e-10         # white noise on every evolved field
+noise_seed = 1
+
+<output1>
+file_type = hst
+dt        = 0.01
+
+<output2>
+file_type = tab
+variable  = z4c
+dcycle    = 10
+slice_x2  = 0.15625
+slice_x3  = 0.15625

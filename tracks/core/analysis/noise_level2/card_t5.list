@@ -1,0 +1,6 @@
+# T5 of tracks/core/JOURNAL-noise-level2.md: card smoke at 64^3, levels 0 and 2 of both
+# scenarios of arXiv:2512.14649 (inputs from make_inputs.py); timing from the logs
+sr64_l0 tracks/core/analysis/noise_level2/inputs/card/sr64_l0.athinput
+sr64_l2 tracks/core/analysis/noise_level2/inputs/card/sr64_l2.athinput
+usr64_l0 tracks/core/analysis/noise_level2/inputs/card/usr64_l0.athinput
+usr64_l2 tracks/core/analysis/noise_level2/inputs/card/usr64_l2.athinput

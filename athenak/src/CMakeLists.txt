@@ -212,6 +212,7 @@ add_executable(
         utils/tr_table.cpp
         utils/cart_grid.cpp
         utils/watchdog.cpp
+        utils/term_signal.cpp
         utils/spherical_surface.cpp
 
 
@@ -222,6 +223,7 @@ add_executable(
         scalar_field/scalar_field.cpp
         scalar_field/scalar_field_rhs.cpp
         scalar_field/scalar_field_noise.cpp
+        scalar_field/scalar_field_noise_mesh.cpp
         scalar_field/scalar_field_io.cpp
         scalar_field/scalar_field_slice.cpp
         scalar_field/scalar_field_diag.cpp
@@ -229,6 +231,7 @@ add_executable(
         z4c/z4c_adm.cpp
         z4c/z4c_calcrhs.cpp
         z4c/z4c_newdt.cpp
+        z4c/z4c_newdt_gauge.cpp
         z4c/z4c_tasks.cpp
         z4c/z4c_update.cpp
         z4c/z4c_gauge.cpp

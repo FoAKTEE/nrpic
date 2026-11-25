@@ -26,6 +26,24 @@
 //!    and nothing changes where the lapse is below alpha_0: a collapsing region and a
 //!    black hole are sliced by the plain 1+log condition.
 //!
+//!    Second pass (tracks/core/JOURNAL-gauge-2.md).  The statement above holds for a
+//!    black hole on a slice with Khat = 0 around it.  On a slice whose normal observers
+//!    diverge in the vacuum around the hole (the bubble of Einstein-Straus data) the term
+//!    holds the lapse of that vacuum just above alpha_0; without the term
+//!    alpha - 2 ln sqrt(gamma) is constant along the normal observers, with it the volume
+//!    element of the held region grows by (1/2T) int ln(alpha/alpha_0) dt, and the normal
+//!    observers carry the stretched coordinates into the hole: the horizon shrinks in
+//!    the coordinates and its mass drifts for want of cells.  Optional remedy, read only
+//!    if its parameter is present (without it the statement of the first pass runs):
+//!      d_t alpha += - (alpha/T) w_h(x) max(ln(alpha/alpha_0), 0),
+//!      w_h = prod_A S(|x - x_A|/r_h - 1),   S(s) = s^2 (3 - 2 s) between 0 and 1,
+//!    lapse_leak_hole = r_h: the term is off within r_h of every compact-object tracker
+//!    and acts in full beyond 2 r_h.  Choose r_h so that 2 r_h does not exceed the
+//!    distance to the matter that needs the term.  Without a tracker the option does
+//!    nothing.  (A weight by the local matter density and a smooth onset were tried and
+//!    removed: the first breaks the tests of expanding matter, the second changes
+//!    nothing; journal entries 6 and 9.)
+//!
 //! 2. Shift: damping coefficient that depends on the tracked black holes,
 //!      eta(x) = eta_0 [1 + sum_A (M_ref/m_A - 1)/(1 + |x - x_A|^2/w_A^2)],
 //!    with eta_0 = shift_eta, x_A and m_A the position and mass of compact-object
@@ -58,6 +76,7 @@ constexpr int kGaugeExtMaxPunc = 8;
 struct GaugeExtOptions {
   Real lapse_leak = 0.0;         // rate 1/T of the relaxation of the excess lapse
   Real lapse_leak_alpha = 1.0;   // reference lapse alpha_0
+  Real leak_hole = 0.0;          // radius r_h around the trackers; zero: no switch-off
   bool eta_profile = false;      // damping coefficient that follows the trackers
   Real eta_mref = 1.0;           // reference mass M_ref
   Real eta_width = 2.0;          // width of the profile in units of the mass
@@ -71,6 +90,15 @@ struct GaugeExtOptions {
     }
     if (pin->DoesParameterExist("z4c", "lapse_leak_alpha")) {
       lapse_leak_alpha = pin->GetReal("z4c", "lapse_leak_alpha");
+    }
+    if (pin->DoesParameterExist("z4c", "lapse_leak_hole")) {
+      leak_hole = pin->GetReal("z4c", "lapse_leak_hole");
+    }
+    if (leak_hole < 0.0) {
+      std::cout << "### FATAL ERROR in " << __FILE__ << " at line " << __LINE__
+                << std::endl
+                << "<z4c> lapse_leak_hole must not be negative" << std::endl;
+      std::exit(EXIT_FAILURE);
     }
     if (pin->DoesParameterExist("z4c", "shift_eta_profile")) {
       eta_profile = pin->GetBoolean("z4c", "shift_eta_profile");
@@ -96,7 +124,12 @@ struct GaugeExtOptions {
       std::cout << "Z4c gauge:";
       if (lapse_leak > 0.0) {
         std::cout << " lapse excess over " << lapse_leak_alpha
-                  << " relaxes at the rate " << lapse_leak << ";";
+                  << " relaxes at the rate " << lapse_leak;
+        if (leak_hole > 0.0) {
+          std::cout << ", off within " << leak_hole << " of every tracker (in full "
+                    << "beyond " << 2.0*leak_hole << ")";
+        }
+        std::cout << ";";
       }
       if (eta_profile) {
         std::cout << " shift damping follows the trackers (M_ref = " << eta_mref
@@ -122,12 +155,45 @@ struct GaugeExt {
   Real pz[kGaugeExtMaxPunc];
   Real amp[kGaugeExtMaxPunc];     // M_ref/m_A - 1
   Real iw2[kGaugeExtMaxPunc];     // 1/w_A^2
+  // second pass of the lapse term; nhole zero: the statement of the first pass
+  Real hole_ir;                   // 1/r_h; zero: no switch-off around the trackers
+  int nhole;                      // number of trackers of the switch-off
+  Real hx[kGaugeExtMaxPunc];      // their positions
+  Real hy[kGaugeExtMaxPunc];
+  Real hz[kGaugeExtMaxPunc];
 
   //! contribution to d_t alpha
   KOKKOS_INLINE_FUNCTION
   Real LapseLeak(const Real alpha) const {
     const Real ex = log(fmax(alpha, 1.0e-30)) - leak_log0;
     return (ex > 0.0) ? -leak_rate*alpha*ex : 0.0;
+  }
+
+  //! S(s) = s^2 (3 - 2 s) between 0 and 1, 0 below, 1 above
+  KOKKOS_INLINE_FUNCTION
+  Real Step(const Real s) const {
+    const Real c = fmin(fmax(s, 0.0), 1.0);
+    return c*c*(3.0 - 2.0*c);
+  }
+
+  //! weight of the lapse term by the distance from the trackers: zero within r_h of
+  //! any of them, one beyond 2 r_h of all of them
+  KOKKOS_INLINE_FUNCTION
+  Real HoleWeight(const Real x1, const Real x2, const Real x3) const {
+    Real w = 1.0;
+    for (int n = 0; n < nhole; ++n) {
+      const Real r = sqrt(SQR(x1 - hx[n]) + SQR(x2 - hy[n]) + SQR(x3 - hz[n]));
+      w *= Step(r*hole_ir - 1.0);
+    }
+    return w;
+  }
+
+  //! contribution to d_t alpha with the weight w of the second pass
+  KOKKOS_INLINE_FUNCTION
+  Real LapseLeak2(const Real alpha, const Real w) const {
+    const Real ex = log(fmax(alpha, 1.0e-30)) - leak_log0;
+    if (ex <= 0.0) { return 0.0; }
+    return -leak_rate*alpha*ex*w;
   }
 
   //! eta(x)/eta_0
@@ -157,6 +223,24 @@ GaugeExt MakeGaugeExt(const GaugeExtOptions &go, const TrackerList &trackers) {
   for (int n = 0; n < kGaugeExtMaxPunc; ++n) {
     gx.px[n] = 0.0; gx.py[n] = 0.0; gx.pz[n] = 0.0;
     gx.amp[n] = 0.0; gx.iw2[n] = 0.0;
+    gx.hx[n] = 0.0; gx.hy[n] = 0.0; gx.hz[n] = 0.0;
+  }
+  // second pass of the lapse term
+  gx.hole_ir = (go.leak_hole > 0.0) ? 1.0/go.leak_hole : 0.0;
+  gx.nhole = 0;
+  if (go.lapse_leak > 0.0 && go.leak_hole > 0.0) {
+    for (auto &pt : trackers) {
+      if (gx.nhole == kGaugeExtMaxPunc) {
+        std::cout << "### FATAL ERROR in " << __FILE__ << " at line " << __LINE__
+                  << std::endl << "lapse_leak_hole takes at most "
+                  << kGaugeExtMaxPunc << " trackers" << std::endl;
+        std::exit(EXIT_FAILURE);
+      }
+      const int n = gx.nhole++;
+      gx.hx[n] = pt->GetPos(0);
+      gx.hy[n] = pt->GetPos(1);
+      gx.hz[n] = pt->GetPos(2);
+    }
   }
   if (!go.eta_profile) { return gx; }
 
@@ -189,7 +273,7 @@ GaugeExt MakeGaugeExt(const GaugeExtOptions &go, const TrackerList &trackers) {
 //----------------------------------------------------------------------------------------
 //! \fn void AddGaugeExt
 //! \brief adds the two terms to the right-hand sides of the lapse and of the shift:
-//!   d_t alpha    += LapseLeak(alpha)
+//!   d_t alpha    += LapseLeak(alpha)      (with lapse_leak_hole: LapseLeak2(alpha, w_h))
 //!   d_t beta^i   -= (eta(x) - eta_0) beta^i      (the main loop has subtracted eta_0 beta^i)
 //! PackT is MeshBlockPack and Z4cT is Z4c (template parameters so that this header needs
 //! neither definition).
@@ -211,10 +295,22 @@ void AddGaugeExt(PackT *pmbp, Z4cT *pz4c, const GaugeExt gx) {
   auto &z4c = pz4c->z4c;
   auto &rhs = pz4c->rhs;
 
+  // second pass of the lapse term: switched off around the trackers
+  const bool leak2 = (leak && gx.nhole > 0);
+
   par_for("z4c gauge ext", DevExeSpace(), 0, nmb-1, ks, ke, js, je, is, ie,
   KOKKOS_LAMBDA(const int m, const int k, const int j, const int i) {
-    if (leak) {
+    if (leak && !leak2) {
       rhs.alpha(m,k,j,i) += gx.LapseLeak(z4c.alpha(m,k,j,i));
+    }
+    if (leak2) {
+      const Real w = gx.HoleWeight(
+          CellCenterX(i - is, nx1, size.d_view(m).x1min, size.d_view(m).x1max),
+          CellCenterX(j - js, nx2, size.d_view(m).x2min, size.d_view(m).x2max),
+          CellCenterX(k - ks, nx3, size.d_view(m).x3min, size.d_view(m).x3max));
+      if (w > 0.0) {
+        rhs.alpha(m,k,j,i) += gx.LapseLeak2(z4c.alpha(m,k,j,i), w);
+      }
     }
     if (eta) {
       const Real deta = eta0*(gx.EtaFactor(
