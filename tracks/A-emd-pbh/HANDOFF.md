@@ -41,7 +41,8 @@ minutes for the ball runs; start it early, in the background). A cut chain is co
   threshold_ball/JOURNAL.md). If `nrpic-run status` still lists A-20261124-132016-ecf12c3 or
   A-20261122-173202-f98c79f as not finished, run `harness/bin/nrpic-run finish <id>` (checksums take minutes).
 - K4 (threshold_ball entry 10; predictions K4a-K4c written) RUNS since 04:05 PST as A-20261125-120525-8fb946e
-  (processors, detached, 6 cores; log scratch/A-emd-pbh/A-20261125-120525-8fb946e/run.log). When run.log ends
+  (processors, detached, 6 cores; log scratch/A-emd-pbh/A-20261125-120525-8fb946e/run.log). Speed at start
+  about 22 s per cycle per member: K4-ref and K4-src reach t = 5 near 06:00 PST, K4-dt (half step) near 08:00 PST. When run.log ends
   with exit=: `harness/bin/nrpic-run finish A-20261125-120525-8fb946e`, then k4_compare.py on its directory
   (registered), figure looked at, outcome under entry 10. This is the next test of C3.
 
