@@ -41,7 +41,10 @@ figure per shell statistic; outcome into floor/JOURNAL.md entry 2 and repro/figs
 `nrpic-stage verify E-stoch-inf G2 --no-checksums` (log scratch/E-stoch-inf/tmp/b15/verify.log; the
 full checksum pass over about 280 run directories, hundreds of GB, takes one to two hours: run it
 without `--no-checksums` in a session with that time and no 256^3 reader active, if the reviewer
-asks), then `nrpic-stage report E-stoch-inf G2`. Verdict and failed checks: stage/G2/VERIFY_RESULTS.md.
+asks), then `nrpic-stage report E-stoch-inf G2`. Result on tip 81e736ac: harness verdict FAIL on
+C3, C7 (failures on record by rulings) and on `runs` only: 7 ablation runs of the reproduction name
+core's noise-level2 card executable, republished after core's review (request to core in the outbox;
+stage/G2/OPEN.md item 7). Every rerun, regeneration and comparison check PASS.
 
 ## Next, in order
 
