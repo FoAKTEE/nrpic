@@ -1,0 +1,128 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "core-20261125-135110-7966158",
+  "track": "core",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "restart-finder T5a/T6: finder with polishing iterations against the tight rule on a vacuum puncture (M/8, 2 M), ah_exc_max_growth, byte identity with the options absent; threaded builds of the branch and of release core-v0.7, 2 threads",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "python",
+    "tracks/core/analysis/restart_finder/finder_test.py",
+    "--exe",
+    "/data/haiyangw/nrpic/wt/core-s4/.work/build_omp_rf/src/athena",
+    "--ref-exe",
+    "/data/haiyangw/nrpic/scratch/core/exe/core_nrpic_v07/athena_cpu_omp",
+    "--out",
+    "$NRPIC_RUN_DIR",
+    "--jobs",
+    "2",
+    "--threads",
+    "2",
+    "--tlim",
+    "2.0"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "79661588f375caf0bc93d0642a80d3b9a4d24ee7",
+    "branch": "core/restart-finder",
+    "dirty": false,
+    "merge_base_main": "0b5c3e7dc6384563c57dbf772b486587144fded7",
+    "worktree": "wt/core-s4"
+  },
+  "code": {
+    "core_tag": "core-v0.7",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "b7f7695d8e9720758c144dd9c0f272ce4fba8b46f921750462326664310fad51",
+    "machine_file_sha256": "ff4e45b0fd5bf6bee4bf1084a282d72b9adf66f4a455f4e937d9884a1fb07535",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/core-s4/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "tracks/core/analysis/restart_finder/finder_test.py",
+      "role": "input",
+      "sha256": "a6321c0e9ed9dcefd44243c277ff85fc9616912e3c37196556fd14f2fb7a8124",
+      "bytes": 12365,
+      "tracked": true
+    },
+    {
+      "path": "problems/tests/finder_polish.athinput",
+      "role": "input",
+      "sha256": "0934b331a530fe274a234303a90a18d735f0104bc2d2c2e7528ede5a2b74b647",
+      "bytes": 2634,
+      "tracked": true
+    },
+    {
+      "path": ".work/build_omp_rf/src/athena",
+      "role": "input",
+      "sha256": "293b74d7e096c0777175fdaae338242d0b936baa83c72cb4ead40021ba22ac55",
+      "bytes": 323100656,
+      "tracked": false
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/exe/core_nrpic_v07/athena_cpu_omp",
+      "role": "input",
+      "sha256": "fbf605f43a30a4a34f321c88d3068aea1497ba0b34933776d4a28b829abd3946",
+      "bytes": 322729288,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": ".work/build_omp_rf/src/athena",
+      "role": "argv",
+      "sha256": "293b74d7e096c0777175fdaae338242d0b936baa83c72cb4ead40021ba22ac55",
+      "bytes": 323100656,
+      "tracked": false
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 4,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/core/core-20261125-135110-7966158",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-25T13:51:14Z",
+  "started": null,
+  "ended": null,
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 40.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 17.2834,
+    "gpu_hours_reserved": 0.1,
+    "gpu_hours_without_gate": 5.8713,
+    "cores_busy": 2,
+    "runs": 1599,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md + 0026-cards-loaded-allotment-cost.md + 0031-level2-branch-and-ablation.md + 0032-new-account-preemption-allotments.md + 0038-track-e-g2-signed-g3-scope.md"
+  }
+}
