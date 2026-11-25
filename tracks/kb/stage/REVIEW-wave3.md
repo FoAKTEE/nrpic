@@ -227,3 +227,55 @@ all resolved); the label says fulltext but the reading is at abstract level (the
 third weak point; stated in each evidence text). 452 partly right: 2602.06961 is a PN N-body
 paper of the Jena group, 2610.20594 a Peters-equation method that uses the pn-nbody code;
 claim 864 carries the precise text, 452 annotated (its "likely competitors" is F's judgement).
+
+## kb lead batch 15 (2026-11-25): package claims3
+
+Checked from the artefacts (database, snapshot kb-20261124-9872d21, LEDGER.tsv,
+SAMPLE_VERDICTS.tsv, the sources), with my own code (`tracks/kb/lead_b15/scripts/`), not from
+the README. Predictions V1, V2, R2, S2 in `tracks/kb/JOURNAL.md` (batch 15 entry), written
+before the runs.
+
+Confirmed
+- Ledger against the database (run kb-20261125-033503-dfc398e): 72 rows (71 claims), no label or
+  status mismatch; 22 `superseded_by` links, one per successor named in the ledger; the 17 new
+  claims 865-881 have resolved locator rows; 881 claims (864 in the snapshot).
+- No claim outside the ledger changed, after the repair below (run kb-20261125-033703-a1be27a:
+  67 claims differ from the snapshot, all in the ledger; the other four ledger claims, 308, 467,
+  662, 673, were annotated only).
+- Sample rate recomputed with my own Clopper-Pearson code: 26/30 = 86.7 %, 69.3-96.2 %;
+  stratum-weighted 86.48 %, s.e. 6.09 % with finite-population correction: equal to the
+  package to the printed digits. Figure `lead_b15/figures/fig_review_claims3.png` (looked at):
+  statuses before and after, and the rate per stratum.
+- Package figures looked at: `claims3/figures/fig_weak_sample.png` agrees with
+  SAMPLE_VERDICTS.tsv (WA 15 right, 3 locator extended, 2 fragments, 1 part unsupported, 1 cut
+  text; WQ 4+1; WB 1+1; WM 1).
+- My own reading (V2) of five claims drawn with my seed (20261126) from the sample and the new
+  claims: 40 (2610.23218 L89, L104-111), 669 (1804.02911 L462-463), 874 (2010.12584 abstract
+  L143), 877 (1804.02911 L359-362) and 869 (1709.00267 L363, L373-393; 2607.09326 L96, L141):
+  every package verdict holds. Reservation on 877: its second clause (F's D/r_t = 4.1 and 5.8)
+  is F's run result, attributed in the text to run F-hills-20261115-045435-f62d553, under a
+  fulltext label whose only locator is the paper. Right as worded; the label covers the first
+  clause only. For the second verifier to judge.
+- Suite: `pytest tests/test_claims_supersede.py` 7 passed (6 of the package, 1 of mine).
+
+Wrong, and fixed in this session
+- `supersede --to` overwrote the successor's `claim_meta.checked_by/checked_at` (289, 313, 430,
+  624 from the seeder or claims_tracks, 862 from the lead of batch 13, all to kb-claims3). For
+  the four machine-located siblings this recorded a reading that did not happen (the package's
+  README says they were not read against their sources). Fix: kb/kbtool/claims_db.py no longer
+  writes them (the supersedes event records the step); regression test
+  `test_supersede_to_existing_keeps_successor_checked_by`; the five rows restored to the
+  snapshot's values with one annotate event each (dry run kb-20261125-033655-43ee7ce, run
+  kb-20261125-033703-3bd4386).
+
+Not confirmed / differs
+- The package's query counts 548 claims in the weak class today (run
+  kb-20261125-033530-5a1ac43), not 543: five sampled claims (308, 467, 662, 673 of WQ; 720 of
+  WB) were only annotated by claims3 and the query does not exclude claims3's own readings. The
+  unread class is 548 - 5 = 543, as the package says; the query should exclude events by
+  kb-claims3 before it is used again (HANDOFF).
+- Not re-read by me: the 25 other sampled verdicts, the 12 other new claims, seed 805's
+  pointers to A, D, F files. These go to the second fresh verifier (OPEN.md O6).
+
+Verdict: claims3 is accepted with the repair above; O1, O2, O3, O5 closed; O4 in part; the
+weak class stated as a known limit (OPEN.md O7).
