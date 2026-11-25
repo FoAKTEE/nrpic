@@ -517,3 +517,75 @@ Sixteen searches, t = 0 to 1.875 M (found or not from the status file):
 - Figure (run core-20261125-145908-fbd5598, `fig_tracker_restart.png`, looked at: the
   crosses of the new build lie on all eight circles of the uninterrupted run, the
   squares of the release only on the last four; the y-labels touch the tick labels).
+
+## Entry 20 (2026-11-25, 07:03 PST): published; handoff for a reader with no memory
+
+**State.** Branch `core/restart-finder` (worktree `wt/core-s4`), pushed. Source commit
+01d4aeeb (last change of `athenak/`, `python/`, `problems/`, `docs/`); main merged at
+the start and again before the queue entry. Items 1, 2 and 3 of
+`tracks/core/NEXT_SOURCE.md` are implemented and tested on processors; the card check
+is queued, not run.
+
+**Published** (new directory, nothing replaced):
+`/data/haiyangw/nrpic/scratch/core/exe/core_restart-finder/` with `athena_cpu`,
+`athena_cpu_omp`, `athena_gpu`, COMMIT, SHA256SUMS, READY (every option, one example
+input each, what is tested and what is not).
+
+**Card check, pending.** Shared-queue entry **q0049**, label `core-rf-card`, priority 2
+(`harness/bin/nrpic-queue show q0049`); list
+`tracks/core/analysis/restart_finder/card/card_rf.list` (six runs, 0.3 card-hours asked);
+inputs outside the repository under `scratch/core/tmp/rf_card/` (SHA256SUMS there; do
+not delete before the job has run). Predictions K1 to K5: entry 12. When it has run:
+`nrpic-run finish <run id>`, then, registered,
+`python tracks/core/analysis/restart_finder/card_check.py --card scratch/core/<run id>
+--cpu-restart scratch/core/core-20261125-142556-a424739 --cpu-finder
+scratch/core/core-20261125-141832-01d4aee --out '$NRPIC_RUN_DIR'`; look at
+`fig_card_check.png`; write the outcome here, the cost per search into
+`finder_stop.md` section 6 and the READY. `card_check.py` has not been run against
+real card output: expect to debug it (it reads the wall time from "cpu time used" in the
+logs of the runs; check that the batch runs keep such a log in their directories).
+Note that `fp_pol` of the list is `mass_tol` 1e-5 with 100 polishing iterations (the
+run `prodpol` of `finder_test.py`), so K3 compares like with like; K3 as written in
+entry 12 ("17 searches", "each of the three rules found") predates the status-file
+reading: there are 16 searches and the strict rules are found at ten of them.
+
+**Evidence, by prediction.** P1 to P4, P13 (restart outputs): held (entries 4, 8, 16).
+P5 (two punctures): held (entry 19). P6 (byte regression, final build): held (entry
+18). P7 (figstyle): held (entry 11). P8, P10 (options absent, guard): held (entries 14,
+17). P9 (first rule): FAILED and the rule was changed (entry 14). P11 (first rule on
+Track D's dumps): held (entry 7). P14, P15, P16: held; P17: first part held, second
+part FAILED (entry 17). P18 (published rule on Track D's dumps): held (entry 18).
+K1 to K5: not run. Two statements of mine were wrong and are corrected in place by
+later entries: what column 1 of the horizon summary holds (entry 9) and how a search
+starts (entry 10).
+
+**Lines of shared files touched** (against main at the merge; for the lead's merge
+with the neighbouring branch): `outputs/history.cpp` 426-432; `particles/nrpic.cpp` 26
+(include), 118-128, 463-468; `particles/nrpic_io.cpp` 659-662 (comment), 848-955 (three
+new functions), 1317-1318, 1415-1420, 1479; `particles/particles.hpp` 87-88, 304-306,
+387-389; `z4c/compact_object_tracker.cpp` 11-16 (includes), 85-173, 353;
+`z4c/compact_object_tracker.hpp` 85-88; `z4c/fastflow.cpp` 86-99, 808, 928-939;
+`z4c/fastflow.hpp` 72; `docs/FORMATS.md` 235-247; `python/nrpic/figstyle.py` 28-29,
+184-191. New files: `problems/tests/restart_outputs.athinput`,
+`problems/tests/finder_polish.athinput`, `tracks/core/analysis/restart_finder/*`,
+`tracks/core/interfaces/restart_outputs.md`, `finder_stop.md`. `tracks/core/CHANGELOG.md`
+got a section at the top (a neighbouring branch may add one at the same place).
+
+**Not done, for the lead or the next session.**
+- The card check q0049 and everything listed under "NOT tested" in the READY.
+- `tracks/core/stage/G2/OPEN.md` (items a and b of core-v0.7 are closed by this
+  branch), `tracks/core/EXE_PROVENANCE.md`, `STATUS.md`, `HANDOFF.md`,
+  `interfaces/REQUESTS_WAVE3.md` (W2; Track D's two requests; Track E's figstyle) and
+  the sentence of CLAUDE.md on the two restart defects are the lead's and the
+  orchestrator's files: not edited here.
+- Track D's ES-FL deck to 240 M with `ah_exc_max_growth` (their card run), the 1.8e-4
+  angular offset (their number, not repeated), a stop on the residual (rejected with
+  reasons, `finder_stop.md` section 2), a guard relative to the last accepted radius
+  (not implemented).
+- Runs that ended with a non-zero status and stay on record: core-20261125-131225-9591922
+  (stopped, entry 3), core-20261125-134013-54a77d6 (stopped, entry 6),
+  core-20261125-135110-7966158 (P9 failed, entry 14), core-20261125-141832-01d4aee and
+  core-20261125-144217-15cea77 (one check of P17 failed, entry 17).
+- Messages posted: F-hills (tracker files), D-bh-dress (finder, guard), A-emd-pbh
+  (reading horizon masses), E-stoch-inf (figstyle), orch (proposal for the vendored
+  figstyle).
