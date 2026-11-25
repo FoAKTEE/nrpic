@@ -8,7 +8,7 @@ inherited by a --cmd wrapper that calls nrpic-run inside). Called directly, nrpi
 `nrpic-queue add` line to use instead; `nrpic-run submit --dry-run` stays open to everyone. A local run of
 nrpic-run and `nrpic-env exec` refuse a command that would reach Slurm itself (sbatch, srun, salloc,
 scripts/gpu_run.sh, gpu_batch.sh, submit_chain.sh) outside a dispatch. And the dispatcher's cap keeper
-cancels an excess that comes in by any other way.
+cancels an excess of this program's jobs that comes in by any other way (never a job of the user's own).
 
     harness/bin/nrpic-queue add --label L [--after LABEL] [--priority N] [--note TEXT] [--no-check]
                                 -- <the arguments of `nrpic-run submit`>
@@ -79,17 +79,25 @@ leaves behind cannot hold the dispatcher; its process group is recorded in the e
 when the command ends is ended, and a restart ends the group of a command the previous dispatcher left
 running before its first look. If the account's jobs rose by more than one around a dispatch (new job ids;
 a job the command printed always counts; one unprinted job per name of a running job is a chain's next
-segment) that is a violation of the one route: it stops submitting, logs ALERT and writes locks/queue/ALERT
-until the orchestrator runs clear-alert. It never finishes runs: the owner closes them (`nrpic-run finish
+segment; a job of the user's own that came in meanwhile does not count) that is a violation of the one
+route: it stops submitting, logs ALERT and writes locks/queue/ALERT until the orchestrator runs clear-alert. It never finishes runs: the owner closes them (`nrpic-run finish
 <run_id>`) as before.
 
 The cap keeper (the enforcement that does not depend on the route): every KEEPER (30) seconds, between
-looks too but not while an entry's command runs, it counts the account's jobs; an excess above the cap that
-lasts KEEPER_CONFIRM (20) seconds (a chain's hand-over lasts seconds) is cancelled with scancel, newest
-first, never a running job: first pending jobs that belong to no submitted entry and are not the next
-segment of a running chain, then pending jobs of the newest submitted entries (such an entry goes back to
-waiting with the reason). It logs loudly, writes ALERT with the jobs and what it cancelled, and
-dispatching stays halted until clear-alert.
+looks too but not while an entry's command runs, it counts the account's jobs. The user's own jobs count
+toward the cap (the account is also the user's login) but are never cancelled: a job is this program's when
+it belongs to a queue entry, or its name is a run id of nrpic-run (<owner>-YYYYMMDD-HHMMSS-<commit7>), or
+its working directory (squeue %Z) lies under the repository, wt/* and scratch/* included; every other job is
+the user's own. An excess above the cap that lasts KEEPER_CONFIRM (20) seconds (a chain's hand-over lasts
+seconds) is cancelled with scancel among our pending jobs only, newest first, never a running job and never
+a running chain's next segment: first ours that belong to no submitted entry (a route past the queue), then
+pending jobs of the newest submitted entries (such an entry goes back to waiting with the reason; one with a
+running job never). What cannot be removed that way stays. It logs loudly and writes ALERT with the jobs,
+what it cancelled, the user's own jobs (ids and names) and what is left; dispatching stays halted until
+clear-alert when it cancelled something or our own jobs alone exceed the cap. An excess that only the
+user's own jobs make is recorded once per distinct set of job ids and does not halt the dispatcher, which
+submits nothing anyway while the count is at or above the cap. status lists the user's own jobs on a line
+of their own ("not ours: ...").
 
 State (untracked): /data/haiyangw/nrpic/locks/queue/ -- entries/<id>.json (one per entry), out/ (output of
 each dispatch), queue.log (every change), queue.lock (one flock for every change), submit.lock (held
@@ -580,12 +588,26 @@ def fresh_jobs(before, after, printed=()):
     return fresh, succ
 
 
-def jobs_of_outcome(text, before, after):
+def alert_halts(path):
+    """Does the ALERT file halt dispatching? Every record does (an unreadable file too), except a cap-keeper
+    record of an excess that only the user's own jobs make (halts: false)."""
+    try:
+        a = H.read_json(path)
+    except (OSError, ValueError):
+        return True
+    if not isinstance(a, dict):
+        return True
+    return any(not isinstance(r, dict) or r.get("halts", True) for r in [a] + list(a.get("more") or []))
+
+
+def jobs_of_outcome(text, before, after, home=None):
     """(run id, job ids, job name) of what a command submitted, recorded on every outcome: the job ids it
-    printed, else the one fresh job that appeared; the name squeue gives the first of them, else the run id
-    (nrpic-run's JOB_NAME)."""
+    printed, else the one fresh job of this program's that appeared (H.program_job; the user's own jobs are
+    never taken for it); the name squeue gives the first of them, else the run id (nrpic-run's JOB_NAME)."""
     run_id, jids = parse_output(text)
     fresh = fresh_jobs(before, after, jids)[0] if after is not None and before is not None else []
+    if home is not None:
+        fresh = [j for j in fresh if H.program_job(j, home)]
     by_id = {j["id"]: j for j in after or []}
     name = next((by_id[j]["name"] for j in jids if j in by_id and by_id[j]["name"]), None)
     if name is None and run_id:
@@ -842,7 +864,7 @@ class Dispatcher:
             track_done(self.Q, jobs)
         self.note_pause()
         while not self.stopping():
-            if os.path.exists(self.Q.path("ALERT")):
+            if os.path.exists(self.Q.path("ALERT")) and alert_halts(self.Q.path("ALERT")):
                 self.say("alert", "ALERT present (locks/queue/ALERT): nothing is submitted until the orchestrator "
                                   "runs `nrpic-queue clear-alert`")
                 return
@@ -1036,7 +1058,7 @@ class Dispatcher:
         after = H.queue_jobs(self.env)
         text = out + "\n" + err
         printed = parse_output(text)[1]
-        run_id, jids, name = jobs_of_outcome(text, before, after)
+        run_id, jids, name = jobs_of_outcome(text, before, after, self.Q.home)
         outcome = "go-on"
         refusal = None if rc == 0 or timed_out else (
             WAIT_CAP if CAP_REFUSAL_RX.search(text) else WAIT_DIRTY if DIRTY_REFUSAL_RX.search(text) else None)
@@ -1093,6 +1115,13 @@ class Dispatcher:
                        "more is submitted at this look", loud=True)
             return "stop"
         fresh, succ = fresh_jobs(before, after, printed)
+        # a job of the user's own that came in during the dispatch (not printed by the command, no run-id name,
+        # working directory outside the repository) is no violation of the one route: it is not counted here
+        users = [j for j in fresh if not printed_by(j["id"], printed) and not H.program_job(j, self.Q.home)]
+        if users:
+            fresh = [j for j in fresh if j not in users]
+            self.Q.log(f"note: during the dispatch of {eid} job(s) of the user's own came in: "
+                       + ", ".join(f"{j['id']} {j['name'] or '-'}" for j in users) + " (not counted as its rise)")
         if len(fresh) > 1:
             self.alert(e, before, after, fresh, succ, printed)
             return "stop"
@@ -1134,8 +1163,10 @@ class Dispatcher:
             H.write_json(p, cur)
         else:
             H.write_json(p, rec)
-        self.Q.log("ALERT: " + msg + ". Nothing more is submitted until `nrpic-queue clear-alert` (locks/queue/ALERT)",
-                   loud=True)
+        self.Q.log("ALERT: " + msg + (". Nothing more is submitted until `nrpic-queue clear-alert` (locks/queue/ALERT)"
+                                      if rec.get("halts", True) else
+                                      ". This record does not halt the dispatcher: it submits nothing while the "
+                                      f"count is at or above {H.QUEUE_CAP} (locks/queue/ALERT)"), loud=True)
 
     def alert(self, e, before, after, fresh, succ, printed):
         rec = {"ts": H.utcnow(), "kind": "rise", "entry": e["id"], "owner": e["owner"], "label": e["label"],
@@ -1168,22 +1199,31 @@ class Dispatcher:
         now = time.time()
         if self.over_since is None:
             self.over_since = now
-            self.Q.log(f"cap keeper: {n} jobs of the account queued, above the cap of {H.QUEUE_CAP}; it acts if this "
-                       f"lasts {self.keeper_confirm:g} s", loud=True)
+            if frozenset(j["id"] for j in jobs) != self.last_enforced:      # an unchanged excess is logged once
+                self.Q.log(f"cap keeper: {n} jobs of the account queued, above the cap of {H.QUEUE_CAP}; it acts if "
+                           f"this lasts {self.keeper_confirm:g} s", loud=True)
             return
         if now - self.over_since >= self.keeper_confirm:
             self.enforce(jobs)
             self.over_since = None               # what is left must last --keeper-confirm again
 
     def enforce(self, jobs):
-        """Cancel the excess, newest first, never a running job: first pending jobs that belong to no submitted
-        entry and are not the next segment of a running chain (the oldest pending job named like a running
-        one); then pending jobs of the newest submitted entries (such an entry goes back to waiting when none of
-        its jobs is left). ALERT records what was cancelled and what could not be; dispatching halts."""
+        """Cancel the excess above the cap, newest first, among this program's pending jobs only. A job is this
+        program's when it belongs to a queue entry, or its name is a run id of nrpic-run, or its working
+        directory lies under the repository (H.program_job); every other job is the user's own: it counts
+        toward the cap (decision 0033 counts the account) but is never cancelled, pending or not. Never a
+        running job either, and never a running chain's next segment (the oldest pending job of ours named like
+        a running one of ours). First our pending jobs that belong to no submitted entry (a route past the
+        queue), then pending jobs of the newest submitted entries (such an entry goes back to waiting when none
+        of its jobs is left). ALERT records what was cancelled, the user's own jobs and what is left. It halts
+        dispatching (until clear-alert) when the keeper cancelled something or when our own jobs alone exceed
+        the cap; an excess that only the user's own jobs make is recorded without halting (the count keeps
+        the dispatcher from submitting while it is at or above the cap). One record per distinct set of job
+        ids; while an ALERT stands, an excess in which nothing may be cancelled is only logged."""
         n, excess = len(jobs), len(jobs) - H.QUEUE_CAP
         ids = frozenset(j["id"] for j in jobs)
         if ids == self.last_enforced:
-            return                               # the same excess as last time: already alerted
+            return                               # the same excess as last time: already recorded
         self.last_enforced = ids
         sub = [e for e in self.Q.entries() if e["state"] == "submitted"]
 
@@ -1192,24 +1232,32 @@ class Dispatcher:
                 if (e.get("job_name") and j["name"] == e["job_name"]) or printed_by(j["id"], e.get("job_ids") or []):
                     return e
             return None
-        running = {j["name"] for j in jobs if j["state"] != "PENDING" and j["name"]}
+        why = {}
+        for j in jobs:
+            e = entry_of(j)
+            why[j["id"]] = f"entry {e['id']}" if e else H.program_job(j, self.Q.home)
+        ours = [j for j in jobs if why[j["id"]]]
+        foreign = [j for j in jobs if not why[j["id"]]]
+        running = {j["name"] for j in ours if j["state"] != "PENDING" and j["name"]}
         protected = set()
         for nm in running:
-            pend = sorted((j for j in jobs if j["state"] == "PENDING" and j["name"] == nm), key=jobkey)
+            pend = sorted((j for j in ours if j["state"] == "PENDING" and j["name"] == nm), key=jobkey)
             if pend:
                 protected.add(pend[0]["id"])     # the running segment's successor
-        pending = [j for j in jobs if j["state"] == "PENDING" and j["id"] not in protected]
+        pending = [j for j in ours if j["state"] == "PENDING" and j["id"] not in protected]
         plan = [(j, None) for j in sorted((j for j in pending if entry_of(j) is None), key=jobkey, reverse=True)]
         for e in sorted(sub, key=lambda x: x.get("dispatch_no") or 0, reverse=True):
             plan += [(j, e) for j in sorted((j for j in pending if entry_of(j) is e), key=jobkey, reverse=True)]
+        fdesc = ", ".join(f"{j['id']} {j['name'] or '-'} {j['state']}" for j in sorted(foreign, key=jobkey))
         if not plan and os.path.exists(self.Q.path("ALERT")):
-            self.Q.log(f"cap keeper: {n} jobs queued, {excess} above the cap, none of them may be cancelled (running, "
-                       "or a running chain's next segment); the ALERT stands", loud=True)
+            self.Q.log(f"cap keeper: {n} jobs queued, {excess} above the cap, none of ours may be cancelled (running, "
+                       f"or a running chain's next segment); {len(foreign)} are the user's own"
+                       + (f" ({fdesc})" if foreign else "") + ", never cancelled; the ALERT stands", loud=True)
             return
         cancelled, refused = [], []
         for j, e in plan[:excess]:
             r = H.run(["scancel", j["id"]], env=self.env, check=False)
-            rec = dict(j, entry=e["id"] if e else None)
+            rec = dict(j, entry=e["id"] if e else None, ours=why[j["id"]])
             (cancelled if r.returncode == 0 else refused).append(rec)
         gone = {j["id"] for j in cancelled}
         requeued = []
@@ -1233,17 +1281,22 @@ class Dispatcher:
             if self.Q.change(e["id"], upd):
                 requeued.append(e["id"])
         short = excess - len(cancelled)
+        halts = bool(cancelled) or len(ours) > H.QUEUE_CAP
         rec = {"ts": H.utcnow(), "kind": "cap-keeper", "count": n, "cap": H.QUEUE_CAP, "excess": excess,
-               "jobs": jobs, "cancelled": cancelled, "scancel_refused": refused, "entries_back_to_waiting": requeued,
-               "left_above_the_cap": max(0, short),
-               "what_to_do": "find where the excess came from (one route: only the dispatcher submits card jobs); "
-                             "close the runs of the entries put back to waiting (nrpic-run finish); if jobs are left "
-                             "above the cap (running ones are never cancelled), decide; then clear-alert"}
-        self.raise_alert(rec, f"cap keeper: {n} jobs of the account queued for {self.keeper_confirm:g} s or more, "
-                              f"{excess} above the cap; cancelled {', '.join(j['id'] for j in cancelled) or 'none'}"
+               "ours": len(ours), "foreign": len(foreign), "foreign_jobs": foreign, "jobs": jobs,
+               "cancelled": cancelled, "scancel_refused": refused, "entries_back_to_waiting": requeued,
+               "left_above_the_cap": max(0, short), "halts": halts,
+               "what_to_do": "the user's own jobs (not of an entry, no run-id name, working directory outside the "
+                             "repository) count toward the cap but are never cancelled; while the count is at or "
+                             "above the cap the dispatcher submits nothing. Find where an excess of ours came from "
+                             "(one route: only the dispatcher submits card jobs); close the runs of the entries put "
+                             "back to waiting (nrpic-run finish); then clear-alert"}
+        self.raise_alert(rec, f"cap keeper: {n} jobs of the account queued for {self.keeper_confirm:g} s or more "
+                              f"({len(ours)} ours, {len(foreign)} the user's own), {excess} above the cap; cancelled "
+                              f"{', '.join(j['id'] for j in cancelled) or 'none'}"
                               + (f"; entries back to waiting: {', '.join(requeued)}" if requeued else "")
-                              + (f"; {short} job(s) left above the cap (running, or a chain's next segment)" if short > 0
-                                 else ""))
+                              + (f"; {short} job(s) left above the cap" if short > 0 else "")
+                              + (f"; not cancelled, the user's own: {fdesc}" if foreign else ""))
 
 
 # ------------------------------------------------------------------ commands
@@ -1574,11 +1627,20 @@ def cmd_status(wt, args):
     if jobs is None:
         print("Slurm queue: squeue did not answer")
     else:
-        print(f"Slurm queue: {len(jobs)} of {H.QUEUE_CAP} jobs of the account (decision 0033)")
-        for j in jobs:
-            e = by_name.get(j["name"])
+        mine = [(j, by_name.get(j["name"])) for j in jobs]
+        foreign = [j for j, e in mine if e is None and not H.program_job(j, wt.home)]
+        print(f"Slurm queue: {len(jobs)} of {H.QUEUE_CAP} jobs of the account (decision 0033): {len(jobs) - len(foreign)} "
+              f"of this program, {len(foreign)} of the user's own")
+        for j, e in mine:
+            if j in foreign:
+                continue
             print(f"  {j['id']:>8s} {j['state']:11s} {j['name'][:40]:40s} "
-                  + (f"{e['id']} {e['owner']}/{e['label']}" if e else "(not from the queue)"))
+                  + (f"{e['id']} {e['owner']}/{e['label']}" if e else
+                     f"(ours, not from the queue: {H.program_job(j, wt.home)})"))
+        if foreign:
+            print("  not ours: " + "; ".join(f"{j['id']} {j['name'] or '-'} {j['state']} ({j['workdir'] or 'no workdir'})"
+                                         for j in foreign)
+                  + " (the user's own: counted toward the cap, never cancelled by the cap keeper)")
     d = Q.dispatcher()
     if d["alive"]:
         poll = float(d.get("poll") or POLL)
@@ -1599,16 +1661,20 @@ def cmd_status(wt, args):
             a = H.read_json(Q.path("ALERT"))
             for r in [a] + list(a.get("more") or []):
                 if r.get("kind") == "cap-keeper":
-                    what = (f"cap keeper: {r.get('count')} jobs queued, {r.get('excess')} above the cap; cancelled "
+                    what = (f"cap keeper: {r.get('count')} jobs queued ({r.get('ours', '?')} ours, "
+                            f"{r.get('foreign', '?')} the user's own), {r.get('excess')} above the cap; cancelled "
                             f"{', '.join(j['id'] for j in r.get('cancelled') or []) or 'none'}"
-                            + (f"; {r['left_above_the_cap']} left above the cap" if r.get("left_above_the_cap") else ""))
+                            + (f"; {r['left_above_the_cap']} left above the cap" if r.get("left_above_the_cap") else "")
+                            + ("" if r.get("halts", True) else "; does not halt the dispatcher"))
                 elif r.get("kind") == "leftover-command":
                     what = f"the command of {r.get('entry')} could not be ended: {r.get('what')}"
                 else:
                     what = (f"{r.get('count_before')} -> {r.get('count_after')} jobs around {r.get('entry')} "
                             f"{r.get('owner')}/{r.get('label')}")
                 print(f"ALERT since {r.get('ts')}: {what}")
-            print(f"  nothing is submitted until clear-alert ({Q.path('ALERT')})")
+            print(f"  nothing is submitted until clear-alert ({Q.path('ALERT')})" if alert_halts(Q.path("ALERT")) else
+                  f"  this ALERT does not halt the dispatcher (an excess of the user's own jobs only); it submits "
+                  f"nothing while the count is at or above {H.QUEUE_CAP}; clear it when read ({Q.path('ALERT')})")
         except (OSError, ValueError, AttributeError, TypeError):
             print(f"ALERT: {Q.path('ALERT')} exists; nothing is submitted until clear-alert")
     if os.path.exists(Q.path("STOP")):

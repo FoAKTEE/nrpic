@@ -35,4 +35,17 @@ Status: ACCEPTED · 2026-11-24 · orchestrator (decision 0017)
    it in `scripts/` in its next source session; wrappers call `nrpic-queue
    check-dispatch`); the detector of Slurm commands is a heuristic; this round of fixes
    has had no second reviewer.
+5. Added 2026-11-25 04:40 PST: the cap keeper never cancels a job that is not this
+   program's. The account is also the user's own login, and the keeper of item 4 would
+   have cancelled first a job the user submits by hand (it has no queue entry); found by
+   the orchestrator on reading the routine, no such job existed. From 03:45 to the
+   restart the live dispatcher ran with the cancel step off. Now a job is ours when it
+   belongs to a queue entry, or its name is a run id, or its working directory lies
+   under the repository; every other job of the account counts toward the five and is
+   never cancelled: with an excess the keeper cancels our own pending jobs, and an
+   excess that only the user's jobs make is recorded without halting the queue. Known
+   consequences: a job submitted by hand from inside the repository counts as ours; a
+   pending segment of a chain started before the queue existed is cancelled first.
+   Regression checks: seven more (queue tool 100 of 100; runner rerun by the
+   orchestrator, no file failing). A second reviewer of items 4 and 5 is sent next.
 

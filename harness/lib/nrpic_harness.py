@@ -335,15 +335,16 @@ QUEUE_CAP = 5
 
 def queue_jobs(env=None):
     """The jobs of this account in the Slurm queue (every state squeue lists: pending, held, running,
-    completing, ...) as a list of {"id", "name", "state"}, or None if squeue fails or does not answer
-    within 60 s. env: the environment the tool uses for its Slurm commands (build_env), so that the count
-    and the submission ask the same Slurm. One line is one job; `-r` lists every task of a job array on a
-    line of its own, so that an array of N tasks counts N."""
+    completing, ...) as a list of {"id", "name", "state", "workdir"}, or None if squeue fails or does not
+    answer within 60 s. env: the environment the tool uses for its Slurm commands (build_env), so that the
+    count and the submission ask the same Slurm. One line is one job; `-r` lists every task of a job array on
+    a line of its own, so that an array of N tasks counts N. workdir (`%Z`) is the job's working directory
+    ('' when squeue gives none): the cap keeper tells this program's jobs from the user's others by it."""
     e = env if env is not None else os.environ
     user = e.get("USER") or e.get("LOGNAME") or os.environ.get("USER") or ""
     try:
-        r = subprocess.run(["squeue", "-h", "-r", "-u", user, "-o", "%i|%j|%T"], capture_output=True, text=True,
-                           timeout=60, env=env)
+        r = subprocess.run(["squeue", "-h", "-r", "-u", user, "-o", "%i|%j|%T|%Z"], capture_output=True,
+                           text=True, timeout=60, env=env)
     except (OSError, subprocess.SubprocessError):
         return None
     if r.returncode != 0:
@@ -352,9 +353,24 @@ def queue_jobs(env=None):
     for line in r.stdout.splitlines():
         if not line.strip():
             continue
-        parts = [p.strip() for p in (line.split("|") if "|" in line else line.split())] + ["", "", ""]
-        jobs.append({"id": parts[0], "name": parts[1], "state": parts[2]})
+        parts = [p.strip() for p in (line.split("|", 3) if "|" in line else line.split())] + ["", "", "", ""]
+        jobs.append({"id": parts[0], "name": parts[1], "state": parts[2], "workdir": parts[3]})
     return jobs
+
+
+def program_job(job, home):
+    """Why a job of the account is this program's ("run id": its name is a run id of nrpic-run, the owner one
+    of the harness's; "under the repository": its working directory lies under the main checkout `home`,
+    which holds wt/* and scratch/*), or None: a job of the user's own, which the cap keeper never cancels.
+    (A job of a queue entry is the program's too; nrpic-queue checks that itself.)"""
+    if parse_run_id(job.get("name") or ""):
+        return "run id"
+    wd = job.get("workdir") or ""
+    if wd:
+        p, h = os.path.realpath(wd), os.path.realpath(home)
+        if p == h or p.startswith(h + os.sep):
+            return "under the repository"
+    return None
 
 
 def queue_count(env=None):
