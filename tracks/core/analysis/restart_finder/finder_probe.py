@@ -8,15 +8,19 @@ tracks/D-bh-dress/puncture_drift/tools/probe_finder.py, rewritten here for the n
 Each dump is restarted for exactly one cycle (time/nlim = ncycle + 1) with a parameter
 file given next to -r, which adds four horizons centred on the origin, searched once at
 the end of that cycle:
-  h0  new rule: mass_tol 1e-2 (the default of the finder), 100 polishing iterations,
-      started from the radius stored in the dump (what a run with the option does)
+  h0  recommended setting: mass_tol 1e-5, 100 polishing iterations, started from the
+      radius stored in the dump (what a run with the option does)
   h1  tight rule: mass_tol 1e-9, 4000 iterations, from r = 1 M (the reference)
-  h2  production rule of Track D: mass_tol 1e-5, 400 iterations, from r = 2 M (outside)
-  h3  new rule from r = 2 M (outside)
+  h2  loose tolerance with polishing: mass_tol 1e-2, 100 iterations, from r = 2 M
+  h3  recommended setting from r = 2 M (outside)
+(The first registered run of this script, core-20261125-131950-1fb387d, had h0 = 1e-2
+with polishing from the stored radius, h2 = Track D's production rule 1e-5 without
+polishing from 2 M, h3 = 1e-2 with polishing from 2 M, and the first form of the rule.)
 The restart output of the dump's deck (output2) is replaced by an event log, so that no
 restart file is written.  Writes DIR/probes.json (one record per dump and horizon) and
 DIR/fig_finder_probe.{pdf,png}; exit status 0 if h0 and h3 lie within 2e-5 of h1 at every
-dump.
+dump.  "found" is taken from the status file (the summary file repeats old values when a
+search fails).
 """
 import argparse
 import concurrent.futures as cf
@@ -33,14 +37,15 @@ REPO = os.path.abspath(os.path.join(HERE, "..", "..", "..", ".."))
 COLS = ["iter", "time", "mass", "Sx", "Sy", "Sz", "S", "area", "hrms", "hmean",
         "meanradius", "minradius"]
 HOR = {
-    0: dict(mass_tol="1.0e-2", flow_iterations="400", polish_iterations="100"),
+    0: dict(mass_tol="1.0e-5", flow_iterations="400", polish_iterations="100"),
     1: dict(mass_tol="1.0e-9", flow_iterations="4000", initial_radius="1.0"),
-    2: dict(mass_tol="1.0e-5", flow_iterations="400", initial_radius="2.0"),
-    3: dict(mass_tol="1.0e-2", flow_iterations="400", polish_iterations="100",
+    2: dict(mass_tol="1.0e-2", flow_iterations="400", polish_iterations="100",
+            initial_radius="2.0"),
+    3: dict(mass_tol="1.0e-5", flow_iterations="400", polish_iterations="100",
             initial_radius="2.0"),
 }
-NAMES = {0: "new rule, stored radius", 1: "tight rule", 2: "1e-5 from outside",
-         3: "new rule from outside"}
+NAMES = {0: "1e-5 + 100, stored radius", 1: "tight rule", 2: "1e-2 + 100 from outside",
+         3: "1e-5 + 100 from outside"}
 
 
 def rst_header(path):
@@ -106,6 +111,8 @@ def one(rst, out, exe, threads):
                 if ln.strip() and not ln.startswith("#")]
         if rows:
             rec["flow_iterations_done"] = int(float(rows[-1][4]))
+            rec["found"] = rec["found"] and (int(float(rows[-1][2])) == 1)
+            rec["reason"] = int(float(rows[-1][3]))
         recs.append(rec)
     return recs
 
@@ -170,11 +177,11 @@ def main():
     ck = {
         "every probe ended with status 0": all(r["exit"] == 0 for r in recs),
         "tight rule found at every dump": len(ref) == ndump,
-        "new rule from the stored radius within 2e-5 of the tight rule at every dump "
+        "1e-5 with polishing from the stored radius within 2e-5 of the tight rule at every dump "
         "(max %.2e)" % worst.get(0, float("nan")):
             sum(1 for r in recs if r["horizon"] == 0 and r["found"]) == ndump
             and worst.get(0, 1.0) < 2.0e-5,
-        "new rule from outside within 2e-5 of the tight rule at every dump (max %.2e)"
+        "1e-5 with polishing from outside within 2e-5 of the tight rule at every dump (max %.2e)"
         % worst.get(3, float("nan")):
             sum(1 for r in recs if r["horizon"] == 3 and r["found"]) == ndump
             and worst.get(3, 1.0) < 2.0e-5,

@@ -407,3 +407,20 @@ Predictions for the rerun (`finder_test.py`, runs prod, ref, tight, def, pol = 1
   search. If the tight rule is not found at t = 1.75 and 1.875 again, the reference is
   the weak part of the test and I say so.
 - P8 and P10 are expected to hold again (deck changed by one line, `diagnostics`).
+
+## Entry 15 (2026-11-25, 06:28 PST): final builds; prediction for the second re-search of Track D's dumps
+
+Final source 01d4aeeb (the corrected rule). Builds: serial `.work/build_cpu_rf`,
+threaded `.work/build_omp_rf` (both relinked 06:17), card `.work/build_gpu_rf` (06:25;
+`fastflow.cpp.o` compiled after the correction). Running with them: T1 final
+(core-20261125-142556-a424739), byte regression final (core-20261125-142602-33f4005),
+finder test second run (core-20261125-141832-01d4aee). T1 to T4 of before ran with
+builds that differ from the final ones in `z4c/fastflow.cpp` only.
+
+- P18 (four of Track D's dumps, t = 100, 250, 400, 500 M, final threaded build;
+  `finder_probe.py` with the recommended setting): 1e-5 with 100 polishing iterations
+  lies within 1e-7 of the tight rule from the stored radius and from 2 M outside, found
+  at every dump (the flow is converged when the polishing ends, so the rule holds
+  again at once: 100 iterations plus those the first meeting took). 1e-2 with 100 from
+  outside reproduces the -3.4e-8 to -4.5e-8 of the first run. Refuted by a search not
+  found, or by a difference above 2e-5.
