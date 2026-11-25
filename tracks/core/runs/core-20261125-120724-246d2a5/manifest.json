@@ -1,0 +1,96 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "core-20261125-120724-246d2a5",
+  "track": "core",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "row 4 M/8, level 3 partial: fates by the rule (JOURNAL 2026-11-21T20:26Z) with q0028 (0.726875 member, 0-405 M, run 597d9ca) and q0029 (0.73625 control continued 300-600 M, run dcc9ea1); P10-P15 of JOURNAL 2026-11-24T13:05Z as far as these two runs reach",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "python3",
+    "tracks/core/verify/row4/row4_fate.py",
+    "--out",
+    "$NRPIC_RUN_DIR",
+    "0.605=/data/haiyangw/nrpic/scratch/core/core-20261121-204230-3bcb118,/data/haiyangw/nrpic/scratch/core/core-20261121-204235-0b25077",
+    "0.680=/data/haiyangw/nrpic/scratch/core/core-20261121-204234-d010783,/data/haiyangw/nrpic/scratch/core/core-20261121-204239-2be5ac2",
+    "0.69875=/data/haiyangw/nrpic/scratch/core/core-20261123-020454-8fec6b2,/data/haiyangw/nrpic/scratch/core/core-20261123-020456-884f550",
+    "0.7175=/data/haiyangw/nrpic/scratch/core/core-20261123-020450-7e42037,/data/haiyangw/nrpic/scratch/core/core-20261123-020452-e635a8e",
+    "0.726875=/data/haiyangw/nrpic/scratch/core/core-20261124-130310-597d9ca,",
+    "0.73625=/data/haiyangw/nrpic/scratch/core/core-20261123-020458-dfc38d7,/data/haiyangw/nrpic/scratch/core/core-20261123-020500-9b192cd+/data/haiyangw/nrpic/scratch/core/core-20261125-080049-dcc9ea1",
+    "0.755=/data/haiyangw/nrpic/scratch/core/core-20261121-204232-f74c942,/data/haiyangw/nrpic/scratch/core/core-20261121-204237-ae00ca2"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "246d2a5af85eb0b13a0e3249ae3319bb2db7659f",
+    "branch": "core/nrpic",
+    "dirty": false,
+    "merge_base_main": "1cbc3effc9fba3e4bd9ecc35daf3cec38c2711eb",
+    "worktree": "wt/core"
+  },
+  "code": {
+    "core_tag": "core-v0.7",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "b7f7695d8e9720758c144dd9c0f272ce4fba8b46f921750462326664310fad51",
+    "machine_file_sha256": "ff4e45b0fd5bf6bee4bf1084a282d72b9adf66f4a455f4e937d9884a1fb07535",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/core/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "tracks/core/verify/row4/row4_fate.py",
+      "role": "argv",
+      "sha256": "03568ec443ca35acf4ced31f8b8d6362f3954a3de7a1a23bbe9ba6dba7909320",
+      "bytes": 10866,
+      "tracked": true
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 1,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/core/core-20261125-120724-246d2a5",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-25T12:07:26Z",
+  "started": null,
+  "ended": null,
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 40.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 15.7587,
+    "gpu_hours_reserved": 4.0334,
+    "gpu_hours_without_gate": 5.8713,
+    "cores_busy": 0,
+    "runs": 1592,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md + 0026-cards-loaded-allotment-cost.md + 0031-level2-branch-and-ablation.md + 0032-new-account-preemption-allotments.md + 0038-track-e-g2-signed-g3-scope.md"
+  }
+}
