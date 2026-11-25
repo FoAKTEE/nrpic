@@ -1,5 +1,10 @@
 # note: working note of Track E (gates G0 and G1)
 
+> Pointer (batch 15, 2026-11-24): the G2 sections of the track (the ultra-slow-roll case against
+> the criteria fixed in SCOPE 4c, its one failure on record, the fresh verifier, the G2
+> schematics) are in the reproduction note `../repro/note/manuscript/main.pdf` (Sec. IV,
+> Appendix F, ledger Table XVI), by decision 0035 item 1. This note stays at its G1 state.
+
 Helper package of E-stoch-inf. Wave 2 (2026-11-15) wrote note v0 for gate G0 (feasibility);
 wave 3 (started 2026-11-20, cut by the usage limit, finished in batch 2b on 2026-11-21) added
 the G1 products of the checklist: C8 updated architecture schematic, C9 data-flow diagram,

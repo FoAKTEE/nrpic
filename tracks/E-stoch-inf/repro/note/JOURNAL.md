@@ -609,3 +609,11 @@ a vector PDF (about 40 kB each), which pdflatex prefers to the PNG; the PNG copi
 manuscript/figures (they stay in the run directory for viewing). Prediction for R16: every PNG
 byte-equal to R15; three schematic PDFs; the note compiles to 32 pages with the schematics
 unchanged on the page and a PDF well below 5 MB.
+
+## Entry 26 (2026-11-24 20:12 PST): outcome of R16 (E-20261125-035757-340bd1e)
+
+R16 HELD: every PNG of R15 byte-equal; three schematic PDFs (vector, about 40 kB each) now used by
+pdflatex; the PNG copies left manuscript/figures. Compile: 32 pages, no undefined reference, PDF
+5.05 MB (from 5.56 MB; the bulk is the two extrinsic-curvature spectra of the reproduction, 1.0 and
+1.2 MB, as before). Pages 10 (ladder, mosaic) at 75 and 150 dpi and 32 (architecture, timeline) read.
+R16 is the source of every committed G2 figure and of the tables.

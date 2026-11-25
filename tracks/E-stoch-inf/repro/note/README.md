@@ -11,8 +11,8 @@ runs at amplitudes lambda = +-1, +-1/2, +-1/4, resolution pair 256^3/320^3, wind
 of U-A4'(a) on record with the three-amplitude reading beside it as a finding after the data, the
 fresh verifier stage/G2/VERIFIER.md), Appendix F (architecture and gate timeline at G2), ledger
 Table XVI (21 rows, checks against stage/G2/VERIFIER.md), six new figures (ladder schematic, slice
-mosaic, resolution pair, even-part scaling, architecture, timeline), all from R15
-(E-20261125-035434-5ead984). JOURNAL entries 19-24.
+mosaic, resolution pair, even-part scaling, architecture, timeline), all from R16
+(E-20261125-035757-340bd1e). JOURNAL entries 19-26.
 Earlier state: 2026-11-24 15:25 PST, after the last pass (batch R4). All five continued runs are in the
 note. RSF256 (SR 256^3 with dumps to N_f; its fourth continuation ran as queue entry q0034, run
 E-20261124-214913-5956891) came in through repro/figs (join E-20261124-225720-444aecc, pass
@@ -148,7 +148,8 @@ give the same quantities with the check's reader.
 | E-20261125-034702-3953daf | R12: halving legend in lambda (entry 21) |
 | E-20261125-034920-07b5d5b | R13: lambda in the ladder schematic (entry 22) |
 | E-20261125-035103-f18b379 | R14: lambda in the ledger caption (entry 23) |
-| **E-20261125-035434-5ead984** | R15: architecture and timeline schematics at G2; source of the committed G2 figures and of all tables |
+| E-20261125-035434-5ead984 | R15: architecture and timeline schematics at G2 (PNG) |
+| **E-20261125-035757-340bd1e** | R16: schematics as vector PDF; source of the committed G2 figures and of all tables |
 
 All: production, two cores, one to one and a half minutes each (R8a: under a minute), 0
 card-hours; every run_all's lattice jsons equal to the committed jsons of the figure package at
@@ -187,7 +188,7 @@ the string's new line (R9 moved seven of them; the strings were unchanged).
 
 ## Checker and pages, last run on the committed text
 
-Compile (batch 15, after R15): 32 pages, no undefined references or citations, no overfull boxes; the checker's hits as accepted below; pages read: 1, 9-12, 14, 30-32. Earlier: compile 26 pages, no undefined references or citations, no overfull boxes. Checker with the
+Compile (batch 15, after R16): 32 pages (5.05 MB), no undefined references or citations, no overfull boxes; the checker's hits as accepted below; pages read: 1, 9-12, 14, 30-32. Earlier: compile 26 pages, no undefined references or citations, no overfull boxes. Checker with the
 forbid list: remaining hits accepted under the guide: 5.1 (one: the verdict label "not
 reproduced", line 47), 7.6 (one: "no defect" about the reviewed code, exception 2), 7.5 and 7.7
 only in `tables/ledger.tex` and `scripts/` (exception 1), 9.3 in `scripts/` (`figstyle.py` turns
