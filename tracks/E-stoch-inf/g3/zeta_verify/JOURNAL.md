@@ -64,3 +64,32 @@ residual dPi_perp whose rms is below 1 per cent of rms(dPi); an error of 14 per 
 coefficient of the momentum alone then moves zeta by less than 1e-6 sigma per cell and F(3),
 F(4) by less than 1e-5 relative. Refuted if the computed shift of F(3) or F(4) exceeds 1e-3
 relative.
+
+## Entry 2 (09:25 PST): outcome of P1, P2; a development pass; prediction P7
+
+Run E-20261125-170519-fa5ad33 (`scripts/test_closed.py`, figure `fig_closed_form.png` looked at:
+fourth-order convergence in the step for the exponential case, a floor of 1e-14 for the
+Hamilton-Jacobi case at N = 27.6).
+- P1 HELD: at h = 1e-3, |N - N_exact| <= 8.2e-16 for y0/y_a - 1 in [-0.5, 0.5] (bar 1e-11);
+  N_y within 1.1e-14, N_yy within 3.4e-12 relative of the 40-digit reference (bar 1e-8);
+  N_phi = -1/y_a to 2.2e-16; N_phiphi, N_phiy below 8.2e-13 (absolute, against N_yy ~ 1-4).
+- P2 HELD: N = 27.611138361785630 against 27.611138361785620 (1.0e-14); first and second
+  derivatives along the attractor within 6e-19 and 3e-17 relative (bars 1e-10, 1e-7).
+
+A development pass of `scripts/analyse_pairs.py` on the pairs (output in scratch tmp, not a
+result; the registered run below repeats it bit for bit, processors being deterministic) showed
+that the second finite-difference coefficient along the momentum alone at eps = the box's
+spread is off by 907 per cent in float64 and by 1.2 per cent even in long double, while the
+variational coefficient is step-converged to 6e-13; the error moved to +0.29 per cent when the
+step changed from 1e-3 to 7.3e-4 and barely moved when the end surface was shifted within a
+step. My P5 named the end-surface quantisation (2.5e-11 in float64) as the floor; that
+mechanism is too small. New prediction before the registered run:
+
+P7 (round-off floor of N): the floor is the accumulated rounding of the absolute field over the
+~5000 steps, about sqrt(5000) x ulp(phi ~ 0.056) x |N_phi| (|N_phi| = 3.5e6): 1.5e-12 in
+long double, 1.5e-9 in float64. Measured as the rms of N(e) minus a cubic over 41 points within
++-3 spreads: long double 3e-13 to 3e-12, float64 3e-10 to 3e-9, both directions, changing
+erratically (not smoothly) with the step. Refuted if the long-double floor is below 1e-13 or
+the float64 floor below 1e-10, or if the floor scales smoothly with the step (then it is
+truncation, not rounding). The second-order change of N along the momentum alone at one spread
+is 4.2e-11 (from N_PiPi): a float64 integration of the absolute field cannot resolve it.

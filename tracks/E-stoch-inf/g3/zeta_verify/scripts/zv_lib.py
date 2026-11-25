@@ -197,8 +197,10 @@ def hubble2_from_pi(pot, phi, Pi):
 
 # ---------------------------------------------------------------------- FKG and RK4
 def rhs(pot, phi, y):
+    """Right-hand side; float64 arithmetic throughout when phi is float64 (precision tests)."""
+    P = PI_LD if np.asarray(phi).dtype == LD else np.float64(np.pi)
     L0 = pot.L(phi)[0]
-    fy = -3 * y + 4 * PI_LD * y ** 3 - 3 / (8 * PI_LD) * L0 * (1 - 4 * PI_LD * y * y / 3)
+    fy = -3 * y + 4 * P * y ** 3 - 3 / (8 * P) * L0 * (1 - 4 * P * y * y / 3)
     return y, fy
 
 
