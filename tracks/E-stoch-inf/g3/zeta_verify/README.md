@@ -32,6 +32,11 @@ How to rerun (from the worktree root, `.venv` present):
       /data/haiyangw/nrpic/scratch/E-stoch-inf/E-20261125-161456-8d3f43c/zeta_tests.json \
       /data/haiyangw/nrpic/scratch/E-stoch-inf/E-20261125-172002-6890cad/pairs.json \
       tracks/E-stoch-inf/usr/inputs/usr_base.athinput '$NRPIC_RUN_DIR'
+    ... -- python3 tracks/E-stoch-inf/g3/zeta_verify/scripts/large_amp.py \
+      tracks/E-stoch-inf/zeta/zeta_reader.py \
+      /data/haiyangw/nrpic/scratch/E-stoch-inf/E-20261125-161456-8d3f43c/zeta_tests.json \
+      /data/haiyangw/nrpic/scratch/E-stoch-inf/E-20261125-172002-6890cad/pairs.json \
+      tracks/E-stoch-inf/usr/inputs/usr_base.athinput '$NRPIC_RUN_DIR'
 
 ## Requests
 
