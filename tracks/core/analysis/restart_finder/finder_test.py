@@ -13,13 +13,17 @@ in a directory of DIR:
 
   prod      the deck as it is: mass_tol 1e-5, no polishing (the rule of puncture_setup)
   ref       the same with the release executable (must be byte-identical to prod)
-  tight     mass_tol 1e-9, 4000 iterations: the reference mass
+  tight     mass_tol 1e-9, 4000 iterations: the reference mass where it is found
   def       mass_tol 1e-2 (the default of the finder), no polishing
-  pol       mass_tol 1e-2, polish_iterations 100: the new rule
-  pol30     mass_tol 1e-2, polish_iterations 30
+  pol       mass_tol 1e-2, polish_iterations 100
+  prodpol   mass_tol 1e-5, polish_iterations 100: the recommended setting
   g04       ah_exc_max_growth = 0.4: the guard radius (0.4 M) lies inside the horizon
             (0.47 M) from the start, so no particle may be removed inside the horizon
   g4        ah_exc_max_growth = 4.0 written out (must be byte-identical to prod)
+
+Whether a search was found, and its number of flow iterations, come from the status
+file (<fastflow> diagnostics = true in the deck): the summary file repeats the last
+accepted surface when a search fails.
 
 Writes DIR/summary.json and DIR/fig_finder_test.{pdf,png}; exit status 0 if the checks
 hold.
@@ -47,7 +51,7 @@ RUNS = {
     "tight": (["fastflow/mass_tol_0=1.0e-9", "fastflow/flow_iterations_0=4000"], None),
     "def": (["fastflow/mass_tol_0=1.0e-2"], None),
     "pol": (["fastflow/mass_tol_0=1.0e-2", "fastflow/polish_iterations_0=100"], None),
-    "pol30": (["fastflow/mass_tol_0=1.0e-2", "fastflow/polish_iterations_0=30"], None),
+    "prodpol": (["fastflow/polish_iterations_0=100"], None),
     "g04": ([], "0.4"),
     "g4": ([], "4.0"),
 }
@@ -109,6 +113,16 @@ def summary_rows(d):
     return np.array(rows)
 
 
+def status_rows(d):
+    """cycle, time, found, reason, flow iterations, area, area mass of every search."""
+    rows = []
+    for ln in open(os.path.join(d, BASE + ".horizon_status_0.txt")):
+        if ln.startswith("#") or not ln.strip():
+            continue
+        rows.append([float(v) for v in ln.split("#")[0].split()[:7]])
+    return np.array(rows)
+
+
 def removed(d):
     p = os.path.join(d, BASE + ".removed.bin")
     if not os.path.exists(p):
@@ -132,36 +146,33 @@ def differing(da, db):
     return dict(files_compared=len(fa), files_differing=diff, same_file_set=(fa == fb))
 
 
-def figure(out, S, R, tlim):
+def figure(out, S, T, R, tlim):
     sys.path.insert(0, os.path.join(REPO, "python"))
     from nrpic import figstyle as fs
     import matplotlib.pyplot as plt
     fs.use_style()
     fig, axs = plt.subplots(1, 3, figsize=(fs.FULL_WIDTH, 2.9))
     fig.subplots_adjust(left=0.085, right=0.985, bottom=0.17, top=0.96, wspace=0.42)
-    ref = S["tight"]
+    sty = (("def", fs.PAL["yellow"], "1e-2", "v"), ("prod", fs.PAL["green"], "1e-5", "s"),
+           ("pol", fs.PAL["orange"], "1e-2, 100 polishing", "^"),
+           ("prodpol", fs.PAL["red"], "1e-5, 100 polishing", "o"),
+           ("tight", fs.PAL["blue"], "tight rule", "x"))
     ax = axs[0]
-    for name, col, lab in (("def", fs.PAL["yellow"], "1e-2"),
-                           ("prod", fs.PAL["green"], "1e-5"),
-                           ("pol30", fs.PAL["orange"], "1e-2, 30 polishing"),
-                           ("pol", fs.PAL["red"], "1e-2, 100 polishing")):
-        s = S[name]
-        n = min(len(s), len(ref))
-        ax.semilogy(s[:n, 1], np.maximum(np.abs(s[:n, 2] - ref[:n, 2]), 1e-16), color=col,
-                    label=lab)
-    ax.axhline(2.0e-5, **fs.MASK_LINE)
-    ax.set_xlabel("t / M"); ax.set_ylabel("|mass - mass of the tight rule|")
-    ax.set_ylim(1e-14, 1e0)
-    ax.legend(loc="upper right", fontsize=7, ncol=1)
-    fs.no_minor_labels(ax)
+    for name, col, lab, mk in sty:
+        f = T[name][:, 2] == 1.0
+        ax.plot(T[name][f, 1], S[name][f, 2], ls="none", marker=mk, ms=4, color=col, label=lab,
+                mfc="none")
+    ax.set_xlabel("t / M"); ax.set_ylabel("horizon mass (found searches)")
+    ax.legend(loc="lower right", fontsize=6)
     ax = axs[1]
-    for name, col, lab in (("def", fs.PAL["yellow"], "1e-2"), ("prod", fs.PAL["green"], "1e-5"),
-                           ("tight", fs.PAL["blue"], "tight rule"),
-                           ("pol", fs.PAL["red"], "1e-2, 100 polishing")):
-        ax.plot(S[name][:, 1], S[name][:, 2], color=col, label=lab,
-                ls="--" if name == "pol" else "-")
-    ax.set_xlabel("t / M"); ax.set_ylabel("horizon mass")
-    ax.legend(loc="best", fontsize=7)
+    for name, col, lab, mk in sty:
+        ax.semilogy(T[name][:, 1], np.maximum(T[name][:, 4], 1), color=col, marker=mk, ms=3,
+                    mfc="none", label=lab)
+        nf = T[name][:, 2] != 1.0
+        ax.semilogy(T[name][nf, 1], np.maximum(T[name][nf, 4], 1), ls="none", marker="o", ms=7,
+                    mfc="none", color="k")
+    ax.set_xlabel("t / M"); ax.set_ylabel("flow iterations (circled: not found)")
+    fs.no_minor_labels(ax)
     ax = axs[2]
     for name, col, lab in (("prod", fs.PAL["blue"], "no option (guard 4 M)"),
                            ("g04", fs.PAL["red"], "ah_exc_max_growth = 0.4")):
@@ -208,6 +219,7 @@ def main():
                 n, rc, wall = f.result()
                 res[n] = dict(rc=rc, wall_s=wall)
     S = {n: summary_rows(os.path.join(out, n)) for n in RUNS}
+    T = {n: status_rows(os.path.join(out, n)) for n in RUNS}
     R = {n: removed(os.path.join(out, n)) for n in RUNS}
     ck = {}
     ck["every run ended with status 0"] = all(r["rc"] == 0 for r in res.values())
@@ -215,34 +227,62 @@ def main():
     res["prod"]["against_release"] = d
     ck["P8: polish_iterations_0 = 0 with the new executable equals the release byte for "
        "byte (%d files)" % d["files_compared"]] = (d["files_differing"] == [] and d["same_file_set"])
-    ref = S["tight"]
+    ref, reft = S["tight"], T["tight"]
+    ok_ref = reft[:, 2] == 1.0                 # searches where the tight rule is found
+    table = []
     for n in RUNS:
-        s = S[n]
-        m = min(len(s), len(ref))
-        same_t = (len(s) == len(ref)) and bool(np.all(s[:, 1] == ref[:, 1]))
-        found = np.isfinite(s[:, 2])
-        dm = np.abs(s[:m, 2] - ref[:m, 2])
+        s, t = S[n], T[n]
+        same_t = (len(t) == len(reft)) and bool(np.all(t[:, 1] == reft[:, 1]))
+        found = t[:, 2] == 1.0
+        both = found & ok_ref if same_t else np.zeros(len(t), bool)
+        dm = np.abs(s[:, 2] - ref[:, 2]) if same_t else np.full(len(s), np.nan)
         r3 = R[n][R[n][:, 3] == 3.0]
-        res[n].update(searches=int(len(s)), found=int(found.sum()), same_times_as_tight=same_t,
-                      max_abs_dmass=float(np.nanmax(dm)), median_abs_dmass=float(np.nanmedian(dm)),
-                      n_above_2e5=int(np.sum(dm > 2.0e-5)),
-                      mass_range=[float(np.nanmin(s[:, 2])), float(np.nanmax(s[:, 2]))],
+        res[n].update(searches=int(len(t)), found=int(found.sum()),
+                      not_found_times=[float(x) for x in t[~found, 1]],
+                      not_found_reasons=sorted(set(int(x) for x in t[~found, 3])),
+                      same_times_as_tight=same_t, both_found=int(both.sum()),
+                      max_abs_dmass_where_both_found=float(np.max(dm[both])) if both.any() else None,
+                      n_above_2e5_where_both_found=int(np.sum(dm[both] > 2.0e-5)),
+                      flow_iterations_total=int(np.sum(t[:, 4])),
+                      flow_iterations_of_found=[int(x) for x in t[found, 4]],
+                      hrms_of_found_max=float(np.max(s[found, 8])) if found.any() else None,
                       minradius_range=[float(np.nanmin(s[:, 11])), float(np.nanmax(s[:, 11]))],
-                      removed=int(len(R[n])), removed_reason3=int(len(r3)),
-                      last_reason3=float(np.max(r3[:, 0])) if len(r3) else None)
-    ck["tight rule: found at every search (%d)" % res["tight"]["searches"]] = (
-        res["tight"]["found"] == res["tight"]["searches"])
-    ck["P9: mass_tol 1e-2 with 100 polishing iterations within 2e-5 of the tight rule at "
-       "every search (max %.2e)" % res["pol"]["max_abs_dmass"]] = (
-        res["pol"]["same_times_as_tight"] and res["pol"]["n_above_2e5"] == 0
-        and res["pol"]["found"] == res["pol"]["searches"])
-    ck["P9: mass_tol 1e-2 alone is more than 2e-5 off at most searches (%d of %d, max %.2e)"
-       % (res["def"]["n_above_2e5"], res["def"]["searches"], res["def"]["max_abs_dmass"])] = (
-        res["def"]["n_above_2e5"] > res["def"]["searches"]//2)
-    ck["P9: 30 polishing iterations lie between (max %.2e)" % res["pol30"]["max_abs_dmass"]] = (
-        res["pol"]["max_abs_dmass"] <= res["pol30"]["max_abs_dmass"] <= res["def"]["max_abs_dmass"])
-    res["prod"]["note"] = "mass_tol 1e-5 alone: max %.2e from the tight rule, %d of %d above 2e-5" % (
-        res["prod"]["max_abs_dmass"], res["prod"]["n_above_2e5"], res["prod"]["searches"])
+                      removed=int(len(R[n])), removed_reason3=int(len(r3)))
+    for i in range(len(reft)):
+        table.append(dict(time=float(reft[i, 1]), **{
+            n: dict(found=int(T[n][i, 2]), iterations=int(T[n][i, 4]), mass=float(S[n][i, 2]),
+                    hrms=float(S[n][i, 8])) for n in ("tight", "prodpol", "pol", "prod", "def")}))
+    res["per_search"] = table
+    ck["P14: tight rule and 1e-5 with 100 polishing iterations agree within 2e-5 wherever "
+       "both are found (%d searches, max %s)" % (
+           res["prodpol"]["both_found"], res["prodpol"]["max_abs_dmass_where_both_found"])] = (
+        res["prodpol"]["both_found"] > 0 and res["prodpol"]["n_above_2e5_where_both_found"] == 0)
+    # column 9 of the last surface the tight rule accepted, carried forward
+    last_h, bad = None, []
+    fp = T["prodpol"][:, 2] == 1.0
+    for i in range(len(reft)):
+        if ok_ref[i]:
+            last_h = ref[i, 8]
+        if fp[i] and last_h is not None and S["prodpol"][i, 8] > 10.0*last_h:
+            bad.append(float(reft[i, 1]))
+    ck["P15: 1e-5 with polishing never reports found on a surface whose residual exceeds "
+       "ten times that of the last tight surface (times %s)" % bad] = (bad == [])
+    fpl = T["pol"][:, 2] == 1.0
+    loose_bad = [float(reft[i, 1]) for i in range(len(reft)) if fpl[i] and S["pol"][i, 8] > 0.1]
+    res["pol"]["found_with_residual_above_0p1"] = loose_bad
+    ck["P16 (expected defect of the loose tolerance): 1e-2 with polishing reports found "
+       "with a residual above 0.1 at least once (times %s)" % loose_bad] = (len(loose_bad) >= 1)
+    jump = (reft[:, 1] > 0.5) & (reft[:, 1] < 1.1)
+    late = reft[:, 1] >= 1.125
+    res["tight"]["not_found_in_jump"] = int(np.sum(jump & ~ok_ref))
+    res["prodpol"]["not_found_in_jump"] = int(np.sum(jump & ~fp))
+    ck["P17: between t = 0.5 and 1.1 at least two searches are not found for the tight rule "
+       "(%d) and for 1e-5 with polishing (%d)" % (res["tight"]["not_found_in_jump"],
+                                                 res["prodpol"]["not_found_in_jump"])] = (
+        res["tight"]["not_found_in_jump"] >= 2 and res["prodpol"]["not_found_in_jump"] >= 2)
+    ck["P17: from t = 1.125 on both are found at every search (tight %d, polished %d of %d)"
+       % (int(np.sum(late & ok_ref)), int(np.sum(late & fp)), int(np.sum(late)))] = bool(
+        np.all(ok_ref[late]) and np.all(fp[late]))
     # guard
     d4 = differing(os.path.join(out, "prod"), os.path.join(out, "g4"))
     res["g4"]["against_prod"] = d4
@@ -255,7 +295,7 @@ def main():
        % res["prod"]["removed_reason3"]] = (res["prod"]["removed_reason3"] > 0)
     ck["P10: with ah_exc_max_growth = 0.4 none is (%d)" % res["g04"]["removed_reason3"]] = (
         res["g04"]["removed_reason3"] == 0)
-    figs = figure(figout, S, R, a.tlim)
+    figs = figure(figout, S, T, R, a.tlim)
     summary = dict(runs_dir=out, exe=a.exe, exe_sha256=sha(a.exe), ref_exe=a.ref_exe,
                    ref_exe_sha256=sha(a.ref_exe), deck_sha256=sha(DECK), tlim=a.tlim,
                    threads=a.threads, particle_file_sha256=sha(ic), checks=ck, runs=res,

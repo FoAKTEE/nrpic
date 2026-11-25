@@ -15,8 +15,8 @@ Checks (predictions K1 to K5 of JOURNAL-restart-finder.md):
   K2  rso_r27   the card continues a restart file that the processor build wrote at
                 cycle 27, with the block: the first conservation record is that of
                 t = 1.6875 and it agrees with the processor run
-  K3  fp_*      masses of the polished search against the tight rule on the card, and
-                card against processors
+  K3  fp_*      masses of the polished search (1e-5 with 100 iterations) against the
+                tight rule on the card where both are found, and card against processors
   K4  cost      flow iterations per search (status file) and wall time per run: seconds
                 per search and per flow iteration on the card
   K5  fp_g04    no removal inside the horizon with ah_exc_max_growth = 0.4
@@ -116,21 +116,30 @@ def main():
     ck["K2: tracker file started at cycle 27 (no file to continue in a new directory)"] = (
         len(t2) > 0 and t2[0][0] == 27)
 
-    # K3, K4, K5
+    # K3, K4, K5 (card run fp_pol is the run prodpol of finder_test.py: 1e-5 with 100)
+    cpu_name = {"prod": "prod", "pol": "prodpol", "tight": "tight"}
     S = {n: ft.summary_rows(os.path.join(card, "fp_" + n)) for n in ("prod", "pol", "tight", "g04")}
-    C = {n: ft.summary_rows(os.path.join(os.path.abspath(a.cpu_finder), n)) for n in ("prod", "pol", "tight")}
+    T = {n: status(os.path.join(card, "fp_" + n)) for n in ("prod", "pol", "tight")}
+    cpu = os.path.abspath(a.cpu_finder)
+    C = {n: ft.summary_rows(os.path.join(cpu, cpu_name[n])) for n in cpu_name}
+    CT = {n: ft.status_rows(os.path.join(cpu, cpu_name[n])) for n in cpu_name}
+    both = (T["pol"][:, 2] == 1.0) & (T["tight"][:, 2] == 1.0)
     dm = np.abs(S["pol"][:, 2] - S["tight"][:, 2])
-    res["finder"] = dict(searches=len(S["pol"]), pol_vs_tight_max=float(np.max(dm)))
-    ck["K3: card, polished search within 2e-5 of the tight rule at every search (max %.2e)"
-       % np.max(dm)] = bool(np.all(dm < 2.0e-5))
-    for n in ("prod", "pol", "tight"):
-        same = S[n].shape == C[n].shape
-        d_ = float(np.max(np.abs(S[n][:, 2] - C[n][:, 2]))) if same else float("nan")
+    res["finder"] = dict(searches=len(S["pol"]), both_found=int(both.sum()),
+                         pol_vs_tight_max=float(np.max(dm[both])) if both.any() else None)
+    ck["K3: card, polished search within 2e-5 of the tight rule wherever both are found "
+       "(%d searches, max %s)" % (both.sum(), res["finder"]["pol_vs_tight_max"])] = bool(
+        both.any() and np.all(dm[both] < 2.0e-5))
+    for n in cpu_name:
+        same = T[n].shape == CT[n].shape and bool(np.all(T[n][:, 2] == CT[n][:, 2]))
+        f = T[n][:, 2] == 1.0
+        d_ = float(np.max(np.abs(S[n][f, 2] - C[n][f, 2]))) if same and f.any() else float("nan")
         res["finder"]["card_vs_cpu_" + n] = d_
-        ck["K3: card against processors, %s: masses within 1e-8 (max %.1e)" % (n, d_)] = (same and d_ < 1.0e-8)
+        ck["K3: card against processors, %s: the same searches found, masses within 1e-8 "
+           "(max %.1e)" % (n, d_)] = (same and d_ < 1.0e-8)
     cost = {}
     for n in ("prod", "pol", "tight"):
-        st = status(os.path.join(card, "fp_" + n))
+        st = T[n]
         cost[n] = dict(wall_s=wall(os.path.join(card, "fp_" + n)), searches=int(len(st)),
                        flow_iterations=float(np.sum(st[:, 4])) if len(st) else None)
     res["cost"] = cost
@@ -164,9 +173,11 @@ def main():
     ax.set_xlabel("t"); ax.set_ylabel("mean of C^E_r (cons.hst)")
     ax.legend(loc="best", fontsize=7); fs.no_minor_labels(ax)
     ax = axs[1]
-    ax.semilogy(S["pol"][:, 1], np.maximum(dm, 1e-16), color=fs.PAL["red"], label="card: polished - tight")
-    ax.semilogy(S["prod"][:, 1], np.maximum(np.abs(S["prod"][:, 2] - S["tight"][:, 2]), 1e-16),
-                color=fs.PAL["green"], label="card: 1e-5 - tight")
+    ax.semilogy(S["pol"][both, 1], np.maximum(dm[both], 1e-16), color=fs.PAL["red"], marker="o",
+                ms=3, label="card: polished - tight")
+    bp = (T["prod"][:, 2] == 1.0) & (T["tight"][:, 2] == 1.0)
+    ax.semilogy(S["prod"][bp, 1], np.maximum(np.abs(S["prod"][bp, 2] - S["tight"][bp, 2]), 1e-16),
+                color=fs.PAL["green"], marker="s", ms=3, label="card: 1e-5 - tight")
     ax.axhline(2.0e-5, **fs.MASK_LINE)
     ax.set_xlabel("t / M"); ax.set_ylabel("|mass difference|")
     ax.legend(loc="best", fontsize=7); fs.no_minor_labels(ax)

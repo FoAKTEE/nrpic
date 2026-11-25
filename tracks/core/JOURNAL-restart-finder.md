@@ -348,3 +348,62 @@ with a restart file that the processor build wrote.
   writes a restart file one cycle before a conservation record with `cons_dcycle > 0`,
   or none of its `.prt` files would have stayed identical; so the regression does not
   see the block (T1 and T2 do).
+
+## Entry 14 (2026-11-25, 06:17 PST): outcome of T5a/T6 (run core-20261125-135110-7966158): P9 FAILED, P8 and P10 held; the option is changed
+
+Registered run, threaded builds (branch, commit 7966158; release
+`core_nrpic_v07/athena_cpu_omp`), two threads, 1377 s; the script ended with status 1.
+
+- P8 HELD: the deck as it is gives the 7 output files of the release byte for byte.
+- P10 HELD: `ah_exc_max_growth = 4.0` written out is byte-identical to the run without
+  it (7 files); the horizon radius stays between 0.465 and 0.633 M; 237 particles are
+  removed inside the horizon without the option and none with `ah_exc_max_growth = 0.4`
+  (7 removals of other kinds).
+- P9 FAILED, and the test itself was not sound. Per search (16 searches, t = 0 to
+  1.875 M; table printed from the summary files, kept in the run directory):
+  - at 11 searches the polished rule (1e-2, 100 iterations) is within 6.3e-8 of the
+    tight rule, the 1e-5 rule within 2.3e-5, the 1e-2 rule off by 7e-4 to 5e-2;
+  - between t = 0.5 and 1.1 M the horizon of this deck jumps from a smallest radius
+    of 0.465 M to 0.61 M. At t = 0.625, 0.75, 0.875 the polished rule reports surfaces
+    with an area mean of the squared expansion of 0.12, 1.5 and 0.5 (column 9; 2e-3 to
+    2e-2 on the surfaces before and after): not horizons, yet written as found. That is
+    the defect of my rule: it accepts whatever surface the flow is on when the
+    polishing ends, converged or not;
+  - the tight rule writes the same mass at t = 0.5 to 1.0 and at 1.625 to 1.875: the
+    summary file repeats the last accepted values when a search fails, so my check
+    "found at every search" (a finite mass) was wrong and the "reference" is stale at
+    six searches. Whether a search was found is only in the status file
+    (`diagnostics = true`), which the deck did not write. At t = 1.75 and 1.875 the
+    polished rule continues the trend of the mass (-8e-4 per search) and the stale
+    reference does not: there the polished rule is very likely right and the reference
+    wrong [JUDGEMENT from the trend; the rerun with status files decides].
+- My middle panel of the figure is void (entry 9); the figure was not used.
+
+What I change, and why.
+- The rule: a surface is accepted when the mass rule holds again after the polishing,
+  that is at the first iteration, at least N after the rule was first met, whose mass
+  change is below `mass_tol`. A flow that is still moving when the polishing ends goes
+  on, and ends "not found" at the iteration limit. With N = 0 nothing changes. The
+  acceptance at the iteration limit (entry 2) is withdrawn; `polish_iterations` at or
+  above `flow_iterations` is refused at start-up.
+- The example deck writes the status file (`diagnostics = true`), and the test reads
+  found/not found, the reason and the number of iterations from it.
+- A residual threshold stays out, now with a measurement: column 9 of accepted
+  surfaces is 1.3e-3 to 1.9e-2 on this puncture in its first 2 M and 7e-9 on Track D's
+  late puncture [their number], both at cells of M/8: no single threshold serves both.
+
+Predictions for the rerun (`finder_test.py`, runs prod, ref, tight, def, pol = 1e-2 with
+100, prodpol = 1e-5 with 100, g04, g4; status files):
+- P14. Wherever the tight rule and `prodpol` are both found, they agree within 2e-5.
+- P15. `prodpol` never reports found on a surface whose column 9 exceeds ten times
+  that of the last surface the tight rule accepted. Refuted by one such search.
+- P16. With the loose tolerance (`pol`, 1e-2) the new rule can still accept a surface
+  that is not converged during the jump (a mass change below 1e-2 per iteration is not
+  convergence); I expect at least one of the searches at t = 0.625 to 0.875 to be
+  reported found with column 9 above 0.1. If so, the interface text says that the
+  option goes with a tolerance of 1e-5 or below, not with the finder's default.
+- P17. Between t = 0.5 and 1.1 at least two searches end not found for the tight rule
+  (reason 6, iteration limit) and for `prodpol`; from 1.125 on both are found at every
+  search. If the tight rule is not found at t = 1.75 and 1.875 again, the reference is
+  the weak part of the test and I say so.
+- P8 and P10 are expected to hold again (deck changed by one line, `diagnostics`).

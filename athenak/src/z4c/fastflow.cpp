@@ -83,15 +83,17 @@ FastFlow::FastFlow(MeshBlockPack *pmbp, ParameterInput *pin, int n):
   // Convergence parameters
   hmean_tol = pin->GetOrAddReal("fastflow", "hmean_tol_" + n_str, 100.);
   mass_tol = pin->GetOrAddReal("fastflow", "mass_tol_" + n_str, 1e-2);
-  // <fastflow> polish_iterations_<n> = N: after the mass rule is met the flow goes on for
-  // N iterations before the surface is accepted (0 when absent: the flow stops at the
-  // first iteration whose mass differs from the one before by less than mass_tol)
+  // <fastflow> polish_iterations_<n> = N: after the mass rule is first met the flow goes
+  // on for N iterations, and the surface is accepted at the first iteration after them
+  // whose mass again differs from the one before by less than mass_tol (0 when absent:
+  // the flow stops at the first iteration that meets the rule)
   if (pin->DoesParameterExist("fastflow", "polish_iterations_" + n_str)) {
     polish_iterations = pin->GetInteger("fastflow", "polish_iterations_" + n_str);
-    if (polish_iterations < 0) {
+    if (polish_iterations < 0 || polish_iterations >= flow_iterations) {
       std::cout << "### FATAL ERROR in " << __FILE__ << " at line " << __LINE__
                 << std::endl << "<fastflow> polish_iterations_" << n_str
-                << " must not be negative" << std::endl;
+                << " must be at least 0 and below flow_iterations_" << n_str
+                << " (" << flow_iterations << ")" << std::endl;
       exit(EXIT_FAILURE);
     }
   }
@@ -923,11 +925,13 @@ void FastFlow::FastFlowLoop() {
       break;
     }
 
-    // End flow when mass difference is small, or polish_iterations later
-    if (polish_left < 0 && Kokkos::fabs(mass_prev-mass) < mass_tol) {
+    // End flow when mass difference is small; with polish_iterations = N, when it is
+    // small again at least N iterations after it first was
+    const bool mass_rule = (Kokkos::fabs(mass_prev-mass) < mass_tol);
+    if (polish_left < 0 && mass_rule) {
       polish_left = polish_iterations;
     }
-    if (polish_left == 0) {
+    if (polish_left == 0 && mass_rule) {
       ah_found = true;
       fail_reason = 0;
       break;
@@ -936,12 +940,6 @@ void FastFlow::FastFlowLoop() {
 
     // Step 5: Find new spectral components.
     UpdateFlowSpectralComponents();
-  }
-  // the iteration limit ended the polishing of a surface that met the mass rule: the
-  // quantities above belong to the last surface evaluated, which is accepted
-  if (!failed && !ah_found && polish_left >= 0) {
-    ah_found = true;
-    fail_reason = 0;
   }
 
   if (ah_found) {

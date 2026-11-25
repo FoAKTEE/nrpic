@@ -7,6 +7,8 @@
 #   particles: tracks/core/analysis/restart_finder/finder_test.py (make_infall)
 # Options shown: <fastflow> polish_iterations_0 (0: the search stops when the mass rule is
 # met, as before) and, commented out, <particles> ah_exc_max_growth (4 when absent).
+# The summary file repeats the last accepted surface when a search fails: whether a
+# search was found is in the status file.
 <comment>
 problem   = one puncture, horizon finder with polishing, test particles with horizon excision
 
@@ -66,6 +68,7 @@ mass_tol_0          = 1.0e-5   # the mass rule: change of the mass between two i
 flow_iterations_0   = 400
 polish_iterations_0 = 0        # iterations after the mass rule is met (0: none, as before)
 initial_radius_0    = 1.0
+diagnostics         = true     # <basename>.horizon_status_0.txt: found or not, reason, flow iterations
 
 <particles>
 particle_type  = nrpic

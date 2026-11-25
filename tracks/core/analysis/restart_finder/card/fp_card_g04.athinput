@@ -1,7 +1,5 @@
-# Card check of core/restart-finder (tracks/core/analysis/restart_finder/card_check.py):
-# problems/tests/finder_polish.athinput with <fastflow> diagnostics = true, which writes
-# <basename>.horizon_status_0.txt with the number of flow iterations of every search,
-# and <particles> ah_exc_max_growth = 0.4.
+# Card check of core/restart-finder: problems/tests/finder_polish.athinput with
+# <particles> ah_exc_max_growth = 0.4 (tracks/core/analysis/restart_finder/card_check.py).
 <comment>
 problem   = one puncture, horizon finder with polishing, test particles with horizon excision
 
@@ -61,7 +59,7 @@ mass_tol_0          = 1.0e-5   # the mass rule: change of the mass between two i
 flow_iterations_0   = 400
 polish_iterations_0 = 0        # iterations after the mass rule is met (0: none, as before)
 initial_radius_0    = 1.0
-diagnostics         = true
+diagnostics         = true     # <basename>.horizon_status_0.txt: found or not, reason, flow iterations
 
 <particles>
 particle_type  = nrpic
