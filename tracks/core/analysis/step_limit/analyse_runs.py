@@ -89,7 +89,13 @@ def main():
         sel = (tc > 0.3) & (tc < 2.0)
         base = float(np.median(hmax[sel])) if sel.any() else float("nan")
         big = np.nonzero((hmax > 10 * base) & (tc > 1.0))[0]
-        log = open(os.path.join(d, "athena.log")).read()
+        # a chained run has no athena.log of its own: the logs of its segments
+        lp = os.path.join(d, "athena.log")
+        if os.path.exists(lp):
+            log = open(lp, errors="replace").read()
+        else:
+            log = "".join(open(x, errors="replace").read() for x in sorted(
+                glob.glob(os.path.join(d, "chain", "seg*.log"))))
         msgs = [ln for ln in log.splitlines() if "Z4c step limit" in ln]
         fin = np.isfinite(hmax)
         rec = {"dir": d, "dx": dx, "last_t": float(t[-1]), "steps": int(len(t) - 1),
