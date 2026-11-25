@@ -222,6 +222,7 @@ add_executable(
         scalar_field/scalar_field.cpp
         scalar_field/scalar_field_rhs.cpp
         scalar_field/scalar_field_noise.cpp
+        scalar_field/scalar_field_noise_mesh.cpp
         scalar_field/scalar_field_io.cpp
         scalar_field/scalar_field_slice.cpp
         scalar_field/scalar_field_diag.cpp
