@@ -303,3 +303,38 @@ first-detection transient; B: 47.1-47.2, 48.2-48.8, 50.5-51). `scripts/t4_common
 line times both meshes share after t = 46.75 (line Misner-Sharp mass against the exact shell mass)
 and compares the finder masses of C and B directly. This is a measurement to replace a median over
 unequal windows; it is not a test of T4, which stays judged as written.
+
+### Entry 11 outcome (analysis A-20261125-115027-17b419e, common window A-20261125-115550-fe60ff1; fig_threshold_slice_or_finder.png, C-d0.42_horizon.png, fig_t4_common.png looked at)
+
+(A-20261125-115530-a4f7dcd, the first run of t4_common.py, returned NaN for C and the spacing of
+the finder rows instead of the search interval: a defect of the script, fixed and rerun; kept on record.)
+
+| member | persistent from t | tau_det | ddet | dmmed (unequal windows) | line MOTS vs shell, t >= 46.75 (median abs) | search interval | s/cycle | cr_max |
+|---|---|---|---|---|---|---|---|---|
+| B-d0.42 | 45.875 | 43.686 | +0.0153 | +2.8e-3 (n 21) | 5.2e-3 (18 times) | 0.0625 | 0.324 | 1.56 |
+| C-d0.42 | 45.906 | 43.705 | -0.0135 | +2.36e-2 (n 37) | 2.1e-3 (16 times) | 0.03125 | 2.198 | 1.94 |
+
+- Outcome by the rule: C-d0.42 forms a BLACK HOLE (found in every one of the 163 searches from
+  t = 45.906 to 51, no isolated finds before; 5.1 M of searches, more than 5 m_AH = 2.0). Its
+  tau_det 43.705 < 45, so on mesh C the member 0.42 lies on the BH side at t_end = 45 as on B and in
+  the exact solution: the upper end of the bracket holds on mesh C, A_c(45) <= 0.42 [VERIFIED]. The
+  lower end on C needs C-d0.40 (not run).
+- T4 mesh-C half REFUTED as written: |ddet(C)| = 0.0135 against the bound 0.0075 (|ddet(B)| = 0.0153;
+  the sign flips), and dmmed(C) = +2.36e-2 against the bound 1.4e-3. Neither error halved.
+  Reading [JUDGEMENT]: (i) ddet on B is already below one search interval in proper time (0.0625 in
+  coordinate time between searches on B), so the prediction asked for a halving below the
+  resolution of the measure; (ii) dmmed is a median over the times where the exact same-slice mass
+  exists, which differ between the meshes (C: inside the first-detection transient, 46.1-47.2;
+  B: later), so the two medians do not measure the same thing. On the times both meshes share after
+  t = 46.75 the line MOTS mass against the exact shell mass is 2.1e-3 on C against 5.2e-3 on B
+  (ratio 0.41, a factor 2.4) and the finder masses of C and B agree within 3.3e-3 (after 46.75; 1.4e-2
+  at the transient near 46.3). This is a measurement made after the figures were seen, not a
+  prediction that held.
+- Also read: C's first detection carries a larger excess over the exact shell mass at its radius
+  than B's (+11.6 per cent against +2.1 per cent; line MOTS at t = 46: 8.5 against 0.6 per cent),
+  falling below 1 per cent by t = 46.75. The excess is in the slice, as on B (finder and line MOTS
+  agree). Cause not named.
+- T6 for C: DONE at tlim 51, no guard stop, 2.20 s per cycle (C-R1.25 1.87), constraint ratio up to
+  1.94 (> 0.1, as every member: C3 stays FAIL).
+- Slice measures do halve: core trapping dtau mean -0.096 on C against -0.209 on B; turnaround
+  dtau mean -0.027 against -0.054 (compare logs of A-20261125-115027-17b419e).
