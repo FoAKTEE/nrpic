@@ -79,6 +79,7 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--run", required=True)
     ap.add_argument("--out", required=True)
+    ap.add_argument("--extra", action="append", default=[], help="NAME=DIR of another member (test F: S2c-A0 ...)")
     a = ap.parse_args()
     os.makedirs(a.out, exist_ok=True)
     mem = {}
@@ -86,6 +87,10 @@ def main():
         rd = os.path.join(a.run, name)
         if os.path.isdir(os.path.join(rd, "tab")):
             mem[name] = rd
+    for e in a.extra:
+        n_, d_ = e.split("=", 1)
+        if os.path.isdir(os.path.join(d_, "tab")):
+            mem[n_] = d_
     mem.update(REFS)
     res = {}
     lines = {}
@@ -120,6 +125,14 @@ def main():
         J["d"] = dict(t_last=s2["t_last_line"], max_ratio=s2["max_ratio_t_le_5"], H_factor_vs_K4ref=fac,
                       holds_so_far=(None if s2["max_ratio_t_le_5"] is None else bool(
                           s2["max_ratio_t_le_5"] < 0.1 and all(f is None or f >= 3.0 for k, f in fac.items() if k in ("1.0", "2.0")))))
+    c_a, c_b = r0("S2c-A0") or r0("S2c-A"), r0("S2c-B0") or r0("S2c-B")
+    J["F1"] = dict(S2c_A=c_a, S2c_B=c_b, holds=(None if c_a is None or c_b is None else bool(c_a < 0.02 and c_b < 0.02 and c_b < c_a)))
+    sc = res.get("S2c-A")
+    if sc:
+        hk = res["tophat A (K4-ref)"]["H"]
+        J["F2"] = dict(t_last=sc["t_last_line"], max_ratio=sc["max_ratio_t_le_5"],
+                       H_factor_vs_K4ref={t: (hk[t] / sc["H"][t] if (sc["H"].get(t) and hk.get(t)) else None) for t in ("1.0", "2.0")},
+                       H_vs_pcs_twin={t: ((res.get("S2-A") or {}).get("H", {}).get(t), sc["H"].get(t)) for t in ("1.0", "2.0")})
     J["e"] = dict(tophat_A=tha, S1_A=s1a, S2_A=s2a, tophat_B=thb, S1_B=s1b, S2_B=s2b)
     out = dict(members=res, judgement=J)
     json.dump(out, open(os.path.join(a.out, "edge.json"), "w"), indent=1)
@@ -139,7 +152,9 @@ def main():
     sty = {"tophat A (K4-ref)": ("0.15", "-", "o"), "tophat A (card)": ("0.45", ":", None), "tophat B (card)": ("0.15", "--", "s"),
            "S1-A": (fs.PAL["blue"], "-", "o"), "S1-A0": (fs.PAL["blue"], "-", "o"), "S1-B0": (fs.PAL["blue"], "--", "s"),
            "S2-A": (fs.PAL["red"], "-", "o"), "S2-A0": (fs.PAL["red"], "-", "o"), "S2-B0": (fs.PAL["red"], "--", "s"),
-           "S2-B": (fs.PAL["red"], "--", "s")}
+           "S2-B": (fs.PAL["red"], "--", "s"),
+           "S2c-A": (fs.PAL["yellow"], "-", "o"), "S2c-A0": (fs.PAL["yellow"], "-", "o"),
+           "S2c-B0": (fs.PAL["yellow"], "--", "s"), "S2c-B": (fs.PAL["yellow"], "--", "s")}
     for n, lr in lines.items():
         if not lr or n not in sty:
             continue
@@ -168,7 +183,7 @@ def main():
     ax[1].set_ylabel(r"volume $\|H\|_2$")
     ax[1].set_title("(b) Hamiltonian norm", fontsize=8)
     ax[1].legend(fontsize=5)
-    for n in ("tophat A (K4-ref)", "tophat B (card)", "S2-A0", "S2-B0", "S1-A0"):
+    for n in ("tophat A (K4-ref)", "tophat B (card)", "S2-A0", "S2-B0", "S2c-A0", "S2c-B0"):
         lr = lines.get(n)
         if not lr:
             continue
