@@ -408,3 +408,26 @@ N = 1e6 instead (q0046, q0047), and the gauge leg starts on D2 (q0048). The deck
 core-v0.6 card build of their series without `dt_gauge` (cfl_number 0.25 below 0.47), a
 deliberate departure from the instruction that new decks carry `dt_gauge = 0.9`: a control
 and its kicked runs must share an executable and a step rule.
+
+## 16. Batch 20 (2026-11-25, processors only): what the lead checked
+
+No helper package ran for C-sidm since batch 17; `git status` was clean after the merge of main.
+No queue run of C-sidm ended (N4c q0018 is pending as job 5297; it is not read). Three things
+were checked from artefacts, each with a registered analysis and its figure read:
+
+| Item | Runs (analysis) | Recheck | Verdict of the lead |
+|---|---|---|---|
+| A324s1c+ close-out | C-20261123-032324-938ecbd closed by `nrpic-run finish` (completed, 1.7733 card-hours, 11 jobs; 230 files hashed) | blockA_delta.py on all 15 block A runs (C-20261125-160056-a5b7282); the seed-1 numbers of batch 11 are reproduced (t_c 534.81, 549.26, 294.47, 448.96, 229.79 M); fig_blockA.png read | [VERIFIED] BA.1-BA.3 hold: the 0.324 control crosses 0.3 at 599.99 M; A.4 failed with all three controls |
+| Horizon claims (decision 0040 item 3) | 24 simulations of stage/G2 and block A (C-20261125-160207-05b6db1) | own reader: deck blocks, horizon files, t_c from alpha_min recomputed; fig_horizon_audit.png read | [VERIFIED] no run had the finder or its diagnostics; no horizon claim in the package; every t_c is the lapse marker |
+| A334s3c (q0023) state | C-20261124-082221-7f03a8e | chain events.log: four segments restarted from rst/cc.00000.rst written at t = 0; history ends at 0.25 M | HANDOFF of batch 17 was wrong ("from about 28 M"): q0023 reruns it from t = 0 (corrected here) |
+
+Not rechecked here: 206.64 M (M/4, mean of the decisive part runs of wave 2) and 163.41 M (D2 f2,
+abbreviated id in the checklist; checked only in an unregistered dev run, 163.407 M). Neither
+rests on a horizon (no deck of decisive/ or longruns/ has a <fastflow> block).
+
+Decision of the lead: the mesh and gauge legs of the N = 1e6 bracket granted by ruling 0039 item 3
+are queued as four entries (predictions B20.1-B20.3, JOURNAL 2026-11-25T16:02Z) on the
+executable and step rule of their controls, without the horizon finder (as the controls; the
+legs judge fate and lapse t_c, not horizon times). The gauge variant is shift_eta 1.0, the
+variant of D2eta1, so the track's gauge leg is one change for both series; a slicing change was
+not chosen because the collapse marker is the lapse itself.

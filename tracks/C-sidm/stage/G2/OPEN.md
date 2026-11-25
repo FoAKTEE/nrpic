@@ -1,8 +1,18 @@
 # C-sidm G2: what the gate still lacks
 
-State at the end of the lead session of batch 17 (2026-11-25). G2 is NOT met and the package is
+State at the end of the lead session of batch 20 (2026-11-25). G2 is NOT met and the package is
 not ready for an independent review. Seven items pass (C3, C4, C8, C12, C14, C19, C20), four
 fail (C1, C2, C7, C9) and nine are open.
+
+## What changed in batch 20
+
+- Block A closed (A324s1c+ finished; blockA_delta.py C-20261125-160056-a5b7282): the y0 = 0.324
+  control at N = 1e5 crosses alpha_min 0.3 at 599.99 M, so all three N = 1e5 controls fail (BA.1-BA.3
+  held). The N = 1e5 kin members still bracket y_max (0.344 at 229.79 M; 0.324 holds 600 M).
+- Decision 0040 item 3 (C-20261125-160207-05b6db1): no run of the package had the horizon finder or
+  its diagnostics; every t_c is the alpha_min = 0.3 lapse marker; the package makes no horizon claim.
+- Mesh and gauge legs of the N = 1e6 bracket queued (ruling 0039 item 3; B20.1-B20.3).
+- q0023 (A334s3c+) reruns that control from t = 0: its only restart file is the one at t = 0.
 
 ## What changed in batch 17
 
@@ -21,7 +31,7 @@ fail (C1, C2, C7, C9) and nine are open.
 | C2 particle number | third point of the N-series on M/8; seed scatter of the N = 1e5 control collapse time | q0018 N4c (priority 2); q0022 A334s2c+, q0023 A334s3c+ (priority 5) | NS.3 (2026-11-24T13:14Z) |
 | C2 mesh | seed scatter of the collisional t_c at M/8, to judge the 3.1 per cent shift M/8 -> M/16 | q0024 D2f2s2+ (priority 5) | D2.3 seed pair |
 | C2 gauge or boundary | no run existed | q0048 D2eta1 (shift_eta 1.0, priority 2) | B17.4 (2026-11-25T11:56Z) |
-| C2/C7 mesh and gauge legs of the threshold itself | the bracket on M/16 at N = 1e6 and with a second gauge | not queued: about 4 x 2.5 card-hours on M/8, more on M/16 (request to orch) | to be written before queueing |
+| C2/C7 mesh and gauge legs of the threshold itself | the bracket on M/16 at N = 1e6 and with shift_eta 1.0 | A16b344, A16b324 (M/16), N6b344e1, N6b324e1 (gauge), priority 2, about 18.4 card-hours of the 20 of ruling 0039 item 3 | B20.1-B20.3 (JOURNAL 2026-11-25T16:02Z) |
 | C10, C11, C13, C15, C16, C17 figures and note | drawn once the bracket and the legs have data | none (processor work) | - |
 | C18 verifier | not started; scope below | none | - |
 | C5, C6 report and reproducibility package | complete only with the items above | none | - |
@@ -31,11 +41,9 @@ N = 1e6): q0019 A334s3o+, q0020 A344s1o+, q0021 A324s1o+, q0025 A334s2i+, q0026 
 q0027 A334s3i+ (the kicked runs of block A at N = 1e5, whose bracket is unfit by A.4). Their
 partial records stay on record with their manifests.
 
-Housekeeping owed: A324s1c+ (C-20261123-032324-938ecbd) ended at 600 M (chain DONE) but
-`nrpic-run finish` refuses its manifest (a `continuations` field marks it hand-written), so
-`qitem.sh close` fails for every run continued in place; close it by hand and read it with
-blockA_delta.py (a first look, not registered, shows the y0 = 0.324 control at N = 1e5
-crossing alpha_min = 0.3 at about 600 M [TO VERIFY]).
+Housekeeping of batch 17 done in batch 20: A324s1c+ (C-20261123-032324-938ecbd) closed with
+`nrpic-run finish` (which now accepts runs continued in place); read with blockA_delta.py.
+`qitem.sh close` still passes `--status` for such runs: use `nrpic-run finish <run id>` directly.
 
 ## What a G2 verifier must cover (unchanged items from batch 11, plus batch 17)
 
@@ -49,7 +57,10 @@ crossing alpha_min = 0.3 at about 600 M [TO VERIFY]).
 - The block A noise model as written and as applied; every failed prediction (JOURNAL
   2026-11-24T13:12Z, 2026-11-25T12:21Z).
 - That the decks of batch 17 differ from their series only where make_decks_b17.py says, and
-  that the N = 1e6 particle files are the same sampler and seed as N6c.
+  that the N = 1e6 particle files are the same sampler and seed as N6c; the same for the decks of
+  batch 20 (make_decks_b20.py).
+- That no collapse time is a horizon time (decision 0040 item 3; C-20261125-160207-05b6db1), and
+  the two t_c this recheck did not cover: 206.64 M (M/4, decisive part runs) and 163.41 M (D2 f2).
 
 ## Reservations of G1 and where they stand
 

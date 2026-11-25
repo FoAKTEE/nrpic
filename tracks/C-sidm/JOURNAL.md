@@ -1004,3 +1004,38 @@ result). A search of scratch/C-sidm before writing found no horizon_summary or h
   values agree with the numbers the package quotes (534.8, 549.3, 294.5, 449.0, 229.8 M block A;
   163.41, 158.42, 206.64 M D2 series) to 0.1 M. Refuted by any horizon file (then its status
   lines are matched before the number stays) or by a quoted t_c off by more than 0.1 M.
+
+## 2026-11-25T16:14Z  session C-sidm lead (batch 20)  outcomes BA.1-BA.3 and H.1
+
+Block A close-out (analysis C-20261125-160056-a5b7282, fig_blockA.png read; A324s1c+ closed as
+completed, C-20261123-032324-938ecbd, 1.7733 card-hours over 11 jobs):
+- BA.1 HOLDS: A324s1c crosses alpha_min = 0.3 at 599.99 M, the last record of its 600 M; its
+  alpha_c change is +0.0017, +0.0024, -0.0047, -0.0168, -0.0387 at 100-500 M (20 M means) and
+  -0.102 over 500-600 M.
+- BA.2 HOLDS: Delta(A324s1i - A324s1c) window means +0.0013 (300-400), +0.0173 (400-500),
+  +0.0847 (500-600 M): the inward-kicked 0.324 run stays between -0.007 and -0.014 at 100-500 M
+  and does not collapse while its control does.
+- BA.3 HOLDS: A.4 FAILED with all three seed-1 controls at N = 1e5 on M/8 (t_c 534.8 M for
+  y0 0.334032, 549.3 M for 0.344, 599.99 M for 0.324).
+- Reading [JUDGEMENT]: the three control collapse times differ by 65 M while y0 spans 6 per cent
+  and they are not ordered by compactness (0.334 first), and a kicked 0.324 run outlives its
+  control: at N = 1e5 the controls' fate is set by the noise relaxation that N6c removed at
+  N = 1e6, not by the instability. The kin members alone (0.344 collapses at 229.8 M, 0.324
+  holds 600 M) bracket y_max at N = 1e5 as well; this is the second particle number of the
+  bracket, with the caveat that its controls fail.
+- Block A is complete for seed 1; seeds 2 and 3 stay partial (q0022 continues A334s2c from
+  249 M; q0023 reruns A334s3c from t = 0, see 16:02Z).
+
+Horizon recheck, decision 0040 item 3 (analysis C-20261125-160207-05b6db1,
+fig_horizon_audit.png read):
+- H.1 HOLDS: 36 run ids of stage/G2 and block A, 24 of them simulations; none has a <fastflow>
+  block, `diagnostics = true`, or a horizon summary or status file. Every collapse time of the
+  package is the alpha_min = 0.3 crossing, recomputed from the histories: 534.81, 549.26, 294.47,
+  448.96, 229.79 M (block A), 599.99 M (A324s1c), 158.42 M (M16), 165.97 M (D2 f4); 163.41 M
+  (D2 f2) was checked only in the unregistered dev run (163.407; its id is abbreviated in the
+  checklist, so the regex missed it), and 206.64 M (M/4, mean of the decisive part runs of
+  wave 2) was not rechecked here (no deck of decisive/ has a <fastflow> block: grep of all
+  C-sidm decks finds one only in threshold_scan/inputs/scan/scanC_amr_*, never run).
+- So the package makes no horizon claim; the statement to carry beside every t_c is "lapse
+  marker, run made without the horizon finder".
+Failed predictions of this entry: none.
