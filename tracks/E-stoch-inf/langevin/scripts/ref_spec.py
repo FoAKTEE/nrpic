@@ -88,7 +88,11 @@ def run_chunk(n, rng, sigma, kind, amp, latt, dN, tab):
     r = langevin.fpt_phase_space(MODEL, ps, ws, P["Nstar"], ends, dN, n, rng,
                                  noise=tab if kind != "none" else None, window=(Na, Nb),
                                  dN_det=0.01, N_max=P["Ne"] - P["Nstar"] + 60.0,
-                                 noise_scale=amp, var_factor=var_factor)
+                                 noise_scale=amp, var_factor=var_factor,
+                                 record_N=P["Nf"] if latt else None)
+    if latt:   # state (phi, varpi) at N_f of every realisation (SCOPE 4d.9 A4): columns 2, 3
+        ph, w, _ = r["state_at_record"]
+        return np.column_stack([r["N"], ph, w])
     return r["N"]
 
 
@@ -160,7 +164,10 @@ def main():
 
     # ---- Monte Carlo
     samples = {}
+    only = [v for v in os.environ.get("NRPIC_REF_VARIANTS", "").split(",") if v]   # e.g. s0.01_lattice,s0.1
     for name, s, kd, amp, latt, dN, frac in VARIANTS:
+        if only and name not in only:
+            continue
         n = max(int(NREAL * frac), 16)
         nch = CH if n >= CH * 100 else 1
         tab = tabs.get((s, kd))
@@ -191,6 +198,16 @@ def main():
                 qs = [1e-5, 1e-4, 1e-3, 1e-2, 0.5, 0.99, 0.999, 0.9999, 1 - 1e-5]
                 st["quantiles_dN"] = dict(zip(map(str, qs), np.quantile(x - x.mean(), qs)))
             rec[lab] = st
+        if latt and Nall.shape[1] >= 4:
+            ph, w = Nall[:, 2], Nall[:, 3]
+            cph, cw = ph - ph.mean(), w - w.mean()
+            rec["state_Nf"] = dict(N=P["Nf"], mean_phi=ph.mean(), mean_varpi=w.mean(),
+                                   var_phi=np.mean(cph ** 2), var_varpi=np.mean(cw ** 2),
+                                   skew_phi=np.mean(cph ** 3) / np.mean(cph ** 2) ** 1.5,
+                                   skew_varpi=np.mean(cw ** 3) / np.mean(cw ** 2) ** 1.5,
+                                   exkurt_phi=np.mean(cph ** 4) / np.mean(cph ** 2) ** 2 - 3,
+                                   corr=np.mean(cph * cw) / np.sqrt(np.mean(cph ** 2) * np.mean(cw ** 2)),
+                                   moments_phi=moments(ph), moments_varpi=moments(w))
         if kd == "none":
             rec["classical_error"] = [float(np.nanmax(np.abs(Nall[:, j] - (P[lab] - P["Nstar"]))))
                                       for j, lab in enumerate(("Nf", "Ne"))]
@@ -204,8 +221,9 @@ def main():
     vl = out["linear"]["var_cont_Ne"]
     out["ratios_Ne"] = {name: dict(var_over_lin=(out[name]["Ne"].get("var_rescaled", out[name]["Ne"]["var"]) / vl),
                                    se=out[name]["Ne"].get("se_var", np.nan) / vl / (out[name]["amp"] ** 2))
-                        for name, *_ in VARIANTS if name != "classical"}
-    out["ratios_Ne"]["s0.01_lattice"]["var_over_lattice_lin"] = (out["s0.01_lattice"]["Ne"]["var"]
+                        for name, *_ in VARIANTS if name != "classical" and name in samples}
+    if "s0.01_lattice" in samples:
+        out["ratios_Ne"]["s0.01_lattice"]["var_over_lattice_lin"] = (out["s0.01_lattice"]["Ne"]["var"]
                                                                 / out["linear"]["var_lattice_Ne"])
     # variance gate of SCOPE 4d.3 as amended in batch 19: within three standard errors of the lattice sum
     _g = out["ratios_Ne"]["s0.01_lattice"]

@@ -79,3 +79,18 @@ kurtosis as in ref_inflection_n32.json to all digits. RF3 HOLDS: skewness 0.0234
 F_+(3) 1.585e-3, F_-(3) 1.275e-3, F_+(4) 7e-5, F_-(4) 4e-5 (14 and 8 realisations at nu = 4: no tail
 statement at this size). The corrected 128-band reference is the one G3 uses; the 4e6 run follows (SCOPE
 4d.9 A1, A9, A10).
+
+## entry-5 (2026-11-25 07:35 PST): A4, the state at N_f in the reference; predictions before the smoke run and the 4e6 run
+
+Change: `sdn/langevin.py` fpt_phase_space takes record_N (a step lands on it; state_at_record returned);
+`ref_spec.py` records (phi, varpi) at N_f for the lattice variant (columns 2-3 of the samples; `state_Nf`
+in the output) and takes NRPIC_REF_VARIANTS to run a subset. Background at N_f from the corrected pilot:
+dphi/dN = 1.420e-6, eps2 = -0.0276 (`results/ref_inflection_n32_binfix.json`).
+Smoke run (2e4 paths, s0.01_lattice only, suffix _smoke):
+- SM1: it completes; the first-passage moments of s0.01_lattice equal those of a 2e4 run without record_N
+  in distribution (variance/var_lattice within 3 standard errors of 1, about 0.03).
+- SM2: var(phi at N_f)/(dphi/dN)^2/var_lattice_Ne in [0.95, 1.05] (on the attractor a field displacement is a
+  shift in time, delta N = -delta phi/(dphi/dN)); |corr(phi, varpi)| above 0.9 [JUDGEMENT].
+The 4e6 run (s0.01_lattice and s0.1, suffix _4e6): RF1's gate within 0.002; skewness of s0.01_lattice
+within two of the pilot's standard errors of 0.0234 (0.0234 +- 0.0074); SM2 within [0.99, 1.01];
+skewness of phi at N_f below 0.005 in magnitude (A4 prediction of g3 entry 4).

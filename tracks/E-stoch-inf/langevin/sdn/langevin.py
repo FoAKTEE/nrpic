@@ -106,7 +106,7 @@ class Background:
 
 
 def fpt_phase_space(model, phi0, w0, N0, phi_end, dN, n, rng, noise=None, window=(0.0, 0.0),
-                    dN_det=None, N_max=200.0, bias=None, noise_scale=1.0, var_factor=None):
+                    dN_det=None, N_max=200.0, bias=None, noise_scale=1.0, var_factor=None, record_N=None):
     """First passage of phi through phi_end for the phase-space Langevin system.
 
     noise(N) -> 2x2 matrix L with covariance per unit N equal to L L^T (rows: phi, varpi).
@@ -118,8 +118,10 @@ def fpt_phase_space(model, phi0, w0, N0, phi_end, dN, n, rng, noise=None, window
     the covariance (used for the lattice density of states). Crossings inside deterministic
     steps are located by cubic Hermite interpolation, inside noisy steps linearly.
     phi_end may be an array of surfaces (reached in order; one crossing per step at most).
+    record_N: a time N at which the state (phi, varpi) of every realisation is stored (a step
+    lands on it exactly); returned as state_at_record (batch 19, SCOPE 4d.9 A4).
     Returns dict(N=first-passage e-folds since N0, shape (n,) or (n, n_surfaces), nan if
-    N_max is reached; logw; state_after_window; ends).
+    N_max is reached; logw; state_after_window; state_at_record; ends).
     """
     bg = Background(model)
     ends = np.atleast_1d(np.asarray(phi_end, dtype=float))
@@ -136,6 +138,7 @@ def fpt_phase_space(model, phi0, w0, N0, phi_end, dN, n, rng, noise=None, window
     dN_det = dN if dN_det is None else dN_det
     sq = np.sqrt(dN)
     state_after = None
+    state_rec = None
     while alive.size and N - N0 < N_max:
         in_win = window[0] <= N < window[1]
         h = dN if in_win else dN_det
@@ -143,6 +146,8 @@ def fpt_phase_space(model, phi0, w0, N0, phi_end, dN, n, rng, noise=None, window
             h = window[0] - N
             if h <= 1e-14:
                 h = dN
+        if record_N is not None and state_rec is None and N < record_N < N + h - 1e-14:
+            h = record_N - N
         pa, wa = phi[alive], w[alive]
         pn, wn = bg.rk4(pa, wa, h)
         noisy = in_win and noise is not None
@@ -194,5 +199,7 @@ def fpt_phase_space(model, phi0, w0, N0, phi_end, dN, n, rng, noise=None, window
         N += h
         if state_after is None and N >= window[1]:
             state_after = (phi.copy(), w.copy())
+        if record_N is not None and state_rec is None and N >= record_N - 1e-12:
+            state_rec = (phi.copy(), w.copy(), N)
     return dict(N=fpt[:, 0] if nsurf == 1 else fpt, logw=logw, state_after_window=state_after,
-                ends=ends)
+                state_at_record=state_rec, ends=ends)
