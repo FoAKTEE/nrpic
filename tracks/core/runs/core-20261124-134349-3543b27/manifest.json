@@ -1,0 +1,99 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "core-20261124-134349-3543b27",
+  "track": "core",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "step-limit T4 on processors: Track A's refined periodic deck at cfl_number 1.0 with dt_gauge = 0.9 (case R0g) to t = 3.0, through the time of the failure of card job 4799",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "bash",
+    "tracks/core/analysis/step_limit/run_refined.sh",
+    "$NRPIC_RUN_DIR",
+    "4",
+    "/data/haiyangw/nrpic/wt/core-s3/.work/build_omp_sl/src/athena",
+    "R0g"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "3543b274b29213a34141322cf5494615a042130f",
+    "branch": "core/step-limit",
+    "dirty": false,
+    "merge_base_main": "bc180c266e1af2b7a50d072fa17f9f0ddc283047",
+    "worktree": "wt/core-s3"
+  },
+  "code": {
+    "core_tag": "core-v0.6",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "072b3623a0133e6f3308c4cfd1b4d318b6447fc5ce5ceccbe61e331df579ce4a",
+    "machine_file_sha256": "a832a4793e95a65c88ac1e0cca66ddc9afee09efde7423f554e8207e6c7b2148",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/core-s3/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "tracks/core/analysis/step_limit/run_refined.sh",
+      "role": "argv",
+      "sha256": "990768cb108cdb1e09355bb092727c6b044dec7cf7be34c171e503b18c96e980",
+      "bytes": 1811,
+      "tracked": true
+    },
+    {
+      "path": ".work/build_omp_sl/src/athena",
+      "role": "argv",
+      "sha256": "d823d3cae4a6bcb1aef95e2228a875de72487f0484cb80508b8ef5fe0a869e6d",
+      "bytes": 318642024,
+      "tracked": false
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 4,
+    "walltime_s": 0.615,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/core/core-20261124-134349-3543b27",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": "d8c3dcac0d71009252f53eb3fdd86c4de92a44f2c05133f611cfba6fc184cd3c",
+    "bytes": 11285,
+    "files": 3
+  },
+  "status": "completed",
+  "exit_code": 0,
+  "registered": "2026-11-24T13:43:51Z",
+  "started": "2026-11-24T13:43:51Z",
+  "ended": "2026-11-24T13:43:51Z",
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 40.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 15.7429,
+    "gpu_hours_reserved": 11.9002,
+    "gpu_hours_without_gate": 5.8713,
+    "cores_busy": 1,
+    "runs": 1539,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md + 0026-cards-loaded-allotment-cost.md + 0031-level2-branch-and-ablation.md"
+  },
+  "finished": "2026-11-24T13:43:51Z"
+}

@@ -1,0 +1,100 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "core-20261121-184901-d62073f",
+  "track": "core",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "gauge-2 analysis of card job B: Einstein-Straus runs es-rho (relaxation only in the dust) and es-hole (off within 16 M of the puncture), collapse L3 with the matter weight; horizon of Track D's ES-1G as reference",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "python3",
+    "tracks/core/analysis/gauge2/es2.py",
+    "--out",
+    "$NRPIC_RUN_DIR",
+    "--es",
+    "es-hole=/data/haiyangw/nrpic/scratch/core/core-20261121-175300-77c17ae/es-hole",
+    "--es",
+    "es-rho=/data/haiyangw/nrpic/scratch/core/core-20261121-175300-77c17ae/es-rho",
+    "--collapse",
+    "collapse-rho=/data/haiyangw/nrpic/scratch/core/core-20261121-175300-77c17ae/collapse-rho",
+    "--ref",
+    "ES-1G=/data/haiyangw/nrpic/scratch/D-bh-dress/D-20261119-142633-6f72922/es.horizon_summary_0.txt"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "d62073ff094aa1eb7ad96c2677c1934086908224",
+    "branch": "core/gauge-2",
+    "dirty": false,
+    "merge_base_main": "9aa744050b6dd76e8847e202b1b6f245a0cda107",
+    "worktree": "wt/core-s1"
+  },
+  "code": {
+    "core_tag": "core-v0.6",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "072b3623a0133e6f3308c4cfd1b4d318b6447fc5ce5ceccbe61e331df579ce4a",
+    "machine_file_sha256": "a832a4793e95a65c88ac1e0cca66ddc9afee09efde7423f554e8207e6c7b2148",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/core-s1/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "tracks/core/analysis/gauge2/es2.py",
+      "role": "argv",
+      "sha256": "9214fb841aac420bf2a919b25e67c28e5bffe533d214e951301128974249abdd",
+      "bytes": 6159,
+      "tracked": true
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 1,
+    "walltime_s": 11.895,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/core/core-20261121-184901-d62073f",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": "b6807133657880aa6d2cf00b568ab1623461886337b0d9748f8dd5a8dd9682b6",
+    "bytes": 1596271,
+    "files": 10
+  },
+  "status": "completed",
+  "exit_code": 0,
+  "registered": "2026-11-21T18:49:02Z",
+  "started": "2026-11-21T18:49:02Z",
+  "ended": "2026-11-21T18:49:14Z",
+  "parents": [
+    "core-20261121-175300-77c17ae"
+  ],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 40.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 6.9873,
+    "gpu_hours_reserved": 1.45,
+    "gpu_hours_without_gate": 5.8713,
+    "cores_busy": 0,
+    "runs": 1458,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
+  },
+  "finished": "2026-11-21T18:49:14Z"
+}

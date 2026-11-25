@@ -26,9 +26,10 @@ horizon mass matches the initial mass at the paper's level when the horizon form
 departs slightly from it later. A prolate spheroid forms its horizon at the paper's
 time, with a mass deficit that shrinks with resolution. The five relativistic star
 clusters of the paper reach the paper's fates. The bisection of their stability
-threshold found no collapse on a coarse mesh; on a mesh twice as fine, with unkicked
-controls, it brackets the threshold between two models just above the turning point of
-the binding energy and well above it, and its next level is running. A
+threshold found no collapse on a coarse mesh. On a mesh twice as fine, with unkicked
+controls, collapse within the evolved time is bracketed between two models above the turning
+point of the binding energy, but the surviving models drift steadily towards collapse,
+so the bracket may reflect the length of the runs; runs twice as long are queued. A
 verifier with no part in the work recomputed a sample of the claims from raw outputs;
 it confirmed the numbers and corrected one general statement about restarts. Two rows
 of the ladder remain partial, and two limits of the gauge are scheduled for the next
@@ -212,16 +213,26 @@ $y_c=0.605$ collapses at $t_c=180.5\,M$, while its control moves outward, toward
 partner of equal binding energy. At $y_c=0.680$, which lies $0.0004$ above the turning
 point, the member collapses at $219.5\,M$ and the control at $251.5\,M$, so the particle
 noise alone suffices. At $y_c=0.755$ neither run collapses, and the two means differ by
-$0.002$. On cells of $M/8$ with $10^4$ particles the threshold is therefore bracketed
-between $y_c=0.680$ and $0.755$, and the turning point lies just below the bracket. That
-a model this close to the turning point collapses from noise within $260\,M$ suggests
-that the threshold of the discretised system lies above $y_c^\ast$, by up to $0.075$.
-The controls drift on this mesh too: both runs at $y_c=0.755$ settle $0.025$ below the
-equilibrium lapse, inward rather than outward, and $0.025$ is more than the $0.01$
-predicted from the self-interacting-core controls. The next level of the bisection,
-three models with their controls between $0.680$ and $0.755$, is in the queue. The
-growing oscillation of the central lapse, $\pm0.03$ after $200\,M$ at $y_c=0.755$, is
-still unexplained. The row is partial.
+$0.002$. The second level placed three models between these. At $y_c=0.69875$ the member
+collapses at $244.25\,M$ and the control at $259.75\,M$; at $0.7175$ they collapse at
+$294.25$ and $293.5\,M$; at $0.73625$ neither collapses, and the means differ by
+$0.0014$. Collapse within $300\,M$ on cells of $M/8$ with $10^4$ particles is therefore
+bracketed between $y_c=0.7175$ and $0.73625$, about $0.04$ above the turning point.
+
+Whether this bracket marks a stability threshold is not settled. Near the bracket the
+kick no longer matters: at $y_c=0.7175$ member and control collapse within $1\,M$ of
+each other, and the controls collapse later the larger $y_c$. The two models that
+survive drift inward steadily, member and control alike (Fig.~\ref{fig:row4m8}, right).
+Over successive windows of $50\,M$ the mean central lapse of $y_c=0.73625$ falls to
+$0.933$ of its equilibrium value by $250$--$300\,M$, that of $0.755$ to $0.964$; the model
+$0.7175$ stood at $0.92$ over $200$--$250\,M$, some $50\,M$ before it collapsed. A model
+that drifts at a steady rate collapses later the larger its $y_c$, so the bracket may be
+set by the length of the runs rather than by a threshold. The next level runs the
+midpoint $0.726875$ to $600\,M$ and continues both surviving pairs from their restart
+files to $600\,M$; if those collapse, the drift, not the bisection, is what the row has
+to explain. The drift of the stable controls was predicted to stay within $0.01$, from
+the controls of the self-interacting-core project; it does not. The growing oscillation
+of the central lapse in the surviving pairs is still unexplained. The row is partial.
 
 
 \begin{figure*}
@@ -235,11 +246,13 @@ $M/4$, labelled by $y_c$; the last member is the unkicked control.}
 
 \begin{figure*}
 \includegraphics[width=\textwidth]{figures/fig_row4_m8.pdf}
-\caption{Central lapse of the bisection on cells of $M/8$, first level. Solid lines show
-the members with the one-per-cent inward kick and dashed lines the unkicked controls on
-the same mesh. Dotted lines mark the equilibrium central lapse of each model, the grey
-band the window $200$--$300\,M$ of the rule, and crosses the collapse time (central lapse
-below $0.3$). Right: the runs without collapse on an expanded axis.}
+\caption{Central lapse of the bisection on cells of $M/8$, levels 1 and 2, in units of
+the equilibrium value of each model. Solid lines show the members with the one-per-cent
+inward kick and dashed lines the unkicked controls on the same mesh; the colour runs from
+$y_c=0.605$ (dark) to $0.755$ (light). Crosses mark the collapse time (first apparent
+horizon or central lapse below $0.3$), the grey band the window $200$--$300\,M$ of the
+rule. Right: the two models in which neither run collapses; thick segments are means over
+windows of $50\,M$.}
 \label{fig:row4m8}
 \end{figure*}
 
@@ -299,8 +312,10 @@ own tests and an interface document. The numbers of the ladder and of a sample o
 release survive an independent recomputation from raw outputs. For the gate the shared
 implementation still needs: the oblate initial data in a release and its collapse, a
 third resolution or a particle-number pair for the prolate collapse, the stability
-threshold narrowed on the finer mesh (it is bracketed there, between $y_c=0.680$ and
-$0.755$, but not yet converged in cell size or particle number), and one coupled set-up converged
+threshold on the finer mesh that does not depend on the length of the runs (collapse
+within $300\,M$ is bracketed there, between $y_c=0.7175$ and $0.73625$, but the surviving
+models drift towards collapse, and nothing is converged in cell size or particle number),
+and one coupled set-up converged
 in particle number, cell size and gauge together.
 
 \appendix

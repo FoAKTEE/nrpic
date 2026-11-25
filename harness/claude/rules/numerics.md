@@ -13,11 +13,14 @@ paths:
 - One code base: every simulation capability lives in this repository's AthenaK (`athenak/src/`),
   written by core; tracks specify, supply reference solutions and tests, and check independently.
   No outside simulation code is adopted, built or run.
-- Every simulation and analysis run is registered: `harness/bin/nrpic-run submit --kind
-  scouting|production --gate G<k> --purpose "..." [--launcher local|batch|chain] -- ...`; close it
-  with `nrpic-run finish <run_id>`. Production runs need `--preregistered <plan>#<anchor>` and the
-  previous gate's pass tag. Card jobs go through `scripts/gpu_batch.sh` and
-  `scripts/submit_chain.sh`, wrapped by `nrpic-run` (budget of decision 0006).
+- Every simulation and analysis run is registered: on the processors `harness/bin/nrpic-run submit
+  --kind scouting|production --gate G<k> --purpose "..." -- ...`; card runs only through the shared
+  queue (decision 0033, one route, at most five jobs of the account in Slurm): `harness/bin/nrpic-queue
+  add --label L -- <the same submit arguments, --launcher batch|chain>`, whose dispatcher runs
+  `nrpic-run submit`; close a run with `nrpic-run finish <run_id>`. Production runs need
+  `--preregistered <plan>#<anchor>` and the previous gate's pass tag. Card jobs go through
+  `scripts/gpu_batch.sh` and `scripts/submit_chain.sh`, wrapped by `nrpic-run` (budget of decision
+  0006); never by sbatch or the scripts directly.
 - Prediction first: write in `JOURNAL.md` what you expect and what would refute it before the run;
   afterwards the outcome, failed predictions included. Name a cause only after a run in which it
   could have failed. Null results and failed runs stay on record.

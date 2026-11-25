@@ -1,9 +1,9 @@
 {
   "track": "core",
   "gate": "G2",
-  "commit": "5e6dc433a688f4dae44790339071761d21839841",
-  "verified_utc": "2026-11-23T02:15:39Z",
-  "export": "/data/haiyangw/nrpic/scratch/core/tmp/stage-verify/core-G2-5e6dc43-20261123T020751Z",
+  "commit": "c4a041dc0dcf24b252cfeaeb89cc46b025282108",
+  "verified_utc": "2026-11-24T14:18:24Z",
+  "export": "/data/haiyangw/nrpic/scratch/core/tmp/stage-verify/core-G2-c4a041d-20261124T135913Z",
   "result": "FAIL",
   "checks": [
     {
@@ -14,14 +14,14 @@
     },
     {
       "check": "sync",
-      "status": "FAIL",
-      "message": "main has commits not merged: run nrpic-ctx sync",
+      "status": "PASS",
+      "message": "main is merged into the branch",
       "detail": null
     },
     {
       "check": "export",
       "status": "PASS",
-      "message": "clean export of 5e6dc433a688 (HEAD) in /data/haiyangw/nrpic/scratch/core/tmp/stage-verify/core-G2-5e6dc43-20261123T020751Z/tree",
+      "message": "clean export of c4a041dc0dcf (HEAD) in /data/haiyangw/nrpic/scratch/core/tmp/stage-verify/core-G2-c4a041d-20261124T135913Z/tree",
       "detail": null
     },
     {
@@ -69,24 +69,24 @@
     {
       "check": "runs",
       "status": "FAIL",
-      "message": "6 of 1448 runs have problems; 9 waived",
+      "message": "6 of 1457 runs have problems; 9 waived",
       "detail": {
-        "core-20261123-020450-7e42037": [
+        "core-20261124-130310-597d9ca": [
           "status is submitted: not finished (nrpic-run finish)"
         ],
-        "core-20261123-020452-e635a8e": [
+        "core-20261124-130321-ed96d4d": [
           "status is submitted: not finished (nrpic-run finish)"
         ],
-        "core-20261123-020454-8fec6b2": [
+        "core-20261124-130340-31cf5e8": [
           "status is submitted: not finished (nrpic-run finish)"
         ],
-        "core-20261123-020456-884f550": [
+        "core-20261124-130347-7d6a10d": [
           "status is submitted: not finished (nrpic-run finish)"
         ],
-        "core-20261123-020458-dfc38d7": [
+        "core-20261124-130356-d9d09bf": [
           "status is submitted: not finished (nrpic-run finish)"
         ],
-        "core-20261123-020500-9b192cd": [
+        "core-20261124-130406-09319a0": [
           "status is submitted: not finished (nrpic-run finish)"
         ]
       }
@@ -455,14 +455,88 @@
     {
       "check": "status",
       "status": "PASS",
-      "message": "STATUS.md has 37 lines",
+      "message": "STATUS.md has 42 lines",
       "detail": null
     },
     {
       "check": "rerun",
-      "status": "WARN",
-      "message": "re-run skipped (--no-rerun)",
+      "status": "PASS",
+      "message": "5 of 5 scripts and commands ran cleanly in the export",
       "detail": null
+    },
+    {
+      "check": "compare",
+      "status": "PASS",
+      "message": "10 regenerated files compared with the committed ones; 0 differ beyond tolerance (rtol 1e-06, atol 1e-12, PNG rms 0.005)",
+      "detail": [
+        [
+          "note/figures/fig_row4_m8.png",
+          "PASS",
+          "identical"
+        ],
+        [
+          "note/figures/fig_collapse.pdf",
+          "PASS",
+          "regenerated (vector files carry dates; the PNG preview is compared)"
+        ],
+        [
+          "note/figures/fig_geodesic.pdf",
+          "PASS",
+          "regenerated (vector files carry dates; the PNG preview is compared)"
+        ],
+        [
+          "note/figures/fig_clusters.pdf",
+          "PASS",
+          "regenerated (vector files carry dates; the PNG preview is compared)"
+        ],
+        [
+          "note/figures/schem_architecture.svg",
+          "PASS",
+          "regenerated (vector files carry dates; the PNG preview is compared)"
+        ],
+        [
+          "note/figures/fig_geodesic.png",
+          "PASS",
+          "identical"
+        ],
+        [
+          "note/figures/schem_architecture.png",
+          "PASS",
+          "identical"
+        ],
+        [
+          "note/figures/fig_row4_m8.pdf",
+          "PASS",
+          "regenerated (vector files carry dates; the PNG preview is compared)"
+        ],
+        [
+          "note/figures/fig_clusters.png",
+          "PASS",
+          "identical"
+        ],
+        [
+          "note/figures/fig_collapse.png",
+          "PASS",
+          "identical"
+        ]
+      ]
+    },
+    {
+      "check": "regenerate",
+      "status": "PASS",
+      "message": "all 10 committed figure files regenerated",
+      "detail": null
+    },
+    {
+      "check": "new-files",
+      "status": "WARN",
+      "message": "4 files written by the scripts are not in the commit",
+      "detail": [
+        "note/numbers_clusters.json",
+        "note/numbers_collapse.json",
+        "note/numbers_geodesic.json",
+        "note/numbers_row4m8.json"
+      ]
     }
   ]
 }
