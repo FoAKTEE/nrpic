@@ -296,12 +296,26 @@ and what the track does about the open verifier finding on C3 (VERIFIER-C18 5b: 
 | t = 0 slices on M/16, M/32 (PCS, the decks as they are) | A-20261125-160633-594a474, analysis A-20261125-160849-8c01b54 (fig_edge.png looked at) | ratio 0.278 / 0.185 / 0.134 (top hat / S1 / S2) on M/16, 0.174 / 0.146 / 0.116 on M/32: (a) REFUTED; the volume momentum norm of S2 falls 60-fold, (c) HOLDS | the momentum floor is the jumps [VERIFIED]; the Hamiltonian remainder is not |
 | Test D: cloud at t = 0 | A-20261125-161039-cb046d7 (fig_edge_d.png looked at) | CIC 0.0064, PCS without compensation 0.089, repeat identical: the remainder is the PCS deposit at the level boundaries (spikes 0.33-0.61 against 0.44 in 16 pi E at x = 0.9-1.3) | request to core (outbox pcs-deposit-refinement-boundary) |
 | Test F1: S2 with CIC, t = 0 | A-20261125-161154-62ce3dc phase 1, analysis A-20261125-161248-eecc672 | 6.4e-3 (M/16), 5.8e-4 (M/32): order 3.5; volume Hamiltonian norm order 4.0: HOLDS | F2 (evolution) read next session |
-| Test F2: S2 with CIC evolved (M/16 to t = 5, M/32 to t = 1) and the PCS twin | A-20261125-161154-62ce3dc, A-20261125-160633-594a474 (running, detached) | pending | next A session: edge_compare.py with --extra S2c-A, S2c-B |
+| Test F2: S2 with CIC evolved (M/16 to t = 5, M/32 to t = 1) and the PCS twin | A-20261125-161154-62ce3dc, A-20261125-160633-594a474 (running), partial reading A-20261125-165215-e3fe168 | REFUTED on M/16: ratio 0.129 at t = 1 (0.156 at 1.25); volume norm 57 times below the top hat's; PCS twin 0.53 at t = 4 | the mesh leg S2c-B decides whether the evolution's floor falls with the mesh |
 
-Judgement under 0039 item 2(c), as far as it goes today: the floor of the top-hat members comes from the density jumps
-(momentum constraint) and from the PCS deposit at the static refinement boundaries (Hamiltonian constraint), shown at
-t = 0 on two meshes by runs that could have failed. Smoothing the edges alone does not meet the bound. C3 stays
-FAILED as written for every member run so far. Smooth members with the CIC cloud meet it at t = 0 and converge; if F2
-holds to t = 5, the track asks the review (outbox c3-smoothed-edge-result) to judge C3 on them; the bound is not moved.
+Judgement under 0039 item 2(c): at t = 0 the floor of the top-hat members comes from the density jumps (momentum
+constraint) and from the PCS deposit at the static refinement boundaries (Hamiltonian), shown on two meshes by runs
+that could have failed. But the evolution rebuilds a floor of 0.1-0.6 within 1-5 M on M/16 whatever the data and the
+cloud (F2 refuted). Smoothed members do NOT meet the bound; C3 stays FAILED, and unless the mesh leg (S2c-B) shows the
+violation falling with the mesh, the review decides with the failure on record (0039 item 2(c)). The bound is not moved.
 Two of the session's runs were stopped by hand to free cores (S1-A, S2-B with PCS, PIDs 2597153, 2597154), on record
 in entry 13.
+
+### 10.2 A2, the Newtonian control (0040 item 7)
+
+| Step | Run | Outcome |
+|---|---|---|
+| Second derivation of the reference | periodic_threshold JOURNAL 08:10 PST | D = a on every scale for dust in EdS; a_H = r_m^2 = 6; lambda_z = 0.063: first crossing 4.35 t_H (DESIGN's 4.2 with 0.064) |
+| N-z: S1L's positions, equal masses, Zel'dovich velocities, Newton (64^3 Fourier) | A-20261125-160633-e38d321; A-20261125-162905-d0ef1d7, -162951-bb0fb26 (figures looked at) | z first at 4.55 t_H, follows Zel'dovich to 0.02: AZ1 narrowly refuted (band edge 4.5) |
+| N-f: S1L's file as it is under Newton | same run; A-20261125-165125-1640161 (figure looked at) | 0.43 t_H: direction holds, band refuted (the psi^6 masses read as a density excess of order one) |
+| N-z128 | same run, continuing | next session |
+
+What the track does: the lag of S1L (6.35 t_H, factor 1.46) is not in the reference, the clock, the reader or the initial
+positions; it lies in the relativistic evolution or in the coordinates of the GR run, not named further. A2 stays
+FAILED as written. Next: a gauge-invariant crossing measure in S1L or a GR member with zero shift, prediction first.
+P0L6 (q0013): its chain has not ended (Slurm 5296 pending), so the find at t = 118.1 was not read this session.

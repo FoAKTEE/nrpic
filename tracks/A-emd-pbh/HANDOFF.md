@@ -5,7 +5,8 @@ Written for a reader with no memory, by the lead of batch 20 (wave 3), 2026-11-2
 State in three lines: G0 and G1 are signed (coord/GATES.md). G2 has an interim package (stage/G2: 9 PASS, 10 OPEN,
 1 FAIL = C3) that is NOT ready for review (stage/G2/OPEN.md). This session ran the smoothed-edge test for C3 (the
 floor is the top hat's jumps plus the PCS deposit at refinement boundaries; smooth data with CIC meet the bound at
-t = 0) and the Newtonian control of A2 (the reference is right; S1L's lag is not in it). Both have runs still going.
+t = 0, but the evolution rebuilds a floor of 0.1-0.6 within 1-5 M on M/16: F2 refuted) and the Newtonian control of A2
+(the reference is right; S1L's lag is not in it). Both have runs still going.
 
 Owner: A-emd-pbh, branch `track/A-emd-pbh`, worktree `/data/haiyangw/nrpic/wt/A-emd-pbh`.
 Run first: `cd /data/haiyangw/nrpic/wt/A-emd-pbh && git merge --no-edit main && git status --short &&
@@ -37,10 +38,11 @@ If P0L6 is cut again with no segment left: `harness/bin/nrpic-queue add --label 
 
 ## Next, in order
 
-1. F2: when S2c-A has reached t = 5 (and S2-A), run edge_compare.py (registered) with the extras; judge F2 against entry
-   13 (ratio < 0.1 at every output, ||H||_2 at t = 1, 2 at least 3 times below K4-ref and below S2-A); figure looked at.
-   Then C3 per 0039 item 2(c) and the orch answer to outbox c3-smoothed-edge-result.
-2. A2: AZ2 from N-f, N-z128 from the same run (a2_compare.py, registered). Then the next control that can tell a
+1. C3 mesh leg: when S2c-B (M/32) has reached t = 1, run edge_compare.py (registered) with the extras and compare its
+   line ratio at t = 0.25-1 with S2c-A's (0.050, 0.098, 0.097, 0.129; A-20261125-165215-e3fe168). Write the prediction
+   first (a violation that falls at order >= 1 would be resolution; a flat one is a defect of the evolution to explain).
+   Then C3 per 0039 item 2(c) with orch's answer (outbox c3-smoothed-edge-result, c3-f2-refuted).
+2. A2: N-z128 from the same run (a2_compare.py, registered; AZ2 is judged: N-f 0.43 t_H). Then the next control that can tell a
    relativistic lag from a coordinate effect (the reader measures coordinate separations; S1L's Gamma-driver shift
    moves the lattice): a gauge-invariant crossing measure (proper separation from the metric dumps, or the sign of
    the Jacobian of the particles' proper volume) or a short GR member with zero shift. Prediction first.

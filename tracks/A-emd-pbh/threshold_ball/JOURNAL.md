@@ -555,3 +555,17 @@ from the density jumps and from the PCS deposit at the refinement boundaries, no
 [VERIFIED at t = 0 on meshes A and B; F2 decides for t <= 5]. C3 stays FAILED as written for the members run so far.
 If F2 holds, the review is asked to judge G2 on smooth members with the CIC cloud; the scan itself would have to be
 rerun with them before G3 (the top-hat threshold scan carries the PCS floor).
+
+### Entry 13, outcome F2 on mesh A so far (partial reading A-20261125-165215-e3fe168 of runs still going; fig_edge.png looked at): REFUTED
+
+S2 with CIC on M/16 (S2c-A, read to t = 1.25): line ratio 0.0064 (t = 0), 0.050 (0.25), 0.098 (0.5), 0.097 (0.75),
+0.129 (1.0), 0.156 (1.25): above 0.1 from t = 1. F2 is refuted on its first clause. Its other clauses hold so far:
+volume ||H||_2 at t = 1 is 0.038, 57 times below K4-ref's (2.20) and half the PCS twin's (0.076). The PCS twin S2-A
+rises to 0.53 at t = 4 (0.62 by 4.75), above the top hat's 0.39-0.45 there. So the evolution itself builds a
+residual of order 0.1-0.6 of the source within one to five M on M/16, whatever the data and the cloud; the initial
+data and the deposit set only the t = 0 value. Whether this part falls with the mesh is what S2c-B (M/32, to t = 1)
+tells; it was at t = 0.08 when this was written. No cause is named for the growth.
+C3 under 0039 item 2(c): the smoothed members do NOT meet the bound during the evolution on M/16; unless S2c-B shows
+the violation falling with the mesh at a rate that would meet 0.1 on a mesh the track can run, the review decides
+with the failure on record. "A violation that does not fall with the mesh is a defect to be explained": the
+mesh leg (S2c-B) is the deciding run.

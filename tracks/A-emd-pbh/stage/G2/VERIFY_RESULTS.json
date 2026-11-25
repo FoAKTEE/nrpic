@@ -1,15 +1,15 @@
 {
   "track": "A-emd-pbh",
   "gate": "G2",
-  "commit": "3272d1343d8e8fe0d6dca5071145c0c0f2710f18",
-  "verified_utc": "2026-11-25T15:49:19Z",
-  "export": "/data/haiyangw/nrpic/scratch/A-emd-pbh/tmp/stage-verify/A-emd-pbh-G2-3272d13-20261125T154846Z",
+  "commit": "16401612f8d37b687291f7f508cfadf1504345ca",
+  "verified_utc": "2026-11-25T16:32:01Z",
+  "export": "/data/haiyangw/nrpic/scratch/A-emd-pbh/tmp/stage-verify/A-emd-pbh-G2-1640161-20261125T163144Z",
   "result": "FAIL",
   "checks": [
     {
       "check": "clean",
-      "status": "PASS",
-      "message": "worktree clean (outside the stage directory being assembled)",
+      "status": "FAIL",
+      "message": "1 uncommitted paths: commit them first (tracks/A-emd-pbh/STATUS.md)",
       "detail": null
     },
     {
@@ -21,7 +21,7 @@
     {
       "check": "export",
       "status": "PASS",
-      "message": "clean export of 3272d1343d8e (HEAD) in /data/haiyangw/nrpic/scratch/A-emd-pbh/tmp/stage-verify/A-emd-pbh-G2-3272d13-20261125T154846Z/tree",
+      "message": "clean export of 16401612f8d3 (HEAD) in /data/haiyangw/nrpic/scratch/A-emd-pbh/tmp/stage-verify/A-emd-pbh-G2-1640161-20261125T163144Z/tree",
       "detail": null
     },
     {
@@ -69,13 +69,22 @@
     {
       "check": "runs",
       "status": "FAIL",
-      "message": "2 of 276 runs have problems; 1 waived",
+      "message": "5 of 287 runs have problems; 1 waived",
       "detail": {
         "A-20261123-025907-97bab8d": [
           "status is submitted: not finished (nrpic-run finish)"
         ],
         "A-20261125-044641-7d5bd16": [
           "status is submitted: not finished (nrpic-run finish)"
+        ],
+        "A-20261125-160633-594a474": [
+          "status is running: not finished (nrpic-run finish)"
+        ],
+        "A-20261125-160633-e38d321": [
+          "status is running: not finished (nrpic-run finish)"
+        ],
+        "A-20261125-161154-62ce3dc": [
+          "status is running: not finished (nrpic-run finish)"
         ]
       }
     },

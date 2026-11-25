@@ -473,3 +473,29 @@ Not done (outside this session's aim): judging and closing processor run A-20261
 - Stage G2: collect, verify, report; REVIEW-wave3 section 9; OPEN.md rewritten. Inbox: 4 acknowledged. Outbox:
   info c18-answered-k4-a2, request c3-smoothed-edge-test.
 - Not done: Newtonian control of A2; smoothed-edge test; reading P0L6 and Szekeres (still in the queue).
+
+## 2026-11-25 07:54-09:10 PST, lead of batch 20 (processors only; decision 0040 items 6, 7)
+
+- Merged main (0040 items 6-9). Predictions first, committed before every run: threshold_ball entry 13 (C3S a-e,
+  amended before any AthenaK run when `--edge-w` proved inadmissible on data set 3; then D and F) and
+  periodic_threshold 2026-11-25 08:10 PST (second derivation of the Zel'dovich reference; AZ1, AZ2).
+- C3: data S1, S2 (smooth_tophat; prep_bh.py gained --profile); t = 0 slices on M/16, M/32; test D (cloud), F1
+  (CIC). Outcomes: (a) refuted, (c) holds, (e) as predicted, D holds, F1 holds. The floor is the jumps (momentum)
+  and the PCS deposit at refinement boundaries (Hamiltonian). C3 stays FAILED as written. Runs:
+  A-20261125-160221-b68396f and -160306-280d150 (failed, on record), -160436-462452d, -160633-594a474,
+  -160849-8c01b54, -161039-cb046d7, -161154-62ce3dc (running), -161248-eecc672. S1-A and S2-B (PCS) stopped by hand
+  (PIDs 2597153, 2597154) to keep six cores. Figures fig_edge.png (two versions) and fig_edge_d.png looked at.
+- A2: N-z (Newton, Zel'dovich velocities) crosses at 4.55 t_H, Zel'dovich 4.35, S1L 6.35: AZ1 narrowly refuted
+  (band edge 4.5); the reference, clock and reader are confirmed to 5 per cent by a run that could have failed;
+  S1L departs from 1-2 t_H on. Runs A-20261125-160633-e38d321 (N-f, N-z128 continuing), -162905-d0ef1d7,
+  -162951-bb0fb26; fig_a2_crossing.png, fig_a2_compare.png looked at.
+- P0L6 (q0013): chain not ended (Slurm 5296 pending), the find at t = 118.1 not read (task condition).
+- Stage G2: collect, verify (--no-checksums: six cores busy; FAIL only on the five unfinished runs), report.
+  CHECKLIST C1 (A2) and C3, OPEN.md, EVIDENCE.md, REVIEW-wave3 section 10. Outbox: core
+  pcs-deposit-refinement-boundary, orch c3-smoothed-edge-result. Inbox: nothing unacknowledged.
+- Brief analyses (seconds) ran on a seventh core while the six run threads were busy.
+- Later in the session: F2 REFUTED on M/16 (A-20261125-165215-e3fe168: S2 with CIC 0.129 at t = 1; PCS twin 0.53 at
+  t = 4): the evolution rebuilds the floor; the mesh leg S2c-B decides (running). AZ2: N-f crosses at 0.43 t_H
+  (A-20261125-165125-1640161): direction holds, band refuted. Consequence as fixed: the lag of S1L is not in the
+  reference, clock, reader or initial positions; relativistic evolution or coordinates, not named further.
+  Outbox: info c3-f2-refuted to orch.

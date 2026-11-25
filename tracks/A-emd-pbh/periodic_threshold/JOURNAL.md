@@ -990,3 +990,20 @@ Note on the IC script (defect of a diagnostic, not of the files): ic.json's medi
 median lattice offset (1.4e-3 to 1.9e-3 instead of 0) puts tiny-|d| particles into the ratio. N-z's momenta carry a
 uniform 1.4e-3 to 1.9e-3 (a bulk drift, harmless in a periodic box: neighbour separations do not see it). The
 correct ratio (offset 0, read at the start of this session) is 1.03 median, 1.00-1.38 at 5-95 per cent.
+
+### Outcome AZ2 and the consequence (analysis A-20261125-165125-1640161; fig_a2_compare.png with three curves looked at)
+
+- N-f (S1L's particle file read by the Newtonian pusher: masses carrying psi^6 up to 2.19 times the mean, u_i read as
+  a dx/deta) crosses along z at 0.43 t_H (x 0.50, y 0.65). AZ2's direction HOLDS (earlier than N-z), its band
+  [2.5, 4.3] is REFUTED: read as a Newtonian coordinate density, the file is an overdensity of order one at the peak,
+  not a Zel'dovich state. N-f is therefore not a fair copy of the GR physics; N-z is the control that matters.
+- Consequence, as fixed before the runs: N-f does not lag (it crosses 15 times earlier than S1L), so the data as a
+  Newtonian pusher reads them are not slow; N-z (the same positions with the Zel'dovich velocities) follows
+  Zel'dovich to 5 per cent. The factor 1.46 of S1L lies in the relativistic evolution or in the coordinates of the
+  GR run (the reader measures coordinate separations, which the Gamma-driver shift changes). Named only this far
+  [VERIFIED: not the reference, the clock, the reader or the initial positions; a run that could have shown a
+  lag in Newtonian dynamics did not]. Not named: relativistic physics against coordinate effect. Next test that can
+  tell them apart: a gauge-invariant crossing measure in S1L (proper separation of lattice neighbours from the metric
+  at the particles, or the sign of the proper-volume Jacobian), or a short GR member with zero shift; prediction
+  first. N-z128 (same run, still going) checks the 5 per cent of N-z.
+A2 stays FAILED as written (decision 0040 item 7).
