@@ -1,0 +1,108 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "B-20261125-121830-9ecb59c",
+  "track": "B-emd-gw",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "population: gauge and particle legs against the base run (GD2-GD3, Q1-Q2 to a = 94.8; population/JOURNAL 2026-11-24 06:10, 06:30): compare_legs.py on analyses B-20261125-115558-2ab4161 (gd) and B-20261125-115657-91b61ec (p8) against B-20261124-131918-e71996f",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "python3",
+    "tracks/B-emd-gw/population/scripts/compare_legs.py",
+    "--base",
+    "/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261124-131918-e71996f/analysis_gr_s014.json",
+    "--leg",
+    "gd:/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261125-115558-2ab4161/analysis_gr_gd.json",
+    "--leg",
+    "p8:/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261125-115657-91b61ec/analysis_gr_p8.json"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "9ecb59ca422063745e4031c4e632cd8fa79a3571",
+    "branch": "track/B-emd-gw",
+    "dirty": false,
+    "package": [
+      "tracks/B-emd-gw/population"
+    ],
+    "outside_package": {
+      "count": 0,
+      "first": []
+    },
+    "merge_base_main": "1cbc3effc9fba3e4bd9ecc35daf3cec38c2711eb",
+    "worktree": "wt/B-emd-gw"
+  },
+  "code": {
+    "core_tag": "core-v0.7",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "b7f7695d8e9720758c144dd9c0f272ce4fba8b46f921750462326664310fad51",
+    "machine_file_sha256": "ff4e45b0fd5bf6bee4bf1084a282d72b9adf66f4a455f4e937d9884a1fb07535",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/B-emd-gw/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "tracks/B-emd-gw/population/scripts/compare_legs.py",
+      "role": "argv",
+      "sha256": "a2ead3e2487b4ea94a97cafc31401369ebfcf9ecd5e93ff95af86c3f3dd751e4",
+      "bytes": 8843,
+      "tracked": true
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261124-131918-e71996f/analysis_gr_s014.json",
+      "role": "argv",
+      "sha256": "c7256488670e37835d4c838d08338f3189b876565f77fb2fda38b47b01e6f84e",
+      "bytes": 381194,
+      "tracked": false,
+      "location": "main checkout data root"
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 1,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/B-emd-gw/B-20261125-121830-9ecb59c",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-25T12:18:31Z",
+  "started": null,
+  "ended": null,
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 40.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 3.423,
+    "gpu_hours_reserved": 9.3501,
+    "gpu_hours_without_gate": 0.481,
+    "cores_busy": 0,
+    "runs": 345,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md + 0026-cards-loaded-allotment-cost.md + 0031-level2-branch-and-ablation.md + 0032-new-account-preemption-allotments.md + 0038-track-e-g2-signed-g3-scope.md"
+  }
+}
