@@ -1,10 +1,10 @@
 {
   "track": "kb",
   "gate": "KB-G3",
-  "commit": "cf53d880f7a10995083ee466d74222f6fcf78e7f",
-  "verified_utc": "2026-11-25T03:43:42Z",
-  "export": "/data/haiyangw/nrpic/scratch/kb/tmp/stage-verify/kb-KB-G3-cf53d88-20261125T034319Z",
-  "result": "PASS",
+  "commit": "4b5e1895596db9d11adb0374b10a3f59cf2fddfe",
+  "verified_utc": "2026-11-25T12:50:10Z",
+  "export": "/data/haiyangw/nrpic/scratch/kb/tmp/stage-verify/kb-KB-G3-4b5e189-20261125T124942Z",
+  "result": "FAIL",
   "checks": [
     {
       "check": "clean",
@@ -14,14 +14,14 @@
     },
     {
       "check": "sync",
-      "status": "PASS",
-      "message": "main is merged into the branch",
+      "status": "FAIL",
+      "message": "main has commits not merged: run nrpic-ctx sync",
       "detail": null
     },
     {
       "check": "export",
       "status": "PASS",
-      "message": "clean export of cf53d880f7a1 (HEAD) in /data/haiyangw/nrpic/scratch/kb/tmp/stage-verify/kb-KB-G3-cf53d88-20261125T034319Z/tree",
+      "message": "clean export of 4b5e1895596d (HEAD) in /data/haiyangw/nrpic/scratch/kb/tmp/stage-verify/kb-KB-G3-4b5e189-20261125T124942Z/tree",
       "detail": null
     },
     {
@@ -63,7 +63,7 @@
     {
       "check": "runs",
       "status": "PASS",
-      "message": "230 run manifests finished (77 hand-written, read as decision 0012 allows), output checksums verified where recorded",
+      "message": "239 run manifests finished (77 hand-written, read as decision 0012 allows), output checksums verified where recorded",
       "detail": null
     },
     {
@@ -362,8 +362,8 @@
     },
     {
       "check": "status",
-      "status": "PASS",
-      "message": "STATUS.md has 32 lines",
+      "status": "WARN",
+      "message": "STATUS.md has 40 lines (at most 60, with a `gate:` line)",
       "detail": null
     },
     {

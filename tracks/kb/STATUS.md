@@ -1,6 +1,7 @@
 # STATUS of kb (2026-11-25 12:55 UTC, lead batch 17)
 
 ## Gates
+gate: KB-G3 signed 2026-11-24 (pass with reservations); KB-G0, KB-G1, KB-G2 signed; service mode
 - KB-G0, KB-G1, KB-G2: signed (coord/GATES.md).
 - KB-G3: SIGNED 2026-11-24, pass with reservations (coord/GATES.md, commit 8fdb954efa, tag
   stage/kb/KB-G3-pass-20261124; decision 0037 item 1). The reservations on single claims are

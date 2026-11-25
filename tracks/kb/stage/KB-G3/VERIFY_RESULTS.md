@@ -1,21 +1,21 @@
 # Re-verification: kb KB-G3
 
-`harness/bin/nrpic-stage verify kb KB-G3` on 2026-11-25T03:43:42Z, clean export of commit `cf53d880f7a1` in `scratch/kb/tmp/stage-verify/kb-KB-G3-cf53d88-20261125T034319Z`. Result: **PASS**.
+`harness/bin/nrpic-stage verify kb KB-G3` on 2026-11-25T12:50:10Z, clean export of commit `4b5e1895596d` in `scratch/kb/tmp/stage-verify/kb-KB-G3-4b5e189-20261125T124942Z`. Result: **FAIL**.
 
 | Check | Result | Message |
 |---|---|---|
 | clean | PASS | worktree clean (outside the stage directory being assembled) |
-| sync | PASS | main is merged into the branch |
-| export | PASS | clean export of cf53d880f7a1 (HEAD) in /data/haiyangw/nrpic/scratch/kb/tmp/stage-verify/kb-KB-G3-cf53d88-20261125T034319Z/tree |
+| sync | FAIL | main has commits not merged: run nrpic-ctx sync |
+| export | PASS | clean export of 4b5e1895596d (HEAD) in /data/haiyangw/nrpic/scratch/kb/tmp/stage-verify/kb-KB-G3-4b5e189-20261125T124942Z/tree |
 | size | PASS | no committed file of the track above 5 MB |
 | note | WARN | no tracks/<ID>/note/main.tex (working note) |
 | package | PASS | EVIDENCE.md, OPEN.md, CHECKLIST.md present (decision 0012); scoping text: stage/KB-G3/SCOPE.md; REVIEW.md present; verifier's report VERIFIER.md |
 | style | PASS | 1 style copies equal harness/style/SHA256SUMS (figstyle.py) |
 | fig-script | PASS | 3 figures, each with its script |
 | min-figs | PASS | 0 schematics and 3 data figures (brief 13.4 asks at least 0 and 0 at KB-G3) |
-| runs | PASS | 230 run manifests finished (77 hand-written, read as decision 0012 allows), output checksums verified where recorded |
+| runs | PASS | 239 run manifests finished (77 hand-written, read as decision 0012 allows), output checksums verified where recorded |
 | run-notes | WARN | 76 runs read with defaults or not fully re-verifiable (nrpic-run lint) |
-| status | PASS | STATUS.md has 32 lines |
+| status | WARN | STATUS.md has 40 lines (at most 60, with a `gate:` line) |
 | rerun | WARN | re-run skipped (--no-rerun) |
 
 ## run-notes
