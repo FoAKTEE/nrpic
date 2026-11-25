@@ -21,9 +21,11 @@ kind, an extra table and history record that an interrupted run does not have.)
                        before this work
 
 --by-binary adds the two-puncture deck problems/puncture/by_binary.athinput reduced to
-three refinement levels and 24 cycles, cut at 12 by time/nlim (outflow faces and refinement: a restart
-is exact only up to round-off there, so the tracker files are compared by cycle numbers
-and by the largest difference of a value).
+three refinement levels and --by-cycles cycles (default 8), cut at half of them by
+time/nlim, run with --by-exe and --by-ref-exe (default: --exe and --ref-exe; the threaded
+builds are faster) at --by-threads threads.  Outflow faces and refinement: a restart is
+exact only up to round-off there, so the tracker files are compared by cycle numbers and
+by the largest difference of a value.  --only-by-binary skips the periodic cases.
 
 Writes DIR/summary.json and DIR/fig_restart_test.{pdf,png}; exit status 0 if every check
 of the new executable holds.
@@ -54,11 +56,12 @@ def sha(path):
     return h.hexdigest()
 
 
-def run(exe, args, rundir, log):
+def run(exe, args, rundir, log, threads=1):
     os.makedirs(rundir, exist_ok=True)
+    env = dict(os.environ, OMP_NUM_THREADS=str(threads), OMP_PROC_BIND="false")
     with open(os.path.join(rundir, log), "ab") as f:
         return subprocess.run([exe] + args + ["-d", rundir], stdout=f,
-                              stderr=subprocess.STDOUT, cwd=rundir).returncode
+                              stderr=subprocess.STDOUT, cwd=rundir, env=env).returncode
 
 
 def rst_files(rundir):
@@ -232,14 +235,14 @@ def tracker_table(path):
     return rows
 
 
-def by_binary_cut(exe, deck, d):
-    rc1 = run(exe, ["-i", deck, "time/nlim=12"], d, "athena.seg1.log")
+def by_binary_cut(exe, deck, d, ncyc, threads):
+    rc1 = run(exe, ["-i", deck, "time/nlim=%d" % (ncyc//2)], d, "athena.seg1.log", threads)
     rs = rst_files(d)
-    rc2 = run(exe, ["-r", rs[-1], "time/nlim=24"], d, "athena.seg2.log")
+    rc2 = run(exe, ["-r", rs[-1], "time/nlim=%d" % ncyc], d, "athena.seg2.log", threads)
     return [rc1, rc2], os.path.relpath(rs[-1], d)
 
 
-def by_binary(exe, ref_exe, out):
+def by_binary(exe, ref_exe, out, ncyc, threads):
     """Two punctures, outflow faces, refinement: tracker files across one restart."""
     src = open(os.path.join(REPO, "problems", "puncture", "by_binary.athinput")).read()
     src = src.replace("num_levels          = 6", "num_levels          = 3")
@@ -249,13 +252,14 @@ def by_binary(exe, ref_exe, out):
     deck = os.path.join(d0, "by_binary_l3.athinput")
     with open(deck, "w") as f:
         f.write(src)
-    by = dict(deck_sha256=sha(deck))
+    by = dict(deck_sha256=sha(deck), cycles=ncyc, cut_at=ncyc//2, threads=threads)
     t0 = time.time()
-    by["A_rc"] = run(exe, ["-i", deck, "time/nlim=24"], os.path.join(d0, "A"), "athena.log")
+    by["A_rc"] = run(exe, ["-i", deck, "time/nlim=%d" % ncyc], os.path.join(d0, "A"),
+                     "athena.log", threads)
     by["A_wall_s"] = round(time.time() - t0, 1)
     for name, x in (("B", exe), ("B_ref", ref_exe)):
         d = os.path.join(d0, name)
-        rcs, rst = by_binary_cut(x, deck, d)
+        rcs, rst = by_binary_cut(x, deck, d, ncyc, threads)
         r = dict(rcs=rcs, continued_from=rst, exe=x)
         for n in (0, 1):
             fa = os.path.join(d0, "A", "by2.co_%d.txt" % n)
@@ -374,31 +378,42 @@ def main():
     ap.add_argument("--ref-exe", required=True)
     ap.add_argument("--out", required=True)
     ap.add_argument("--by-binary", action="store_true")
+    ap.add_argument("--only-by-binary", action="store_true")
+    ap.add_argument("--by-exe")
+    ap.add_argument("--by-ref-exe")
+    ap.add_argument("--by-cycles", type=int, default=8)
+    ap.add_argument("--by-threads", type=int, default=1)
     a = ap.parse_args()
     out = os.path.abspath(a.out)
     os.makedirs(out, exist_ok=True)
-    res = periodic_cases(a.exe, a.ref_exe, out)
-    checks, ref = judge(res)
     summary = dict(exe=a.exe, exe_sha256=sha(a.exe), ref_exe=a.ref_exe,
-                   ref_exe_sha256=sha(a.ref_exe), checks=checks, release_before=ref,
-                   cases=res)
-    if a.by_binary:
-        by = by_binary(a.exe, a.ref_exe, out)
+                   ref_exe_sha256=sha(a.ref_exe))
+    checks = {}
+    if not a.only_by_binary:
+        res = periodic_cases(a.exe, a.ref_exe, out)
+        checks, ref = judge(res)
+        summary.update(release_before=ref, cases=res)
+        summary["figures"] = figure(out, res)
+    if a.by_binary or a.only_by_binary:
+        bx, br = a.by_exe or a.exe, a.by_ref_exe or a.ref_exe
+        by = by_binary(bx, br, out, a.by_cycles, a.by_threads)
+        by.update(exe_sha256=sha(bx), ref_exe_sha256=sha(br))
         summary["by_binary"] = by
         for n in (0, 1):
             c = by["B"]["co_%d" % n]
             checks["by_binary: tracker %d of the continued run holds the cycles of A, "
                    "header once" % n] = (c["same_cycles"] and c["header_lines_B"] == 2)
-            checks["by_binary: tracker %d values within 1e-9 of A" % n] = (
-                c["same_cycles"] and c["max_abs_diff"] < 1.0e-9)
-    summary["figures"] = figure(out, res)
+            checks["by_binary: tracker %d values within 1e-9 of A (max %.1e)"
+                   % (n, c["max_abs_diff"])] = (c["same_cycles"] and c["max_abs_diff"] < 1.0e-9)
+    summary["checks"] = checks
     summary["all_ok"] = all(checks.values())
     with open(os.path.join(out, "summary.json"), "w") as f:
         json.dump(summary, f, indent=1)
     for k, v in checks.items():
         print("%-4s %s" % ("ok" if v else "FAIL", k))
-    print("release before:", json.dumps(ref, indent=1))
-    if a.by_binary:
+    if "release_before" in summary:
+        print("release before:", json.dumps(summary["release_before"], indent=1))
+    if "by_binary" in summary:
         print("by_binary:", json.dumps(summary["by_binary"], indent=1))
     print("ALL OK" if summary["all_ok"] else "SOME CHECK FAILED")
     return 0 if summary["all_ok"] else 1

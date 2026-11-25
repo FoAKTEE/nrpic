@@ -133,3 +133,17 @@ cells M/8, test particles, to t = 8 M, finder every 4 cycles; script
 - P12. Cost: one flow iteration costs the same with or without the option, so a search
   with N polishing iterations costs at most N iterations more; timed on processors here
   and on a card in the card check.
+
+## Entry 3 (2026-11-25, 05:36 PST): T1 first attempt stopped, by_binary too slow on the serial build
+
+Run core-20261125-131225-9591922 (T1 with `--by-binary`): the periodic cases finished,
+then the two-puncture deck at three levels ran at about 80 s per cycle on the serial
+build (ten tracker records in 14 minutes); three runs of 24 cycles would have taken 95
+minutes. Stopped by `nrpic-run stop` (recorded as failed; no summary was written, no
+number is taken from it). The script now takes the threaded builds for that deck
+(`--by-exe`, `--by-threads`) and 8 cycles cut at 4; T1 is run again without the deck and
+the deck in a run of its own. Before the registered attempt an unregistered trial of the
+script (debugging, `scratch/core/tmp/rf_smoke`, removed) showed that a cut by
+`time/nlim` cannot serve as the reference of an interrupted run: a run that ends by
+itself writes final outputs of every kind (one more table file, one more history record),
+which an interrupted run does not have. The cuts are therefore made by SIGTERM.
