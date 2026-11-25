@@ -87,7 +87,19 @@ sqrt(A/16 pi) against the exact horizon mass of the same slice, median over the 
 | A-L32 | identical to A to 1e-7 | | | | | |
 | B-L32 | identical to B to 1e-11 | | | | | |
 
-Findings (JOURNAL.md entry 12):
+Corrections after the fresh verifier (batch 19; stage/G2/VERIFIER-C18.md; analysis
+A-20261125-151126-7f79a83 of threshold_ball/scripts/c18_answer.py; no status file exists for these
+runs, repeats were checked as identical rows: none). Mass column: the committed convention; the
+tracked set bounds the median error to [5.1e-3, 7.2e-3] (A), [-2.7e-3, -1.6e-3] (B),
+[-1.0e-3, +0.5e-3] (C): A's 7.4e-3 lies 2e-4 above its bracket, C's -2.1e-4 is below the bracket
+width (1.6e-3) and no mass order is quoted. ddet under three interpolations at the first find:
+A 0.150-0.193, B 0.056-0.077, C 0.0166-0.0175 M, so the orders are 1.2-1.5 (A->B) and 1.75-2.1
+(B->C), not 1.5 and 2.0 alone (the verifier's third interpolation gives 1.0, 1.3); dtrap (no
+interpolation) stays 2.1, 1.5. Ball-radius leg: the mass varies by 3.3e-3 at A (table values),
+so "the mass by under 1e-3" holds at B only. A-R1.35's ddet is 0.175 in the verifier's
+recomputation (0.164 here); not rechecked by the lead.
+
+Findings (JOURNAL.md entry 12, as written before the corrections above):
 - mesh (A, B, C): the first-detection error falls 0.193 -> 0.068 -> 0.017 M (orders 1.5, 2.0),
   the trapping error 0.093 -> 0.022 -> 0.0077 M (2.1, 1.5), the finder's lag behind the first
   trapped slice 0.43 -> 0.20 -> 0.09 (1.1, 1.1); the horizon mass error 7.4e-3 -> 2.1e-3 -> 2.1e-4

@@ -395,3 +395,46 @@ K4 (entry 10) is judged after this entry with `scripts/k4_compare.py`; predictio
 Note on naming: decision 0039 item 2(c) calls K4 "the test of the smoothed edge". K4 is not that test: it
 varies the time step and the source extrapolation on the unsmoothed top hat (entry 10). The smoothed-edge
 test (entry 7's candidate) has not been run.
+
+### Entry 12 outcome (analysis A-20261125-151126-7f79a83; fig_c18_mass_bracket.png looked at; first attempts A-20261125-150848-401a271 and A-20261125-150943-69ea256 failed on a member without a status file and in the figure, kept on record)
+
+- P12a HOLDS: every classification and persistence time is reproduced from horizon_status_0.txt, and every BH
+  member is found in every search from its persistence start (B-d1.00 ... B-d0.40 from their first find; B-d0.35
+  first find 57.3125, 14 isolated finds, persistent from 58.3125; C-d0.42 163 of 936 unique searches, all from
+  45.90625; entry 11's "1119" counted rows repeated by restarts). conv_ball A, B, C and C-R1.25 have no status
+  file (made before `<fastflow> diagnostics`); their summaries contain no repeated rows. A-d0.42 and A-d0.40:
+  3 finds each, 16 of 19 summary rows are repeats of the last surface.
+- P12b HOLDS: the committed convention over the rows the committed analysis used reproduces every README median
+  (to 1e-5). For A-d0.42 those rows were 17 of which 14 were repeats: its -3.8e-2 is withdrawn (true finds: the
+  committed convention -2.1e-2; bracket [-2.6e-2, -0.8e-2]); A-d0.40's -4.6e-2 likewise (bracket [-4.5e-2, -2.7e-2]).
+- P12c REFUTED: the README medians lie OUTSIDE the bracket [median vs next particle, median vs outermost trapped
+  particle] for cb-A (7.4e-3 vs [5.1e-3, 7.2e-3]), B-d0.42 (+2.8e-3 vs [-5.6e-3, -0.5e-3]), B-d0.40 (+3.2e-4 vs
+  [-9.6e-3, -3.7e-3]), B-d0.35 (+2.4e-3 vs [-7.7e-3, +0.5e-3]), C-d0.42 (+2.36e-2 vs [-4.2e-3, +5.9e-3]) and both A
+  members. The running median of 9 places the trapped surface inside the outermost trapped tracked particle where
+  tau_p - tau_AH is noisy (near threshold and in C-d0.42's first-detection transient), lowering the exact mass.
+  My brackets agree with the verifier's to 5e-4 (B-d0.42 [-5.4e-3, -0.05e-3], C-d0.42 [-3.9e-3, +6.5e-3]): the
+  verifier's numbers stand, the README's near-threshold medians do not. The bracket width (median 1.1e-3 to
+  9.9e-3 relative) is the resolution of this diagnostic; READMEs corrected to the brackets.
+- P12d REFUTED: the ddet spread over the interpolations at the first find is up to 0.27 M on B (B-d0.40, counting
+  the two bracketing particles) and 0.12 M on C-d0.42; over the three interpolations alone 0.02-0.08 M on B,
+  0.058 M on C-d0.42, 0.001 M on conv_ball C. conv_ball's ddet orders become 1.2-1.5 (A->B) and 1.75-2.1 (B->C).
+- T4 (entry 11) stays FAILED as written: |ddet(C-d0.42)| = 0.0135 (v2), 0.0133, 0.044 against 0.0075 under every
+  interpolation; its mass half cannot be judged (bracket width 9.7e-3 > bound 1.4e-3).
+- Time measure: at B-d0.42's first detection (coordinate 45.875) the core edge reads 43.76 M, the finder radius
+  43.69 M, the outer comoving layers 46.52 M (verifier 46.50). The threshold is stated in the core edge's proper
+  time (= synchronous time of the exact solution); read in the outer layers' time the code's bracket would move
+  to (0.42, 0.45]. CHECKLIST C1 now names this.
+
+### Entry 10 outcome, K4 (run A-20261125-120525-8fb946e finished; analysis A-20261125-150851-5545f8e, fig_k4.png looked at)
+
+- K4a HOLDS: ||H||_2 of K4-dt (cfl 0.125) within 0.2 per cent of K4-ref at t = 1-5 (ratios 1.000, 1.000, 0.998,
+  0.998, 0.998).
+- K4b HOLDS: K4-src (no source extrapolation) within 0.8 per cent (1.000, 0.999, 1.007, 1.000, 1.008).
+- K4c HOLDS: K4-ref (processors, v0.6 threaded build) equals conv_ball's card member A to 1e-3 at t = 1-5.
+- ||H||_2 rises from 2.2 at t = 0 to 11 at t = 0.25 and falls to 0.5-0.9 by t = 2-5 in all four; ||M||_2 falls
+  from 12.5. The floor is independent of mesh (entry 6), particle number (entry 7), location (entry 9), time step
+  and source timing (this entry) [VERIFIED on member A]. Remaining candidates named in entry 10: the initial data
+  (the top hat's density jumps, whose residual does not fall with the mesh) or the gauge.
+- K4 is NOT the smoothed-edge test that decision 0039 item 2(c) refers to; that test has not run. Item C3 stays
+  FAILED as written. Next test (prediction to be written before it): data set 3 with smoothed edges (prep_bh.py
+  --edge-w) on meshes A and B, initial slice and t <= 5 on processors, ratio of section 3 at t = 0 and the norms.

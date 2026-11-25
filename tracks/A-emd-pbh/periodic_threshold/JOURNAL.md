@@ -899,3 +899,24 @@ finder searched (3 status rows). The first step is 8.93e-4, not 1.7e-3 as predic
 in that number: the light-speed limit on level 6 binds with c ~ 1.4, a factor 1.9 smaller step
 while c > 0.5; the late step is the cfl cap 0.5 dx6 = 2.44e-3 as assumed in D5). The deck goes to
 the cards (queue_b11 line 1).
+
+## 2026-11-25 07:35 PST (lead of batch 19): test A2 from S1L, prediction before any reading of its snapshots
+
+Decision 0039 item 2(a): the lead decides whether the triaxial run S1L serves as A2 (oblate collapse against
+the Zel'dovich time of first shell crossing) or one oblate member is queued. Decision: S1L serves as A2.
+Its run A-20261123-025907-97bab8d (core-v0.6 card build, S1 data mu = 0.3, e = 0.2) has run to t = 198.7 and
+wrote 20 full particle snapshots (262144 particles, every 10 coordinate units, peak.part.00000-00019.bin), so
+the epoch of the first Zel'dovich axis lies inside the part already run; q0015 (continuation 198.7 -> 220) is
+NOT needed for A2 (it serves S1-S3 and SCOPE section 7). Reference: DESIGN.md section 1, Zel'dovich eigenvalues
+(2 mu/15)(k/aH)^2 (1+3e+p, 1-2p, 1-3e+p); first axis z at 4.2 t_H, second 8.5 t_H, third 33.6 t_H for mu = 0.3
+(P0 run A-emd-pbh-20261115-153520-0576e01). Caveats on record: a periodic triaxial peak, not a deformed core
+inside the ball; mu = 0.3 is not small, so the reference is first-order Lagrangian and the bound wide.
+Prediction A2 [JUDGEMENT], written before any snapshot is read: the first shell crossing (sign change of the
+Lagrangian Jacobian of x(q) on the particle lattice, or the z-separation of neighbouring lattice particles on
+the z axis extrapolated to zero) happens first along z, at t_sc/t_H in [3.4, 5.0] (4.2 within 20 per cent: the
+GR correction (aH/k)^2 ~ 6 per cent at that epoch plus an unquantified second-order Lagrangian term for e = 0.2),
+before any horizon is found and before the central lapse falls below 0.3. Refuted by a first crossing outside
+[3.4, 5.0] t_H, along another axis first, or no crossing before the lapse collapse. If the snapshots (spacing
+of 10 coordinate units) cannot bracket t_sc to within that band, A2 is undecided and one oblate member is
+queued (six card-hours at most, priority 2) with denser snapshots. Analysis not written yet (next session;
+processors only; the conversion from coordinate time to t/t_H from the run's own background, DESIGN 1).
