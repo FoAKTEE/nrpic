@@ -19,7 +19,7 @@ outputs read are those of the runs named in the two READMEs (`scripts/vmembers.p
 
 | run id | what | outcome |
 |---|---|---|
-| A-20261125-130535-b79555d | V0: readers and reference on analytic fields, exact events of the 11 tables | superseded by -131605 (same tests, fewer cases) |
+| A-20261125-130535-b79555d, A-20261125-131418-1b00953 | V0: readers and reference on analytic fields, exact events of the 11 tables (earlier versions) | superseded by -131605 (same tests, fewer cases) |
 | A-20261125-131605-f9e71ee | V0 final (after both reader fixes) | V0a-d, V0f pass; V0e: MOTS location 3e-3 off (mass within 6e-4) |
 | A-20261125-130753-314837e, A-20261125-131436-e9ef7fb | V1: conv_ball recomputed (identical outputs; the second after the reader change) | section 3 |
 | A-20261125-131148-99204e1, A-20261125-131458-396f809 | V2 first attempts: rule outcomes withdrawn (my reader defects, section 5a) | on record |
