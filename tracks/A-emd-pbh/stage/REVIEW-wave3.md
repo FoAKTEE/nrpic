@@ -252,3 +252,31 @@ No helper packages finished since batch 11; the lead's own work is checked from 
 - t4_common.py defect (NaN for C, finder-row spacing taken for the search interval) found by reading
   its own output; fixed and rerun; the defective run stays on record.
 - Not confirmed this session: G3 of the A-mesh guard-stop test (A-20261124-132016-ecf12c3); K4.
+
+## 9. Batch 19 (2026-11-25, lead; the fresh verifier of C18 and K4)
+
+Package checked: `stage/G2/verifier-c18/` (fresh verifier, batch 18; report `stage/G2/VERIFIER-C18.md`).
+The lead did not rerun the verifier's own scripts; it answered each finding with its own registered
+analysis from the card outputs (`threshold_ball/scripts/c18_answer.py`, run A-20261125-151126-7f79a83;
+the two first attempts A-20261125-150848-401a271 and A-20261125-150943-69ea256 failed on a member
+without a status file and in the figure, kept on record) and looked at fig_c18_mass_bracket.png.
+
+| Verifier finding | Lead's recheck | What the track does |
+|---|---|---|
+| Classification, persistence times, tau_det, bracket reproduced | CONFIRMED from horizon_status_0.txt for every member; B-d0.35 has 14 isolated finds before 58.3125; C-d0.42 163 of 936 unique searches (batch 17's "1119" counted restart repeats) | READMEs keep the numbers; the "1119" corrected |
+| Summary file repeats stale finds (5a) | CONFIRMED: A-d0.42 and A-d0.40 have 16 of 19 summary rows repeated; the committed analysis built A's mass medians (-3.8e-2, -4.6e-2) on them: WRONG | A medians withdrawn; brackets of 3 finds instead |
+| Mass medians of B-d0.42, B-d0.40, B-d0.35, C-d0.42, conv_ball A not reproduced (NOT CONFIRMED by the verifier) | CONFIRMED the verifier: the committed convention (running median of 9, sign change linear in R_i) reproduces the README values, but they lie outside the bracket between the outermost trapped tracked particle and the next one outward; my brackets agree with the verifier's within 5e-4 | READMEs and checklist C2, C8 carry the brackets; values below the bracket width are not measurements; C8's verdict (order 1e-3 on M/64) stands |
+| ddet interpolation spread at the core edge (5e) | CONFIRMED and larger than I predicted (P12d refuted): 0.02-0.08 M on B threshold members over three interpolations, 0.058 M on C-d0.42, 0.001 M on conv_ball C | conv_ball orders stated as 1.2-1.5 and 1.75-2.1; T4's time half fails under every interpolation |
+| Exact mass resolution of the tracked set (5f) | CONFIRMED: bracket widths 1.1e-3 to 9.9e-3 relative | T4's mass half is not decidable; named in OPEN.md; a denser tracked set near the core edge for G3 |
+| C3 FAILED, also at t = 0 (5b) | not recomputed at t = 0 by the lead; K4 (below) consistent | C3 stays FAILED as written |
+| Time measure (5g) | CONFIRMED: outer layers 46.52 M, core edge 43.76 M at B-d0.42's first detection | the gate text (CHECKLIST C1, threshold_ball README) names the core-edge proper time |
+| A-R1.35 ddet 0.175 vs 0.164 | not rechecked | left open in conv_ball README and OPEN.md |
+
+K4 (threshold_ball entry 10; run A-20261125-120525-8fb946e on processors, analysis A-20261125-150851-5545f8e,
+fig_k4.png looked at): K4a, K4b, K4c HOLD (step 0.2 per cent, source extrapolation 0.8 per cent, card vs
+processor 1e-3). K4 is not the smoothed-edge test named in decision 0039 item 2(c); that test has not run.
+
+A2 (decision 0039 item 2(a)): the lead decides that S1L (A-20261123-025907-97bab8d, 20 particle snapshots
+through the Zel'dovich epoch) serves as A2, with the prediction written before any snapshot is read
+(periodic_threshold JOURNAL 2026-11-25 07:15 PST); no card time; the fallback (one oblate member, <= 6
+card-hours) only if the snapshots cannot bracket the first crossing within the band.

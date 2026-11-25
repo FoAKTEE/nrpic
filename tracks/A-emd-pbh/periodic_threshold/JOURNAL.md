@@ -900,7 +900,7 @@ in that number: the light-speed limit on level 6 binds with c ~ 1.4, a factor 1.
 while c > 0.5; the late step is the cfl cap 0.5 dx6 = 2.44e-3 as assumed in D5). The deck goes to
 the cards (queue_b11 line 1).
 
-## 2026-11-25 07:35 PST (lead of batch 19): test A2 from S1L, prediction before any reading of its snapshots
+## 2026-11-25 07:15 PST (lead of batch 19): test A2 from S1L, prediction before any reading of its snapshots
 
 Decision 0039 item 2(a): the lead decides whether the triaxial run S1L serves as A2 (oblate collapse against
 the Zel'dovich time of first shell crossing) or one oblate member is queued. Decision: S1L serves as A2.
