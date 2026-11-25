@@ -118,3 +118,18 @@ Prediction for the rerun with a second independent map (DOP853 in N on (phi - ph
 within 1 per cent in both coefficients, and along phi and the box relation within 0.1 per cent. Refuted if along
 Pi the second coefficient still differs by more than 1 per cent: then the floor is not the t-integrator's alone
 and the reader's Pi dependence is examined before it judges anything.
+
+## entry-7 (2026-11-25 08:33 PST): the rerun of entry 6 was stopped; Z1 along Pi stays failed as written
+
+Run E-20261125-161757-fb0eb95 (the reader with the second independent map, DOP853 in N at rtol 3e-14) ran Z0 and
+Z2 again (identical to E-20261125-161456-8d3f43c) and then spent over ten minutes in the 25 Z1 states; stopped by
+`nrpic-run stop` at 08:29 (status failed, on record). A timing check outside the record: at rtol 1e-13 one call
+needs 3.4e6 right-hand-side evaluations (40 s): in N the attractor equation is a small difference of two large
+terms and the step control cannot meet tolerances near rounding. Entry 6's prediction was not tested. The
+second map is now off by default (ZETA_USE_DOPN=1 turns it on). Status of Z1: FAILED as written along Pi alone at
+eps = box rms (0.142); passes along phi, along the box relation, and along Pi at 10 eps (5.1e-3) and 100 eps
+(3.0e-6). The reader's own coefficient is the same at 1, 10, 100 eps to 4e-5; the independent integrator's moves
+by 15 per cent: the evidence points at the independent integrator, but no cause is named until a test that could
+fail (a quadruple-precision or a series solution of the attractor map along Pi). Since the box's perturbations lie
+on the box relation (corr(d phi, d Pi) = 1 - 6e-12), the Pi-alone direction carries no weight in zeta; whether
+the reader judges G3 runs with Z1 failed in that direction is put to the orchestrator.

@@ -161,6 +161,11 @@ def map_dopN(phi, pi):
     return float(r.t_events[0][0])
 
 
+# map_dopN at rtol 3e-14 took over ten minutes for 25 states (run E-20261125-161757-fb0eb95, stopped); at 1e-13 one
+# call needs 3.4e6 evaluations (40 s). Off by default; the *_N fields then repeat the first map's.
+USE_DOPN = os.environ.get("ZETA_USE_DOPN", "0") == "1"
+
+
 # ------------------------------------------------------------ dumps
 VARS = ["phi", "Pi", "chi", "K", "alpha"]
 
@@ -247,7 +252,7 @@ for lab, (ep, eP) in {"phi": (eps_p, 0.0), "Pi": (0.0, eps_P), "box": (eps_p, ep
     Hs = np.sqrt(PI8 / 3.0 * (0.5 * pi**2 + V(ph)))   # a homogeneous state: Friedmann H
     nr = map_rk4(ph, pi / Hs)
     nd = np.array([map_dop(x, y) for x, y in zip(ph, pi)])
-    nN = np.array([map_dopN(x, y) for x, y in zip(ph, pi)])
+    nN = nd if not USE_DOPN else np.array([map_dopN(x, y) for x, y in zip(ph, pi)])
     c1 = lambda n: (-n[4] + 8 * n[3] - 8 * n[1] + n[0]) / 12.0  # noqa: E731  (per unit step)
     c2 = lambda n: (-n[4] + 16 * n[3] - 30 * n[2] + 16 * n[1] - n[0]) / 12.0  # noqa: E731
     z1[lab] = dict(eps_phi=ep, eps_Pi=eP, N0_reader=float(nr[2]), N0_dop=float(nd[2]),

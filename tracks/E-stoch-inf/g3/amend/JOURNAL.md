@@ -177,3 +177,19 @@ This departs from the wording of A9 ("a constant shift c"); the rest of A9 (medi
 nu = 3 within two standard errors, 2 per cent bar) stands. Proposed as a dated note to A9 in SCOPE 4d.9.
 - TL1': c0 within [3.5, 4.5] on both sides.
 - TL2-TL5 of entry 7 stand unchanged (TL4: mean weight within three standard errors of 1).
+
+## entry-9 (2026-11-25 08:32 PST): outcome of TS1-TS3 (lattice variant at sigma = 0.1, run E-20261125-160722-a6d1f26)
+
+4e6 paths, 128 band, 2 cores, 17 min (`results/ref_inflection_n32_s01lat.json`, `fig/ref_inflection_n32_s01lat_pdf.png`
+looked at: the density follows the Gaussian of the linear variance to 3e-5; in the right panel the skewness square
+sits at the edge of the axis because only one variant ran, a cosmetic defect).
+- TS1 FAILED: var/var_lattice_Ne = 1.00245 +- 0.00050, 4.9 standard errors above 1 (s0.01_lattice: 0.99865 +- 0.00058).
+  The sigma = 0.1 variant is 0.38 per cent above the sigma = 0.01 one. No cause named [JUDGEMENT, untested: modes
+  joined 2.3 e-folds after crossing instead of 4.6 carry a gradient correction of order (sigma)^2 = 1e-2 of their
+  power at their entry; a test would vary sigma at 0.05 and 0.2]. The G3 reference stays sigma = 0.01 (A10).
+- TS2 HOLDS as worded: skewness 0.01824 +- 0.00136 against 0.01989 +- 0.00117, difference -0.0017 +- 0.0018, inside
+  0.0027. But the bound A10 wanted is NOT reached: at two standard errors the difference may be 0.0053, twice the
+  threshold of (T). Bounding the coarse-graining dependence of the skewness below 0.0027 needs about 4 times the
+  paths of both variants (or the paired-noise design: same noise for both sigma).
+- TS3 HOLDS: var_phi at N_f 4.932e-13 (+0.39 per cent of sigma = 0.01's 4.913e-13); skew_phi 0.0024 +- 0.0013.
+  Exceedance at latsig: F_+(3) 1.4515e-3, F_-(3) 1.2698e-3, F_+(4) 3.93e-5, F_-(4) 2.35e-5.
