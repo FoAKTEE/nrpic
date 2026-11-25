@@ -1,0 +1,90 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "C-20261125-120516-36dc9b8",
+  "track": "C-sidm",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "batch 17: smoke test (3 cycles) of the decks A8N_y0p34400_N1e6_s1_kin and D2_cc2_kn10_f2_s1_eta1 on the threaded processor build core-v0.6 before they enter the card queue",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "bash",
+    "tracks/C-sidm/longruns/scripts/smoke_b17.sh",
+    "$NRPIC_RUN_DIR",
+    "A8N_y0p34400_N1e6_s1_kin",
+    "D2_cc2_kn10_f2_s1_eta1"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "36dc9b8f07fd91ed32e709d3786ec76742599329",
+    "branch": "track/C-sidm",
+    "dirty": false,
+    "merge_base_main": "1cbc3effc9fba3e4bd9ecc35daf3cec38c2711eb",
+    "worktree": "wt/C-sidm"
+  },
+  "code": {
+    "core_tag": "core-v0.7",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "b7f7695d8e9720758c144dd9c0f272ce4fba8b46f921750462326664310fad51",
+    "machine_file_sha256": "ff4e45b0fd5bf6bee4bf1084a282d72b9adf66f4a455f4e937d9884a1fb07535",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/C-sidm/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "tracks/C-sidm/longruns/scripts/smoke_b17.sh",
+      "role": "argv",
+      "sha256": "82189201415a725dc331ed2baf689eb9eec182d0cf116d7f66f378bf8ac692c5",
+      "bytes": 781,
+      "tracked": true
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 4,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/C-sidm/C-20261125-120516-36dc9b8",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-25T12:05:17Z",
+  "started": null,
+  "ended": null,
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 60.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 25.7134,
+    "gpu_hours_reserved": 3.9334,
+    "gpu_hours_without_gate": 0.0,
+    "cores_busy": 1,
+    "runs": 239,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md + 0026-cards-loaded-allotment-cost.md + 0031-level2-branch-and-ablation.md + 0032-new-account-preemption-allotments.md + 0038-track-e-g2-signed-g3-scope.md"
+  }
+}
