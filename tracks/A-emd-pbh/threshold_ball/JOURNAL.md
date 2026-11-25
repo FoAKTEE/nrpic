@@ -412,7 +412,7 @@ test (entry 7's candidate) has not been run.
   [-9.6e-3, -3.7e-3]), B-d0.35 (+2.4e-3 vs [-7.7e-3, +0.5e-3]), C-d0.42 (+2.36e-2 vs [-4.2e-3, +5.9e-3]) and both A
   members. The running median of 9 places the trapped surface inside the outermost trapped tracked particle where
   tau_p - tau_AH is noisy (near threshold and in C-d0.42's first-detection transient), lowering the exact mass.
-  My brackets agree with the verifier's to 5e-4 (B-d0.42 [-5.4e-3, -0.05e-3], C-d0.42 [-3.9e-3, +6.5e-3]): the
+  My brackets agree with the verifier's to 6e-4 (B-d0.42 [-5.4e-3, -0.05e-3], C-d0.42 [-3.9e-3, +6.5e-3]): the
   verifier's numbers stand, the README's near-threshold medians do not. The bracket width (median 1.1e-3 to
   9.9e-3 relative) is the resolution of this diagnostic; READMEs corrected to the brackets.
 - P12d REFUTED: the ddet spread over the interpolations at the first find is up to 0.27 M on B (B-d0.40, counting
