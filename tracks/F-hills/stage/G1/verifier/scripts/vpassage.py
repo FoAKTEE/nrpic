@@ -110,6 +110,28 @@ def main():
                 "max_dev_from_median_frac": float(np.abs(ma / med - 1).max()),
                 "hrms_max": float(d["hrms"][acc].max()),
                 "binned_median_frac_slope": binned_slope(ta, ma, 65, 95) if tag == "A2" else binned_slope(ta, ma, 20, 60)}
+    # the heavy hole's two branches in A2 (seen in fig_v_horizons): smooth decline before the
+    # alternating band, then an upper and a lower branch split at the midpoint of the band
+    d2 = hz[("A2", 2)]
+    acc2 = ~d2["failed"]
+    t2, m2 = d2["t"][acc2], d2["mass"][acc2]
+    pre = (t2 >= 63) & (t2 <= 86)
+    jumps = np.where(np.abs(np.diff(m2)) > 2e-4)[0]
+    t_band = float(t2[jumps[jumps > 0][np.searchsorted(t2[jumps], 80.0)] if (t2[jumps] > 80).any() else -1]) \
+        if len(jumps) else None
+    br = {"slope_63_86_per_M": float(np.polyfit(t2[pre], m2[pre], 1)[0]) if pre.sum() > 3 else None,
+          "m_at_63": float(np.interp(63, t2, m2)), "m_at_86": float(np.interp(86, t2, m2)),
+          "t_first_jump_after_80": t_band}
+    if t_band is not None and t_band > 0:
+        post = t2 > t_band
+        mid = 0.5 * (m2[post].max() + m2[post].min())
+        up, lo = post & (m2 > mid), post & (m2 <= mid)
+        br.update({"split_at": float(mid), "n_upper": int(up.sum()), "n_lower": int(lo.sum()),
+                   "upper_median": float(np.median(m2[up])) if up.any() else None,
+                   "lower_first_last": [float(m2[lo][0]), float(m2[lo][-1])] if lo.any() else None,
+                   "lower_slope_per_M": float(np.polyfit(t2[lo], m2[lo], 1)[0]) if lo.sum() > 3 else None,
+                   "upper_slope_per_M": float(np.polyfit(t2[up], m2[up], 1)[0]) if up.sum() > 3 else None})
+    res["heavy_A2_branches"] = br
     m_h = [res[f"horizon_A2_{n}"]["median"] for n in (0, 1, 2)]
     res["masses_used"] = {"members_and_M": m_h, "source": "medians of A2's accepted searches"}
 
