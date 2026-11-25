@@ -244,3 +244,15 @@ that member ejected).
 - K3b prediction: at r_a = 100 r_t the primary is ejected 4-15 times less often than the secondary
   (P1/P2 between 0.07 and 0.25), and P1 = P2 on the parabola within 1 sigma.
 Refuted: any probability more than 3 sigma off, or P1/P2 outside 0.05-0.3.
+
+### Outcomes of entry 4 (run F-20261125-180244-25c98a5, 4 cores, 256 phases per point; fig_v_khsr looked at)
+
+- K3a MET: every probability within 0.41 sigma of the claim. D = 0.5 parabola P1 = P2 = 0.484, Pdis
+  0.969 (claim 0.485, 0.971); r_a = 100 r_t P1 0.070, P2 0.488, Pdis 0.977, both bound 0.418 (claim
+  0.068, 0.484, 0.973, 0.420). D = 1 parabola P1 = P2 = 0.457, Pdis 0.914 (0.459, 0.918); r_a = 100
+  r_t P1 0.070, P2 0.453, Pdis 0.922, both bound 0.398 (0.070, 0.457, 0.922, 0.395).
+- K3b MET: P1/P2 = 0.144 (D = 0.5) and 0.155 (D = 1) at r_a = 100 r_t (ledger row 60: 0.141,
+  0.154); P1 = P2 exactly on the parabola (the phase grid is symmetric under phi -> phi + pi).
+- Energy check: relative total-energy error up to 6e-3 on the parabola, where the total energy is
+  near zero; in absolute terms 5.6e-4, i.e. 3e-5 of the energy unit (18.75), harmless for the
+  classification. On r_a = 100 r_t at most 1.7e-8.

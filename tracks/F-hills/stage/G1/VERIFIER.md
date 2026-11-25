@@ -1,8 +1,9 @@
 # VERIFIER of G1, F-hills (checklist C18; decisions 0016 item 4, 0042 item 2)
 
-Fresh verifier, batch 22, 2026-11-25 09:38-10:05 PST, processors only, 0 card-hours. Package:
+Fresh verifier, batch 22, 2026-11-25 09:38-10:10 PST, processors only, 0 card-hours. Package:
 `verifier/` (README, JOURNAL with predictions and outcomes, scripts, results, figures). Every
 number below is from the registered run **F-20261125-175931-32701e4** (`verifier/scripts/run_all.sh`;
+Sec. 3.5 from F-20261125-180244-25c98a5, `verifier/scripts/vkhsr.py`;
 its passage numbers at the cut equal those of the earlier passes F-20261125-175038-4719d4a,
 -175132-e7c6c68, -175235-e0fdde6, -175533-141e4f1, which it supersedes) unless another run id is given. Horizon numbers are all **made without the diagnostics** (no run of
 this track has `<fastflow> diagnostics`); failed searches are found by the source's failure
@@ -24,7 +25,8 @@ signature (a non-finite or non-positive mass, or columns 3-12 identical to the p
   whose FFI energy is exact to 3.5e-6 (J0). One bound I wrote failed: the Kepler energy is kept to
   3.2e-11, not 1e-11 (harmless).
 - Predictions were committed before any reader ran on data (commit 57c7a67dc; for criterion (iii)
-  commit 8afb440c8, where I had seen the t = 0 history rows before writing, so K1 is arithmetic, not
+  commit 8afb440c8; for KHSR commit of entry 4 before its run; entry 3's ledger predictions were
+  written into the journal before the reader ran and committed with its code, where I had seen the t = 0 history rows before writing, so K1 is arithmetic, not
   a blind test). By accident I read the owner's journal lines 1060-1075 (the first outcome lines of
   batch 21, S1-S3) while reading its predictions; those numbers are also in b21_a2_state.json,
   which the task gives me as the claim.
@@ -36,7 +38,7 @@ signature (a non-finite or non-positive mass, or columns 3-12 identical to the p
 
 | Criterion | What I checked | State |
 |---|---|---|
-| (i) F-pre-1 reproduces 0911.1136 and 1804.02911; one KHSR result | nothing (not in this package's time) | not checked |
+| (i) F-pre-1 reproduces 0911.1136 and 1804.02911; one KHSR result | the KHSR result (khsr_note K3) at four points with my own three-body integrator (Sec. 3.5); not 0911.1136 or 1804.02911 | KHSR part reproduced; the rest not checked |
 | (ii) F-pre-2 reproduces 2404.16270 | nothing | not checked |
 | (iii) t = 0 Hamiltonian residual for approx, none, plain sum; junk at R >= 40 m, two radii within 20 percent | rms H at t = 0 of all seven E2 cases and the card smoke; FFI junk energy at P1's four spheres | reproduced (Sec. 3.4); the radii agree within 19.8 percent, at the edge of the criterion |
 | (iv) one complete vacuum passage: all horizons found until a merger, trackers to 200 M, outcome with the constraint norm | P1 (merged at 48.8 M, to 280 M) and P1b (A + A2, to 96.2 M of at least 170 M) | P1: complete, reproduced; P1b: not complete (verified to its last record) |
@@ -115,6 +117,24 @@ digits.
 | 1.5-3.9e-6 over integration choices | omega_0 = 0.1: 3.3-4.2e-6; 0.3: 1.7-2.1e-6; u = t - r: 1.7-2.4e-6 | reproduced in range (my omega_0 = 0.1 reaches 4.2e-6 at 40 M) |
 | 67-70 percent in l >= 4, flat in l | 69-71 percent; E_l flat from l = 2 to 8 (fig_v_junk) | reproduced |
 
+### 3.5 KHSR K3 (khsr_note, scan F-20261121-212757-77cdc15), run F-20261125-180244-25c98a5
+
+My three-body integrator (vnewton.rhs, DOP853, rtol 1e-11), KHSR's set-up as khsr_note states it
+(M/m = 1e6, m1/m2 = 3, circular prograde coplanar binary, start 10 r_t, stop at 30 r_t outbound),
+256 phases per point against the scan's 512; sigma is the binomial error of my sample.
+
+| point | claim P1, P2, Pdis, both bound | mine | verdict |
+|---|---|---|---|
+| D = 0.5, parabola | 0.485, 0.485, 0.971, 0 | 0.484, 0.484, 0.969, 0 | reproduced (0.2 sigma) |
+| D = 0.5, r_a = 100 r_t | 0.068, 0.484, 0.973, 0.420 | 0.070, 0.488, 0.977, 0.418 | reproduced (0.4 sigma) |
+| D = 1, parabola | 0.459, 0.459, 0.918, 0 | 0.457, 0.457, 0.914, 0 | reproduced (0.2 sigma) |
+| D = 1, r_a = 100 r_t | 0.070, 0.457, 0.922, 0.395 | 0.070, 0.453, 0.922, 0.398 | reproduced (0.1 sigma) |
+| ledger row 60: P1/P2 at r_a = 100 r_t, D = 0.5, 1 | 0.141, 0.154 | 0.144, 0.155 | reproduced, 2 digits |
+
+So the KHSR statements "the ejection probability falls to a little more than half of the disruption
+probability at r_a = 100 r_t" (0.55 of 0.97; 0.52 of 0.92) and "the primary escapes six to eight
+times less often than the secondary" hold at these two penetration factors.
+
 ## 4. Predictions that failed as written (owner's and mine)
 
 - A2-1 (batch 11): minimum 2.0-2.7 M at 63-75 M. The minimum, 2.110 M, came at 76.37 M: failed on
@@ -151,7 +171,8 @@ digits.
 
 ## 6. Not checked (plainly)
 
-F-pre-1 (newton3, criterion (i)) and the KHSR result (khsr_note K3); F-pre-2 (geodesic_binary,
+F-pre-1 (newton3, criterion (i): 0911.1136, 1804.02911) and KHSR beyond the four points of Sec. 3.5
+(retrograde, r_a = 500, 200, 130, the parabolic approximation K3c/K3d); F-pre-2 (geodesic_binary,
 kerr, criterion (ii)); the eih package (EIH separations, 1PN scans); the note v2 ledger tables except
 rows 122, 126 (in part), 128, 168, 194, 200, 201, 203, 205, 207 (checked in sections 3.3 and 3.4; row
 168, the conic 9.809 and e = 1.00023, is my 9.8087 and 1.000235); P1's remnant spin (row 204),
@@ -185,7 +206,8 @@ added after A2 in `vpassage.py` (`RUN_A2`) and `vmesh.py` (`RUNS["A"]`).
 
 ## 9. Comparison with the lead's verdicts (written after sections 1-8 were committed, 05e52ce51)
 
-Read for this section only: `CHECKLIST.md` (C6-C8, C18), `../REVIEW-wave3.md` (binary_conv,
+(Sections 3.3-3.5 gained the ledger rows and the KHSR check after this section was first written;
+their rows here were updated with them.) Read for this section only: `CHECKLIST.md` (C6-C8, C18), `../REVIEW-wave3.md` (binary_conv,
 khsr_note, card chains, batch 21), the owner's JOURNAL.md batch 21 outcomes (lines 1060-1120).
 
 | Lead's verdict | Mine | Agreement |
@@ -203,9 +225,9 @@ khsr_note, card chains, batch 21), the owner's JOURNAL.md batch 21 outcomes (lin
 | binary_conv (batch 4a): order ">= 3.3" not established; "only the three-point (R12) or later R16n data decide the order" | R12 now decides it: no order exists (s12 - s16 changes sign; m/8 outside the asymptotic regime) | agree, and the open question is closed in the negative (F2) |
 | binary_conv (batch 4a): fractional drifts labelled "per M" | the S6/H2 "per M" numbers are fractional too | agree; the wording is still in the batch-21 numbers (F3) |
 | khsr_note: P1 to 280 M "not rechecked, to the G1 verifier" | merger, remnant pass and recession, rms H, remnant mass change, heavy hole +0.32 percent (from 4 M) reproduced; d_at_112 not reproduced; spin and radiated energy not checked | mostly done; one defect found |
-| khsr_note: K3 "a second agent's check ... is part of the G1 verifier" | not done | open |
+| khsr_note: K3 "a second agent's check ... is part of the G1 verifier" | four prograde points (D = 0.5, 1; parabola, r_a = 100 r_t) with my own integrator, all within 0.41 sigma; P1/P2 0.144, 0.155 | agree at these points (K3a/K3b); K3c/K3d and the other r_a not checked |
 | C6 PASS (F-pre-1, F-pre-2) | not checked by me | no opinion |
-| C18 OPEN: "every number of the Supplemental Material recomputed from the manifests" | ledger rows 122, 128, 168, 194, 200-207 (part) recomputed; the passage, Newton, mesh, horizon and junk numbers above too; the rest of the ledger not | C18 is met for the material of sections 3.1-3.4 only; the rest of the ledger, K3, F-pre-1/2 and eih remain for a verifier |
+| C18 OPEN: "every number of the Supplemental Material recomputed from the manifests" | ledger rows 122, 128, 168, 194, 200-207 (part) recomputed; the passage, Newton, mesh, horizon and junk numbers above too; the rest of the ledger not | C18 is met for the material of sections 3.1-3.5 only; the rest of the ledger, F-pre-1/2 (except the four KHSR points) and eih remain for a verifier |
 
 Where the lead's text should change (my requests a-f of section 8): F1 (heavy-hole branches, before
 judging A2-5), F2 (no order of convergence; quote the m/12-m/16 agreement instead), F3 (fractional
