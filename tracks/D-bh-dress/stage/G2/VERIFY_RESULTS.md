@@ -1,12 +1,12 @@
 # Re-verification: D-bh-dress G2
 
-`harness/bin/nrpic-stage verify D-bh-dress G2` on 2026-11-24T18:07:00Z, clean export of commit `72ebe935535b` in `scratch/D-bh-dress/tmp/stage-verify/D-bh-dress-G2-72ebe93-20261124T180528Z`. Result: **FAIL**.
+`harness/bin/nrpic-stage verify D-bh-dress G2` on 2026-11-25T12:25:08Z, clean export of commit `7cecfcd1a619` in `scratch/D-bh-dress/tmp/stage-verify/D-bh-dress-G2-7cecfcd-20261125T122110Z`. Result: **FAIL**.
 
 | Check | Result | Message |
 |---|---|---|
 | clean | PASS | worktree clean (outside the stage directory being assembled) |
-| sync | PASS | main is merged into the branch |
-| export | PASS | clean export of 72ebe935535b (HEAD) in /data/haiyangw/nrpic/scratch/D-bh-dress/tmp/stage-verify/D-bh-dress-G2-72ebe93-20261124T180528Z/tree |
+| sync | FAIL | main has commits not merged: run nrpic-ctx sync |
+| export | PASS | clean export of 7cecfcd1a619 (HEAD) in /data/haiyangw/nrpic/scratch/D-bh-dress/tmp/stage-verify/D-bh-dress-G2-7cecfcd-20261125T122110Z/tree |
 | size | PASS | no committed file of the track above 5 MB |
 | note | PASS | tracks/<ID>/note/main.tex present |
 | package | PASS | EVIDENCE.md, OPEN.md, CHECKLIST.md present (decision 0012); scoping text: scope/SCOPE.md; no verifier's report yet (VERIFIER.md, decision 0016) |
@@ -14,9 +14,9 @@
 | style | PASS | 2 style copies equal harness/style/SHA256SUMS (czstyle.py, paperfig.py) |
 | fig-script | PASS | 13 figures, each with its script |
 | min-figs | PASS | 2 schematics and 11 data figures (brief 13.4 asks at least 1 and 5 at G2) |
-| runs | FAIL | 7 of 297 runs have problems |
-| run-notes | WARN | 99 runs read with defaults or not fully re-verifiable (nrpic-run lint) |
-| status | PASS | STATUS.md has 38 lines |
+| runs | FAIL | 4 of 302 runs have problems |
+| run-notes | WARN | 102 runs read with defaults or not fully re-verifiable (nrpic-run lint) |
+| status | PASS | STATUS.md has 40 lines |
 | rerun | PASS | 13 of 13 scripts and commands ran cleanly in the export |
 | compare | PASS | 37 regenerated files compared with the committed ones; 0 differ beyond tolerance (rtol 1e-06, atol 1e-12, PNG rms 0.005) |
 | regenerate | PASS | all 26 committed figure files regenerated |
@@ -27,15 +27,6 @@
 {
  "D-20261121-165420-5d1c245": [
   "input /data/haiyangw/nrpic/scratch/D-bh-dress/tmp/gate_review_G1/review_checks.py changed since the run (sha256 differs)"
- ],
- "D-20261123-022725-a553496": [
-  "status is submitted: not finished (nrpic-run finish)"
- ],
- "D-20261123-022726-1b133af": [
-  "status is submitted: not finished (nrpic-run finish)"
- ],
- "D-20261123-022727-1c17e73": [
-  "status is submitted: not finished (nrpic-run finish)"
  ],
  "D-20261124-134157-b17938b": [
   "status is submitted: not finished (nrpic-run finish)"
