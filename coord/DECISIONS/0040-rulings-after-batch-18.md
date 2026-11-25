@@ -42,3 +42,20 @@ The allotments stand.
 5. Usage. The week stands at 66 per cent on Wednesday 07:02 PST and resets on Friday
    15:00 PST. No further source session on Fable before the reset; Opus sessions for
    analysis as card runs end; nothing new is launched above 90 per cent.
+6. Added after batch 19 (2026-11-25 08:00 PST). Track A, item C3: decision 0039 item
+   2(c) named run K4 as the test of the smoothed edge; that was the orchestrator's
+   error. K4 varied the time step and the extrapolation of the source on the top hat,
+   and the floor of the constraints depends on neither. The smoothed-edge test runs on
+   processors next, and C3 is judged after it as 0039 item 2(c) says, with that test
+   in the place of K4.
+7. Track A, test A2: the lead's choice stands (the triaxial run S1L serves). Its timing
+   prediction failed: first shell crossing along the predicted axis at 6.1 to 6.4
+   Hubble times against the band 3.4 to 5.0. A2 is FAILED as written. The control in
+   Newtonian mode with the same particles is the next test; no cause is named before it.
+8. Verifier files: `VERIFIER.md` of a stage is the report of the fresh verifier of the
+   whole gate. A report on one checklist item (`VERIFIER-C18.md`) is cited from the
+   checklist and does not replace it; the stage tool is not changed.
+9. Track E: the scope of G3 is amended (its section 4d.9, items A1 to A13, commit
+   905feb7c0, before any production entry); the floor of the spectral convergence is
+   second order at 256 cells too (risk R28 closed). Production entries of G3 may run.
+
