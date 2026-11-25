@@ -29,3 +29,7 @@ tracks/kb/outbox/20261121T213157Z__to-B-emd-gw__key-reference-claims-complete.md
 tracks/kb/outbox/20261121T235027Z__to-B-emd-gw__claim-861-2312-12499.md	2026-11-23T02:01:51Z	
 tracks/orch/outbox/20261124T201500Z__to-all__queue-cap-five.md	2026-11-24T21:06:22Z	
 tracks/orch/outbox/20261124T210500Z__to-all__shared-card-queue.md	2026-11-24T21:06:22Z	
+tracks/core/outbox/20261125T004353Z__to-all__sigterm-restart-and-chain-segments.md	2026-11-25T12:00:57Z	
+tracks/orch/outbox/20261125T033009Z__to-all__release-core-v0.7.md	2026-11-25T12:00:57Z	
+tracks/orch/outbox/20261125T033027Z__to-all__release-core-v0.7-checksum.md	2026-11-25T12:00:57Z	
+tracks/kb/outbox/20261125T034403Z__to-all__claims-superseded-batch15.md	2026-11-25T12:00:57Z	
