@@ -600,3 +600,45 @@ shells. CONFIRMED at 128 (second order); NOT YET at 256 (q0038, job 5284 submitt
 SCOPE 4d committed (cbe20398) and pushed before the first G3 submission (q0045, added after the push).
 Power estimate and the 128-band reference are registered runs with predictions written first; two
 of the power predictions (W2, W3) failed and are on record (g3/JOURNAL.md entry 1).
+
+# Part H. Batch 19 (lead of batch 19, 2026-11-25 morning): the review of the G3 scope, FL256h
+
+Packages finished since Part G: `g3/scope_review` (batch 18 helper, independent review of SCOPE 4d;
+verdict "change B1-B3 first"). Card run finished: FL256h (q0038). Ruling: decision 0040 item 1.
+Checks are the lead's own, from the artefacts, in `g3/amend/` (README, JOURNAL entries 1-5).
+
+## H.1 g3/scope_review: what the lead confirmed, could not confirm, and found wrong
+
+| Finding | Lead's check | Verdict | What the track does |
+|---|---|---|---|
+| B1 top bin of the lattice factor | own code (`g3/amend/bins_lead.py`, own vector count and bins, nothing shared with `ref_bins.py`), run E-20261125-151230-a4f4059, `fig_bins_lead.png` looked at: variant/lattice 0.97786 (32) and 0.99058 (64) as binned, 1.00002 and 0.99991 fixed; top factor 0.2789 vs 0.9338, 0.1656 vs 0.9922; share 3.38 and 1.13 per cent | CONFIRMED to every digit the review quoted | ref_spec.py fixed (d5a5f2f3c); pilot rerun E-20261125-151340-743c38c passes the new variance gate (0.9993 +- 0.0032), other variants bit-identical; SCOPE A1 |
+| B2 variance and tail mixed at fixed nu sigma_lin | own arithmetic (`b2_lead.py`), run E-20261125-151429-83a040c: 9.849, 16.90; 3.94 per cent at S = 256 and 4e6, i.e. 0.40 per cent in sigma, 0.0090 in skewness; skewness 0.0231 moves F(3) by 10.1 per cent | CONFIRMED (a few per cent below the review's thresholds through my reference F(3) of 1.5e-3) | SCOPE A2: (V) and (T) judged apart, r(nu) reported only |
+| B3 reader tests cannot fail; sign | from `ladder_lib.py` line 180 and the definition in 4d.1: R^NR = -psi + (H/Pi) dphi, zeta = psi + Delta N_bg = -R^NR at first order | CONFIRMED (test (a) cannot fail, test (b) has the wrong sign) | SCOPE A3: Z0-Z2 on processors; entry-2 predictions G3-T "for both variables" superseded (g3/JOURNAL entry 4) |
+| B3 bullet 3 and S1: the non-Gaussianity of zeta comes from the shared map | smoke run of the reference with the state at N_f, E-20261125-152619-d917a14: phi at N_f has skewness 0.023 (+- about 0.02 at 2e4), the first-passage value | NOT CONFIRMED, possibly WRONG [TO VERIFY at 4e6, run E-20261125-152832-c301e92]: the one-patch field already carries the skewness at N_f | SCOPE A4 (state at N_f in the reference, direct comparison with the box's d phi) implemented; if confirmed, A4 carries the G3 result |
+| S2 mirrored pairs | follows from the definitions | adopted | A5; baseline lists of pairs |
+| S3 gauge leg has no lever arm | not rerun (review run E-20261125-131805-0806ef8; ruled by decision 0040) | accepted on the review's run | A8: withdrawn, limitation stated, request to core for a field-dependent lapse (outbox) |
+| S4, S5 | wording | adopted | A6, A7 |
+| S6, S7 | arithmetic confirmed with B2 (nu = 4: three combined errors 25 per cent at 4e6 direct; the NR error a third of the reference's at 87 and 50 seeds) | CONFIRMED | A9 (sampler target 2 per cent per side), A10 (seeds with reference size) |
+| N1 R^NR skewness band | adopted as a prediction band [0, 0.002] | adopted | g3/JOURNAL entry 4 |
+| N3 sigma = 0.1 at 4e6 | adopted | adopted | in the 4e6 run |
+| N4 s0.01_lin variance 0.9844 of the continuum | the corrected pilot file gives 0.9844 +- 0.0067 (2.3 standard errors low) | NOT CHECKED further | open; the linear-limit variant is not used by any criterion |
+| N6 level 2 cost 1.9 | arithmetic | adopted | A11 |
+| Owen's T and block estimates of S7, N2 box modes | not rerun | NOT CONFIRMED by the lead | not needed for a criterion; the pilot measures the per-seed scatter on real output (G3P-3) |
+
+Own failed prediction: LB2 (flat-spectrum control) refuted in part (0.99998 instead of 0.996-0.998: the sparse
+low shells overcount a flat spectrum by 0.27 per cent and cancel the top-bin deficit at |n| <= 32 by chance).
+Failed run on record: E-20261125-152419-40200ec (figure code of ref_spec.py with a variant subset; fixed).
+
+## H.2 FL256h (q0038) and the floor
+
+Finished E-20261125-115534-8414659 (0.44 card-hours). Read by E-20261125-151222-d5a5f2f with the corrected
+recipe (record ratio 0.5 checked): ratios 1.997 (median) and 2.000 (amplitude), no sign flip, per-mode rms
+2.001; s = 1/2 medians at 128 and 256 0.1 per cent apart. F1 at 256, F2, F4, F5 HOLD (floor/JOURNAL.md
+entry 4); the figure shows the s = 1/2 curve on the s = 1 curve divided by 2 on every shell. R28 closed. The
+note's three sentences that called the floor open now state the halving (no new number; compiled).
+
+## H.3 Gates
+
+G0, G1, G2 are signed (coord/GATES.md). G3: scope fixed and amended before any production run; no
+production run yet; `stage/G3/CHECKLIST.md` collected, `stage/G3/OPEN.md` lists what is open. Not ready for
+review.
