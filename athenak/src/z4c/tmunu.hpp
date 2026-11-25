@@ -58,6 +58,12 @@ class Tmunu {
   Real lambda8pi = 0.0;
   void AllocateStepSources();
 
+  // Scheme A: interior-only densitized base & slope for stage-accurate reconstruction
+  // D^{(s)} = d0 + theta * c_s * d1 in Z4c::CalcRHS without full-ghost u_tmunu_step.
+  DvceArray5D<Real> u_tmunu_d0, u_tmunu_d1;
+  bool stage_extrap = false;
+  void AllocateStageSources();
+
   // Sources of all matter modules together.  A module whose sources change with every
   // stage of the time integrator (the scalar field) assembles them here before each
   // right-hand side of the spacetime and before each evaluation of the constraints:

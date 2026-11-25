@@ -183,7 +183,7 @@ void Particles::NrpicNewtonGroupSums(const Real time, const int ncycle) {
   const Real hub = sc.da*ia;
 
   nrpic::MeshMetric proto;
-  proto.bspline = nropt.interp_bspline;
+  proto.interp = nropt.interp_mode;
   proto.m1 = nropt.interp_bspline ? met1s : met1;
   proto.m0 = proto.m1;
   proto.is_static = true;

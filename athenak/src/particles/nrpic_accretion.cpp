@@ -264,7 +264,7 @@ void Particles::NrpicAccAfterPush() {
 
   nrpic::MeshMetric proto;
   if (msrc == NrpicMetric::mesh) {
-    proto.bspline = nropt.interp_bspline;
+    proto.interp = nropt.interp_mode;
     proto.m1 = nropt.interp_bspline ? met1s : met1;
     proto.m0 = proto.m1;
     proto.is_static = true;
@@ -396,7 +396,7 @@ void Particles::NrpicAccRecordRemoved(const bool after_push) {
   if (mesh_metric) {
     // level 0 is t^n after a push of an evolving spacetime, the only level otherwise
     const bool two = after_push && !metric_is_static;
-    proto.bspline = nropt.interp_bspline;
+    proto.interp = nropt.interp_mode;
     if (nropt.interp_bspline) {
       proto.m1 = met1s;
       proto.m0 = two ? met0s : met1s;

@@ -78,7 +78,7 @@ struct MeshMetric {
   int ist[3];         // index of the first active cell in each direction
   int ncell[3];       // number of cells including ghost cells in each direction
   bool is_static;
-  bool bspline = false;   // m0, m1 hold sharpened values: cubic B-spline weights
+  InterpMode interp = InterpMode::hermite;
 
   KOKKOS_INLINE_FUNCTION
   bool IsStatic() const { return is_static; }
@@ -86,44 +86,82 @@ struct MeshMetric {
   KOKKOS_INLINE_FUNCTION
   void Gather(const DvceArray5D<Real> &a, const Real x[3], AdmPoint &p) const {
     int ib[3];
-    Real w[3][4], dw[3][4];
-    for (int d=0; d<3; ++d) {
-      Real xi = (x[d] - xmin[d])*idx[d] - 0.5;      // cell-centre coordinate
-      int i0 = ist[d] + static_cast<int>(floor(xi));
-      i0 = (i0 < 1) ? 1 : i0;
-      i0 = (i0 > ncell[d]-3) ? ncell[d]-3 : i0;
-      ib[d] = i0;
-      if (bspline) {
-        BSplineWeights(xi - static_cast<Real>(i0 - ist[d]), w[d], dw[d]);
-      } else {
-        HermiteWeights(xi - static_cast<Real>(i0 - ist[d]), w[d], dw[d]);
-      }
-      for (int n=0; n<4; ++n) { dw[d][n] *= idx[d]; }
-    }
     Real v[NRM_NVAR], dv[3][NRM_NVAR];
-    for (int n=0; n<NRM_NVAR; ++n) {
-      v[n] = 0.0;
-      dv[0][n] = 0.0; dv[1][n] = 0.0; dv[2][n] = 0.0;
-    }
-    for (int c=0; c<4; ++c) {
-      const int k = ib[2] + c - 1;
-      for (int b=0; b<4; ++b) {
-        const int j = ib[1] + b - 1;
-        const Real wyz = w[1][b]*w[2][c];
-        const Real dwy = dw[1][b]*w[2][c];
-        const Real dwz = w[1][b]*dw[2][c];
-        for (int aa=0; aa<4; ++aa) {
-          const int i = ib[0] + aa - 1;
-          const Real ww  = w[0][aa]*wyz;
-          const Real wdx = dw[0][aa]*wyz;
-          const Real wdy = w[0][aa]*dwy;
-          const Real wdz = w[0][aa]*dwz;
-          for (int n=0; n<NRM_NVAR; ++n) {
-            const Real val = a(m,n,k,j,i);
-            v[n] += ww*val;
-            dv[0][n] += wdx*val;
-            dv[1][n] += wdy*val;
-            dv[2][n] += wdz*val;
+    if (interp == InterpMode::quintic) {
+      Real w[3][6], dw[3][6];
+      for (int d=0; d<3; ++d) {
+        Real xi = (x[d] - xmin[d])*idx[d] - 0.5;      // cell-centre coordinate
+        int i0 = ist[d] + static_cast<int>(floor(xi));
+        i0 = (i0 < 2) ? 2 : i0;
+        i0 = (i0 > ncell[d]-4) ? ncell[d]-4 : i0;
+        ib[d] = i0;
+        QuinticHermiteWeights(xi - static_cast<Real>(i0 - ist[d]), w[d], dw[d]);
+        for (int n=0; n<6; ++n) { dw[d][n] *= idx[d]; }
+      }
+      for (int n=0; n<NRM_NVAR; ++n) {
+        Real vz = 0.0, dvxz = 0.0, dvyz = 0.0, dvzz = 0.0;
+        for (int c=0; c<6; ++c) {
+          const int k = ib[2] + c - 2;
+          Real vy = 0.0, dvxy = 0.0, dvyy = 0.0;
+          for (int b=0; b<6; ++b) {
+            const int j = ib[1] + b - 2;
+            Real vx = 0.0, dvxx = 0.0;
+            for (int aa=0; aa<6; ++aa) {
+              const Real val = a(m,n,k,j,ib[0] + aa - 2);
+              vx   += w[0][aa]*val;
+              dvxx += dw[0][aa]*val;
+            }
+            vy   += w[1][b]*vx;
+            dvxy += w[1][b]*dvxx;
+            dvyy += dw[1][b]*vx;
+          }
+          vz   += w[2][c]*vy;
+          dvxz += w[2][c]*dvxy;
+          dvyz += w[2][c]*dvyy;
+          dvzz += dw[2][c]*vy;
+        }
+        v[n] = vz;
+        dv[0][n] = dvxz; dv[1][n] = dvyz; dv[2][n] = dvzz;
+      }
+    } else {
+      Real w[3][4], dw[3][4];
+      for (int d=0; d<3; ++d) {
+        Real xi = (x[d] - xmin[d])*idx[d] - 0.5;      // cell-centre coordinate
+        int i0 = ist[d] + static_cast<int>(floor(xi));
+        i0 = (i0 < 1) ? 1 : i0;
+        i0 = (i0 > ncell[d]-3) ? ncell[d]-3 : i0;
+        ib[d] = i0;
+        if (interp == InterpMode::bspline) {
+          BSplineWeights(xi - static_cast<Real>(i0 - ist[d]), w[d], dw[d]);
+        } else {
+          HermiteWeights(xi - static_cast<Real>(i0 - ist[d]), w[d], dw[d]);
+        }
+        for (int n=0; n<4; ++n) { dw[d][n] *= idx[d]; }
+      }
+      for (int n=0; n<NRM_NVAR; ++n) {
+        v[n] = 0.0;
+        dv[0][n] = 0.0; dv[1][n] = 0.0; dv[2][n] = 0.0;
+      }
+      for (int c=0; c<4; ++c) {
+        const int k = ib[2] + c - 1;
+        for (int b=0; b<4; ++b) {
+          const int j = ib[1] + b - 1;
+          const Real wyz = w[1][b]*w[2][c];
+          const Real dwy = dw[1][b]*w[2][c];
+          const Real dwz = w[1][b]*dw[2][c];
+          for (int aa=0; aa<4; ++aa) {
+            const int i = ib[0] + aa - 1;
+            const Real ww  = w[0][aa]*wyz;
+            const Real wdx = dw[0][aa]*wyz;
+            const Real wdy = w[0][aa]*dwy;
+            const Real wdz = w[0][aa]*dwz;
+            for (int n=0; n<NRM_NVAR; ++n) {
+              const Real val = a(m,n,k,j,i);
+              v[n] += ww*val;
+              dv[0][n] += wdx*val;
+              dv[1][n] += wdy*val;
+              dv[2][n] += wdz*val;
+            }
           }
         }
       }

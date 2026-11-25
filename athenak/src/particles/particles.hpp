@@ -21,6 +21,7 @@
 #include "bvals/bvals.hpp"
 #include "particles/nrpic_external.hpp"
 #include "particles/nrpic_threads.hpp"
+#include "particles/nrpic_kernels.hpp"
 
 // forward declarations
 
@@ -70,6 +71,7 @@ struct NrpicOptions {
   bool field_constraints;  // field dumps also hold the constraints, Khat, Theta, lapse
   bool interp_bspline;     // metric at the particles by the cubic spline through the
                            // nodes instead of the Catmull-Rom reconstruction
+  nrpic::InterpMode interp_mode = nrpic::InterpMode::hermite;
   Real dt_expansion;       // > 0: step limited to this fraction of the expansion time
                            // 3/|mean(alpha Khat)| (cosmological runs)
   Real deposit_comp_c;     // > 0: pass (-c, 1+2c, -c)^3 on the deposited densities, before
@@ -105,6 +107,8 @@ struct NrpicOptions {
                         // converted with the volume element of each of its stages
   bool source_extrap;   // ... extrapolated to the middle of the step from the last two
                         // deposits, D = 3/2 D^n - 1/2 D^(n-1)
+  bool source_stage_extrap = false;  // Scheme A: stage-accurate positivity-limited
+                                     // interior reconstruction D^{(s)} in Z4c::CalcRHS
   int deposit_shape;    // degree of the B-spline cloud of the deposit: 1 (cloud in
                         // cell), 2 (triangular shaped cloud), 3 (piecewise cubic)
   Real curv_dt;         // time between curvature diagnostics (<= 0 = off)
@@ -339,7 +343,8 @@ class Particles {
   DvceArray5D<Real> met_prev, met_prevs; // optional t^{n-1} metric for quadratic time interp
   DvceArray5D<Real> tm_work;       // work array for the source filter
   DvceArray4D<Real> sg_work;       // sqrt(det(gamma_ij)) cache for metric-conservative filter
-  DvceFaceFld5D<Real> flx_tm;      // face fluxes for metric-conservative filter + AMR refluxing
+  // block-boundary-only face fluxes for metric-conservative AMR refluxing (2 faces/dir)
+  DvceArray5D<Real> bflx_x1, bflx_x2, bflx_x3;
   bool tm_is_densitized = false;   // true while u_tmunu holds sqrt(gamma)*Tmunu before filter
   nrpic::ThreadDeposit thread_dep; // deposit target of a threaded build (nrpic_threads.hpp)
   DvceArray5D<Real> tm_prev;       // source densities of the previous deposit

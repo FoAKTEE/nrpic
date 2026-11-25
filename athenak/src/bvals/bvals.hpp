@@ -227,6 +227,13 @@ class MeshBoundaryValuesCC : public MeshBoundaryValues {
   // functions to communicate fluxes of CC data
   TaskStatus PackAndSendFluxCC(DvceFaceFld5D<Real> &flx);
   TaskStatus RecvAndUnpackFluxCC(DvceFaceFld5D<Real> &flx);
+  // functions to communicate ONLY the 2 block-boundary faces per direction for CC refluxing
+  TaskStatus PackAndSendBndryFluxCC(DvceArray5D<Real> &bx1,
+                                    DvceArray5D<Real> &bx2,
+                                    DvceArray5D<Real> &bx3);
+  TaskStatus RecvAndUnpackBndryFluxCC(DvceArray5D<Real> &bx1,
+                                      DvceArray5D<Real> &bx2,
+                                      DvceArray5D<Real> &bx3);
 
   // functions to prolongate conserved and primitive CC variables
   void FillCoarseInBndryCC(DvceArray5D<Real> &a, DvceArray5D<Real> &ca,

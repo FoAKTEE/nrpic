@@ -345,3 +345,242 @@ TaskStatus MeshBoundaryValuesCC::InitFluxRecv(const int nvars) {
 #endif
   return TaskStatus::complete;
 }
+
+//----------------------------------------------------------------------------------------
+//! \fn TaskStatus MeshBoundaryValuesCC::PackAndSendBndryFluxCC
+//! \brief Pack restricted block-boundary face fluxes (bx{1,2,3}, storing only the 2 outer
+//! faces per direction in (m, v, side, t1, t2) layout) for fine-to-coarse refluxing.
+
+TaskStatus MeshBoundaryValuesCC::PackAndSendBndryFluxCC(DvceArray5D<Real> &bx1,
+                                                        DvceArray5D<Real> &bx2,
+                                                        DvceArray5D<Real> &bx3) {
+  int nmb = pmy_pack->nmb_thispack;
+  int nnghbr = pmy_pack->pmb->nnghbr;
+  int nvar = bx1.extent_int(1);
+
+  auto &indcs = pmy_pack->pmesh->mb_indcs;
+  const int is = indcs.is, js = indcs.js, ks = indcs.ks;
+  const int cis = indcs.cis, cjs = indcs.cjs, cks = indcs.cks;
+
+  int my_rank = global_variable::my_rank;
+  auto &nghbr = pmy_pack->pmb->nghbr;
+  auto &mbgid = pmy_pack->pmb->mb_gid;
+  auto &mblev = pmy_pack->pmb->mb_lev;
+  auto &sbuf = sendbuf;
+  auto &rbuf = recvbuf;
+  auto &one_d = pmy_pack->pmesh->one_d;
+  auto &two_d = pmy_pack->pmesh->two_d;
+
+  Kokkos::TeamPolicy<> policy(DevExeSpace(), (nmb*nnghbr*nvar), Kokkos::AUTO);
+  Kokkos::parallel_for("PackBndryFlxCC", policy, KOKKOS_LAMBDA(TeamMember_t tmember) {
+    const int m = (tmember.league_rank())/(nnghbr*nvar);
+    const int n = (tmember.league_rank() - m*(nnghbr*nvar))/nvar;
+    const int v = (tmember.league_rank() - m*(nnghbr*nvar) - n*nvar);
+
+    int il = sbuf[n].iflux_coar[0].bis;
+    int jl = sbuf[n].iflux_coar[0].bjs;
+    int ju = sbuf[n].iflux_coar[0].bje;
+    int kl = sbuf[n].iflux_coar[0].bks;
+    int ku = sbuf[n].iflux_coar[0].bke;
+    int iu = sbuf[n].iflux_coar[0].bie;
+    const int ni = iu - il + 1;
+    const int nj = ju - jl + 1;
+    const int nk = ku - kl + 1;
+    const int nji = nj*ni;
+    const int nkj = nk*nj;
+    const int nki = nk*ni;
+
+    int dm = nghbr.d_view(m,n).gid - mbgid.d_view(0);
+    int dn = nghbr.d_view(m,n).dest;
+
+    if ((nghbr.d_view(m,n).gid >= 0) && (nghbr.d_view(m,n).lev < mblev.d_view(m))) {
+      if (n < 8) {
+        const int fi = 2*il - cis;
+        const int side = (fi == is) ? 0 : 1;
+        Kokkos::parallel_for(Kokkos::TeamThreadRange<>(tmember, nkj), [&](const int idx) {
+          int k = idx / nj;
+          int j = (idx - k * nj) + jl;
+          k += kl;
+          const int fj = 2*j - cjs - js;
+          const int fk = 2*k - cks - ks;
+          Real rflx;
+          if (one_d) {
+            rflx = bx1(m,v,side,0,0);
+          } else if (two_d) {
+            rflx = 0.5*(bx1(m,v,side,0,fj) + bx1(m,v,side,0,fj+1));
+          } else {
+            rflx = 0.25*(bx1(m,v,side,fk  ,fj) + bx1(m,v,side,fk  ,fj+1) +
+                         bx1(m,v,side,fk+1,fj) + bx1(m,v,side,fk+1,fj+1));
+          }
+          if (nghbr.d_view(m,n).rank == my_rank) {
+            rbuf[dn].flux(dm, (j-jl + nj*(k-kl + nk*v))) = rflx;
+          } else {
+            sbuf[n].flux(m, (j-jl + nj*(k-kl + nk*v))) = rflx;
+          }
+        });
+      } else if (n < 16) {
+        const int fj = 2*jl - cjs;
+        const int side = (fj == js) ? 0 : 1;
+        Kokkos::parallel_for(Kokkos::TeamThreadRange<>(tmember, nki), [&](const int idx) {
+          int k = idx / ni;
+          int i = (idx - k * ni) + il;
+          k += kl;
+          const int fi = 2*i - cis - is;
+          const int fk = 2*k - cks - ks;
+          Real rflx;
+          if (two_d) {
+            rflx = 0.5*(bx2(m,v,side,0,fi) + bx2(m,v,side,0,fi+1));
+          } else {
+            rflx = 0.25*(bx2(m,v,side,fk  ,fi) + bx2(m,v,side,fk  ,fi+1) +
+                         bx2(m,v,side,fk+1,fi) + bx2(m,v,side,fk+1,fi+1));
+          }
+          if (nghbr.d_view(m,n).rank == my_rank) {
+            rbuf[dn].flux(dm, (i-il + ni*(k-kl + nk*v))) = rflx;
+          } else {
+            sbuf[n].flux(m, (i-il + ni*(k-kl + nk*v))) = rflx;
+          }
+        });
+      } else if ((n >= 24) && (n < 32)) {
+        const int fk = 2*kl - cks;
+        const int side = (fk == ks) ? 0 : 1;
+        Kokkos::parallel_for(Kokkos::TeamThreadRange<>(tmember, nji), [&](const int idx) {
+          int j = idx / ni;
+          int i = (idx - j * ni) + il;
+          j += jl;
+          const int fi = 2*i - cis - is;
+          const int fj = 2*j - cjs - js;
+          const Real rflx = 0.25*(bx3(m,v,side,fj  ,fi) + bx3(m,v,side,fj  ,fi+1) +
+                                  bx3(m,v,side,fj+1,fi) + bx3(m,v,side,fj+1,fi+1));
+          if (nghbr.d_view(m,n).rank == my_rank) {
+            rbuf[dn].flux(dm, (i-il + ni*(j-jl + nj*v))) = rflx;
+          } else {
+            sbuf[n].flux(m, (i-il + ni*(j-jl + nj*v))) = rflx;
+          }
+        });
+      }
+    }
+    tmember.team_barrier();
+  });
+
+#if MPI_PARALLEL_ENABLED
+  Kokkos::fence();
+  bool no_errors = true;
+  for (int m = 0; m < nmb; ++m) {
+    for (int n = 0; n < nnghbr; ++n) {
+      if ((nghbr.h_view(m,n).gid >= 0) &&
+          (nghbr.h_view(m,n).lev < mblev.h_view(m)) &&
+          ((n < 16) || ((n >= 24) && (n < 32)))) {
+        int dn = nghbr.h_view(m,n).dest;
+        int drank = nghbr.h_view(m,n).rank;
+        if (drank != my_rank) {
+          int lid = nghbr.h_view(m,n).gid - pmy_pack->pmesh->gids_eachrank[drank];
+          int tag = CreateBvals_MPI_Tag(lid, dn);
+          int data_size = nvar*(sendbuf[n].iflxc_ndat);
+          auto send_ptr = Kokkos::subview(sendbuf[n].flux, m, Kokkos::ALL);
+          int ierr = MPI_Isend(send_ptr.data(), data_size, MPI_ATHENA_REAL, drank, tag,
+                               comm_flux, &(sendbuf[n].flux_req[m]));
+          if (ierr != MPI_SUCCESS) { no_errors = false; }
+        }
+      }
+    }
+  }
+  if (!no_errors) {
+    std::cout << "### FATAL ERROR in " << __FILE__ << " at line " << __LINE__
+              << std::endl << "MPI error in posting sends" << std::endl;
+    std::exit(EXIT_FAILURE);
+  }
+#endif
+  return TaskStatus::complete;
+}
+
+//----------------------------------------------------------------------------------------
+//! \fn TaskStatus MeshBoundaryValuesCC::RecvAndUnpackBndryFluxCC
+//! \brief Unpack coarse-face fluxes from finer neighbors into bx{1,2,3}.
+
+TaskStatus MeshBoundaryValuesCC::RecvAndUnpackBndryFluxCC(DvceArray5D<Real> &bx1,
+                                                          DvceArray5D<Real> &bx2,
+                                                          DvceArray5D<Real> &bx3) {
+  int nmb = pmy_pack->nmb_thispack;
+  int nnghbr = pmy_pack->pmb->nnghbr;
+  auto &nghbr = pmy_pack->pmb->nghbr;
+  auto &mblev = pmy_pack->pmb->mb_lev;
+  auto &rbuf = recvbuf;
+#if MPI_PARALLEL_ENABLED
+  bool bflag = false;
+  bool no_errors = true;
+  for (int m = 0; m < nmb; ++m) {
+    for (int n = 0; n < nnghbr; ++n) {
+      if ((nghbr.h_view(m,n).gid >= 0) &&
+          (nghbr.h_view(m,n).lev > mblev.h_view(m)) &&
+          ((n < 16) || ((n >= 24) && (n < 32)))) {
+        if (nghbr.h_view(m,n).rank != global_variable::my_rank) {
+          int test;
+          int ierr = MPI_Test(&(rbuf[n].flux_req[m]), &test, MPI_STATUS_IGNORE);
+          if (ierr != MPI_SUCCESS) { no_errors = false; }
+          if (!(static_cast<bool>(test))) { bflag = true; }
+        }
+      }
+    }
+  }
+  if (!no_errors) {
+    std::cout << "### FATAL ERROR in " << __FILE__ << " at line " << __LINE__
+              << std::endl << "MPI error in testing non-blocking receives" << std::endl;
+    std::exit(EXIT_FAILURE);
+  }
+  if (bflag) { return TaskStatus::incomplete; }
+#endif
+
+  int nvar = bx1.extent_int(1);
+  auto &indcs = pmy_pack->pmesh->mb_indcs;
+  const int is = indcs.is, js = indcs.js, ks = indcs.ks;
+  Kokkos::TeamPolicy<> policy(DevExeSpace(), (nmb*nnghbr*nvar), Kokkos::AUTO);
+  Kokkos::parallel_for("UnpackBndryFlxCC", policy, KOKKOS_LAMBDA(TeamMember_t tmember) {
+    const int m = (tmember.league_rank())/(nnghbr*nvar);
+    const int n = (tmember.league_rank() - m*(nnghbr*nvar))/nvar;
+    const int v = (tmember.league_rank() - m*(nnghbr*nvar) - n*nvar);
+
+    int il = rbuf[n].iflux_coar[0].bis;
+    int iu = rbuf[n].iflux_coar[0].bie;
+    int jl = rbuf[n].iflux_coar[0].bjs;
+    int ju = rbuf[n].iflux_coar[0].bje;
+    int kl = rbuf[n].iflux_coar[0].bks;
+    int ku = rbuf[n].iflux_coar[0].bke;
+    const int ni = iu - il + 1;
+    const int nj = ju - jl + 1;
+    const int nk = ku - kl + 1;
+    const int nji = nj*ni;
+    const int nkj = nk*nj;
+    const int nki = nk*ni;
+
+    if ((nghbr.d_view(m,n).gid >= 0) && (nghbr.d_view(m,n).lev > mblev.d_view(m))) {
+      if (n < 8) {
+        const int side = (il == is) ? 0 : 1;
+        Kokkos::parallel_for(Kokkos::TeamThreadRange<>(tmember, nkj), [&](const int idx) {
+          int k = idx / nj;
+          int j = (idx - k * nj) + jl;
+          k += kl;
+          bx1(m,v,side,k-ks,j-js) = rbuf[n].flux(m,(j-jl + nj*(k-kl + nk*v)));
+        });
+      } else if (n < 16) {
+        const int side = (jl == js) ? 0 : 1;
+        Kokkos::parallel_for(Kokkos::TeamThreadRange<>(tmember, nki), [&](const int idx) {
+          int k = idx / ni;
+          int i = (idx - k * ni) + il;
+          k += kl;
+          bx2(m,v,side,k-ks,i-is) = rbuf[n].flux(m,(i-il + ni*(k-kl + nk*v)));
+        });
+      } else if ((n >= 24) && (n < 32)) {
+        const int side = (kl == ks) ? 0 : 1;
+        Kokkos::parallel_for(Kokkos::TeamThreadRange<>(tmember, nji), [&](const int idx) {
+          int j = idx / ni;
+          int i = (idx - j * ni) + il;
+          j += jl;
+          bx3(m,v,side,j-js,i-is) = rbuf[n].flux(m,(i-il + ni*(j-jl + nj*v)));
+        });
+      }
+    }
+    tmember.team_barrier();
+  });
+
+  return TaskStatus::complete;
+}

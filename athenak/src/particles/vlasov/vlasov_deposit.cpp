@@ -127,7 +127,7 @@ void Particles::NrpicVlasovDepositLoop(const DvceArray5D<Real> &tm, Real &sum_mw
         i = (i < cg.is) ? cg.is : ((i > cg.ie) ? cg.ie : i);
         j = (j < cg.js) ? cg.js : ((j > cg.je) ? cg.je : j);
         k = (k < cg.ks) ? cg.ks : ((k > cg.ke) ? cg.ke : k);
-        const Real nc = ep(mo, k, j, i);
+        const Real nc = ep(mo, k - cg.ks, j - cg.js, i - cg.is);
         if (nc > 0.0) {
           const Real dmin_ad = cbrt(ppc_t * E_tot / nc);
           const Real droot = h[0] * static_cast<Real>(1 << (lev0 - root_lev));

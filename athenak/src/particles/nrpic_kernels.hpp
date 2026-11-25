@@ -316,6 +316,86 @@ void BSplineWeights(const Real s, Real w[4], Real dw[4]) {
   dw[3] = 0.5*s2;
 }
 
+enum class InterpMode : int { hermite = 0, bspline = 1, quintic = 2 };
+
+//----------------------------------------------------------------------------------------
+//! \fn QuinticHermiteWeights
+//! \brief C^2 6-node quintic Hermite weights and derivatives for offsets {-2,-1,0,1,2,3}
+//! from the base node, s = (x - x_base)/h in [0,1).  Uses 4th-order centered D1 and D2
+//! at the two cell endpoints (0 and 1), reproducing polynomials up to degree 4 identically
+//! with O(h^5) field error, O(h^4) gradient error, C^2 continuous Hessians across every
+//! cell face, and zero extra pre-sharpened grid storage.
+
+KOKKOS_INLINE_FUNCTION
+void QuinticHermiteWeights(const Real s, Real w[6], Real dw[6]) {
+  const Real s2 = s*s, s3 = s2*s, s4 = s3*s, s5 = s4*s, t = 1.0 - s;
+  const Real H00 = 1.0 - 10.0*s3 + 15.0*s4 - 6.0*s5;
+  const Real H01 = 1.0 - H00;
+  const Real H10 = s - 6.0*s3 + 8.0*s4 - 3.0*s5;
+  const Real H11 = -4.0*s3 + 7.0*s4 - 3.0*s5;
+  const Real H20 = 0.5*s2 - 1.5*s3 + 1.5*s4 - 0.5*s5;
+  const Real H21 = 0.5*s3 - s4 + 0.5*s5;
+  const Real dH00 = -30.0*s2*t*t;
+  const Real dH01 = -dH00;
+  const Real dH10 = 1.0 - 18.0*s2 + 32.0*s3 - 15.0*s4;
+  const Real dH11 = -12.0*s2 + 28.0*s3 - 15.0*s4;
+  const Real dH20 = s - 4.5*s2 + 6.0*s3 - 2.5*s4;
+  const Real dH21 = 1.5*s2 - 4.0*s3 + 2.5*s4;
+  const Real c12 = 1.0/12.0;
+  w[0] = c12*(H10 - H20);
+  w[1] = c12*(-8.0*H10 + H11 + 16.0*H20 - H21);
+  w[2] = H00 + c12*(-8.0*H11 - 30.0*H20 + 16.0*H21);
+  w[3] = H01 + c12*(8.0*H10 + 16.0*H20 - 30.0*H21);
+  w[4] = c12*(-H10 + 8.0*H11 - H20 + 16.0*H21);
+  w[5] = c12*(-H11 - H21);
+  dw[0] = c12*(dH10 - dH20);
+  dw[1] = c12*(-8.0*dH10 + dH11 + 16.0*dH20 - dH21);
+  dw[2] = dH00 + c12*(-8.0*dH11 - 30.0*dH20 + 16.0*dH21);
+  dw[3] = dH01 + c12*(8.0*dH10 + 16.0*dH20 - 30.0*dH21);
+  dw[4] = c12*(-dH10 + 8.0*dH11 - dH20 + 16.0*dH21);
+  dw[5] = c12*(-dH11 - dH21);
+}
+
+//----------------------------------------------------------------------------------------
+//! \fn StageSourceLimiter
+//! \brief Positivity- and causality-preserving local limiter theta in [0, 1] for Scheme A
+//! stage reconstruction D^{(s)} = d0 + theta * c_s * d1.
+
+KOKKOS_INLINE_FUNCTION
+Real StageSourceLimiter(const Real e0, const Real de, const Real s0[3], const Real ds[3],
+                        const Real g_uu[3][3], const Real oopsi4, const Real cs) {
+  if (cs <= 0.0 || e0 <= 0.0) return 0.0;
+  Real theta = 1.0;
+  if (e0 + cs*de < 0.0) {
+    theta = (de < 0.0) ? fmax(0.0, e0/(-cs*de)) : 0.0;
+  }
+  for (int it=0; it<5; ++it) {
+    const Real e_s = e0 + theta*cs*de;
+    const Real s_s[3] = {s0[0] + theta*cs*ds[0],
+                         s0[1] + theta*cs*ds[1],
+                         s0[2] + theta*cs*ds[2]};
+    Real s2 = 0.0;
+    for (int a=0; a<3; ++a) {
+      for (int b=0; b<3; ++b) {
+        s2 += oopsi4*g_uu[a][b]*s_s[a]*s_s[b];
+      }
+    }
+    if (e_s >= 0.0 && s2 <= (1.0 + 1.0e-12)*e_s*e_s) return theta;
+    theta *= 0.5;
+  }
+  const Real e_s = e0 + theta*cs*de;
+  const Real s_s[3] = {s0[0] + theta*cs*ds[0],
+                       s0[1] + theta*cs*ds[1],
+                       s0[2] + theta*cs*ds[2]};
+  Real s2 = 0.0;
+  for (int a=0; a<3; ++a) {
+    for (int b=0; b<3; ++b) {
+      s2 += oopsi4*g_uu[a][b]*s_s[a]*s_s[b];
+    }
+  }
+  return (e_s >= 0.0 && s2 <= (1.0 + 1.0e-12)*e_s*e_s) ? theta : 0.0;
+}
+
 //----------------------------------------------------------------------------------------
 //! \fn LorentzFactor
 //! \brief W = sqrt(1 + gamma^ij u_i u_j); also returns the raised components u^i

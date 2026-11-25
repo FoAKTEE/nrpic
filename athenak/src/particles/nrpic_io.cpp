@@ -879,7 +879,7 @@ void Particles::NrpicWriteTrajectories(Real time, bool truncate) {
       const int gids = pmy_pack->gids;
       const int ntrack = nropt.traj_ntrack;
       nrpic::MeshMetric proto;
-      proto.bspline = nropt.interp_bspline;
+      proto.interp = nropt.interp_mode;
       proto.m1 = nropt.interp_bspline ? met1s : met1;
       proto.m0 = proto.m1;
       proto.is_static = true;

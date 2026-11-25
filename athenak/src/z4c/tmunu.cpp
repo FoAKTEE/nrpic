@@ -54,6 +54,21 @@ void Tmunu::AllocateStepSources() {
 }
 
 //----------------------------------------------------------------------------------------
+//! \fn void Tmunu::AllocateStageSources
+//! \brief allocates interior-only d0/d1 arrays for Scheme A stage-accurate backreaction
+
+void Tmunu::AllocateStageSources() {
+  int nmb = std::max((pmy_pack->nmb_thispack), (pmy_pack->pmesh->nmb_maxperrank));
+  auto &indcs = pmy_pack->pmesh->mb_indcs;
+  int nx1 = indcs.nx1;
+  int nx2 = (indcs.nx2 > 1) ? indcs.nx2 : 1;
+  int nx3 = (indcs.nx3 > 1) ? indcs.nx3 : 1;
+  Kokkos::realloc(u_tmunu_d0, nmb, N_Tmunu, nx3, nx2, nx1);
+  Kokkos::realloc(u_tmunu_d1, nmb, N_Tmunu, nx3, nx2, nx1);
+  stage_extrap = true;
+}
+
+//----------------------------------------------------------------------------------------
 //! \fn void Tmunu::AllocateTotalSources
 //! \brief allocates the sources of all matter modules together (see tmunu.hpp) and
 //! switches the spacetime solver and the constraints to them

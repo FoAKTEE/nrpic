@@ -172,6 +172,7 @@ void Particles::NrpicInit(ParameterInput *pin) {
   nropt.lambda     = pin->GetOrAddReal("particles", "lambda", 0.0);
   nropt.source_density = pin->GetOrAddBoolean("particles", "source_density", false);
   nropt.source_extrap  = pin->GetOrAddBoolean("particles", "source_extrap", false);
+  nropt.source_stage_extrap = pin->GetOrAddBoolean("particles", "source_stage_extrap", false);
   {
     // shape of the particle cloud in the deposit, a B-spline of degree one, two or
     // three: cic (two cells per direction), tsc (three), pcs (four)
@@ -206,15 +207,26 @@ void Particles::NrpicInit(ParameterInput *pin) {
   nropt.field_constraints = pin->GetOrAddBoolean("particles", "field_constraints", false);
   {
     std::string itp = pin->GetOrAddString("particles", "interp", "hermite");
-    if (itp != "hermite" && itp != "bspline") {
+    if (itp == "hermite") {
+      nropt.interp_mode = nrpic::InterpMode::hermite;
+    } else if (itp == "bspline") {
+      nropt.interp_mode = nrpic::InterpMode::bspline;
+    } else if (itp == "quintic") {
+      nropt.interp_mode = nrpic::InterpMode::quintic;
+    } else {
       std::cout << "### FATAL ERROR in " << __FILE__ << " at line " << __LINE__ << std::endl
-                << "<particles> interp must be hermite or bspline" << std::endl;
+                << "<particles> interp must be hermite, bspline or quintic" << std::endl;
       std::exit(EXIT_FAILURE);
     }
     nropt.interp_bspline = (itp == "bspline");
     if (nropt.interp_bspline && pm->mb_indcs.ng < 4) {
       std::cout << "### FATAL ERROR in " << __FILE__ << " at line " << __LINE__ << std::endl
                 << "<particles> interp = bspline needs four ghost cells" << std::endl;
+      std::exit(EXIT_FAILURE);
+    }
+    if (nropt.interp_mode == nrpic::InterpMode::quintic && pm->mb_indcs.ng < 3) {
+      std::cout << "### FATAL ERROR in " << __FILE__ << " at line " << __LINE__ << std::endl
+                << "<particles> interp = quintic needs at least three ghost cells" << std::endl;
       std::exit(EXIT_FAILURE);
     }
   }
@@ -279,7 +291,7 @@ void Particles::NrpicInit(ParameterInput *pin) {
   if (nropt.deposit) {
     Kokkos::realloc(tm_work, nmb, Tmunu::N_Tmunu, ncells3, ncells2, ncells1);
     if (nropt.deposit_adaptive) {
-      Kokkos::realloc(e_prev, nmb, ncells3, ncells2, ncells1);
+      Kokkos::realloc(e_prev, nmb, indcs.nx3, indcs.nx2, indcs.nx1);
     }
     if (pm->multilevel) {
       int nccells1 = indcs.cnx1 + 2*(indcs.ng);
@@ -289,12 +301,12 @@ void Particles::NrpicInit(ParameterInput *pin) {
     }
     if (nropt.filter_metric_conservative) {
       Kokkos::realloc(sg_work, nmb, ncells3, ncells2, ncells1);
-      Kokkos::realloc(flx_tm.x1f, nmb, Tmunu::N_Tmunu, ncells3, ncells2, ncells1 + 1);
-      Kokkos::realloc(flx_tm.x2f, nmb, Tmunu::N_Tmunu, ncells3, ncells2 + 1, ncells1);
-      Kokkos::realloc(flx_tm.x3f, nmb, Tmunu::N_Tmunu, ncells3 + 1, ncells2, ncells1);
-      Kokkos::deep_copy(DevExeSpace(), flx_tm.x1f, 0.0);
-      Kokkos::deep_copy(DevExeSpace(), flx_tm.x2f, 0.0);
-      Kokkos::deep_copy(DevExeSpace(), flx_tm.x3f, 0.0);
+      Kokkos::realloc(bflx_x1, nmb, Tmunu::N_Tmunu, 2, indcs.nx3, indcs.nx2);
+      Kokkos::realloc(bflx_x2, nmb, Tmunu::N_Tmunu, 2, indcs.nx3, indcs.nx1);
+      Kokkos::realloc(bflx_x3, nmb, Tmunu::N_Tmunu, 2, indcs.nx2, indcs.nx1);
+      Kokkos::deep_copy(DevExeSpace(), bflx_x1, 0.0);
+      Kokkos::deep_copy(DevExeSpace(), bflx_x2, 0.0);
+      Kokkos::deep_copy(DevExeSpace(), bflx_x3, 0.0);
     }
     pbval_tm = new MeshBoundaryValuesCC(pmy_pack, pin, false);
     pbval_tm->InitializeBuffers(Tmunu::N_Tmunu);
@@ -479,7 +491,7 @@ TaskStatus Particles::NrpicPush(Driver *pdriver, int stage) {
 
   nrpic::MeshMetric proto;
   if (mesh_metric) {
-    proto.bspline = nropt.interp_bspline;
+    proto.interp = nropt.interp_mode;
     if (nropt.interp_bspline) {
       proto.m1 = met1s;
       proto.m0 = metric_is_static ? met1s : met0s;
@@ -784,16 +796,17 @@ void Particles::NrpicDepositSources() {
     auto mm = met1;
     const bool already_dens = tm_is_densitized;
     const int nb1 = pmy_pack->nmb_thispack - 1;
+    const int isk = indcs.is, jsk = indcs.js, ksk = indcs.ks;
     par_for("nrpic_eprev", DevExeSpace(), 0, nb1, indcs.ks, indcs.ke, indcs.js, indcs.je,
             indcs.is, indcs.ie,
     KOKKOS_LAMBDA(const int m, const int k, const int j, const int i) {
       if (already_dens) {
-        ep(m,k,j,i) = tm(m,Tmunu::I_Tmunu_E,k,j,i);
+        ep(m,k-ksk,j-jsk,i-isk) = tm(m,Tmunu::I_Tmunu_E,k,j,i);
       } else {
         const Real det = adm::SpatialDet(mm(m,NRM_GXX,k,j,i), mm(m,NRM_GXY,k,j,i),
                                          mm(m,NRM_GXZ,k,j,i), mm(m,NRM_GYY,k,j,i),
                                          mm(m,NRM_GYZ,k,j,i), mm(m,NRM_GZZ,k,j,i));
-        ep(m,k,j,i) = tm(m,Tmunu::I_Tmunu_E,k,j,i)*sqrt(det);
+        ep(m,k-ksk,j-jsk,i-isk) = tm(m,Tmunu::I_Tmunu_E,k,j,i)*sqrt(det);
       }
     });
   }
@@ -845,7 +858,7 @@ void Particles::NrpicDepositSources() {
   const int gnmb = gb_nmb;
 
   nrpic::MeshMetric proto;
-  proto.bspline = nropt.interp_bspline;
+  proto.interp = nropt.interp_mode;
   proto.m1 = nropt.interp_bspline ? met1s : met1;
   proto.m0 = proto.m1;
   proto.is_static = true;
@@ -907,7 +920,7 @@ void Particles::NrpicDepositSources() {
           i = (i < is) ? is : ((i > ie) ? ie : i);
           j = (j < js) ? js : ((j > je) ? je : j);
           k = (k < ks) ? ks : ((k > ke) ? ke : k);
-          const Real nc = ep(mo,k,j,i);
+          const Real nc = ep(mo,k-ks,j-js,i-is);
           if (nc > 0.0) {
             // smallest admissible cell size, and the finest level that respects it
             const Real dmin = cbrt(ppc_target*mp*W/nc);
@@ -1445,28 +1458,27 @@ void Particles::NrpicFilterPassMetricConservative(const Real kappa,
   const int nmb = pmy_pack->nmb_thispack;
   const int nmb1 = nmb - 1;
   const int nv1 = Tmunu::N_Tmunu - 1;
-  const int ncells1 = indcs.nx1 + 2*indcs.ng;
-  const int ncells2 = indcs.nx2 + 2*indcs.ng;
-  const int ncells3 = indcs.nx3 + 2*indcs.ng;
-  if (flx_tm.x1f.extent_int(0) < nmb) {
-    Kokkos::realloc(flx_tm.x1f, nmb, Tmunu::N_Tmunu, ncells3, ncells2, ncells1 + 1);
-    Kokkos::realloc(flx_tm.x2f, nmb, Tmunu::N_Tmunu, ncells3, ncells2 + 1, ncells1);
-    Kokkos::realloc(flx_tm.x3f, nmb, Tmunu::N_Tmunu, ncells3 + 1, ncells2, ncells1);
-    Kokkos::deep_copy(DevExeSpace(), flx_tm.x1f, 0.0);
-    Kokkos::deep_copy(DevExeSpace(), flx_tm.x2f, 0.0);
-    Kokkos::deep_copy(DevExeSpace(), flx_tm.x3f, 0.0);
+  if (bflx_x1.extent_int(0) < nmb) {
+    Kokkos::realloc(bflx_x1, nmb, Tmunu::N_Tmunu, 2, indcs.nx3, indcs.nx2);
+    Kokkos::realloc(bflx_x2, nmb, Tmunu::N_Tmunu, 2, indcs.nx3, indcs.nx1);
+    Kokkos::realloc(bflx_x3, nmb, Tmunu::N_Tmunu, 2, indcs.nx2, indcs.nx1);
+    Kokkos::deep_copy(DevExeSpace(), bflx_x1, 0.0);
+    Kokkos::deep_copy(DevExeSpace(), bflx_x2, 0.0);
+    Kokkos::deep_copy(DevExeSpace(), bflx_x3, 0.0);
   }
   auto &tmu = pmy_pack->ptmunu->u_tmunu;
   auto tm = tmu;
+  auto wk = tm_work;
   auto sg = sg_work;
-  auto f1 = flx_tm.x1f;
-  auto f2 = flx_tm.x2f;
-  auto f3 = flx_tm.x3f;
+  auto b1 = bflx_x1;
+  auto b2 = bflx_x2;
+  auto b3 = bflx_x3;
   auto bcs = pmy_pack->pmb->mb_bcs.d_view;
   auto sz  = pmy_pack->pmb->mb_size.d_view;
 
   for (int s=0; s<3; ++s) {
     const int dir = reverse_dirs ? (2 - s) : s;
+    if (dir == 2 && pm->two_d) { continue; }
     if (pm->multilevel) {
       pm->pmr->RestrictCC(tmu, coarse_tm);
     }
@@ -1481,69 +1493,92 @@ void Particles::NrpicFilterPassMetricConservative(const Real kappa,
     }
 
     if (dir == 0) {
-      par_for("nrpic_mcflx_x1", DevExeSpace(), 0, nmb1, 0, nv1, ks, ke, js, je, is, ie+1,
-      KOKKOS_LAMBDA(const int m, const int n, const int k, const int j, const int i) {
-        if ((i == is && bcs(m,BoundaryFace::inner_x1) != BoundaryFlag::block &&
-             bcs(m,BoundaryFace::inner_x1) != BoundaryFlag::periodic) ||
-            (i == ie+1 && bcs(m,BoundaryFace::outer_x1) != BoundaryFlag::block &&
-             bcs(m,BoundaryFace::outer_x1) != BoundaryFlag::periodic)) {
-          f1(m,n,k,j,i) = 0.0;
+      par_for("nrpic_mcflx_bx1", DevExeSpace(), 0, nmb1, 0, nv1, 0, 1, ks, ke, js, je,
+      KOKKOS_LAMBDA(const int m, const int n, const int side, const int k, const int j) {
+        const BoundaryFace bf = (side == 0) ? BoundaryFace::inner_x1 : BoundaryFace::outer_x1;
+        if (bcs(m,bf) != BoundaryFlag::block && bcs(m,bf) != BoundaryFlag::periodic) {
+          b1(m,n,side,k-ks,j-js) = 0.0;
         } else {
-          f1(m,n,k,j,i) = nrpic::vlasov::MetricFlux1D(
-              kappa, sz(m).dx1, sg(m,k,j,i-1), sg(m,k,j,i),
-              tm(m,n,k,j,i-1), tm(m,n,k,j,i));
+          const int fi = (side == 0) ? is : (ie + 1);
+          b1(m,n,side,k-ks,j-js) = nrpic::vlasov::MetricFlux1D(
+              kappa, sz(m).dx1, sg(m,k,j,fi-1), sg(m,k,j,fi),
+              tm(m,n,k,j,fi-1), tm(m,n,k,j,fi));
         }
       });
     } else if (dir == 1) {
-      par_for("nrpic_mcflx_x2", DevExeSpace(), 0, nmb1, 0, nv1, ks, ke, js, je+1, is, ie,
-      KOKKOS_LAMBDA(const int m, const int n, const int k, const int j, const int i) {
-        if ((j == js && bcs(m,BoundaryFace::inner_x2) != BoundaryFlag::block &&
-             bcs(m,BoundaryFace::inner_x2) != BoundaryFlag::periodic) ||
-            (j == je+1 && bcs(m,BoundaryFace::outer_x2) != BoundaryFlag::block &&
-             bcs(m,BoundaryFace::outer_x2) != BoundaryFlag::periodic)) {
-          f2(m,n,k,j,i) = 0.0;
+      par_for("nrpic_mcflx_bx2", DevExeSpace(), 0, nmb1, 0, nv1, 0, 1, ks, ke, is, ie,
+      KOKKOS_LAMBDA(const int m, const int n, const int side, const int k, const int i) {
+        const BoundaryFace bf = (side == 0) ? BoundaryFace::inner_x2 : BoundaryFace::outer_x2;
+        if (bcs(m,bf) != BoundaryFlag::block && bcs(m,bf) != BoundaryFlag::periodic) {
+          b2(m,n,side,k-ks,i-is) = 0.0;
         } else {
-          f2(m,n,k,j,i) = nrpic::vlasov::MetricFlux1D(
-              kappa, sz(m).dx2, sg(m,k,j-1,i), sg(m,k,j,i),
-              tm(m,n,k,j-1,i), tm(m,n,k,j,i));
+          const int fj = (side == 0) ? js : (je + 1);
+          b2(m,n,side,k-ks,i-is) = nrpic::vlasov::MetricFlux1D(
+              kappa, sz(m).dx2, sg(m,k,fj-1,i), sg(m,k,fj,i),
+              tm(m,n,k,fj-1,i), tm(m,n,k,fj,i));
         }
       });
     } else {
-      par_for("nrpic_mcflx_x3", DevExeSpace(), 0, nmb1, 0, nv1, ks, ke+1, js, je, is, ie,
-      KOKKOS_LAMBDA(const int m, const int n, const int k, const int j, const int i) {
-        if ((k == ks && bcs(m,BoundaryFace::inner_x3) != BoundaryFlag::block &&
-             bcs(m,BoundaryFace::inner_x3) != BoundaryFlag::periodic) ||
-            (k == ke+1 && bcs(m,BoundaryFace::outer_x3) != BoundaryFlag::block &&
-             bcs(m,BoundaryFace::outer_x3) != BoundaryFlag::periodic)) {
-          f3(m,n,k,j,i) = 0.0;
+      par_for("nrpic_mcflx_bx3", DevExeSpace(), 0, nmb1, 0, nv1, 0, 1, js, je, is, ie,
+      KOKKOS_LAMBDA(const int m, const int n, const int side, const int j, const int i) {
+        const BoundaryFace bf = (side == 0) ? BoundaryFace::inner_x3 : BoundaryFace::outer_x3;
+        if (bcs(m,bf) != BoundaryFlag::block && bcs(m,bf) != BoundaryFlag::periodic) {
+          b3(m,n,side,j-js,i-is) = 0.0;
         } else {
-          f3(m,n,k,j,i) = nrpic::vlasov::MetricFlux1D(
-              kappa, sz(m).dx3, sg(m,k-1,j,i), sg(m,k,j,i),
-              tm(m,n,k-1,j,i), tm(m,n,k,j,i));
+          const int fk = (side == 0) ? ks : (ke + 1);
+          b3(m,n,side,j-js,i-is) = nrpic::vlasov::MetricFlux1D(
+              kappa, sz(m).dx3, sg(m,fk-1,j,i), sg(m,fk,j,i),
+              tm(m,n,fk-1,j,i), tm(m,n,fk,j,i));
         }
       });
     }
 
     if (pm->multilevel) {
       (void) pbval_tm->InitFluxRecv(Tmunu::N_Tmunu);
-      (void) pbval_tm->PackAndSendFluxCC(flx_tm);
+      (void) pbval_tm->PackAndSendBndryFluxCC(b1, b2, b3);
       (void) pbval_tm->ClearFluxSend();
       (void) pbval_tm->ClearFluxRecv();
-      (void) pbval_tm->RecvAndUnpackFluxCC(flx_tm);
+      (void) pbval_tm->RecvAndUnpackBndryFluxCC(b1, b2, b3);
     }
 
     par_for("nrpic_mc_upd", DevExeSpace(), 0, nmb1, 0, nv1, ks, ke, js, je, is, ie,
     KOKKOS_LAMBDA(const int m, const int n, const int k, const int j, const int i) {
       const Real sgv = sg(m,k,j,i);
       if (sgv > 0.0) {
-        const Real df = (dir == 0) ? (f1(m,n,k,j,i+1) - f1(m,n,k,j,i))
-                      : ((dir == 1) ? (f2(m,n,k,j+1,i) - f2(m,n,k,j,i))
-                                    : (f3(m,n,k+1,j,i) - f3(m,n,k,j,i)));
-        const Real dx = (dir == 0) ? sz(m).dx1 : ((dir == 1) ? sz(m).dx2 : sz(m).dx3);
-        tm(m,n,k,j,i) += df / (sgv * dx);
+        Real fl, fr, dx;
+        if (dir == 0) {
+          dx = sz(m).dx1;
+          fl = (i == is) ? b1(m,n,0,k-ks,j-js)
+                         : nrpic::vlasov::MetricFlux1D(kappa, dx, sg(m,k,j,i-1), sgv,
+                                                       tm(m,n,k,j,i-1), tm(m,n,k,j,i));
+          fr = (i == ie) ? b1(m,n,1,k-ks,j-js)
+                         : nrpic::vlasov::MetricFlux1D(kappa, dx, sgv, sg(m,k,j,i+1),
+                                                       tm(m,n,k,j,i), tm(m,n,k,j,i+1));
+        } else if (dir == 1) {
+          dx = sz(m).dx2;
+          fl = (j == js) ? b2(m,n,0,k-ks,i-is)
+                         : nrpic::vlasov::MetricFlux1D(kappa, dx, sg(m,k,j-1,i), sgv,
+                                                       tm(m,n,k,j-1,i), tm(m,n,k,j,i));
+          fr = (j == je) ? b2(m,n,1,k-ks,i-is)
+                         : nrpic::vlasov::MetricFlux1D(kappa, dx, sgv, sg(m,k,j+1,i),
+                                                       tm(m,n,k,j,i), tm(m,n,k,j+1,i));
+        } else {
+          dx = sz(m).dx3;
+          fl = (k == ks) ? b3(m,n,0,j-js,i-is)
+                         : nrpic::vlasov::MetricFlux1D(kappa, dx, sg(m,k-1,j,i), sgv,
+                                                       tm(m,n,k-1,j,i), tm(m,n,k,j,i));
+          fr = (k == ke) ? b3(m,n,1,j-js,i-is)
+                         : nrpic::vlasov::MetricFlux1D(kappa, dx, sgv, sg(m,k+1,j,i),
+                                                       tm(m,n,k,j,i), tm(m,n,k+1,j,i));
+        }
+        wk(m,n,k,j,i) = tm(m,n,k,j,i) + (fr - fl) / (sgv * dx);
       } else {
-        tm(m,n,k,j,i) = 0.0;
+        wk(m,n,k,j,i) = 0.0;
       }
+    });
+    par_for("nrpic_mc_copy", DevExeSpace(), 0, nmb1, 0, nv1, ks, ke, js, je, is, ie,
+    KOKKOS_LAMBDA(const int m, const int n, const int k, const int j, const int i) {
+      tm(m,n,k,j,i) = wk(m,n,k,j,i);
     });
   }
 }
@@ -1664,26 +1699,59 @@ void Particles::NrpicFilterSources() {
 //! densities are extrapolated to the middle of the step from the last two deposits.
 
 void Particles::NrpicStepSources() {
-  if (!nropt.source_density) return;
+  if (!nropt.source_density && !nropt.source_stage_extrap) return;
   auto &indcs = pmy_pack->pmesh->mb_indcs;
   const int is = indcs.is, js = indcs.js, ks = indcs.ks;
   const int ie = indcs.ie, je = indcs.je, ke = indcs.ke;
   const int nmb1 = pmy_pack->nmb_thispack - 1;
   const int nv1 = Tmunu::N_Tmunu - 1;
+  auto tm = pmy_pack->ptmunu->u_tmunu;
+  auto m1 = met1;
+
+  if (nropt.source_stage_extrap) {
+    if (!pmy_pack->ptmunu->stage_extrap) {
+      pmy_pack->ptmunu->AllocateStageSources();
+      pmy_pack->ptmunu->lambda8pi = nropt.lambda/(8.0*M_PI);
+      tm_prev_valid = false;
+    }
+    auto d0 = pmy_pack->ptmunu->u_tmunu_d0;
+    auto d1 = pmy_pack->ptmunu->u_tmunu_d1;
+    const bool valid = tm_prev_valid;
+    Real ratio = 1.0;
+    {
+      Mesh *pm = pmy_pack->pmesh;
+      Real dt_next = std::min(2.0*pm->dt, dtnew);
+      if (pmy_pack->pz4c != nullptr) {
+        dt_next = std::min(dt_next, pm->cfl_no*pmy_pack->pz4c->dtnew);
+      }
+      nrpic::MpiMin({&dt_next});
+      if (pm->dt > 0.0 && dt_next > 0.0) { ratio = std::min(dt_next/pm->dt, 2.0); }
+    }
+    par_for("nrpic_stagesrc", DevExeSpace(), 0, nmb1, 0, nv1, ks, ke, js, je, is, ie,
+    KOKKOS_LAMBDA(const int m, const int n, const int k, const int j, const int i) {
+      const Real det = adm::SpatialDet(m1(m,NRM_GXX,k,j,i), m1(m,NRM_GXY,k,j,i),
+                                       m1(m,NRM_GXZ,k,j,i), m1(m,NRM_GYY,k,j,i),
+                                       m1(m,NRM_GYZ,k,j,i), m1(m,NRM_GZZ,k,j,i));
+      const Real d_now = (det > 0.0) ? tm(m,n,k,j,i)*sqrt(det) : 0.0;
+      const int ik = k - ks, ij = j - js, ii = i - is;
+      d1(m,n,ik,ij,ii) = valid ? ratio*(d_now - d0(m,n,ik,ij,ii)) : 0.0;
+      d0(m,n,ik,ij,ii) = d_now;
+    });
+    tm_prev_valid = true;
+    return;
+  }
+
   if (!pmy_pack->ptmunu->step_density) {
     // first call: the source container exists only after the particle module has
     // been constructed, so the step arrays are allocated here
     pmy_pack->ptmunu->AllocateStepSources();
     pmy_pack->ptmunu->lambda8pi = nropt.lambda/(8.0*M_PI);
     int nmb = std::max((pmy_pack->nmb_thispack), (pmy_pack->pmesh->nmb_maxperrank));
-    Kokkos::realloc(tm_prev, nmb, Tmunu::N_Tmunu, indcs.nx3 + 2*indcs.ng,
-                    indcs.nx2 + 2*indcs.ng, indcs.nx1 + 2*indcs.ng);
+    Kokkos::realloc(tm_prev, nmb, Tmunu::N_Tmunu, indcs.nx3, indcs.nx2, indcs.nx1);
     tm_prev_valid = false;
   }
-  auto tm = pmy_pack->ptmunu->u_tmunu;
   auto ts = pmy_pack->ptmunu->u_tmunu_step;
   auto tp = tm_prev;
-  auto m1 = met1;
   const bool extrap = nropt.source_extrap && tm_prev_valid;
   // half the ratio of the coming step to the last one: the densities are extrapolated
   // to the middle of the coming step from the deposits at the two ends of the last one
@@ -1703,8 +1771,8 @@ void Particles::NrpicStepSources() {
                                      m1(m,NRM_GXZ,k,j,i), m1(m,NRM_GYY,k,j,i),
                                      m1(m,NRM_GYZ,k,j,i), m1(m,NRM_GZZ,k,j,i));
     const Real d = (det > 0.0) ? tm(m,n,k,j,i)*sqrt(det) : 0.0;
-    ts(m,n,k,j,i) = extrap ? (d + half*(d - tp(m,n,k,j,i))) : d;
-    tp(m,n,k,j,i) = d;
+    ts(m,n,k,j,i) = extrap ? (d + half*(d - tp(m,n,k-ks,j-js,i-is))) : d;
+    tp(m,n,k-ks,j-js,i-is) = d;
   });
   tm_prev_valid = true;
   // After a restart the densities for the coming step are those of the dump (they were

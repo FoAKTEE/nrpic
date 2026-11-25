@@ -565,7 +565,7 @@ TaskStatus Particles::NrpicCollide(Driver *pdriver, int stage) {
     Real e_before = 0.0;
     if (budget || own) {
       if (nropt.metric == NrpicMetric::mesh) {
-        eproto.bspline = nropt.interp_bspline;
+        eproto.interp = nropt.interp_mode;
         eproto.m1 = nropt.interp_bspline ? met1s : met1;
         eproto.m0 = eproto.m1;
         eproto.is_static = true;
