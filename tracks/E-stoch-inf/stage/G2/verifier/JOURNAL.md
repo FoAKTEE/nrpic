@@ -204,3 +204,24 @@ e_{s/2} > 3 sigma lies within 4 +- 0.05 for H and M; (iii) the 1/2 -> 1/4 halvin
 where e_{1/4} > 3 sigma, also lies within 4 +- 0.05; (iv) the floor from (1/2, 1/4) is closer
 to sigma than the floor from (1, 1/2) at the dumps 9-13 where the odd part dominates.
 Refuted if dump 13 of M stays outside the band with sigma.
+
+## Entry 4, 2026-11-25 02:58 UTC: outcome of the floor follow-up (run E-20261125-023427-6fb6400)
+
+- (i) holds: the noise level from D1 and from D2 agrees within 0.3 percent at every dump 1-13
+  (H and M).
+- (ii) holds: with sigma in place of f, M at dump 13 gives 3.9988 (4c floor: 3.9245); every
+  dump judged with e_{1/2} > 3 sigma lies within 4.000 +- 0.0045 for H (dumps 0, 5-12) and
+  4.000 +- 0.0012 for M (dumps 0, 4-13). With the 4c floor the same dumps scatter by up to
+  0.042 (H, dump 9) and 0.075 (M, dump 13): f/sigma is 0.65 to 1.75 at dumps 8-13, where the
+  odd part is 20 to 1000 times the even part.
+- (iii) holds: the 1/2 -> 1/4 halving with sigma, where e_{1/4} > 3 sigma (H dumps 6-8; M
+  dumps 0, 6-10), is within 1.3e-4 of 4.
+- (iv) holds at 9 of the 10 comparisons of dumps 9-13 and fails at dump 12 (H 1.041 against
+  0.999, M 0.923 against 0.972, both close to 1).
+- Reading [VERIFIED by these runs, under the model E(s) = s^2 A + F_s that the D statistics
+  support]: the even parts of H and M scale as s^2 to 1e-3 at every dump where they stand 3
+  sigma above the per-run noise, and the U-A4'(a) miss of M at cN 6.52 comes from the floor
+  estimator of 4c (a difference of two nearly equal odd-part norms, here biased low by 31
+  percent), not from the physics and not from a higher order in s. U-A4'(a) as written stays
+  failed: the criterion fixes its floor, and the fix above uses the quarter pair, which 4c
+  did not define. fig_floor3.png looked at.
