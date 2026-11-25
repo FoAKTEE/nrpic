@@ -56,11 +56,18 @@ TaskStatus Z4c::NewTimeStep(Driver *pdriver, int stage) {
   dtnew = dt1;
   if (pmy_pack->pmesh->multi_d) { dtnew = std::min(dtnew, dt2); }
   if (pmy_pack->pmesh->three_d) { dtnew = std::min(dtnew, dt3); }
+  const Real dx_min = dtnew;
 
   // <z4c> dt_lightspeed: the step limit above assumes a coordinate speed of light of
   // one; here it is taken from the fields
   if (dt_lightspeed > 0.0 && pmy_pack->pmesh->three_d) {
     dtnew = std::min(dtnew, dt_lightspeed*LightSpeedTimeStep());
+  }
+
+  // <z4c> dt_gauge: the stability bound of the integrator for the gauge sectors, which
+  // neither limit above counts (z4c_newdt_gauge.cpp); a warning at start-up without it
+  if (pmy_pack->pmesh->three_d) {
+    GaugeStepLimit(pdriver, dx_min);
   }
 
   return TaskStatus::complete;

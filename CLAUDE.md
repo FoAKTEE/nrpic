@@ -17,6 +17,7 @@ at its top; never read it whole).
 | Release `core-v0.4` (wave 2, merged into main 2026-11-21; tag on f9323185): linear waves of any wave vector with cross polarization and error file (`<problem> amp_cross, phase_cross`), mesh output in double precision (`<outputN> double_precision`), `<z4c> waveform_at_new_time`; lapse relaxation where matter expands and shift damping that follows the punctures (`<z4c> lapse_leak`, `shift_eta_profile`); initial slice of stochastic inflation at N* with constraint record and dumps (`<problem> id = stochastic`, `<scalar_field> con_dcycle, dump_metric, noise_mode_scale`); Gaussian clumps with momentum and spin (`comp<c>_p1..3`, `comp<c>_s1..3`); elliptic initial-data solve on the mesh (`<particles> id_solve, id_vector`, `<gravity> mg_bc = robin`); tracers on timelike geodesics, accretion record, external Newtonian point mass (`<particles> zero_mass, removal_record, acc_nsphere, peri_count, newton_pm_mass, newton_bg_t0`), common horizon of a pair (`<fastflow> punc_pair_a_<n>`); collisions with the metric at each particle, static conformally flat test metric, perturbing force (`<particles> coll_energy, perturb_gamma`, `<problem> metric_kind = static_conformal`). Some corrections change outputs without an option (changelog) | `athenak/src/{particles,z4c,scalar_field,multigrid,gravity,outputs,pgen/nrpic}/`, inputs under `problems/{tests,cosmo,puncture,scalar,clump,idsolve}/` | `coord/INTERFACES/*.md` (new: `id_solver`, `moving_clumps`, `scalar_field_2`), triage `tracks/core/interfaces/REQUESTS_{B,ADF}.md`, `tracks/core/CHANGELOG.md` section core-v0.4 (all 61 options, corrections, formats), `tracks/core/RELEASE-v0.4.md` (byte regression PASS), `scratch/core/exe/core_nrpic_v04/READY` (an example input per option), known defects `tracks/core/stage/G2/OPEN.md` |
 | Release `core-v0.5` (wave 3a, merged into main 2026-11-21; tag on c3eb42e0): threaded processor build whose deposit repeats bit for bit at a fixed thread count (`scripts/build_cpu_omp.sh`, `scripts/cpu_run.sh`, `<particles> deposit_threads = atomic \| private`; not a byte reference); the particle module on several MPI ranks (no option: `mpirun -np N` with the MPI build; eleven options stop there); adaptive refinement in `nrpic_cosmo` on particles per cell, lapse and chi (`<amr_criterion0> method = user` with `<particles_amr>`), coarse clouds with their shape on fine leaf cells (`<particles> deposit_fine_shape`), constraint norms inside and outside spheres (`<particles> region_dcycle, region_*`), horizon finder and tracker in a periodic box (`<fastflow> diagnostics`, `<z4c> tracker_walk_tol`), step limit by the speed of light (`<z4c> dt_lightspeed`), stop of a run whose fields are not finite (`<z4c_guard>`, on by default: exit status 3), shifted lattice (`<problem> shift_x1..3`); signed constraint means of the scalar field (`<scalar_field> con_signed`), named keys of the stochastic modes (`rng::ModeEntity`, `rng::StochasticModeStream`, Python twins), inflection (ultra-slow-roll) example. Five changes act without an option (changelog) | `athenak/src/{particles,z4c,scalar_field,utils,driver,outputs,pgen/nrpic}/`, `python/nrpic/{rng,scalar_field,sf_lattice}.py`, `scripts/{build_cpu_omp.sh,cpu_run.sh,omp_places.py}`, inputs under `problems/{tests,scalar,cosmo_amr}/` | `coord/INTERFACES/*.md` (new: `cosmo_amr`, `mpi`, `scalar_field_3`, `threaded_build`; changed: `rng`), triage `tracks/core/interfaces/REQUESTS_A2.md`, `tracks/core/CHANGELOG.md` section core-v0.5 (all 25 options, changes without an option, formats), `tracks/core/RELEASE-v0.5.md` (byte regression PASS; card check of the merged card build pending at tagging: job 4772), `scratch/core/exe/core_nrpic_v05/READY` (an example input per option; threaded and MPI executables), known defects `tracks/core/stage/G2/OPEN.md` |
 | Release `core-v0.6` (wave 3 batch 3, merged into main 2026-11-21; tag on 984bde68): Newtonian mode with a Fourier Poisson solver on a uniform periodic mesh (`<particles> newton_poisson = fft`, `newton_fft_symbol = spectral \| seven_point`) and second moments of particle groups (`newton_ngroup`, `newton_group<g>_species, _tag_min, _tag_max, _x1..3`; `problems/newton/make_ic.py ball --axes, --vgrad, --rotate, --background`); outer faces of Z4c with a fall-off fill of the ghost cells and a radiative condition for the part that is not a wave, off by default, less reflection but not none (`<z4c> ghost_falloff, ghost_power_*, sbc_variant = nonwave, sbc_power_*, sbc_v_khat, sbc_speed, sbc_theta`); initial-data solver, second pass: multipole far field on by default (`<particles> id_far, id_far_lmax, id_far_radius`; `id_far = robin` gives the slice of core-v0.5 for matter at rest), moving matter, static refinement (`id_lin_solver`), punctures of `nrpic_cf` in the solve (`id_punctures, id_puncture_radius`); chains resubmit a segment killed from outside and run under a name of their own (`scripts/submit_chain.sh`: `MAX_OUTSIDE_KILLS`, `PROC_NAME`). Five changes act without an option, all with `id_solve = true` (changelog) | `athenak/src/{particles,z4c,multigrid,gravity}/`, `python/nrpic/newton.py`, `scripts/submit_chain.sh`, inputs under `problems/{newton,idsolve,tests}/` | `coord/INTERFACES/*.md` (new: `z4c_faces`, `id_solver2`; changed: `newtonian_mode` section 7), triage `tracks/core/interfaces/REQUESTS_NEWTON2.md`, `tracks/core/CHANGELOG.md` section core-v0.6 (all 26 options, changes without an option, formats), `tracks/core/RELEASE-v0.6.md` (byte regression PASS, 75 of 75; card check of the merged card build PASS, job 4800, fifteen cases), `scratch/core/exe/core_nrpic_v06/READY` (an example input per option; threaded and MPI executables), known defects `tracks/core/stage/G2/OPEN.md` |
+| Release `core-v0.7` (wave 3 batch 14, merged into main 2026-11-25 UTC; tag on 5f75e5b9): stochastic backreaction of level 2 of arXiv:2512.14649, the curvature perturbation and its momentum as mesh fields with local coefficients, on a uniform mesh and one rank (`<scalar_field> noise_level = 2, noise_mode_eq = shells \| mesh, noise_level2_background, noise_level2_laplacian, noise_background_eq = constraint \| evolved, noise_rmodes_dump`); step limit by the stability bound of the gauge sectors, off when absent (`<z4c> dt_gauge = 0.9`; without it a warning in the log at start-up); restart outputs on the termination signal, exit status 143 (no option), and chains that do not count an attempt cut by a signal (`scripts/submit_chain.sh`: `MAX_TERM_IN_A_ROW`); the relaxed lapse switched off around tracked black holes, a mitigation and not a cure (`<z4c> lapse_leak_hole`); table components of `nrpic_cf` with momentum, boosted equilibrium clusters (`<problem> comp<c>_boost_file, comp<c>_boost_shift` with `comp<c>_p1..3, comp<c>_corr = table`; `problems/ic/make_ic.py boosted`, format `bst1`). Three changes act without an option (changelog) | `athenak/src/{scalar_field,z4c,utils,driver,pgen/nrpic}/`, `athenak/src/main.cpp`, `python/nrpic/boosted_cluster.py`, `scripts/submit_chain.sh`, inputs under `problems/{scalar,tests,es,clump}/` | `coord/INTERFACES/*.md` (new: `noise_level2`, `step_limit`, `preempted_runs`, `moving_clusters`; changed: `cosmo_gauge` section 9), triage `tracks/core/interfaces/REQUESTS_WAVE3.md` (W24, W26, W31), `tracks/core/CHANGELOG.md` section core-v0.7 (nine options, three changes without an option, run scripts, formats), `tracks/core/RELEASE-v0.7.md` (byte regression PASS, 75 of 75; quick tests PASS; card check of the merged card build pending at tagging: shared-queue entry q0039, and the branch card runs q0035, q0036), `scratch/core/exe/core_nrpic_v07/READY` (an example input per option; threaded and MPI executables), known defects `tracks/core/stage/G2/OPEN.md` |
 | Python reference tools: geodesic integrators, pusher prototypes, equilibrium models, samplers, figure style | `python/nrpic/`, `problems/ic/make_ic.py` | `docs/FORMATS.md` |
 | The source paper | `refs/arxiv_2611.12831/src/main.tex` (untracked; `refs/fetch.sh`) | never redistribute it |
 
@@ -107,17 +108,24 @@ that the orchestrator reviews.
   periodic set-ups and for the particle state; with outflow faces and refinement the mesh
   state of Z4c differs after a restart at round-off (median 3e-13, up to 1e-7 after a few
   steps), so a chained asymptotically flat run repeats only up to the growth of round-off.
-- With a Gamma-driver shift keep `cfl_number` at 0.6 or below: the step limit counts the
-  speed of light only, and the shift goes unstable at the grid scale above dt/dx = 0.685
-  (decision 0027).
+  Two older restart defects remain (`tracks/core/stage/G2/OPEN.md`): a continuation can
+  lose one record of `*.cons.hst`, and the mesh history repeats its header lines at every
+  continuation (readers skip comment lines anywhere).
+- With a Gamma-driver shift the step limit counts the gauge speeds only with `<z4c>
+  dt_gauge = 0.9` (release `core-v0.7`; off when absent). Without it keep `cfl_number`
+  below the bound the code prints at start-up: 0.47 cells in flat space with a 1+log
+  lapse (so 0.45 or below; most decks use 0.25), 0.55 with a frozen or harmonic lapse,
+  0.56 on the 64-cell root mesh of Track A's expanding box (decisions 0027, 0035;
+  `coord/INTERFACES/step_limit.md`).
 - A linked worktree has no Kokkos: `git submodule update --init --reference
   /data/haiyangw/nrpic/athenak/kokkos athenak/kokkos` once before building there. If you
   change no source, do not build: use the executables of the main checkout, read-only,
-  `/data/haiyangw/nrpic/.work/build_gpu_v06/src/athena` (cards) and
-  `/data/haiyangw/nrpic/.work/build_cpu_v06/src/athena` (processors), built from the
-  source on `main` after the merge of release `core-v0.6`; its threaded and MPI processor
-  builds: `athena_cpu_omp`, `athena_cpu_mpi` in `scratch/core/exe/core_nrpic_v06/` (older
-  releases stay: `core-v0.5` at `.work/build_gpu_v05` and `.work/build_cpu_v05`,
+  `/data/haiyangw/nrpic/.work/build_gpu_v07/src/athena` (cards) and
+  `/data/haiyangw/nrpic/.work/build_cpu_v07/src/athena` (processors), built from the
+  source on `main` after the merge of release `core-v0.7`; its threaded and MPI processor
+  builds: `athena_cpu_omp`, `athena_cpu_mpi` in `scratch/core/exe/core_nrpic_v07/` (older
+  releases stay: `core-v0.6` at `.work/build_gpu_v06` and `.work/build_cpu_v06`,
+  `core-v0.5` at `.work/build_gpu_v05` and `.work/build_cpu_v05`,
   `core-v0.4` at `.work/build_gpu_v04` and `.work/build_cpu_v04`,
   `core-v0.3` at `.work/build_gpu_v03` and `.work/build_cpu_v03`, `core-v0.2` at
   `.work/build_gpu_c3` and `.work/build_cpu_c1`). Scouting runs may
@@ -141,12 +149,21 @@ that the orchestrator reviews.
   is refused outside the dispatcher. Never `sbatch`, `scripts/gpu_batch.sh` or
   `scripts/submit_chain.sh` directly, never jobs held behind one another, and no
   sequencers of your own. A chain keeps one job in the queue and resubmits its next
-  segment itself. Details: `harness/RULES.md`, section "Shared card queue".
+  segment itself. The dispatcher's cap keeper reports an excess above five and cancels
+  nothing (decision 0037 item 6): jobs the user submits by hand count toward the five,
+  the dispatcher submits nothing while the count is at or above five, and an excess is
+  removed by hand by the orchestrator. Outside a dispatch, `sbatch`, `srun` and `salloc`
+  on the PATH of a local run of `nrpic-run` or of `nrpic-env exec` are stubs that refuse.
+  Details: `harness/RULES.md`, section "Shared card queue".
 - The cards are shared with other users of the machine (`squeue` shows their jobs), and a
   partition of higher priority can take both cards for hours and cancel our jobs: a job
   may wait long. Never wait idle for one: work on what needs no card and say in your
   report which runs are pending. Long runs write a restart file at least every ten
-  minutes of wall time.
+  minutes of wall time. From release `core-v0.7` a run that receives SIGTERM finishes its
+  cycle, writes a restart file and exits with status 143 inside the 30 s Slurm gives; a
+  chain does not count such an attempt as a segment. Chains with executables of
+  `core-v0.7` need the chain script of `core-v0.7` (in every worktree after `nrpic-ctx
+  sync`; the older script ends such a chain FAILED; `coord/INTERFACES/preempted_runs.md`).
 - 144 cores are shared by all sessions: at most 16 at a time per session; set
   `OMP_NUM_THREADS` and thread counts of numerical libraries explicitly.
 - Never `pkill -f`, `killall` or `kill $(pgrep -f ...)`: the pattern matches your own

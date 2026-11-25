@@ -1,0 +1,117 @@
+# Two equilibrium clusters with bulk momenta on the mesh at t = 0 (no evolution): the
+# scaling of each cluster into the conformal factor of the other, the superposed
+# curvatures of two boost tables and the two corrections of psi (test TD of
+# tracks/core/JOURNAL-clump2.md, run by tracks/core/analysis/clump2/run_binary_static.py).
+# Clusters y_c = 0.819 of mass 1 at x = -20 and +20 with the Newtonian circular speed
+# (M/(2 d))^(1/2) = 0.111803 along -y and +y; tables and particles from
+#   problems/ic/make_ic.py boosted --cluster 0.819,1,-20,0,0,0,-0.111803,0 \
+#       --cluster 0.819,1,20,0,0,0,0.111803,0 --sampler quiet --lattice-h 0.25 \
+#       --prefix binary
+# Variants from the command line: problem/comp<c>_p2 = momenta of the JSON,
+# problem/comp<c>_corr=table; mesh/nx1=192 mesh/nx2=96 mesh/nx3=96 for cells of 0.5.
+
+<comment>
+problem   = two moving equilibrium clusters: constraint residuals of the initial data
+
+<job>
+basename  = clump
+
+<mesh>
+nghost    = 4
+nx1       = 96
+x1min     = -48.0
+x1max     = 48.0
+ix1_bc    = outflow
+ox1_bc    = outflow
+nx2       = 48
+x2min     = -24.0
+x2max     = 24.0
+ix2_bc    = outflow
+ox2_bc    = outflow
+nx3       = 48
+x3min     = -24.0
+x3max     = 24.0
+ix3_bc    = outflow
+ox3_bc    = outflow
+
+<meshblock>
+nx1       = 16
+nx2       = 16
+nx3       = 16
+
+<time>
+evolution  = dynamic
+integrator = rk4
+cfl_number = 0.25
+nlim       = 0
+tlim       = 1.0
+ndiag      = 1
+
+<z4c>
+lapse_oplog     = 2.0
+lapse_harmonicf = 1.0
+lapse_harmonic  = 0.0
+lapse_advect    = 1.0
+shift_Gamma     = 0.75
+shift_eta       = 2.0
+shift_advect    = 1.0
+diss            = 0.5
+chi_div_floor   = 1.0e-5
+damp_kappa1     = 0.02
+damp_kappa2     = 0.0
+
+<particles>
+particle_type  = nrpic
+pusher         = midpoint
+metric         = mesh
+tolerance      = 1.0e-10
+max_iterations = 50
+deposit        = true
+deposit_shape  = cic
+nfilter        = 4
+filter_compensate = true
+filter_comp_c  = -1.0
+alpha_exc      = 0.0
+hist_dcycle    = 1
+particle_file  = particles.nrp
+
+<problem>
+pgen_name   = nrpic_cf
+ncomp       = 2
+comp0_type  = table
+comp0_file  = binary_c0.tab
+comp0_x1    = -20.0
+comp0_x2    = 0.0
+comp0_x3    = 0.0
+comp0_boost_file = binary_c0.bst
+comp0_p1    = 0.0
+comp0_p2    = 0.0
+comp0_p3    = 0.0
+comp0_corr  = none
+comp0_corr_file = binary_c0_corr.tab
+comp1_type  = table
+comp1_file  = binary_c1.tab
+comp1_x1    = 20.0
+comp1_x2    = 0.0
+comp1_x3    = 0.0
+comp1_boost_file = binary_c1.bst
+comp1_p1    = 0.0
+comp1_p2    = 0.0
+comp1_p3    = 0.0
+comp1_corr  = none
+comp1_corr_file = binary_c1_corr.tab
+lapse       = isotropic
+
+<output1>
+file_type = hst
+dt        = 0.125
+
+<output2>
+file_type = bin
+variable  = con
+dt        = 1.0
+
+<output3>
+file_type = bin
+variable  = adm_psi4
+dt        = 1.0

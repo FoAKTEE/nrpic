@@ -2,39 +2,37 @@
 
 gate:        G2 NOT MET (tracks/core/stage/G2/: CHECKLIST 18 items, 13 PASS, 5 FAIL:
              C1 ladder rows 3, 4 partial; C2 three-way convergence; C6 reproducibility
-             package (verify of batch 10a in VERIFY_RESULTS.md); C7 = C1; C12 no
-             REVIEW.md/SCOPE.md). Batch 10a (analysis round, no AthenaK source change).
-headline:    ladder row 4 on cells of M/8 judged by the rule written before the runs:
-             the cluster stability threshold is BRACKETED between y_c = 0.680 and 0.755
-             (0.605 member collapses at 180.5 M; 0.680 member AND control collapse,
-             219.5 and 251.5 M; 0.755 stays, D = +0.0016). The turning point 0.6796
-             lies just below the bracket. P1, P4 hold; P2 partly refuted (stable
-             controls drift inward by 0.026); P3 refuted (0.680 collapses).
-last-result: fates core-20261123-020318-e952741 (six chains closed, jobs 4839-4844,
-             0.63 card-hours each, 3.8 in all); note rebuilt by
-             core-20261123-020543-eb1cd2a (new Fig. 5, 13 ledger rows, 9 pages, checker
-             clean); scripts/cpu_run.sh footer fixed (Track A W31 iii, stub test).
-pending:     row 4 level 2 on M/8 (predictions P5-P9, journal 2026-11-23T02:05Z):
-             0.7175 member/control core-20261123-020450-7e42037 / -020452-e635a8e
-             (jobs 4923, 4924 eligible), 0.69875 -020454-8fec6b2 / -020456-884f550
-             (4925, 4926 held), 0.73625 -020458-dfc38d7 / -020500-9b192cd (4927, 4928
-             held); sequencer pid 3075029 (log scratch/core/tmp/lead_b10a/
-             sequencer.log); 12 card-hours asked, about 3.8 expected.
-next:        1. when the six chains end: nrpic-run finish each, row4_fate.py on all six
-                models of levels 1 and 2, P5-P9, LADDER row 4, note Fig. 5 and ledger
-             2. the threshold at a second cell size or particle number (row 4 is not
-                converged); the inward drift of stable controls
-             3. core-v0.7 after the weekly reset: W24 mitigation (core/gauge-2), W26
-                clump-table, W27 oblate, W31 (i) gauge speeds in the step limit,
-                restart refill (OPEN.md u); W30 cure
+             package (open level-3 chains); C7 = C1; C12 no REVIEW.md/SCOPE.md).
+             Batch 17 (2026-11-25T11:47-12:30Z): round without AthenaK source change.
+headline:    Release core-v0.7 is on main (tag 5f75e5b9); its release processor build is
+             byte-identical to the candidate (75 of 75, core-20261125-115428-3670218). The
+             queue marker no longer reaches any job of scripts/ (decision 0037 item 4;
+             fake-Slurm tests PASS, control with the old scripts shows the leak). Row 4
+             level 3, two of six runs: the 0.726875 member collapses at 338.25 M, and the
+             0.73625 control, STABLE by the 300-M rule, collapses at 421.25 M (fates
+             core-20261125-120724-246d2a5): the 300-M bracket (0.7175, 0.73625) stands as
+             written but does not mark a stability threshold [JUDGEMENT, rest pending].
+last-result: M1 (marker) held: core-20261125-120211-08f4fb9, -120145-665b6a0 (both
+             registered by hand: the local launcher refuses fake-Slurm tests). R7 held.
+             Provenance: E's seven ablation runs used athena_gpu 468109496c82... (source
+             6ca93cba), verified on the copies in their run directories
+             (tracks/core/EXE_PROVENANCE.md); answered E.
+pending:     card runs in the shared queue (none waited for; all "waiting" at 12:10Z):
+             q0039 core-v07-card   card check K7 of the merged card executable
+             q0035 nl2-review-R5   card run of the reviewed level-2 build (its package)
+             q0036 step-limit-card card smoke run of the step-limit build (its package)
+             q0030-q0033           row 4 level 3: 0.726875 control, 0.73625 member
+                                   continued, 0.755 pair continued (HANDOFF.md)
+next:        1. when q0039 has run: judge it (RELEASE-v0.7.md, "Card checks pending");
+                then the CLAUDE.md sentence to orch
+             2. row 4 level 3 when q0030-q0033 have run: finish, row4_fate.py (HANDOFF)
+             3. the Fable source session: tracks/core/NEXT_SOURCE.md items 1-3
 blockers:    none
-needs:       orch: interface corrections into coord/INTERFACES (outbox 20261121T233031Z);
-             the nine waiver lines (outbox 20261121T204332Z); merge of core/nrpic
-             (cpu_run.sh footer fix reaches the tracks with it)
-offers:      tracks/core/note/ (shared implementation and ladder, with the M/8 row-4
-             result); answers in outbox 20261123T020802Z to A (step limit) and kb
-             (tests behind the paper-to-code links: M23 symbol confirmed, `nco` dead,
-             candidates for M18, M19, M20, M24, M25)
-budget:      G2 card-hours used 11.96 before this session (+3.8 measured for the six
-             closed chains, already counted at finish); 12 asked for level 2 (40 to the
-             gate, decision 0026); processors: four single-core runs of minutes
+needs:       orch: RULES text on the marker once core/nrpic is merged, and whether
+             fake-Slurm self-tests may be registered by the tool (outbox
+             20261125T121047Z); older: 20261125T030800Z, 20261121T233031Z, 20261121T204332Z
+offers:      scripts/tests/test_queue_marker.py; tracks/core/tools/hand_run.py;
+             tracks/core/NEXT_SOURCE.md; EXE_PROVENANCE.md (rule: no executable is
+             replaced in place)
+budget:      G2 card-hours: used 15.76, reserved 4.03, left 20.21 of 40 (nrpic-run
+             budget, 2026-11-25T12:15Z); this session used no card

@@ -4,8 +4,8 @@
     harness/bin/nrpic-run [-C <wt>] submit --kind scouting|production --gate G<k> --purpose TEXT
                           [--launcher local|batch|chain] [options] [-- <command or athinput> ...]
     harness/bin/nrpic-run [-C <wt>] status [<run_id>]
-    harness/bin/nrpic-run [-C <wt>] finish <run_id> [--status completed|failed|stopped]
-    harness/bin/nrpic-run [-C <wt>] verify <run_id>
+    harness/bin/nrpic-run [-C <wt>] finish <run_id> [--status completed|failed|stopped] [--full]
+    harness/bin/nrpic-run [-C <wt>] verify <run_id> [--full]
     harness/bin/nrpic-run [-C <wt>] budget
     harness/bin/nrpic-run [-C <wt>] stop <run_id>
     harness/bin/nrpic-run [-C <wt>] lint [--owner ID | --all] [-v]     (read-only)
@@ -33,11 +33,18 @@ Launchers (one registered run each):
           The chain is capped at floor(gpu-hours / 59 min) segments, at least one (MAX_SEGMENTS).
   Card runs are submitted only by `nrpic-queue add` (decision 0033, one route): `nrpic-run submit` with
   launcher batch or chain is for the dispatcher of the shared queue, which marks its calls
-  (NRPIC_QUEUE_DISPATCH, the one variable of the caller nrpic-run reads; never passed on). Called directly
-  it is refused, nothing registered, and the message gives the line to queue it instead:
+  (NRPIC_QUEUE_DISPATCH, the one variable of the caller nrpic-run reads; a job nrpic-run submits gets an
+  environment built from files, without it). Called directly it is refused, nothing registered, and the
+  message gives the line to queue it instead:
               harness/bin/nrpic-queue add --label L -- --kind scouting --gate G2 --purpose "..." --launcher chain ...
-  --dry-run stays open to everyone. The marker gates the route only: the cap of five jobs of the account
-  in the Slurm queue (harness/lib/nrpic_harness.py QUEUE_CAP) is checked for every card submission.
+  --dry-run stays open to everyone. A local run outside a dispatch runs with harness/shims/slurm first on
+  its PATH: there sbatch, srun and salloc are stubs that print the rule and exit 2, so whatever the command
+  calls (scripts/gpu_batch.sh, submit_chain.sh, a script that calls another) submits nothing; one whose
+  first word is sbatch, srun or salloc is refused before it is registered. Inside a dispatch the PATH is left
+  as it is (nothing of the stubs reaches a job); a --background run always gets the stubs. A call by
+  absolute path (/usr/bin/sbatch) passes: only a limit on the Slurm side or the tool-guard hook closes that.
+  The marker gates the route only: the cap of five jobs of the account in the Slurm queue
+  (harness/lib/nrpic_harness.py QUEUE_CAP) is checked for every card submission.
 
 What submit does, in order (under one lock per owner, locks/nrpic-run.<ID>.lock): refuses a dirty
 worktree (untracked files count); refuses a local `python ...` command when the worktree has no
@@ -50,12 +57,23 @@ the inputs (files named with --input, files on the command line, input decks, th
 writes tracks/<ID>/runs/<run_id>/manifest.json and commits it (path-limited) on the own branch;
 creates scratch/<ID>/<run_id>/ and starts the run. finish records exit status, wall time, GPU-hours
 and sha256sums.txt of the output directory and commits the manifest again; verify recomputes the
-checksums. Run id (decision 0016 item 2, amending 0012): <ID short>-<YYYYMMDD-HHMMSS UTC>-<commit7>,
+checksums. Both hash through the run directory's cache .nrpic/sha256cache.json (decision 0039 item 5;
+nrpic_harness.OutputHasher): a file is read again only when it is new or its size or modification time
+(ns) differs from its entry; a checksum from the cache proves unchanged size and modification time since
+it was hashed, not bytes read again. --full reads every byte. Up to four threads.
+Runs continued in place (decision 0039 item 5): a queue wrapper that resumes a chain from its own restart
+file appends a record to the manifest's list `continuations` (at, from_restart, by/via, job_id /
+segments_used_before / max_segments; nrpic_harness.continuation_problems). finish accepts such a manifest,
+refuses a malformed list with what is wrong, closes again without --status a run that was closed before
+its last continuation, and counts the card-hours of a chain as the sum over all its jobs (sacct per job,
+else the job's own segment logs; resources.gpu_hours_basis, gpu_seconds_by_job).
+Run id (decision 0016 item 2, amending 0012): <ID short>-<YYYYMMDD-HHMMSS UTC>-<commit7>,
 the short owner id being A..F, core, kb or orch; the long form of waves 1 and 2
 (A-emd-pbh-20261115-...) stays valid for the runs that carry it and is read. Where things are
 written: the manifest tracks/<ID>/runs/<run_id>/manifest.json (committed at submit and at finish);
 in scratch/<ID>/<run_id>/ the outputs, run.log (local runs), sha256sums.txt (at finish) and
-.nrpic/launch.json, .nrpic/result.json (how the run was started and ended; not checksummed).
+.nrpic/launch.json, .nrpic/result.json (how the run was started and ended), .nrpic/sha256cache.json
+(the checksum cache of finish and verify); .nrpic/ is not checksummed.
 
 The orchestrator (owner orch) registers its own runs from the main checkout: manifests in
 tracks/orch/runs/<run_id>/ on main, output in scratch/orch/<run_id>/, run id orch-<...>. Other agents
@@ -118,6 +136,26 @@ def check_route(wt, args):
         "Nothing was submitted or registered. Queue the run instead, from this worktree:\n"
         f"  harness/bin/nrpic-queue add --label <label> -- {shlex.join(args)}\n"
         "(`nrpic-run submit --dry-run ...` stays open to everyone; harness/bin/nrpic-queue --help)")
+
+
+def check_local_command(wt, command):
+    """One route (decision 0033): a local run whose command's first word is sbatch, srun or salloc is refused
+    outside a dispatch of the shared queue (the one textual check; everything else meets the stubs of
+    harness/shims/slurm on its PATH, H.with_slurm_shims, which wrap() puts there)."""
+    if not command or os.path.basename(command[0]) not in H.SLURM_COMMANDS or H.queue_dispatch_problem(wt) is None:
+        return
+    raise H.HarnessError(
+        f"a local run may not submit Slurm jobs (decision 0033, one route): its command is {command[0]}. Nothing "
+        "was run or registered. Card runs are submitted only by the shared queue: harness/bin/nrpic-queue add "
+        "--label <label> -- <the arguments of nrpic-run submit, --launcher batch or chain>, or --cmd '<wrapper>' "
+        "for a line that continues a chain (harness/bin/nrpic-queue --help)")
+
+
+def local_shims(wt, background):
+    """Does a local run get the Slurm stubs first on its PATH? Outside a dispatch of the shared queue, yes; inside
+    one, no (nothing of the stubs may reach a job); a --background run always does, because it outlives the
+    dispatch and the process group the dispatcher ends."""
+    return background or H.queue_dispatch_problem(wt) is not None
 
 
 def check_queue_cap(env=None):
@@ -793,6 +831,8 @@ def submit(wt, args):
     if card:                           # decision 0033, checked before anything is written: one route (the
         check_route(wt, args)          # dispatcher's marker), then the cap on queued jobs, which the marker
         check_queue_cap(env)           # does not lift
+    else:                              # a local run that would reach Slurm itself: the same route
+        check_local_command(wt, command)
     mpath = manifest_path(wt, run_id)
     os.makedirs(os.path.dirname(mpath))
     os.makedirs(os.path.join(outdir, ".nrpic"))
@@ -807,7 +847,8 @@ def submit(wt, args):
 
     if o["launcher"] == "local":
         H.write_json(os.path.join(outdir, ".nrpic", "launch.json"),
-                     {"command": command, "cores": o["cores"], "wall": o["wall"], "host": H.host()})
+                     {"command": command, "cores": o["cores"], "wall": o["wall"], "host": H.host(),
+                      "slurm_shims": local_shims(wt, o["background"])})
         if o["background"]:
             p = subprocess.Popen([sys.executable, "-I", os.path.realpath(__file__), "-C", wt.root, "_wrap", run_id],
                                  stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
@@ -873,6 +914,8 @@ def wrap(wt, run_id, echo=False):
     outdir = outdir_of(wt, run_id)
     info = H.read_json(os.path.join(outdir, ".nrpic", "launch.json"))
     env = H.build_env(wt, threads=int(info.get("cores", 1)))
+    if info.get("slurm_shims", True):     # decision 0033: outside a dispatch sbatch/srun/salloc are stubs
+        env = H.with_slurm_shims(env, wt)
     env["NRPIC_RUN_ID"], env["NRPIC_RUN_DIR"] = run_id, outdir
     os.makedirs(env["MPLCONFIGDIR"], exist_ok=True)
     info["pid"] = os.getpid()
@@ -921,25 +964,36 @@ def wrap(wt, run_id, echo=False):
 
 # ------------------------------------------------------------------ finish / verify
 
-def sha256sums(outdir):
-    lines, total, n = [], 0, 0
+def sha256sums(outdir, full=False, stats=None):
+    """Write <outdir>/sha256sums.txt (every regular file, .nrpic/ and links left out) and return (its sha256,
+    bytes, files). Through the run directory's cache (H.OutputHasher, decision 0039 item 5): a file whose size
+    and modification time equal its entry is not read again unless full; the counters go into `stats`."""
+    rels = []
     for dirpath, dirnames, filenames in os.walk(outdir):
         rel = os.path.relpath(dirpath, outdir)
         if rel == ".":
             dirnames[:] = [d for d in dirnames if d != ".nrpic"]
         dirnames.sort()
         for fn in sorted(filenames):
-            full = os.path.join(dirpath, fn)
+            full_p = os.path.join(dirpath, fn)
             relf = os.path.normpath(os.path.join(rel, fn))
-            if relf == "sha256sums.txt" or os.path.islink(full) or not os.path.isfile(full):
+            if relf == "sha256sums.txt" or os.path.islink(full_p) or not os.path.isfile(full_p):
                 continue
-            lines.append(f"{H.sha256_file(full)}  {relf}")
-            total += os.path.getsize(full)
-            n += 1
+            rels.append(relf)
+    hasher = H.OutputHasher(outdir, full=full)
+    got = hasher.digests(rels)
+    if hasher.errors:
+        rel, err = next(iter(hasher.errors.items()))
+        raise H.HarnessError(f"cannot checksum {len(hasher.errors)} output file(s) of {outdir} (first: {rel}: {err}); "
+                             "nothing recorded")
+    total = sum(os.path.getsize(os.path.join(outdir, r)) for r in rels)
     path = os.path.join(outdir, "sha256sums.txt")
     with open(path, "w") as f:
-        f.write("\n".join(lines) + ("\n" if lines else ""))
-    return H.sha256_file(path), total, n
+        f.write("".join(f"{got[r]}  {r}\n" for r in rels))
+    hasher.save()
+    if stats is not None:
+        H.add_hash_stats(stats, hasher.stats)
+    return H.sha256_file(path), total, len(rels)
 
 
 def segment_wall(logs):
@@ -975,15 +1029,53 @@ def sacct_elapsed(env, ids):
     return tot if ok else None
 
 
+def chain_card_seconds(env, outdir, ids, ncont=0):
+    """Card-seconds of a chain, summed over every job of it: the segments it started itself and those a
+    continuation in place started (decision 0039 item 5). Per job: sacct's ElapsedRaw; for a job sacct does not
+    know, the wall time of its own segment logs chain/seg<NNN>.job<ID>.a<k>.log; a job with neither counts 0 and
+    is named. When sacct knows no job at all, the wall time of all segment logs (as before). Returns (seconds,
+    {job id: seconds or None}, basis: one sentence for the manifest and the commit)."""
+    cdir = os.path.join(outdir, "chain")
+    names = sorted(os.listdir(cdir)) if os.path.isdir(cdir) else []
+    seglogs = {}
+    for f in names:
+        mm = re.fullmatch(r"seg\d+\.job(\d+)\..*log", f)
+        if mm:
+            seglogs.setdefault(mm.group(1), []).append(os.path.join(cdir, f))
+    per = {j: sacct_elapsed(env, [j]) for j in ids}
+    by_sacct = [j for j in ids if per[j] is not None]
+    what = f"{len(ids)} jobs of the chain" + (f", {ncont} continuation(s) in place included" if ncont else "")
+    if not by_sacct:
+        wall, _, _ = segment_wall([os.path.join(cdir, f) for f in names if re.fullmatch(r"seg\d+\.job.*\.log", f)])
+        return wall, {j: None for j in ids}, f"wall time of all segment logs ({what}; sacct answered for none)"
+    by_log, unknown = [], []
+    for j in ids:
+        if per[j] is None and j in seglogs:
+            per[j] = segment_wall(seglogs[j])[0]
+            by_log.append(j)
+        elif per[j] is None:
+            unknown.append(j)
+    basis = (f"sum over {what}: sacct ElapsedRaw for {len(by_sacct)}"
+             + (f", own segment logs for {len(by_log)} ({', '.join(by_log)})" if by_log else "")
+             + (f", neither for {len(unknown)} ({', '.join(unknown)}; counted 0)" if unknown else ""))
+    return sum(x for x in per.values() if x), per, basis
+
+
 def finish(wt, args):
-    if not args:
-        raise H.HarnessError("usage: nrpic-run finish <run_id> [--status completed|failed|stopped]")
+    if not args or args[0].startswith("-"):
+        raise H.HarnessError("usage: nrpic-run finish <run_id> [--status completed|failed|stopped] [--full]")
     run_id = args[0]
     force = None
+    full = "--full" in args
     if "--status" in args:
-        force = args[args.index("--status") + 1]
+        k = args.index("--status")
+        force = args[k + 1] if k + 1 < len(args) else None
         if force not in FINAL:
             raise H.HarnessError("--status completed|failed|stopped")
+    unknown = [a for i, a in enumerate(args[1:], 1) if a not in ("--full", "--status") and args[i - 1] != "--status"]
+    if unknown:
+        raise H.HarnessError(f"finish: unknown argument(s) {' '.join(unknown)} "
+                             "(usage: nrpic-run finish <run_id> [--status completed|failed|stopped] [--full])")
     wt.require_owner()
     mpath = manifest_path(wt, run_id)
     if not os.path.isfile(mpath):
@@ -999,9 +1091,22 @@ def finish(wt, args):
             f"{'; '.join(([H.hand_marker(m)] if v['schema'] and H.hand_marker(m) else []) + v['issues'][:3])}). "
             "finish closes only the runs it started; close this one by hand (status, exit_code, ended, "
             "outputs) and commit it")
-    if m.get("status") in FINAL and not force:
-        print(f"{run_id} is already {m['status']}")
+    if "continuations" in m:                  # runs continued in place by a queue wrapper (decision 0039 item 5)
+        bad = H.continuation_problems(m["continuations"])
+        if bad:
+            raise H.HarnessError(
+                f"{os.path.relpath(mpath, wt.root)}: the field `continuations` is malformed, nothing was changed:\n  "
+                + "\n  ".join(bad) + "\nEach record needs `at` (ISO 8601 with a zone), `from_restart` (path or null), "
+                "`by` or `via` (who), and `job_id`, `segments_used_before` or `max_segments` (harness/RULES.md, "
+                "nrpic-run). Repair the record by hand, commit it, and finish again")
+    reopened = H.reopened_at(m) if m.get("status") in FINAL else None
+    if m.get("status") in FINAL and not force and not reopened:
+        print(f"{run_id} is already {m['status']}"
+              + (f" (closed after its last continuation, {m['continuations'][-1].get('at')})" if v["continuations"] else ""))
         return 0
+    if reopened and not force:
+        print(f"{run_id}: closed as {m['status']} at {m.get('finished') or m.get('ended')}, then continued in place at "
+              f"{reopened}: closing it again")
     outdir = v["outdir"]
     env = H.build_env(wt)
     info = launch_info(outdir)
@@ -1019,8 +1124,8 @@ def finish(wt, args):
             status = force or ("completed" if rc == 0 else "failed")
             started, ended, wall = res.get("started"), res.get("ended"), res.get("walltime_s")
     else:
-        ids = list(info.get("job_ids", []))
-        for j in chain_job_ids(outdir):
+        ids = [str(j) for j in info.get("job_ids", [])]
+        for j in chain_job_ids(outdir) + H.continuation_job_ids(m):
             if j not in ids:
                 ids.append(j)
         live = slurm_active(env, ids)
@@ -1058,10 +1163,14 @@ def finish(wt, args):
                           if re.fullmatch(r"seg\d+\.job.*\.log", f)) if os.path.isdir(
                 os.path.join(outdir, "chain")) else []
             wall, started, ended = segment_wall(logs)
-            el = sacct_elapsed(env, ids)
-            gpu_h = (el if el is not None else wall) / 3600.0
+            secs, per_job, basis = chain_card_seconds(env, outdir, ids, v["continuations"])
+            gpu_h = secs / 3600.0
+            m["resources"]["gpu_hours_basis"] = basis
+            m["resources"]["gpu_seconds_by_job"] = {j: (round(s, 1) if s is not None else None)
+                                                    for j, s in per_job.items()}
         m["slurm"]["job_ids"] = ids
-    sums_sha, nbytes, nfiles = sha256sums(outdir) if os.path.isdir(outdir) else (None, 0, 0)
+    hs = H.hash_stats()
+    sums_sha, nbytes, nfiles = sha256sums(outdir, full=full, stats=hs) if os.path.isdir(outdir) else (None, 0, 0)
     m["status"] = status
     m["exit_code"] = rc
     m["started"] = started or m.get("started") or info.get("submitted")
@@ -1073,24 +1182,32 @@ def finish(wt, args):
     m["finished"] = H.utcnow()
     H.write_json(mpath, m)
     rel = os.path.relpath(mpath, wt.root)
+    cont = (f"; continued in place {v['continuations']} time(s), card-hours "
+            f"{m['resources']['gpu_hours']}: {m['resources'].get('gpu_hours_basis')}") if v["continuations"] else ""
     H.commit_paths(wt, [rel], f"{wt.short}(run): finish {run_id} ({status})",
                    body=f"exit code {rc}; wall time {m['resources']['walltime_s']} s; "
                         f"{nfiles} output files, {nbytes} bytes, checksums in "
-                        f"{m['outputs']['dir']}/sha256sums.txt",
+                        f"{m['outputs']['dir']}/sha256sums.txt ({H.hash_summary(hs)}){cont}",
                    trailers=[("Run-Id", run_id), ("Gate", m.get("gate", ""))], force_add=True)
     print(f"finished {run_id}: {status} (exit {rc}); manifest committed; "
-          f"{nfiles} files checksummed in {outdir}/sha256sums.txt")
+          f"{nfiles} files checksummed in {outdir}/sha256sums.txt: {H.hash_summary(hs)}"
+          + (f"\n  card-hours {m['resources']['gpu_hours']}: {m['resources'].get('gpu_hours_basis')}"
+             if m["resources"].get("gpu_hours_basis") else ""))
+    for x in hs["notes"][:5]:
+        print("  note: " + x)
     return 0
 
 
 def verify(wt, args):
-    if not args:
-        raise H.HarnessError("usage: nrpic-run verify <run_id>")
+    if not args or args[0].startswith("-") or any(a != "--full" for a in args[1:]):
+        raise H.HarnessError("usage: nrpic-run verify <run_id> [--full]")
     run_id = args[0]
     m = find_manifest(wt, run_id)
-    problems, notes, n = H.verify_run(wt.home, wt.root, m)
-    for x in notes:
+    hs = H.hash_stats()
+    problems, notes, n = H.verify_run(wt.home, wt.root, m, full="--full" in args, stats=hs)
+    for x in notes + hs["notes"][:5]:
         print("  note: " + x)
+    print(f"  checksums: {H.hash_summary(hs)}")
     if problems:
         print(f"verify {run_id}: FAIL")
         for p in problems:

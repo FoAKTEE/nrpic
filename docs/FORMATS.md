@@ -231,3 +231,33 @@ Since release core-v0.5 the summary file of the horizon finder
 (`<base>.co_<n>.txt`) are opened at their first record and therefore lie in the run
 directory given with `-d`; the releases before opened them in the directory the
 executable was started in.
+
+## Boost table of a table component (`*.bst`, format `bst1`)
+
+Momentum of a component of type `table` of `nrpic_cf` (`<problem> comp<c>_boost_file`,
+`comp<c>_p1..3`; `tracks/core/interfaces/moving_clumps.md`, part B): the radial moments
+of the momentum density of the moving cluster, from which the generator builds the
+extrinsic curvature, and the radial functions of the comoving shift. Plain text. Header
+lines begin with `#`; those of the form `# key = value` are read:
+
+| key | value | required |
+|---|---|---|
+| `format` | `bst1` | yes |
+| `pmass` | momentum per unit coordinate velocity of the clump far from it, `P = pmass V` | yes |
+| `ext_m`, `ext_kappa` | beyond the last row the slice function is `F = r + m + m^2/r + kappa/(r (r - m))` with `m = ext_m` (shift only) | yes |
+| `lam`, `yc`, `mass`, `i4_last`, `columns` | for the reader of the file; ignored by the code | no |
+
+Each data row is `r  Q/r^3  I4/r^5  ba  bb` on a uniform grid `r_k = k dr`, `k = 0 .. N-1`,
+starting at `r = 0`, with at least eight rows, extending beyond the matter:
+
+    Abar_ij = 3 Q/(2 r^2) [P_i n_j + P_j n_i - (delta_ij - n_i n_j) P.n]
+            + I4/(2 r^4)  [P_i n_j + P_j n_i + (delta_ij - 5 n_i n_j) P.n],
+    beta^i  = -(V^i ba + n^i (V.n) bb)        (only with comp<c>_boost_shift = true),
+
+`Q` the enclosed fraction of the momentum and `I4` its enclosed second moment per unit
+momentum (both constant beyond the last row; the columns divided by `r^3` and `r^5` are
+finite at the centre). Interpolation is four-point Lagrange (cubic), as for the radial
+table. Writer: `problems/ic/make_ic.py boosted` (`python/nrpic/boosted_cluster.py`,
+`BoostedST.write_boost_table`), which also writes the radial table of the cluster and the
+second-order correction of psi (a table of format `mp1`, multipoles 0 and 2 about the
+direction of motion, used with `comp<c>_corr = table`).

@@ -97,8 +97,17 @@ messages:
 
 Requirements and behaviour:
 - The input must contain a restart output block, for example
-  `<output9>` with `file_type = rst` and `dcycle = 2000` (or `dt = ...`). Preemption
-  loses the work done since the last dump. The script refuses inputs without one.
+  `<output9>` with `file_type = rst` and `dcycle = 2000` (or `dt = ...`). The script
+  refuses inputs without one. On a preemption an executable with the handler of
+  `utils/term_signal.cpp` (release v0.7; `core_step-limit`) finishes its cycle and
+  writes a restart file inside the 30 s Slurm gives; the job resubmits at once and then
+  waits for it. An older executable loses the work since its last dump, as before.
+- Segments: `MAX_SEGMENTS` caps the attempts that count. An attempt cut by a signal
+  (SIGTERM to the job, a kill from outside) before it has run for `ATHENA_WALL` does not
+  count (`chain/uncounted`; `--status` prints both numbers). At most `MAX_TERM_IN_A_ROW`
+  (20) attempts in a row may end by SIGTERM. When the last counted segment ends without
+  finishing the run the chain is FAILED "MAX_SEGMENTS=N reached" in that job; no job is
+  queued only to say so, and the start command is refused until `MAX_SEGMENTS` is raised.
 - The executable is copied to `<rundir>/chain/athena` at start, so rebuilding does not
   change the binary that reads the chain's restart files. To change the binary or the
   arguments, `--stop`, then run the start command again: it resumes from the newest
@@ -114,12 +123,21 @@ Requirements and behaviour:
   `segNNN.job<id>.aN.log` (`latest.log`), `slurm-<id>.out`, `config.sh`.
 - Environment at start: `ATHENA_WALL` (default 00:50:00), `SLURM_TIME` (00:59:00),
   `CPUS` (1), `MAX_SEGMENTS` (100), `JOB_NAME`, `PROC_NAME`, `MAX_OUTSIDE_KILLS` (2),
-  `SLURM_EXTRA`, and `CHECK_CMD`
+  `MAX_TERM_IN_A_ROW` (20), `SLURM_EXTRA`, and `CHECK_CMD`
   (a shell command run after each normally ended segment, with `$1` = rundir; a
   nonzero exit marks the chain FAILED).
 - Test without Slurm or AthenaK: `python3 scripts/tests/test_submit_chain.py --out DIR`
-  (fake `sbatch`, a fake executable that kills its own process id; run
-  core-20261121-080619-6a0793f).
+  (fake `sbatch`, a fake executable that kills its own process id or signals the job;
+  runs core-20261121-080619-6a0793f and, with the scenarios of preempted attempts,
+  core-20261125-000640-5c4b644).
+- The marker of the shared card queue (`NRPIC_QUEUE_DISPATCH`, every `NRPIC_QUEUE_*`
+  variable) is removed at the top of `gpu_run.sh`, `gpu_batch.sh`, `submit_chain.sh` and
+  `_athena_job.sh` (and again in the chain's sbatch call), so no job, srun step or
+  executable carries it and no job can pass for the dispatcher (decision 0037 item 4); a
+  chain still submits its own next segment. A `--cmd` wrapper of the queue tests its
+  dispatch with `harness/bin/nrpic-queue check-dispatch`, never with the variable. Test
+  with the fake Slurm of `harness/tests/rc_fixture.py`, the scripts before the change as
+  a control: `python3 scripts/tests/test_queue_marker.py --old DIR --out DIR`.
 - Z4c NaNs do not show up as `nan` in the history: `HistoryOutput` sums only cells with
   `chi >= excise_chi`, so NaN cells drop out, the norms go to 0, and `Volume` collapses.
   That is why the `Volume` check exists. Use `CHECK_CMD` for anything problem-specific.

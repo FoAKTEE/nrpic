@@ -1,0 +1,27 @@
+{
+ "horizon_summary_0.txt": {
+  "lines_short": 25,
+  "identical_in_place": 25,
+  "differing_in_place": 0,
+  "not_in_long_at_all": 0,
+  "first_differing_line": null,
+  "largest_relative_difference_there": null
+ },
+ "z4c.user.hst": {
+  "lines_short": 15,
+  "identical_in_place": 15,
+  "differing_in_place": 0,
+  "not_in_long_at_all": 0,
+  "first_differing_line": null,
+  "largest_relative_difference_there": null
+ },
+ "nrpic.hst": {
+  "lines_short": 41,
+  "identical_in_place": 41,
+  "differing_in_place": 0,
+  "not_in_long_at_all": 0,
+  "first_differing_line": null,
+  "largest_relative_difference_there": null
+ },
+ "verdict": "identical"
+}

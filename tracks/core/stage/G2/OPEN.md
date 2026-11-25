@@ -1,12 +1,14 @@
 # What core's G2 still lacks
 
-Five states: the state after release core-v0.6 (2026-11-21, batch 4a, first section:
-the gate as a whole and the defects found since), the release candidate core-v0.6, the
+Six states: the state after release core-v0.6 (2026-11-21, batch 4a, first section:
+the gate as a whole and the defects found since), the release candidate core-v0.7
+(2026-11-24: restart defects, the mitigation status of `lapse_leak_hole`, what level 2
+of the stochastic backreaction does not support), the release candidate core-v0.6, the
 release core-v0.5, the release core-v0.4, and the list written after the wave-1
 integration (2026-11-15, below, with its numbering kept; items that a release changes
 are named in the section of that release).
 
-## State after release core-v0.6 (2026-11-21, batch 4a, session core-lead-6; items u, v and the products of item 4 brought up to date in batch 8, session core-lead-8; item 2 and item 4 in batch 10a, 2026-11-23, session core-lead-10a)
+## State after release core-v0.6 (2026-11-21, batch 4a, session core-lead-6; items u, v and the products of item 4 brought up to date in batch 8, session core-lead-8; item 2 and item 4 in batch 10a, 2026-11-23, session core-lead-10a, and in batch 11, 2026-11-24, session core-lead-11)
 
 **Is G2 met? No.** Criteria of the core sheet (brief 9.3, "G2: all of C3 passed,
 core-v0.1 released") and of every track's G2 (charter 9.2), item by item in
@@ -18,22 +20,26 @@ core-v0.1 released") and of every track's G2 (charter 9.2), item by item in
    oblate component in any release; the component and first collapse runs exist on the
    unmerged branch core/oblate (`REQUESTS_WAVE3.md` W27), so the row has no released
    evidence.
-2. Ladder row 4 (cluster stability threshold) is PARTIAL, closer than before. The
-   fates of the five models agree with the paper. The M/4 bisection of wave 2 gave no
-   bracket (the M/4 mesh pushes clusters outward, Track C's drift package). Batch 10a
-   judged the repeat on cells of M/8 against unkicked controls, by the rule written
-   before the runs (JOURNAL 2026-11-21T20:26Z): 0.605 member collapses (t_c 180.5 M),
-   0.680 member and control both collapse (219.5 M, 251.5 M), 0.755 stays (D = +0.0016);
-   **the threshold on M/8 with 10^4 particles is bracketed between y_c = 0.680 and
-   0.755** (fates run core-20261123-020318-e952741; `verify/LADDER.md` row 4). What is
-   still missing for the row: (a) the bracket narrowed: level 2 (0.69875, 0.7175,
-   0.73625, each with its control; chains core-20261123-020450-7e42037 to
-   -020500-9b192cd, 12 card-hours asked, predictions P5-P9 in the journal) is queued;
-   (b) the threshold at a second cell size or particle number (it is not converged; the
-   discrete threshold lies above the turning point 0.6796, since the 0.680 control
-   collapses from noise); (c) the inward drift of the stable controls (0.026 at 0.755,
-   more than the 0.01 predicted) and the growing central-lapse oscillation (+-0.03 after
-   200 M) are not explained.
+2. Ladder row 4 (cluster stability threshold) is PARTIAL. The fates of the five models
+   agree with the paper. The M/4 bisection of wave 2 gave no bracket (the M/4 mesh pushes
+   clusters outward, Track C's drift package). On cells of M/8 against unkicked controls,
+   by the rule written before the runs (JOURNAL 2026-11-21T20:26Z): level 1 (batch 10a,
+   run core-20261123-020318-e952741) bracketed between 0.680 and 0.755; level 2 (batch 11,
+   fates of all six models core-20261124-130055-9fc9901): 0.69875 member and control
+   collapse (244.25 M, 259.75 M), 0.7175 both collapse (294.25 M, 293.5 M), 0.73625 stays
+   (D = +0.0014). **Collapse within 300 M on M/8 with 10^4 particles is bracketed between
+   y_c = 0.7175 and 0.73625** (`verify/LADDER.md` row 4). What is still missing for the
+   row: (a) whether the bracket is a stability threshold or the 300-M window: the
+   surviving pairs drift inward steadily, member and control alike (50-M means of
+   alpha_c/alpha_c^eq fall to 0.933 at 0.73625 and 0.964 at 0.755 by 250-300 M), and near
+   the bracket the kick no longer matters; level 3 tests it (0.726875 member and control
+   to 600 M; the 0.73625 and 0.755 pairs continued from their 300-M restarts to 600 M;
+   chains core-20261124-130310-597d9ca to -130406-09319a0, 11.82 card-hours asked,
+   predictions P10-P15 in the journal entry 2026-11-24T13:05Z); if they collapse, the
+   cause of the drift (mesh, particle noise, deposit) becomes the item, and the criterion
+   of the row has to be one that does not depend on the window; (b) the threshold, or the
+   drift rate, at a second cell size or particle number (nothing is converged); (c) the
+   growing central-lapse oscillation of the surviving pairs is not explained.
 3. Three-way convergence (C2): each direction is shown on a different set-up
    (`verify/figs/convergence_three_way.png`: H-norm of the cluster against N, the
    expanding ball against the cell size, gauges and boundary on the ball); no single
@@ -43,8 +49,9 @@ core-v0.1 released") and of every track's G2 (charter 9.2), item by item in
    checker (`note/`, C15); the fresh-context verifier's report is in (`VERIFIER.md`,
    C16, a sample of fourteen claims; its five text defects are corrected); the
    architecture schematic is redrawn for core-v0.6 (C14). The six row-4 chains of batch 5
-   are closed (batch 10a), so the run check of the clean-export verify (C6) no longer
-   fails on them; the six level-2 chains queued in batch 10a are open runs again; also open: the ladder rows 2 and 4 rest in part on pre-program directories, now named and
+   are closed (batch 10a), and so are the six level-2 chains (batch 11); the six level-3
+   chains queued in batch 11 are open runs, which the run check of the clean-export
+   verify (C6) counts until they are closed; also open: the ladder rows 2 and 4 rest in part on pre-program directories, now named and
    inventoried by sha256 (`verify/preprogram/README.md`) but without manifests.
 
 What is met: rows 1 and 2 PASS (geodesics, Oppenheimer-Snyder; `verify/LADDER.md`),
@@ -109,6 +116,110 @@ the ladder schematic, failed runs on record.
 
 Every other known defect is in the sections below, newest first: core-v0.6 items a to
 o, core-v0.5 items b to m, core-v0.4, and the list of 2026-11-15.
+
+## Release candidate core-v0.7 (2026-11-24): branches left out, items changed, defects
+
+**Branch left out of core-v0.7**: core/oblate (oblate collapse of the verification
+ladder), not ready: tip 4f01a81f of 2026-11-20, no commit since; it holds neither
+release core-v0.5 nor a READY for a merged state. Nothing of it is in the source of the
+candidate. core/noise-level2, core/step-limit, core/gauge-2 and core/clump-table passed
+the maintainer's review and are merged (`tracks/core/RELEASE-v0.7.md`); the byte
+regression against core-v0.6 passes with them (run core-20261125-023046-30aba6c).
+
+Items of the lists below that core-v0.7 changes:
+- "core/clump-table left out" (section of core-v0.6): merged. Its card check M2, open
+  since 2026-11-21, was judged at the merge and holds (run
+  core-20261125-021225-382dbc7).
+- The step limit of the gauge sectors (decision 0027 item 2; rule "cfl_number at 0.45
+  or below" of CLAUDE.md): `<z4c> dt_gauge` enforces the bound; without it the code now
+  warns at start-up. The rule stays for runs without the option.
+- Preempted runs (decision 0032 item 2): a restart file is written on SIGTERM.
+
+Defects and limits of core-v0.7 itself (found by the packages or at the merge):
+- a. **Restart defect 1** (found by package step-limit; older than this release:
+  release core-v0.6 does the same, reference case R2 of run
+  core-20261124-234903-61e194c): the conservation record `<basename>.cons.hst` loses one
+  record when a run is continued from a restart file written one or two cycles before
+  the record is due, because the deposits of the cycles before are not in the restart
+  file. Reproduced with the candidate: case S2 of the quick test (run
+  core-20261125-023641-7a1c47d) lacks the record at t = 1.6875 in the continued run;
+  every other output of that case is byte-identical. The state of the run is not
+  affected (last restart file and `.prt` companion identical bit for bit). Not fixed.
+- b. **Restart defect 2** (same package, also in core-v0.6): the mesh history file
+  (`<basename>.z4c.user.hst` and the other histories written by the mesh) gets its
+  header lines again at every continuation (two header lines against four in cases S1
+  and S2); the data lines are identical. Readers must skip comment lines anywhere in
+  the file. Not fixed.
+- c. **`lapse_leak_hole` is a mitigation, not a cure** (decision 0025 item 3). The defect
+  it addresses stands: on a slice whose vacuum has diverging normal observers around a
+  hole (Einstein-Straus bubble) `lapse_leak` stretches the coordinates of that vacuum
+  and the horizon shrinks in the coordinates (0.78 to 0.88 M after 200 M at T = 2 M),
+  with a late drift of its mass. With `lapse_leak_hole = 16` (vacuum, 200 M, cells M/8,
+  card job F of the package): mass drift over 100 to 199.5 M inside [0, +2.1e-4]
+  against [-5.6e-4, +1.26e-3] for the first pass and [-4.8e-5, +2.0e-5] for plain
+  1+log; the horizon radius is steady near 1.6 M until about 110 M and then falls again
+  at -3.5e-3 per M: the shrinking is delayed by about 100 M, not stopped, and the level
+  of plain 1+log is not reached [numbers of the package, `cosmo_gauge.md` section 9,
+  not rerun by me]. Not tested: runs longer than 100 M on the Einstein-Straus data,
+  other radii than 6 M (no help) and 16 M, several trackers, a moving hole, several
+  ranks, a tracker placed where a hole will form. A cure (a gauge that does not hold
+  the vacuum lapse above its reference) does not exist in the code; runs with the
+  relaxed lapse around a hole beyond about 200 M at cells of M/8 are not covered
+  [JUDGEMENT from the package's one 200 M run].
+- d. **Level 2 of the stochastic backreaction, what it does not support**
+  (`noise_level2.md` sections 10 and 12): (i) refined meshes: `noise_mode_eq = mesh` and
+  `noise_level = 2` stop on a mesh with more than one level; (ii) several ranks: the
+  scalar field refuses them, as before; (iii) a lapse that varies in space, and a
+  shift: NOT TESTED (window, H, eps1, eps2 and the kick factors are uniform, from box
+  means; the tests have a lapse of 1 and a lapse a(t) that depends on time only); (iv)
+  the power model of the noise; (v) kick factors local in space are not implemented;
+  (vi) with every kick off a non-finite mesh R is reported at the next dump and does
+  not stop the run (`<z4c_guard>` tests the spacetime fields only). The three readings
+  of the Laplacian differ at the order of level 2 itself (0.20 and 0.27 per cent of the
+  level-2 effect): which one arXiv:2512.14649 means is a reading of its text, not a
+  test. `noise_background_eq = evolved` is not tested in the inflection case or at
+  256^3. The cost of level 2 at 256^3 after the review is not timed on a card (R5,
+  q0035).
+- e. Step limit `dt_gauge`: tested on flat space, on Track A's uniform reproducer and
+  refined periodic deck, all on processors. Not tested: punctures, horizons,
+  `shift_eta_profile`, rk3, nghost 2 and 3 in runs of the code, adaptive refinement,
+  several ranks, any card run of the final build (q0036). With `lapse_leak_hole` the
+  bound counts the relaxation of the lapse also where the option has switched it off
+  (the kernel does not know the weight): the bound is then smaller than needed there
+  [JUDGEMENT from the formula; one run, x_holedt of the quick test, status 0, the limit
+  never set the step at cfl_number 0.25]. A sector that is not evolved (geodesic
+  slicing, zero shift) prints the largest float as its bound (1.7e+39 cells in the
+  level-2 example): cosmetic. `dt_gauge` is off when absent: a deck with `cfl_number`
+  above the bound still runs into the instability, with a warning.
+- f. Stop on SIGTERM: tested on one rank, serial and threaded at one thread, periodic
+  boxes with and without particles. Not tested: several MPI ranks (the reduction ran
+  on one rank only, in the regression of the MPI build), a card, the companions `.amr` and `.sf` of a restart file,
+  asymptotically flat set-ups (whose restart is exact only up to round-off, CLAUDE.md),
+  a real preemption by Slurm. A run signalled during a cycle that takes longer than the
+  grace period of the batch system (30 s on anta) is killed without a restart file.
+- g. Chain script: the script of core-v0.6 with an executable of core-v0.7 ends a
+  chain FAILED when the executable is signalled from outside the job (changelog, run
+  scripts, item 5). Tested with fakes only.
+- h. Table clusters with momentum (`moving_clusters.md` section 8): cross terms of
+  several bodies are not solved; a cluster beside a puncture has data and no evolution;
+  the binary is not shown to be circular (separation falls 1.2 per cent in 125 M); the
+  non-conformally-flat part at O(v^2) and the Lorentz contraction are left out; several
+  ranks, the threaded build and adaptive refinement not run; the card tests TC, TE, TF
+  of the package ran with correction tables written before a generator fix. The branch
+  was merged from a core-v0.5 base: with `id_solve` its example gets the far field of
+  core-v0.6 and was run once (converges; no reference for the changed bytes).
+- i. Card checks at the time of writing: the merged card executable has NOT run on a
+  card (queue entry q0039, 22 cases); the card runs of the reviewed level-2 build
+  (q0035) and of the step-limit build (q0036) wait as well. `RELEASE-v0.7.md`, section
+  "Card checks pending", has the commands that judge them.
+- j. Combinations: level 2 with `dt_gauge`, and `lapse_leak_hole` with `dt_gauge`, ran
+  once each on processors (status 0, finite). Nothing else of the four branches was run
+  together, and none of them with adaptive refinement or several ranks.
+- k. As for core-v0.6: the capability tests of the packages and the verification
+  ladder were not rerun on the merged executables; the release rests on the byte
+  regression, on one example per branch against the branch's own executable, and on
+  the packages' tests of their branch builds.
+- l. Carried from core-v0.6 unchanged: items a to k and m to o of its section below.
 
 ## Release candidate core-v0.6 (2026-11-21): branches left out, items changed, defects
 

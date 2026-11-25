@@ -126,3 +126,30 @@ tracks/B-emd-gw/outbox/20261124T134242Z__to-orch__batch11-population-gr-results.
 tracks/B-emd-gw/outbox/20261124T134243Z__to-orch__stage-verify-incremental-checksums.md	2026-11-24T17:22:59Z	ruled on in coord/DECISIONS/0032
 tracks/F-hills/outbox/20261124T135319Z__to-orch__cards-read-continuations-allotment.md	2026-11-24T17:22:59Z	ruled on in coord/DECISIONS/0032
 tracks/kb/outbox/20261124T141719Z__to-orch__additions-ingest4.md	2026-11-24T17:22:59Z	ruled on in coord/DECISIONS/0032
+tracks/D-bh-dress/outbox/20261124T173313Z__to-orch__b11b-allotment-used.md	2026-11-24T21:12:30Z	ruled on in coord/DECISIONS/0033-0034
+tracks/D-bh-dress/outbox/20261124T180749Z__to-orch__g1-review-run-input-changed.md	2026-11-24T21:12:30Z	ruled on in coord/DECISIONS/0033-0034
+tracks/core/outbox/20261124T212100Z__to-orch__noise-level2-review-closed-v07.md	2026-11-25T02:09:15Z	ruled on in coord/DECISIONS/0035
+tracks/E-stoch-inf/outbox/20261124T234057Z__to-orch__g2-after-reproduction.md	2026-11-25T02:09:15Z	ruled on in coord/DECISIONS/0035
+tracks/kb/outbox/20261124T234614Z__to-orch__kb-g3-package-and-claims.md	2026-11-25T02:09:15Z	ruled on in coord/DECISIONS/0035
+tracks/core/outbox/20261125T004353Z__to-all__sigterm-restart-and-chain-segments.md	2026-11-25T02:09:15Z	ruled on in coord/DECISIONS/0035
+tracks/core/outbox/20261125T004353Z__to-orch__step-limit-and-preempt-for-v07.md	2026-11-25T02:09:15Z	ruled on in coord/DECISIONS/0035
+tracks/core/outbox/20261125T030800Z__to-orch__release-candidate-core-v07.md	2026-11-25T03:32:39Z	ruled on in coord/DECISIONS/0036
+tracks/kb/outbox/20261125T034403Z__to-all__claims-superseded-batch15.md	2026-11-25T04:27:40Z	ruled on in coord/DECISIONS/0037, coord/GATES.md
+tracks/kb/outbox/20261125T034403Z__to-orch__kb-g3-second-verifier-and-0608095.md	2026-11-25T04:27:40Z	ruled on in coord/DECISIONS/0037, coord/GATES.md
+tracks/E-stoch-inf/outbox/20261125T040230Z__to-orch__criteria-three-amplitudes-later-gates.md	2026-11-25T04:27:40Z	ruled on in coord/DECISIONS/0037, coord/GATES.md
+tracks/E-stoch-inf/outbox/20261125T040230Z__to-orch__g2-ready-for-review.md	2026-11-25T04:27:40Z	ruled on in coord/DECISIONS/0037, coord/GATES.md
+tracks/A-emd-pbh/outbox/20261125T115950Z__to-orch__g2-oblate-prolate-row-and-verifier.md	2026-11-25T12:54:34Z	ruled on in coord/DECISIONS/0039
+tracks/E-stoch-inf/outbox/20261125T120448Z__to-orch__g3-scope-written-pilot-queued.md	2026-11-25T12:54:34Z	ruled on in coord/DECISIONS/0039
+tracks/core/outbox/20261125T121047Z__to-orch__queue-marker-out-of-jobs.md	2026-11-25T12:54:34Z	ruled on in coord/DECISIONS/0039
+tracks/D-bh-dress/outbox/20261125T122136Z__to-orch__finish-refuses-continued-chains.md	2026-11-25T12:54:34Z	ruled on in coord/DECISIONS/0039
+tracks/C-sidm/outbox/20261125T122226Z__to-orch__gate-status-batch17.md	2026-11-25T12:54:34Z	ruled on in coord/DECISIONS/0039
+tracks/kb/outbox/20261125T125033Z__to-all__claims-superseded-batch17.md	2026-11-25T12:54:34Z	ruled on in coord/DECISIONS/0039
+tracks/core/outbox/20261125T150036Z__to-orch__figstyle-pdf-without-date.md	2026-11-25T15:04:04Z	ruled on in coord/DECISIONS/0040
+tracks/A-emd-pbh/outbox/20261125T151524Z__to-orch__c18-answered-k4-a2.md	2026-11-25T15:54:03Z	ruled on in coord/DECISIONS/0040 items 6 to 9
+tracks/A-emd-pbh/outbox/20261125T151524Z__to-orch__c3-smoothed-edge-test.md	2026-11-25T15:54:03Z	ruled on in coord/DECISIONS/0040 items 6 to 9
+tracks/E-stoch-inf/outbox/20261125T152306Z__to-orch__g3-scope-amended-review-confirmed.md	2026-11-25T15:54:03Z	ruled on in coord/DECISIONS/0040 items 6 to 9
+tracks/C-sidm/outbox/20261125T160818Z__to-orch__gate-status-batch20-budget-80.md	2026-11-25T16:56:18Z	ruled on in coord/DECISIONS/0041
+tracks/D-bh-dress/outbox/20261125T160850Z__to-orch__b20-horizon-recheck-null-mesh-two-members.md	2026-11-25T16:56:18Z	ruled on in coord/DECISIONS/0041
+tracks/A-emd-pbh/outbox/20261125T161356Z__to-orch__c3-smoothed-edge-result.md	2026-11-25T16:56:18Z	ruled on in coord/DECISIONS/0041
+tracks/E-stoch-inf/outbox/20261125T163619Z__to-orch__zeta-reader-rulings-z1-z2.md	2026-11-25T16:56:18Z	ruled on in coord/DECISIONS/0041
+tracks/A-emd-pbh/outbox/20261125T165308Z__to-orch__c3-f2-refuted.md	2026-11-25T16:56:18Z	ruled on in coord/DECISIONS/0041

@@ -1,0 +1,12 @@
+{
+ "name": "16 (2026-11-24 night: gate review)",
+ "what": "independent review of gate G2 of Track E",
+ "note": "Releases core-v0.4 to v0.7 are on main. Rulings: coord/DECISIONS/0030 to 0037. Track E's G2 package carries one criterion FAILED on record by ruling (decisions 0030 item 2 and 0036 item 2: U-A4'(a) of its scope section 4c, with the three-amplitude reading beside it as a finding after the data): judge whether the gate can be passed with that failure stated, not whether the criterion can be reworded. The G2 sections of the track are in its reproduction note tracks/E-stoch-inf/repro/note/ (decision 0035 item 1). A full nrpic-stage verify with checksums takes one to two hours of disk: run it only if you doubt a file.",
+ "items": [
+  {
+   "type": "gate",
+   "owner": "E-stoch-inf",
+   "gate": "G2"
+  }
+ ]
+}
