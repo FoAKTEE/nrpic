@@ -171,3 +171,28 @@ Full derivation and summary: [04_iterative_algorithmic_proofs.md](file:///home/s
 - **M4 6-Level SMR Kerr $a=0.9M$ (`mesh 10k`, $t=200M$)**: `plain` (`76.02s`, `filt=-2.25e-6/8.91e-4`), `dens` (`75.44s`, `filt=0.00e+00/8.64e-4`) vs **`mcons`** (`189.85s`, `|<e^{iphi}>|=0.1577`, **`filt(t0/max) = 0.00e+00 / 9.93e-16`**). *(Full-3D `flx_tm` + `pbval_tm` overhead here directly motivates Iteration 4a boundary-only refluxing + 4d widened-halo filter.)*
 - **M5b Prolate Compensated Pass (`nfilter=4, filter_compensate=true`, 7-level AMR, $t=5M$)**: `mcons` (`59.3s`, `||H||_max = 0.3475`, `filt = 0.00e+00 / 1.01e-15`).
 - **GPU vs OpenMP (4 threads) 10-step OS AMR Determinism**: `max|dx| = 8.882e-16`, `max|du| = 6.453e-16`, `rel|d_int_E_filt| = 4.229e-15`.
+
+### Verified Iteration 4 — VRAM Slimming (`bflx`), $C^2$ Quintic Hermite, and Scheme A Stage-Accurate RK Backreaction (`gb204` B200 GPU, Milestone #7)
+
+Worktree `feat/iter4-vram-quintic-backreaction`, proof script [`run_iter4_verify.py`](file:///home/schmidt/ssci-haiyangw/nrpic/vlasov_gr/notes/scripts/run_iter4_verify.py), data [`iter4_verify.npz`](file:///home/schmidt/ssci-haiyangw/nrpic/vlasov_gr/paper/data/iter4_verify.npz).
+
+- **Standalone Kernel Checks 1–12 (`g++` & `nvcc -arch=sm_100`)**: **PASSED** (`Test 11 quintic`: `sym = 2.97e-15, pou = 2.22e-16, p4 = (3.55e-15, 3.20e-14), C2 = (0.00e+00, 0.00e+00, 5.00e-16), orders = (5.30, 4.13)`; `Test 12 stageA`: `p_frozen = 1.00, p_rk2 = 1.99, p_rk3 = 1.99, p_rk4 = 1.99, th = (1.00, 0.125, 0.062)`).
+- **Iter 4a (Boundary-Only `bflx` Refluxing + Interior `e_prev`/`tm_prev`)**:
+  - 10-step OS AMR Determinism: `GPU4 vs GPU3` `max|dx| = 4.441e-16, max|du| = 4.247e-16, rel|d_intE_filt| = 0.000e+00`; `GPU4 vs OMP4 (4 threads)` `max|dx| = 8.882e-16, max|du| = 6.313e-16, rel|d_intE_filt| = 4.229e-15, filt4_max = 9.611e-16`.
+  - Full `t=25M` 7-level OS AMR (`mcons`): `build_gpu` (`wall = 161.1s, peak_VRAM = 73,174 MiB, rho_err = 4.183e-4, t_AH = 16.39M, M_AH = 1.00158M, ||H||_max = 1.893`) vs **`build_gpu_iter4`** (**`wall = 160.8s, peak_VRAM = 67,110 MiB` (`-6,064 MiB`), `rho_err = 4.183e-4, t_AH = 16.39M, M_AH = 1.00158M, ||H||_max = 1.893, filt_max = 9.29e-16`**).
+- **Iter 4b ($C^2$ 6-Node `quintic` Hermite, Zero Extra `met*s` VRAM) on M4 6-Level SMR Kerr $a=0.9M$ ($N=10^4, t=200M$, `gl4 + mcons`)**:
+  - `hermite_ng2`: `wall = 192.8s, VRAM = 6,746 MiB, dE(med/p99/max) = (1.05e-7/4.44e-6/3.27e-5), dL_med = 3.31e-6, dQ/K_med = 5.26e-7`.
+  - `hermite_ng4`: `wall = 205.4s, VRAM = 11,880 MiB, dE(med/p99/max) = (1.05e-7/4.44e-6/3.27e-5), dL_med = 3.31e-6, dQ/K_med = 5.26e-7`.
+  - `bspline_ng4`: `wall = 205.3s, VRAM = 14,260 MiB (+2,380 MiB), dE(med/p99/max) = (1.65e-9/5.30e-7/1.94e-6), dL_med = 2.50e-8, dQ/K_med = 2.01e-8`.
+  - **`quintic_ng4`**: **`wall = 209.3s, VRAM = 11,880 MiB` (`0` extra VRAM vs `hermite_ng4`, `-2,380 MiB` vs `bspline_ng4`), `dE(med/p99/max) = (3.38e-10 / 7.31e-8 / 3.27e-7)` (`311x` vs `hermite`, `4.9x` vs `bspline`), `dL_med = 8.53e-9` (`388x`), `dQ/K_med = 2.36e-9` (`223x`), `|<e^{iphi}>| = 0.1577`, `filt_max = 9.93e-16`**.
+- **Iter 4b/4c M5a OS $R_0=5M$ Variants ($t=25M$, `mcons`)**:
+  - `quintic + frozen`: `wall = 163.5s, peak_VRAM = 67,160 MiB, rho_err = 4.183e-4, t_AH = 16.39M, M_AH = 1.00161M, ||H||_max = 1.895, filt_max = 9.61e-16`.
+  - `hermite + stageA`: `wall = 161.4s (+0.4%), peak_VRAM = 68,394 MiB (-4,780 MiB vs Iter 3), rho_err = 4.223e-4, t_AH = 16.20M, M_AH = 1.00074M (2x cleaner), ||H||_max = 1.881, filt_max = 9.48e-16`.
+  - `quintic + stageA`: `wall = 165.5s, peak_VRAM = 68,444 MiB, rho_err = 4.223e-4, t_AH = 16.20M, M_AH = 1.00077M, ||H||_max = 1.883, filt_max = 9.61e-16`.
+- **Iter 4c OS CFL Convergence (`t=10.0M`, `cfl = 0.25, 0.125, 0.0625`, `hermite + mcons`)**:
+  - `frozen` $\alpha_c(10)$: `rel(0.25) = 5.192e-4, rel(0.125) = 2.841e-4, p_emp = 0.87` (`rho_err = 4.201e-4, 4.225e-4, 4.227e-4`).
+  - **`stageA`** $\alpha_c(10)$: **`rel(0.25) = 3.463e-5` (`15.0x` smaller), `rel(0.125) = 1.248e-5` (`22.8x` smaller), `p_emp = 1.47` (`rho_err = 4.227e-4` converged at `cfl=0.25`)**.
+- **Iter 4c Nonlinear ST Collapse ($y_c=0.500, N=10^4$, `qmc_antipodal`, 9-level AMR, `tlim=90M`, `mcons`)**:
+  - `st_herm_froz`: `wall = 742.3s, peak_VRAM = 99,160 MiB, t_AH = 75.56M, M_AH = 1.00080M, ||H||_max = 1.566, |P|_max/M0 = 8.06e-15, filt_max = 9.24e-16`.
+  - `st_quin_stgA`: `wall = 754.5s, peak_VRAM = 101,084 MiB, t_AH = 76.06M, M_AH = 1.00060M, ||H||_max = 1.572, |P|_max/M0 = 1.43e-14, filt_max = 9.25e-16`.
+- **Wave 4C Partial Harvest (`jeans_10k_strat_mid`, stopped on user directive after binary BH inspiral)**: reached `t = 56.73M` (`part.00000..00011.bin`, `t_l=55.0M`), both clumps formed AH at `t_AH ~ 10.5M`, final `M_AH,0 = 0.1865M, M_AH,1 = 0.1844M`, separation shrunk `d_AB = 6.09M -> 0.55M`, MC vertical kick reached `z_BH,0 = +0.65M` (`t=55M`, peak `+0.71M`).

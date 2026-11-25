@@ -146,3 +146,21 @@ $$\sigma_{c+1/2} = \frac{2\,\sigma_L\,\sigma_R}{\sigma_L + \sigma_R} \qquad (\si
   - **M4 6-Level SMR Kerr $a=0.9M$ (`mesh 10k`, $t=200M$)**: `plain` `(-2.25e-6 / 8.91e-4)` and `dens` `(0.00e+00 / 8.64e-4)` vs **`mcons` `(0.00e+00 / 9.93e-16)`** (**$8.70\times 10^{11}\times$** reduction; identical cluster order parameter `|<e^{iphi}>| = 0.1577`).
   - **M5b Prolate $e=0.9$ Compensated Pass (`nfilter=4, filter_compensate=true`, 7-level AMR, $t=5M$)**: `||H||_max = 0.3475`, **`filt(t0/max) = (0.00e+00 / 1.01e-15)`**.
   - **GPU vs OpenMP (4 threads) 10-step OS AMR Determinism (`mcons`)**: `max|dx| = 8.882e-16`, `max|du| = 6.453e-16`, `rel|d_int_E_filt| = 4.229e-15`.
+
+---
+
+## Iteration 4 — Boundary-Only AMR Refluxing (`bflx`), $C^2$ Quintic Hermite, and Scheme A Stage-Accurate Backreaction
+
+### 4.1 Mathematical Formulations
+1. **Iter 4a — Boundary-Only `bflx` Refluxing + Interior `e_prev`/`tm_prev`**:
+   Since `mcons` refluxing only replaces coarse-fine boundary face fluxes (never interior cell fluxes), `flx_tm` $(nmb \times 10 \times 3 \times n_{\rm all}^3)$ is replaced by three face slabs `bflx_x{1,2,3}` $(nmb \times 10 \times 2 \times nx^2)$ and `PackAndSendBndryFluxCC` / `RecvAndUnpackBndryFluxCC` in `flux_correct_cc.cpp`, alongside interior-only $(nx_3,nx_2,nx_1)$ allocation for `e_prev` and `tm_prev` (`242` fewer `Real`/cell on $16^3$ blocks at `nghost=4`).
+2. **Iter 4b — $C^2$ 6-Node Quintic Hermite (`interp = quintic`, Zero Extra `met*s` VRAM)**:
+   On uniform stencils $\{-2,-1,0,1,2,3\}$ with $\alpha \in [0,1)$, 1D endpoint quintic Hermite interpolation using 4th-order centered derivatives $D_1 = (-f_{+2}+8f_{+1}-8f_{-1}+f_{-2})/(12h)$ and $D_2 = (-f_{+2}+16f_{+1}-30f_0+16f_{-1}-f_{-2})/(12h^2)$ produces six $C^2(\mathbb{R})$ weights (`QuinticHermiteWeights` in `nrpic_kernels.hpp`) exact for polynomials through degree 4 (`O(h^5)` value, `O(h^4)` first derivative), requiring zero `met1s`/`met0s` shadow arrays (`46 * 8 bytes/cell` saved vs `bspline`).
+3. **Iter 4c — Scheme A Stage-Accurate RK Backreaction (`source_stage_extrap`)**:
+   Storing interior $(U_0, \Delta U) = (\text{tm\_prev}, \text{tm\_cur} - \text{tm\_prev})$ in `u_tmunu_{d0,d1}`, `Z4c::CalcRHS` evaluates at RK stage fraction $c_s = \text{Driver::c\_stage}[s-1]$ the pointwise admissibility-limited state $U(t^n + c_s\Delta t) = U_0 + c_s \theta(U_0, \Delta U)\,\Delta U$, where $\theta \in [0,1]$ (`StageSourceLimiter`) enforces positivity $E \ge \varepsilon E_0$ and causal flux $|S|_{\gamma^{-1}} \le (1-\varepsilon) E$, eliminating the first-order frozen-$T_{\mu\nu}$ RK splitting error without additional particle pushes.
+
+### 4.2 Measured GPU Proofs (`run_iter4_verify.py`, `iter4_verify.npz`, `tests/kernel/vlasov_kernel_test.cpp`)
+- **Tests 1–12 (`g++` & `nvcc -arch=sm_100`)**: `Test 11 quintic` (`C2=(0,0,5.00e-16), orders=(5.30, 4.13)`); `Test 12 stageA` (`p_frozen=1.00 -> p_rk4=1.99, th=(1.00, 0.125, 0.062)`).
+- **Iter 4a**: `GPU4 vs GPU3` 10-step OS parity `max|dx|=4.441e-16, rel|d_intE_filt|=0.000e+00`; `GPU4 vs OMP4` `max|dx|=8.882e-16, rel|d_intE_filt|=4.229e-15`. Full `t=25M` OS AMR: **`73,174 MiB -> 67,110 MiB` (`-6,064 MiB`), `161.1s -> 160.8s`**, identical physics (`rho_err=4.183e-4, M_AH=1.00158M`).
+- **Iter 4b**: M4 6-level SMR Kerr ($a=0.9M, t=200M, ng=4, \text{gl4}+\text{mcons}$): **`quintic_ng4` (`11,880 MiB, 209.3s`) improves median $|\Delta E/E_0|$ by `311x` over `hermite_ng4` (`3.38e-10` vs `1.05e-7`) and `4.9x` over `bspline_ng4` (`1.65e-9`) with zero extra `met*s` VRAM (`-2,380 MiB` vs `bspline`)** and `dL_med=8.53e-9, dQ/K_med=2.36e-9, filt_max=9.93e-16`.
+- **Iter 4c**: OS `t=10M` CFL convergence (`0.25, 0.125, 0.0625`) cuts $\alpha_c(10)$ error by **`15–23x`** (`3.463e-5, 1.248e-5`, `p=1.47` vs frozen `5.192e-4, 2.841e-4`, `p=0.87`), halves OS $t=25M$ $M_{\rm AH}$ error (`1.00074M` vs `1.00158M` at `+0.4%` cost), and holds ST $y_c=0.500$ 9-level AMR (`tlim=90M`) at `M_AH=1.00060M`, `|P|_max/M0=1.43e-14`, and `filt_max=9.25e-16` (`754.5s`). *(754s ST wall time + 209s M4 Kerr time motivate Iteration 5: Speed is King!)*
