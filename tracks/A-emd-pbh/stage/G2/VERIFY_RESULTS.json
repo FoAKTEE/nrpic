@@ -1,9 +1,9 @@
 {
   "track": "A-emd-pbh",
   "gate": "G2",
-  "commit": "fc5f1090c3eb3b88896bf5efc6f4ddfa2bd94707",
-  "verified_utc": "2026-11-25T12:03:32Z",
-  "export": "/data/haiyangw/nrpic/scratch/A-emd-pbh/tmp/stage-verify/A-emd-pbh-G2-fc5f109-20261125T115936Z",
+  "commit": "3272d1343d8e8fe0d6dca5071145c0c0f2710f18",
+  "verified_utc": "2026-11-25T15:49:19Z",
+  "export": "/data/haiyangw/nrpic/scratch/A-emd-pbh/tmp/stage-verify/A-emd-pbh-G2-3272d13-20261125T154846Z",
   "result": "FAIL",
   "checks": [
     {
@@ -21,7 +21,7 @@
     {
       "check": "export",
       "status": "PASS",
-      "message": "clean export of fc5f1090c3eb (HEAD) in /data/haiyangw/nrpic/scratch/A-emd-pbh/tmp/stage-verify/A-emd-pbh-G2-fc5f109-20261125T115936Z/tree",
+      "message": "clean export of 3272d1343d8e (HEAD) in /data/haiyangw/nrpic/scratch/A-emd-pbh/tmp/stage-verify/A-emd-pbh-G2-3272d13-20261125T154846Z/tree",
       "detail": null
     },
     {
@@ -69,16 +69,10 @@
     {
       "check": "runs",
       "status": "FAIL",
-      "message": "4 of 256 runs have problems; 1 waived",
+      "message": "2 of 276 runs have problems; 1 waived",
       "detail": {
-        "A-20261122-173202-f98c79f": [
-          "status is submitted: not finished (nrpic-run finish)"
-        ],
         "A-20261123-025907-97bab8d": [
           "status is submitted: not finished (nrpic-run finish)"
-        ],
-        "A-20261124-132016-ecf12c3": [
-          "status is running: not finished (nrpic-run finish)"
         ],
         "A-20261125-044641-7d5bd16": [
           "status is submitted: not finished (nrpic-run finish)"
@@ -257,9 +251,15 @@
       }
     },
     {
+      "check": "checksums",
+      "status": "WARN",
+      "message": "output checksums not re-verified (--no-checksums)",
+      "detail": null
+    },
+    {
       "check": "status",
       "status": "PASS",
-      "message": "STATUS.md has 35 lines",
+      "message": "STATUS.md has 34 lines",
       "detail": null
     },
     {
