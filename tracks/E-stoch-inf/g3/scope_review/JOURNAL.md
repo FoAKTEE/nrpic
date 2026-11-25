@@ -121,3 +121,12 @@ point: a 1 per cent sigma error, the bin artefact and the whole delta-N skewness
 Also read from the reference file (not a new run): the 128-band variants give the same variance and skewness at
 N_f and N_e (s0.01: variance ratio 1.0009 and 1.0010, skewness 0.0288 and 0.0282), so the time of the
 uniform-field surface does not matter for this band.
+
+## entry-5 (2026-11-25 05:18 PST): prediction for `kcheck.py` (gauge leg, lever arm), before its run
+
+Run b_p of E-20261120-222424-0eb754b, all 21 dumps (t = 0 to 10.0), own parser of box_stats.py.
+- KC1: rms(K - <K>)/|<K>| below 1e-5 at every dump with N - N* >= 1 and below 1e-4 at every dump;
+  rms(chi/<chi> - 1) below 1e-5 at every dump; alpha = 1 to 1e-10 (geodesic); the rms of (H/Pi) dphi grows to
+  0.49 at the last dump. Reason: eps1 is 1e-2 at N* and about 1e-12 after USR, so the local expansion rate
+  barely depends on the field. Refuted if rms dK/|K| exceeds 1e-4 at any dump: then a K-driven slicing has a
+  lever arm during the run, and finding S3 of the review is withdrawn.
