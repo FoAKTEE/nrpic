@@ -279,7 +279,7 @@ def main():
     b1.semilogy(xs, np.exp(-xs ** 2 / 2) / np.sqrt(2 * np.pi), **figstyle.GUIDE, label="Gaussian, linear variance")
     show = [("s1", figstyle.PAL["yellow"]), ("s0.1", figstyle.PAL["green"]), ("s0.01", figstyle.PAL["red"]),
             ("s0.01_lattice", figstyle.PAL["orange"])]
-    for name, c in show:
+    for name, c in [sc for sc in show if sc[0] in samples]:
         x = samples[name][:, 1]
         x = x[np.isfinite(x)]
         d = (x - x.mean()) / sig_lin
@@ -292,7 +292,7 @@ def main():
     b1.set_xlabel("$\\delta\\mathcal{N}/\\sigma_\\mathrm{lin}$")
     b1.set_ylabel("probability density")
     b1.legend(loc="upper right", fontsize=7)
-    names = [v[0] for v in VARIANTS if v[0] != "classical"]
+    names = [v[0] for v in VARIANTS if v[0] != "classical" and v[0] in samples]
     for i, name in enumerate(names):
         r = out["ratios_Ne"][name]
         b2.errorbar(i, r["var_over_lin"], yerr=3 * r["se"], fmt="o", color=figstyle.PAL["blue"], ms=4)

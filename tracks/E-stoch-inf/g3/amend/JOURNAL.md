@@ -94,3 +94,7 @@ Smoke run (2e4 paths, s0.01_lattice only, suffix _smoke):
 The 4e6 run (s0.01_lattice and s0.1, suffix _4e6): RF1's gate within 0.002; skewness of s0.01_lattice
 within two of the pilot's standard errors of 0.0234 (0.0234 +- 0.0074); SM2 within [0.99, 1.01];
 skewness of phi at N_f below 0.005 in magnitude (A4 prediction of g3 entry 4).
+Smoke run E-20261125-152419-40200ec FAILED (exit 1) after the Monte Carlo: the figure of ref_spec.py
+assumed every variant present (KeyError 's1' with NRPIC_REF_VARIANTS). The moments printed before the
+failure: s0.01_lattice variance/var_lattice 0.9932 +- 0.0105 at 2e4 (SM1 holds). Fixed (the figure draws the
+variants that ran); rerun with the same predictions.
