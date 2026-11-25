@@ -278,3 +278,18 @@ A batch 0.16, P0L 0.77).
 Entry 10 (K4) was NOT started: the pause flag appeared first. Start it with
 `harness/bin/nrpic-run submit --kind scouting --gate G2 --package tracks/A-emd-pbh/threshold_ball --launcher local --cores 6 --parent A-20261121-075356-1ad4c81 --purpose "threshold_ball K4 (entry 10)" -- bash tracks/A-emd-pbh/threshold_ball/scripts/k4_floor.sh '$NRPIC_RUN_DIR'`
 then k4_compare.py on its directory (registered).
+
+## Entry 11, 2026-11-25 03:55 PST (lead of batch 17): judging C-d0.42 (T4, mesh-C half), before the analysis
+
+C-d0.42 = A-20261122-173202-f98c79f ended DONE at tlim 51 (chain events.log: segment 17, job 5216,
+"finished: time=5.100000e+01 cycle=13056", 2026-11-24 14:39 PST; queue entry q0012 done); closed with
+`nrpic-run finish` this session. Judged against entry 1 as written, nothing changed: BH = found in at
+least three consecutive searches spanning at least 5 m_AH and in every later search (dispersal = no
+such run of searches by tlim); T4 mesh-C half: |ddet(C)| <= |ddet(B)|/2 = 0.0075 M and |dmmed(C)| <=
+|dmmed(B)|/2 = 1.4e-3 (B-d0.42: +0.015, +2.8e-3, entry 4); refuted by C not halving B's errors. Also
+read, no bound set before: T1's bounds for 0.42 (|ddet| <= 0.5, |dmmed| <= 1e-2), T6 (end state,
+guard, constraint ratio, cost against the C-R1.25 1.87 s per cycle). Seen before the analysis (raw
+status file, no measure computed): the finder's first success on C is at coordinate t = 45.906 (B:
+45.875) and 163 of 1119 searches succeed. Analysis: `scripts/analyse.py --member C-d0.42 --member
+B-d0.42` (registered below). Mesh-C bracket: C-d0.42 alone gives only the upper end (tau_det < 45
+or not); the lower end needs C-d0.40 (queue q0014, prediction T7 of entry 8).
