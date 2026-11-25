@@ -1,0 +1,31 @@
+{
+ "by": "kb-claims3",
+ "actions": [
+  {
+   "do": "add",
+   "text": "Store status (kb, 2026-11-24) of nonlinear stability results for FLRW-type cosmologies under Einstein-Vlasov. Future stability is proven (i) with a positive cosmological constant (Ringstrom; review arXiv:1106.1367 article.tex L2192-2193, L2215-2217; surface-symmetric case arXiv:1402.7085 L50); (ii) for the Milne model, a vacuum k = -1 FLRW with linear expansion, with massive Vlasov matter, stated as the first Einstein-Vlasov stability result in 3+1 dimensions with vanishing cosmological constant in the cosmological case (arXiv:1709.00267 main.tex L363, L392-393), also with charged matter (arXiv:2012.14241 L329-330); (iii) for massless Vlasov matter, i.e. radiation-like decelerated expansion: homogeneous FLRW on R^3 against compactly supported spherically symmetric perturbations (arXiv:2306.17774 L49) and Bianchi I data isotropizing to a radiative Einstein-de Sitter model (arXiv:1904.13290 L333). Toward the past, stable Big Bang formation holds for near-FLRW Einstein-scalar-field-Vlasov data (arXiv:2402.08544 L152). For the matter-dominated Einstein-de Sitter background the store has fluid results only: linearly unstable with dust, nonlinearly stable for a polytropic fluid with index n > 3 on T^3 (arXiv:2607.09326 main.tex L96, L141; numerical Gowdy evidence arXiv:2606.16879 L43); arXiv:2607.09326 names other matter models only as an outlook (L311). No paper in the store proves or tests nonlinear stability of a matter-dominated (massive particles, Lambda = 0) FLRW under Einstein-Vlasov [VERIFIED for the store by search, package claims3; absence from the literature is not claimed].",
+   "label": "fulltext",
+   "kind": "result",
+   "paper": "1709.00267",
+   "locator": "1709.00267v1:main.tex:L363; 1709.00267v1:main.tex:L391-393; 1106.1367v1:article.tex:L2192-2193; 1106.1367v1:article.tex:L2215-2217; 1402.7085v1:main.tex:L50; 2012.14241v2:Milne-EVM-Final.tex:L329-330; 2306.17774v1:masslessVlasovFLRW.tex:L49; 1904.13290v2:main.tex:L333; 2402.08544v2:VlasovSF.tex:L152; 2607.09326v1:main.tex:L96; 2607.09326v1:main.tex:L141; 2607.09326v1:main.tex:L311; 2606.16879v1:main_v2.tex:L43",
+   "track": "brief",
+   "origin": "tracks/kb/claims3 (answers brief seed 803)",
+   "evidence": "answers seed 803 (claims3 item 1); every locator read by the package; store search in run of seed803_search.py (20 papers, JOURNAL entry 3)"
+  },
+  {
+   "do": "annotate",
+   "id": 803,
+   "evidence": "processed (claims3 item 1): answered by the answer claim added by this run (result.json new_claims) (see JOURNAL entry 3): stability under Einstein-Vlasov is proven with Lambda > 0, for the Milne model (1709.00267 L363, L392-393), for massless (radiation-like) Vlasov matter on decelerated FLRW (2306.17774 L49) and toward the past (2402.08544 L152); for matter-dominated EdS only fluid results exist (2607.09326 L96, L141; 2606.16879 L43); no Einstein-Vlasov result for a matter-dominated Lambda = 0 FLRW is in the store. The label stays to_verify because the seed is a question."
+  },
+  {
+   "do": "annotate",
+   "id": 790,
+   "evidence": "claims3 item 1: the question of this seed ('the case of an Einstein-de Sitter-type background is [TO VERIFY]') is answered by the answer claim added by this run (result.json new_claims): for Einstein-Vlasov no result in the store; for Einstein-Euler, nonlinear stability of EdS for a polytropic fluid with n > 3 on T^3 (2607.09326 L96, L141)."
+  },
+  {
+   "do": "annotate",
+   "id": 805,
+   "evidence": "processed (claims3 item 1): all three derivations were re-derived by the tracks with symbolic checks and runs. (1) S1 expanding dust ball, the brief's two relations: A, track/A-emd-pbh@2b13db83 tracks/A-emd-pbh/expball/DERIVATION.md section 8 (L262-285): relation 1 (2GM/R = (HR)^2, no anti-trapped sphere while R_b < 1/H) correct, with the precision that a bound core needs max 2m/R < 1; relation 2 (flat slice, lapse 1, closed-form data) correct for its first part, K_ij jumps at the surface; symbolic scripts expball/sym/*.py, runs A-emd-pbh-20261115-121654-6bfb707, -122121-aa1c84d, -122117-aa1c84d, A-20261115-130257-a7374a4; core confirms (core/nrpic@048bd939 tracks/core/JOURNAL-id.md entries 1-2, analysis/id/check_derivation.py, 15 sympy statements); summary in coord/notes/derivations_to_check.md section 1 'Checked' (main@7064a618). (2) Einstein-Straus vacuum bubble: D, track/D-bh-dress@25227d47 tracks/D-bh-dress/einstein_straus/DERIVATION.md sections 1-8, 48 identities (run D-bh-dress-20261115-042626-f3da881, lead rerun -065141-5fdc744), four corrections (section 7: bare puncture mass M/a, throat at R = 2M inside the f = 0 region, f(2M) = 0 required, one sheet only); offline residuals -042704-f3da881, in AthenaK -043002-d51c7f2, -043033-4df1e76; the a, m_p of sections 3-4 recomputed by an independent quadrature in D's G1 gate review (track/D-bh-dress@0d8efbd2 tracks/D-bh-dress/stage/G1/GATE_REVIEW.md L76). (3) Strong-field Hills scale: F, track/F-hills@e98745bd tracks/F-hills/novelty/JOURNAL.md L74-96, run F-hills-20261115-045435-f62d553: plunge bound a_b/r_gb > 4 q^(2/3) = 18.6, 86.2, 400 for q = 10, 100, 1000; Peters time 6328 GM/c^3 at a_b = 30 r_gb, q = 10; passage 163-285 GM/c^3 from 3-5 r_t; correction: part of the box q = 10-30, a_b = 20-60 r_gb lies below the plunge bound (a_b >= 38.6 r_gb needed at q = 30); F's verifier V3 (track/F-hills@7bc31208 tracks/F-hills/JOURNAL.md L57, run F-hills-20261115-144954-b5b0bce) reproduced the 905 numbers. The seed stays to_verify (it is an instruction, not a statement); the checks live in the tracks' notes, not in paper text."
+  }
+ ]
+}

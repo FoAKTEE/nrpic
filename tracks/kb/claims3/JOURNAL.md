@@ -90,7 +90,7 @@ served record), close it with the reason and no successor is invented.
   and after); exit 1 only for the known gr-qc/9412071. Refuted by any other change in the
   count or by a changed file.
 
-## Entry 2, 2026-11-24 18:50 PST: draw done; tool changes and their tests
+## Entry 2, 2026-11-24 18:24 PST: draw done; tool changes and their tests
 
 - Draw (run kb-20261125-021654-6799dfd, seed 20261125, after commit 6799dfda): W = 573 as
   counted in entry 1; sample of 30 in `weak_sample.tsv` of the run directory (WA 22, WQ 5, WB 2,
@@ -102,3 +102,78 @@ served record), close it with the reason and no successor is invented.
   downloads_excluded.tsv read by kbtool/inventory.py) with one test in test_inventory.py. Whole
   suite before: 269 tests (1 xfail), after: 274 (1 xfail), all others pass. The first CLI test
   failed once on my own test parser (no --data-root on the test's top parser), fixed in the test.
+
+## Entry 3, 2026-11-24 18:36 PST: readings done; outcomes of P1, P2, P3 (by reading); predictions for the writes
+
+All readings at the raw sources (kb-data/raw/arxiv, as text; `claims_tracks/scripts/read_claim.py`,
+`scripts/grep_src.py`), the full line where the stored one was cut, whole-file search for words
+not in the cited lines. Nothing is written to the database before the registered runs below.
+
+### P3 outcome (item 3, sample of 30 of run kb-20261125-021654-6799dfd)
+Verdicts (one row per claim in `SAMPLE_VERDICTS.tsv`, written by `scripts/ledger.py`):
+- right 26: 6, 40*, 88, 163, 214, 233, 235, 292, 328, 348, 373*, 407, 468, 474*, 479, 501, 568,
+  578 (WA); 720, 721* (WB); 775 (WM); 308, 467, 662, 669*, 673 (WQ). (* = right, locator
+  incomplete: a supported part sits outside the stored locator: 40 L89, 373 L241, 474 L838-840,
+  721 L189 and 2511.20567 L62-64, 669 L463; the locators are extended.)
+- not right 4, all in WA: 29 fragment (subject and condition "for mu <= 0.045" cut away), 126 part
+  unsupported ("as arXiv:2109.04896" is A's comparison, not stated by 2306.11810), 482 cut text and
+  wrong label (a [JUDGEMENT] that the Hermite weights are the Catmull-Rom weights stored as
+  fulltext; the paper never says Catmull-Rom), 572 fragment (a cut citation list joined to one
+  supported clause).
+- Rate right 26/30 = 86.7 per cent; Clopper-Pearson 95 per cent interval and the stratum-weighted
+  estimate are computed by `scripts/ledger.py` (registered run below).
+- P3a HELD (25-29 predicted). P3b HELD in its refutation clause (no error in WM; errors in WA),
+  but its description failed in part: I expected errors in WQ (wording against reading, the 682
+  case) and found none in the five WQ claims; all four errors are cuts or mislabels of the
+  seeder (WA). Five claims carry a cut start ("i.e.", "and", "which") yet a complete statement
+  (373, 467 right; 29, 482, 572 not), a pattern the fragment query of claims_tracks (text shorter
+  than 25 characters) does not catch.
+
+### P1 outcome (seed 803)
+Store search (scripts/seed803_search.py, to be registered): 20 papers by title or by chunks with
+Vlasov + FLRW/Friedmann/de Sitter/Robertson + stab. Read at abstract or cited lines: 1709.00267
+L363, L391-393; 1106.1367 L2184-2217; 1402.7085 L50-54; 2012.14241 L329-330; 2306.17774 L49;
+1904.13290 L333; 2402.08544 L152; 2607.09326 L96, L136-178, L311, L317-321; 2606.16879 L43;
+1306.6223 L157-160 (Lambda > 0); gr-qc/0512031 L143-148 (Bianchi I dynamics); the others are
+Minkowski stability, static clusters, Vlasov-Poisson or high-frequency limits (titles).
+- P1 HELD in its refutation clauses: no paper in the store proves or tests nonlinear stability of a
+  matter-dominated Lambda = 0 FLRW under Einstein-Vlasov, and the store does hold FLRW stability
+  papers with Vlasov matter. Not foreseen: (a) a decelerated FLRW IS proven stable under
+  Einstein-massless-Vlasov (2306.17774, radiation-like, spherical perturbations on R^3), and
+  Bianchi I massless data isotropize to a radiative EdS (1904.13290); (b) the matter-dominated EdS
+  IS proven nonlinearly stable for a polytropic fluid with n > 3 on T^3 (2607.09326), with
+  numerical Gowdy evidence (2606.16879), while dust is linearly unstable. My "accelerated or
+  linearly expanding backgrounds only" was too narrow.
+- Write: a new fulltext claim carrying the answer with 13 locators; 803 annotated (stays
+  to_verify, a question, as 714 -> 863); 790 (brief L583, the same question for EdS) annotated
+  with a pointer.
+
+### P2 outcome (seed 805)
+- HELD: each part has a re-derivation with symbolic checks and runs on the tracks' branches: dust
+  ball A (expball/DERIVATION.md section 8, A-emd-pbh-20261115-121654-6bfb707 and others) and core
+  (JOURNAL-id.md, check_derivation.py); Einstein-Straus D (einstein_straus/DERIVATION.md, run
+  D-bh-dress-20261115-042626-f3da881, 48 identities, four corrections), with the a, m_p of
+  sections 3-4 recomputed in D's G1 gate review (GATE_REVIEW.md L76); Hills scale F (run
+  F-hills-20261115-045435-f62d553, verifier V3 F-hills-20261115-144954-b5b0bce; correction: part of
+  the brief's box lies below the plunge bound). Write: 805 annotated with these locators; it
+  stays to_verify (an instruction). No question to the tracks was needed: the answers are in git.
+
+### Item 4 plan (P5)
+20 fragments traced to their note rows at the origin commits (git show): 12 superseded by a new
+whole-sentence claim read at the source (619, 620, 621, 622, 625 abstract-labelled; 81, 84,
+179, 192, 213, 277, 424 fulltext), 85 joined to 84's new claim, 5 closed with `--to` the
+sibling that carries the row's statement (623 -> 624, 290 -> 289, 314 -> 313, 431 -> 430; 85),
+3 withdrawn because the row has no statement for them (171, 187: "Abstract: line(s) ..."
+pointers; 549: a list heading). `withdraw` was added to the tool for these (status withdrawn,
+label refuted; test in test_claims_supersede.py; 276 tests).
+
+### Predictions for the registered writes (plans in `plans/`, dry runs agreed)
+- W2 (plan_item2, 682 -> 862): 1 action, no new claim, 682 refuted/superseded with one link,
+  others' hash unchanged, exit 0.
+- W3 (plan_item3): 30 actions, 4 new claims (successors of 29, 126, 482, 572), every locator
+  row of the touched claims resolved, others unchanged, exit 0.
+- W1 (plan_item1): 4 actions, 1 new claim with 13 resolved locator rows, others unchanged.
+- W4 (plan_item4): 20 actions, 12 new claims, 3 withdrawn, 5 links to existing claims, others
+  unchanged.
+Refuted by an exit other than 0, a locator row that does not resolve, or a changed hash of the
+other claims.

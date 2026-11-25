@@ -154,3 +154,39 @@ def test_cli_supersede_and_show(store, tmp_path, monkeypatch, capsys):  # noqa: 
     c2 = sqlite3.connect(Lay.db_work)
     assert c2.execute("SELECT count(*) FROM claim_links").fetchone()[0] == 1
     assert ck is not None
+
+
+def test_withdraw_a_heading_and_abstract_label_checked(store, tmp_path):  # noqa: F811
+    """A heading split from a note row ("Abstract: line 171") is withdrawn, not superseded; a
+    superseding claim labelled abstract with resolved locators is status checked (O4)."""
+    st, _ = store
+    con = _db(tmp_path)
+    head = _claim(con, text="Abstract: line 2")
+    cdb.withdraw(con, head, "kb-helper", "heading of the note row; the row has no statement on the abstract")
+    assert _state(con, head) == ("refuted", "withdrawn")
+    assert [r[0] for r in con.execute("SELECT action FROM claim_events WHERE claim_id=? ORDER BY event_id",
+                                      (head,))] == ["add", "withdraw"]
+    with pytest.raises(ValueError, match="already withdrawn"):
+        cdb.withdraw(con, head, "x", "again")
+    with pytest.raises(ValueError):
+        cdb.supersede(con, head, "x", "e", text="t", locator="2609.14218v1:MDPBH.tex:L2", store=st)
+    with pytest.raises(ValueError, match="withdrawn"):
+        cdb.refute(con, head, "x", "counter")
+    with pytest.raises(ValueError, match="evidence"):
+        cdb.withdraw(con, _claim(con, text="x"), "x", "")
+    frag = _claim(con, text="Abstract")
+    new = cdb.supersede(con, frag, "kb-helper", "heading only; the row's sentence", label="abstract",
+                        text="The abstract (L2) says the effect is one order below.",
+                        locator="2609.14218v1:MDPBH.tex:L2", store=st)
+    assert _state(con, new) == ("abstract", "checked")
+    assert con.execute("SELECT verified_by FROM claims WHERE claim_id=?", (new,)).fetchone()[0] == "kb-helper"
+
+
+def test_superseding_judgement_with_resolved_locator_is_located(store, tmp_path):  # noqa: F811
+    st, _ = store
+    con = _db(tmp_path)
+    old = _claim(con, text="which are the X weights [JUDGEMENT]")
+    new = cdb.supersede(con, old, "kb-helper", "cut text, judgement stored as fulltext", label="judgement",
+                        text="The weights at L2 are the X weights [JUDGEMENT].",
+                        locator="2609.14218v1:MDPBH.tex:L2", store=st)
+    assert _state(con, new) == ("judgement", "located")

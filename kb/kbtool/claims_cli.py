@@ -382,6 +382,18 @@ def cmd_supersede(a):
     return 0
 
 
+def cmd_withdraw(a):
+    """Close a claim that holds no statement and that nothing replaces (claims_db.withdraw)."""
+    lay = layout(a.data_root)
+    try:
+        _write(lay, "claim withdraw", lambda con: _cdb.withdraw(con, a.claim_id, a.by, a.evidence))
+    except (ValueError, KeyError) as e:
+        print(f"claim {a.claim_id}: {e}", file=sys.stderr)
+        return 1
+    print(f"claim {a.claim_id}: withdrawn by {a.by}")
+    return 0
+
+
 def stats(con):
     """Counts for the QA report and `kb claim stats`."""
     out = {"claims": con.execute("SELECT count(*) FROM claims").fetchone()[0]}
@@ -558,7 +570,7 @@ def _brief_summary(statements, info):
 
 
 def register(sub):
-    p = sub.add_parser("claim", help="K8: evidence queue (seed, check, list, show, add, verify, relocate, refute, supersede, stats)")
+    p = sub.add_parser("claim", help="K8: evidence queue (seed, check, list, show, add, verify, relocate, refute, supersede, withdraw, stats)")
     p.add_argument("--db", help="database to read (default kb.sqlite, the working database)")
     cs = p.add_subparsers(dest="claim_cmd", required=True)
     s = cs.add_parser("seed", help="parse the tracks' wave-1 notes into claims and check their locators")
@@ -640,6 +652,13 @@ def register(sub):
     s.add_argument("--origin")
     s.add_argument("--allow-unresolved", action="store_true", help="write a locator part that does not resolve")
     s.set_defaults(fn=cmd_supersede)
+
+    s = cs.add_parser("withdraw", help="close a claim that holds no statement (a heading or a locator split "
+                                        "from a note row) and that no claim replaces; -> refuted/withdrawn")
+    s.add_argument("claim_id", type=int)
+    s.add_argument("--by", required=True)
+    s.add_argument("--evidence", required=True)
+    s.set_defaults(fn=cmd_withdraw)
 
     s = cs.add_parser("stats")
     s.add_argument("--json", action="store_true")

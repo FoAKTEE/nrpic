@@ -1,0 +1,175 @@
+{
+ "by": "kb-claims3",
+ "actions": [
+  {
+   "do": "verify",
+   "id": 6,
+   "evidence": "[claims3 sample, seed 20261125, run kb-20261125-021654-6799dfd] read against its own wording: right. 2609.14218v1 MDPBH.tex L709-719: k^2 r_m^2 = 6, horizon entry k^2/(a^2H^2) = 6, t_H = 100 sqrt(6)/k = 10 sqrt(6) L (L718)."
+  },
+  {
+   "do": "supersede",
+   "id": 29,
+   "evidence": "[claims3 sample, seed 20261125, run kb-20261125-021654-6799dfd] read against its own wording: fragment. The text 'and \"will continue to run unless manually stopped\"' has lost its subject and its condition, which are at 2609.14218v1 MDPBH.tex L1141 (the calculation, for mu <= 0.045); cut by the seeder from A's note row (REFERENCES.md:40 at 9d731b1).",
+   "text": "arXiv:2609.14218 (MDPBH.tex L1141-1142): for mu <= 0.045 the calculation does not break down and \"will continue to run unless manually stopped\".",
+   "label": "fulltext",
+   "locator": "2609.14218v1:MDPBH.tex:L1141-1142"
+  },
+  {
+   "do": "verify",
+   "id": 40,
+   "evidence": "[claims3 sample, seed 20261125, run kb-20261125-021654-6799dfd] read against its own wording: right. Einstein Toolkit is named at 2610.23218v1 main.tex L89 (outside the stored locator); W-BSSNOK and McLachlan at L104-111. Locator extended.",
+   "locator": "2610.23218v1:main.tex:L89; 2610.23218v1:main.tex:L104-111"
+  },
+  {
+   "do": "verify",
+   "id": 88,
+   "evidence": "[claims3 sample, seed 20261125, run kb-20261125-021654-6799dfd] read against its own wording: right. 2211.13950v3 MD_threshold10.tex L440-441: with k_min the derived condition is a sufficient condition for non-formation or a necessary condition for PBH formation."
+  },
+  {
+   "do": "supersede",
+   "id": 126,
+   "evidence": "[claims3 sample, seed 20261125, run kb-20261125-021654-6799dfd] read against its own wording: part unsupported. 'as arXiv:2109.04896' is not stated by 2306.11810: the set-up is described at L94, L114, L131, L149-163 and the earlier paper (deJong:2021bbo = 2109.04896, bbl L1505-1513) is cited at L237 for the two formation mechanisms only; the isolated-horizon part (L188-217) is right.",
+   "text": "arXiv:2306.11810: an oscillating massive scalar field drives the matter-dominated background and a massless scalar field, laid out as a shell with angular momentum, is the collapsing perturbation (Spinning_PBHs.tex L94, L114, L131, L149-163); apparent-horizon mass and spin come from isolated-horizon formulas with the flat-space rotational Killing vectors (L188-217). The paper calls arXiv:2109.04896 its previous work (L237); that the set-up is the same as there is A-emd-pbh's reading, not a statement of the paper.",
+   "label": "fulltext",
+   "locator": "2306.11810v2:Spinning_PBHs.tex:L94; 2306.11810v2:Spinning_PBHs.tex:L114; 2306.11810v2:Spinning_PBHs.tex:L131; 2306.11810v2:Spinning_PBHs.tex:L149-163; 2306.11810v2:Spinning_PBHs.tex:L188-217; 2306.11810v2:Spinning_PBHs.tex:L237"
+  },
+  {
+   "do": "verify",
+   "id": 163,
+   "evidence": "[claims3 sample, seed 20261125, run kb-20261125-021654-6799dfd] read against its own wording: right. 1901.04498v2 main.tex L239-242 (all cases settle to a black hole containing all the matter, with gravitational radiation) and L251-253 (circumferences not more than ~25 per cent above 4 pi M_BH)."
+  },
+  {
+   "do": "verify",
+   "id": 214,
+   "evidence": "[claims3 sample, seed 20261125, run kb-20261125-021654-6799dfd] read against its own wording: right. 1604.06065v2 compendium_arxiv.tex L1427-1444: h_ij not solved in the present version; quasi-static h_ij is a static spin-2 perturbation of the geometry; oscillations only through violation of the adiabatic approximation."
+  },
+  {
+   "do": "verify",
+   "id": 233,
+   "evidence": "[claims3 sample, seed 20261125, run kb-20261125-021654-6799dfd] read against its own wording: right. 2108.11967v2 main.tex L286: B_max at v(0) = 0.395c, Z(0) = 0.297; E_max at v(0) = 0.225c, Z(0) = 0.087."
+  },
+  {
+   "do": "verify",
+   "id": 235,
+   "evidence": "[claims3 sample, seed 20261125, run kb-20261125-021654-6799dfd] read against its own wording: right. 2108.11967v2 main.tex L297: for b = 0.09-5.0, C ~ 0.0236-0.0793 at <gamma> ~ gamma_cr = 1.62."
+  },
+  {
+   "do": "verify",
+   "id": 292,
+   "evidence": "[claims3 sample, seed 20261125, run kb-20261125-021654-6799dfd] read against its own wording: right. 2506.17641v3 sidmacc.tex L145: Ref. Gu:2026zzq, M_GR/M_smfp ~ 4e-6; sidmacc.bbl L343-347: Gu:2026zzq is arXiv:2601.17117.",
+   "locator": "2506.17641v3:sidmacc.tex:L145; 2506.17641v3:sidmacc.bbl:L343-347"
+  },
+  {
+   "do": "verify",
+   "id": 328,
+   "evidence": "[claims3 sample, seed 20261125, run kb-20261125-021654-6799dfd] read against its own wording: right. gr-qc/0601112v1 ssevnum7.tex L694 prints Z_c = 1/sqrt(alpha(0)) - 1; the table part is C's computation (run C-sidm-20261115-121626-e99907d), as the text says."
+  },
+  {
+   "do": "verify",
+   "id": 348,
+   "evidence": "[claims3 sample, seed 20261125, run kb-20261125-021654-6799dfd] read against its own wording: right. 1901.08528v2 PBH-UCMH-ArXiv-v2.tex L166-169: r_ta ~ (2 G M t_ta^2)^(1/3), the numerical estimate, better than 0.1 per cent."
+  },
+  {
+   "do": "verify",
+   "id": 373,
+   "evidence": "[claims3 sample, seed 20261125, run kb-20261125-021654-6799dfd] read against its own wording: right. The text starts with 'i.e.' (cut from D's note row REFERENCES.md:86 at 3276791) but carries complete statements: M H ~ 1e-2 M_Pl^2 is at 2109.04896v3 PBH_formation.tex L241 (outside the stored locator); M ~ H^(-beta), beta >> 1, not tracked beyond a few times the initial mass because of the cost, at L243. Locator extended.",
+   "locator": "2109.04896v3:PBH_formation.tex:L241; 2109.04896v3:PBH_formation.tex:L243"
+  },
+  {
+   "do": "verify",
+   "id": 407,
+   "evidence": "[claims3 sample, seed 20261125, run kb-20261125-021654-6799dfd] read against its own wording: right. 2303.06630v1 gravastars.tex L43 (abstract lines): gravastars cannot be the source of dark energy; a direct coupling of their mass to the expansion adds a velocity-dependent acceleration."
+  },
+  {
+   "do": "verify",
+   "id": 468,
+   "evidence": "[claims3 sample, seed 20261125, run kb-20261125-021654-6799dfd] read against its own wording: right. 2611.12831v1 main.tex L740-750: the whole cloud on the finest level l_p among the neighbouring cell centres; coarse leaf weight = sum of the virtual fine weights. The text keeps core's table verdict column ('correct, imprecise'), which is core's, not the paper's."
+  },
+  {
+   "do": "verify",
+   "id": 474,
+   "evidence": "[claims3 sample, seed 20261125, run kb-20261125-021654-6799dfd] read against its own wording: right. 2611.12831v1 main.tex L62 (DGREM, Lorentz-like force, DGREM-Boris), L401, L462-582 (Boris pusher), L837 (both second order); 'accuracy limited by the interpolation error' is L838 and 'in all tests ... implicit midpoint' L840, outside the stored locator. Locator extended.",
+   "locator": "2611.12831v1:main.tex:L62; 2611.12831v1:main.tex:L401; 2611.12831v1:main.tex:L462-582; 2611.12831v1:main.tex:L837-840"
+  },
+  {
+   "do": "verify",
+   "id": 479,
+   "evidence": "[claims3 sample, seed 20261125, run kb-20261125-021654-6799dfd] read against its own wording: right. 2611.12831v1 main.tex L840, quoted exactly."
+  },
+  {
+   "do": "supersede",
+   "id": 482,
+   "evidence": "[claims3 sample, seed 20261125, run kb-20261125-021654-6799dfd] read against its own wording: wrong label and cut text. The text starts with 'which are' (its subject, the cubic Hermite weights of 2611.12831v1 main.tex L586-591, is in the preceding piece of core's row) and carries a [JUDGEMENT] tag, but was stored as fulltext: the paper calls the scheme Hermite interpolation and never says Catmull-Rom (no hit in main.tex). The weights at L588-591 are the Catmull-Rom weights (my comparison: w_-1 = (-s+2s^2-s^3)/2, w_0 = (2-5s^2+3s^3)/2, w_1 = (s+4s^2-3s^3)/2, w_2 = (-s^2+s^3)/2).",
+   "text": "arXiv:2611.12831 reconstructs the metric at the particle position by what it calls cubic Hermite interpolation (main.tex L586); its four one-dimensional weights (L588-591) coincide with the Catmull-Rom weights [JUDGEMENT: by comparison with the Catmull-Rom formula; the paper does not use that name].",
+   "label": "judgement",
+   "kind": "method",
+   "locator": "2611.12831v1:main.tex:L586-591"
+  },
+  {
+   "do": "verify",
+   "id": 501,
+   "evidence": "[claims3 sample, seed 20261125, run kb-20261125-021654-6799dfd] read against its own wording: right. 2611.12831v1 main.tex L1026-1027 (table: y_c = 0.605, t_BH = 109; 0.500, 73) and L1138 (AH formation at about 109 M and 73 M)."
+  },
+  {
+   "do": "verify",
+   "id": 568,
+   "evidence": "[claims3 sample, seed 20261125, run kb-20261125-021654-6799dfd] read against its own wording: right. 2611.12831v1 main.tex L822-823: 'with one particle advance per global step'."
+  },
+  {
+   "do": "supersede",
+   "id": 572,
+   "evidence": "[claims3 sample, seed 20261125, run kb-20261125-021654-6799dfd] read against its own wording: fragment. The text joins a cut list of citations ('see Kehle:2024vyt = 2402.10190), cosmic censorship ...') with a separate clause; only the last clause is at the stored locator 2611.12831v1 main.tex L763, which supports it.",
+   "text": "arXiv:2611.12831 (main.tex L763): at fixed particle number density each factor-of-two refinement divides the mean number of particles per cell by eight and raises the relative density fluctuations (about N_ppc^(-1/2)); the paper names adaptive particle resampling in those regions as future work.",
+   "label": "fulltext",
+   "locator": "2611.12831v1:main.tex:L763"
+  },
+  {
+   "do": "verify",
+   "id": 578,
+   "evidence": "[claims3 sample, seed 20261125, run kb-20261125-021654-6799dfd] read against its own wording: right. 2611.12831v1 main.tex L459 (fixed-point iteration, 1e-7 in code units) and L775 (2e-14 for the Kerr tests)."
+  },
+  {
+   "do": "annotate",
+   "id": 720,
+   "evidence": "[claims3 sample, seed 20261125, run kb-20261125-021654-6799dfd] read against its own wording: right. gr-qc/0107076v1 paper.tex L59-61 (unstable static critical solutions, Type I, finite mass); gr-qc/9804040v1 rrs98.tex L55-56 (mass discontinuity); gr-qc/0601112v1 ssevnum7.tex L56-57 (no universality)."
+  },
+  {
+   "do": "verify",
+   "id": 721,
+   "evidence": "[claims3 sample, seed 20261125, run kb-20261125-021654-6799dfd] read against its own wording: right. 'extremal Reissner-Nordstrom' is at 2402.10190v1 main.tex L189 (L166 says extremal black holes); 2511.20567v2 main.tex L62-63 'numerically construct' solutions of Einstein-Maxwell-Vlasov. Locator extended.",
+   "locator": "2402.10190v1:main.tex:L166; 2402.10190v1:main.tex:L189; 2511.20567v2:main.tex:L62-64; 2611.12831v1:main.tex:L28"
+  },
+  {
+   "do": "verify",
+   "id": 775,
+   "evidence": "[claims3 sample, seed 20261125, run kb-20261125-021654-6799dfd] read against its own wording: right. 2605.04487v2 main_v3.tex L171 (abstract: Zel'dovich deformation of a homogeneous sphere, evolved in an Einstein-de Sitter background, semirelativistic N-body) and L191 (body: homogeneous Lagrangian sphere deformed by the Zel'dovich approximation). The quoted words are the brief's paraphrase, not the paper's.",
+   "locator": "2605.04487v2:main_v3.tex:L171; 2605.04487v2:main_v3.tex:L191"
+  },
+  {
+   "do": "annotate",
+   "id": 308,
+   "evidence": "[claims3 sample, seed 20261125, run kb-20261125-021654-6799dfd] read against its own wording: right. 2108.11967v2 main.tex L482 (subcaption b = 0.1) and rows L492, L495, L498, L501; the 8e-5 is C's review, as the text says."
+  },
+  {
+   "do": "annotate",
+   "id": 467,
+   "evidence": "[claims3 sample, seed 20261125, run kb-20261125-021654-6799dfd] read against its own wording: right. starts with 'and' (cut from core's row SECTION2_CORRECTIONS.md:38 at 357e7ac; the subject is 2611.12831); L680-686 is the only filtering passage; the repository numbers are in docs/TESTLOG.md L650-651 (9e-4, 6.6e-3, 7.3e-3)."
+  },
+  {
+   "do": "annotate",
+   "id": 662,
+   "evidence": "[claims3 sample, seed 20261125, run kb-20261125-021654-6799dfd] read against its own wording: right. 1201.4794v1 ms.tex L307-309: for prograde orbits with D ~ 0.1 the energy change is as large as ~30 in a narrow phase range (citing SKR fig. 7); 30.0 is F's coding of '~30'."
+  },
+  {
+   "do": "verify",
+   "id": 669,
+   "evidence": "[claims3 sample, seed 20261125, run kb-20261125-021654-6799dfd] read against its own wording: right. 1804.02911v1 mnras.tex L462-463: <E> ~ 1 and E_max ~ 2 'for D << 1' (L463, outside the stored locator). Locator extended.",
+   "locator": "1804.02911v1:mnras.tex:L462-463"
+  },
+  {
+   "do": "annotate",
+   "id": 673,
+   "evidence": "[claims3 sample, seed 20261125, run kb-20261125-021654-6799dfd] read against its own wording: right. 1804.02911v1 mnras.tex L506: fractional difference of the disruption probability between radial and parabolic below 2 per cent for D < 1e-4."
+  }
+ ]
+}

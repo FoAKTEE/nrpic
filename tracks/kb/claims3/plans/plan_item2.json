@@ -1,0 +1,11 @@
+{
+ "by": "kb-claims3",
+ "actions": [
+  {
+   "do": "supersede",
+   "id": 682,
+   "to": 862,
+   "evidence": "link of the lead's correction of 2026-11-24: claim 862 added and 682 refuted as worded by tracks/kb/lead_b13/scripts/apply_g3.sh in run kb-20261124-233445-89478ae (that run failed later, on a relocate without --by; its add and refute events are in the database), locator rows of 862 by run kb-20261124-233504-c6530a6. 682 gives the 15 per cent to the Gondolo-Silk distribution; 1305.2619v1 SFWpaper.tex L443 gives it to the 4Gm variant. First case of the supersede action (claims3 item 2)."
+  }
+ ]
+}

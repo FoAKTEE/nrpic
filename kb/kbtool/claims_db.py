@@ -20,7 +20,8 @@ locator resolves and every quoted number is in the cited lines), partial (locato
 resolve, some number not found), unresolved (a locator does not resolve), unlocated (no
 locator), checked (a person read the passage), refuted, stale (gone from its note),
 superseded (label refuted: the claim's own text is wrong or no statement, not the paper; a
-claim_links row names the claim that replaces it; `supersede`, package claims3).
+claim_links row names the claim that replaces it; `supersede`, package claims3), withdrawn
+(label refuted: the text holds no statement and nothing replaces it; `withdraw`).
 
 Every write happens inside the caller's writer lock (kbtool.lock.writer_lock).
 """
@@ -55,7 +56,8 @@ CREATE INDEX IF NOT EXISTS claims_paper ON claims(paper_id);
 """
 
 LABELS = ("fulltext", "abstract", "title_only", "background", "judgement", "to_verify", "refuted")
-STATUSES = ("located", "partial", "unresolved", "unlocated", "checked", "refuted", "stale", "superseded")
+STATUSES = ("located", "partial", "unresolved", "unlocated", "checked", "refuted", "stale", "superseded",
+            "withdrawn")
 SOURCE_TO_LABEL = {"BACKGROUND": "background", "JUDGEMENT": "judgement", "TO VERIFY": "to_verify",
                    "UNLABELLED": "to_verify", "UNLOCATED": "to_verify"}
 AUTO = "auto"
@@ -276,8 +278,8 @@ def refute(con, cid, by, evidence):
     if not row:
         raise KeyError(cid)
     label, status, tracks = row
-    if status == "superseded":
-        raise ValueError(f"claim {cid} is superseded (its text was replaced): refute the claim that replaces it")
+    if status in ("superseded", "withdrawn"):
+        raise ValueError(f"claim {cid} is {status} (its text was replaced or withdrawn): refute the claim that replaces it")
     now = utcnow()
     con.execute("UPDATE claims SET label='refuted', verified_by=?, verified_at=? WHERE claim_id=?", (by, now, cid))
     con.execute("UPDATE claim_meta SET status='refuted', label_set_by=?, checked_by=?, checked_at=? WHERE claim_id=?",
@@ -321,6 +323,8 @@ def supersede(con, old, by, evidence, text=None, to=None, label="fulltext", kind
         raise ValueError("supersede needs exactly one of a new text or an existing claim (--to)")
     if not (evidence or "").strip():
         raise ValueError("supersede needs evidence: what is wrong with the old text")
+    if o_status == "withdrawn":
+        raise ValueError(f"claim {old} is withdrawn")
     if o_status == "superseded":
         prev = [l["to_id"] for l in links(con, old) if l["relation"] == SUPERSEDED_BY and l["from_id"] == old]
         raise ValueError(f"claim {old} is already superseded (by {', '.join(map(str, prev)) or '?'})")
@@ -331,7 +335,7 @@ def supersede(con, old, by, evidence, text=None, to=None, label="fulltext", kind
                         (to,)).fetchone()
         if not t:
             raise KeyError(to)
-        if t[0] == "refuted" or t[1] in ("refuted", "superseded"):
+        if t[0] == "refuted" or t[1] in ("refuted", "superseded", "withdrawn"):
             raise ValueError(f"claim {to} is {t[0]}/{t[1]}: it cannot replace another claim")
         new = to
         con.execute("UPDATE claim_meta SET checked_by=?, checked_at=? WHERE claim_id=?", (by, utcnow(), to))
@@ -363,6 +367,13 @@ def supersede(con, old, by, evidence, text=None, to=None, label="fulltext", kind
         if first is not None:
             con.execute("UPDATE claims SET chunk_id=?, quote_start=?, quote_end=? WHERE claim_id=?",
                         (first.chunk_ids[0] if first.chunk_ids else None, first.flat_start, first.flat_end, new))
+        if label in ("abstract", "title_only") and locs and all(r.resolved for r in res):
+            # the person who supersedes read the cited abstract or title lines (OPEN.md O4): the
+            # label says what was read, the status that it was read
+            con.execute("UPDATE claims SET verified_by=?, verified_at=? WHERE claim_id=?", (by, utcnow(), new))
+            con.execute("UPDATE claim_meta SET status='checked' WHERE claim_id=?", (new,))
+        elif label in ("judgement", "background", "to_verify") and locs and all(r.resolved for r in res):
+            con.execute("UPDATE claim_meta SET status='located' WHERE claim_id=?", (new,))
     now = utcnow()
     con.execute("UPDATE claims SET label='refuted', verified_by=?, verified_at=? WHERE claim_id=?", (by, now, old))
     con.execute("UPDATE claim_meta SET status='superseded', label_set_by=?, checked_by=?, checked_at=? WHERE claim_id=?",
@@ -375,6 +386,27 @@ def supersede(con, old, by, evidence, text=None, to=None, label="fulltext", kind
     con.execute("INSERT INTO claim_links(from_id, to_id, relation, at, by, evidence) VALUES (?,?,?,?,?,?)",
                 (old, new, SUPERSEDED_BY, now, by, evidence))
     return new
+
+
+def withdraw(con, cid, by, evidence):
+    """Close a claim that holds no statement at all (a heading or locator split from a note row
+    by a seeder, e.g. "Abstract: line 171") and that no other claim replaces: label refuted,
+    status withdrawn, an event 'withdraw'. The text is kept. Refused: an unknown claim, one
+    already superseded or withdrawn, or no evidence."""
+    row = con.execute("SELECT c.label, m.status FROM claims c JOIN claim_meta m USING(claim_id) WHERE claim_id=?",
+                      (cid,)).fetchone()
+    if not row:
+        raise KeyError(cid)
+    if not (evidence or "").strip():
+        raise ValueError("withdraw needs evidence: why the text holds no statement")
+    if row[1] in ("superseded", "withdrawn"):
+        raise ValueError(f"claim {cid} is already {row[1]}")
+    now = utcnow()
+    con.execute("UPDATE claims SET label='refuted', verified_by=?, verified_at=? WHERE claim_id=?", (by, now, cid))
+    con.execute("UPDATE claim_meta SET status='withdrawn', label_set_by=?, checked_by=?, checked_at=? WHERE claim_id=?",
+                (by, by, now, cid))
+    event(con, cid, by, "withdraw", row[0], "refuted", row[1], "withdrawn",
+          f"{evidence} Withdrawn: the text holds no statement; the paper is not refuted.")
 
 
 def rows(con, where="", args=()):

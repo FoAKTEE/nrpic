@@ -1,0 +1,151 @@
+{
+ "by": "kb-claims3",
+ "actions": [
+  {
+   "do": "supersede",
+   "id": 619,
+   "label": "abstract",
+   "kind": "result",
+   "evidence": "[claims3 item 4, fragments] heading 'Abstract' cut by the serve package from B's row (REFERENCES.md:94 at 90a7ef3); the row's sentence, read at the abstract lines.",
+   "text": "arXiv:1704.04307 (abstract, nonlinear_cosmo_reference.tex L38-48): evolving the differences from a reference solution that describes the dominant behaviour of the spacetime lowers the error by an order of magnitude or more, depending on how well the reference solution approximates the exact one.",
+   "locator": "1704.04307v1:nonlinear_cosmo_reference.tex:L38-48"
+  },
+  {
+   "do": "supersede",
+   "id": 620,
+   "label": "abstract",
+   "kind": "result",
+   "evidence": "[claims3 item 4, fragments] heading 'Abstract' cut from B's row (REFERENCES.md:101 at 90a7ef3); the row's sentence, read at L39.",
+   "text": "arXiv:2608.13206 (abstract, PRD.tex L39): GRChombo with flux-conservative hydrodynamics and a cosmologically scaled Gamma-driver whose cosmic-time step grows with the scale factor, about 94 times fewer coarse-level advances than the standard driver, a conformal-time moving-puncture gauge as a check, and a collapse threshold mu_c ~ 0.7958 for a spherical Gaussian curvature profile in radiation domination.",
+   "locator": "2608.13206v3:PRD.tex:L38-39"
+  },
+  {
+   "do": "supersede",
+   "id": 621,
+   "label": "abstract",
+   "kind": "result",
+   "evidence": "[claims3 item 4, fragments] heading 'Abstract' cut from B's row (REFERENCES.md:107 at 90a7ef3); the row's sentence, read at L41.",
+   "text": "arXiv:2610.23218 (abstract, main.tex L41): in matter-era dust collapse the lapse conditions of black-hole simulations must be adapted to the cosmological context, the Gamma-driver fails at shell focusing of the dust, and the shift damping depends on the resolution of the shell-focusing region.",
+   "locator": "2610.23218v1:main.tex:L39-41"
+  },
+  {
+   "do": "supersede",
+   "id": 622,
+   "label": "abstract",
+   "kind": "method",
+   "evidence": "[claims3 item 4, fragments] heading 'Abstract' cut from B's row (REFERENCES.md:114 at 90a7ef3); the row's sentence, read at L99.",
+   "text": "arXiv:2207.03125 (abstract, paper.tex L99): the CTTK scheme solves an algebraic equation for the mean curvature K at a chosen conformal factor instead of solving the Hamiltonian constraint as an elliptic equation for the conformal factor at chosen K.",
+   "locator": "2207.03125v2:paper.tex:L97-99"
+  },
+  {
+   "do": "supersede",
+   "id": 623,
+   "to": 624,
+   "evidence": "[claims3 item 4, fragments] heading 'Abstract' cut from B's row (REFERENCES.md:126 at 90a7ef3); claim 624 carries the row's statement (1505.04756 L204, L315)."
+  },
+  {
+   "do": "supersede",
+   "id": 625,
+   "label": "abstract",
+   "kind": "result",
+   "evidence": "[claims3 item 4, fragments] heading 'Abstract' cut from B's row (REFERENCES.md:134 at 90a7ef3); the row's first sentence, read at L143.",
+   "text": "arXiv:2010.12584 (abstract, nLPT-arxiv-v2.tex L143): for random three-dimensional initial data, the Lagrangian perturbation series converges at the first shell crossing, established with all-order recursion relations and convergence studies up to the 40th order.",
+   "locator": "2010.12584v2:nLPT-arxiv-v2.tex:L142-144"
+  },
+  {
+   "do": "supersede",
+   "id": 84,
+   "kind": "result",
+   "evidence": "[claims3 item 4, fragments] 'thresholds L423-427' (84) and 'and L550-563' (85) are the locators of one clause of A's row (REFERENCES.md:126 at 9d731b1), cut into two pieces without the statement; read at both ranges.",
+   "text": "arXiv:2211.13950 gives the conditions under which velocity dispersion impedes PBH formation as bounds on the rms entry amplitude sigma_delta,ent(k) on the small scale, one for Case I and one for Case II (MD_threshold10.tex L419-427), and summarizes the necessary condition for PBH formation as delta_ent > delta_th(sigma_0, mu, k_min), with delta_th proportional to (sigma_0 k-tilde/k_min)^(2/5) below sigma_cr and an exponential branch above it (L550-563).",
+   "locator": "2211.13950v3:MD_threshold10.tex:L419-427; 2211.13950v3:MD_threshold10.tex:L550-563"
+  },
+  {
+   "do": "supersede",
+   "id": 85,
+   "to": "@6",
+   "evidence": "[claims3 item 4, fragments] second half of the cut clause of 84; the joined claim replaces both."
+  },
+  {
+   "do": "supersede",
+   "id": 81,
+   "kind": "result",
+   "evidence": "[claims3 item 4, fragments] 'criterion L298 -301.' is the locator end of A's set-up row (REFERENCES.md:122 at 9d731b1) without its content; read at L296-301.",
+   "text": "arXiv:2211.13950 (MD_threshold10.tex L296-301): Case I (small-scale virialization before the PBH-scale collapse, t_vir < t_coll) holds when k^2 delta_ent > k-tilde^2 delta-tilde_ent, Case II when k^2 delta_ent < k-tilde^2 delta-tilde_ent.",
+   "locator": "2211.13950v3:MD_threshold10.tex:L296-301"
+  },
+  {
+   "do": "supersede",
+   "id": 424,
+   "kind": "number",
+   "evidence": "[claims3 item 4, fragments] '`mnras.tex` l. 361)' is the locator end of a sentence of F's NOVELTY.md (L44 at dd48b3e); read at 1804.02911 L359-361.",
+   "text": "arXiv:1804.02911 (mnras.tex L359-361): in its scattering experiments the largest penetration factor D with binary disruption is D = 2.1, for coplanar prograde orbits and for all sampled orbits; F places the 8:1:1 and 18:1:1 configurations of arXiv:2406.11985 at D/r_t = 4.1 and 5.8, outside that range (run F-hills-20261115-045435-f62d553).",
+   "locator": "1804.02911v1:mnras.tex:L359-361"
+  },
+  {
+   "do": "supersede",
+   "id": 431,
+   "to": 430,
+   "evidence": "[claims3 item 4, fragments] 'line 108)' is the locator end of the sentence of F's NOVELTY.md (L64 at dd48b3e) that claim 430 carries with the locator L108."
+  },
+  {
+   "do": "supersede",
+   "id": 179,
+   "kind": "result",
+   "evidence": "[claims3 item 4, fragments] 'Omega_GW today (911-918)' names a formula without stating it (B's row REFERENCES.md:29 at 1600069); read at L909-918.",
+   "text": "arXiv:2403.15126 (pII_GW_Vir_C2_Arx.tex L911-918) gives the present-day energy density of the background, Omega_GW(t_0, omega_0), as the quadrupole spectrum (4 pi G/5c^5) omega^7 sum|Q_ij(omega)|^2 redshifted by 1/(1+z_e), divided by the comoving volume at horizon entry and the critical density today, and integrated over the deformation parameters (alpha, beta, gamma) with their distribution F_D.",
+   "locator": "2403.15126v1:pII_GW_Vir_C2_Arx.tex:L909-918"
+  },
+  {
+   "do": "supersede",
+   "id": 192,
+   "kind": "result",
+   "evidence": "[claims3 item 4, fragments] 'dE/dln omega (2891)' names a formula without stating it (B's row REFERENCES.md:48 at 767eb93); read at L2882-2891.",
+   "text": "arXiv:2605.04487 (main_v3.tex L2882-2891) computes the emitted spectrum from the quadrupole formula in frequency space, dE_GW/dln omega = (4 pi G/5c^5) omega^7 sum_ij |Q_ij(omega)|^2.",
+   "locator": "2605.04487v2:main_v3.tex:L2882-2891"
+  },
+  {
+   "do": "supersede",
+   "id": 213,
+   "kind": "method",
+   "evidence": "[claims3 item 4, fragments] 'spin-2 projector: 1394' names an operator without stating it (B's row REFERENCES.md:84 at 767eb93); read at L1394.",
+   "text": "arXiv:1604.06065 (compendium_arxiv.tex L1394) obtains the h_ij equation with the spin-2 projector Lambda^{ijlm} = P^{il} P^{jm} - (1/2) P^{ij} P^{lm}.",
+   "locator": "1604.06065v2:compendium_arxiv.tex:L1394"
+  },
+  {
+   "do": "supersede",
+   "id": 277,
+   "kind": "result",
+   "evidence": "[claims3 item 4, fragments] 'y_c sequence (1092)' names a topic without stating it (C's row REFERENCES.md:87 at 904eb96); read at L1092.",
+   "text": "arXiv:2611.12831 (main.tex L1092): y_c labels a one-parameter sequence of equilibrium clusters; decreasing y_c raises the central particle speed sqrt(1 - y_c), the central redshift and the compactness, moving the models from the weakly relativistic stable branch past the first binding-energy maximum, which for this family closely marks the onset of dynamical instability found by Shapiro and Teukolsky (1985).",
+   "locator": "2611.12831v1:main.tex:L1092"
+  },
+  {
+   "do": "supersede",
+   "id": 290,
+   "to": 289,
+   "evidence": "[claims3 item 4, fragments] 'is correct].' is the end of the label bracket of C's row (REFERENCES.md:111 at 904eb96), whose statement claim 289 carries."
+  },
+  {
+   "do": "supersede",
+   "id": 314,
+   "to": 313,
+   "evidence": "[claims3 item 4, fragments] 'abstract `:64-71`' is a second locator of the table row (REPORT.md:169 at 904eb96) whose statement claim 313 carries."
+  },
+  {
+   "do": "withdraw",
+   "id": 171,
+   "evidence": "[claims3 item 4, fragments] 'Abstract: lines 173-175' is a pointer in B's row (REFERENCES.md:26 at 1600069); the row states nothing about the abstract, and the next item is claim 172."
+  },
+  {
+   "do": "withdraw",
+   "id": 187,
+   "evidence": "[claims3 item 4, fragments] 'Abstract: line 171' is a pointer in B's row (REFERENCES.md:45 at 767eb93); the row states nothing about the abstract; the row's statements are claims 188, 189."
+  },
+  {
+   "do": "withdraw",
+   "id": 549,
+   "evidence": "[claims3 item 4, fragments] 'Paper [VERIFIED]:' is the heading of a list in core's SECTION2_CORRECTIONS.md (L146 at 357e7ac); its items are seeded from the following lines."
+  }
+ ]
+}
