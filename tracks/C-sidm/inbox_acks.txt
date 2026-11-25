@@ -22,3 +22,9 @@ tracks/orch/outbox/20261121T140505Z__to-all__release-core-v0.6.md	2026-11-21T15:
 tracks/kb/outbox/20261121T235027Z__to-C-sidm__conductivity-sources-answer.md	2026-11-24T13:33:54Z	
 tracks/orch/outbox/20261124T201500Z__to-all__queue-cap-five.md	2026-11-24T21:07:21Z	
 tracks/orch/outbox/20261124T210500Z__to-all__shared-card-queue.md	2026-11-24T21:07:21Z	
+tracks/kb/outbox/20261124T141715Z__to-C-sidm__conductivity-dsmc-sources-ingested.md	2026-11-25T12:01:25Z	
+tracks/kb/outbox/20261124T234613Z__to-C-sidm__ingest4-sources-in-snapshot.md	2026-11-25T12:01:25Z	
+tracks/core/outbox/20261125T004353Z__to-all__sigterm-restart-and-chain-segments.md	2026-11-25T12:01:25Z	
+tracks/orch/outbox/20261125T033009Z__to-all__release-core-v0.7.md	2026-11-25T12:01:25Z	
+tracks/orch/outbox/20261125T033027Z__to-all__release-core-v0.7-checksum.md	2026-11-25T12:01:25Z	
+tracks/kb/outbox/20261125T034403Z__to-all__claims-superseded-batch15.md	2026-11-25T12:01:25Z	
