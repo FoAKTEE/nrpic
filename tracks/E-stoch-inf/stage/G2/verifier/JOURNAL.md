@@ -101,3 +101,64 @@ Predictions (each refuted outside its range):
   sum within 2e-3.
 - V14 U-W: max shift 1.9e-4 (+-20 percent) to k_max/2 = 16 dk and 9.1e-3 (+-20 percent) to
   32 dk; every shell within its bound.
+
+## Entry 2, 2026-11-25 02:35 UTC: outcomes of V0-V7, V10, V12-V14 (runs listed per item)
+
+- V0 (run E-20261125-022126-26671c3): reader reads the synthetic file back bit for bit; the
+  R^NR coefficients of the 40 planted modes agree to 9.6e-13 of their rms and nothing outside
+  the set exceeds 9.5e-12. **Prediction (1e-13, 1e-14) refuted**, for a cause the same run
+  could have refuted: with all amplitudes 1e3 times larger the errors fall to 4.4e-15 and
+  1.1e-15, so the 1e-12 is the rounding of the stored O(1) fields (gt_ii = 1 + 1e-7, ulp
+  2.2e-16) relative to coefficients of 3e-5, not the reader. Full-lattice rms = band rms to
+  1e-16. Floor formula: recovered f/f_true = 1.0014 (independent floors) and 1.0015 (common
+  floor). V2: alpha of philox_ref and of core's twin identical on 2000 modes of each seed.
+- V1 (run E-20261125-022507-b13c79b; the first try E-20261125-022137-182e82c was stopped by
+  me at 39 GB of dense output and is on record as failed): H(t = 0) = 1 + 4e-16; USR from
+  cN = 2.523421 to 6.550320 (SCOPE 2: 2.52, 6.55); eps1 minimum 9.716e-13 at cN = 8.331;
+  N(tlim) = 10 + 1.7e-13; own lattice rms at N_f 0.893707 (0.89366 given; 5.3e-5 apart);
+  reference self-error (rtol 1e-12 against 1e-10) 9.8e-10 relative; lockstep `.modes` of
+  U256ap at N_f against mine: 2.55e-3 at the top shell (q2 = 4096), 8.0e-5 for q2 <= 1024,
+  1e-7 at the lowest shells (fig_reference.png, looked at: k^5 growth). Holds.
+- V3 (run E-20261125-022710-0eb5db0): R^NR at t = 0 equals L^-3/2 W(N*) R(N*) alpha_n with
+  the same sign to 5.0e-12 (U256ap) and 7.4e-12 (U256bp) on the 3 modes with W > 1/2. Holds:
+  the extraction, phase convention, alpha and slice agree.
+- V4 U-A0 (run E-20261125-022200-68c072e): max |dN| over the landmarks 1.61e-9 (256^3),
+  6.6e-10 (320^3), 4.3e-10 (control to t = 3.75); all record rows the same. Holds.
+- V5 U-A1 (same run): max relative deviation 4.17e-5 in <Pi> at N_f (s = +-1), 1.04e-5
+  (+-1/2), 2.52e-6 (+-1/4): second order in s, at cN = 10; <phi> 1.2e-9, <K> 2.4e-11.
+  Holds.
+- V10 U-A4'(c) (same run): <|H'|/[H]> max 2.89e-12 (A +-1), 1.73e-12 (B), 3.03e-12 (320),
+  1.28e-12 (+-1/2), 1.19e-12 (+-1/4), all at cN < 0.4: holds. <|M|/[M]> max 2.52e-2 (256^3
+  at s = +-1, +-1/2, +-1/4 alike, at cN = 6.64), 8.09e-3 (320^3). **Prediction for s = 1/2
+  and 1/4 refuted** (I predicted 4e-2 to 1.2e-1 from the note in 4c that the record doubles
+  at s = 1/2): the maximum does not depend on s, so at the end of USR it is the first-order
+  part (truncation, falls by 3.1 from 256 to 320); only the late values scale (at N_f 2.13e-3,
+  3.84e-3, 5.60e-3). No run reaches the bar 1e-1. Control: 1.28e-7 and 0.50.
+- V6 U-A2' (run E-20261125-022710-0eb5db0): max D_n (k <= 32 dk) 1.0894e-4 (A, mode
+  (0,32,0)), 1.0871e-4 (B, (0,0,32)); to k_max 4.506e-3 (both, (64,0,0)). Holds for A and B.
+  **Half and quarter pairs: 1.242e-4 and 1.289e-4, not within 5 percent of 1.09e-4 (refuted)**:
+  at the axis modes D(s) = 1.293e-4 - 2.04e-5 s^2 fits all three, i.e. a third-order part of
+  the odd part lowers D at s = 1 (follow-up below). U-A2n (band) 2.877e-4 (A), 2.874e-4 (B):
+  **prediction 2.5e-4 +- 10 percent refuted for the band**, holds for k <= 32 dk (2.53e-4);
+  it halves exactly (1.438e-4, 7.19e-5). Removing the gt_ij term of Phi changes max D by 1e-8
+  (gt part 1.3e-7, chi part 4.6e-7 of the rms of R^NR: R^NR is carried by delta phi).
+- V7 U-A3: single runs 0.99230-1.00161 (A), 0.99678-1.00185 (B); odd parts 0.999916-0.999919
+  (s = 1), 0.99998 (1/2), 0.999995 (1/4): the odd-part deficit 8.4e-5 is third order. Holds.
+- V12 U-R: (i) 1.0894e-4 / 5.182e-5 = 2.10 (**prediction 2.4-4.5 refuted**, criterion
+  2.0-4.5 met by a margin of 5 percent); the 320 maximum sits at (13,15,-20), a mode whose
+  |alpha| is in the lowest 1e-4 of all; (ii) shell power 1.18e-4 (k <= 32 dk), 4.6e-3 (to 64
+  dk); (iii) even/odd 2.87664e-4 against 2.87654e-4, 3.5e-5 apart. Holds.
+- V13 U-S: band rms of U256bp 0.894109, 4.49e-4 above 0.89366 (bar 5e-3); its own
+  realisation's lattice value 0.893953 (NR 1.7e-4 above it). Holds.
+- V14 U-W (run E-20261125-022612-d2d99fa): max shift 1.870e-4 (k <= 16 dk, g2), 9.13e-3 (k <=
+  32 dk, g2); per-mode errors of each window equal the package's table to its digits. Holds.
+  The per-shell clause "less than the NR-vs-reference bound" uses the bound |e_w| + |e_b|,
+  which holds by construction (the window README says so): 4 shells of s10 exceed it by the
+  factor 1/(1 + e_b) only.
+- Figures looked at: fig_records.png, fig_reference.png, fig_modes.png, fig_window.png (below).
+
+Prediction for the follow-up `extra_modes.py` (before it runs): the Richardson-in-s^2 linear
+part L from s = 1, 1/2 agrees with that from s = 1/2, 1/4 to below 1e-5 of |p| for k <= 32 dk;
+max D_lin (k <= 32 dk) about 1.3e-4 at an axis mode |n| = 32; the third-order share at s = 1
+is at most about 4e-5 (the low-k plateau of fig_modes.png); D_lin at the axis modes falls from
+256 to 320 by 2.4 to 3.8 (order 4 to 6). Refuted outside these ranges.
