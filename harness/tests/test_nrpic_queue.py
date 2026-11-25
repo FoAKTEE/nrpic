@@ -22,7 +22,8 @@ valid in the wrapper and not in the job it submits (6); a rise of two jobs named
 ALERT (2); an error between claim and the end of a dispatch fails the entry; status says HUNG for a stopped
 dispatcher; STOP; restart from the files; the cap keeper cancels an excess that lasted, newest pending first,
 never a running job or a chain's next segment, and puts an entry back to waiting; `squeue -r` counts array
-tasks; the pause flag does not stop submissions (decision 0026 item 2).
+tasks; the pause flag does not stop submissions (decision 0026 item 2). The keeper never cancels a job of the
+user's own (not of an entry, no run-id name, working directory outside the repository): cases (a) to (f).
 """
 import calendar
 import json
@@ -104,12 +105,15 @@ class T:
         self.names.add(name)
         return ["--cmd", f"sbatch {'--hold ' if hold else ''}-J {name} {self.hold} {name}"]
 
-    def foreign(self, name, key=None, hold=False):
-        """A job another way than the queue would submit (the test plays it)."""
+    def foreign(self, name, key=None, hold=False, cwd=None):
+        """A job submitted by another way than the queue (the test plays it). cwd: its working directory; by
+        default one outside the fixture's repository, so that a job without a run-id name is the user's own."""
         key = key or name
         self.names.add(key)
+        cwd = cwd or os.path.join(self.fx["root"], "elsewhere")
+        os.makedirs(cwd, exist_ok=True)
         env = F.H.build_env(F.H.Worktree(self.A))
-        r = F.sh(["sbatch"] + (["--hold"] if hold else []) + ["-J", name, self.hold, key], env=env)
+        r = F.sh(["sbatch"] + (["--hold"] if hold else []) + ["-J", name, self.hold, key], env=env, cwd=cwd)
         return r.stdout.split()[-1]
 
     def release(self, *names):
@@ -666,7 +670,18 @@ def exception(t, c):
 
 
 def alert(t, c):
-    """Review 2: two jobs named like a running job are not a chain's hand-over: ALERT."""
+    """Review 2: two jobs named like a running job are not a chain's hand-over: ALERT. A job of the user's own
+    that comes in during a dispatch is not counted as the entry's rise."""
+    t.settle()
+    out = os.path.join(t.fx["root"], "elsewhere")
+    os.makedirs(out, exist_ok=True)
+    t.names.update({"u1", "u1x"})
+    r, u1 = t.add(t.A, "u1", ["--cmd", f"sbatch -J u1 {t.hold} u1; sbatch -D {out} -J other {t.hold} u1x > /dev/null"])
+    ok = wait_until(lambda: t.state("u1") == "submitted", 30)
+    time.sleep(1.5)
+    c.ok(ok and not os.path.exists(t.alert) and len(t.live()) == 2 and f"during the dispatch of {u1} job(s) of the "
+         "user's own came in" in t.log(), "a job of the user's own (working directory outside the repository, not "
+         "printed) that came in during a dispatch is not counted as its rise: no ALERT", t.log()[-800:])
     t.settle()
     t.foreign("dupq", "dupq0")
     wait_until(lambda: len(t.live()) == 1, 30)
@@ -695,43 +710,129 @@ def alert(t, c):
     os.remove(pause)
 
 
+def keeper_record(t):
+    """The last cap-keeper record of the ALERT file, and how many records the file holds."""
+    try:
+        a = json.load(open(t.alert))
+    except (OSError, ValueError):
+        return {}, 0
+    recs = [a] + list(a.get("more") or [])
+    keep = [r for r in recs if r.get("kind") == "cap-keeper"]
+    return (keep[-1] if keep else {}), len(recs)
+
+
 def keeper(t, c):
-    """The cap keeper: an excess that lasted --keeper-confirm is cancelled, newest pending first, never a running
-    job and never a running chain's next segment: first pending jobs of no entry, then of the newest submitted
-    entry, which goes back to waiting. ALERT records it; dispatching halts until clear-alert."""
+    """The cap keeper never cancels a job of the user's own (not of an entry, no run-id name, working directory
+    outside the repository): it counts toward the cap, and only our pending jobs are cancelled, newest first,
+    never a running one and never a running chain's next segment: first ours of no entry, then those of the
+    newest submitted entries, which go back to waiting. Cases (a) to (f) of the decisions on the keeper."""
     t.settle("y1")
-    r, k1 = t.add(t.B, "k1", t.hold_cmd("k1", hold=True))
-    ok = wait_until(lambda: t.state("k1") == "submitted", 30)
-    c.ok(ok, "an entry whose job is pending (k1)")
-    k1job = (t.e("k1").get("job_ids") or ["?"])[0]
-    t.mon_pause = True                                   # the excess below is made on purpose
-    keep = {}
-    for nm, key, hold in (("fr1", "fr1", False), ("fr2", "fr2", False), ("csx", "csx0", False),
-                          ("csx", "csx1", True), ("fp1", "fp1", True), ("fr3", "fr3", False)):
-        keep[key] = t.foreign(nm, key, hold)
-    ok = wait_until(lambda: os.path.isfile(t.alert), 30)
+    under = os.path.join(t.repo, "scratch", "tmp-queue-test")        # a directory under the fixture's repository
+    os.makedirs(under, exist_ok=True)
+    # (a) five of ours plus one pending job of the user's own, submitted last
+    for lab, hold in (("ka", False), ("kb", True), ("kc", True), ("kd", False)):
+        t.add(t.B, lab, t.hold_cmd(lab, hold=hold))
+    ok = wait_until(lambda: all(t.state(l) == "submitted" for l in ("ka", "kb", "kc", "kd")), 30)
+    c.ok(ok and len(t.live()) == 5, "(a) five jobs of ours: y1, ka and kd running, kb and kc pending")
+    jid = {l: t.e(l)["job_ids"][0] for l in ("ka", "kb", "kc", "kd", "y1")}
+    t.mon_pause = True                                   # the excesses below are made on purpose
+    fa1 = t.foreign("fa1", hold=True)
+    ok = wait_until(lambda: keeper_record(t)[0].get("ts"), 30)
     time.sleep(1)
-    a = json.load(open(t.alert)) if ok else {}
-    rec = a if a.get("kind") == "cap-keeper" else next((x for x in a.get("more", []) if x.get("kind") == "cap-keeper"), {})
-    cancelled = sorted(j["id"] for j in rec.get("cancelled", []))
+    rec, nrec = keeper_record(t)
     live_ids = {j for j, _ in t.live()}
-    running = [keep[k] for k in ("fr1", "fr2", "csx0", "fr3")] + (t.e("y1").get("job_ids") or [])
-    c.ok(ok and rec.get("count") == 8 and rec.get("excess") == 3 and cancelled == sorted([keep["fp1"], k1job])
-         and rec.get("left_above_the_cap") == 1 and all(j in live_ids for j in running) and keep["csx1"] in live_ids
-         and keep["fp1"] not in live_ids and k1job not in live_ids,
-         "cap keeper: eight jobs for two seconds, three above the cap: it cancelled the pending job of no entry (fp1) "
-         "and then the newest entry's pending job (k1); running jobs and the running chain's next segment (csx) "
-         "were left, one job above the cap is reported", json.dumps(rec)[:2500])
-    e = t.e("k1")
-    c.ok(e["state"] == "waiting" and "cancelled by the cap keeper" in (e.get("wait") or {}).get("what", "")
-         and "cap keeper" in t.log(), "the entry whose job was cancelled is back to waiting with the reason",
-         json.dumps(e)[:1200])
-    t.release("fr1", "fr2", "fr3", "csx0", "csx1")
-    wait_until(lambda: len(t.live()) == 1, 30)
-    time.sleep(2)
-    c.ok(t.state("k1") == "waiting", "after the keeper's ALERT nothing is dispatched (k1 waits with room in the queue)")
+    c.ok(ok and [j["id"] for j in rec.get("cancelled", [])] == [jid["kc"]] and fa1 in live_ids
+         and jid["kc"] not in live_ids and len(live_ids) == 5 and rec.get("foreign") == 1 and rec.get("halts")
+         and t.state("kc") == "waiting" and "cancelled by the cap keeper" in (t.e("kc").get("wait") or {}).get("what", ""),
+         "(a) the user's pending job submitted last is left; exactly one of ours, the newest entry's pending job (kc), "
+         "is cancelled and kc is back to waiting; five jobs queued", json.dumps(rec)[:2000])
     t.q(t.repo, ["clear-alert"])
-    c.ok(wait_until(lambda: t.state("k1") == "submitted", 30), "clear-alert: k1 is submitted again")
+    time.sleep(1.5)
+    c.ok(t.state("kc") == "waiting", "(a) at five jobs kc waits")
+    # (b) two jobs of the user's own and five of ours: two of ours are cancelled, the user's are left
+    t.release("fa1")
+    ok = wait_until(lambda: t.state("kc") == "submitted", 30)
+    jid["kc"] = t.e("kc")["job_ids"][0] if ok else "?"
+    fb1, fb2 = t.foreign("fb1"), t.foreign("fb2", hold=True)
+    ok = wait_until(lambda: keeper_record(t)[0].get("ts"), 30)
+    time.sleep(1)
+    rec, nrec = keeper_record(t)
+    live_ids = {j for j, _ in t.live()}
+    c.ok(ok and sorted(j["id"] for j in rec.get("cancelled", [])) == sorted([jid["kc"], jid["kb"]])
+         and fb1 in live_ids and fb2 in live_ids and len(live_ids) == 5 and rec.get("foreign") == 2
+         and t.state("kb") == "waiting" and t.state("kc") == "waiting",
+         "(b) two jobs of the user's own (one pending) and five of ours: two of ours are cancelled (the newest "
+         "entries' pending jobs, kc and kb), the user's are left; five jobs queued", json.dumps(rec)[:2000])
+    t.q(t.repo, ["clear-alert"])
+    for lab in ("kb", "kc"):
+        t.q(t.B, ["remove", t.ids[lab]])
+    # (c) a job with a run-id name and no entry, and one from a directory under the repository with any name,
+    # are ours: they are cancelled before an entry's pending job
+    t.release("fb1", "fb2", "ka", "kd")
+    wait_until(lambda: len(t.live()) == 1, 30)
+    t.add(t.B, "kp", t.hold_cmd("kp", hold=True))
+    ok = wait_until(lambda: t.state("kp") == "submitted", 30)
+    jid["kp"] = t.e("kp")["job_ids"][0] if ok else "?"
+    rid = t.foreign("A-20261125-010203-abcdef1", "rid1", hold=True)          # outside the repository
+    zz = t.foreign("zzwd", hold=True, cwd=under)                              # under the repository
+    fcs = [t.foreign("fc1"), t.foreign("fc2", hold=True), t.foreign("fc3", hold=True)]
+    ok = wait_until(lambda: keeper_record(t)[0].get("ts"), 30)
+    time.sleep(1)
+    rec, nrec = keeper_record(t)
+    live_ids = {j for j, _ in t.live()}
+    how = {j["id"]: j.get("ours") for j in rec.get("cancelled", [])}
+    c.ok(ok and sorted(how) == sorted([rid, zz]) and how.get(rid) == "run id" and how.get(zz) == "under the repository"
+         and jid["kp"] in live_ids and t.state("kp") == "submitted" and all(f in live_ids for f in fcs)
+         and len(live_ids) == 5,
+         "(c) a run-id-named job without an entry and a job from a directory under the repository are ours: both are "
+         "cancelled, before the entry's pending job (kp, left) and none of the user's three", json.dumps(rec)[:2000])
+    t.q(t.repo, ["clear-alert"])
+    # (d) six jobs of the user's own and none of ours: nothing cancelled, one ALERT, not a second one
+    t.release("y1", "kp")
+    wait_until(lambda: len(t.live()) == 3, 30)
+    fds = fcs + [t.foreign("fd1"), t.foreign("fd2", hold=True), t.foreign("fd3", hold=True)]
+    ok = wait_until(lambda: keeper_record(t)[0].get("ts"), 30)
+    time.sleep(4)                                        # four more looks of the keeper
+    rec, nrec = keeper_record(t)
+    live_ids = {j for j, _ in t.live()}
+    c.ok(ok and nrec == 1 and not rec.get("cancelled") and rec.get("foreign") == 6 and rec.get("ours") == 0
+         and not rec.get("halts") and all(f in live_ids for f in fds),
+         "(d) six jobs of the user's own and none of ours: nothing cancelled, one ALERT record (not halting), no "
+         "second one at the next looks", json.dumps(rec)[:1500])
+    fd4 = t.foreign("fd4")
+    time.sleep(4)
+    rec, nrec = keeper_record(t)
+    c.ok(nrec == 1 and "none of ours may be cancelled" in t.log(), "(d) a seventh job of the user's own: logged, still "
+         "one ALERT record", t.log()[-600:])
+    # (e) status lists the user's own jobs on a line of their own
+    st = t.q(t.repo, ["status"]).stdout
+    m = re.search(r"^  not ours: (.*)$", st, re.M)
+    c.ok(m and all(f in m.group(1) for f in fds + [fd4]) and "0 of this program, 7 of the user's own" in st
+         and "does not halt the dispatcher" in st,
+         "(e) status: the user's own jobs on the line 'not ours: ...'; the ALERT says it does not halt", st)
+    r, kw = t.add(t.C, "kw", t.hold_cmd("kw"))
+    time.sleep(2)
+    c.ok(t.state("kw") == "waiting", "(d) at seven jobs an entry waits (the count rule)")
+    t.release("fc1", "fc2", "fc3", "fd1")
+    ok = wait_until(lambda: t.state("kw") == "submitted", 30)
+    c.ok(ok and os.path.isfile(t.alert), "(d) below five jobs the entry is dispatched although that ALERT stands: it "
+         "records an excess of the user's own jobs only and does not halt")
+    t.q(t.repo, ["clear-alert"])
+    # (f) our pending job that is the next segment of our running chain is never cancelled
+    t.settle()
+    cs0 = t.foreign("csr", "csr0", cwd=under)
+    cs1 = t.foreign("csr", "csr1", hold=True, cwd=under)
+    fs = [t.foreign(f"ff{i}") for i in range(4)]
+    ok = wait_until(lambda: keeper_record(t)[0].get("ts"), 30)
+    time.sleep(1)
+    rec, nrec = keeper_record(t)
+    live_ids = {j for j, _ in t.live()}
+    c.ok(ok and not rec.get("cancelled") and rec.get("left_above_the_cap") == 1 and cs0 in live_ids and cs1 in live_ids
+         and all(f in live_ids for f in fs),
+         "(f) six jobs: our running chain, its pending next segment (protected) and four of the user's own: nothing is "
+         "cancelled, one job is reported left above the cap", json.dumps(rec)[:1500])
+    t.q(t.repo, ["clear-alert"])
+    t.settle()
     t.mon_pause = False
 
 

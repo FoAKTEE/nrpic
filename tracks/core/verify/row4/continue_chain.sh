@@ -24,8 +24,8 @@
 # sha256 is the manifest's; EXE_SRC has the sha256 the manifest recorded for the executable;
 # JOB_NAME and the overrides of config.sh are those of the manifest; a segment is left.
 #
-# Without the dispatcher's marker it refuses (exit 3); DRY=1 prints what it would run and
-# submits nothing (with or without the marker). The continuation is recorded in
+# Outside a dispatch (`harness/bin/nrpic-queue check-dispatch` fails) it refuses (exit 3);
+# DRY=1 prints what it would run and submits nothing (with or without the marker). The continuation is recorded in
 # <rundir>/chain/continuations.log (time, queue entry, wrapper sha256, restart, segments);
 # submit_chain.sh writes "start/resume" and "submitted job N" into chain/events.log, from
 # which `nrpic-run finish <run_id>` collects every job id and the card-hours.
@@ -102,7 +102,11 @@ if [[ ${DRY:-0} == 1 ]]; then
   printf 'continue_chain: DRY, would run:'; printf ' %q' "${cmd[@]}"; echo
   exit 0
 fi
-[[ -n ${NRPIC_QUEUE_DISPATCH:-} ]] || die "refused: not called by the dispatcher of the shared queue (decision 0033); DRY=1 shows the command" 3
+# the marker alone proves nothing (harness/RULES.md, nrpic-run section): the queue checks it
+# (entry being dispatched with that token, this worktree, submit lock held). scripts/
+# removes the marker from the environment of every job it submits (decision 0037 item 4).
+"$WT/harness/bin/nrpic-queue" check-dispatch >&2 ||
+  die "refused: not inside a dispatch of the shared queue (decision 0033); DRY=1 shows the command" 3
 
 wsha=$(sha256sum "${BASH_SOURCE[0]}" | cut -d' ' -f1)
 printf '%s queue-entry=%s wrapper=%s sha256=%s restart=%s segments_used=%s max_segments=%s\n' \

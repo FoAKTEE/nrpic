@@ -1,0 +1,109 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "core-20261125-120211-08f4fb9",
+  "track": "core",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "M1 (a)-(d): queue marker out of jobs, srun steps and executables of gpu_run.sh, gpu_batch.sh, submit_chain.sh, _athena_job.sh, end to end with the fake Slurm of harness/tests/rc_fixture.py; control with the scripts of 367021876 (JOURNAL 2026-11-25T11:52Z)",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    ".venv/bin/python",
+    "scripts/tests/test_queue_marker.py",
+    "--old",
+    "/data/haiyangw/nrpic/scratch/core/tmp/b17_old_scripts",
+    "--out",
+    "$NRPIC_RUN_DIR/t"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "08f4fb953fa7e146ce36a382b0cf75c275071f4e",
+    "branch": "core/nrpic",
+    "dirty": false,
+    "merge_base_main": "1cbc3effc9fba3e4bd9ecc35daf3cec38c2711eb",
+    "worktree": "wt/core"
+  },
+  "code": {
+    "core_tag": "core-v0.7",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/core/.venv/bin/python"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": ".venv/bin/python",
+      "role": "argv",
+      "sha256": "d6bca2b84e73c7775a0dd5e6a76899cfe4ee62863d7c8f88513811d1fda23f49",
+      "bytes": 5937704,
+      "tracked": false
+    },
+    {
+      "path": "scripts/tests/test_queue_marker.py",
+      "role": "argv",
+      "sha256": "1709c827a1a5be3a64250311eda10d360e556927cc587b541cf836cece82d4f1",
+      "bytes": 12981,
+      "tracked": true
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/tmp/b17_old_scripts/gpu_run.sh",
+      "role": "input",
+      "sha256": "4aa66ca2433e76a097d1a8c09a9f0d00bf940f07eac2fcdb6150e59ca2c3c1a6",
+      "bytes": 3220,
+      "tracked": false
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/tmp/b17_old_scripts/gpu_batch.sh",
+      "role": "input",
+      "sha256": "7242e3109317e3f6020e47843859ccd70428660f9f4e844ee2d394bc9e9962a8",
+      "bytes": 1632,
+      "tracked": false
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/tmp/b17_old_scripts/submit_chain.sh",
+      "role": "input",
+      "sha256": "9c140d6c360784842e232b32fda5e269adb2d9ad62e52791dd2ffca2dde7b68b",
+      "bytes": 20425,
+      "tracked": false
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/tmp/b17_old_scripts/_athena_job.sh",
+      "role": "input",
+      "sha256": "f4edee3a16b35dd8f11ab7a59648d470597c404cb99646583bf57f6ed3fac20d",
+      "bytes": 2270,
+      "tracked": false
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 1,
+    "walltime_s": 20.151,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/core/core-20261125-120211-08f4fb9",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": "3fecfc4509f0d8efd8552da1f74a3fe0a303bacf8c4284fae5ebed38f2bb37d8",
+    "bytes": 183192,
+    "files": 149
+  },
+  "status": "completed",
+  "exit_code": 0,
+  "registered": "2026-11-25T12:02:11Z",
+  "started": "2026-11-25T12:02:11Z",
+  "ended": "2026-11-25T12:02:31Z",
+  "parents": [],
+  "notes": "registered by hand with tracks/core/tools/hand_run.py: nrpic-run's local launcher refuses a command whose script names sbatch or submit_chain.sh, also when they are fakes on PATH (decision 0033; CLAUDE.md rule 4). old scripts: git show 367021876:scripts/<name>",
+  "finished": "2026-11-25T12:02:31Z"
+}
