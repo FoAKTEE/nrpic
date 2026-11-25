@@ -94,7 +94,8 @@ def analyse(name, d):
         tt = tab_times(con)
         res["line"] = {}
         for key, tq in (("t0", 0.0), ("first", res["first"]["t"]),
-                        ("persistent", res.get("persistent", {}).get("t"))):
+                        ("persistent", res.get("persistent", {}).get("t")),
+                        ("plus2", res["first"]["t"] + 2.0)):
             if tq is None:
                 continue
             k = int(np.argmin(np.abs(tt - tq)))
