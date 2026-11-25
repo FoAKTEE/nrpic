@@ -96,8 +96,16 @@ t = 1.6875 is present; release: `tsq.cons.hst` (that record missing) and
 T4, run core-20261125-134356-4a92c73: byte regression of the serial build against
 release core-v0.7, twelve set-ups, 75 of 75 items identical.
 
-T3 (two punctures with refinement and outflow faces, tracker files across a restart)
-and the card check: section 7.
+T3, run core-20261125-142953-bf5a228 (figure: core-20261125-145908-fbd5598,
+`fig_tracker_restart.png`): `problems/puncture/by_binary.athinput` reduced to three
+refinement levels (176 MeshBlocks, outflow faces), 8 cycles, cut at 4 by `time/nlim`,
+threaded builds on one thread. Both tracker files of the continued run of the new build
+are byte-identical to those of the uninterrupted run (8 records, header once); those of
+release core-v0.7 hold the 4 records from cycle 4 on. No round-off difference appeared
+in these 8 cycles; longer runs on such meshes can show one (section 6).
+
+T1 again with the final serial build: run core-20261125-142556-a424739, all checks hold.
+The card check: section 7.
 
 ## 5. What does not change
 
@@ -141,7 +149,7 @@ cycle is missing, because one of the two executables has no densities of the cyc
 before, and no other record is touched. A chain that changes executable at a restart
 loses at most that one record.
 
-Open at the time of writing (see the journal for the outcome): T3, the two-puncture deck
-`problems/puncture/by_binary.athinput` across a restart on the threaded build; the card
-check (shared-queue entry `core-rf-card`), in which the card continues a restart file
-written by the processor build.
+Open at the time of writing (see the journal for the outcome): the card check
+(shared-queue entry `core-rf-card`), in which the card runs the restart deck and
+continues a restart file written by the processor build. No run of the card build
+exists yet.

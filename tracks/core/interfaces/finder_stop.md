@@ -180,18 +180,27 @@ byte for byte; with `ah_exc_max_growth = 0.4` (guard radius 0.4 M, inside the ho
 **Cost** (processors, two threads, the mesh of T5a): 7.7 ms per flow iteration (462.7 s
 with 24 312 iterations against 290.7 s with 1963), 6.4 ms from the polished run; 100
 polishing iterations cost about 0.7 s per search, where a cycle of that deck costs
-4.5 s. On a card: section 6.
+4.5 s. On a card: not measured yet (section 6).
 
 **Byte regression** with no new option set: 75 of 75 items identical to release
 core-v0.7 (final serial build, run core-20261125-142602-33f4005).
 
-## 6. Open at the time of writing
+## 6. The published rule on Track D's dumps; what is open
 
-- The corrected rule on four of Track D's dumps (t = 100, 250, 400, 500 M; `mass_tol`
-  1e-5 with 100 polishing iterations from the stored radius and from outside): run
-  core-20261125-144142-5858c3d, outcome in the journal (prediction P18).
-- The cost per search on a card and the finder on a card: shared-queue entry
-  `core-rf-card` (journal entry 12, predictions K3 and K4; `card_check.py`).
+Run core-20261125-144142-5858c3d (final threaded build, four of the dumps of T5b,
+t = 100, 250, 400, 500 M; prediction P18, held):
+
+| Search | Iterations | Mass against the tight rule, four dumps |
+|---|---|---|
+| `mass_tol` 1e-5, 100 polishing iterations, from the stored radius | 102 to 111 | +6.0e-9 to +6.3e-9 |
+| the same from 2 M outside | 148 to 150 | +6.0e-9 to +6.1e-9 |
+| `mass_tol` 1e-2, 100 polishing iterations, from 2 M outside | 102 | -3.4e-8 to -4.5e-8 |
+
+Found at every dump. Figure: `fig_finder_probe.png` of the run.
+
+Open: the finder on a card and its cost per search there (shared-queue entry
+`core-rf-card`, journal entry 12, predictions K3 and K4; `card_check.py`). No run of the
+card build exists yet.
 
 ## 7. Not tested, not done
 

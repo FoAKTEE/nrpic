@@ -503,3 +503,17 @@ Sixteen searches, t = 0 to 1.875 M (found or not from the status file):
   script for later runs).
 - The re-judgement of the second finder test with corrected labels is run
   core-20261125-144217-15cea77 (same checks, same failing one; figure looked at).
+
+## Entry 19 (2026-11-25, 07:01 PST): outcome of T3 (two punctures), runs core-20261125-142953-bf5a228 and core-20261125-145908-fbd5598
+
+- P5 HELD, and more sharply than predicted. `problems/puncture/by_binary.athinput` at
+  three levels (176 MeshBlocks, outflow faces), 8 cycles cut at 4 by `time/nlim`,
+  threaded builds on one thread, 1723 s: both tracker files of the continued run of the
+  new build are byte-identical to those of the uninterrupted run (8 records, two header
+  lines; largest difference 0); the continued run of release core-v0.7 has the 4
+  records from cycle 4 on. I had allowed a round-off difference below 1e-9 (the mesh
+  state of such a set-up after a restart is exact only up to round-off); none appeared
+  in 8 cycles, which does not show that none appears in a long run.
+- Figure (run core-20261125-145908-fbd5598, `fig_tracker_restart.png`, looked at: the
+  crosses of the new build lie on all eight circles of the uninterrupted run, the
+  squares of the release only on the last four; the y-labels touch the tick labels).
