@@ -33,6 +33,10 @@ minutes for the ball runs; start it early, in the background). A cut chain is co
 
 ## Processor work left
 
+- `nrpic-run finish A-20261122-173202-f98c79f` (C-d0.42) was started DETACHED at 04:20 PST (140 GB of restart
+  files to checksum; log scratch/A-emd-pbh/tmp/finish_cd042.log). It commits the manifest on this branch after
+  the session ended: `git log -1 -- tracks/A-emd-pbh/runs/A-20261122-173202-f98c79f` and push it; if the log
+  shows no "finished" line and no process runs, start it again (in the background).
 - G1-G3 of threshold_ball entry 5 judged in batch 17 (A-20261125-120158-b76bfe3; outcome at the end of
   threshold_ball/JOURNAL.md). If `nrpic-run status` still lists A-20261124-132016-ecf12c3 or
   A-20261122-173202-f98c79f as not finished, run `harness/bin/nrpic-run finish <id>` (checksums take minutes).

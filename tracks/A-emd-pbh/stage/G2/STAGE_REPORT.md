@@ -1,6 +1,6 @@
 # Stage report: A-emd-pbh G2
 
-Date: 2026-11-25 · branch `track/A-emd-pbh` at `ff6458cb7583` · checklist
+Date: 2026-11-25 · branch `track/A-emd-pbh` at `0aa928249f24` · checklist
 `tracks/A-emd-pbh/stage/G2/CHECKLIST.md` (from `nrpic-stage collect`)
 
 ## Verdict
@@ -8,7 +8,7 @@ Date: 2026-11-25 · branch `track/A-emd-pbh` at `ff6458cb7583` · checklist
 **FAIL**. Tag: `stage/A-emd-pbh/G2-fail-20261125` (created and pushed by the orchestrator after review, decision 0003).
 
 - 11 checklist items not PASS or NA: C1 OPEN, C3 FAIL, C5 OPEN, C6 OPEN, C10 OPEN, C11 OPEN, C13 OPEN, C14 OPEN, C16 OPEN, C17 OPEN, C18 OPEN
-- verify ran on cc5fce0; files changed since: CLAUDE.md, athenak/src/CMakeLists.txt, athenak/src/driver/driver.cpp, athenak/src/main.cpp, athenak/src/pgen/nrpic/nrpic_bowen_york.hpp, athenak/src/pgen/nrpic/nrpic_cf.cpp (run verify again)
+- verify ran on fc5f109; files changed since: tracks/A-emd-pbh/HANDOFF.md, tracks/A-emd-pbh/JOURNAL.md, tracks/A-emd-pbh/RISKS.md, tracks/A-emd-pbh/STATUS.md, tracks/A-emd-pbh/inbox_acks.txt, tracks/A-emd-pbh/outbox/20261125T115950Z__to-orch__g2-oblate-prolate-row-and-verifier.md (run verify again)
 - verify reported FAIL: runs
 - no VERIFIER.md (step 7: verifier subagent; decision 0016 item 1, VERIFIER_REPORT.md accepted too)
 
@@ -33,7 +33,7 @@ Date: 2026-11-25 · branch `track/A-emd-pbh` at `ff6458cb7583` · checklist
 | C3 | Constraints behave | Constraint norms are bounded through each run and jump only at the horizon (A-20261124-132342-d5dc06e, fig_constraint_conv.png), but they do not converge before t ~ 6: //H//_2 is flat or grows slightly from M/16 to M/64 at t <= 4 (prediction K refuted) and is flat in particle number x1-x64 at fixed mesh (K2 refuted); //M//_2 at t = 0 grows with the mesh (order -0.8). //H/////16 pi E// on the mesh line outside the horizon is 0.11-0.21 at t = 0 and 0.3-3 later (threshold scan, T6 refuted). The floor is not localized at refinement boundaries or density jumps (K3 refuted, A-20261124-134637-bd0d6eb); step and source-extrapolation test K4 not yet run (batch 17: not started, the session was spent on C-d0.42). C-d0.42 on M/64: constraint ratio up to 1.94 (A-20261125-115027-17b419e), as on M/32. Ruling on the 0.1 bound of SCOPE section 3 still asked of orch. | FAIL |
 | C4 | A first minimal full-GR kinetic run | Full-GR kinetic runs (Z4c + particles, nrpic_cf expanding ball) that form horizons: conv_ball's 14 members (A-20261121-075926-d10c2c1, -083336-6a82131, -091934-ac62f5f, -110017-471b0ae) and the eight mesh-B threshold members (queue lines 3-11, closed with nrpic-run finish in batch 11); periodic P0L to t = 140 (A-20261122-235305-4ea0aa5). | PASS |
 | C5 | Verification report (decision 0012: STAGE_REPORT.md with EVIDENCE.md and OPEN.md; no REPORT.md) | STAGE_REPORT.md written by nrpic-stage report in batch 11 as an interim package; the verification report proper waits for C1, C3, C18. | OPEN |
-| C6 | Reproducibility package | Every run registered (manifests in tracks/A-emd-pbh/runs/, commands, inputs with sha256); scripts in conv_ball/, threshold_ball/, periodic_threshold/ with 'How to rerun' in conv_ball/README.md. Missing: a single rerun list for G2 (stage/G2/VERIFY) and threshold_ball/README.md. | OPEN |
+| C6 | Reproducibility package | Every run registered (manifests in tracks/A-emd-pbh/runs/, commands, inputs with sha256); scripts in conv_ball/, threshold_ball/, periodic_threshold/ with 'How to rerun' in conv_ball/README.md. threshold_ball/README.md now carries the results table and rerun steps (batch 17). Missing: a single rerun list for G2 (stage/G2/VERIFY). | OPEN |
 | C7 | In the spherical case, the errors of the turnaround time and of the horizon-formation time relative to the exact solution converge in particle number, mesh spacing and ball radius | conv_ball (A-20261121-120257-a2eb839): turnaround time error converges B->C at order 2.1 (A->B flat: a flat maximum), horizon-formation time ddet at orders 1.5, 2.0 and trapping time 2.1, 1.5 in mesh spacing; time errors independent of particle number at mesh B; ball radius: dependence 0.09 M at A, 0.04 M at B, 0.024 M at C (C-R1.25, batch 11; T5 refuted at its 0.02 bound). Across amplitude (threshold_ball A-20261124-131120-5c974ce): /ddet/ <= 0.14 M for delta_c 0.35-1.0 on mesh B. At threshold on M/64 (C-d0.42, A-20261125-115027-17b419e, entry 11): ddet -0.0135 against +0.0153 on M/32 (both below one search interval; T4's halving refuted as written), core trapping time error -0.096 against -0.209 and turnaround -0.027 against -0.054 (halved); line MOTS mass error on common times 2.1e-3 against 5.2e-3 (A-20261125-115550-fe60ff1). | PASS |
 | C8 | The horizon-mass error is of the same order as in the Oppenheimer–Snyder test of Wu and Most | Horizon-mass error (median over detections) 7.4e-3, 2.1e-3, 2.1e-4 on M/16, M/32, M/64 (conv_ball A-20261121-120257-a2eb839), against the source's fiducial Oppenheimer-Snyder level 1e-3 (main.tex:945) and best AMR particle RMS 7.3e-4 (main.tex:1484); threshold scan on M/32: /dmmed/ 3.2e-4 to 9.4e-3 for delta_c 0.35-1.0 (A-20261124-131120-5c974ce). First-detection excess (up to 4-7 per cent at threshold) is carried by the slice, not the finder (threshold_ball entry 4). | PASS |
 | C9 | Track A. The threshold line is built in the periodic box (the expanding ball holds only amplitudes below the comparison amplitudes of arXiv:2609.14218; lead's evidence in `scope/SCOPE.md`); the expanding ball stays the spherical verification case and the set-up for isolated collapses. The G1 scan-design criterion is met on the reference-based design; the Newtonian-mode runs are G2 work. (0013) | The expanding ball is the spherical verification case (conv_ball, threshold_ball); the threshold line is built in the periodic box (periodic_threshold): P0L/S1L on the refined periodic mesh run stably at cfl 0.5 (job 2, A-20261124-130507-10510ac); the box's horizon is not yet found (P3 refuted; peak_leak6 queued). Newtonian-mode runs were made at G1 (newton/). | PASS |
@@ -46,18 +46,18 @@ Date: 2026-11-25 · branch `track/A-emd-pbh` at `ff6458cb7583` · checklist
 | C16 | Schematics drawn with /sleep-paper-figure-style: track architecture (exists / to be ported / new) and the gate timeline | Schematics of note/ name release core-v0.3 (G1 reservation); not updated to v0.6. | OPEN |
 | C17 | Working note written with /paper-writing; its manuscript checker passed with --compile | The working note has no G2 sections yet. | OPEN |
 | C18 | Verifier subagent (fresh context) wrote VERIFIER.md (decision 0016; VERIFIER_REPORT.md accepted too); every number of the Supplemental Material recomputed from the manifests | verify_bh (independent check of BH-1R) exists; no fresh-context verifier has recomputed conv_ball's or threshold_ball's numbers for G2. | OPEN |
-| C19 | Null results and failed runs are on record (manifests and JOURNAL) | Failed runs closed as failed: A-20261121-235851-d2200d7 (A-mesh guard stops), A-20261121-131600-02b5d41 (periodic job 1); cut chains continued, not repeated (journals 2026-11-24); refuted predictions on record: T4 reason, T5, T6, P2-P4, Q1b, F1, K, K2, K3 (threshold_ball entries 4-9, periodic_threshold entries 2026-11-24); batch 17: T4 mesh-C half refuted (entry 11), script defect run A-20261125-115530-a4f7dcd kept, q0014 (C-d0.40) withdrawn unrun with T7 untested (entry 8 note). | PASS |
+| C19 | Null results and failed runs are on record (manifests and JOURNAL) | Failed runs closed as failed: A-20261121-235851-d2200d7 (A-mesh guard stops), A-20261121-131600-02b5d41 (periodic job 1); cut chains continued, not repeated (journals 2026-11-24); refuted predictions on record: T4 reason, T5, T6, P2-P4, Q1b, F1, K, K2, K3 (threshold_ball entries 4-9, periodic_threshold entries 2026-11-24); batch 17: T4 mesh-C half refuted (entry 11), script defect run A-20261125-115530-a4f7dcd kept, q0014 (C-d0.40) withdrawn unrun with T7 untested (entry 8 note); G3 of the A-mesh guard test refuted "stops like G1" (passes to t = 48.5; A-20261125-120158-b76bfe3). | PASS |
 | C20 | STATUS.md, JOURNAL.md and HANDOFF.md are current | STATUS.md, JOURNAL.md, HANDOFF.md, RISKS.md rewritten at the end of batch 17 (2026-11-25). | PASS |
 
 ## Re-verification on a clean checkout (`nrpic-stage verify`)
 
-`nrpic-stage verify` on 2026-11-24T13:50:54Z, clean export of `cc5fce090969`: **FAIL**. Details: `VERIFY_RESULTS.md`.
+`nrpic-stage verify` on 2026-11-25T12:03:32Z, clean export of `fc5f1090c3eb`: **FAIL**. Details: `VERIFY_RESULTS.md`.
 
 | Check | Result | Message |
 |---|---|---|
 | clean | PASS | worktree clean (outside the stage directory being assembled) |
 | sync | PASS | main is merged into the branch |
-| export | PASS | clean export of cc5fce090969 (HEAD) in /data/haiyangw/nrpic/scratch/A-emd-pbh/tmp/stage-verify/A-emd-pbh-G2-cc5fce0-20261124T134835Z/tree |
+| export | PASS | clean export of fc5f1090c3eb (HEAD) in /data/haiyangw/nrpic/scratch/A-emd-pbh/tmp/stage-verify/A-emd-pbh-G2-fc5f109-20261125T115936Z/tree |
 | size | PASS | no committed file of the track above 5 MB |
 | note | PASS | tracks/<ID>/note/main.tex present |
 | package | PASS | EVIDENCE.md, OPEN.md, CHECKLIST.md present (decision 0012); scoping text: scope/SCOPE.md; no verifier's report yet (VERIFIER.md, decision 0016) |
@@ -65,10 +65,10 @@ Date: 2026-11-25 · branch `track/A-emd-pbh` at `ff6458cb7583` · checklist
 | style | PASS | 2 style copies equal harness/style/SHA256SUMS (czstyle.py, paperfig.py) |
 | fig-script | PASS | 7 figures, each with its script |
 | min-figs | WARN | 3 schematics and 4 data figures (brief 13.4 asks at least 1 and 5 at G2) |
-| runs | FAIL | 5 of 251 runs have problems; 1 waived |
+| runs | FAIL | 4 of 256 runs have problems; 1 waived |
 | runs-waived | WARN | failures of the manifest check waived: 1 runs named in main's coord/WAIVERS.md (decision 0019 item 6): A-20261121-064515-aa13c8f: the gate reviewer's failed first attempt; its scratch script was edited for the rerun A-20261121-064537-2bcf310 |
 | run-notes | WARN | 45 runs read with defaults or not fully re-verifiable (nrpic-run lint) |
-| status | PASS | STATUS.md has 37 lines |
+| status | PASS | STATUS.md has 35 lines |
 | rerun | PASS | 7 of 7 scripts and commands ran cleanly in the export |
 | compare | PASS | 14 regenerated files compared with the committed ones; 0 differ beyond tolerance (rtol 1e-06, atol 1e-12, PNG rms 0.005) |
 | regenerate | PASS | all 14 committed figure files regenerated |
