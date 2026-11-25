@@ -488,3 +488,30 @@ The data run failed for both members: expball requires the core support inside t
 Predictions (a), (c) now apply to S2 (both edges smooth) and are stated for S1 as well; (d) applies to S2.
 Added: (e) S1's t = 0 ratio lies between the top hat's and S2's; if S1 is as low as S2, the inner jumps carried
 the floor, if S1 is as high as the top hat, the outer edge did. Refuted only in the sense that it names which.
+
+### Entry 13, first outcome at t = 0 (data A-20261125-160436-462452d, runs A-20261125-160633-594a474 phase 1, analysis A-20261125-160849-8c01b54, fig_edge.png looked at)
+
+Line ratio ||H||/||16 pi E|| at t = 0 (top hat / S1 / S2): mesh A 0.278 / 0.185 / 0.134; mesh B 0.174 / 0.146 / 0.116.
+- (a) REFUTED: S2 (both edges smooth) stays above 0.1 on both meshes and falls from A to B by 1.15 only.
+- (c) HOLDS, strongly: volume ||M||_2 of S2 falls from 3.64e-2 (A) to 6.1e-4 (B), a factor 60, while the top
+  hat's grows (12.5 to 21.4); S1 (outer edge kept) 2.91 to 0.66. The momentum-constraint floor at t = 0 IS the
+  jumps (inner and, above all, the outer edge) [VERIFIED on two meshes].
+- (e) S1 lies between the top hat and S2 on both meshes: the inner jumps carry 0.09 of A's 0.278, the outer edge
+  0.05, and 0.13 (A) / 0.12 (B) remain with smooth data.
+- Volume ||H||_2 at t = 0: top hat 2.18 / 0.86 (A / B), S2 0.31 / 0.12: smoothing lowers it 7 times, and both fall
+  by 2.5 from A to B.
+- Where the remainder sits (panel c, t = 0, x line): |H| ~ 1e-8 inside the finest level (x < 0.9) on both meshes,
+  a spike of ~1e-1 at the finest level's boundary (x = 1), and 1e-2 to 1e-1 on the levels of spacing >= M/8
+  (x > 1 on A, x > 2 on B), for the top hat and for S1, S2 alike. Cause not named.
+(d) waits for S2-A's evolution (running). S1-A's evolution is stopped by hand (PID 2597153, at its first cycles,
+08:10 PST) to free one core for test D below; S1's t = 0 slices are kept.
+
+### Entry 13, prediction D (before the runs): is the t = 0 remainder the deposit's or the metric's?
+
+S2's slice on mesh A (nlim = 0) three more times: D-cic (deposit_shape = cic, no cloud compensation:
+deposit_comp_c = deposit_comp_c2 = 0), D-pcs0 (pcs without compensation), D-ref (as S2-A0, a repeat).
+[JUDGEMENT] If the remainder on the coarse levels is the deposit's (the cloud of one particle per local cell),
+changing the cloud or switching off its compensation changes the line ratio by more than 30 per cent and |H| on
+x in [1.2, 4] by more than a factor 2; if it is the metric side (table interpolation, finite differences of psi on
+cells of M/8 to M/2), both stay within 10 per cent. D-ref repeats S2-A0 to 1e-12 (processors are reproducible).
+Refuted (for the deposit reading) by changes below 10 per cent; neither reading named for 10-30 per cent.
