@@ -193,3 +193,26 @@ sits at the edge of the axis because only one variant ran, a cosmetic defect).
   paths of both variants (or the paired-noise design: same noise for both sigma).
 - TS3 HOLDS: var_phi at N_f 4.932e-13 (+0.39 per cent of sigma = 0.01's 4.913e-13); skew_phi 0.0024 +- 0.0013.
   Exceedance at latsig: F_+(3) 1.4515e-3, F_-(3) 1.2698e-3, F_+(4) 3.93e-5, F_-(4) 2.35e-5.
+
+## entry-10 (2026-11-25 08:39 PST): outcome of TL1'-TL5 (importance-sampled tail, run E-20261125-160658-855db8c)
+
+3 cores, about 30 min; `results/ref_inflection_n32_tilt.json`, `fig/ref_inflection_n32_tilt.png` looked at (tilted and
+direct fractions on one curve; the path weight is a tight exponential of delta N on each side, w ~ exp(-c0 |x| +
+c0^2/2): the profile shift is close to the optimal tilt, so in the tail the weights act as an exact rescaling).
+- TL1' HOLDS: c0 = 3.948 (side +), 4.057 (side -); confirmation medians 3.99, 4.01; medians of the 4e6 runs 3.994, 4.004.
+- TL2 HOLDS (A9's 2 per cent): relative standard error of F(4) 0.106 per cent (+), 0.107 per cent (-); at nu = 5,
+  0.16-0.17 per cent.
+- TL3 FAILS on side + by a hair, holds on side -: F_+(3) tilted 1.4613e-3 +- 1.6e-6 against direct 1.5015e-3 +- 1.9e-5,
+  -2.07 combined standard errors (latsig; -2.00 with the own sigma); F_-(3) 1.2313e-3 against 1.2105e-3, +1.20. The
+  direct value carries all of the combined error; the sigma = 0.1 lattice run gives 1.4515e-3 for F_+(3)
+  (E-20261125-160722-a6d1f26, a slightly wider distribution), on the tilted side. No cause named. By A9 as written,
+  nu = 4 is therefore reported, not judged, for F_+ until the validation passes; for F_- it is judged.
+- TL4 FAILS on side -: mean weight 0.735 +- 0.038 (side + 0.987 +- 0.109). [My prediction was ill-posed: the mean of w
+  over all paths is carried by paths with x near 0 and below, which a shift of 4 sigma almost never samples (weight
+  e^8 there); its sample error underestimates. The self-normalised estimator inherits that defect (F_-(3)
+  self-normalised 1.68e-3, 36 per cent high); the plain estimator, unbiased and well sampled in the tail, is the one
+  reported.]
+- TL5 HOLDS: F_+(4)/Q(4) = 1.222, F_-(4)/Q(4) = 0.798 (latsig; direct 1.28 +- 0.10 and 0.73 +- 0.07). Asymmetry
+  A(4) = (F_+ - F_-)/(F_+ + F_-) = 0.210 +- 0.001 (direct: 0.27 +- 0.05). nu = 4.5: F_+ 4.53e-6, F_- 2.46e-6; nu = 5:
+  4.25e-7, 1.84e-7.
+Next: a second direct run of 4e6 with another seed (or the tilted run's own nu = 3 from a c0 = 3 run) decides TL3.
