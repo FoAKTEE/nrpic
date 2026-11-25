@@ -94,7 +94,38 @@ def main():
                              bracket_t_over_tH=[float(t_over_tH(tt[k - 1])), float(t_over_tH(tt[k]))])
         else:
             first[ax] = None
-    res = dict(run=os.path.abspath(a.run), lattice_one_to_one=bool(one_to_one), lattice_offset=off.tolist(),
+    # clocks (measurement added after the first reading, A-20261125-151629-bb77171): proper time of the
+    # lowest lapse (alpha_min of <base>.nrpic.hst, integrated in coordinate time), the probe particle's
+    # proper time, and the volume-mean lapse of <base>.region.hst integrated (the background clock)
+    clocks = {}
+    try:
+        hn = np.loadtxt(os.path.join(a.run, "peak.nrpic.hst"), comments="#", ndmin=2)
+        hr = np.loadtxt(os.path.join(a.run, "peak.region.hst"), comments="#", ndmin=2)
+        def uniq(h):
+            keep, tn = [], np.inf
+            for i in range(len(h) - 1, -1, -1):
+                if h[i, 0] < tn:
+                    keep.append(i)
+                    tn = h[i, 0]
+            return h[keep[::-1]]
+        hn, hr = uniq(hn), uniq(hr)
+        ta, am = hn[:, 0], hn[:, 15]
+        tau_min = np.concatenate([[0.0], np.cumsum(0.5 * (am[1:] + am[:-1]) * np.diff(ta))])
+        tb, ab = hr[:, 0], hr[:, 5]
+        tau_bg = np.concatenate([[0.0], np.cumsum(0.5 * (ab[1:] + ab[:-1]) * np.diff(tb))])
+        for ax in "xyz":
+            if first.get(ax):
+                tc = first[ax]["t_interp"]
+                first[ax]["tau_alpha_min"] = float(np.interp(tc, ta, tau_min))
+                first[ax]["tau_probe"] = float(np.interp(tc, ta, hn[:, 14]))
+                first[ax]["t_background"] = float(np.interp(tc, tb, tau_bg))
+                first[ax]["alpha_min_at_t"] = float(np.interp(tc, ta, am))
+                for k_ in ("tau_alpha_min", "tau_probe", "t_background"):
+                    first[ax][k_ + "_over_tH"] = float(t_over_tH(first[ax][k_]))
+        clocks = dict(note="alpha_min col 16 of nrpic.hst; tau_probe col 15; mean_alpha_coord col 6 of region.hst")
+    except (OSError, ValueError, IndexError) as e:
+        clocks = dict(error=str(e))
+    res = dict(run=os.path.abspath(a.run), clocks=clocks, lattice_one_to_one=bool(one_to_one), lattice_offset=off.tolist(),
                max_initial_displacement_over_h=disp0, rows=rows, first_crossing=first,
                zeldovich_first_axis_t_over_tH=4.2, band=[3.4, 5.0])
     json.dump(res, open(os.path.join(a.out, "a2.json"), "w"), indent=1)
