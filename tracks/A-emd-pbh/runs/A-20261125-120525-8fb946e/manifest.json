@@ -60,7 +60,7 @@
     "nodes": 1,
     "gpus": 0,
     "cores": 6,
-    "walltime_s": null,
+    "walltime_s": 9448.762,
     "wall_limit": null,
     "segments_max": null,
     "gpu_hours_requested": 0.0,
@@ -71,15 +71,15 @@
   "outputs": {
     "dir": "scratch/A-emd-pbh/A-20261125-120525-8fb946e",
     "sha256sums": "sha256sums.txt",
-    "sha256sums_sha256": null,
-    "bytes": null,
-    "files": null
+    "sha256sums_sha256": "3ad252a9215b63a9cd4b48130a4527da68b0826dea69180255bef9ba8c4ca200",
+    "bytes": 2572791619,
+    "files": 304
   },
-  "status": "running",
-  "exit_code": null,
+  "status": "completed",
+  "exit_code": 0,
   "registered": "2026-11-25T12:05:25Z",
-  "started": null,
-  "ended": null,
+  "started": "2026-11-25T12:05:25Z",
+  "ended": "2026-11-25T14:42:54Z",
   "parents": [
     "A-20261121-075356-1ad4c81"
   ],
@@ -93,5 +93,6 @@
     "cores_busy": 0,
     "runs": 257,
     "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md + 0026-cards-loaded-allotment-cost.md + 0031-level2-branch-and-ablation.md + 0032-new-account-preemption-allotments.md + 0038-track-e-g2-signed-g3-scope.md"
-  }
+  },
+  "finished": "2026-11-25T15:05:08Z"
 }
