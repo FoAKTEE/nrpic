@@ -660,3 +660,26 @@ stage/E-stoch-inf/G2-pass-20261124); U-A4'(a) stays FAILED as written in the gat
   and orch.
 Card-hours this session: 0 used by finished runs of this session (FL128h's 0.031 was spent on
 2026-11-24 20:45); pending: FL256h (<= 1.0), G3P (<= 0.95).
+
+## 2026-11-25 07:04-08:00 PST, lead of batch 19 (Opus): scope review checked, SCOPE 4d amended, floor closed, G3 queued
+
+Decision 0040 item 1 (amend 4d before any G3 production run; gauge leg withdrawn).
+- Scope review (g3/scope_review, batch 18) checked from its artefacts in g3/amend/ (README, JOURNAL
+  entries 1-5), predictions written before each run. B1 CONFIRMED by own code (bins_lead.py,
+  E-20261125-151230-a4f4059: 0.97786 as binned, 1.00002 fixed, LB1 holds); LB2 (flat control) REFUTED
+  in part (0.99998, sparse low shells cancel the top-bin deficit by chance). B2 CONFIRMED (b2_lead.py,
+  E-20261125-151429-83a040c, LB3 holds). B3 CONFIRMED from ladder_lib.py line 180 (zeta = -R^NR).
+- ref_spec.py: top bin cut at NLAT, lattice-sigma tails, variance gate; corrected pilot
+  E-20261125-151340-743c38c: RF1-RF3 hold (0.9993 +- 0.0032; other variants bit-identical).
+- SCOPE 4d.9 A1-A13 written (905feb7c0), pushed before the first production entry; predictions for the
+  amended criteria: g3/JOURNAL.md entry 4. Job size of the baseline noted before submission (A12).
+- FL256h (q0038, 0.44 card-h) finished and read (E-20261125-151222-d5a5f2f): F1 at 256, F2, F4, F5 hold;
+  R28 closed; three note sentences changed without a new number, compiled (repro/note JOURNAL entry 29).
+- A4 implemented (langevin.py record_N; ref_spec state_Nf, variant filter). Smoke run failed once
+  (E-20261125-152419-40200ec, figure code; fixed), rerun E-20261125-152619-d917a14: SM1, SM2 hold;
+  phi at N_f already skewed by 0.023 (R35, TO VERIFY). 4e6 direct reference E-20261125-152832-c301e92
+  started (s0.01_lattice, s0.1; 4 cores).
+- Queue: q0045 removed and re-entered unchanged at priority 2 (q0050); q0051 G3C, q0052 G3R (priority 2);
+  q0053 G3B00, q0054 G3B01 (priority 5, after G3P). Stage G3 collected (CHECKLIST, OPEN.md); REVIEW-wave3
+  Part H. Inbox: four infos acknowledged. Outbox: request to core (field-dependent lapse, later), info to orch.
+Card-hours this session: 0 used by runs of this session (FL256h's 0.44 was spent at 05:20 PST).

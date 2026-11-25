@@ -1,47 +1,41 @@
 # STATUS of E-stoch-inf
 
 gate:        G0 PASS (2026-11-20), G1 PASS with reservations (2026-11-21), G2 PASS with
-             reservations (2026-11-24; coord/GATES.md, decision 0038, tag G2-pass-20261124).
-             U-A4'(a) stays FAILED as written in the gate record. G3: scope fixed (SCOPE 4d),
-             pilot queued; no G3 result yet.
+             reservations (2026-11-24; coord/GATES.md, decision 0038). U-A4'(a) stays FAILED as
+             written. G3: scope SCOPE 4d amended by 4d.9 (A1-A13, batch 19) before any production
+             run; card runs queued; no G3 result yet (stage/G3/OPEN.md).
 reproduction: complete (decision 0028); working note repro/note/manuscript/main.pdf (32 pages).
-last-result: Lead batch 17 (2026-11-25 03:46-04:40 PST):
-             - Gate review corrections F1-F4 made (note eq. floor with 1/3 and max; STAGE_REPORT
-               verdict/figures/decision; fig_ladder box 1; ledger rows name the estimator);
-               note rerun R17 E-20261125-115608-b9c1b59 (repro/note/JOURNAL.md 27-28).
-             - Floor (R28) at 128 ANSWERED: FL128h E-20261125-041742-71d74fb read by
-               E-20261125-115344-a22128b: ratios 1.90 and 2.00, signs kept, control 0.97: second
-               order in the amplitude (floor/JOURNAL.md entry 3). The first reading doubled the
-               amplitude factor (recipe error, caught by control F3; entry 2; risk R32).
-             - G3 scope SCOPE.md section 4d (cbe20398, pushed before any G3 submission): exceedance
-               fractions F_pm(nu) of R^NR and zeta, nu = 3, 4 judged; S = 256 seeds of 128^3 from
-               the power estimate E-20261125-115822-29795d6 (W2, W3 failed: cells nearly
-               independent); one-patch delta-N reference, 128 band pilot E-20261125-115707-b845282
-               (L1-L4 hold; lattice variant 0.980, R33); three-amplitude constraint criterion over
-               cN 2.0-6.6; Richardson in s^2 (128 vs 160); gauge leg lapse_kdriver = 2; level 2 as
-               sensitivity; budget about 14 of 60 card-hours.
-             - g3/read_seed.py on existing USR output (E-20261125-120930-980b18e): R^NR Gaussian
-               to one-box precision (sigma/sigma_lin 1.002, 1.001; F(3)/Q(3) 1.02-1.05); zeta next.
-             - Provenance of the superseded level-2 executable: kept by core at
-               core_noise-level2_6ca93cba (hash equal to the seven manifests, checked); asked core
-               to confirm, orch for a harness pointer.
-card plan:   q0038 FL256h submitted (job 5284, run E-20261125-115534-8414659, priority 2);
-             q0045 G3P waiting (priority 5, one batch job, 14 runs, <= 0.95 card-h).
-runs pending: q0038 (read by floor/floor_read.py, floor/JOURNAL.md entry 4 to come);
-             q0045 (read by the g3 reader still to be written; predictions g3/JOURNAL.md entry 2).
-next:        1. Read FL256h with floor_read.py (--pair FL256:<CL256S dir>:<FL256h dir>); F1 at
-                256, F4; then replace the note's 'open' sentence on the floor.
-             2. Write the g3 reader (R^NR, zeta, exceedances per seed) with its two processor tests;
-                read the pilot; replace the cost of 4d.8 by the measured one.
-             3. G3 reference: 4e6 direct + importance sampling for the 128 band; the model check
-                (TO VERIFY of 4d.3); then queue the baseline 256 seeds.
-blockers:    none (the G3 full set waits for the pilot and, if orch wants it, a look at SCOPE 4d).
-needs:       core: nothing open (provenance of the level-2 build supplied 2026-11-25, acknowledged).
-             orch: ruling or review of SCOPE 4d; harness pointer for moved executables.
-offers:      - repro/: the reproduction of both papers (scripts, readers, ledger, verifiers).
-             - g2prod/: release ladder and its judges; floor/: the half-amplitude reader.
-             - langevin/, repro/langevin/: stochastic delta-N statistics (to A); now with the
-               128^3 band (results/ref_inflection_n32.json).
-budget:      G2 allotment closed at 19.6 card-hours of 30; G3 allotment 60 card-hours (0038):
-             pending FL256h (<= 1.0, a G2-gate run) and G3P (<= 0.95). This session: 0 card-hours
-             of finished runs, processors only (at most 4 cores).
+last-result: Lead batch 19 (2026-11-25 07:04-08:00 PST):
+             - Scope review (g3/scope_review) checked from its artefacts: B1 CONFIRMED by own code
+               (variant/lattice 0.97786 as binned, 1.00002 fixed; E-20261125-151230-a4f4059), B2
+               CONFIRMED by own arithmetic (E-20261125-151429-83a040c), B3 CONFIRMED from the
+               formulas (zeta = -R^NR at first order). ref_spec.py fixed; corrected 128-band pilot
+               passes the variance gate 0.9993 +- 0.0032 (E-20261125-151340-743c38c).
+             - SCOPE 4d.9: variance and tail shape judged apart; reader tests Z0-Z2; reference state
+               at N_f; mirrored pairs; >= 4 judged dumps for G3-C; Richardson model test; nu = 4 only
+               with a 2 per cent importance-sampled reference; seeds with reference size; gauge leg
+               withdrawn (decision 0040), limitation stated. Predictions g3/JOURNAL.md entry 4.
+             - Floor (R28) CLOSED: FL256h halves the floor at 256^3 (1.997, 2.000, no sign flip;
+               E-20261125-151222-d5a5f2f); note sentences updated (no new number).
+             - Reference state at N_f implemented (A4); smoke run E-20261125-152619-d917a14: phi at
+               N_f already skewed by 0.023 (2e4) [TO VERIFY at 4e6; R35].
+             - Failed: prediction LB2 in part; run E-20261125-152419-40200ec (figure code), fixed.
+card plan:   q0050 G3P (pilot, re-entry of q0045, priority 2); q0051 G3C, q0052 G3R (priority 2);
+             q0053 G3B00, q0054 G3B01 (baseline pairs 0-18, priority 5, after G3P).
+runs pending: E-20261125-152832-c301e92 (processors, 4e6 reference, background; read and finish it);
+             q0050-q0054 (cards; readers: g3 reader to write, judge_q-type three-amplitude reader).
+next:        1. Finish and read the 4e6 run (gate, skewness, state at N_f: R35); importance sampler
+                at nu = 4 (A9).
+             2. zeta reader with Z0-Z2 on processors (32^3, build_cpu_v07).
+             3. Read the pilot when it runs: cost per run into 4d.9 A12, then the rest of the
+                baseline (98 pairs) and level 2 (16 pairs).
+blockers:    none (cards held by another partition: R37).
+needs:       core: a field-dependent lapse condition, for later (outbox 2026-11-25), not for G3.
+             orch: nothing blocking; info post on the amended scope.
+offers:      - repro/: reproduction of both papers (scripts, readers, ledger, verifiers).
+             - g2prod/, floor/: release ladder and judges; half-amplitude reader.
+             - langevin/: stochastic delta-N statistics with the corrected lattice factor
+               (results/ref_inflection_n32_binfix.json; 4e6 file to come) (to A).
+budget:      G2 allotment closed at 19.6 card-hours of 30 (+0.44 FL256h, a G2-gate run). G3
+             allotment 60: 0 card-hours used; queued at most 0.95 + 0.6 + 0.6 + 0.95 + 0.95.
+             This session: processors only, at most 4 cores.
