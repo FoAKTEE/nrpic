@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """N4 band by band: the quasi-static measure of the GR particles (analyze_gr.py, spec_qs on
 the GR dump mesh, |k| up to 64 k_f at 128^3) against that of the Newtonian particles
-(analyze.py, gw.spectra[...]['qs'] on ng = 64, |k| up to 32 k_f), summed over |k| <= K k_f
+(analyze.py, gw.spectra[...]['qs'] on ng = 64, |k| up to 32 k_f, stored as a^4 rho_qs
+per shell and divided here by a rho_c), summed over |k| <= K k_f
 for K = 8, 16, 32, at the epochs of the Newtonian spectra (the GR spectrum interpolated per
 shell in log a between the two bracketing dumps). Separates a grid difference (the GR mesh
 holds the shells 33-64 that ng = 64 does not) from a difference of the particles.
@@ -25,6 +26,7 @@ sys.path.insert(0, os.path.join(ROOT, "python"))
 from nrpic import figstyle as fs                       # noqa: E402
 
 BANDS = (8, 16, 32)
+RHO_C = 3.0/(8.0*np.pi)
 
 
 def gr_spec_at(dumps, a):
@@ -59,7 +61,7 @@ def main():
     res = {"bands": list(BANDS), "epochs": []}
     for key in sorted(nw, key=lambda x: nw[x]["a"]):
         aN = nw[key]["a"]
-        sN = np.array(nw[key]["qs"])
+        sN = np.array(nw[key]["qs"])/(aN*RHO_C)     # analyze.py stores a^4 rho_qs per shell
         row = {"a": aN, "Omega_N": {str(K): float(sN[1:K + 1].sum()) for K in BANDS},
                "Omega_N_all": float(sN.sum()), "gr": {}}
         for name, dumps in grs:
