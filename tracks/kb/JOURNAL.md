@@ -882,3 +882,27 @@ Predictions, written before the runs of this session.
   ledger changed). V2, R2, S2 held.
 - gate: KB-G3 package complete for the second fresh verifier (decision 0036 item 3); not passed.
   0 card-hours.
+
+## 2026-11-25 12:35 UTC, kb lead batch 17 (KB-G3 signed with reservations; the verifier's corrections)
+
+KB-G3 is SIGNED, pass with reservations (coord/GATES.md row of 2026-11-24, commit 8fdb954efa,
+tag stage/kb/KB-G3-pass-20261124; decision 0037 item 1). This session closes the reservations
+the ruling names. Sources read by me at the lines of plan
+tracks/kb/lead_b17/plans/P1_verifier2.json (2611.12831 L75, L381-386, L676, L967, L1140,
+L1358, L1360-1362, L1384-1391, L28-45; 2501.13046 L60-104; 2605.04487 L2396-2404; 2507.18312
+L236-242; 2609.14218 L168-178, L1200-1206; meta records of 2611.12831 and 2604.03628;
+athenak/LICENSE).
+
+Predictions, written before the runs:
+- A1 (dry run, then the real run of apply.py with P1, 19 actions): 15 supersedes make 15 new
+  claims 882-896, 3 withdrawals (710, 711, 715), 2 annotations (709, 844); every locator row of
+  the 11 new fulltext/judgement claims resolves (the transaction refuses otherwise); the hash
+  of all other claim rows is the same before and after. The database then holds 896 claims.
+  Refuted by an exception, an unresolved row, other ids, or a changed hash of the others.
+- A2 (after the real run): no live claim with label abstract and status unlocated keeps only
+  its seed event (the twelve of VERIFIER2 C1 (b) are gone from that list or carry a new event);
+  the live to_verify count rises by exactly 4 (706, 794, 795, 796 successors). Refuted by any
+  other count.
+- S3 (verify-downloads, QA, snapshot): verify-downloads exit 1 only for gr-qc/9412071; QA C1
+  762/762, parse 737/762, golden hybrid 28/32 papers (no chunk changed); snapshot id changes and
+  db/current moves to it; 896 claims in `kb status`. Refuted by any other value.
