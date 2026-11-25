@@ -4,7 +4,7 @@ Branch `core/restart-finder` (worktree `wt/core-s4`), from `main` at 0b5c3e7d (r
 core-v0.7 and the script changes of 2026-11-25). Task: `tracks/core/NEXT_SOURCE.md`
 items 1 to 3. Package directory for tests: `tracks/core/analysis/restart_finder/`.
 
-## Entry 1 (2026-11-25, 05:20 PST): what the source does now, design, predictions
+## Entry 1 (2026-11-25, 05:03 PST): what the source does now, design, predictions
 
 Read in the source of this branch [VERIFIED by reading]:
 
