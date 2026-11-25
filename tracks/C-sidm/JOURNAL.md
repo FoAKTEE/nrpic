@@ -829,3 +829,34 @@ for the continuations and about 6 for these three; 45 allotted.
 - open: all twelve entries waiting (HANDOFF.md table); A324s1c+ in Slurm; closing each run when
   its entry is done (`qitem.sh close <run_id>`).
 - card-hours: none used by this session.
+
+## 2026-11-25T11:56Z  session C-sidm lead (batch 17)  follow-up runs: predictions before submission
+
+Written before the registered analyses of N6c and M16 of this session are run. A peek at the
+history of N6c (C-20261124-221122-928c9eb), made with the reader `nseries.py` into
+scratch/C-sidm/tmp before the run was closed and not a result, showed no collapse in 600 M;
+these predictions are conditional on that reading being confirmed by the registered analysis
+(if it is not, the entries below are removed again). Decks: make_decks_b17.py; executable of
+their series, core-v0.6 card build (qitem.sh), no `dt_gauge` (cfl_number 0.25 below 0.47).
+
+N6i, N6o: the threshold model y0 = 0.334032 at N = 1e6 on M/8, seed 1, kicked one percent
+inward / outward (particle files of C-20261124-130731-e1d24de), 600 M; control N6c.
+At N = 1e5 (seed 1): kin collapsed at 294.5 M, kout at 449.0 M, control at 534.8 M.
+- B17.1 [JUDGEMENT, 55 per cent] N6i collapses before 600 M, later than the N = 1e5 kin
+  (t_c in (294.5, 600) M). Refuted if it does not collapse by 600 M: then the N = 1e5 kin
+  collapse was noise-assisted and the threshold model is on the stable side on M/8 (the
+  numerical threshold above 0.334032), or the kick is too small to decide at N = 1e6.
+- B17.2 N6o does not collapse by 600 M, and alpha_c(t) - alpha_c(0) is positive (expanded)
+  over 100-300 M (20 M means). Refuted by a collapse before 600 M (as at N = 1e5) or by a
+  negative change at 200 M.
+- B17.3 Delta_i = alpha_c(N6i) - alpha_c(N6c) at 200 M (20 M means) below -0.01, and
+  Delta_o = alpha_c(N6o) - alpha_c(N6c) at 200 M above +0.005: the kicks are resolved
+  against the control's pulsation at this N. Refuted if either has the wrong sign.
+D2eta1: D2 at f = 2, collision seed 1, on M/8 with shift_eta 1.0 (D2 has 2.0), 220 M.
+- B17.4 t_c(alpha_min = 0.3) within 5 per cent of 163.41 M (f = 2) and collisions per
+  particle per M over 0-100 M within 5 per cent of 8.86e-3. The 1+log lapse and its
+  advection are unchanged; the cell-factor series spread t_c by 1.6 per cent at most, a
+  bound for the run-to-run noise of cards. Refuted above 5 per cent: the collapse time read
+  from the lapse depends on the shift damping, and the gauge leg of C2 needs a slicing-
+  independent collapse marker (an apparent horizon) before it can pass.
+Cost [JUDGEMENT, from N6c and D2]: N6i, N6o about 2.5 card-hours each, D2eta1 about 0.6.

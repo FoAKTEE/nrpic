@@ -4,7 +4,9 @@
 the equilibria package's stratified sampler at N = 1e5, unperturbed, and with the coherent
 one-percent radial kicks inward and outward of threshold_scan/make_scan.py (same function).
 
-    python3 make_ic_seeds.py --out DIR [--seeds 2 3] [--N 100000]
+    python3 make_ic_seeds.py --out DIR [--seeds 2 3] [--N 100000] [--tag king_y0p34400]
+
+--tag (batch 17) samples another model of the King b = 1 sequence with the same sampler and kicks.
 """
 import argparse
 import json
@@ -28,6 +30,7 @@ def main():
     ap.add_argument("--out", default=os.environ.get("NRPIC_RUN_DIR"))
     ap.add_argument("--seeds", type=int, nargs="+", default=[2, 3])
     ap.add_argument("--N", type=int, default=100000)
+    ap.add_argument("--tag", default=TAG, help="model tag of make_equilibria.py (batch 17; default the threshold model)")
     a = ap.parse_args()
     make = os.path.join(TRACK, "equilibria", "make_equilibria.py")
     index = {}
@@ -35,10 +38,10 @@ def main():
         out = os.path.join(a.out, f"s{s}")
         os.makedirs(out, exist_ok=True)
         cmd = [sys.executable, make, "--out", out, "--N", str(a.N), "--seed", str(s),
-               "--sampler", "stratified", "--only", TAG]
+               "--sampler", "stratified", "--only", a.tag]
         print("+", " ".join(cmd), flush=True)
         subprocess.run(cmd, check=True)
-        st = C.stem(TAG, N=a.N, seed=s)
+        st = C.stem(a.tag, N=a.N, seed=s)
         x, u, m, _ = C.nio.read_nrp(os.path.join(out, st + ".nrp"))
         r_tab, u_tab, a_tab, _ = C.nio.read_tab(os.path.join(out, st + ".tab"))
         md = dict(meta=json.load(open(os.path.join(out, st + ".json"))), x=x, u=u, m=m,
