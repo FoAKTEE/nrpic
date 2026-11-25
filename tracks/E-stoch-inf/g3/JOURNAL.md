@@ -71,3 +71,26 @@ estimator on real output, not a G3 result (no seed of the G3 list).
 - RS3: the one-point density follows the Gaussian of the linear variance down to 1e-5 within a
   factor 1.5 (figure). Refuted outside any band: then either the reader or the linear picture of
   the box at N_f is wrong, and G3P-3 is reconsidered before the pilot is read.
+
+Outcome (run E-20261125-120930-980b18e, 2 cores; `W128bp.json`, `U256A.json`, `fig_seeds.png` looked at):
+
+| | W128bp (128^3, t = 10.00) | U256A (256^3, t = tlim) |
+|---|---|---|
+| sigma_lin (own record) | 0.49395 | 0.89365 |
+| sigma(R^NR)/sigma_lin | 1.0016 | 1.0010 |
+| skewness, excess kurtosis | 0.0014, 0.011 | 0.0024, 0.0011 |
+| F_+(3)/Q(3), F_-(3)/Q(3) | 1.048, 1.034 | 1.017, 1.016 |
+| F_+(4)/Q(4), F_-(4)/Q(4) | 1.10, 1.22 | 1.10, 1.09 |
+| extreme x | -4.95, +4.68 | -4.99, +5.11 |
+
+- RS1 HOLDS (both within 0.2 per cent; U256A agrees with U-S's 0.894).
+- RS2 HOLDS (both tails at nu = 3 within the bands; skewness 0.001-0.002). At 128 one box measures
+  F(3) to 3.7 per cent (power run), so 1.048 and 1.034 are about one standard error high.
+- RS3 HOLDS where the bins hold at least about 20 cells (density >= 1e-4); between 1e-4 and 1e-5 a bin
+  holds a few cells and the points scatter by up to a factor 3 about the Gaussian (Poisson), so the
+  band of RS3 is not testable there from one box.
+Reading [JUDGEMENT]: the linear extraction R^NR is Gaussian to the precision of one box; its skewness
+(0.001-0.002) is an order of magnitude below the one-patch delta-N skewness of the same band (0.023
+at 128, 0.038 at 256). The non-Gaussianity that G3 compares lives in the nonlinear variable zeta
+(SCOPE 4d.1 (ii)); R^NR serves as the Gaussian control and the check of sigma_lin. This is the
+reason zeta and its tests come before the full set.
