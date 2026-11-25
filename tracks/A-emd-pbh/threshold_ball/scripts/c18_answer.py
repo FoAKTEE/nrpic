@@ -120,13 +120,30 @@ def one(name):
     if len(hz) == 0:
         out["summary"] = dict(n=0)
         return out
-    # each summary row against the nearest status row
-    stt = st[:, 0]
-    j = np.clip(np.searchsorted(stt, hz[:, 1]), 1, len(stt) - 1)
-    j = np.where(np.abs(stt[j - 1] - hz[:, 1]) <= np.abs(stt[j] - hz[:, 1]), j - 1, j)
-    true_find = st[j, 1] > 0
-    out["summary"] = dict(n=int(len(hz)), stale=int((~true_find).sum()),
-                          max_dt_match=float(np.max(np.abs(stt[j] - hz[:, 1]))))
+    # each summary row against the nearest status row; without a status file (runs made before
+    # <fastflow> diagnostics existed) a row equal in mass, area and radius to the row before it
+    # is taken as a repeat of the last accepted surface (inferred, said so in the output)
+    if len(st) >= 2:
+        stt = st[:, 0]
+        j = np.clip(np.searchsorted(stt, hz[:, 1]), 1, len(stt) - 1)
+        j = np.where(np.abs(stt[j - 1] - hz[:, 1]) <= np.abs(stt[j] - hz[:, 1]), j - 1, j)
+        true_find = st[j, 1] > 0
+        out["summary"] = dict(n=int(len(hz)), stale=int((~true_find).sum()), source="status file",
+                              max_dt_match=float(np.max(np.abs(stt[j] - hz[:, 1]))))
+    else:
+        same = np.zeros(len(hz), bool)
+        same[1:] = np.all(hz[1:, 2:11] == hz[:-1, 2:11], axis=1)
+        true_find = ~same
+        out["summary"] = dict(n=int(len(hz)), stale=int(same.sum()),
+                              source="no status file: repeats inferred from identical consecutive rows")
+        pst = np.column_stack([hz[:, 1], true_find.astype(float)])
+        fi2, iso2 = persistence(pst, m_ah)
+        out["status"].update(n=int(len(hz)), found=int(true_find.sum()), first_found_t=float(hz[0, 1]),
+                             persistent_from_t=float(pst[fi2, 0]) if fi2 is not None else None,
+                             n_from_persistence=int(len(pst) - fi2) if fi2 is not None else 0,
+                             all_found_from_persistence=bool(pst[fi2:, 1].all()) if fi2 is not None else None,
+                             isolated_before=iso2, last_t=float(pst[-1, 0]),
+                             note="no status file; searches before the first find are not in the summary")
     # trajectories of the tracked particles (as compare_tb.py)
     T = C.read_traj_many([rd], "ball")
     keep = T["tag"] < tr["n_track"]
@@ -234,7 +251,8 @@ def main():
          "|---|---|---|---|---|---|---|---|---|---|"]
     for n in names:
         s, sm = res[n]["status"], res[n]["summary"]
-        L.append(f"| {n} | {s['n']} | {s['found']} | {fmt(s['first_found_t'], '%.5f')} | "
+        nosf = " (no status file)" if "note" in s else ""
+        L.append(f"| {n}{nosf} | {s['n']} | {s['found']} | {fmt(s['first_found_t'], '%.5f')} | "
                  f"{fmt(s['persistent_from_t'], '%.5f')} | {s['n_from_persistence']} | {s['all_found_from_persistence']} | "
                  f"{s['isolated_before']} | {sm['n']} | {sm.get('stale', '-')} |")
     L += ["", "## Horizon mass: median of m_irr/m_exact - 1 over the true finds", "",
