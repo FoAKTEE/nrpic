@@ -294,7 +294,8 @@ def main():
         M = res[n]["mass"]["true_finds"]
         lo, hi = M["bracket_median"]
         axs[0].plot([i, i], [lo, hi], color=fs.PAL["blue"], lw=4, alpha=0.5, solid_capstyle="butt")
-        axs[0].plot(i, M["m_lead"][0], "o", color="k", ms=4)
+        if M["m_lead"][0] is not None:
+            axs[0].plot(i, M["m_lead"][0], "o", color="k", ms=4)
         c = CLAIM.get(n, {}).get("dmmed")
         if c is not None:
             axs[0].plot(i, c, "x", color=fs.PAL["red"], ms=6)
