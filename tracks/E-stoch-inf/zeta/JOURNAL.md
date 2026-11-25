@@ -20,3 +20,21 @@ the linear variable R_lin = (H/Pi) dphi (not a criterion; Z0-Z2 judge zeta once 
   the same split for zeta.
 - P4: skewness of the odd part below 0.01 in magnitude at both amplitudes (32^3 box, 32768 cells: one-box
   noise about 0.014, so only a gross error shows).
+
+## entry-3 (2026-11-25 07:52 PST): outcomes of entries 1-2
+
+Runs E-20261125-153148-cfad424 (four 32^3 runs, 544-552 s each on one core) and reading
+E-20261125-155027-a9037d9 (`pairs_check.json`, `fig_pairs_check.png` looked at; the s = 1/4 points lie
+under the s = 1/2 points in both panels).
+- P1 HOLDS: all four reach tlim = 10.4375 with exit 0 and finite fields.
+- P2 HOLDS: |<phi>(+) - <phi>(-)| / rms(difference) = 7.3e-10 (s = 1/4) and 0 (s = 1/2).
+- P3 HOLDS: a = 1.83848e-4 (s = 1/4) and 1.83856e-4 (s = 1/2), ratio 1.00004; the residual of the even part
+  about a (O^2 - <O^2>) is 0.7797 of its rms at both amplitudes. The even part of R_lin scales exactly as the
+  square of the odd part (no part that does not scale, at this level), but only about 40 per cent of its
+  variance is the LOCAL quadratic of O; the rest is non-local (products of modes at other positions).
+- P4 HOLDS: skewness of O 0.00746 at both amplitudes (the same realisation, scaled).
+Reading [JUDGEMENT]: a sigma_O = 6.2e-6 at s = 1/2 means a local-quadratic skewness of R_lin of about 6 a
+sigma = 4e-5 in this 32^3 box; the 128^3 box gave a_R = 2.8e-4 (review run E-20261125-131002-ceefa2f)
+against 0.0078 for one-patch delta N. With R35 (one-patch phi at N_f already skewed), Z2 for zeta and A4's
+direct comparison will tell whether NR's d phi lacks the one-patch non-Gaussianity. Inputs for Z0 and Z2
+exist now (the pairs); the reader with the map is the next step.
