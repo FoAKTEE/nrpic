@@ -143,3 +143,34 @@ matter on the attractor.
   and F(4) is 5.8e-7 and 7.5e-7 (4.1e-6, 5.3e-6 for a coefficient off by 100 per cent).
   The full members lie off the linear relation by 8.2e-5 (s = 1/4) and 1.6e-4 (s = 1/2) of
   rms(dPi), growing with s: the even part of Pi (curvature of the trajectory), not noise.
+
+## Entry 4 (09:35 PST): step 4, the lead's reader read after entry 3; comparison run E-20261125-173127-4dcc4ee
+
+Read only now: `zeta/zeta_reader.py`, `zeta/JOURNAL.md` entries 1-7, the lead's reading
+E-20261125-161456-8d3f43c (`zeta_tests.json`). What the lead's reader does differently from mine:
+the map is RK4 in phi (4000 fixed steps from the cell's phi to phi_e, float64), v = Pi/H_cell;
+phi_e and the Z1 expansion state come from the lead's own DOP853 background started at the
+deck's slice (not the lockstep record); Z1 uses eps = 4 x the s = 1/4 spread (the s = 1 box rms),
+five-point stencils, Friedmann H at each state, and as reference DOP853 in cosmic time with an
+event at phi_e (float64, rtol 1e-13). No prediction is attached to this comparison beyond P5's
+(the reference, not the map, carries the 0.142); the outcome:
+
+- At the lead's own Z1 state (which my FKG reproduces: phi_e to 13 digits; the state lies
+  8.56e-9 in phi and 4.2e-4 in Pi from the lockstep record, i.e. 0.03 e-folds along the
+  trajectory) and with the lead's eps and stencils, my variational map gives along Pi alone
+  c2 = 1.33413e-9: the lead's READER has 1.33418e-9 (+3.4e-5), the lead's DOP853 reference
+  1.16849e-9 (-12.4 per cent). Along phi and along the box relation the reader is within 6.1e-5
+  and 6.0e-5, DOP853 within 9.1e-6 and 1.3e-5. First coefficients: reader within 3.5e-10,
+  DOP853 within 3e-9 (phi, box) and 2.7e-6 (Pi). At 10 and 100 eps along Pi: reader 2.5e-7 and
+  1.5e-8, DOP853 5.1e-3 and 3.0e-6. So the failed Z1 along the momentum is a wrong expected
+  value: the DOP853 reference sits on its own floor (about 1e-10 in N, as the lead suspected in
+  its entry 7), the reader is right to 3.4e-5. P5's conclusion holds with the cause now named
+  from a test that could have failed (the reader could have disagreed with the variational value).
+- Lattice numbers, lead against mine (digits agreeing): Z0 3.0100897e-5 / 3.0101140e-5 (5.1)
+  at s = 1/4, 5.1 at s = 1/2; rms O_zeta 9.6; a_zeta 6.762735e-3 / 6.762717e-3 (5.6) at s = 1/4,
+  6.7 at s = 1/2; a_R 5.7 and 6.8; the box relation r identical. a_map along the relation: lead
+  6.963785e-3 at its own N_f state, mine 6.962410e-3 at the lockstep state (3.7 digits) and
+  6.963873e-3 at the lead's state (4.9 digits). Z2(iii): -2.887 / -2.868 per cent (2.2 digits);
+  Z2(iii'): -0.247 / -0.228 per cent (1.1 digits): the difference is the expansion state of
+  a_map (with a_map at the lead's state my (iii') is -0.249 per cent), not the readers. Both
+  pass (iii')'s 0.5 per cent bar; both fail (iii) as written.
