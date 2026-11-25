@@ -757,3 +757,28 @@ is read whole; it was not yet closed (its close by hand runs now). FNQ is cut at
   The ordering part has one time so far (FNQ): at 100 M |M_4N - M_N| = 3.7e-4 < |M_N - M_N/4| = 1.43e-3.
 - Q2 PARTIAL, holds so far: FNQ's removed m E_K at 100 M is -0.86 per cent off FK's (bound 3 per cent).
 - (iii) PARTIAL: FNQ 18 counted bins to tau_rem 180 M, largest |median| 0.265 per cent (Q1 bound 2 per cent).
+
+## Entry 20 (2026-11-25 04:12 PST, lead of batch 17): outcome of FF4 (M/4 member of the growth)
+
+FF4 ES-FL4 D-20261123-022727-1c17e73 closed by nrpic-run finish (completed, 1.34 card-hours, 174 files).
+Read with g2runs/tools/esf_criteria.py --base esfl4 --tau_max 650 twice: with the control V-1L (M/8) as in
+the ES-FL reading, D-20261125-121034-8f82998, and with the control at the same mesh, V-1L4 (FV4, the M/4
+vacuum run made for this purpose in entry 6), D-20261125-121123-143a007 (esf_criteria.png looked at). The
+choice of the same-mesh control is made here, after the first reading was seen [JUDGEMENT; labelled so].
+Predictions: entry 6.
+- P12 HOLDS with the same-mesh control, FAILED with the M/8 control: (iii) 60 counted bins to tau_rem
+  650 M, largest |median| 0.685 per cent (bound 1, refutation 2); D2 holds at all 480 samples with V-1L4,
+  fails at 207 of 480 with V-1L (largest excess 5.4e-3: the M/4 horizon mass sits ~8e-3 below M/8's, the
+  finder offset of the coarse mesh, FP4). The (iii) medians step from about -0.45 per cent to about 0 at
+  tau_rem ~290 M: the same end-of-excision step as ES-FL, of the same size, in the other direction.
+- P13 FAILED as written: with Delta M = M_AH(t) - M_AH(0) the M/4 growth is 43, 20, 13, 9.9 per cent below
+  ES-FL's at 100, 200, 300, 400 M, because the M/4 finder's t = 0 mass is 1.0330 (M/8: 0.9915; smoke test S4
+  expected [0.85, 1.0]). The absolute masses differ by -7.9e-3 to -8.0e-3 over 100-400 M (0.5-0.7 per cent
+  of M). The excision switch part HOLDS: 225.0 M against ES-FL's 219.5 M (within 10 M).
+- P14 HOLDS: 1.34 card-hours (0.9-1.4).
+- Not predicted: D3 fails at M/4 with either control (with V-1L4: 1704 of 146616 removals below -3e-4, min
+  -1.66e-3, all at t_rem < 30 M, panel c); D1 closure -3.1e-2 raw (ES-FL +1.8e-2). D4: every removal 0.22 to
+  3.8 M of proper time after the exact crossing (ES-FL: median 0.26 M): the coarse horizon removes later.
+So criterion G ((iii) and D2) holds at M/4 and M/8 with the control of each mesh; the growth has a third mesh
+member when FL16 (M/16, q0011) runs. A mesh ORDER of the growth needs a reference time after the t = 0
+transient (L3 uses Delta M from 20 M, entry 10).
