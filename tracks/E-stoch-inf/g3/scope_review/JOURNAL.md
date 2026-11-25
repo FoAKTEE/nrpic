@@ -47,7 +47,7 @@ executable and tlim). Not a G3 result: a test of the statistic and its estimator
   confidence: I do not know how the curvature divides between the chi and the phi terms on the geodesic
   slice at N_f]. Refuted if |Delta a| > 0.002 while the chi term's rms is below 0.1 sigma_lin.
 
-## entry-2 (2026-11-25 05:20 PST): outcomes of RB1 and BS1-BS5
+## entry-2 (2026-11-25 05:12 PST; first written with the guessed time 05:20): outcomes of RB1 and BS1-BS5
 
 RB (run E-20261125-130854-ef74ef8, `ref_bins.json`, `fig_ref_bins.png` looked at: the right panel shows the
 measured and expected points; in the left panel the dotted "truncated" steps lie under the solid ones except
@@ -76,8 +76,8 @@ reference parabolas, and the s.d. bars):
   effective number of modes of the variance is 1.32e5 (below 1.4e5 as predicted): the per-mode power is nearly
   flat over the band, so every mode counts. The box variance scatters by 0.39 per cent (s.d. of s2_box/sigma^2).
 - BS4 HOLDS: a_R = 2.81e-4 from the mirrored pair (|a_R| < 0.002); mean skewness of the pair 8.4e-4 (< 0.006);
-  the even part is 2.0e-4 sigma_lin rms and 90 per cent of it is the local quadratic (residual 1e-5 of
-  sigma_lin... rms 9.7e-6 against 9.8e-5). R^NR carries 3.0-3.6 per cent of the one-patch delta-N value
+  the even part is 2.0e-4 sigma_lin rms and the local quadratic leaves a residual of a tenth of it (rms
+  9.7e-6 against 9.8e-5, absolute units). R^NR carries 3.0-3.6 per cent of the one-patch delta-N value
   a = 0.0078-0.0095. The scope's statement (4) holds, and more strongly than "to the precision of one box".
 - BS5 HOLDS trivially, with a finding: the chi term of R^NR has rms 8.3e-7 sigma_lin (the aniso term 2.3e-7);
   R^NR at N_f is (H_b/Pi_b) dphi to one part in 1e6, and the logarithmic chi changes a_R by 1e-13. On the
@@ -87,7 +87,7 @@ reference parabolas, and the s.d. bars):
   separate-universe map that makes the reference's skewness; the slicing leg (kdriver drives K, and K is uniform
   to that precision) has no lever arm.
 
-## entry-3 (2026-11-25 05:22 PST): predictions for `sensitivity.py` (a calculation from the two runs above)
+## entry-3 (2026-11-25 05:13 PST; first written with the guessed time 05:22): predictions for `sensitivity.py` (a calculation from the two runs above)
 
 - SE1: at nu = 3 with S = 256 and 4e6 direct reference realisations, the reference dominates the combined
   error (reference relative s.e. 1.36 per cent, NR 0.25 per cent); three combined s.e. are 4.1-4.3 per cent of
@@ -100,3 +100,24 @@ reference parabolas, and the s.d. bars):
   reference by direct sampling (4e6) has about 9 per cent relative error, so the 1.2 per cent of 256 seeds
   is wasted unless the importance sampler reaches about 1 per cent.
 Refuted item by item if outside these ranges.
+
+## entry-4 (2026-11-25 05:16 PST): outcomes of SE1-SE4 (run E-20261125-131336-2b903fe)
+
+`sensitivity.json`, `fig_sensitivity.png` looked at (relative error of F_+(nu) against seeds with the reference
+floor and three effects; at nu = 3 the three effect lines lie on top of each other near 0.10, which is the
+point: a 1 per cent sigma error, the bin artefact and the whole delta-N skewness move F(3) by the same amount).
+- SE1 HOLDS: nu = 3: NR 0.251 per cent (S = 256), reference 1.36 per cent (4e6 direct), three combined s.e.
+  4.15 per cent = a sigma error of 0.42 per cent, a skewness difference of 0.0095, an excess-kurtosis
+  difference of 0.017.
+- SE2 HOLDS: the bin artefact moves F_ref(3) by -10.5 per cent = -7.6 combined s.e. (nu = 4: -17.4 per cent,
+  -1.9 combined s.e. with a 4e6 direct reference).
+- SE3 HOLDS: the direct skewness comparison has three combined s.e. of 0.0027 (NR 3.1e-4 at 256 seeds,
+  reference 8.5e-4 at 4e6), 3.5 times finer than the 0.0095 that F(3) resolves.
+- SE4 PARTLY REFUTED: the NR error at nu = 3 falls below a third of the reference's at 78 seeds, not 20-40; at
+  nu = 4 at 44 seeds (reference 8.9 per cent by direct sampling, as predicted). At nu = 4 with a 4e6 direct
+  reference three combined s.e. are 27 per cent, more than the whole delta-N skewness effect there (24 per cent):
+  the judged comparison at nu = 4 cannot fail on the physics unless the importance-sampled reference reaches a
+  few per cent.
+Also read from the reference file (not a new run): the 128-band variants give the same variance and skewness at
+N_f and N_e (s0.01: variance ratio 1.0009 and 1.0010, skewness 0.0288 and 0.0282), so the time of the
+uniform-field surface does not matter for this band.
