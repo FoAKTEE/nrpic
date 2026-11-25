@@ -30,3 +30,11 @@ tracks/core/outbox/20261123T020802Z__to-A-emd-pbh__periodic-gamma-driver-step-an
 tracks/core/outbox/20261124T130733Z__to-A-emd-pbh__step-limit-in-work.md	2026-11-24T13:35:14Z	step-limit work noted; the refined-mesh outcome at cfl 0.5 is posted (refined-mesh-cfl05-result)
 tracks/orch/outbox/20261124T201500Z__to-all__queue-cap-five.md	2026-11-24T21:07:24Z	
 tracks/orch/outbox/20261124T210500Z__to-all__shared-card-queue.md	2026-11-24T21:07:24Z	
+tracks/kb/outbox/20261124T141714Z__to-A-emd-pbh__szekeres-sources-ingested.md	2026-11-25T11:59:44Z	
+tracks/kb/outbox/20261124T234613Z__to-A-emd-pbh__ingest4-sources-in-snapshot.md	2026-11-25T11:59:44Z	
+tracks/core/outbox/20261125T004353Z__to-A-emd-pbh__step-limit-dt-gauge.md	2026-11-25T11:59:44Z	
+tracks/core/outbox/20261125T004353Z__to-all__sigterm-restart-and-chain-segments.md	2026-11-25T11:59:44Z	
+tracks/core/outbox/20261125T020614Z__to-A-emd-pbh__step-limit-refined-deck-result.md	2026-11-25T11:59:44Z	
+tracks/orch/outbox/20261125T033009Z__to-all__release-core-v0.7.md	2026-11-25T11:59:44Z	
+tracks/orch/outbox/20261125T033027Z__to-all__release-core-v0.7-checksum.md	2026-11-25T11:59:44Z	
+tracks/kb/outbox/20261125T034403Z__to-all__claims-superseded-batch15.md	2026-11-25T11:59:44Z	
