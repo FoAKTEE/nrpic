@@ -23,24 +23,34 @@ def main():
     d = vlib.read_deck(vlib.DECK)
     tlim = float(d["time/tlim"])
     res = {"deck": vlib.DECK, "mode_file": vlib.MODEFILE, "tlim": tlim}
+    # dump times of every release run (headers only)
+    times = {}
+    for lab in vlib.RUNS:
+        times[lab] = [vlib.dump_header(vlib.dump_path(lab, k))["time"] for k in vlib.dumps_of(lab)]
+    res["dump_times"] = times
+    allt = np.unique(np.concatenate([np.array(v) for v in times.values()] + [[0.0, tlim]]))
     t0 = _t.time()
-    ref = vlib.Reference(vlib.DECK, vlib.MODEFILE, tlim, rtol=1e-12)
+    ref = vlib.Reference(vlib.DECK, vlib.MODEFILE, tlim, rtol=1e-12, t_eval=allt)
     res["wall_ref_s"] = _t.time() - t0
     res["nfev"] = int(ref.sol.nfev)
     res["H0"] = float(ref.hubble(ref.phi0, ref.pi0))
     # convergence of the reference itself: rtol 1e-10
-    ref10 = vlib.Reference(vlib.DECK, vlib.MODEFILE, tlim, rtol=1e-10)
+    ref10 = vlib.Reference(vlib.DECK, vlib.MODEFILE, tlim, rtol=1e-10, t_eval=[tlim])
     R12, _ = ref.modes(tlim)
     R10, _ = ref10.modes(tlim)
     res["ref_self_err_Nf_max_rel"] = float(np.max(np.abs(R12 - R10) / np.abs(R12)))
+    del ref10
+    bgref = vlib.Reference(vlib.DECK, vlib.MODEFILE, tlim, rtol=1e-12, nshell=1)
+    Nf_bg_vs_full = float(abs(bgref.background(tlim)["N"] - ref.background(tlim)["N"]))
+    res["bg_only_vs_full_N_at_Nf"] = Nf_bg_vs_full
 
     # background on a fine grid and landmarks
     tt = np.linspace(0.0, tlim, 200001)
-    b = ref.background(tt)
+    b = bgref.background(tt)
     e2 = b["eps2"] - 3.0
     up = np.nonzero((e2[:-1] < 0) & (e2[1:] >= 0))[0]
     dn = np.nonzero((e2[:-1] > 0) & (e2[1:] <= 0))[0]
-    f = lambda t: float(ref.background(t)["eps2"] - 3.0)
+    f = lambda t: float(bgref.background(t)["eps2"] - 3.0)
     t_on = brentq(f, tt[up[0]], tt[up[0] + 1], xtol=1e-14)
     t_off = brentq(f, tt[dn[0]], tt[dn[0] + 1], xtol=1e-14)
     i2 = int(np.argmax(b["eps2"]))
@@ -49,7 +59,7 @@ def main():
           "eps1 minimum": float(tt[i1]), "N_f": tlim}
     res["landmarks"] = {}
     for k, t in lm.items():
-        bb = ref.background(t)
+        bb = bgref.background(t)
         res["landmarks"][k] = {kk: float(v) for kk, v in bb.items()} | {"t": t}
     res["eps1_min"] = float(b["eps1"][i1])
     # comparison with the track's reference (usr/results/usr_reference.json), not used
@@ -85,11 +95,6 @@ def main():
     res["background_Nf"] = {k: float(v) for k, v in bN.items()}
 
     # reference at every dump time of every release run
-    times = {}
-    for lab in vlib.RUNS:
-        times[lab] = [vlib.dump_header(vlib.dump_path(lab, k))["time"] for k in vlib.dumps_of(lab)]
-    res["dump_times"] = times
-    allt = np.unique(np.concatenate([np.array(v) for v in times.values()]))
     Rt = np.empty((len(allt), len(q2)), dtype=np.complex128)
     Wt = np.empty((len(allt), len(q2)))
     bg = {k: np.empty(len(allt)) for k in ("phi", "Pi", "N", "H", "K", "eps1", "eps2")}

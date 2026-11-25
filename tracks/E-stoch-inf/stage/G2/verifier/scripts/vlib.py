@@ -238,7 +238,7 @@ def read_mode_file(path):
 class Reference:
     """Friedmann + Klein-Gordon background and continuum MS modes from t = 0 (N*)."""
 
-    def __init__(self, deck, mode_file, t_end, rtol=1e-12, nshell=None):
+    def __init__(self, deck, mode_file, t_end, rtol=1e-12, nshell=None, t_eval=None):
         d = read_deck(deck)
         self.lam = float(d["scalar_field/lambda"])
         self.vev = float(d["scalar_field/vev"])
@@ -256,8 +256,11 @@ class Reference:
         self.ns = ns
         sc = np.concatenate([[1.0, 1.0, 1.0], np.abs(R0) + 1e-30, np.abs(R0) + 1e-30,
                              np.abs(dR0) + 1e-30, np.abs(dR0) + 1e-30])
+        # with t_eval: no dense output (the dense output of 13663 components is tens of GB)
+        self.t_eval = None if t_eval is None else np.unique(np.clip(t_eval, 0.0, t_end))
         self.sol = solve_ivp(self._rhs, (0.0, t_end), y0, method="DOP853", rtol=rtol,
-                             atol=sc * rtol * 1e-3, dense_output=True)
+                             atol=sc * rtol * 1e-3, dense_output=t_eval is None,
+                             t_eval=self.t_eval)
         if not self.sol.success:
             raise RuntimeError(self.sol.message)
 
@@ -278,8 +281,18 @@ class Reference:
         return np.concatenate([[pi, -3.0 * H * pi - dV, H], Dr, Di,
                                -fr * Dr - w2 * Rr, -fr * Di - w2 * Ri])
 
+    def _state(self, t):
+        if self.t_eval is None:
+            return self.sol.sol(t)
+        tt = np.atleast_1d(np.asarray(t, dtype=float))
+        idx = np.array([int(np.argmin(np.abs(self.sol.t - x))) for x in tt])
+        if np.max(np.abs(self.sol.t[idx] - tt)) > 1e-12:
+            raise ValueError("time not in t_eval")
+        y = self.sol.y[:, idx]
+        return y[:, 0] if np.ndim(t) == 0 else y
+
     def background(self, t):
-        y = self.sol.sol(t)
+        y = self._state(t)
         phi, pi, N = y[0], y[1], y[2]
         H = self.hubble(phi, pi)
         eps1 = 4.0 * np.pi * pi * pi / (H * H)
@@ -287,7 +300,7 @@ class Reference:
         return dict(phi=phi, Pi=pi, N=N, H=H, K=-3.0 * H, eps1=eps1, eps2=eps2)
 
     def modes(self, t):
-        y = self.sol.sol(t)
+        y = self._state(t)
         ns = self.ns
         R = y[3:3 + ns] + 1j * y[3 + ns:3 + 2 * ns]
         dR = y[3 + 2 * ns:3 + 3 * ns] + 1j * y[3 + 3 * ns:3 + 4 * ns]
