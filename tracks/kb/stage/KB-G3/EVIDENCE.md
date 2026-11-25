@@ -43,8 +43,14 @@ withdrawn 3. "Refuted" labels include the 22 superseded and 3 withdrawn claims.
 
 Claims labelled as supported by a pipeline step, never read against their own wording: 573
 before claims3, 543 unread after it. Sample of 30 (seed 20261125): 26 right as worded, 86.7 %
-(CP 95 %: 69.3-96.2 %); stratum-weighted 86.5 % (s.e. 6.1 %). Expected not right as worded among
-the 543: about 70 (21-167) [JUDGEMENT: extrapolation]. The errors found were all cuts or
+(CP 95 %: 69.3-96.2 %); stratum-weighted 86.5 % (s.e. 6.1 %). This is the rate of the mixed class.
+The machine-located claims alone (label set by the automatic seeder; claims3's WA, the second
+verifier's M) are right as worded 28 of 35 times, 80.0 % (CP 95 %: 63.1-91.6 %): claims3's 18/22
+pooled with the second verifier's 10/13 (VERIFIER2.md section 2; the pool is not independent of
+claims3). The rest of the weak class: 20/21, 95.2 % (76.2-99.9 %). The second verifier's
+stratum-weighted estimate for its W (529 claims) is 80.6 % (s.e. 9.3 %), about 86 claims not right
+as worded (34-179). Expected not right as worded among the 543 by this package's own sample:
+about 70 (21-167) [JUDGEMENT: extrapolation]. The errors found were all cuts or
 mislabels of the automatic seeder (WA). Runs kb-20261125-021654-6799dfd (draw),
 kb-20261125-023841-d9343e6 (rates), recomputed in kb-20261125-033503-dfc398e. The package's
 class query today counts 548 because it does not exclude its own five annotations (308, 467,
@@ -57,9 +63,25 @@ class query today counts 548 because it does not exclude its own five annotation
    3.5 %); refutations 10/11 brief seeds and 19/24 printed defects confirmed; parse rate 714/744 =
    95.97 % by its own definition. Runs kb-20261124-130442-e69c2e8, kb-20261124-130450-578a535,
    kb-20261124-132849-3ebad97, kb-20261124-132859-5f1a7f3.
-2. Second fresh verifier of the claims processed since the first: OPEN (O6). What it reads:
-   claims3/LEDGER.tsv (869, 865-868, 870-881, the 30 sample verdicts, 805's annotation, the four
-   sibling pointers), lead_b13 claims 862-864, the snapshot above.
+2. `VERIFIER2.md` (fresh helper session of batch 15, predictions and seed 20261126 committed in
+   d4741a70b, snapshot kb-20261125-2f97258): item 1, 60 of 61 claims written or changed since the
+   first verifier right (781 not); item 2, a new stratified sample of 40: checked by a person 12/14
+   (85.7 %), machine-located 10/13 (76.9 %), rest of the weak class 12/13 (92.3 %); item 3, C1-C7
+   met, with reservations on C1 and C5; recommendation pass with reservations. Runs
+   kb-20261125-041310-20371de, kb-20261125-042218-7b7af60, kb-20261125-042240-6c19d72,
+   kb-20261125-042327-f947572 (failed before any draw: kb-20261125-041256-d4741a7).
+
+## Gate signed; reservations closed in batch 17
+
+KB-G3 is SIGNED, pass with reservations (coord/GATES.md, 2026-11-24, commit 8fdb954efa; decision
+0037 item 1). In batch 17 the lead superseded the seven claims of VERIFIER2.md (781, 223, 574,
+553, 145, 169, 462 -> 882-888, 553's successor labelled judgement) and processed the twelve
+abstract-labelled claims without a locator (773 -> 889, 774 -> 890, 712 -> 891 located in the full
+text; 709, 844 checked against metadata records; 710, 711, 715 withdrawn as headings; 706, 794,
+795, 796 -> 892-895 to_verify as repository and tool statements): plan
+tracks/kb/lead_b17/plans/P1_verifier2.json, dry run kb-20261125-124157-537e458, run
+kb-20261125-124220-191593e (others' hash unchanged), check kb-20261125-124251-3855127 (none of the
+twelve left; live to_verify +4; figure fig_a2_labels.png, read). OPEN.md O7-O9.
 
 ## Runs since batch 13 (all scouting, processors, 0 card-hours)
 

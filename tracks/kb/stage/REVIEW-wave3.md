@@ -279,3 +279,31 @@ Not confirmed / differs
 
 Verdict: claims3 is accepted with the repair above; O1, O2, O3, O5 closed; O4 in part; the
 weak class stated as a known limit (OPEN.md O7).
+
+## kb lead batch 17 (2026-11-25): the second KB-G3 verifier (verifier2) and its corrections
+
+Package: tracks/kb/stage/KB-G3/verifier2/ and VERIFIER2.md (fresh helper of batch 15). KB-G3 was
+signed on it, pass with reservations (coord/GATES.md; decision 0037 item 1). Checked by me from
+the artefacts:
+- The seven claims it finds not right as worded (781 item 1; 223, 574 stratum P; 145, 462, 553
+  stratum M; 169 stratum Q): I read each at its source (lines in plan
+  tracks/kb/lead_b17/plans/P1_verifier2.json). CONFIRMED all seven: 781 carries the brief's
+  inference and [TO VERIFY]; 223 a pointer; 574 a cut predicate (L1140); 145 makes a mean and
+  median a maximum (2605.04487 L2400-2402); 462 lacks its subject (L381); 553 is a [JUDGEMENT]
+  under fulltext (I redid the algebra: right); 169 lacks its question (2507.18312 L240) and is
+  filed under the wrong paper. Action: superseded by 882-888 (run kb-20261125-124220-191593e).
+- C1 reservation (b), twelve abstract claims without a locator and with only their seed event:
+  CONFIRMED, my query on snapshot 2f97258 returns exactly 706, 709-712, 715, 773, 774, 794-796,
+  844 (run kb-20261125-124251-3855127, a2.json); after plan P1 none (OPEN.md O8).
+- The pooled machine-located rate: CONFIRMED from the files, claims3/SAMPLE_VERDICTS.tsv WA 18/22
+  and verifier2 tally.json (run kb-20261125-042240-6c19d72) M 10/13, 28/35 = 80.0 %, Clopper-
+  Pearson 63.1-91.6 %; rest of W 20/21, 76.2-99.9 % (arithmetic check in this session with
+  scipy, not a registered run). Written beside the mixed rate in OPEN O7 and EVIDENCE.md.
+- C5 "marked PASS before the report existed": CONFIRMED; CHECKLIST C5 now cites VERIFIER2.md.
+- Not acted on in this batch (HANDOFF): 741's locator (Spin_PBH.tex L1206), 428's author order,
+  804 vs 805 treated alike, 313/430 wording debris, 864's "Jena", 877's mixed label, the O4
+  claims (409, 447, 449, 450). Not re-read by me: the 33 other sample verdicts, the 60 item-1
+  verdicts other than 781.
+
+Verdict: verifier2 accepted; its WRONG items are corrected, its NOT CONFIRMED items are listed
+above with what the track does about each.

@@ -910,3 +910,21 @@ Predictions, written before the runs:
   plan has 14 supersedes, not 15 (7 + 773, 774, 712 + 706, 794, 795, 796), so A1 expects new
   claims 882-895, 10 of them with locator rows (the 4 to_verify successors have none), and 895
   claims in the database; S3 expects 895 in `kb status`. An arithmetic slip of mine, on record.
+- A1 outcome (dry run kb-20261125-124157-537e458, run kb-20261125-124220-191593e): held as
+  corrected: 19 actions, new claims 882-895, the 10 located successors resolve all their rows
+  (2, 4, 1, 1, 1, 2, 1, 2, 4, 2), others' hash unchanged, 895 claims. The first-written count
+  (15 supersedes, 896 claims) was my slip and is a failed prediction on record.
+- A2 outcome (run kb-20261125-124251-3855127, a2.json, figure fig_a2_labels.png read: fulltext
+  +2, abstract -10, judgement +1, to_verify +4): held. The snapshot list of seed-only abstract
+  unlocated claims is exactly VERIFIER2's twelve; after P1 it is empty; live to_verify +4.
+- S3 outcome (run kb-20261125-124304-2790a38): held: verify-downloads exit 1 only for
+  gr-qc/9412071; QA C1 762/762, parse 737/762 = 96.7 %, golden hybrid 28/32 papers, 23/32
+  locations (rerank 28/32, 25/32); 895 claims; snapshot kb-20261125-56c4b53 (sha256 56c4b530...),
+  db/current moved to it. kb/QA_REPORT.md replaced by this report.
+- Review of verifier2 from the artefacts: REVIEW-wave3.md, batch 17 (seven WRONG confirmed at
+  their sources; the twelve confirmed by my own query; 28/35 and its interval recomputed).
+- did: KB-G3 signed recorded (OPEN, EVIDENCE, CHECKLIST C5, STATUS, HANDOFF); 14 supersedes, 3
+  withdrawals, 2 annotations; O7 with the machine-located rate; O8 closed, O9 new; snapshot; info
+  note to all. Inbox: nothing unacknowledged.
+- failed predictions: A1 as first written (count slip, corrected before the run). A2, S3 held.
+- gate: KB-G3 signed (pass with reservations), the claim reservations closed; 0 card-hours.
