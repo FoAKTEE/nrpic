@@ -1,38 +1,31 @@
-# OPEN items of E-stoch-inf at G2 (lead of batch 13, 2026-11-24; replaces the list of batch 10a)
+# OPEN items of E-stoch-inf at G2 (lead of batch 15, 2026-11-24; replaces the list of batch 13)
 
-What the G2 package lacks, in one list (CHECKLIST item in brackets):
+The package is complete for an independent review (decision 0016 item 4): every CHECKLIST item is
+PASS, NA by ruling, or FAIL on record with its ruling. On record, not open:
 
-1. The reading of the quarter-amplitude pair (C3, C7): U256qp E-20261123-230004-861aea7 and U256qm
-   E-20261123-230507-a6246b1 ran (0.62 card-hours each, finished 2026-11-23 20:06 PST); analysis
-   E-20261124-233223-51b52c0 (group g2q, 3 cores) started 15:32 PST this session; Q-a..Q-c of
-   `g2prod/JOURNAL.md` entry 3 judged in entry 4 when it has ended. Ruling 0030 item 2: U-A4'(a)
-   stays FAIL on record without rewording; a cause of the miss is named only if Q-a holds.
-2. A fresh verifier of the g2prod SCOPE 4c numbers (C18, C5): U-A0..U-A4', U-R, U-S, the halving and
-   the quarter pair, recomputed with its own reader from the run directories. repro/verify verified
-   the reproduction (133 ledger rows), not the SCOPE 4c judgement.
-3. Working-note sections for G2 (C17): the SCOPE 4c ladder, its one failure, the third amplitude and
-   the common-mode part. The reproduction note (`repro/note/manuscript/main.pdf`, 26 pages) covers
-   the reproduction only.
-4. Figures (C10, C11, C13, C15, C16): verification-ladder schematic; a note figure of the USR
-   resolution pair 256/320 (the analysis figure fig_g2_resolution.png exists); a multi-scale slice
-   mosaic with zoom boxes; the G2 update of the architecture schematic and the gate timeline. Mesh
-   convergence (fig_specconv) and constraint norms (fig_constraints) exist in the reproduction note.
-5. Rerun recipe of g2prod (C6): `g2prod/README.md` without the analysis commands of entry 2 (they
-   are in HANDOFF.md).
-6. Floor of the SR spectral convergence (C2 context, not a G2 criterion): FL128h q0037, FL256h q0038
-   (priority 2, about 0.4-0.65 card-hours), predictions `floor/JOURNAL.md` entry 1; a cause is
-   named only if F1 and F3 hold.
-7. Observations without a cause, on record: the common-mode part of the odd-part error (-4.1e-5 at
-   s = 1, s^2; g2prod 2.3); U-A2' at s = 1/2 14 percent above s = 1; a4res Q6; the one-point width
-   factor 3.5-4 against the published figures (repro/note); lockstep sub-stepping (core request).
+1. U-A4'(a) FAILS as written at one dump of M (3.9245 at cN 6.52); rulings 0030 item 2 and 0036
+   item 2: it stays FAILED; the three-amplitude reading (verifier run E-20261125-023427-6fb6400)
+   stands beside it as a finding after the data (g2prod/JOURNAL.md 4.2; note Sec. IV C). C3, C7.
+2. Quarter pair: Q-a refuted, Q-b and Q-c hold (g2prod/JOURNAL.md 4.1).
 
-8. `nrpic-stage verify` (C14): the report above uses the verify of 2026-11-23 (FAIL: sync, runs).
-   The lead of batch 13 started verify at 15:37 PST and stopped it at 16:05 (its checksum pass had
-   reached run 67 of 270 run directories and was competing for the disk with the quarter-pair
-   analysis); rerun it in a session with about two hours and no reader of the 256^3 dumps running.
+Open, not required by the G2 criteria:
 
-Can it go to an independent review once the queued runs have ended? Not on the runs alone. After
-item 1 is read (a processor analysis, no card), ruling 0030 item 2 allows the review with the
-U-A4'(a) failure on record. Items 2 and 3 (verifier, note sections) are products of the package
-(C17, C18) and are not made yet; item 4 (figures) and item 5 are small. Item 6 is not required for
-G2. Estimate: one verifier session and one note session (processors only), then the review.
+3. Floor of the SR spectral convergence (C2 context): FL128h q0037, FL256h q0038 (priority 2,
+   waiting in the shared queue since 2026-11-24 15:35 PST); predictions floor/JOURNAL.md entry 1.
+4. Not checked by the fresh verifier (VERIFIER.md 4): the USR mode file at N* against Bunch-Davies
+   data at N0 (rests on the usr package); the window scan ran on the scouting build at 128^3 (4c
+   accepts it); U-R (i) at 320^3 without a 320^3 half pair; what the per-run part F_s is
+   (deterministic, independent between amplitudes, equal size; rounding not shown); no processor
+   rerun of a card run.
+5. The three-amplitude statistics D1, D2 were computed only by the verifier; the package's own
+   reader has not recomputed them (the lead checked the inputs and the algebra, REVIEW-wave3 F1).
+6. Observations without a cause: U-A2' at s = 1/2 14 percent above s = 1; a4res Q6; the one-point
+   width factor 3.5-4 against the published figures (repro/note); the offset of the common mode at
+   s = 1/4 (about +4e-7 before the end of USR, g2prod 4.1).
+7. `nrpic-stage verify` of batch 15 ran with --no-checksums (the checksum pass over about 280
+   run directories, hundreds of GB, takes one to two hours); a full pass is owed before the gate
+   is signed if the reviewer asks for it.
+
+Proposals for later gates (outbox to orch, batch 15), not rewordings of 4c: a noise level from
+three amplitudes (sigma = rms(D1)/sqrt(17)); a U-R clause on the discretisation part (Richardson
+in s^2 over three amplitudes).

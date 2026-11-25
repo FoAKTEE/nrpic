@@ -518,3 +518,51 @@ recompute listed in the digest); the 26 pages were not reread.
 
 `stage/G2/CHECKLIST.md` updated (C2 PASS by ruling 0030 item 2; C12 PASS; C3, C7 FAIL on record;
 C5, C6, C10, C11, C13-C18 OPEN). Lacks, and whether it can go to review: `stage/G2/OPEN.md`.
+
+# Part F. Batch 15 (lead of batch 15, 2026-11-24 evening): the fresh G2 verifier and the quarter pair
+
+Package reviewed: `stage/G2/verifier/` (fresh verifier of SCOPE 4c, batch 14, report
+`stage/G2/VERIFIER.md`), and the quarter-amplitude analysis E-20261124-233223-51b52c0 left by the
+lead of batch 13. Ruling 0036 item 2 applies (U-A4'(a) stays FAILED as written; the three-amplitude
+reading stands beside it, labelled as after the data).
+
+## F1. Checked by the lead from the artefacts
+
+- Quarter pair: reran `g2prod/scripts/judge_q.py` (registered E-20261125-033357-a608cda; figure
+  fix and rerun E-20261125-033450-4c4a31c) on the g2q summary of E-20261124-233223-51b52c0 with
+  judge_g2's floor code unchanged, prediction written first (g2prod/JOURNAL.md 4.0). Every number
+  the verifier quotes (VERIFIER.md 3.2, 3.4) is reproduced by the package's own reader to its
+  digits: M factor 4.1275 (verifier 4.127), common mode -2.0725e-6 (-2.07e-6), U-A0 1.61e-9,
+  U-A1 2.52e-6, U-A3 0.99809-1.00042, records 1.19e-12 / 0.0251, even/odd 6.3337e-5 (6.334e-5).
+  Two readers that share no code agree. Figure fig_g2_quarter.png looked at (the first version's
+  common-mode panel was useless: fixed). Outcome: Q-a REFUTED, Q-b and Q-c hold (entry 4.1).
+- The verifier's table (VERIFIER.md 2) against the package: each package number it cites is the
+  one in judge_g2.json of E-20261123-024359-5dc3213 (checked for U-A0, U-A1, U-A2' A/B, U-A3,
+  U-A4'(a) H range and M miss, U-A4'(c), U-A4'(d), U-R (i)-(iii), U-S, common mode; the ledger of
+  the note reads them from that json and stops if a verifier string is not on its line: R11-R16).
+- The three-amplitude reading: its numbers come only from the verifier's run
+  E-20261125-023427-6fb6400 (floor3.json, checksum verified by the note's figure script); the lead
+  did not recompute D1, D2 from the fields. Plotted beside the fixed-level factors (note Fig. 15):
+  every judged cross lies within 4 +- 0.005, the one square at cN 6.52 outside the band. The
+  derivation of the correlation -4/17 for independent per-run parts of equal size is checked by
+  hand (var D = 17 sigma^2, cov = -4 sigma^2) [VERIFIED].
+
+## F2. The verifier's findings and what the track does
+
+| Finding (VERIFIER.md) | Verdict | What the track does |
+|---|---|---|
+| All recomputed SCOPE 4c numbers CONFIRMED; U-A4'(a) failure confirmed | CONFIRMED | CHECKLIST C3, C7 stay FAIL, C18 PASS citing VERIFIER.md |
+| Q-a refuted by the quarter pair (3.2) | CONFIRMED by the package's reader (entry 4.1) | no s^4 cause named; entry 4 |
+| Floor estimator of 4c ill-conditioned (3.3, weak point 1) | reading after the data, numbers from the verifier's run only | stands beside the failure (entry 4.2, note Sec. IV C); proposal of a three-amplitude floor for later gates to orch (outbox) |
+| U-R (i) measures the third-order flat part (weak point 2) | agrees with note Fig. 14 (ratio 0.992 below |n| ~ 25, 2.91 above 40) | stated in the note (Sec. IV B); proposal of a U-R clause on the discretisation part for later gates (outbox) |
+| CHECKLIST cited a missing entry 4 (weak point 3) | right | entry 4 written; C3, C5, C7 point to it |
+| Judge's readings of U-A4'(c) (control counted out) and (d) (two control readings) | right, both stated in the package | stated in the note (Sec. IV D) and here; no change of verdict |
+| The 4c remark "M record doubles at s = 1/2" not borne out at 256^3 | right (already marked in entry 2.3) | no change |
+| Not checked: mode file at N* against Bunch-Davies; window scan on the scouting build; U-R (i) at 320^3 without a half pair; nature of F_s; no processor rerun of a card run | open | listed in stage/G2/OPEN.md |
+
+## F3. Stage package G2 after this review
+
+Every CHECKLIST item is PASS, NA by ruling, or FAIL on record with its ruling (C3, C7: ruling 0030
+item 2 and 0036 item 2). Products added this session: g2prod entry 4, g2prod/README.md (rerun
+recipe, results), note Sec. IV and Appendix F with six figures and ledger Table XVI (R16
+E-20261125-035757-340bd1e). The package goes to independent review (decision 0016 item 4).
