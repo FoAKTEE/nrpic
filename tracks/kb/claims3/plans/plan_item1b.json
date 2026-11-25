@@ -1,0 +1,15 @@
+{
+ "by": "kb-claims3",
+ "actions": [
+  {
+   "do": "annotate",
+   "id": 803,
+   "evidence": "claims3 item 1: the answer claim of run kb-20261125-023541-5ae96e9 is claim 869 (fulltext, 13 locator rows)."
+  },
+  {
+   "do": "annotate",
+   "id": 790,
+   "evidence": "claims3 item 1: the answer claim of run kb-20261125-023541-5ae96e9 is claim 869."
+  }
+ ]
+}

@@ -1,0 +1,104 @@
+{
+ "sample": {
+  "n": 30,
+  "right": 26,
+  "rate": 0.8666666666666667,
+  "cp95": [
+   0.6927816497238732,
+   0.9624465036616366
+  ],
+  "kinds": {
+   "right": 21,
+   "fragment": 2,
+   "right_locator": 5,
+   "part_unsupported": 1,
+   "wrong_label": 1
+  },
+  "strata": {
+   "WA": {
+    "N": 426,
+    "n": 22,
+    "right": 18,
+    "cp95": [
+     0.5971542169221286,
+     0.9481327006875631
+    ]
+   },
+   "WB": {
+    "N": 43,
+    "n": 2,
+    "right": 2,
+    "cp95": [
+     0.15811388300841897,
+     1.0
+    ]
+   },
+   "WM": {
+    "N": 14,
+    "n": 1,
+    "right": 1,
+    "cp95": [
+     0.025,
+     1.0
+    ]
+   },
+   "WQ": {
+    "N": 90,
+    "n": 5,
+    "right": 5,
+    "cp95": [
+     0.4781762498950185,
+     1.0
+    ]
+   }
+  },
+  "W": 573,
+  "weighted_rate": 0.8648262732032366,
+  "weighted_se": 0.06093611752129334,
+  "not_right_cp95": [
+   0.037553496338363315,
+   0.30721835027612676
+  ]
+ },
+ "actions": {
+  "W2": {
+   "supersede (existing)": 1
+  },
+  "W3": {
+   "verify": 21,
+   "supersede (new claim)": 4,
+   "annotate": 5
+  },
+  "W1": {
+   "add": 1,
+   "annotate": 3
+  },
+  "W4": {
+   "supersede (new claim)": 12,
+   "supersede (existing)": 5,
+   "withdraw": 3
+  }
+ },
+ "ledger_rows": 72,
+ "downloads": {
+  "rows_before": 765,
+  "rows_after": 763,
+  "ids_after": {
+   "0707.4654": false,
+   "1006.1632": false
+  },
+  "files_unchanged": true,
+  "problem_rows_after": [
+   "gr-qc/9412071"
+  ],
+  "predictions_hold": true
+ },
+ "runs": {
+  "W2": "kb-20261125-023539-1da3331",
+  "W3": "kb-20261125-023540-7407543",
+  "W1": "kb-20261125-023541-5ae96e9",
+  "W4": "kb-20261125-023542-f420d93",
+  "W5": "kb-20261125-023614-440dff2",
+  "DRAW": "kb-20261125-021654-6799dfd"
+ }
+}

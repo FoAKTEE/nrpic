@@ -177,3 +177,28 @@ label refuted; test in test_claims_supersede.py; 276 tests).
   unchanged.
 Refuted by an exit other than 0, a locator row that does not resolve, or a changed hash of the
 other claims.
+
+## Entry 4, 2026-11-24 18:40 PST: outcomes of the writes; one more annotation predicted
+
+- Store search for 803: run kb-20261125-023523-40c916a, 20 papers (as listed in entry 3).
+- W2 (kb-20261125-023539-1da3331): HELD. 682 refuted/superseded, link 682 -> 862, others' hash
+  unchanged. P4b HELD: `kb claim show 682` gives superseded_by [862].
+- W3 (kb-20261125-023540-7407543): HELD. 30 actions (21 verify, 5 annotate, 4 supersede), new
+  claims 865-868 (successors of 29, 126, 482, 572), every locator row resolved, others unchanged.
+- W1 (kb-20261125-023541-5ae96e9): HELD. Answer claim 869, fulltext/checked, 13 of 13 locator
+  rows resolved; 803, 790, 805 annotated (labels kept). The annotations of 803 and 790 do not
+  name 869 (the plan could not know the id): W1b adds that pointer. Prediction W1b: 2 annotate
+  events, no label or status change, others unchanged.
+- W4 (kb-20261125-023542-f420d93): HELD. 12 new claims 870-881 (870-874 abstract/checked, 875-881
+  fulltext/checked), 5 links to existing claims (85 -> 875, 623 -> 624, 290 -> 289, 314 -> 313,
+  431 -> 430), 3 withdrawn (171, 187, 549). P5 HELD: every fragment traced to its note row, 13 of
+  20 re-seeded (84 and 85 into one claim), none left open.
+- W5 (kb-20261125-023614-440dff2): P6 HELD. downloads 765 -> 763 rows, 0707.4654 and 1006.1632
+  gone, the other 763 ids unchanged, the 3 + 16 files byte-identical, gr-qc/0608095 still present,
+  the only problem row is the known gr-qc/9412071.
+- Ledger and figures (kb-20261125-023841-d9343e6): 72 ledger rows; sample 26/30 = 86.7 per cent
+  right as worded, Clopper-Pearson 95 per cent 69.3-96.2 per cent; stratum-weighted 86.5 per cent
+  (s.e. 6.1 per cent); not right 4/30, CP 3.8-30.7 per cent. Figures fig_weak_sample.png (looked
+  at: WA carries all four errors; the two intervals overlap) and fig_actions.png (looked at:
+  counts per write as in result.json).
+- Whole kb suite after the last tool change: 276 tests, 1 xfail, exit 0.
