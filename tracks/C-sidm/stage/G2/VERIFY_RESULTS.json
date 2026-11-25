@@ -1,10 +1,10 @@
 {
   "track": "C-sidm",
   "gate": "G2",
-  "commit": "7a433f66cba9d168ea1c392ac5888e67befcb897",
-  "verified_utc": "2026-11-25T12:25:24Z",
-  "export": "/data/haiyangw/nrpic/scratch/C-sidm/tmp/stage-verify/C-sidm-G2-7a433f6-20261125T122426Z",
-  "result": "PASS",
+  "commit": "e93561aad09a76464ccb2d7628be5f069a4059fb",
+  "verified_utc": "2026-11-25T16:11:38Z",
+  "export": "/data/haiyangw/nrpic/scratch/C-sidm/tmp/stage-verify/C-sidm-G2-e93561a-20261125T161032Z",
+  "result": "FAIL",
   "checks": [
     {
       "check": "clean",
@@ -21,7 +21,7 @@
     {
       "check": "export",
       "status": "PASS",
-      "message": "clean export of 7a433f66cba9 (HEAD) in /data/haiyangw/nrpic/scratch/C-sidm/tmp/stage-verify/C-sidm-G2-7a433f6-20261125T122426Z/tree",
+      "message": "clean export of e93561aad09a (HEAD) in /data/haiyangw/nrpic/scratch/C-sidm/tmp/stage-verify/C-sidm-G2-e93561a-20261125T161032Z/tree",
       "detail": null
     },
     {
@@ -68,18 +68,19 @@
     },
     {
       "check": "runs",
-      "status": "PASS",
-      "message": "242 run manifests finished (26 hand-written, read as decision 0012 allows)",
-      "detail": null
+      "status": "FAIL",
+      "message": "1 of 246 runs have problems",
+      "detail": {
+        "C-20261125-132112-edf3fbc": [
+          "status is submitted: not finished (nrpic-run finish)"
+        ]
+      }
     },
     {
       "check": "run-notes",
       "status": "WARN",
-      "message": "26 runs read with defaults or not fully re-verifiable (nrpic-run lint)",
+      "message": "25 runs read with defaults or not fully re-verifiable (nrpic-run lint)",
       "detail": {
-        "C-20261123-032324-938ecbd": [
-          "hand-written (fields nrpic-run never writes: continuations)"
-        ],
         "C-sidm-20261115-115344-eb8b752": [
           "output directory read from a field other than outputs.dir",
           "no gate"
@@ -205,9 +206,15 @@
       }
     },
     {
+      "check": "checksums",
+      "status": "WARN",
+      "message": "output checksums not re-verified (--no-checksums)",
+      "detail": null
+    },
+    {
       "check": "status",
       "status": "PASS",
-      "message": "STATUS.md has 33 lines",
+      "message": "STATUS.md has 34 lines",
       "detail": null
     },
     {
