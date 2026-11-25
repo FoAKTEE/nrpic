@@ -1,4 +1,4 @@
-# What G2 of A-emd-pbh still lacks (lead of batch 19, 2026-11-25)
+# What G2 of A-emd-pbh still lacks (lead of batch 20, 2026-11-25)
 
 G2 is not met and the package is not ready for review. Checklist: 9 PASS, 10 OPEN, 1 FAIL (C3).
 Each item with what it lacks and the queue entry or session that serves it (`harness/bin/nrpic-queue
@@ -7,7 +7,7 @@ list --owner A-emd-pbh`).
 | item | lacks | queue entry / next step |
 |---|---|---|
 | C1 code paths of section 10 | (ii) P0L6: the finder must hold the periodic LTB horizon; (iii) the Szekeres card series; (iv) A2 analysis of S1L's snapshots | (ii) q0013 a-p0l6: chain A-20261125-044641-7d5bd16 at t = 138 of 140, segment 7 resubmitted as Slurm 5296 (pending); first status-file find at t = 118.1 (read with predictions D1-D5); (iii) q0040 a-szk-n64-128, q0041 a-szk-n256 (waiting, p2; P17-P21); (iv) A2 run and FAILED: S1L's first crossing (z, as predicted) at 6.1-6.4 t_H against the band [3.4, 5.0] (A-20261125-151715-66f198f); next: Newtonian-mode control of the same particles on processors to tell a relativistic lag from the initial velocities; no oblate card member (the snapshots bracket the crossing) |
-| C3 constraints behave | FAIL as written (bound 0.1 kept, decision 0039 item 2(c)). K4 shows the floor independent of step and source timing (A-20261125-150851-5545f8e) | the smoothed-edge test (data set 3 with prep_bh.py --edge-w, meshes A and B, processors, t <= 5; prediction first): not run. If smoothed members meet 0.1 and converge, G2 is judged on them; otherwise the review decides with the failure on record |
+| C3 constraints behave | FAIL as written for every member run so far (bound 0.1 kept, 0039 item 2(c)). Batch 20 (threshold_ball entry 13): the floor at t = 0 is the top hat's jumps (momentum constraint: S2's falls 60-fold A to B) PLUS the PCS deposit at the refinement boundaries (Hamiltonian: smooth S2 keeps 0.134 / 0.116 on A / B with PCS, 0.0064 / 5.8e-4 with CIC; A-20261125-160849-8c01b54, -161039-cb046d7, -161248-eecc672) | F2: S2 with CIC evolved (A to t = 5, B to t = 1; run A-20261125-161154-62ce3dc on processors, detached) and its PCS twin S2-A (A-20261125-160633-594a474): read with edge_compare.py by the next session. Then the review decides whether G2 is judged on smooth members with the CIC cloud (a deposit choice, not a moved bound) or with the failure on record |
 | C5 verification report | waits for C1, C3, C18 | none |
 | C6 reproducibility package | a single rerun list for G2 (stage/G2/VERIFY) | session work, no card |
 | C10 ladder schematic | not drawn | session work (paperfig) |

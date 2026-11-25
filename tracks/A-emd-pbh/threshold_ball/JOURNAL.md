@@ -541,3 +541,17 @@ twin S2-A's. Refuted by a ratio >= 0.02 at t = 0, a rise from A to B, or any out
 (F2 is read by the next session), C3's floor is named: the top hat's jumps and the PCS cloud at level boundaries,
 and the review is asked to judge C3 on smooth members with the CIC cloud (0039 item 2(c)); a change of the
 deposit is then a request to the review, not a bound moved.
+
+### Entry 13, outcome F1 (run A-20261125-161154-62ce3dc phase 1, analysis A-20261125-161248-eecc672, fig_edge.png looked at): HOLDS
+
+S2 with the CIC cloud at t = 0: line ratio 6.36e-3 (A) and 5.78e-4 (B), a fall by 11 (order 3.5); volume ||H||_2
+1.79e-3 to 1.09e-4 (16.4, order 4.0); volume ||M||_2 as with PCS (3.64e-2, 6.1e-4: the momentum constraint does not
+see the cloud at t = 0). Smooth data with the CIC cloud meet the bound by factors 16 (A) and 170 (B) and converge
+at fourth order at t = 0 [VERIFIED, two meshes]. F2 (evolution) runs: S2c-A to t = 5 (1 thread), S2c-B to t = 1
+(2 threads), the PCS twin S2-A to t = 5 (2 threads); first reading of S2-A (PCS) to t = 0.25: ratio 0.134 -> 0.08,
+volume ||H||_2 0.31 -> 0.7 (the top hat's goes 2.2 -> 12 in the same transient).
+Judgement of C3 under decision 0039 item 2(c), as far as this session can: the floor of the top-hat members comes
+from the density jumps and from the PCS deposit at the refinement boundaries, not from the evolution scheme
+[VERIFIED at t = 0 on meshes A and B; F2 decides for t <= 5]. C3 stays FAILED as written for the members run so far.
+If F2 holds, the review is asked to judge G2 on smooth members with the CIC cloud; the scan itself would have to be
+rerun with them before G3 (the top-hat threshold scan carries the PCS floor).
