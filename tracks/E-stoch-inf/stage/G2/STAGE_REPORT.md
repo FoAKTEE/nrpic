@@ -1,16 +1,15 @@
 # Stage report: E-stoch-inf G2
 
-Date: 2026-11-25 · branch `track/E-stoch-inf` at `449b8b2c1d92` · checklist
+Date: 2026-11-25 · branch `track/E-stoch-inf` at `2b456a9f66ec` · checklist
 `tracks/E-stoch-inf/stage/G2/CHECKLIST.md` (from `nrpic-stage collect`)
 
 ## Verdict
 
 **FAIL**. Tag: `stage/E-stoch-inf/G2-fail-20261125` (created and pushed by the orchestrator after review, decision 0003).
 
-- 12 checklist items not PASS or NA: C3 FAIL, C5 OPEN, C6 OPEN, C7 FAIL, C10 OPEN, C11 OPEN, C13 OPEN, C14 OPEN, C15 OPEN, C16 OPEN, C17 OPEN, C18 OPEN
-- verify ran on f8fe199; files changed since: CLAUDE.md, coord/BOARD.md, coord/DECISIONS/0029-reproduction-first-stage.md, coord/DECISIONS/0030-rulings-after-batch-10a.md, coord/DECISIONS/0031-level2-branch-and-ablation.md, coord/DECISIONS/0032-new-account-preemption-allotments.md (run verify again)
-- verify reported FAIL: sync, runs
-- no VERIFIER.md (step 7: verifier subagent; decision 0016 item 1, VERIFIER_REPORT.md accepted too)
+- 2 checklist items not PASS or NA: C3 FAIL, C7 FAIL
+- verify ran on b6cef1f; files changed since: tracks/E-stoch-inf/HANDOFF.md, tracks/E-stoch-inf/JOURNAL.md, tracks/E-stoch-inf/RISKS.md, tracks/E-stoch-inf/STATUS.md, tracks/E-stoch-inf/outbox/20261125T040230Z__to-orch__criteria-three-amplitudes-later-gates.md, tracks/E-stoch-inf/outbox/20261125T040230Z__to-orch__g2-ready-for-review.md (run verify again)
+- verify reported FAIL: runs
 
 ## Package documents (decision 0012)
 
@@ -20,7 +19,7 @@ Date: 2026-11-25 · branch `track/E-stoch-inf` at `449b8b2c1d92` · checklist
 | `stage/G2/EVIDENCE.md` | present |
 | `stage/G2/OPEN.md` | present |
 | `stage/G2/CHECKLIST.md` | present |
-| `stage/G2/VERIFIER.md` (verifier's report) | MISSING (VERIFIER.md, decision 0016; VERIFIER_REPORT.md accepted too) |
+| `stage/G2/VERIFIER.md` (verifier's report) | present |
 | `stage/G2/REVIEW.md` | none (needed where the lead rechecked helpers) |
 | scoping text | `spec/scope/SCOPE.md` |
 
@@ -30,45 +29,47 @@ Date: 2026-11-25 · branch `track/E-stoch-inf` at `449b8b2c1d92` · checklist
 |---|---|---|---|
 | C1 | The code paths used by the track pass their tests of §10 | Release card build core-v0.6: SR P256v6 (E-20261121-202935-31520bc) records identical to the tested-branch G1 run, A2 1.2078e-4 (analysis E-20261123-015014-b4ecd4e); USR seed A identical per mode to the scouting pair, U-A0..U-A3 and U-A2' pass on all eight release USR runs (E-20261123-014858-8e72d4c, -021730-a421438, -020751-0baf597; judge E-20261123-024359-5dc3213). g2prod/JOURNAL.md entry 2. | PASS |
 | C2 | Three-way convergence in particle number, mesh spacing, and gauge or boundary | Ruling 0030 item 2: a gauge variant is not required of Track E at G2 (the reproduced paper runs geodesic slicing only); C2 stands on mesh convergence in the periodic box, another gauge is a G3 item. Mesh: U-R 256 vs 320 PASS (factor 2.10 on the odd-part maximum, shell power 1.2e-4; fig_g2_resolution.png of E-20261123-024359-5dc3213); SR spectral convergence 32-256 (repro/figs Fig. 7, pass E-20261124-213029-e937f69; floor at the lowest shells, test FL128h/FL256h queued q0037/q0038, floor/JOURNAL.md entry 1). Particle number: NA (no particles before the hand-over). | PASS |
-| C3 | Constraints behave | U-A4'(a) as written: H within 4.00 +- 0.05 at all 9 judged dumps; M outside at one of 11 (3.925 at cN 6.52) - FAIL, on record without rewording (ruling 0030 item 2). U-A4'(c) PASS on the nine proper runs (H' <= 3.0e-12, M <= 0.025); U-A4'(d) control ratio 1.19e5 PASS (E-20261123-024359-5dc3213). Third amplitude s = +-1/4 ran (U256qp E-20261123-230004-861aea7, U256qm E-20261123-230507-a6246b1); its reading against Q-a..Q-c (g2prod entry 3): analysis E-20261124-233223-51b52c0 (see g2prod/JOURNAL.md entry 4). | FAIL |
+| C3 | Constraints behave | U-A4'(a) as written FAILS at one dump of M (3.9245 at cN 6.52, bar 3.95-4.05; H within at all 9 judged dumps), on record without rewording (rulings 0030 item 2, 0036 item 2); confirmed by the fresh verifier (stage/G2/VERIFIER.md table, run E-20261125-022309-d346f12). U-A4'(b) reported; (c) PASS on the proper runs (H' <= 3.03e-12, M <= 0.0252); (d) control ratio 1.19e5 / 2.38e5 PASS (E-20261123-024359-5dc3213). Quarter pair (g2prod/JOURNAL.md entry 4, judge E-20261125-033450-4c4a31c on analysis E-20261124-233223-51b52c0): Q-a REFUTED (4.1275), Q-b and Q-c hold; no s^4 cause. The three-amplitude reading (verifier run E-20261125-023427-6fb6400: every judged factor within 4 +- 0.005) stands beside the failure as a finding after the data (entry 4.2; note Sec. IV C). | FAIL |
 | C4 | A first minimal full-GR kinetic run | Decision 0026 item 3: does not apply to Track E before the hand-over from field to particles. | NA |
-| C5 | Verification report (decision 0012: STAGE_REPORT.md with EVIDENCE.md and OPEN.md; no REPORT.md) | STAGE_REPORT.md (nrpic-stage report), EVIDENCE.md, OPEN.md present. Verification of the reproduction: repro/verify/VERIFIER.md (fresh verifier, two passes). Missing for G2: a verifier of the g2prod SCOPE 4c numbers (C18) and the reading of the quarter pair. | OPEN |
-| C6 | Reproducibility package | Every run registered with manifests and checksums; decks, queues, scripts committed (g2prod/, repro/*); restart byte-exact (R0); continued runs join their originals bit for bit (repro/continue entries 12-13, E-20261124-212343-7e9c4b2, E-20261124-225720-444aecc). Rerun recipes: repro/figs/README.md, repro/verify/README.md, HANDOFF (analyse_g2.py commands); g2prod/README.md (22 lines) still lacks the analysis commands of entry 2. | OPEN |
-| C7 | The USR case is reproduced | SCOPE 4c definition: U-A0, U-A1, U-A2', U-A3 for seeds A and B, U-R, U-W, U-A4'(c), U-S, U-A4'(d) PASS; U-A4'(a) FAILS at one dump of M (3.925, bar 3.95-4.05), kept on record by ruling 0030 item 2 (no rewording; the package goes to independent review after the quarter pair is read). The reproduction of arXiv:2512.14649 (repro/note, Table IV) reproduces the USR figures in part: spectra agree, one-point widths 3.5-4 times narrower than the published ones (cause open). | FAIL |
+| C5 | Verification report (decision 0012: STAGE_REPORT.md with EVIDENCE.md and OPEN.md; no REPORT.md) | STAGE_REPORT.md (nrpic-stage report), EVIDENCE.md, OPEN.md, this CHECKLIST; verification of the SCOPE 4c numbers by a fresh verifier: stage/G2/VERIFIER.md (every recomputed number CONFIRMED, the one failure confirmed, nothing WRONG); its two open points answered in g2prod/JOURNAL.md entry 4 (quarter pair) and stage/REVIEW-wave3.md Part F. Verification of the reproduction: repro/verify/VERIFIER.md. | PASS |
+| C6 | Reproducibility package | Every run registered with manifests and checksums; decks, queue, scripts committed (g2prod/, repro/*); restart byte-exact (R0); g2prod/README.md: run ids, the analyses with their manifests and the rerun command (batch 15); note: run_all.py registered (R16 E-20261125-035757-340bd1e), repro/note/README.md 'How to rerun and rebuild'. | PASS |
+| C7 | The USR case is reproduced | SCOPE 4c as written: U-A0, U-A1, U-A2', U-A3 (seeds A and B), U-R, U-W, U-A4'(b)-(d), U-S PASS; U-A4'(a) FAILS at one dump of M, so 'the USR case is reproduced' is NOT met as written (rulings 0030 item 2 and 0036 item 2: stays FAILED, the three-amplitude reading beside it, labelled as after the data). Confirmed criterion by criterion by stage/G2/VERIFIER.md section 2. Quarter pair g2prod/JOURNAL.md entry 4. Note: repro/note/manuscript/main.pdf Sec. IV. | FAIL |
 | C8 | Sensitivity to window-function parameters and resolution | Window: U-W met by the scan (E-20261121-154733-0d1fbda, rerun E-20261121-203008-f104a3e). Resolution: U-R PASS (E-20261123-020751-0baf597 with E-20261123-014858-8e72d4c, judge E-20261123-024359-5dc3213). | PASS |
 | C9 | Track E. Decision of the feasibility gate, pending the group: continue to G1 and G2 (about two card-hours); the scope of G3 is decided at G2. The lead's choices of `spec/scope/SCOPE.md` section 4 are accepted. (0013) | G0 decision: continue (coord/GATES.md 2026-11-20); G1 signed 2026-11-21; G2 within the scope of SCOPE section 4 and 4c. | PASS |
-| C10 | Schematic: Verification ladder | Not drawn yet. | OPEN |
-| C11 | Data figure: Convergence figures (one each for particle number, mesh, gauge) | Mesh: note figure fig_specconv (repro/note/manuscript, script under repro/note/manuscript/scripts; SR spectral convergence 32-256) and the analysis figure fig_g2_resolution.png (USR 256 vs 320, E-20261123-024359-5dc3213); particle number NA; gauge NA by ruling 0030. Not yet a figure of the USR resolution pair in a note. | OPEN |
+| C10 | Schematic: Verification ladder | Verification-ladder schematic fig_ladder (repro/note/manuscript/figures/fig_ladder.pdf, script scripts/schem_ladder.py, registered run_all R16 E-20261125-035757-340bd1e; looked at), note Fig. 12. | PASS |
+| C11 | Data figure: Convergence figures (one each for particle number, mesh, gauge) | Mesh: note Fig. 14 fig_g2_resolution (USR 256^3 vs 320^3, script fig_g2_resolution.py from judge E-20261123-024359-5dc3213, R16) and Fig. 7 fig_specconv (SR spectral convergence 32-256); particle number NA (no particles before the hand-over); gauge NA by ruling 0030 item 2. | PASS |
 | C12 | Data figure: Constraint norms against time | Note figure fig_constraints (repro/note/manuscript: constraint records against e-folds, both scenarios, rungs 32-256, from registered runs; ledger with verifier verdicts) and fig_g2_records.png (every release USR run, E-20261123-024359-5dc3213). | PASS |
-| C13 | Data figure: At least one multi-scale slice mosaic with zoom boxes | Not drawn yet. | OPEN |
-| C14 | Package documents of decision 0012: STAGE_REPORT.md (nrpic-stage report), EVIDENCE.md, OPEN.md and this CHECKLIST.md in the stage directory; REVIEW.md where the lead rechecked helpers; the scoping text in SCOPE.md or SCOPING.md beside them or in the scope directory, named in the report (no REPORT.md needed) | CHECKLIST, EVIDENCE, OPEN, STAGE_REPORT present; scoping text spec/scope/SCOPE.md (section 4c for G2); REVIEW: stage/REVIEW-wave3.md Part D (analysis record; no helper package). | OPEN |
-| C15 | Data figures drawn with /zoom-figure-style from registered run outputs, one script per figure, every PNG looked at | Analysis figures from registered outputs, all looked at (g2prod entry 2); note figures with one script each pending. | OPEN |
-| C16 | Schematics drawn with /sleep-paper-figure-style: track architecture (exists / to be ported / new) and the gate timeline | G1 schematics exist (note/); G2 update not drawn. | OPEN |
-| C17 | Working note written with /paper-writing; its manuscript checker passed with --compile | Working note of the reproduction: repro/note/manuscript/main.pdf (26 pages, REVTeX, /paper-writing, guide and notation one level above; checker with the forbid list run, accepted hits only: repro/note/JOURNAL.md). It carries the SR/USR reproduction, not the SCOPE 4c judgement of g2prod (U-A* criteria, halving, quarter pair): those G2 sections are not written. | OPEN |
-| C18 | Verifier subagent (fresh context) wrote VERIFIER.md (decision 0016; VERIFIER_REPORT.md accepted too); every number of the Supplemental Material recomputed from the manifests | repro/verify/VERIFIER.md: fresh verifier of the reproduction (two passes, 133 ledger rows with verdicts; repro/note README). No fresh verifier of the g2prod SCOPE 4c numbers (U-A0..U-A4', U-R, U-S) yet. | OPEN |
+| C13 | Data figure: At least one multi-scale slice mosaic with zoom boxes | Note Fig. 13 fig_g2_mosaic: R^NR at N_f of the release run E-20261121-211214-0377aab on the slice through its maximum, box / quarter / sixteen cells with zoom boxes (script fig_g2_mosaic.py, R16; looked at). | PASS |
+| C14 | Package documents of decision 0012: STAGE_REPORT.md (nrpic-stage report), EVIDENCE.md, OPEN.md and this CHECKLIST.md in the stage directory; REVIEW.md where the lead rechecked helpers; the scoping text in SCOPE.md or SCOPING.md beside them or in the scope directory, named in the report (no REPORT.md needed) | CHECKLIST, EVIDENCE, OPEN, STAGE_REPORT (nrpic-stage report of batch 15) and VERIFIER.md in stage/G2/; scoping text spec/scope/SCOPE.md section 4c; REVIEW: stage/REVIEW-wave3.md Part F (the lead's recheck of the verifier and the quarter pair, batch 15). | PASS |
+| C15 | Data figures drawn with /zoom-figure-style from registered run outputs, one script per figure, every PNG looked at | Each note figure has one script in repro/note/manuscript/scripts/ run by the registered run_all (R16 E-20261125-035757-340bd1e) from registered run outputs (json checked against sha256sums); every PNG looked at (repro/note/JOURNAL.md entries 19-26); figstyle.py (Cyclic Zoom). | PASS |
+| C16 | Schematics drawn with /sleep-paper-figure-style: track architecture (exists / to be ported / new) and the gate timeline | G2 state of the architecture schematic (fig_architecture: first release / later releases / track analysis / ahead) and of the gate timeline (fig_timeline: G0, G1 passed, G2 ready for review), paperfig.py, scripts schem_architecture.py and schem_timeline.py, R16; note Appendix F, Figs. 20-21; looked at. | PASS |
+| C17 | Working note written with /paper-writing; its manuscript checker passed with --compile | repro/note/manuscript/main.pdf (32 pages): Sec. IV 'The ultra-slow-roll lattice against criteria fixed in advance' (criteria, runs at three amplitudes, resolution pair, window, the failure on record and the three-amplitude reading, independent check), abstract, introduction item (iv), discussion, summary rule 5, ledger Table XVI, Appendix F; written with /paper-writing (guide and notation one level above); check_manuscript.py --compile: no undefined references, no overfull boxes, accepted hits only (repro/note/JOURNAL.md entry 24); pages read. The G1 note (note/) points to it. | PASS |
+| C18 | Verifier subagent (fresh context) wrote VERIFIER.md (decision 0016; VERIFIER_REPORT.md accepted too); every number of the Supplemental Material recomputed from the manifests | stage/G2/VERIFIER.md: fresh verifier of the SCOPE 4c numbers (own reader, own R^NR extraction, own background and MS reference, own Philox; tools tested on planted data; runs E-20261125-022126-26671c3 ... -023609-01d8feb, verifier/JOURNAL.md with predictions): every recomputed number CONFIRMED, the U-A4'(a) failure confirmed, Q-a refuted, no claim WRONG. The note's ledger Table XVI cites its lines for each G2 row (ledger.py stops if a string moves). | PASS |
 | C19 | Null results and failed runs are on record (manifests and JOURNAL) | Failed predictions and failed runs on record: g2prod entry 2 (T memory band, U320 band, U-A2' at s = 1/2, U-A4'(a) halving of M; failed analysis E-20261123-015650-493cff5; invalid pass E-20261123-014905-2bf3570). | PASS |
-| C20 | STATUS.md, JOURNAL.md and HANDOFF.md are current | STATUS.md, JOURNAL.md, HANDOFF.md rewritten by the lead of batch 13 (2026-11-24). | PASS |
+| C20 | STATUS.md, JOURNAL.md and HANDOFF.md are current | STATUS.md, JOURNAL.md, HANDOFF.md rewritten by the lead of batch 15 (2026-11-24). | PASS |
 
 ## Re-verification on a clean checkout (`nrpic-stage verify`)
 
-`nrpic-stage verify` on 2026-11-23T02:54:17Z, clean export of `f8fe19994fae`: **FAIL**. Details: `VERIFY_RESULTS.md`.
+`nrpic-stage verify` on 2026-11-25T04:05:29Z, clean export of `b6cef1f00382`: **FAIL**. Details: `VERIFY_RESULTS.md`.
 
 | Check | Result | Message |
 |---|---|---|
 | clean | PASS | worktree clean (outside the stage directory being assembled) |
-| sync | FAIL | main has commits not merged: run nrpic-ctx sync |
-| export | PASS | clean export of f8fe19994fae (HEAD) in /data/haiyangw/nrpic/scratch/E-stoch-inf/tmp/stage-verify/E-stoch-inf-G2-f8fe199-20261123T025357Z/tree |
+| sync | PASS | main is merged into the branch |
+| export | PASS | clean export of b6cef1f00382 (HEAD) in /data/haiyangw/nrpic/scratch/E-stoch-inf/tmp/stage-verify/E-stoch-inf-G2-b6cef1f-20261125T040204Z/tree |
 | size | PASS | no committed file of the track above 5 MB |
 | note | PASS | tracks/<ID>/note/main.tex present |
-| package | PASS | EVIDENCE.md, OPEN.md, CHECKLIST.md present (decision 0012); scoping text: spec/scope/SCOPE.md; no verifier's report yet (VERIFIER.md, decision 0016) |
+| package | PASS | EVIDENCE.md, OPEN.md, CHECKLIST.md present (decision 0012); scoping text: spec/scope/SCOPE.md; verifier's report VERIFIER.md |
 | note-pdf | PASS | note/main.pdf committed after the last .tex change |
 | style | PASS | 2 style copies equal harness/style/SHA256SUMS (czstyle.py, paperfig.py) |
 | fig-script | PASS | 12 figures, each with its script |
 | min-figs | PASS | 3 schematics and 9 data figures (brief 13.4 asks at least 1 and 5 at G2) |
-| runs | FAIL | 2 of 186 runs have problems |
+| runs | FAIL | 7 of 289 runs have problems |
 | run-notes | WARN | 30 runs read with defaults or not fully re-verifiable (nrpic-run lint) |
-| status | PASS | STATUS.md has 38 lines |
-| rerun | WARN | re-run skipped (--no-rerun) |
+| status | PASS | STATUS.md has 34 lines |
+| rerun | PASS | 12 of 12 scripts and commands ran cleanly in the export |
+| compare | PASS | 24 regenerated files compared with the committed ones; 0 differ beyond tolerance (rtol 1e-06, atol 1e-12, PNG rms 0.005) |
+| regenerate | PASS | all 24 committed figure files regenerated |
 
 ## Figures
 
@@ -89,7 +90,20 @@ Date: 2026-11-25 · branch `track/E-stoch-inf` at `449b8b2c1d92` · checklist
 
 ## Verifier report
 
-MISSING: the verifier subagent has not reported (`stage/G2/VERIFIER.md`, decision 0016).
+`tracks/E-stoch-inf/stage/G2/VERIFIER.md` present; its first lines:
+
+> # VERIFIER: gate G2 of Track E (ultra-slow-roll case), fresh verifier
+> 
+> Helper package `stage/G2/verifier/` of owner E-stoch-inf, batch 14 (2026-11-25, 02:16 to 03:15
+> UTC). Decision 0016 item 4, ruling 0035 item 1. Criteria: `spec/scope/SCOPE.md` section 4c as
+> written (U-A0 to U-A4' (a)-(d), U-R, U-S, U-W, the floor, the clause on the maxima). Package
+> judged: the release ladder of `g2prod` on the card build core-v0.6 (11 runs, `g2prod/queue.txt`)
+> and the window scan that U-W cites. Processors only, 0 card-hours, at most 4 cores. Journal
+> with predictions and outcomes, including the failed ones: `verifier/JOURNAL.md` entries 1-6.
+> 
+> ## 1. What was checked and how
+> 
+> Independence. I wrote my own reader of the NRSFDMP2 dumps from the interface text
 
 ## Null results and failed runs
 
@@ -125,6 +139,7 @@ MISSING: the verifier subagent has not reported (`stage/G2/VERIFIER.md`, decisio
 - `E-20261124-221028-81db3d8`: failed (exit 1), repro/verify update pass V10-V12: constraint ratios from the dumps of RNC256 and RSF256, Fig. 7 256^3 rung against lockstep and my MS reference and between rungs, SR/USR level 2 against level 0 at N_f (own readers)
 - `E-20261124-224156-28cbf07`: failed (exit 1), R8a: four readers of R^NR on dump 17 of C128S and CL256S against one linear reference (why the note's and the check's 256^3 members of Fig. 7 differ, ledger rows 68-71)
 - `E-20261124-230810-9ae014e`: failed (exit 1), repro/figs figure run 7: every figure as E-20261124-213739-9776185 plus RSF256 to t = 8.5 (--rsf256 E-20261124-225826-0bf3842): Fig. 2 with constraint panels, Figs. 3 and 6a from RSF256, joins with RSF256 to 1386 and its record against P256v6, scope P2 whole-run maxima (entry 14)
+- `E-20261125-022137-182e82c`: failed (exit -15), G2 verifier V1: own reference of the USR case (Friedmann + Klein-Gordon background, landmarks, continuum MS modes of 3415 shells from the mode file at N*, at every dump time of the release ladder), lattice rms at N_f, comparison with usr_reference.json and the lockstep record; predictions stage/G2/verifier/JOURNAL.md entry 1
 - `E-stoch-inf-20261115-125316-dafadc4`: failed (exit 1), V2: quadratic inflation m = M_Pl, phi_in = phi_UV = sqrt42 (2206.11234 Fig. 2): Monte Carlo (direct and importance sampling) vs closed-form characteristic function, BDF2 survival solver, moment recursion; pole structure
 - `E-stoch-inf-20261115-131526-629fed8`: failed (exit 1), T-N6 of noise/JOURNAL.md: calibration of the A3 decisions (KS of |w|^2 and arg w, fourth moment) on correct amplitudes, 2000 seeds of the base case; single-decision calibration and family-wise false-alarm rate per validation
 
@@ -134,7 +149,7 @@ MISSING: the verifier subagent has not reported (`stage/G2/VERIFIER.md`, decisio
 Rewritten by the lead on 2026-11-15 at the G0 package; updated by the lead on 2026-11-19
 (wave 2b) after the slow-roll ladder, the G0 verifier (`stage/G0/VERIFIER.md`) and the review
 `stage/REVIEW-wave2.md`; updated by the lead of batch 2a on 2026-11-21 after the G1 verifier
-(`stage/G1/VERIFIER.md`), the wave-3 ladder items and `stage/REVIEW-wave3.md`; updated by the lead of batch 3 on 2026-11-21 after the note and usr packages (`stage/REVIEW-wave3.md` Part B); updated by the lead of batch 13 on 2026-11-24 (R13, R23, R25, R27 changed; R28, R29 new); updated by the lead of batch 10a on 2026-11-22 after the g2prod ladder (R13, R24, R25-R27). Sources: `spec/scope/SCOPE.md` (sections 3, 4, 4b, 8),
+(`stage/G1/VERIFIER.md`), the wave-3 ladder items and `stage/REVIEW-wave3.md`; updated by the lead of batch 3 on 2026-11-21 after the note and usr packages (`stage/REVIEW-wave3.md` Part B); updated by the lead of batch 13 on 2026-11-24 (R13, R23, R25, R27 changed; R28, R29 new); updated by the lead of batch 15 on 2026-11-24 (R25, R26 changed; R30, R31 new); updated by the lead of batch 10a on 2026-11-22 after the g2prod ladder (R13, R24, R25-R27). Sources: `spec/scope/SCOPE.md` (sections 3, 4, 4b, 8),
 `codebase/DESIGN_REVIEW.md`, `langevin/README.md`, `noise/NOISE_SPEC.md`, `ladder/README.md`.
 Labels as in the brief.
 
@@ -164,11 +179,12 @@ Labels as in the brief.
 | R22 | Late in the 256^3 USR pair the momentum parts are equal and flat at 1.6e-13-1.9e-13 absolute, seven times the 128^3 floor; cause not named | open | low (after USR, below the record's 2e-3) | usr entry 15 | the halving pair at 256^3 (U256hp/hm, s = +-1/2) is queued in `g2prod` (last but one; waits for the allotment) |
 | R23 | Unattended card runs: own sequencers are retired (decisions 0033, 0034: one shared queue, cap of five jobs for the account); the g2prod sequencer ended by itself on 2026-11-23 20:06 PST after U256qp/qm | retired 2026-11-24 | - | `nrpic-queue list --owner E-stoch-inf` | queue entries carry --package so later edits elsewhere do not block them |
 | R24 | 320^3 and 384^3 never ran | retired 2026-11-22 | - | timing E-20261121-202929-43dcc9c | 320^3 2.52 s per step, 36.4e3 MiB; 384^3 4.30 s, 61.1e3 MiB (fits one card); U320 pair ran in two segments each |
-| R25 | U-A4'(a) misses at one dump of M (even halving 3.925 at cN 6.52, bar 3.95-4.05): as written the USR case is not reproduced in full (g2prod 2.3); ruling 0030 item 2: no rewording, independent review after the quarter pair is read | happened | high for the G2 verdict | Q-a..Q-c of g2prod entry 3; analysis E-20261124-233223-51b52c0 | a cause is named only if Q-a holds; the miss stays on record either way |
-| R26 | A common factor of all modes in the odd part, -4.1e-5 at s = 1, scaling as s^2, arises after cN 5.5 (third order in the amplitude); it caps what the k <= 32 maximum can show under resolution (U-R factor 2.10) | certain | low for U-A2' (bar 0.02), medium for U-R and for comparisons at 1e-4 | fig_g2_common_mode.png (E-20261123-024359-5dc3213) | name the term only after a run that could fail (s = 1/4 pair, Q-b) |
+| R25 | U-A4'(a) misses at one dump of M (3.9245 at cN 6.52, bar 3.95-4.05): as written the USR case is not reproduced in full | happened; stays FAILED (rulings 0030 item 2, 0036 item 2) | high for the G2 verdict (the gate review decides) | g2prod entry 4: Q-a refuted (4.1275 from s = 1/2, 1/4), so no s^4 cause; verifier's three-amplitude reading (E-20261125-023427-6fb6400): the 4c floor estimator, every judged factor within 4 +- 0.005 | on record beside the reading after the data; proposal of a three-amplitude floor for later gates (outbox batch 15) |
+| R26 | A common factor of all modes in the odd part, -4.107e-5 at s = 1, -9.87e-6 at 1/2, -2.07e-6 at 1/4 (a s^2 + b, a = -4.16e-5, b = +5.3e-7), arises after cN 5.5: a third-order term; it caps the k <= 32 maximum under resolution (U-R factor 2.10, ratio 0.992 below |n| ~ 25) | certain | low for U-A2', medium for U-R and for 1e-4 comparisons; a finer rung would fail U-R (i) as written | g2prod 4.1 (Q-b held); note Fig. 14 | which third-order term is not named; U-R clause on the discretisation part proposed for later gates (outbox batch 15) |
 | R27 | Several sessions of E share this worktree (repro/*, decision 0028; finished on 2026-11-24): a commit without paths could take another session's staged files | lower now (the reproduction is complete) | medium | git status | path-limited commits only |
 | R28 | The SR spectral convergence stops at a floor of about 1.5e-7 (power) at the lowest shells, the same at 128 and 256 cells, independent of dx, dt and the linear reference (repro/verify 8.3); cause open | certain | low for G2 (far below cosmic variance), medium for claims of convergence order | floor/JOURNAL.md F1-F5 | half-amplitude pair FL128h/FL256h (q0037/q0038): second order halves it, a numerical floor keeps it |
 | R29 | The one-point spread of the fields is 3.5-4 times narrower in our runs than in the published one-point figures while the spectra agree (repro/note, open; verifier: Parseval check of P1 Fig. 2 against Fig. 3 inconsistent by that factor) | open | medium for the reproduction verdict, low for G2 | repro/note Table IV | a question to the authors is the group's step (nobody here contacts them); state it as [JUDGEMENT] |
+| R30 | The three-amplitude statistics (D1, D2, sigma) exist only in the verifier's run; the package's reader has not recomputed them, and what the per-run part F_s is (deterministic, equal size at every s; rounding not shown) is open | open | medium if the reading is cited beyond 'after the data' | stage/G2/OPEN.md items 4, 5 | recompute D1, D2 with the track's reader before any later gate relies on a three-amplitude floor |
 
 ## Decision requested from the group
 

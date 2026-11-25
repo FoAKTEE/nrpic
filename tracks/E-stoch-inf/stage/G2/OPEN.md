@@ -22,7 +22,13 @@ Open, not required by the G2 criteria:
 6. Observations without a cause: U-A2' at s = 1/2 14 percent above s = 1; a4res Q6; the one-point
    width factor 3.5-4 against the published figures (repro/note); the offset of the common mode at
    s = 1/4 (about +4e-7 before the end of USR, g2prod 4.1).
-7. `nrpic-stage verify` of batch 15 ran with --no-checksums (the checksum pass over about 280
+7. `nrpic-stage verify` of batch 15 (VERIFY_RESULTS.md): FAIL on one check, `runs`: 7 of 289 runs, the
+   backreaction-level ablation of the reproduction (2026-11-23), name an input executable,
+   scratch/core/exe/core_noise-level2/athena_gpu, that core republished after its review (sha256
+   468109496c82... in the manifests, d7069a4e... now). Not a G2 criterion run; core's review says
+   the runs stand (note: "a reviewed development version"); request to core for the superseded
+   build's provenance (outbox batch 15). Every other check PASS (rerun of 12 scripts, 24 figures
+   regenerated within tolerance, size, sync, package). It ran with --no-checksums (the checksum pass over about 280
    run directories, hundreds of GB, takes one to two hours); a full pass is owed before the gate
    is signed if the reviewer asks for it.
 

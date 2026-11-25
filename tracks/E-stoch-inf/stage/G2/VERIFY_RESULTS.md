@@ -1,33 +1,50 @@
 # Re-verification: E-stoch-inf G2
 
-`harness/bin/nrpic-stage verify E-stoch-inf G2` on 2026-11-23T02:54:17Z, clean export of commit `f8fe19994fae` in `scratch/E-stoch-inf/tmp/stage-verify/E-stoch-inf-G2-f8fe199-20261123T025357Z`. Result: **FAIL**.
+`harness/bin/nrpic-stage verify E-stoch-inf G2` on 2026-11-25T04:05:29Z, clean export of commit `b6cef1f00382` in `scratch/E-stoch-inf/tmp/stage-verify/E-stoch-inf-G2-b6cef1f-20261125T040204Z`. Result: **FAIL**.
 
 | Check | Result | Message |
 |---|---|---|
 | clean | PASS | worktree clean (outside the stage directory being assembled) |
-| sync | FAIL | main has commits not merged: run nrpic-ctx sync |
-| export | PASS | clean export of f8fe19994fae (HEAD) in /data/haiyangw/nrpic/scratch/E-stoch-inf/tmp/stage-verify/E-stoch-inf-G2-f8fe199-20261123T025357Z/tree |
+| sync | PASS | main is merged into the branch |
+| export | PASS | clean export of b6cef1f00382 (HEAD) in /data/haiyangw/nrpic/scratch/E-stoch-inf/tmp/stage-verify/E-stoch-inf-G2-b6cef1f-20261125T040204Z/tree |
 | size | PASS | no committed file of the track above 5 MB |
 | note | PASS | tracks/<ID>/note/main.tex present |
-| package | PASS | EVIDENCE.md, OPEN.md, CHECKLIST.md present (decision 0012); scoping text: spec/scope/SCOPE.md; no verifier's report yet (VERIFIER.md, decision 0016) |
+| package | PASS | EVIDENCE.md, OPEN.md, CHECKLIST.md present (decision 0012); scoping text: spec/scope/SCOPE.md; verifier's report VERIFIER.md |
 | note-pdf | PASS | note/main.pdf committed after the last .tex change |
 | style | PASS | 2 style copies equal harness/style/SHA256SUMS (czstyle.py, paperfig.py) |
 | fig-script | PASS | 12 figures, each with its script |
 | min-figs | PASS | 3 schematics and 9 data figures (brief 13.4 asks at least 1 and 5 at G2) |
-| runs | FAIL | 2 of 186 runs have problems |
+| runs | FAIL | 7 of 289 runs have problems |
 | run-notes | WARN | 30 runs read with defaults or not fully re-verifiable (nrpic-run lint) |
-| status | PASS | STATUS.md has 38 lines |
-| rerun | WARN | re-run skipped (--no-rerun) |
+| status | PASS | STATUS.md has 34 lines |
+| rerun | PASS | 12 of 12 scripts and commands ran cleanly in the export |
+| compare | PASS | 24 regenerated files compared with the committed ones; 0 differ beyond tolerance (rtol 1e-06, atol 1e-12, PNG rms 0.005) |
+| regenerate | PASS | all 24 committed figure files regenerated |
 
 ## runs
 
 ```
 {
- "E-20261123-020704-2b99463": [
-  "status is submitted: not finished (nrpic-run finish)"
+ "E-20261123-035724-b661081": [
+  "input /data/haiyangw/nrpic/scratch/core/exe/core_noise-level2/athena_gpu changed since the run (sha256 differs)"
  ],
- "E-20261123-021204-2f573ec": [
-  "status is submitted: not finished (nrpic-run finish)"
+ "E-20261123-152119-38957ba": [
+  "input /data/haiyangw/nrpic/scratch/core/exe/core_noise-level2/athena_gpu changed since the run (sha256 differs)"
+ ],
+ "E-20261123-153146-d965002": [
+  "input /data/haiyangw/nrpic/scratch/core/exe/core_noise-level2/athena_gpu changed since the run (sha256 differs)"
+ ],
+ "E-20261123-153347-18e7c21": [
+  "input /data/haiyangw/nrpic/scratch/core/exe/core_noise-level2/athena_gpu changed since the run (sha256 differs)"
+ ],
+ "E-20261123-164235-49b0945": [
+  "input /data/haiyangw/nrpic/scratch/core/exe/core_noise-level2/athena_gpu changed since the run (sha256 differs)"
+ ],
+ "E-20261123-183822-4abbcae": [
+  "input /data/haiyangw/nrpic/scratch/core/exe/core_noise-level2/athena_gpu changed since the run (sha256 differs)"
+ ],
+ "E-20261123-192948-348e2e5": [
+  "input /data/haiyangw/nrpic/scratch/core/exe/core_noise-level2/athena_gpu changed since the run (sha256 differs)"
  ]
 }
 ```
@@ -162,4 +179,131 @@
   "output directory read from a field other than outputs.dir",
   "no gate",
   "input /data/haiyangw/nrpic/wt/E-stoch-inf/tracks/E-stoch-inf/noise/ref/noise_ref.py changed since the run (s
+```
+
+## compare
+
+```
+[
+ [
+  "note/figures/fig_deltan.pdf",
+  "PASS",
+  "regenerated (vector files carry dates; the PNG preview is compared)"
+ ],
+ [
+  "note/figures/fig_noise.pdf",
+  "PASS",
+  "regenerated (vector files carry dates; the PNG preview is compared)"
+ ],
+ [
+  "note/figures/fig_background.pdf",
+  "PASS",
+  "regenerated (vector files carry dates; the PNG preview is compared)"
+ ],
+ [
+  "note/figures/schem_timeline.png",
+  "PASS",
+  "identical"
+ ],
+ [
+  "note/figures/fig_freezing.png",
+  "PASS",
+  "identical"
+ ],
+ [
+  "note/figures/fig_noise.png",
+  "PASS",
+  "identical"
+ ],
+ [
+  "note/figures/fig_sr_order.png",
+  "PASS",
+  "identical"
+ ],
+ [
+  "note/figures/fig_sr_order.pdf",
+  "PASS",
+  "regenerated (vector files carry dates; the PNG preview is compared)"
+ ],
+ [
+  "note/figures/schem_dataflow.png",
+  "PASS",
+  "identical"
+ ],
+ [
+  "note/figures/schem_dataflow.svg",
+  "PASS",
+  "regenerated (vector files carry dates; the PNG preview is compared)"
+ ],
+ [
+  "note/figures/fig_cost.png",
+  "PASS",
+  "identical"
+ ],
+ [
+  "note/figures/fig_sr_freezing.pdf",
+  "PASS",
+  "regenerated (vector files carry dates; the PNG preview is compared)"
+ ],
+ [
+  "note/figures/fig_cost.pdf",
+  "PASS",
+  "regenerated (vector files carry dates; the PNG preview is compared)"
+ ],
+ [
+  "note/figures/fig_sr_freezing.png",
+  "PASS",
+  "identical"
+ ],
+ [
+  "note/figures/fig_deltan.png",
+  "PASS",
+  "identical"
+ ],
+ [
+  "note/figures/fig_background.png",
+  "PASS",
+  "identical"
+ ],
+ [
+  "note/figures/schem_architecture.svg",
+  "PASS",
+  "regenerated (vector files carry dates; the PNG preview is compared)"
+ ],
+ [
+  "note/figures/schem_architecture.png",
+  "PASS",
+  "identical"
+ ],
+ [
+  "note/figures/schem_timeline.svg",
+  "PASS",
+  "regenerated (vector files carry dates; the PNG preview is compared)"
+ ],
+ [
+  "note/figures/fig_freezing.pdf",
+  "PASS",
+  "regenerated (vector files carry dates; the PNG preview is compared)"
+ ],
+ [
+  "note/figures/fig_sr_modes.png",
+  "PASS",
+  "identical"
+ ],
+ [
+  "note/figures/fig_sr_modes.pdf",
+  "PASS",
+  "regenerated (vector files carry dates; the PNG preview is compared)"
+ ],
+ [
+  "note/figures/fig_sr_constraints.png",
+  "PASS",
+  "identical"
+ ],
+ [
+  "note/figures/fig_sr_constraints.pdf",
+  "PASS",
+  "regenerated (vector files carry dates; the PNG preview is compared)"
+ ]
+]
 ```
