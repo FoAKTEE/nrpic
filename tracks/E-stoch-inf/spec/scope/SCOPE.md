@@ -465,7 +465,7 @@ reader with Z0-Z2. (2) The pilot (re-entered at priority 2: the gate package wai
 128^3 runs, 21 dumps with constraint fields) and G3-R (four 160^3 runs) before the baseline, priority 2:
 they can invalidate the set. (4) Baseline: the first two jobs (the ten minus members of pairs 0-9 with
 pairs 10-12; pairs 13-20) after the pilot; the rest only once the pilot's measured cost per run is written
-here. (5) Level 2. Total about 13 card-hours at the window scan's cost (gauge leg removed, level 2 at 1.9).
+here. (Changed before the submission, same day: 14 runs a job, the ten minus members of pairs 0-9 with pairs 10-11, then pairs 12-18, so that a job fits the hour at the top of G3P-1, 0.06 card-hours a run.) (5) Level 2. Total about 13 card-hours at the window scan's cost (gauge leg removed, level 2 at 1.9).
 
 A13 Replaces the paragraph '"G3 of Track E is met" = ...' above: the statistic of 4d.1 measured on 128
 mirrored pairs with its standard errors; (V) and (T) of A2 and the comparison of A4 stated with their
