@@ -216,3 +216,12 @@ c0^2/2): the profile shift is close to the optimal tilt, so in the tail the weig
   A(4) = (F_+ - F_-)/(F_+ + F_-) = 0.210 +- 0.001 (direct: 0.27 +- 0.05). nu = 4.5: F_+ 4.53e-6, F_- 2.46e-6; nu = 5:
   4.25e-7, 1.84e-7.
 Next: a second direct run of 4e6 with another seed (or the tilted run's own nu = 3 from a c0 = 3 run) decides TL3.
+
+## entry-11 (2026-11-25 08:40 PST): a second direct 4e6 run of s0.01_lattice with independent seeds, prediction
+
+`ref_spec.py` takes NRPIC_REF_SEEDTAG (appended to the seed string; empty reproduces every earlier run). Run: 4e6 paths,
+s0.01_lattice only, seed tag "_rep2", suffix _4e6rep2, 5 cores. Prediction (TL3 of entry 7 left open on side +):
+- R2a: its F_+(3) (latsig) lies within two of its standard errors (about 1.9e-5) of the tilted 1.4613e-3, i.e. in
+  [1.423e-3, 1.500e-3]; F_-(3) within two of the tilted 1.2313e-3. Refuted outside: then the tilted F_+ is biased
+  and A9's validation fails on that side.
+- R2b: variance gate passes (within three s.e. of the lattice sum); skewness within two combined s.e. of 0.0199.

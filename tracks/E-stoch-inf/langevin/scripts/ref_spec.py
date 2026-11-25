@@ -172,8 +172,9 @@ def main():
         n = max(int(NREAL * frac), 16)
         nch = CH if n >= CH * 100 else 1
         tab = tabs.get((s, kd))
+        stag = os.environ.get("NRPIC_REF_SEEDTAG", "")   # batch 20: an independent repeat (empty: the seeds of every earlier run)
         res = pmap(run_chunk, [(n // nch, r, s, kd, amp, latt, dN, tab)
-                               for r in seeds(zlib.crc32(f"{CASE}:{name}".encode()), nch)])
+                               for r in seeds(zlib.crc32(f"{CASE}:{name}{stag}".encode()), nch)])
         Nall = np.concatenate(res, axis=0)
         samples[name] = Nall
         rec = dict(n=len(Nall), sigma=s, kind=kd, amp=amp, lattice=latt, dN=dN)
