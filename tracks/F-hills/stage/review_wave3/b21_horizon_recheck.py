@@ -191,7 +191,11 @@ def main():
         m = a[ok, 2]
         dev = float(np.max(np.abs(m / np.median(m) - 1)))
         mem = max(float(data[(name, n)][0][data[(name, n)][1], 2].max()) for n in (0, 1))
-        h4[name] = {"heavy_max_rel_dev": dev, "member_max_mass": mem}
+        far = np.abs(m / np.median(m) - 1) > 0.01
+        late = a[ok, 1] >= 1.0
+        h4[name] = {"heavy_max_rel_dev": dev, "member_max_mass": mem,
+                    "heavy_times_beyond_1pc": [float(x) for x in a[ok, 1][far][:10]],
+                    "heavy_max_rel_dev_after_1M": float(np.max(np.abs(m[late] / np.median(m) - 1)))}
         okh4 &= dev < 0.01 and mem < 0.5
     h4["verdict"] = "MET" if okh4 else "REFUTED"
     res["H4"] = h4
