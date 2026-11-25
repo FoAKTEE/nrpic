@@ -57,3 +57,9 @@ A334s3i+  resume 20 C-20261124-091733-b92f4e5 csidm-A334s3i tracks/C-sidm/longru
 # chain helper at 12:00 PST (decision 0033 item 2; segment 6, after 2 min); closed as stopped and
 # continued in place from its newest restart (segment cap 24 kept: 6 used + 18) ---------------
 A334s3o+  resume 18 C-20261124-120250-9e6a3ba csidm-A334s3o tracks/C-sidm/longruns/inputs/A8_y0p33403_s3_kout.athinput output2/dt=10 A: continue A334s3o from its newest restart to 600 M
+# --- batch 17 (2026-11-25): N6c held at N = 1e6 (NS.1), so the bracket of block A is read at
+# N = 1e6 on M/8, and the gauge leg of C2 starts on D2 (predictions: JOURNAL.md 2026-11-25T11:56Z
+# B17.4 and 12:01Z B17.5, B17.6; decks make_decks_b17.py; executable of the series, core-v0.6) --
+N6b344    chain 2.5  1000000 csidm-N6b344  tracks/C-sidm/longruns/inputs/A8N_y0p34400_N1e6_s1_kin.athinput NS-b: y0 0.344 kicked in at N = 1e6 on M/8, 600 M (B17.5)
+N6b324    chain 2.5  1000000 csidm-N6b324  tracks/C-sidm/longruns/inputs/A8N_y0p32400_N1e6_s1_kin.athinput NS-b: y0 0.324 kicked in at N = 1e6 on M/8, 600 M (B17.6)
+D2eta1    chain 0.8  100000  csidm-D2eta1  tracks/C-sidm/longruns/inputs/D2_cc2_kn10_f2_s1_eta1.athinput D2g: D2 f = 2 seed 1 on M/8 with shift_eta 1.0, 220 M (B17.4)
