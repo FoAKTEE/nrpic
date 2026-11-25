@@ -213,7 +213,7 @@ Level 1 against level 0 gives a smooth, one-signed difference that grows with $k
 
 \section{The ultra-slow-roll lattice against criteria fixed in advance}\label{sec:criteria}
 
-A reproduction asks whether a code returns what a paper prints. A verified capability asks more: that the code meets thresholds written down before the runs that judge it. For the USR scenario we fixed nine criteria and their thresholds before any production run, together with two rules: maxima run over every record time and every mode, and no record time is dropped afterwards. The criteria cover the background, the linear solution per mode, the freezing of long modes, the constraints, resolution, a second random realization and the coarse-graining window. Figure~\ref{fig:ladder} shows the ladder from these inputs to the outcome, and Table~\ref{tab:ledgerultraslowrollcriteria} of the ledger holds every value.
+A reproduction asks whether a code returns what a paper prints. A verified capability asks more: that the code meets thresholds written down before the runs that judge it. For the USR scenario we fixed nine criteria and their thresholds before any production run, together with two rules: maxima run over every record time and every mode, and no record time is dropped afterwards. The criteria cover the background, the linear solution per mode, the freezing of long modes, the constraints, resolution, a second random realization and the coarse-graining window. Figure~\ref{fig:ladder} shows the ladder from these inputs to the outcome, and Table~\ref{tab:ledgerultraslowrollcriteria} of the ledger holds every value. Appendix~\ref{app:track} places the test in the plan of the track.
 
 \begin{figure*}
 \includegraphics[width=\textwidth]{fig_ladder}
@@ -527,6 +527,23 @@ Tables~\ref{tab:ledgerlatticebackground}--\ref{tab:ledgerultraslowrollcriteria} 
 The Check column gives the verdict of the independent check on each row, with the line of its report in brackets: ``yes'', its value agrees within the stated or sampling precision (its value follows where it differs in the last digit or stands for a definition); ``differs'', its value, given, differs beyond the printed digits while the statement it supports holds; ``beyond reach'', its method cannot reach the printed digits; ``quote'', the printed string was checked at its line; ``rerun only'', it reproduced the row only by rerunning our scripts; ``run joined'', it joined the run and compared its records with the dumps but did not recompute the value; a dash, no check (two rows added after the check, and the slice of Fig.~\ref{fig:mosaic}); ``verifier's run'', a value that only the independent check's own run gives. In the table of the USR criteria the Check column cites the report of the independent check of Sec.~\ref{sec:g2check}. The script stops if the verifier's value does not stand on the line it names.
 
 \input{tables/ledger}
+
+
+\section{The track: architecture and gates}\label{app:track}
+
+The reproduction and the criteria of Sec.~\ref{sec:criteria} are the first two stages of a longer plan: tail statistics of the curvature perturbation against the one-patch description, and initial conditions for particle runs of primordial black-hole formation. Figure~\ref{fig:architecture} shows which parts of the calculation sit in the code and which in the analysis outside it, and Fig.~\ref{fig:timeline} the gates of the plan.
+
+\begin{figure*}
+\includegraphics[width=0.9\textwidth]{fig_architecture}
+\caption{Architecture of the calculation. Left to right: the initial slice and the noise, the evolution in the code, and the references and analysis outside the code. Colors mark the first release of the code, its later releases, the analysis of the track, and what lies ahead; the bottom row lists the deliverables.}
+\label{fig:architecture}
+\end{figure*}
+
+\begin{figure*}
+\includegraphics[width=0.9\textwidth]{fig_timeline}
+\caption{Gates of the track, from feasibility to the paper, with indicative times and the work between gates. Colors mark gates passed, in progress and ahead; the triangle marks the present state.}
+\label{fig:timeline}
+\end{figure*}
 
 \bibliography{references}
 

@@ -576,3 +576,15 @@ change (text only); every other PNG and json byte-equal to R12.
 R13 HELD: only fig_ladder.png differs from R12 (lambda in the amplitude box). One s was left in the
 ledger caption (e(s)/e(s/2)); written e(lambda)/e(lambda/2). Prediction for R14: byte-equal to R13
 except tables/ledger.tex (caption only). R14 is the source of the committed figures and tables.
+
+## Entry 23 (2026-11-24 20:00 PST): outcome of R14 (E-20261125-035103-f18b379); C16 schematics; R15
+
+R14 HELD: every PNG byte-equal to R13; ledger.tex differs only by the caption and the run id in its
+"this run" sources. Compile clean (30 pages), pages 10 and 30 read again.
+C16 of the G2 checklist (architecture and gate timeline at G2) was still missing: the G1 versions
+(tracks/E-stoch-inf/note/scripts) are copied into this note's scripts and brought to the state of
+2026-11-24 (G1 passed, G2 package ready for review; USR runs, window, resolution pair, three
+amplitudes, level 2 in the later releases; drafts looked at in scratch/E-stoch-inf/tmp/b15); a short
+appendix "The track: architecture and gates" carries them. Prediction for R15: every figure of R14
+byte-equal; two new PNGs (fig_architecture, fig_timeline); the note compiles with no undefined
+reference, about 32 pages; the appendix figures fit their pages.
