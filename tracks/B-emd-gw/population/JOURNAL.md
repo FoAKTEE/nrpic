@@ -820,3 +820,31 @@ Run B-20261125-170321-cd30c0b (`vel_check.py`, 4 epochs). [VERIFIED by it]
   cent of 1 at every epoch, and the relative spread of the GR masses is of the order of the
   density contrast at a = 2.3 (1e-3 to 1e-2) while the Newtonian masses are equal to round-off.
   Refuted if the ratio stays above 1.3 at a = 9 with the masses exchanged.
+
+## 2026-11-25 09:12 PST (lead of batch 21): VC2 outcome; the cause of the N4 failure
+
+Run B-20261125-170535-84c9ba5 (`vel_check.py` with the masses exchanged; figure
+`fig_vel_check.png` in its run directory looked at: the right panel's y label is cut at the top, a
+cosmetic defect). [VERIFIED by it]
+- VC2 HOLDS in its main part: with the GR positions and the Newtonian masses the potential term of
+  the GR set over the Newtonian one is 1.004, 0.988, 0.965, 0.906 and the full source 1.010, 1.000,
+  0.989, 0.944 at a = 2.3, 9.0, 20.3, 36 (within 10 per cent; refuted above 1.3 at a = 9). Its side
+  statements FAIL: the relative spread of the GR masses is 0.0283 (predicted 1e-3 to 1e-2) and of
+  the Newtonian masses 2e-4 (predicted round-off; they come from the target density and the
+  Jacobian, `make_ic.py` line 23).
+- Cause of the N4 failure, named after a run in which it could have failed (VC2): the GR particle
+  file carries the rest-mass weight of the initial data, m W psi^6 (1 + dN - 2 psiN)/(1 + dN)
+  (`make_ic.py` line 133), a weight that is constant along each particle; `hqs_particles` of
+  `analyze_gr.py` deposits it as if it were the Newtonian mass, which adds a density term of the
+  size of the potential (2.8 per cent rms) that does not grow and dominates the lowest k early on.
+  It is an error of that estimator, not of the run: the GR metric and the Newtonian particles agree
+  (N4 entry above), and the GR particles move as the Newtonian ones do (VC1: velocities 0.3-0.6 per
+  cent, positions 0.002-0.08 cells to a = 36).
+- Consequences [JUDGEMENT]: every use of `Omega_qs_part`, `spec_qs` and `cmp_*_qs` of
+  analyze_gr.py is biased high at early times (A1-A3 of 2026-11-24 05:58 and GD3's "particles'
+  estimate" of 2026-11-25 04:10: the ratio "corrected 5.4e-7 against particles 8.3e-7 at a = 121"
+  is not a reference until redone). The fix is one line (deposit m / (W psi^6 ...) or equal
+  masses, as `vel_check.py` does); the rerun of analyze_gr.py over the two GR runs takes about an
+  hour of processors and is the next session's (not done here; prediction first). N4 stays FAILED
+  as written, on record, with this cause; after a = 36 the same-particle ratio with equal masses is
+  not yet measured.
