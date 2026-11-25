@@ -3,8 +3,10 @@
 For a reader with no memory. The owner's own HANDOFF (`tracks/core/HANDOFF.md`) belongs
 to core's lead on `core/nrpic` and is not written from this branch.
 
-State (2026-11-24 16:45 PST, batch 13): both items of the package are implemented,
-tested on processors, documented and published.
+State (2026-11-24 18:10 PST, batch 13): both items of the package are implemented,
+tested on processors, documented and published. The last processor test (Track A's
+refined deck with the option, journal entry 16) ended at 18:04. One thing is open: the
+card job below.
 
 1. Step limit of the gauge sectors, `<z4c> dt_gauge` (W31): `athenak/src/z4c/
    z4c_newdt_gauge.cpp` and hooks; `tracks/core/interfaces/step_limit.md`.

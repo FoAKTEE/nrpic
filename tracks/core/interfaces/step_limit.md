@@ -244,7 +244,7 @@ with a 1+log lapse**; or `dt_gauge = 0.9`.
 | T1 | bounds of the start-up line against the Python twin, six gauge settings | agree to 2.4e-6 cells | core-20261124-140144-47691db |
 | T2 | flat space with noise 1e-10, one sector binding per group, `cfl_number` at 0.93, 0.97, 1.03, 1.07 of the bound b, and 1.07 b with `dt_gauge = 0.9`; 300 steps | Gamma-driver 1.5 (b = 0.487 cells), 1+log (0.468), frozen lapse and harmonic lapse (0.551, the pair of conformal factor and Theta): stable at 0.93 b and 0.97 b, guard stop or growth by 4e18 at 1.03 b and 1.07 b, stable with the option. The three cases that tell the code's stencils from Track A's model (shift at 0.502 cells, the third pair at 0.568) are unstable, as the code's stencils say. The group for the relaxation (`lapse_leak` 32) did not test it: in flat space the lapse settles below its reference and the relaxation is off | the same |
 | T3 | Track A's uniform-mesh reproducer (64^3 cells of 0.3125, `cfl_number` 1.0, `dt_lightspeed` 0.25) without and with `dt_gauge = 0.9` | lapse frozen: onset of growth at t = 8.72 without (Track A 8.1; H_max from 0.0035 to 1.97, the step at one cell), none with (step 0.560 cells, H_max falls to 0.0012). Relaxed lapse (`lapse_leak` 20): onset at t = 3.18 and guard stop at t = 10.764 without (Track A 3.18, 10.76), t = 12 without either with (step 0.32 to 0.34 cells, set by the lapse pair from t = 0.51). This is also the test of the relaxation bound | core-20261124-233050-ae129ee, -233103-faf1f5b; analysis core-20261125-003000-0ad24cb |
-| T4 | Track A's refined periodic deck (64^3 root, four static levels, finest cell 0.0195, P0L data) at `cfl_number` 1.0 with `dt_gauge = 0.9`, through the time at which card job 4799 failed (jump at t = 2.5) | see the end of this section | core-20261124-233029-c745838 (processors); card job queued, q0036 |
+| T4 | Track A's refined periodic deck (64^3 root, four static levels, finest cell 0.0195, P0L data) at `cfl_number` 1.0 with `dt_gauge = 0.9`, through the time at which card job 4799 failed (onset at t = 2.40), on processors to t = 3 | no onset, no guard stop; the level-4 step follows the light-speed limit to t = 1.18 and is then held at 0.57 cells by the shift's bound (0.631 cells then; 0.656 at the start); H_max at t = 2, 2.5, 3: 0.0181, 0.0150, 0.0106, within 5 per cent of Track A's run at `cfl_number` 0.5 (0.0190, 0.0143, 0.0108), where job 4799 without the option has 0.0171, 179, 203 | core-20261124-233029-c745838; analysis core-20261125-020445-10806d1; the same on a card, with the control and the run at 0.5: queued, q0036 |
 | T5a | cost of evaluating the bound every cycle (32^3, serial, three repetitions) | 0.6 per cent (minima), 1.0 per cent (medians), inside the scatter of 10 per cent; histories identical | core-20261125-001339-5005deb |
 | T6a | byte regression against release core-v0.6, twelve set-ups, option absent | PASS, 75 of 75 items identical; again with the final source (handler of the second item): PASS, 75 of 75 | core-20261124-140705-57ba7ce; core-20261125-000250-6dc7307 |
 | T6b | east, os, c4 of the regression with `dt_gauge = 1.0` against the same without | histories byte-identical (3, 2, 3 files), the limit never sets the step, no warning without the option; bounds at the start in cells (shift, lapse, third pair): east 1.86, 0.89, 0.54; os 0.60, 0.48, 0.57; c4 1.86, 0.91, 0.55 | core-20261125-003008-668d147 |
@@ -261,11 +261,13 @@ Example: `problems/tests/z4c_step_limit.athinput` (`athena -i
 problems/tests/z4c_step_limit.athinput`; with `z4c/dt_gauge=0.0` on the command line the
 warning and the instability).
 
-**T4.** Pending when this was written: the processor run (three threads, 30 s per
-cycle) reaches t = 3 about 18:10 PST on 2026-11-24; the card job (R0 without the option,
-R0g with it, R1 at `cfl_number` 0.5) waits in the shared queue as q0036 behind entries
-of priority 2, with both cards taken by the other partition. The journal's last entry
-and READY say how it ended.
+**T4, cost.** To t = 3 the refined deck takes 322 steps with `dt_gauge = 0.9`; Track
+A's run at `cfl_number` 0.5 takes about 540 (0.5 halves the light-speed-limited step
+too) and its unstable run at 1.0 about 296 (both estimated from their step histories).
+Once the run at 0.5 has reached its cap the ratio per unit time tends to 0.5/0.571 =
+0.88. The card job (R0 without the option, R0g with it to t = 6, R1 at 0.5, all with the
+final card build) waits in the shared queue as q0036; it will be the first run of
+`athena_gpu`.
 
 ## 7. Not tested, not counted
 

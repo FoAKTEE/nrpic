@@ -67,6 +67,11 @@ the limit binding: F1, run core-20261125-003154-965cb92):
   growth at t = 8.72 (lapse frozen) and at t = 3.18 with a guard stop at t = 10.76
   (relaxed lapse); with dt_gauge = 0.9 smooth to t = 12 in both, steps of 0.56 and 0.32
   cells [core-20261124-233050-ae129ee, core-20261124-233103-faf1f5b]
+- Track A's refined periodic deck (four levels, finest cell 0.0195) at cfl_number 1.0
+  with dt_gauge = 0.9, on processors to t = 3: no onset where card job 4799 failed
+  (t = 2.40); level-4 step held at 0.57 cells from t = 1.18; H_max within 5 per cent of
+  Track A's run at cfl_number 0.5; 322 steps against about 540 at 0.5
+  [core-20261124-233029-c745838, core-20261125-020445-10806d1]
 - cost of the bound per cycle: 1 per cent, inside the scatter [core-20261125-001339-5005deb];
   cost in steps: 77 against 84 of a fixed cfl_number 0.5 (frozen lapse), 124 against
   131 of 0.3 (relaxed lapse)
@@ -92,10 +97,6 @@ Stop on SIGTERM, final builds:
   refined periodic deck at cfl_number 1.0 without and with dt_gauge, and at 0.5) is its
   first; until tracks/core/JOURNAL-step-limit.md reports it, a track that uses
   athena_gpu runs it first on a short deck of its own.
-- Track A's refined periodic deck (four levels) with dt_gauge = 0.9 through the time of
-  its failure: the processor run was at t = 0.9 of 3.0 when this was written (run
-  core-20261124-233029-c745838, 30 s per cycle on three threads); the last entry of the
-  journal says how it ended.
 - SIGTERM: several MPI ranks; a card; refinement (.amr) and scalar field (.sf)
   companions; asymptotically flat set-ups; a real preemption by Slurm.
 - Step limit: punctures, horizons, shift_eta_profile, rk3, nghost 2 and 3 in runs of the

@@ -926,3 +926,85 @@ take the final `athena_gpu` when it is dispatched: its first run.
 
 **Open at this entry**: T4 on processors (R0g, run core-20261124-233029-c745838, at
 t = 1.0 of 3.0, about 18:10); the card job q0036.
+
+## Entry 16 (18:06): outcome of T4 on processors (Track A's refined periodic deck); close of the session
+
+Run core-20261124-233029-c745838 (R0g: 64^3 root, four static levels, finest cell
+0.0195, P0L data, `cfl_number` 1.0, `dt_lightspeed` 0.25, `dt_gauge = 0.9`; threaded build
+of source 476fe0c on three threads, 322 cycles to t = 3.0 in 9208 s, 28.6 s per cycle;
+exit 0, "Terminating on time limit"). Analysis core-20261125-020445-10806d1 against two
+runs of Track A with the same deck and data on a card: job 4799 without the option
+(A-20261121-131600-02b5d41, release core-v0.5) and its run at `cfl_number` 0.5
+(A-20261122-235305-4ea0aa5, release core-v0.6). The first call of the analysis
+(core-20261125-020434-e142595) stopped on the missing `athena.log` of the chained run;
+the script now reads the segment logs. Figure `fig_refined.png` looked at: in the first
+panel R0g follows the curve of job 4799 to t = 1.18 and is flat at 0.57 cells from
+there, below the dashed bound, while job 4799 climbs to 0.83 cells and breaks at
+t = 2.45; in the second panel R0g lies on the run at 0.5 and job 4799 leaves them at
+t = 2.3 by four decades; the lapse extremes of R0g and of the run at 0.5 coincide; the
+alternation of beta^x of R0g stays between 2e-6 and 1e-5 (Track A's runs have line
+outputs only every 2 time units, two points each; the y labels of the right panels are
+cut, as in entry 13).
+
+| | R0g (`dt_gauge` 0.9) | job 4799 (no option) | `cfl_number` 0.5 |
+|---|---|---|---|
+| largest step on level 4, cells | 0.571 | 1.000 (0.83 at t = 2.45) | 0.471 at t = 3 |
+| step in cells at t = 1, 1.5, 2, 2.5, 3 | 0.520, 0.567, 0.569, 0.570, 0.571 | 0.520, 0.637, 0.745, 0.45, 0.79 | 0.261, 0.319, 0.373, 0.424, 0.471 |
+| H_max at t = 1.5, 2, 2.5, 3 | 0.0263, 0.0181, 0.0150, 0.0106 | 0.0256, 0.0171, 179, 203 | 0.0222, 0.0190, 0.0143, 0.0108 |
+| onset of growth (Track A's definition) | none | t = 2.40 | none |
+| end | t = 3.0 (as asked) | guard stop at t = 4.815 | t = 140 |
+| steps to t = 3 | 322 | about 296 (from its step history) | about 540 (from its step history) |
+
+- P4b' held in what it named as its test: the level-4 step never exceeds 0.590 cells
+  (largest 0.571); "set by dt_gauge" at t = 1.180, before 1.8; no jump and no guard
+  stop; H_max at t = 2 and 3 is 0.95 and 0.99 of the run at `cfl_number` 0.5 (asked:
+  within a factor 3), where job 4799 is at 179 and 203 from t = 2.5.
+- P4b' **failed in one statement**: "the lapse holds the step first, at 0.507 cells, and
+  the shift later". The lapse never set the step. Its bound in cells rises as the
+  conformal factor falls, and by the time the light-speed limit released the step
+  (t = 1.18) only the shift's bound was in reach: 0.631 cells then, against 0.656 at the
+  start (the conformal metric has left flatness; the bound follows the fields). I had
+  read the bounds of the start-up line as if they held later.
+- Cost [steps of the two card runs estimated by integrating 1/step over their histories,
+  which gives 310 for R0g against its 322 counted]: to t = 3 the run with the option
+  takes 0.58 to 0.60 of the steps of the remedy `cfl_number` 0.5, because 0.5 halves the
+  light-speed-limited step as well; and 6 per cent more than the unstable run up to its
+  onset (247 against 233 to t = 2.3). Later, when the run at 0.5 has reached its cap,
+  the ratio per unit time tends to 0.5/0.571 = 0.88. P4c (0.6 to 0.75 of the steps to
+  t = 6) is not judged: R1 to t = 6 with this branch's executable is in the card job.
+- P4a (R0 with this branch's executable repeats job 4799) and the cost on a card: with
+  the card job q0036, not run in this session (both cards were taken by the other
+  partition; five jobs of the account pending all afternoon).
+
+**So Track A's refined periodic deck at `cfl_number` 1.0 passes the time of its failure
+smoothly with `dt_gauge = 0.9`, at 0.57 cells on level 4, and agrees with the run at
+0.5 in the constraint to 5 per cent.**
+
+Checked without a run [VERIFIED by compiling, not linked, not run]: `utils/term_signal.cpp`,
+`driver/driver.cpp` and `main.cpp` pass `g++ -fsyntax-only` with the configuration of an
+MPI build (`config.hpp` and include flags of `wt/core-mpi/.work/build_cpu_mpi`, read
+only; `MPI_PARALLEL_ENABLED` 1).
+
+### State at the close (18:10)
+
+Done, committed, pushed (`origin/core/step-limit`): both items; interface texts; READY
+published; messages to Track A (two), to all, to orch. Deliverables of the task and
+where they are: derivation and comparison with Track A (sections 2, 3 of
+`interfaces/step_limit.md`; entries 0 to 7); the option and the warning (section 4); the
+decision option against default (section 5); tests T1 to T6 with predictions and
+outcomes (entries 3 to 16); byte regression (entries 8, 12); stop on SIGTERM and chain
+script (`interfaces/preempted_runs.md`; entries 10 to 12, 14).
+
+Not done:
+
+1. The card smoke run: q0036 (`step-limit-card`) waits in the shared queue. No run of
+   the final `athena_gpu` exists. What to do when it has run: `analysis/step_limit/
+   HANDOFF.md`.
+2. Stop on SIGTERM: not run on a card, on several MPI ranks (syntax only), with
+   refinement or the scalar field; no real preemption; the 30 s are the configured
+   value, not a timing.
+3. `scripts/README.md` was edited after the source commit 5c4b644f named in COMMIT (text
+   only).
+4. Named for a later session: the survey of the tracks' puncture and horizon decks with
+   `dt_gauge = 1.0` before the option could become the default; the two restart defects
+   (one record of `*.cons.hst`, the repeated header of the mesh history).
