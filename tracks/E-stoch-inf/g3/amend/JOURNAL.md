@@ -131,3 +131,49 @@ Run E-20261125-152832-c301e92 (4e6 paths each, s0.01_lattice and s0.1, 4 cores, 
 - sigma = 0.1 (continuum density of states): skewness 0.0210 +- 0.0010, 0.0011 +- 0.0016 above the lattice
   variant at sigma = 0.01: no coarse-graining dependence seen, but the bound at three standard errors (0.0047)
   is not below 0.0027 as A10 wanted; a lattice variant at sigma = 0.1 of the same size would be the clean test.
+
+## entry-7 (2026-11-25 08:05 PST, lead of E, batch 20): A9's tilted reference and the lattice variant at sigma = 0.1; predictions before the runs
+
+Defect found and fixed before any registered run: `sdn/langevin.py` normalised the bias direction e = L^-1 u
+by its norm also where the noise vanishes (lattice factor 0 at the band edge), e = 0/0, so every biased path
+turned NaN (smoke test in scratch/E-stoch-inf/tmp/smoke_tilt, not registered). The shift is now skipped where
+L = 0. Unbiased runs (bias None) do not pass through that line: the 4e6 direct run is unaffected.
+
+`langevin/scripts/ref_tilt.py` (new): the s0.01_lattice system of `ref_spec.py` with a constant shift c of the
+noise along its dominant direction, the rule for c fixed in the script's docstring before the run (pilots of
+1e5 paths at |c| = 1..3.5, median of the tilted x interpolated to 4, a confirmation pilot within [3.5, 4.5]),
+then 4e6 paths per side. Validation at nu = 3 against the direct 4e6 samples (E-20261125-152832-c301e92).
+- TL1: the chosen |c| lies in [1.5, 3.0] on both sides [JUDGEMENT: a shift of 4 sigma spread over a window of
+  ln 32 = 3.5 e-folds needs c of about 4/sqrt(3.5) = 2.1; a response that is not flat across the window moves it].
+- TL2 (A9, g3/JOURNAL.md entry 4): relative standard error of F_+(4) and F_-(4) at or below 2 per cent (refuted
+  above 3 per cent). [For a Gaussian with the optimal shift the error would be 0.1 per cent; a constant c is not
+  the optimal profile, so I expect 0.2-1 per cent.]
+- TL3: validation at nu = 3: tilted F_pm(3) within two combined standard errors of the direct 4e6 values
+  (direct F_+(3) = 1.5015e-3, F_-(3) = 1.2105e-3 at latsig; combined error about 1.4 per cent).
+- TL4: mean path weight within three of its standard errors of 1.
+- TL5: F_+(4)/Q(4) in [1.15, 1.40] and F_-(4)/Q(4) in [0.6, 0.85] (direct 4e6: 4.05e-5 and 2.325e-5 against
+  Q(4) = 3.167e-5, i.e. 1.28 and 0.73 with 8 and 10 per cent errors).
+
+Lattice variant at sigma = 0.1 (`ref_spec.py` variant s0.1_lattice, new; the variance gate now loops over the
+lattice variants that ran), 4e6 paths, 128 band (A10's coarse-graining bound, review N3):
+- TS1: variance gate passes (var/var_lattice_Ne - 1 within three standard errors, about 0.002 relative).
+- TS2: skewness of delta N at N_e within 0.0027 of the s0.01_lattice value 0.0199 +- 0.0012 (the continuum pair
+  s0.1 - s0.01 differed by 0.0011 +- 0.0016). Refuted if the difference exceeds 0.0027 by more than two combined
+  errors: then the coarse-graining dependence is not bounded below the T threshold and sigma must be stated.
+- TS3: state at N_f: var_phi within 0.5 per cent of s0.01_lattice's 4.913e-13 and skew_phi below 0.004 in magnitude.
+
+## entry-8 (2026-11-25 08:14 PST): the constant shift of A9 fails its smoke test; a shift profile instead, before any registered run
+
+Unregistered smoke tests (scratch/E-stoch-inf/tmp/smoke_tilt, logs log2 and log3; their outputs deleted from
+`results/` and `fig/`): with the constant shift of A9 as written, the pilot needed c = 3.3 for a tilted median
+of 4 sigma, and the mean path weight of 3200 paths was 0.010 (expected 1): the shift is spent evenly over the
+window while the linear delta-N variance comes mostly from its last e-fold, so the log-weights have variance
+c^2 W = 39 and the estimator is useless at any affordable size. TL1 of entry 7 is moot.
+Change (`ref_tilt.py`, before the registered run): c(N) = c0 sqrt(p(N)/int p dN), p(N) = P_R(sigma aH(N)) at N_e
+times the lattice factor, i.e. the shift follows each step's share of the linear variance; then the linear
+delta N moves by c0 sigma and the log-weight variance is c0^2 (16 at c0 = 4). Smoke pilot with 1600 paths per
+point: median of the tilted x = 3.03, 3.57, 4.00, 4.57 at c0 = 3, 3.5, 4, 4.5 (side +). [This informs TL1'.]
+This departs from the wording of A9 ("a constant shift c"); the rest of A9 (median in [3.5, 4.5], validation at
+nu = 3 within two standard errors, 2 per cent bar) stands. Proposed as a dated note to A9 in SCOPE 4d.9.
+- TL1': c0 within [3.5, 4.5] on both sides.
+- TL2-TL5 of entry 7 stand unchanged (TL4: mean weight within three standard errors of 1).

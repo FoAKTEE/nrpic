@@ -105,6 +105,7 @@ VARIANTS = [
     ("s0.01", 0.01, "modes", 1.0, False, 2e-3, 1.0),
     ("s0.01_desitter", 0.01, "desitter", 1.0, False, 2e-3, 0.25),
     ("s0.01_lattice", 0.01, "modes", 1.0, True, 2e-3, 1.0),
+    ("s0.1_lattice", 0.1, "modes", 1.0, True, 2e-3, 1.0),   # batch 20: coarse-graining bound of A10 on the lattice
     ("s0.01_lin", 0.01, "modes", 1e-3, False, 2e-3, 0.25),
 ]
 
@@ -222,13 +223,13 @@ def main():
     out["ratios_Ne"] = {name: dict(var_over_lin=(out[name]["Ne"].get("var_rescaled", out[name]["Ne"]["var"]) / vl),
                                    se=out[name]["Ne"].get("se_var", np.nan) / vl / (out[name]["amp"] ** 2))
                         for name, *_ in VARIANTS if name != "classical" and name in samples}
-    if "s0.01_lattice" in samples:
-        out["ratios_Ne"]["s0.01_lattice"]["var_over_lattice_lin"] = (out["s0.01_lattice"]["Ne"]["var"]
-                                                                / out["linear"]["var_lattice_Ne"])
     # variance gate of SCOPE 4d.3 as amended in batch 19: within three standard errors of the lattice sum
-    _g = out["ratios_Ne"]["s0.01_lattice"]
-    _g["se_over_lattice_lin"] = out["s0.01_lattice"]["Ne"]["se_var"] / out["linear"]["var_lattice_Ne"]
-    _g["gate_within_3se"] = bool(abs(_g["var_over_lattice_lin"] - 1) <= 3 * _g["se_over_lattice_lin"])
+    # (batch 20: for every lattice variant that ran; before, only s0.01_lattice, which had to be in the run)
+    for _lv in [v[0] for v in VARIANTS if v[4] and v[0] in samples]:
+        _g = out["ratios_Ne"][_lv]
+        _g["var_over_lattice_lin"] = out[_lv]["Ne"]["var"] / out["linear"]["var_lattice_Ne"]
+        _g["se_over_lattice_lin"] = out[_lv]["Ne"]["se_var"] / out["linear"]["var_lattice_Ne"]
+        _g["gate_within_3se"] = bool(abs(_g["var_over_lattice_lin"] - 1) <= 3 * _g["se_over_lattice_lin"])
     print("ratios", out["ratios_Ne"], flush=True)
 
     # ---- figure 1: background, noise amplitude, linear band spectrum
@@ -278,7 +279,7 @@ def main():
     xs = np.linspace(edges[0], edges[-1], 400)
     b1.semilogy(xs, np.exp(-xs ** 2 / 2) / np.sqrt(2 * np.pi), **figstyle.GUIDE, label="Gaussian, linear variance")
     show = [("s1", figstyle.PAL["yellow"]), ("s0.1", figstyle.PAL["green"]), ("s0.01", figstyle.PAL["red"]),
-            ("s0.01_lattice", figstyle.PAL["orange"])]
+            ("s0.01_lattice", figstyle.PAL["orange"]), ("s0.1_lattice", figstyle.PAL["blue"])]
     for name, c in [sc for sc in show if sc[0] in samples]:
         x = samples[name][:, 1]
         x = x[np.isfinite(x)]

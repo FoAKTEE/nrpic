@@ -157,7 +157,7 @@ def fpt_phase_space(model, phi0, w0, N0, phi_end, dN, n, rng, noise=None, window
                 L = L * np.sqrt(var_factor(N))
             z1 = rng.standard_normal(alive.size)
             z2 = rng.standard_normal(alive.size)
-            if bias is not None:
+            if bias is not None and np.any(L):   # batch 20: no shift where the noise vanishes (lattice factor 0 at the band edge gave e = 0/0)
                 # shift of the standard-normal pair along the dominant noise direction,
                 # oriented against the roll (towards longer first-passage times)
                 lam, U = np.linalg.eigh(L @ L.T)
