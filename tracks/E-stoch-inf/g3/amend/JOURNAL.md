@@ -50,3 +50,32 @@ Delta N_bg with Delta N_bg = -(H/Pi) dphi at first order (a cell ahead on the ro
 So zeta = -R^NR at first order [VERIFIED from the formulas; the processor test Z0 checks it on output].
 Test (a) of 4d.1 subtracts the box mean of zeta, so it is zero whatever the reader computes: it cannot
 fail [VERIFIED from the definition]. Test (b) asks zeta = +R^NR: it fails at first order.
+
+## entry-4 (2026-11-25): outcomes of entries 1-3
+
+LB1 HOLDS (run E-20261125-151230-a4f4059, `bins_lead.json`, `fig_bins_lead.png` looked at): with P_R(N_e)
+the variant over the lattice sum is 0.97786 (|n| <= 32) and 0.99058 (64) as ref_spec binned it, 1.00002 and
+0.99991 with the top bin cut at NLAT; top-bin factor 0.2789 against 0.9338 (32) and 0.1656 against 0.9922
+(64); top-bin share of the band 0.0338 and 0.0113. Every number agrees with the review's (0.9778, 0.9906,
+1.00001, 0.99991; 0.279/0.934, 0.166/0.992; 3.4 and 1.1 per cent) to the digits it quoted, from code that
+shares nothing with ref_bins.py. B1 is CONFIRMED.
+LB2 REFUTED in part: with P = 1 the as-is ratio is 0.99998 (32) and 1.00062 (64), not 0.996-0.998; the
+fixed ratio 1.00271 and 1.00226 lies within 0.003 of 1 as predicted. The sparse low shells make the per-bin
+factor overcount a flat spectrum by about 0.27 per cent, and at 32 that excess cancels the top-bin deficit
+by chance. I had treated the low-shell part as noise around 1. It does not matter for the reference: P_R
+rises by four decades across the band, so the low shells carry no weight (LB1).
+LB3 HOLDS (run E-20261125-151429-83a040c, `b2_lead.json`): dlnF/dln sigma 9.849 (nu = 3), 16.90 (nu = 4);
+at S = 256 and 4e6 reference realisations three combined standard errors are 3.94 per cent of F(3), which a
+sigma error of 0.40 per cent, a skewness of 0.0090 or an excess kurtosis of 0.016 produces; the reference
+skewness 0.0231 moves F(3) by 10.1 per cent; the NR error falls to a third of the reference's at 87 seeds
+(nu = 3) and 50 (nu = 4). With my reference F(3) of 1.5e-3 instead of the review's value the thresholds are a
+few per cent lower than its 4.15 per cent, 0.42 per cent, 0.0095 and 78 seeds; B2 is CONFIRMED.
+B3 CONFIRMED from the formulas (entry 3).
+RF1 HOLDS (run E-20261125-151340-743c38c, `results/ref_inflection_n32_binfix.json`, `fig/ref_inflection_
+n32_binfix_pdf.png` looked at): var(s0.01_lattice)/var_lattice_Ne = 0.9993 +- 0.0032 (old 0.9796 +- 0.0032);
+the gate flag in the file is true. RF2 HOLDS: every other variant has the same variance, skewness and
+kurtosis as in ref_inflection_n32.json to all digits. RF3 HOLDS: skewness 0.0234 +- 0.0037 (old 0.0231 +-
+0.0038), excess kurtosis 0.0106 (old 0.0131). Tails of the corrected variant at 2e5 (sigma of the lattice):
+F_+(3) 1.585e-3, F_-(3) 1.275e-3, F_+(4) 7e-5, F_-(4) 4e-5 (14 and 8 realisations at nu = 4: no tail
+statement at this size). The corrected 128-band reference is the one G3 uses; the 4e6 run follows (SCOPE
+4d.9 A1, A9, A10).
