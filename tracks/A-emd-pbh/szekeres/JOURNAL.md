@@ -383,3 +383,17 @@ Next, in this order, after the pause is lifted:
 4. Analysis of the card members: `analyse_code_runs.py --run <card run dir> --prep PREP
    --members N64 N128 N256 [--cont N256:N256r] --label series`; outcomes of P17-P21 here;
    DESIGN sections 6-7 and README results.
+
+## Entry 10, 2026-11-25 04:15 PST (lead of batch 17): the card series goes into the shared queue
+
+Preparation run A-20261120-223422-8cc4241 is complete (manifest status completed; prep_ppc1.json:
+four members, predicted E0 error 1e-16). Predictions P17-P21 of entry 8 stand as written (P22-P23,
+the processor particle-number check, are not part of this submission). Two changes, neither in a
+prediction: (1) executable: the card build of release core-v0.7 (`.work/build_gpu_v07/src/athena`)
+instead of v0.3, by the rule that new runs use v0.7 (geodesic slicing, no Gamma-driver, so
+dt_gauge does not apply; the non-finite guard of v0.5 is on by default and stops a blown-up member
+with exit 3, which P17 counts as non-finite); (2) N = 256 runs as its own chain (restart output
+every tau = 5 instead of 10 so that a segment cut by preemption loses less than 10 minutes),
+N = 64 and 128 as one batch job (`lists/card_n64_n128.list`). Cost as entry 8: about 1.0-1.2
+card-hours, cap 1.5. Queue entries: a-szk-n64-128 and a-szk-n256 (priority 2: G2 item C1 (iii)).
+Read by `scripts/analyse_code_runs.py` (smoke-tested at N = 16, entry 9).
