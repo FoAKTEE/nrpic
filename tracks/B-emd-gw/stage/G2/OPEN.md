@@ -1,33 +1,30 @@
-# What G2 of B-emd-gw still lacks (batch 11, 2026-11-24; series 6 added in batch 11b)
+# What G2 of B-emd-gw still lacks (batch 17, 2026-11-25 04:00 PST)
 
 Met: criterion (a) (FLRW particle run sub-percent and converging in mesh 16-128 and particle
-number 1-27 per cell; the start-step floor now tested at 128 cells, J4), a first full-GR kinetic
-run (now also the population box to a = 143), constraint norms against time, a slice mosaic with
-zoom boxes, failed runs on record.
+number 1-27 per cell; start-step floor tested at 128 cells, J4), a first full-GR kinetic run (and
+the population box to a = 143, now in two gauges), constraint norms against time, a slice mosaic
+with zoom boxes, the verification-ladder schematic, failed runs on record.
 
-Lacking, in the order the track will close them:
+Lacking, item by item of CHECKLIST.md, with the queue entry or processor run that serves it:
 
-1. Full GR against the Newtonian mode (decision 0013, multi-code row): done against the 64^3
-   fidL8 box by the sigma1 a scaling (halo counts and masses, H1; near field, A1). The
-   same-particle Newtonian reference at 128^3 is queued (B-20261124-131438-5d7e049); its
-   comparison (N2-N4, `population/scripts/compare_newton.py`) is the halo-by-halo GR-minus-Newton
-   statement. The 0.028 run stops at a = 30.7 in the densest core; restarts X0-X3 are queued
-   (B-20261124-133533-cb0bb7d) to tell slice, step and slicing condition apart. Not established:
-   what the high-k excess of the metric's TT energy after halo formation is.
-2. Shearing dust (arXiv:2003.08014): L2 now has values (-0.828, -0.830, -0.835 at N_y = 32-128,
-   near CosmoGRaPH's -0.8183, far from gevolution and GRAMSES) but no convergence: the field
-   carries relative constraint means of 0.1-0.4 from a = 2.25 on at every N_y. At N_y = 64 it
-   converges in particles along y to about -0.820 (1-8 per cell); at 4 per cell the mesh gives
-   -0.822, -0.831, -0.839 at N_y = 64, 128, 256 (differences 9.4e-3, 7.9e-3: order about 0.25,
-   away from CosmoGRaPH; series 6, B-20261124-140856-911ded9, summary -172643-d1e88c7). L2 is not
-   converged in this code; the weak-field comparison rests on S1-S4, M1, L1. A run that could name
-   the cause (an amplitude without stream crossing before t_A at three meshes) is not yet queued.
-   S3 has a floor of 2-3e-5 (N_y = 256).
-3. Gauge leg of the three-way convergence: one slicing point (f = 1 at N_y = 64, P10 holds); a
-   convergent gauge leg (a second slicing or shift at three meshes) and its figure are missing.
-4. Constraints: Hr of the FLRW run grows about as N^2 with the mesh; the population's mean
-   constraint violations grow after halo formation (Hr_mean 2.85e-2, Mr_mean 0.20 at a = 141).
-5. Package products (the verification-ladder schematic C10 exists since batch 11): gauge convergence figure (C11), G2
-   sections of the working note with the checker (C17), a fresh verifier (C18), a reproducibility
-   list (C6), schematics (C16); one script per figure where analyze_b.py and analyze_f.py draw
-   several (C15).
+| Item | What is missing | Served by |
+|---|---|---|
+| C1 code paths pass their tests | (i) the 0.028 box past a = 30.7: the zero-shift stop is the gauge (X0, X1 repeat it, X2 with a Gamma-driver shift passes to a = 36; population/JOURNAL 2026-11-25 04:00), the shifted run to a = 143 is not run; (ii) shearing-dust L2 converged in the mesh: no entry (needs an amplitude without stream crossing at three meshes, designed first; HANDOFF) | (i) q0044 `pop_s028_gd2` (S1-S3); (ii) none yet |
+| C2 three-way convergence | mesh leg of the population box (256^3); particle leg past a = 95 (cut by the chain cap); gauge leg: one shift at one mesh (q0004, judged GD1-GD3), no second mesh in that gauge | q0007 `pop_s014_gr256` (in Slurm, job 5283, M1-M4); q0042 `pop_s014_gr_p8_cont` (P8C1-P8C2, then Q1); gauge at a second mesh: no entry (would need 256^3 in the shifted gauge, about 5 card-h: decision for the next lead) |
+| C3 constraints behave | growth of Hr_mean and Mr_mean after halo formation, not shown to fall with the mesh or the particle number; larger in the shifted gauge (X2: Hr_mean 2.1e-2 at a = 36) | q0007 (M4), q0042 (Q1), q0044 (S1) |
+| C5 verification report | waits for C1-C3, C9 | writing, after the runs |
+| C6 reproducibility package | package-level list of commands, decks, executables and run ids | writing (no card) |
+| C9 multi-code row | the same-particle Newtonian reference at 128^3 has run (B-20261124-172958-fc4a2cf, -73b0662, exit 0); its analysis and the halo-by-halo comparison (N2-N4) are not done; the amplitude scaling in full GR past a = 30 | processor analysis `analyze.py` + `compare_newton.py` (next session); q0044 (S2, S3) |
+| C11 convergence figures | particle-number and mesh figures of the population box; the gauge figure exists for one mesh (`population/figs/pop_legs.png`) | q0042, q0007 |
+| C14 package documents | REVIEW of this batch exists; the report regenerated after the runs | writing |
+| C15 one script per figure | analyze_b.py, analyze_f.py and analyze_gr.py draw several figures each | rewriting (no card) |
+| C16 schematics | track architecture (exists / to be ported / new) and the gate timeline for G2 | writing (no card) |
+| C17 working note | G2 sections with the manuscript checker --compile | writing (no card) |
+| C18 verifier | a fresh-context verifier recomputing the Supplemental numbers | after C17 |
+
+Failures on record that need no further run: X3 (setup error, restart refused `dt_lightspeed`),
+the time part of GD1 (0.185 card-h against 0.2-0.5), of N1p (13 h per Newtonian run), the
+particle leg's chain cut by the cap at a = 94.8.
+
+No entry of this owner serves no gate item. No ruling of the orchestrator is needed to close an
+item as a failure on record; G2 is not complete.

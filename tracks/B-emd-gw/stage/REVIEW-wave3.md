@@ -341,3 +341,40 @@ uncommitted.
   (B-20261124-172958-fc4a2cf, -73b0662, prediction N1p in population/JOURNAL 09:29).
 - Newtonian reference on processors: 33 s per step on one core (about 13 h per run); the time part
   of N1p fails; card job 5167 cancelled before it ran (manifest 'failed, exit 1': it never started).
+
+## Batch 17 (2026-11-25 03:46-, lead): the three population runs that ended in the shared queue
+
+Checked from the artefacts (run directories, guard files, histories, analysis JSON, figures looked
+at), each against the prediction committed before its registration (git: X0-X3 in cb0bb7d9f,
+GD1-GD3 in 614abe3be, Q1-Q2 in 6d2c3b7b1, 05:35-05:50 PST on 2026-11-24; registrations 13:04 PST
+and later). `nrpic-run finish` of the three runs hashes 45-62 GB each; the analyses were started
+while it ran (read only) and the order is on record in the analysis manifests' purposes.
+
+- q0005, X0-X3 (B-20261124-210432-6c4d005; analysis B-20261125-115619-ad8b3f4,
+  `population/figs/pop_stop028.png`). Confirmed from `pop.guard.txt` of each case and the base:
+  X0 stops at the base's time and cycle (9.086462674958188, 599), its history rows equal the base's
+  to every printed digit; X1 stops at 9.07865; X2 reaches t = 10 with exit 0 and K < 0 everywhere
+  from t = 8.48. X3 never started: `dt_lightspeed` is not in the restart's stored input and the
+  command line may not add it. Wrong in the batch-11 design: X3 could not run as specified (setup
+  error of that lead, on record; not retried, X2 answers the question). Not confirmed: whether the
+  shifted 0.028 box lasts to a = 143 (q0044).
+- q0004, gauge leg (B-20261124-210431-6bf48af; analysis -115558-2ab4161, comparison
+  -120818-1dfae55, `population/figs/pop_legs.png`). Confirmed: t = 21.916 at cycle 1421, exit 0, no
+  guard file, 11.1 min of card time. GD1 holds (time part fails: 0.185 against 0.2-0.5 card-h),
+  GD2 holds for counts and fails for the largest masses (+10 to +16 per cent), GD3 holds in both
+  parts (high-k Omega 950 times smaller at a = 121). The band ratio of GD3 rests on the per-shell
+  Omega spectrum divided by the shell's squared wavenumber, an approximation inside each shell
+  that is common to both runs (`compare_legs.py` header); the exact mode sums are in the JSON as
+  rms_raw, rms_cor over all k only.
+- q0006, particle leg (B-20261124-223926-33194d9). Confirmed from chain/events.log: two segments
+  cut by SIGTERM at 15:42 and 17:08 PST, the chain ended FAILED at its cap of two segments
+  (the v0.6 chain script counts a signalled attempt), last row t = 17.477 (a = 94.8), newest
+  restart rst/pop.00008.rst (t = 16.0). Closed as failed; the continuation is a new run (q0042).
+  Analysis to a = 94.8: B-20261125-115657-91b61ec (see the next paragraph when it ends).
+- Initial-data solves of the legs (B-20261124-135029-3fe13f6, -135030-b54972f), prediction I3 not
+  judged before: HOLDS (outer change 8.3e-10 and 8.4e-10, Hamiltonian residual 2.1e-11 and
+  3.2e-11, both below 1e-7 and 1e-9; the 256^3 solve took 6.1 h, inside 3-8 h). Wrong in the
+  previous HANDOFF: "the time part of I3 likely fails" (it holds).
+- Defects of this session: a log of a background `nrpic-run finish` was written to
+  `scratch/B-emd-gw/tmp_finish_p8.log` instead of `scratch/B-emd-gw/tmp/`; one `finish` was cut
+  by a 110 s timeout before it wrote anything (manifest unchanged, rerun in the background).
