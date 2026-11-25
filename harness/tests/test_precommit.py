@@ -10,7 +10,8 @@ corrections of the dry run of wave 3a fails the checks marked "dry run").
 Covered: a clean own-path commit, a path-limited commit (temporary index), a file above 5 MB, a
 private key block, an API key assignment, a foreign path, an OWNERSHIP glob, the main branch, a merge
 from main, a manifest that is not JSON, one whose run_id differs from its directory, a hand-written
-manifest accepted with a note; from the dry run over the history (coord/digests/hook-dryrun.md):
+manifest accepted with a note, a manifest whose `continuations` has the forms of C's and D's queue wrappers
+accepted and malformed ones rejected with what is wrong (decision 0039 item 5); from the dry run over the history (coord/digests/hook-dryrun.md):
 documentation placeholders accepted (a key header with a stub, the AWS EXAMPLE key, a run of
 consecutive characters), real-shaped fakes rejected (an AWS secret, a key in a string with \\n
 escapes), a '++' content line or a quoted file name or diff.noprefix no longer hide a secret, a
@@ -111,6 +112,31 @@ def main():
     r = commit(A, rd2, json.dumps({"run_id": "A-emd-pbh-20261115-120000-abcdef0", "status": "done"}))
     c.ok(r.returncode == 0 and "hand-written manifest" in r.stderr,
          "a hand-written manifest in the full-id form with status 'done': accepted with a note", r.stderr)
+    # decision 0039 item 5: `continuations`, records of a chain continued in place by a queue wrapper (the forms
+    # tracks/C-sidm/longruns/seq/qitem.sh and tracks/D-bh-dress/g2long/tools/continue_chain.sh write)
+    rc = "tracks/A-emd-pbh/runs/A-20261123-032324-938ecbd/manifest.json"
+    base = {"schema": "nrpic-run-manifest/1", "run_id": "A-20261123-032324-938ecbd", "track": "A-emd-pbh", "gate": "G2",
+            "launcher": "chain", "status": "failed", "finished": "2026-11-23T22:19:54Z",
+            "outputs": {"dir": "scratch/A-emd-pbh/A-20261123-032324-938ecbd"}, "resources": {"segments_max": 4}}
+    c_rec = {"at": "2026-11-24T12:59:33Z", "by": "tracks/A-emd-pbh/seq/qitem.sh A324s1c+ (shared card queue)",
+             "kind": "in-place resume of a chain cut by preemption", "status_before": "failed",
+             "from_restart": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261123-032324-938ecbd/rst/cc.00000.rst",
+             "max_segments": 25, "extra_athena_args": ["output2/dt=10"], "predictions": "JOURNAL.md"}
+    d_rec = {"at": "2026-11-24T13:07:12-0800", "job_id": "5210", "from_restart": None, "segments_used_before": 5,
+             "max_segments": 12, "via": "harness/bin/nrpic-queue --cmd tracks/A-emd-pbh/tools/continue_chain.sh",
+             "reason": "continued in place after its waiting job was cancelled under the queue cap"}
+    r = commit(A, rc, json.dumps(dict(base, continuations=[c_rec, d_rec]), indent=1))
+    c.ok(r.returncode == 0 and "continuations" not in r.stderr,
+         "a manifest with `continuations` in the forms of C's and D's wrappers: accepted, silently", r.stderr)
+    r = commit(A, rc, json.dumps(dict(base, continuations=[{k: v for k, v in d_rec.items() if k not in ("at", "via")}])))
+    c.ok(r.returncode == 1 and "continuations: record [0] has no `at`" in r.stderr and "names nobody" in r.stderr,
+         "a `continuations` record without `at` and without who: rejected, with what is wrong", r.stderr)
+    r = commit(A, rc, json.dumps(dict(base, continuations=dict(c_rec))))
+    c.ok(r.returncode == 1 and "must be a list of records" in r.stderr, "`continuations` not a list: rejected", r.stderr)
+    r = commit(A, rc, json.dumps(dict(base, continuations=[dict(c_rec, at="2026-11-24 12:59", max_segments=0)])))
+    c.ok(r.returncode == 1 and "is not an ISO 8601 time" in r.stderr and "`max_segments` must be an integer >= 1"
+         in r.stderr, "a record with a time without zone and a segment cap of 0: rejected, both named", r.stderr)
+    F.sh(["git", "-C", A, "checkout", "--", rc])           # the refused commits removed the file from the tree
 
     # ---- the corrections of the dry run over the history (wave 3a)
     stub = 'fh.write("-----BEGIN OPENSSH ' + 'PRIVATE KEY-----\\nb3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQ\\n-----END OPENSSH ' \

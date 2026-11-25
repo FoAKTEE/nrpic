@@ -16,7 +16,9 @@ everything (a dirty worktree is refused; the manifest records the commit).
 Start (relative paths are relative to the worktree root):
 - On the processors: `harness/bin/nrpic-run submit --kind scouting --gate G1 --purpose "..."
   [--cores N] [--background] -- python3 tracks/<ID>/analysis/x.py ...`; the command runs in the
-  worktree root with $NRPIC_RUN_DIR = scratch/<ID>/<run_id>/ for its output.
+  worktree root with $NRPIC_RUN_DIR = scratch/<ID>/<run_id>/ for its output. sbatch, srun and salloc on
+  its PATH are stubs that refuse (harness/shims/slurm; the same under `nrpic-env exec`): a processor run
+  submits no card job.
 - Several short AthenaK runs in one job on one card (through the queue): `harness/bin/nrpic-queue add
   --label L -- --kind scouting --gate G1 --purpose "..." --launcher batch --list <file> [--wall
   00:45:00]`, lines `<name> <athinput> [athena args]` (wraps scripts/gpu_batch.sh).

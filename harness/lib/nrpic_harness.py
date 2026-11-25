@@ -8,6 +8,8 @@ own file (harness/bin/<cmd> inside a worktree), unless -C <path> names another o
 Layout facts (decision 0001): the linked worktrees are wt/<ID> inside the main checkout; the data
 roots scratch/, kb-data/, cache/, locks/ are inside the main checkout too.
 """
+import concurrent.futures
+import datetime
 import fnmatch
 import hashlib
 import json
@@ -335,15 +337,16 @@ QUEUE_CAP = 5
 
 def queue_jobs(env=None):
     """The jobs of this account in the Slurm queue (every state squeue lists: pending, held, running,
-    completing, ...) as a list of {"id", "name", "state"}, or None if squeue fails or does not answer
-    within 60 s. env: the environment the tool uses for its Slurm commands (build_env), so that the count
-    and the submission ask the same Slurm. One line is one job; `-r` lists every task of a job array on a
-    line of its own, so that an array of N tasks counts N."""
+    completing, ...) as a list of {"id", "name", "state", "workdir"}, or None if squeue fails or does not
+    answer within 60 s. env: the environment the tool uses for its Slurm commands (build_env), so that the
+    count and the submission ask the same Slurm. One line is one job; `-r` lists every task of a job array on
+    a line of its own, so that an array of N tasks counts N. workdir (`%Z`) is the job's working directory
+    ('' when squeue gives none): the cap keeper tells this program's jobs from the user's others by it."""
     e = env if env is not None else os.environ
     user = e.get("USER") or e.get("LOGNAME") or os.environ.get("USER") or ""
     try:
-        r = subprocess.run(["squeue", "-h", "-r", "-u", user, "-o", "%i|%j|%T"], capture_output=True, text=True,
-                           timeout=60, env=env)
+        r = subprocess.run(["squeue", "-h", "-r", "-u", user, "-o", "%i|%j|%T|%Z"], capture_output=True,
+                           text=True, timeout=60, env=env)
     except (OSError, subprocess.SubprocessError):
         return None
     if r.returncode != 0:
@@ -352,9 +355,24 @@ def queue_jobs(env=None):
     for line in r.stdout.splitlines():
         if not line.strip():
             continue
-        parts = [p.strip() for p in (line.split("|") if "|" in line else line.split())] + ["", "", ""]
-        jobs.append({"id": parts[0], "name": parts[1], "state": parts[2]})
+        parts = [p.strip() for p in (line.split("|", 3) if "|" in line else line.split())] + ["", "", "", ""]
+        jobs.append({"id": parts[0], "name": parts[1], "state": parts[2], "workdir": parts[3]})
     return jobs
+
+
+def program_job(job, home):
+    """Why a job of the account is this program's ("run id": its name is a run id of nrpic-run, the owner one
+    of the harness's; "under the repository": its working directory lies under the main checkout `home`,
+    which holds wt/* and scratch/*), or None: a job of the user's own, which the cap keeper never cancels.
+    (A job of a queue entry is the program's too; nrpic-queue checks that itself.)"""
+    if parse_run_id(job.get("name") or ""):
+        return "run id"
+    wd = job.get("workdir") or ""
+    if os.path.isabs(wd):                     # squeue may print "(null)" or a relative path: never "under" anything
+        p, h = os.path.realpath(wd), os.path.realpath(home)
+        if p == h or p.startswith(h + os.sep):
+            return "under the repository"
+    return None
 
 
 def queue_count(env=None):
@@ -363,64 +381,29 @@ def queue_count(env=None):
     return None if jobs is None else len(jobs)
 
 
-# Commands that reach Slurm (decision 0033, one route): a local run of nrpic-run and `nrpic-env exec` refuse
-# them unless they run inside a dispatch of the shared queue (the marker below).
-_SLURM_NAMES = r"(sbatch|srun|salloc|gpu_run\.sh|gpu_batch\.sh|submit_chain\.sh)"
-_SLURM_WORD = re.compile(r"(?<![\w./-])(?:[\w./-]*/)?" + _SLURM_NAMES + r"(?![\w.-])")
-_SLURM_QUOTED = re.compile(r"""["'](?:[\w./-]*/)?""" + _SLURM_NAMES + r"""(?=["'\s])""")
-_CHAIN_QUERY = re.compile(r"""["']?\s+["']?(?:--status|--stop|-h|--help)(?![\w-])""")
-_INTERPRETERS = re.compile(r"(?:ba|da|z|k)?sh|python[0-9.]*|perl")
+# Commands that reach Slurm (decision 0033, one route). Outside a dispatch of the shared queue, a local run of
+# nrpic-run and `nrpic-env exec` put harness/shims/slurm first on the command's PATH: there sbatch, srun and
+# salloc are stubs that print the rule and exit 2, whatever form the command takes (a prefix such as timeout or
+# env, a script that calls another, Python, ...). Inside a valid dispatch the PATH is left as it is, so that
+# nothing of the stubs reaches a job (a chain's job resubmits its next segment with the real sbatch). A call by
+# absolute path (/usr/bin/sbatch) or with a PATH of its own passes: only a limit on the Slurm side or the
+# tool-guard hook closes that. The one textual refusal left: the command's own first word.
+SLURM_COMMANDS = ("sbatch", "srun", "salloc")
 
 
-def _first_slurm_name(text, rx):
-    for m in rx.finditer(text):
-        if m.group(1) == "submit_chain.sh" and _CHAIN_QUERY.match(text, m.end()):
-            continue                          # --status and --stop submit nothing
-        return m.group(1)
-    return None
+def slurm_shim_dir(root):
+    """harness/shims/slurm of the worktree `root`."""
+    return os.path.join(root, "harness", "shims", "slurm")
 
 
-def _script_text_hit(path):
-    """The Slurm name a readable script file would run, or None (binary, unreadable or large files: None)."""
-    try:
-        if not os.path.isfile(path) or os.path.getsize(path) > 4 << 20:
-            return None
-        with open(path, "rb") as f:
-            raw = f.read()
-    except OSError:
-        return None
-    if b"\0" in raw[:8192]:
-        return None
-    text = raw.decode("utf-8", "replace")
-    first = text.split("\n", 1)[0]
-    if path.endswith(".py") or (first.startswith("#!") and "python" in first):
-        return _first_slurm_name(text, _SLURM_QUOTED)   # a string that begins with the name: subprocess, os.system
-    body = "\n".join(ln for ln in text.splitlines() if not ln.lstrip().startswith("#"))
-    return _first_slurm_name(body, _SLURM_WORD)
-
-
-def slurm_launch_in(argv, cwd):
-    """What in a command line would submit a Slurm job, as far as can be told without running it, or None:
-    sbatch, srun or salloc, or scripts/gpu_run.sh, gpu_batch.sh, submit_chain.sh (not --status or --stop),
-    named as a word anywhere in the arguments (a `bash -c` or `python3 -c` string included), or run by a
-    script file the command executes (argv[0], or the first file argument of a shell or Python), when the
-    file can be read: shell lines outside comments; in a Python file, a string that begins with the name."""
-    if not argv:
-        return None
-    hit = _first_slurm_name(" ".join(argv), _SLURM_WORD)
-    if hit:
-        return f"{hit} (in the command line)"
-    files = [argv[0]]
-    if _INTERPRETERS.fullmatch(os.path.basename(argv[0])) and "-c" not in argv[1:]:
-        files += [a for a in argv[1:] if not a.startswith("-")][:1]
-    for p in files:
-        if re.fullmatch(_SLURM_NAMES, os.path.basename(p)):
-            continue                          # the launcher scripts themselves: decided by the command line above
-        full = p if os.path.isabs(p) else os.path.join(cwd, p)
-        hit = _script_text_hit(full)
-        if hit:
-            return f"{hit} (in {p})"
-    return None
+def with_slurm_shims(env, wt):
+    """A copy of env with harness/shims/slurm first on PATH (outside a dispatch of the shared queue)."""
+    d = slurm_shim_dir(wt.root)
+    if not all(os.access(os.path.join(d, c), os.X_OK) for c in SLURM_COMMANDS):
+        raise HarnessError(f"{d}/{{sbatch,srun,salloc}} are missing: merge main first (git merge --no-edit main)")
+    env = dict(env)
+    env["PATH"] = d + ":" + env.get("PATH", BOOT_PATH)
+    return env
 
 
 # One route for card runs (decision 0033): only the dispatcher of the shared queue (harness/bin/nrpic-queue
@@ -718,11 +701,293 @@ def _first(*vals):
     return None
 
 
-# every top-level key any version of nrpic-run has written (submit and finish)
+# every top-level key any version of nrpic-run has written (submit and finish), and `continuations`, which a
+# wrapper of the shared card queue adds when it continues a chain in place (decision 0039 item 5; below)
 NRPIC_RUN_KEYS = ("schema", "run_id", "track", "gate", "kind", "purpose", "preregistered_in", "launcher", "command",
                   "cwd", "git", "code", "env", "input", "inputs", "batch_entries", "resources", "slurm", "outputs",
                   "status", "exit_code", "registered", "started", "ended", "finished", "parents", "notes",
-                  "budget_at_submit")
+                  "budget_at_submit", "continuations")
+
+
+# ------------------------------------------------------------------ runs continued in place (decision 0039 item 5)
+#
+# A chain cut by preemption, by the queue cap or by its segment cap is continued IN PLACE by a wrapper given to
+# `nrpic-queue add --cmd` (C: tracks/C-sidm/longruns/seq/qitem.sh; D: tracks/D-bh-dress/g2long/tools/
+# continue_chain.sh): scripts/submit_chain.sh is started again on the run's own directory and resumes from its
+# newest restart file, under the run's own id. The wrapper appends one record to the manifest's optional
+# top-level list `continuations` and commits the manifest:
+#
+#   "continuations": [ {"at": "2026-11-24T12:59:33Z",              when (ISO 8601 to the second, with a zone:
+#                                                                   Z, +HH:MM or +HHMM)                  required
+#                       "from_restart": "<path of the .rst>" | null, the restart file it resumes from; null when
+#                                                                   the chain had none yet (its waiting job was
+#                                                                   cancelled before it ran)             required
+#                       "job_id": "5210",                          the Slurm job it submitted (digits; null when
+#                                                                   not known yet)                     } at least
+#                       "segments_used_before": 5,                 the chain's segment counter before (int >= 0)} one of
+#                       "max_segments": 12,                        the segment cap after (int >= 1)    } these
+#                       "by" | "via": "<wrapper> (queue entry ...)", who continued it (non-empty)   required, one
+#                       ...: any further keys (reason, kind, status_before, extra_athena_args, predictions) } ]
+#
+# Records are appended in order of `at`. A manifest that was final before the continuation (its `finished`,
+# else `ended`, earlier than the last record) is open again: `nrpic-run finish <run_id>` closes it again without
+# --status, from the chain's STATUS, and counts the card-hours of every job of the chain. A manifest whose
+# `continuations` is malformed is refused by finish, by the stage check's run check and by the pre-commit hook,
+# with what is wrong.
+CONTINUATION_WHO = ("by", "via")
+CONTINUATION_POINT = ("job_id", "segments_used_before", "max_segments")
+_ISO_RX = re.compile(r"(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2})(\.\d+)?(Z|[+-]\d{2}:?\d{2})")
+
+
+def parse_time(s):
+    """An aware datetime of 'YYYY-MM-DDTHH:MM:SS[.fff](Z|+HH:MM|+HHMM)', or None."""
+    if not isinstance(s, str):
+        return None
+    m = _ISO_RX.fullmatch(s.strip())
+    if not m:
+        return None
+    zone = "+0000" if m.group(3) == "Z" else m.group(3).replace(":", "")
+    try:
+        return datetime.datetime.strptime(m.group(1) + zone, "%Y-%m-%dT%H:%M:%S%z")
+    except ValueError:
+        return None
+
+
+def _is_int(x):
+    return isinstance(x, int) and not isinstance(x, bool)
+
+
+def continuation_problems(value):
+    """[] when `value` (a manifest's `continuations`) is a well-formed list of records (schema above), else one
+    sentence per fault, naming the record by its index."""
+    if not isinstance(value, list):
+        return [f"`continuations` must be a list of records, one per continuation (it is a {type(value).__name__})"]
+    out, last = [], None
+    for i, rec in enumerate(value):
+        w = f"record [{i}]"
+        if not isinstance(rec, dict):
+            out.append(f"{w} is a {type(rec).__name__}, not an object")
+            continue
+        at = parse_time(rec.get("at"))
+        if "at" not in rec:
+            out.append(f"{w} has no `at` (when it was continued, ISO 8601 with a zone, e.g. 2026-11-24T12:59:33Z)")
+        elif at is None:
+            out.append(f"{w}: `at` {rec.get('at')!r} is not an ISO 8601 time to the second with a zone "
+                       "(Z, +HH:MM or +HHMM)")
+        if "from_restart" not in rec:
+            out.append(f"{w} has no `from_restart` (the restart file it resumes from, or null when there was none)")
+        elif rec["from_restart"] is not None and not (isinstance(rec["from_restart"], str) and rec["from_restart"].strip()):
+            out.append(f"{w}: `from_restart` must be the path of a restart file or null (it is {rec['from_restart']!r})")
+        who = [k for k in CONTINUATION_WHO if k in rec]
+        if not who:
+            out.append(f"{w} names nobody: give `by` (or `via`), the wrapper and queue entry that continued it")
+        for k in who:
+            if not (isinstance(rec[k], str) and rec[k].strip()):
+                out.append(f"{w}: `{k}` must be a non-empty string (it is {rec[k]!r})")
+        if not any(rec.get(k) is not None for k in CONTINUATION_POINT):
+            out.append(f"{w} names no job or segment: give `job_id`, `segments_used_before` or `max_segments`")
+        j = rec.get("job_id")
+        if j is not None and not ((isinstance(j, str) and j.isdigit()) or (_is_int(j) and j >= 0)):
+            out.append(f"{w}: `job_id` must be a Slurm job id of digits (it is {j!r})")
+        s = rec.get("segments_used_before")
+        if s is not None and not (_is_int(s) and s >= 0):
+            out.append(f"{w}: `segments_used_before` must be an integer >= 0 (it is {s!r})")
+        s = rec.get("max_segments")
+        if s is not None and not (_is_int(s) and s >= 1):
+            out.append(f"{w}: `max_segments` must be an integer >= 1 (it is {s!r})")
+        if at is not None:
+            if last is not None and at < last:
+                out.append(f"{w} is dated before the record above it: records are appended in order of `at`")
+            last = at
+    return out
+
+
+def reopened_at(m):
+    """The `at` of the last continuation when it is later than the manifest's `finished` (else `ended`): a run that
+    was closed and then continued in place, so that finish must close it again. None otherwise (also when the
+    times cannot be read)."""
+    if not isinstance(m, dict) or not isinstance(m.get("continuations"), list) or not m["continuations"]:
+        return None
+    rec = m["continuations"][-1]
+    at = parse_time(rec.get("at")) if isinstance(rec, dict) else None
+    closed = parse_time(m.get("finished")) or parse_time(m.get("ended"))
+    if at is None or closed is None or at <= closed:
+        return None
+    return rec.get("at")
+
+
+def continuation_job_ids(m):
+    """The job ids the continuation records name (strings, in order, without repeats)."""
+    out = []
+    recs = m.get("continuations") if isinstance(m, dict) else None
+    for rec in recs if isinstance(recs, list) else []:
+        j = rec.get("job_id") if isinstance(rec, dict) else None
+        if j is not None and str(j).isdigit() and str(j) not in out:
+            out.append(str(j))
+    return out
+
+
+# ------------------------------------------------------------------ checksums of outputs (decision 0039 item 5)
+#
+# Outputs are hashed with an incremental cache per run directory, <output dir>/.nrpic/sha256cache.json (beside
+# .nrpic/launch.json and result.json, in the part of the directory that is never checksummed): one entry per
+# relative path with the file's size and modification time in nanoseconds when it was hashed, and its sha256. A
+# file is hashed again only when it is new, or its size or modification time differs from its entry, or its
+# entry is "racy" (the file had been modified less than RACY_NS before it was hashed, so a later write within the
+# same clock tick could keep the time; such a file is hashed at the next pass too). --full (finish and both
+# verify commands) hashes every file and rewrites the cache. Up to HASH_THREADS files are hashed at once (hashlib
+# releases the GIL on large buffers); never more. A checksum taken from the cache proves CACHE_SENTENCE.
+HASH_THREADS = 4
+SHA_CACHE = (".nrpic", "sha256cache.json")
+SHA_CACHE_SCHEMA = "nrpic-sha256-cache/1"
+RACY_NS = 2 * 10 ** 9
+CACHE_SENTENCE = ("a checksum taken from the cache proves unchanged size and modification time since it was hashed, "
+                  "not bytes read again")
+
+
+def hash_stats():
+    """Counters of one or more passes of OutputHasher (added with add_hash_stats)."""
+    return {"files": 0, "rehashed": 0, "rehashed_bytes": 0, "cached": 0, "cached_bytes": 0, "full": False,
+            "notes": []}
+
+
+def add_hash_stats(into, s):
+    for k in ("files", "rehashed", "rehashed_bytes", "cached", "cached_bytes"):
+        into[k] += s[k]
+    into["full"] = into["full"] or s["full"]
+    into["notes"] += s["notes"]
+    return into
+
+
+def gb(n):
+    return f"{n / 1e9:.2f} GB" if n >= 1e8 else f"{n / 1e6:.1f} MB"
+
+
+def hash_summary(s, always=False):
+    """One line for a report: how many output files were hashed again and how many taken from the cache, with
+    CACHE_SENTENCE whenever the cache gave any (always: also when it gave none, for the stage report)."""
+    if not s["files"]:
+        return "no output files checksummed"
+    line = (f"{s['files']} output files: {s['rehashed']} hashed again (bytes read, {gb(s['rehashed_bytes'])}), "
+            f"{s['cached']} taken from the cache ({gb(s['cached_bytes'])})" + (" (--full)" if s["full"] else ""))
+    if s["cached"]:
+        line += f"; {CACHE_SENTENCE}; --full reads every byte"
+    elif always:
+        line += f"; every byte read again (none taken from the cache, where {CACHE_SENTENCE})"
+    return line
+
+
+class OutputHasher:
+    """sha256 of files of one output directory `root`, with its cache (SHA_CACHE). digests(rels) hashes what the
+    cache cannot vouch for, in up to HASH_THREADS threads; save() writes the entries of the files of this pass
+    (those not looked at are dropped). The cache is never required: unreadable, it is ignored (a note), and
+    not writable, the pass is still complete (a note)."""
+
+    def __init__(self, root, full=False):
+        self.root = root
+        self.path = os.path.join(root, *SHA_CACHE)
+        self.full = full
+        self.stats = hash_stats()
+        self.stats["full"] = bool(full)
+        self.errors = {}
+        self.seen = {}
+        self.old = {}
+        try:
+            doc = read_json(self.path)
+            if isinstance(doc, dict) and doc.get("schema") == SHA_CACHE_SCHEMA and isinstance(doc.get("entries"), dict):
+                self.old = doc["entries"]
+            else:
+                self.stats["notes"].append(f"{self.path} is not a cache of {SHA_CACHE_SCHEMA}: ignored, files hashed")
+        except FileNotFoundError:
+            pass
+        except (OSError, ValueError) as e:
+            self.stats["notes"].append(f"{self.path} unreadable ({e}): ignored, files hashed")
+
+    @staticmethod
+    def _trusted(e, st):
+        return (isinstance(e, dict) and e.get("size") == st.st_size and e.get("mtime_ns") == st.st_mtime_ns
+                and isinstance(e.get("sha256"), str) and len(e["sha256"]) == 64 and _is_int(e.get("hashed_ns"))
+                and st.st_mtime_ns <= e["hashed_ns"] - RACY_NS)
+
+    def _hash_one(self, rel):
+        p = os.path.join(self.root, rel)
+        t0 = time.time_ns()
+        st = os.stat(p)
+        d = sha256_file(p)
+        st2 = os.stat(p)
+        same = (st.st_size, st.st_mtime_ns) == (st2.st_size, st2.st_mtime_ns)
+        return d, st, ({"size": st.st_size, "mtime_ns": st.st_mtime_ns, "sha256": d, "hashed_ns": t0} if same else None)
+
+    def digests(self, rels):
+        """{rel: sha256} for the relative paths `rels`; a file that cannot be read is left out and its error
+        is in self.errors[rel]."""
+        out, todo = {}, []
+        for rel in rels:
+            try:
+                st = os.stat(os.path.join(self.root, rel))
+            except OSError as e:
+                self.errors[rel] = str(e)
+                continue
+            e = None if self.full else self.old.get(rel)
+            if self._trusted(e, st):
+                out[rel] = e["sha256"]
+                self.seen[rel] = e
+                self.stats["cached"] += 1
+                self.stats["cached_bytes"] += st.st_size
+            else:
+                todo.append((st.st_size, rel))
+        todo.sort(reverse=True)                  # the largest first, so that the threads end together
+        if todo:
+            with concurrent.futures.ThreadPoolExecutor(max_workers=min(HASH_THREADS, len(todo))) as ex:
+                futs = {ex.submit(self._hash_one, rel): rel for _, rel in todo}
+                for f in concurrent.futures.as_completed(futs):
+                    rel = futs[f]
+                    try:
+                        d, st, entry = f.result()
+                    except OSError as e:
+                        self.errors[rel] = str(e)
+                        continue
+                    out[rel] = d
+                    if entry is not None:
+                        self.seen[rel] = entry
+                    else:
+                        self.stats["notes"].append(f"{rel} changed while it was hashed (not cached)")
+                    self.stats["rehashed"] += 1
+                    self.stats["rehashed_bytes"] += st.st_size
+        self.stats["files"] += len(out)
+        return out
+
+    def save(self):
+        doc = {"schema": SHA_CACHE_SCHEMA, "algorithm": "sha256", "dir": self.root, "written": utcnow(),
+               "meaning": CACHE_SENTENCE, "entries": dict(sorted(self.seen.items()))}
+        tmp = f"{self.path}.tmp{os.getpid()}"
+        try:
+            os.makedirs(os.path.dirname(self.path), exist_ok=True)
+            with open(tmp, "w") as f:
+                json.dump(doc, f, indent=0)
+                f.write("\n")
+            os.replace(tmp, self.path)
+            return True
+        except OSError as e:
+            self.stats["notes"].append(f"cache not written ({e}); the next pass hashes again")
+            try:
+                os.remove(tmp)
+            except OSError:
+                pass
+            return False
+
+
+_INPUT_MEMO = {}
+
+
+def sha256_memo(path):
+    """sha256 of an input file, read once per process for a given (path, size, modification time): the stage
+    check meets one executable in many manifests. Bytes are read in every process (no cache on disk)."""
+    st = os.stat(path)
+    key = (os.path.realpath(path), st.st_size, st.st_mtime_ns)
+    if key not in _INPUT_MEMO:
+        _INPUT_MEMO[key] = sha256_file(path)
+    return _INPUT_MEMO[key]
 
 
 def hand_marker(m):
@@ -751,13 +1016,14 @@ def manifest_view(m, home, where=""):
     FINAL_STATUSES, ACTIVE_STATUSES or "unknown"), status_raw, final, gate, kind, purpose, launcher,
     outdir (absolute, or None), outdir_rel, gpu_hours (used, None if not recorded),
     gpu_hours_requested, walltime_s, cores, exit_code, sha, inputs (list of {path, sha256, tracked}),
-    issues (what was not in the nrpic-run schema), where."""
+    continuations (number of records), reopened (the `at` of a continuation after the close, else None),
+    issues (what was not in the nrpic-run schema; a malformed `continuations`), where."""
     v = {"ok": isinstance(m, dict), "where": where, "issues": [], "raw": m}
     if not isinstance(m, dict):
         v.update(schema=False, hand=True, run_id=None, owner=None, status="unknown", status_raw=None, final=True,
                  gate=None, kind=None, purpose="", launcher=None, outdir=None, outdir_rel=None,
                  gpu_hours=None, gpu_hours_requested=0.0, walltime_s=None, cores=1, exit_code=None,
-                 sha=None, inputs=[])
+                 sha=None, inputs=[], continuations=0, reopened=None)
         v["issues"].append(f"not a JSON object ({type(m).__name__})")
         return v
     res = m.get("resources") if isinstance(m.get("resources"), dict) else {}
@@ -824,6 +1090,12 @@ def manifest_view(m, home, where=""):
     v["hand"] = (not v["schema"]) or bool(hand_marker(m))
     if not v["schema"]:
         v["issues"].insert(0, "hand-written (not the nrpic-run schema)")
+    v["continuations"] = len(m["continuations"]) if isinstance(m.get("continuations"), list) else 0
+    if "continuations" in m:
+        v["issues"] += ["continuations: " + p for p in continuation_problems(m["continuations"])]
+    v["reopened"] = reopened_at(m) if v["final"] else None
+    if v["reopened"]:
+        v["issues"].append(f"continued in place at {v['reopened']} after it was closed: close it again with finish")
     if v["run_id"] is None:
         v["issues"].append("no run_id")
     elif parse_run_id(v["run_id"]) is None:
@@ -867,23 +1139,30 @@ def git_blob_sha256(root, rev, path):
     return hashlib.sha256(r.stdout).hexdigest() if r.returncode == 0 else None
 
 
-def verify_run(home, root, m, outputs=True):
-    """Problems found when re-checking one run manifest (either kind; see manifest_view): output
-    checksums against sha256sums.txt (and that file against the manifest), tracked inputs against
-    their blobs at the run's commit, untracked inputs against the files still on disk. For a
-    hand-written manifest of wave 1, what it does not record is a note, not a problem.
-    Returns (problems, notes, n_outputs)."""
+def verify_run(home, root, m, outputs=True, full=False, stats=None):
+    """Problems found when re-checking one run manifest (either kind; see manifest_view): a malformed
+    `continuations`, a run continued after it was closed; output checksums against sha256sums.txt (and
+    that file against the manifest), through the run directory's cache unless full (OutputHasher; the
+    counters are added to `stats`, a hash_stats() dict, when given); tracked inputs against their blobs at
+    the run's commit, untracked inputs against the files still on disk. For a hand-written manifest of
+    wave 1, what it does not record is a note, not a problem. Returns (problems, notes, n_outputs)."""
     problems, notes, n = [], [], 0
     v = manifest_view(m, home)
     if not v["ok"]:
         return [v["issues"][0]], notes, 0
     hand = v["hand"]
+    if "continuations" in m:
+        problems += ["continuations: " + p for p in continuation_problems(m["continuations"])]
     if v["status"] in ACTIVE_STATUSES:
         problems.append(f"status is {v['status_raw']}: not finished (nrpic-run finish)")
     elif v["status"] == "unknown":
         (notes if hand else problems).append(f"status {v['status_raw']!r}: cannot tell whether the run finished")
     elif v["status_raw"] != v["status"]:
         notes.append(f"status {v['status_raw']!r} read as {v['status']}")
+    if v["reopened"]:
+        (notes if hand else problems).append(
+            f"continued in place at {v['reopened']}, after it was closed as {v['status_raw']}: its outputs and "
+            f"card-hours are those of the close; close it again (nrpic-run finish {v['run_id']})")
     outdir = v["outdir"]
     if outputs:
         sums = os.path.join(outdir, "sha256sums.txt") if outdir else None
@@ -899,7 +1178,7 @@ def verify_run(home, root, m, outputs=True):
             rec = outs.get("sha256sums_sha256")
             if rec and sha256_file(sums) != rec:
                 problems.append("sha256sums.txt differs from the one recorded in the manifest")
-            listed = set()
+            listed, rows = set(), []
             for line in open(sums, errors="replace"):
                 if not line.strip():
                     continue
@@ -909,11 +1188,23 @@ def verify_run(home, root, m, outputs=True):
                     rel = rel.lstrip("*").strip()
                 listed.add(os.path.normpath(rel))
                 n += 1
-                p = os.path.join(outdir, rel)
-                if not os.path.isfile(p):
+                rows.append((rel, digest))
+            present = []
+            for rel, digest in rows:
+                if not os.path.isfile(os.path.join(outdir, rel)):
                     problems.append(f"missing output {rel}")
-                elif sha256_file(p) != digest:
+                else:
+                    present.append(rel)
+            hasher = OutputHasher(outdir, full=full)
+            got = hasher.digests(list(dict.fromkeys(present)))
+            for rel, digest in rows:
+                if rel in hasher.errors:
+                    problems.append(f"cannot read output {rel}: {hasher.errors[rel]}")
+                elif rel in got and got[rel] != digest:
                     problems.append(f"changed output {rel}")
+            hasher.save()
+            if stats is not None:
+                add_hash_stats(stats, hasher.stats)
             if not hand:
                 for dirpath, dirnames, filenames in os.walk(outdir):
                     rel = os.path.relpath(dirpath, outdir)
@@ -939,7 +1230,7 @@ def verify_run(home, root, m, outputs=True):
             continue
         p = path if os.path.isabs(path) else os.path.join(root, path)
         if os.path.isfile(p):
-            if sha256_file(p) != digest:
+            if sha256_memo(p) != digest:
                 (notes if hand else problems).append(f"input {path} changed since the run (sha256 differs)")
         else:
             notes.append(f"input {path} no longer present (not re-verifiable)")
