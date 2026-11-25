@@ -920,3 +920,22 @@ before any horizon is found and before the central lapse falls below 0.3. Refute
 of 10 coordinate units) cannot bracket t_sc to within that band, A2 is undecided and one oblate member is
 queued (six card-hours at most, priority 2) with denser snapshots. Analysis not written yet (next session;
 processors only; the conversion from coordinate time to t/t_H from the run's own background, DESIGN 1).
+
+### Outcome of A2 (analysis A-20261125-151629-bb77171; second reading on three clocks A-20261125-151715-66f198f, added after the first reading; fig_a2_crossing.png looked at)
+
+- Lattice: one-to-one from snapshot 0 (largest initial displacement 0.19 h); the minimum neighbour separation
+  along z at t = 0 is 0.937 h, equal to the Zel'dovich value 1 - 0.064 at a = 1 (the data are the first-order
+  growing mode, as designed).
+- "z first" HOLDS: the first crossing is along z at the centre, then x, then y.
+- The time PREDICTION IS REFUTED: the first z crossing lies at 6.35 t_H (snapshot bracket 6.19-7.21 t_H in
+  coordinate time read as cosmic time), outside [3.4, 5.0]; on the other clocks 6.12 t_H (proper time of the
+  lowest lapse), 6.13 (probe particle), 6.44 (background lapse): late by a factor 1.5 in time on every clock.
+  Second axis x at 8.1-9.1 t_H (Zel'dovich 8.5), third y at 10.4-13.8 (Zel'dovich 33.6: after the first
+  crossing the peak no longer follows the first-order solution). The lapse at the lowest point is 0.81 at the
+  z crossing, so the slow central clock does not explain the lag. The separation falls more slowly than
+  1 - 0.064 a from the first interval on (0.626 against 0.594 at t = 10, 0.200 against 0.008 at t = 40).
+- Reading [JUDGEMENT, not tested]: Newtonian ellipsoidal collapse of the centre runs AHEAD of the Zel'dovich
+  time, not behind it, so the lag is either relativistic (the scale is near the horizon early: (k/aH)^2 = a)
+  or set by the initial velocities. The discriminating test, on processors: the same S1 particles under
+  `<particles> pusher = newton`, `newton_poisson = fft` (core-v0.6), first crossing from the same reader.
+  No oblate card member is queued: the snapshots bracket the crossing, so the fallback condition is not met.
