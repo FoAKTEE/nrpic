@@ -371,3 +371,27 @@ K4 runs as A-20261125-120525-8fb946e (processors, detached, 6 cores: three membe
 threaded build, tlim 5 as in k4_floor.sh; entry 10 names t = 2-5). Predictions K4a-K4c stand as
 written. Judge with `scripts/k4_compare.py` on its directory (registered) after
 `harness/bin/nrpic-run finish A-20261125-120525-8fb946e`.
+
+## Entry 12, 2026-11-25 07:10 PST (lead of batch 19): answers to the fresh verifier of C18, predictions before the analysis
+
+The verifier (stage/G2/VERIFIER-C18.md) reproduces classification, detection times and the bracket and does
+not reproduce the mass medians of B-d0.42, B-d0.40, B-d0.35, C-d0.42 and conv_ball A. Decision 0040 items 2-3:
+answer with a registered analysis; read found / not found only from horizon_status_0.txt. Script
+`scripts/c18_answer.py` (all 15 members): status-file searches and persistence, stale summary rows, the finder
+mass against three exact masses on the slice (committed smoothed sign change "lead"; shell of the outermost
+trapped tracked particle "last"; the next tracked particle outward "next"), ddet under four interpolations.
+Predictions [JUDGEMENT], written before the run:
+- P12a: every persistence time of the READMEs and every classification is reproduced from the status files,
+  and every BH member is found in every status row from its persistence start. Refuted by one difference.
+- P12b: the committed convention over the rows the committed analysis used reproduces every README median to
+  2e-4 (the READMEs were written from it).
+- P12c: the README medians lie inside the bracket [median vs next, median vs last] for every member (the
+  committed sign change is interpolated between those two particles). Refuted by a README median outside it;
+  the verifier reports exactly that for B-d0.42, B-d0.40, B-d0.35, so P12c is at risk.
+- P12d: ddet spread across the four interpolations at first detection is below 0.04 M on B and up to 0.1 M on
+  C-d0.42 (verifier 5e). Refuted by a spread outside that.
+
+K4 (entry 10) is judged after this entry with `scripts/k4_compare.py`; predictions K4a-K4c stand as written.
+Note on naming: decision 0039 item 2(c) calls K4 "the test of the smoothed edge". K4 is not that test: it
+varies the time step and the source extrapolation on the unsmoothed top hat (entry 10). The smoothed-edge
+test (entry 7's candidate) has not been run.
