@@ -1,9 +1,10 @@
 # VERIFIER of G1, F-hills (checklist C18; decisions 0016 item 4, 0042 item 2)
 
-Fresh verifier, batch 22, 2026-11-25 09:38-10:10 PST, processors only, 0 card-hours. Package:
+Fresh verifier, batch 22, 2026-11-25 09:38-10:05 PST, processors only, 0 card-hours. Package:
 `verifier/` (README, JOURNAL with predictions and outcomes, scripts, results, figures). Every
-number below is from the registered run **F-20261125-175533-141e4f1** (`verifier/scripts/run_all.sh`)
-unless another run id is given. Horizon numbers are all **made without the diagnostics** (no run of
+number below is from the registered run **F-20261125-175931-32701e4** (`verifier/scripts/run_all.sh`;
+its passage numbers at the cut equal those of the earlier passes F-20261125-175038-4719d4a,
+-175132-e7c6c68, -175235-e0fdde6, -175533-141e4f1, which it supersedes) unless another run id is given. Horizon numbers are all **made without the diagnostics** (no run of
 this track has `<fastflow> diagnostics`); failed searches are found by the source's failure
 signature (a non-finite or non-positive mass, or columns 3-12 identical to the previous row).
 
@@ -29,7 +30,7 @@ signature (a non-finite or non-positive mass, or columns 3-12 identical to the p
   which the task gives me as the claim.
 - A2's chain resumed at 09:49 PST (Slurm 5294) during this session. The passage is read twice by
   the same code: cut at 96.2285 M, the owner's last record (`results/cut_96.23/`), and to the live
-  record (96.89 M in the reference run).
+  record (97.33 M in the reference run).
 
 ## 2. G1 criteria of the scope text (`../G0/SCOPING.md` section 5) as far as I checked them
 
@@ -81,16 +82,19 @@ digits.
 | s(20 M): P1 4.2855, alone m/8 4.3753 | 4.28549, 4.37531 | reproduced, 5 digits |
 | Newton, binary alone: 4.9430 (7.5 M), 4.9693 (20 M) | 4.94300, 4.96926 | reproduced, 5 digits |
 | EIH 4.9478 (7.5 M), 4.9302 (20 M) | no EIH integrator of my own | not checked |
-| order of the separation error m/8 to m/16 >= 3.3 (3.96 from Delta s) | with m/12 (R12) the three members give no order: s12 - s16 = +7.7e-6 at 7.5 M, -4.4e-4 at 10 M (sign change) while s8 - s16 = -0.061 to -0.38; the three-member order is undefined at 5, 7.5, 10, 20 M | not reproduced: the statement was made from two members before R12 existed; m/12 and m/16 agree within 2.1e-3 M, m/8 is outside the convergent regime |
+| order of the separation error m/8 to m/16 >= 3.3 (3.96 from Delta s) | with m/12 (R12): s12 - s16 = +7.7e-6 at 7.5 M, -4.4e-4 at 10 M (sign change) while s8 - s16 = -0.061 to -0.38; three-member order undefined at 5 and 7.5 M, 13.4, 12.0, 14.5 at 10, 15, 20 M | not reproduced as an asymptotic order: the statement was made from two members before R12 existed; m/12 and m/16 agree within 2.1e-3 M, m/8 is outside the convergent regime |
+| note ledger row 194: three-member order 12, 14.5 at 15, 20 M | 11.98, 14.46 | reproduced as numbers, 2-3 digits; an "order" of 12-14 for fourth-order differences is not asymptotic (F2) |
 | R12 = R16n within 0.002 M | largest 2.12e-3 M at 0.71 M, -3.4e-4 M at 21.06 M | reproduced after the first M; marginally exceeded in the start transient |
 | C (P1b m/12) vs A within 0.0023 M to 22 M | largest 2.33e-3 M at 0.59 M, 2.08e-3 at 22.3 M | reproduced, 2 digits |
 | P1 merger: tracker separation < 0.1 M at 48.79 M | 48.793 M | reproduced |
 | H3: finder 0 first above 0.2 at 48.81 M (0.2686), finder 1 at 49.06 M (0.2693) | 48.8125 M (0.26857), 49.0625 M (0.26930) | reproduced, 4 digits |
 | remnant passes M at 6.99 M at 154.6 M | 6.991681 M at 154.598 M | reproduced, all digits |
 | p1_280.json d_at_112 = 11.816 | 11.895 at 112.0 M (its rows at 120-280 M equal mine to 10 digits) | not reproduced; my value of 11.816 occurs near 112.4 M |
-| P1 rms H 4.7e-5 to 8.8e-5 over 60-280 M | 4.66e-5 to 8.79e-5 | reproduced, 2 digits |
-| remnant mass -0.42 percent over 60-280 M | -0.43 percent (medians of all accepted rows; p1_280's medians keep only its "good" rows and sit about 9e-4 higher) | reproduced, 1-2 digits |
-| heavy hole +0.32 percent (P1) | +0.24 percent from the 1-20 M median, +0.018 percent from 20-60 M | not checkable: the baseline of +0.32 percent is not stated where I read it |
+| ledger row 200: common horizon 24.9 M from the heavy hole | 24.879 M (tracker 0 to M at 48.8125 M) | reproduced, 3 digits |
+| ledger row 201: remnant 24.25 M from M at 280 M, rate 0.158 | 24.2502 M; rate 0.159 (fit over 275-280 M) | reproduced, 4 and 2 digits |
+| P1 rms H 4.7e-5 to 8.8e-5 over 60-280 M; ledger row 207: 3.2e-4 at 1 M, 6e-5 at 112 M, 8.8e-5 largest over 112-280 M, 4.7e-5 at 280 M | 4.66e-5 to 8.79e-5; 3.17e-4, 6.02e-5, 8.79e-5, 4.66e-5 | reproduced, 2 digits |
+| remnant mass -0.42 percent over 60-280 M; ledger row 203: medians 0.2683, 0.2672 | -0.43 percent; medians 0.26743, 0.26628 (all accepted rows; p1_280 keeps only its "good" rows, about 9e-4 higher) | change reproduced, 1-2 digits; medians differ in the third digit by the row selection |
+| heavy hole +0.32 percent (P1); ledger row 205: 1.00419 at t = 4 M, median 1.00736 over 240-280 M | 1.004190 at 4.0 M (accepted search), 1.007359; ratio +0.316 percent | reproduced, 2 digits (the baseline is the search at 4 M) |
 | H1: failures < 1 percent at m/16 and m/12 before 96 M | 0 in R12, R16n+B, A+A2, C; P1 4, 5, 18 and R8 2, 2 (m/8, no number claimed) | reproduced |
 | H2 as written: m/8 members 1.0-1.7e-3 per M | P1 (10-40 M) 1.12e-3, 1.65e-3; R8 (10-21 M) 0.92e-3, 1.43e-3 | failed as written (R8 member 0 below 1.0e-3); the corrected band 0.9-1.7e-3 (OPEN item 5) holds |
 | H2: m/16 members below 1e-4 per M | at most 3.1e-5 (R16n+B 23-60, 60-108 M; A 15-40, 40-62 M; A2 65-95 M) | reproduced |
@@ -103,8 +107,9 @@ digits.
 | Claim (`junk_gauge/README.md` T3 text) | Mine | Verdict |
 |---|---|---|
 | t = 0 rms H at m/8 4.7e-5; card 4.713e-5 (E2 F-20261115-173547-a02af7d; smoke F-20261115-174602-c6879fe) | 4.7134e-5 (approx L10); the card history row gives the same to its 6 digits | reproduced |
-| truncation order 7.6-8 | L9 -> L10: 7.98 (approx), 7.91 (none); L10 -> L11: 6.42 (approx), 1.62 (none, at its own residual) | reproduced for L9 -> L10 |
-| own residual of the corrected data 4.9e-7 = 1/33 of the uncorrected | raw rms at m/16: approx 5.51e-7, none 1.633e-5, ratio 29.6 | not reproduced as raw numbers (the claim seems to remove truncation; its method is not in what I read); the substance (the correction lowers the m/16 residual about thirtyfold) holds |
+| truncation order 7.6-8; ledger row 126: 7.98, 7.68 (corrected), 7.96, 7.62 (uncorrected) | raw-norm orders L9 -> L10: 7.98 (approx), 7.91 (none); L10 -> L11: 6.42, 1.62 | the ledger measures the truncation error against a closed form (note Sec. on the data), which the history does not hold: 7.98 reproduced, the others not checkable from the history |
+| ledger row 122: rms H at t = 0, corrected: 0.0119, 4.71e-5, 5.51e-7 (m/4, m/8, m/16) | 0.011906, 4.7134e-5, 5.5141e-7 | reproduced, 3 digits |
+| own residual of the corrected data 4.9e-7 = 1/33 of the uncorrected (junk_gauge README) | raw rms at m/16: approx 5.51e-7 (= ledger row 122), none 1.633e-5, ratio 29.6 | not reproduced as raw numbers (4.9e-7 is not the ledger's raw 5.51e-7; its method is not in what I read); the substance (the correction lowers the m/16 residual about thirtyfold) holds |
 | plain sum vs approx at m/8 | plain/approx = 0.999 (truncation-dominated at m/8) | measured; no claim to compare |
 | junk at r = 40, 48, 70, 90 M in u in [-35, 6] M: 2.8, 2.6, 2.5, 2.5e-6 M | 2.73, 2.50, 2.28, 2.36e-6 M (FFI omega_0 = 0.2, u = t - r*, M_adm = 1.25, record cut at u = 14) | reproduced within 3-9 percent; largest/smallest 1.198 |
 | 1.5-3.9e-6 over integration choices | omega_0 = 0.1: 3.3-4.2e-6; 0.3: 1.7-2.1e-6; u = t - r: 1.7-2.4e-6 | reproduced in range (my omega_0 = 0.1 reaches 4.2e-6 at 40 M) |
@@ -118,7 +123,8 @@ digits.
 - H4 (batch 21): P1's heavy finder is 2.3 percent below its median in its first three searches.
 - Mine: P0(c) one bound (Kepler energy 3.2e-11 against 1e-11); P1 the centre-of-mass distance 9.81
   (three-body 9.762); P7 A's waveform count (257 to 64 M, not 248 to 61.75 M); P8 the order of
-  convergence (none exists with the three members). Each is in `verifier/JOURNAL.md` entry 2.
+  convergence (I predicted 2-5; there is none at 5 and 7.5 M and 12-14.5 at 10-20 M). Each is in
+  `verifier/JOURNAL.md` entries 2 and 3.
 
 ## 5. Findings the claims do not state
 
@@ -133,7 +139,9 @@ digits.
 - F2 (convergence). The two-member order ">= 3.3" should not be quoted: with R12 the separation of
   the binary alone shows m/12 and m/16 agreeing within 2e-3 M with a sign change of their difference,
   so the m/8 member is far outside any asymptotic regime. What the data support: "m/12 and m/16 agree
-  within 2.1e-3 M to 21 M; m/8 differs by 0.06-0.38 M".
+  within 2.1e-3 M to 21 M; m/8 differs by 0.06-0.38 M". The ledger's row 194 (orders 12 and 14.5 at
+  15 and 20 M) is reproduced as arithmetic (11.98, 14.46; 13.4 at 10 M; none at 5 and 7.5 M), and
+  orders that large and that scattered are themselves the sign that the members are not asymptotic.
 - F3 (wording). "Per M" drifts in the S6/H2 numbers are fractions of the mass per M; "Newton 9.81 M"
   is the two-body conic, the three-body pass is 9.762 M; p1_280.json's d_at_112 is not the value at
   112.0 M.
@@ -144,9 +152,12 @@ digits.
 ## 6. Not checked (plainly)
 
 F-pre-1 (newton3, criterion (i)) and the KHSR result (khsr_note K3); F-pre-2 (geodesic_binary,
-kerr, criterion (ii)); the eih package (EIH separations, 1PN scans); the note v2 ledger tables; the
-batch-11 card analysis beyond the quantities above (N1/N1m tide, F-20261124-132934-375a163); P1's
-remnant spin, "recoil" and radiated energy; the single-member junk (S2g) and its scaling; the junk at
+kerr, criterion (ii)); the eih package (EIH separations, 1PN scans); the note v2 ledger tables except
+rows 122, 126 (in part), 128, 168, 194, 200, 201, 203, 205, 207 (checked in sections 3.3 and 3.4; row
+168, the conic 9.809 and e = 1.00023, is my 9.8087 and 1.000235); P1's remnant spin (row 204),
+radiated energy (row 208) and "recoil"; the
+batch-11 card analysis beyond the quantities above (N1/N1m tide, F-20261124-132934-375a163); the
+single-member junk (S2g) and its scaling; the junk at
 P1b's spheres. None of these was read with a reader of mine.
 
 ## 7. Running the readers on the completed passage
@@ -167,7 +178,8 @@ added after A2 in `vpassage.py` (`RUN_A2`) and `vmesh.py` (`RUNS["A"]`).
   3.3" by the three-member statement of F2; (c) quote the Newtonian centre-of-mass pass as 9.76 M at
   104.3 M (three-body), or say "conic 9.81 M"; (d) check p1_280.json's d_at_112; (e) look at the
   heavy hole's two branches in A2 (F1) before judging A2-5, and state which branch a number uses;
-  (f) state the baseline of P1's "heavy hole +0.32 percent" and the method behind "own residual 4.9e-7".
+  (f) state the method behind "own residual 4.9e-7" (junk_gauge README; the ledger's raw value is
+  5.51e-7) and that "+0.32 percent" is measured from the search at 4 M.
 - To core: nothing new; the open request on the finder's diagnostics after a restart (decision 0042
   item 4) would let F1 be judged.
 
@@ -187,13 +199,13 @@ khsr_note, card chains, batch 21), the owner's JOURNAL.md batch 21 outcomes (lin
 | H3 MET | same to all digits | agree |
 | H4 REFUTED as written for P1 only (0.984 in the first three searches; 0.70 percent after 1 M; A + A2 5.0e-4, C 1.2e-4) | same | agree |
 | C7 PASS with reservations (junk window 2.3-2.8e-6 M, burst then steady 5.0-5.4e-8 M per M) | 2.28-2.73e-6 M at the four radii; the steady part visible in fig_v_junk | agree; I add that the four radii agree within 19.8 percent, at the edge of criterion (iii)'s 20 percent |
-| C8 FAIL (NOT MET, PARTIAL): P1 merged; P1b to 96.23 M needs A2 to at least 170 M | same: P1b not complete; the join and the state to 96.23 M (and to 96.89 M live) reproduced | agree |
+| C8 FAIL (NOT MET, PARTIAL): P1 merged; P1b to 96.23 M needs A2 to at least 170 M | same: P1b not complete; the join and the state to 96.23 M (and to 97.33 M live) reproduced | agree |
 | binary_conv (batch 4a): order ">= 3.3" not established; "only the three-point (R12) or later R16n data decide the order" | R12 now decides it: no order exists (s12 - s16 changes sign; m/8 outside the asymptotic regime) | agree, and the open question is closed in the negative (F2) |
 | binary_conv (batch 4a): fractional drifts labelled "per M" | the S6/H2 "per M" numbers are fractional too | agree; the wording is still in the batch-21 numbers (F3) |
-| khsr_note: P1 to 280 M "not rechecked, to the G1 verifier" | merger, remnant pass, rms H range, remnant mass change reproduced; d_at_112 not reproduced; heavy "+0.32 percent" not checkable | partly done; one defect found |
+| khsr_note: P1 to 280 M "not rechecked, to the G1 verifier" | merger, remnant pass and recession, rms H, remnant mass change, heavy hole +0.32 percent (from 4 M) reproduced; d_at_112 not reproduced; spin and radiated energy not checked | mostly done; one defect found |
 | khsr_note: K3 "a second agent's check ... is part of the G1 verifier" | not done | open |
 | C6 PASS (F-pre-1, F-pre-2) | not checked by me | no opinion |
-| C18 OPEN: "every number of the Supplemental Material recomputed from the manifests" | the note v2 ledger was not recomputed; the passage, Newton, mesh, horizon and junk numbers above were | C18 is met for the material of sections 3.1-3.4 only; the note's ledger, K3, F-pre-1/2 and eih remain for a verifier |
+| C18 OPEN: "every number of the Supplemental Material recomputed from the manifests" | ledger rows 122, 128, 168, 194, 200-207 (part) recomputed; the passage, Newton, mesh, horizon and junk numbers above too; the rest of the ledger not | C18 is met for the material of sections 3.1-3.4 only; the rest of the ledger, K3, F-pre-1/2 and eih remain for a verifier |
 
 Where the lead's text should change (my requests a-f of section 8): F1 (heavy-hole branches, before
 judging A2-5), F2 (no order of convergence; quote the m/12-m/16 agreement instead), F3 (fractional

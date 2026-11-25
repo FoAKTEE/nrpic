@@ -4,7 +4,7 @@ Helper package, batch 22 (2026-11-25, processors only, 0 card-hours). Task: reco
 material named in `../OPEN.md` item 2 with readers of my own, everything but the tail of the
 passage (A2 beyond its last record).
 
-## Entry 0 (2026-11-25 09:45 PST): what I read before the predictions
+## Entry 0 (2026-11-25 09:42 PST, commit 57c7a67dc): what I read before the predictions
 
 Read: CLAUDE.md, CHARTER (to "Owners" and sheet 9.9), decisions 0016 item 4, 0041 items 4-6,
 0042; `../OPEN.md` (the lead's list of material); `../../G0/SCOPING.md` section 5 (the G1
@@ -89,7 +89,7 @@ The claims I test, with where they are stated:
 </content>
 </invoke>
 
-## Entry 1 (2026-11-25 09:58 PST): predictions for criterion (iii), written before vjunk.py ran
+## Entry 1 (2026-11-25 09:54 PST, commit 8afb440c8): predictions for criterion (iii), written before vjunk.py ran
 
 Claims (from `junk_gauge/README.md` lines 9-31 and 69-91, the T3 evidence text): (K1) at m/8 the
 t = 0 Hamiltonian norm is 4.7e-5 (card smoke 4.713e-5); truncation converges at order 7.6-8; the
@@ -117,7 +117,7 @@ proper-volume integral of H^2 outside the excised punctures); L9, L10, L11 = m/4
   percent apart [JUDGEMENT: FFI edge effects and the choice of r* move the number at the tens of
   percent level; the band is the lead's own spread over integration choices].
 
-## Entry 2 (2026-11-25 10:00 PST): outcomes
+## Entry 2 (2026-11-25 09:57 PST, commit 05e52ce51): outcomes
 
 Reference run: F-20261125-175533-141e4f1 (run_all.sh; supersedes the passes F-20261125-175038-4719d4a,
 -175132-e7c6c68, -175235-e0fdde6, whose numbers for the same quantities are identical; they differ
@@ -196,7 +196,7 @@ preceded each registered pass; no number below comes from them.
   steady flux of 3-8e-8 per M that carries most of the window's energy, flat in l: what OPEN item 4
   calls an emission of unidentified source.
 
-## Entry 3 (2026-11-25 10:00 PST): note ledger rows that overlap my readers, predictions first
+## Entry 3 (2026-11-25 09:59 PST, commit 32701e43c): note ledger rows that overlap my readers, predictions first
 
 Read after sections 1-9 of VERIFIER.md: `note/tables/ledger.tex` rows 122, 126, 128, 168, 194,
 200-208 (grep for the quantities my readers already compute). Predictions for the rows not yet
@@ -210,3 +210,16 @@ computed by my readers (vmesh.py extended; bracket of the three-member order wid
 - Row 126 (orders 7.98, 7.68; 7.96, 7.62) is not computable from the history alone: the note says the
   truncation error is measured against a closed form; my raw-norm orders (7.98, 6.42; 7.91, 1.62)
   are a different quantity. Not checkable here.
+
+### Outcomes of entry 3 (run F-20261125-175931-32701e4, the final reference pass; its passage numbers
+at the cut equal those of F-20261125-175533-141e4f1)
+
+- L1 MET: three-member orders 11.98 (15 M), 14.46 (20 M), and 13.4 at 10 M; none at 5 and 7.5 M.
+- L2 MET: 24.879 M. L3 MET: 0.159 per M (fit 275-280 M). L4 MET: 1.004190 at 4.0 M (an accepted
+  search); 1.007359/1.004190 - 1 = +0.316 percent, so "+0.32 percent" is measured from 4 M.
+- L5 MET: 3.17e-4 (1 M), 6.02e-5 (112 M), 4.66e-5 (280 M); largest over 112-280 M 8.79e-5.
+- Row 126: not checkable from the history (closed-form truncation error); row 122 (0.0119, 4.71e-5,
+  5.51e-7) MET to 3 digits; row 168 (conic 9.809, e 1.00023) MET (9.8087, 1.000235).
+- Figures of the final pass looked at: fig_v_tests, fig_v_passage, fig_v_horizons (live and cut),
+  fig_v_mesh, fig_v_junk (the development versions, identical in content, were read before; the
+  final versions of fig_v_tests and cut_96.23/fig_v_horizons were read from the registered runs).
