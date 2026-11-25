@@ -1,46 +1,114 @@
-\section{Relativistic kinetic system in 3+1 form}\label{sec:system}
+\section{General-relativistic kinetic system in 3+1 form}\label{sec:system}
 
-Consider massive particles of rest mass $\mu_p$ moving along timelike trajectories on the future mass shell $g^{\mu\nu} u_\mu u_\nu = -1$, where $u_\mu$ denotes covariant four-velocity per unit rest mass. Under a three-plus-one Arnowitt-Deser-Misner (ADM) foliation \cite{Arnowitt:1962hi} of spacelike hypersurfaces $\Sigma_t$ with lapse $\alpha$, shift vector $\beta^i$, induced spatial three-metric $\gamma_{ij}$, inverse $\gamma^{ij}$, and determinant $\gamma \equiv \det(\gamma_{ij})$, the spacetime line element reads
+Collisionless star clusters, relativistic plasmas, and photon radiation fields evolve in curved spacetime as phase-space ensembles coupled to the gravitational field~\cite{Andreasson:2011ng,Sarbach:2013fya,Acuna-Cardenas:2021nkj}. Throughout this work we set Newton's gravitational constant $G$ and the speed of light $c$ to unity and adopt metric signature $(-,+,+,+)$. Greek indices $\mu,\nu,\rho,\sigma$ label spacetime coordinates, Latin indices $i,j,k,l$ label spatial coordinates, and parenthesized indices $(m),(n),(k)$ denote components projected onto a local orthonormal tetrad carried by normal observers.
+
+\subsection{Spacetime foliation, constraints, and Z4c evolution}\label{sec:system_z4c}
+
+On a curved four-dimensional manifold with metric $g_{\mu\nu}$ and inverse $g^{\mu\nu}$, constituent particles or light rays carry covariant four-momentum per unit scale $u_\mu$ on the unified future mass shell $g^{\mu\nu} u_\mu u_\nu = -\varepsilon$, where $\varepsilon = 1$ selects massive particles (with $u^\mu = g^{\mu\nu}u_\nu$ the four-velocity and microscopic rest mass $\mu_p$) and $\varepsilon = 0$ selects massless null rays parameterized by an affine coordinate. Letting $\mathcal{F}(x^\mu, u_\nu)$ denote the scalar invariant phase-space distribution function with Lorentz-invariant momentum measure $\dd\Pi_u$, coupled Boltzmann transport and gravity obey the covariant Einstein--Vlasov system,
+\begin{align}\label{eq:einstein_vlasov}
+u^\mu \partial_\mu \mathcal{F} - \Gamma^\mu_{\nu\rho} u^\nu u^\rho \frac{\partial \mathcal{F}}{\partial u^\mu} &= \left(\frac{\dd \mathcal{F}}{\dd\tau}\right)_{\rm coll}, \nonumber\\
+G_{\mu\nu} + \Lambda g_{\mu\nu} &= 8\pi T_{\mu\nu},
+\end{align}
+where $\Gamma^\mu_{\nu\rho}$ are the four-dimensional Christoffel symbols of $g_{\mu\nu}$, $\Lambda$ is the vacuum energy (set to zero in asymptotically flat models), $(\dd \mathcal{F}/\dd\tau)_{\rm coll}$ is the relativistic two-body collision integral, and $T_{\mu\nu}$ is the stress-energy tensor formed from the second momentum moment of $\mathcal{F}$.
+
+Time integration foliates spacetime into spacelike hypersurfaces $\Sigma_t$ of constant coordinate time $t$ with spatial coordinates $x^i$, induced three-metric $\gamma_{ij}$, inverse $\gamma^{ij}$, and determinant $\gamma \equiv \det(\gamma_{ij})$~\cite{Arnowitt:1962hi}. Normal (Eulerian) observers cross $\Sigma_t$ orthogonally with future-directed unit four-velocity $n^\mu = (\alpha^{-1}, -\alpha^{-1}\beta^i)$ and covector $n_\mu = (-\alpha, 0, 0, 0)$, defined by the lapse function $\alpha$ and shift vector $\beta^i$. In these $3+1$ variables the ADM line element reads
 \begin{equation}\label{eq:adm_metric}
-\dd s^2 = -\alpha^2\,\dd t^2 + \gamma_{ij}(\dd x^i + \beta^i\,\dd t)(\dd x^j + \beta^j\,\dd t).
+\dd s^2 = -\alpha^2\,\dd t^2 + \gamma_{ij}\bigl(\dd x^i + \beta^i\,\dd t\bigr)\bigl(\dd x^j + \beta^j\,\dd t\bigr),
 \end{equation}
-Normal observers pierce $\Sigma_t$ orthogonally along $n_\mu = (-\alpha, 0, 0, 0)$ and $n^\mu = (\alpha^{-1}, -\alpha^{-1}\beta^i)$, measuring the Lorentz factor
+and the symmetric extrinsic curvature $K_{ij}$ measures the embedding rate of $\Sigma_t$ through
+\begin{equation}\label{eq:extrinsic_curvature}
+\partial_t \gamma_{ij} = -2\alpha K_{ij} + D_i \beta_j + D_j \beta_i,
+\end{equation}
+where $D_i$ is the spatial covariant derivative compatible with $\gamma_{ij}$ and $\beta_i = \gamma_{ij}\beta^j$. Normal observers decompose $T^{\mu\nu}$ into the spatial energy density $E$, covariant momentum density $S_i$, and symmetric spatial stress tensor $S_{ij}$ via the source projections,
+\begin{equation}\label{eq:source_projections}
+E \equiv n_\mu n_\nu T^{\mu\nu}, \quad
+S_i \equiv -g_{i\mu} n_\nu T^{\mu\nu}, \quad
+S_{ij} \equiv g_{i\mu} g_{j\nu} T^{\mu\nu}.
+\end{equation}
+
+Physical initial data and exact time slices must satisfy the elliptic ADM Hamiltonian and momentum constraints,
+\begin{align}\label{eq:adm_constraints}
+\Ham &\equiv {}^{(3)}R + K^2 - K_{ij} K^{ij} - 16\pi E = 0, \nonumber\\
+\Mom_i &\equiv D_j K^j{}_i - D_i K - 8\pi S_i = 0,
+\end{align}
+where $K \equiv \gamma^{ij} K_{ij}$ and ${}^{(3)}R$ is the Ricci scalar of $\gamma_{ij}$. For hyperbolic numerical evolution on adaptive Cartesian grids without coordinate excision~\cite{Bona:2003fj,Gundlach:2005eh,Hilditch:2012fp,Zhu:2024utz}, we adopt the Z4c conformal formulation built upon the conformal variables
+\begin{align}\label{eq:z4c_vars}
+\chi &= \gamma^{-1/3}, &
+\tilde{\gamma}_{ij} &= \chi\gamma_{ij}, \nonumber\\
+\tilde{A}_{ij} &= \chi\!\left(K_{ij} - \frac{1}{3}\gamma_{ij}K\right), &
+\hat{K} &= K - 2\Theta,
+\end{align}
+paired with the contracted conformal connection $\tilde{\Gamma}^i = -\partial_j\tilde{\gamma}^{ij}$ (with $\det\tilde{\gamma}_{ij} = 1$) and constraint-propagation scalar $\Theta$. Letting $\mathcal{L}_\beta$ denote the Lie derivative along $\beta^i$ (treating $\tilde{\gamma}_{ij}$ and $\tilde{A}_{ij}$ as tensor densities of weight $-2/3$), the Z4c evolution system reads
+\begin{align}\label{eq:z4c_eom}
+\partial_t \chi &= \frac{2}{3}\chi\bigl(\alpha K - \partial_k\beta^k\bigr) + \beta^k\partial_k\chi + \frac{c_H}{2}\chi^{-1/4}\Ham, \nonumber\\
+\partial_t \tilde{\gamma}_{ij} &= -2\alpha \tilde{A}_{ij} + \mathcal{L}_\beta \tilde{\gamma}_{ij}, \nonumber\\
+\partial_t \tilde{A}_{ij} &= \chi\Bigl[-D_i D_j \alpha + \alpha\bigl({}^{(3)}R_{ij} - 8\pi S_{ij}\bigr)\Bigr]^{\rm TF} \nonumber\\
+&\quad + \alpha\bigl(K \tilde{A}_{ij} - 2\tilde{A}_{ik}\tilde{A}^k{}_j\bigr) + \mathcal{L}_\beta \tilde{A}_{ij}, \nonumber\\
+\partial_t \hat{K} &= -D^i D_i \alpha + \alpha\bigl[\tilde{A}_{ij}\tilde{A}^{ij} + \frac{1}{3}K^2 + 4\pi(E + S)\bigr] \nonumber\\
+&\quad + \alpha\kappa_1(1 - \kappa_2)\Theta + \beta^k\partial_k \hat{K}, \nonumber\\
+\partial_t \Theta &= \frac{\alpha}{2}\bigl[{}^{(3)}R + \frac{2}{3}K^2 - \tilde{A}_{ij}\tilde{A}^{ij} - 16\pi E \nonumber\\
+&\quad - 2\kappa_1(2+\kappa_2)\Theta\bigr] + \beta^k\partial_k\Theta, \nonumber\\
+\partial_t \tilde{\Gamma}^i &= -2\tilde{A}^{ij}\partial_j\alpha + 2\alpha\Bigl[\tilde{\Gamma}^i{}_{jk}\tilde{A}^{jk} - \frac{3}{2}\tilde{A}^{ij}\frac{\partial_j\chi}{\chi} \nonumber\\
+&\quad - \frac{1}{3}\tilde{\gamma}^{ij}\bigl(2\partial_j\hat{K} + \partial_j\Theta\bigr) - 8\pi\tilde{\gamma}^{ij} S_j \nonumber\\
+&\quad - \kappa_1(\tilde{\Gamma}^i - \tilde{\Gamma}^i_{\rm met})\Bigr] + \tilde{\mathcal{L}}_\beta \tilde{\Gamma}^i,
+\end{align}
+where $S = \gamma^{ij} S_{ij}$, superscript $\mathrm{TF}$ extracts the trace-free part with respect to $\gamma_{ij}$, $\tilde{\Gamma}^i_{\rm met}$ denotes the connection computed directly from derivatives of $\tilde{\gamma}_{ij}$, $(\kappa_1, \kappa_2)$ set covariant constraint damping~\cite{Gundlach:2005eh}, and $c_H \ge 0$ activates optional parabolic Hamiltonian relaxation~\cite{Duez:2002bn,Etienne:2024ncu}. Here $\tilde{\mathcal{L}}_\beta\tilde{\Gamma}^i$ retains the standard advection, divergence, and second-derivative metric gauge terms~\cite{Hilditch:2012fp,Zhu:2024utz}. We close the coordinate gauge with the moving-puncture $1+\log$ slicing condition and integrated Gamma-driver shift condition~\cite{Bona:1994dr,Alcubierre:2002kk,Campanelli:2005dd,Baker:2005vv,vanMeter:2006vi},
+\begin{align}\label{eq:puncture_gauge}
+\partial_t \alpha &= \beta^i \partial_i \alpha - 2\alpha \hat{K}, \nonumber\\
+\partial_t \beta^i &= \mu_S \tilde{\Gamma}^i - \eta \beta^i + \beta^j \partial_j \beta^i,
+\end{align}
+parametrized by shift speed $\mu_S$ (typically $3/4$) and damping rate $\eta$.
+
+\subsection{Unified Darboux kinetic theory and stress-energy moments}\label{sec:system_darboux}
+
+In canonical Darboux phase-space coordinates $(x^i, u_i) \in \mathbb{R}^3 \times \mathbb{R}^3$, raising the spatial index gives $u^i = \gamma^{ij} u_j$, while solving $g^{\mu\nu} u_\mu u_\nu = -\varepsilon$ for the normal-observer energy factor yields
 \begin{equation}\label{eq:lorentz_w}
-W = -n^\mu u_\mu = \sqrt{1 + \gamma^{ij} u_i u_j},
+W \equiv \alpha u^0 = -n^\mu u_\mu = \sqrt{\varepsilon + \gamma^{ij} u_i u_j}.
 \end{equation}
-and the raised spatial components $u^i = \gamma^{ij} u_j$. In canonical Darboux phase-space coordinates $(x^i, u_i)$, the single-particle Hamiltonian equals the coordinate energy $-u_0 = \alpha W - \beta^i u_i$ \cite{Acuna-Cardenas:2021nkj}. Hamilton's canonical equations yield the normal-observer characteristic equations,
+For massive particles ($\varepsilon = 1$), $W$ equals the Eulerian Lorentz factor; for null rays ($\varepsilon = 0$), $W$ is the normal-observer photon frequency measured in units of $u_i$. The single-particle canonical Hamiltonian is the covariant coordinate energy
+\begin{equation}\label{eq:darboux_H}
+H(t, \bm{x}, \bm{u}) \equiv -u_0 = \alpha W - \beta^i u_i.
+\end{equation}
+Applying Hamilton's equations produces the geodesic characteristic equations valid simultaneously for massive particles and light rays:
 \begin{align}\label{eq:characteristics}
 \frac{\dd x^i}{\dd t} &= \frac{\partial H}{\partial u_i} = \frac{\alpha \gamma^{ij} u_j}{W} - \beta^i, \nonumber\\
-\frac{\dd u_i}{\dd t} &= -\frac{\partial H}{\partial x^i} = -W \partial_i \alpha + u_j \partial_i \beta^j + \frac{\alpha}{2W} u^l u^m \partial_i \gamma_{lm}.
+\frac{\dd u_i}{\dd t} &= -\frac{\partial H}{\partial x^i} = -W \partial_i \alpha + u_j \partial_i \beta^j + \frac{\alpha}{2W} u^l u^m \partial_i \gamma_{lm},
 \end{align}
+where $u^l u^m \partial_i \gamma_{lm} = -u_j u_k \partial_i \gamma^{jk}$. Unconstrained spatial momenta $\bm{u} \in \mathbb{R}^3$ ensure strictly subluminal coordinate motion for $\varepsilon = 1$ and smooth null propagation for $\varepsilon = 0$ without coordinate singularities in the characteristic vector field.
 
-On the future mass shell, the Lorentz-invariant momentum measure is $\dd\Pi_u = \dd^3 u / (\sqrt{\gamma}\,W)$, while the proper spatial volume element on $\Sigma_t$ is $\sqrt{\gamma}\,\dd^3 x$. Their product coincides with the flat canonical Liouville measure $\dd^3 x\,\dd^3 u$. Defining the Darboux rest-mass phase-space density $f(t, \bm{x}, \bm{u}) \equiv \sqrt{\gamma}\,W\,\mathcal{F}$ from the scalar distribution function $\mathcal{F}$ absorbs every metric determinant and Lorentz factor. Because the Hamiltonian phase flow satisfies $\partial_{x^i}(\dd x^i/\dd t) + \partial_{u_i}(\dd u_i/\dd t) = 0$ identically, Boltzmann transport takes the flux-conservative Darboux Vlasov law
+On the mass shell, the invariant momentum element $\dd\Pi_u = \dd^3 u / (\sqrt{\gamma}\,W)$ combines with the proper spatial volume element $\sqrt{\gamma}\,\dd^3 x$ to recover the flat canonical Liouville volume form $\dd^3 x\,\dd^3 u$. Defining the Darboux rest-mass phase-space density $f(t, \bm{x}, \bm{u}) \equiv \sqrt{\gamma}\,W\,\mathcal{F}$ absorbs every metric determinant and Lorentz factor~\cite{Acuna-Cardenas:2021nkj}. Because the canonical flow identically satisfies phase-space incompressibility, $\partial_{x^i}(\dd x^i/\dd t) + \partial_{u_i}(\dd u_i/\dd t) = 0$, the covariant Boltzmann transport equation takes the strictly flux-conservative Darboux Vlasov law,
 \begin{equation}\label{eq:darboux_vlasov}
 \frac{\partial f}{\partial t} + \frac{\partial}{\partial x^i}\!\left(\frac{\dd x^i}{\dd t} f\right) + \frac{\partial}{\partial u_i}\!\left(\frac{\dd u_i}{\dd t} f\right) = \left(\frac{\partial f}{\partial t}\right)_{\rm coll}.
 \end{equation}
-Unconstrained covariant momenta $\bm{u} \in \mathbb{R}^3$ maintain strictly subluminal three-velocities everywhere, and all gravitational source terms in the characteristic equations vanish globally in Minkowski coordinates.
-
-Normal observers measure the coordinate-densitized rest-mass density $D = \sqrt{\gamma}\,\rho_0$ and stress-energy projections $(E, S_i, S_{ij})$ directly from moments of $f$:
+Evaluating velocity moments of $f$ determines the densitized rest-mass density $D = \sqrt{\gamma}\,\rho_0$ and the normal-observer stress-energy projections,
 \begin{equation}\label{eq:adm_sources}
-\sqrt{\gamma}\begin{pmatrix} \rho_0 \\ E \\ S_i \\ S_{ij} \end{pmatrix} = \int_{\mathbb{R}^3} \begin{pmatrix} 1 \\ W \\ u_i \\ u_i u_j / W \end{pmatrix} f(t,\bm{x},\bm{u})\,\dd^3 u.
+\sqrt{\gamma}\begin{pmatrix} \rho_0 \\ E \\ S_i \\ S_{ij} \end{pmatrix}
+= \int_{\mathbb{R}^3} \begin{pmatrix} \varepsilon \\ W \\ u_i \\ u_i u_j / W \end{pmatrix} f(t, \bm{x}, \bm{u})\,\dd^3 u.
 \end{equation}
-Dividing these integrals by $\sqrt{\gamma}$ supplies the matter source terms to Einstein's field equations evolved in the constraint-damped Z4c formulation \cite{Bona:2003fj,Hilditch:2012fp,Gundlach:2005eh} under moving-puncture $1+\log$ slicing and Gamma-driver shift gauge \cite{Bona:1994dr,Campanelli:2005dd,Alcubierre:2002kk}. Integrating the zeroth moment over $\Sigma_t$ establishes total rest-mass conservation $M_0 = \int_{\Sigma_t} D\,\dd^3 x = \int f\,\dd^3 x\,\dd^3 u$, while the ADM energy identity reads $\int_{\Sigma_t} E\sqrt{\gamma}\,\dd^3 x = \int W f\,\dd^3 x\,\dd^3 u$.
+When $f$ is sampled by $N$ Lagrangian packets $p = 1,\dots,N$ carrying fixed mass weights $m_p$ at $(x_p^i(t), u_{i,p}(t))$, the ensemble produces the discrete particle sources,
+\begin{multline}\label{eq:particle_sources}
+\bigl(E, S_i, S_{ij}\bigr)(t,\bm{x}) \\
+= \sum_{p=1}^{N} \frac{m_p}{\sqrt{\gamma}}\!\left(W_p,\, u_{i,p},\, \frac{u_{i,p} u_{j,p}}{W_p}\right)\delta^3(\bm{x} - \bm{x}_p).
+\end{multline}
+Integrating over $\Sigma_t$ yields exact rest-mass conservation $M_0 = \int_{\Sigma_t} D\,\dd^3 x = \int f\,\dd^3 x\,\dd^3 u$ and the ADM energy identity $\int_{\Sigma_t} E\sqrt{\gamma}\,\dd^3 x = \int W f\,\dd^3 x\,\dd^3 u$.
 
-Along any spacetime Killing vector $\xi^\mu$, collisionless geodesic motion conserves $\xi^\mu u_\mu$ exactly. In stationary, axisymmetric Kerr spacetime of mass $M$ and spin parameter $a$, time translation and axial rotation symmetries yield specific geodesic energy $\Egeo = -u_t = \alpha W - \beta^i u_i$ and axial angular momentum $L_z = u_\phi$, while separability of the Hamilton-Jacobi equation preserves the Carter constant \cite{Wu:2026nrpic}
-\begin{equation}\label{eq:carter_q}
-Q = u_\theta^2 + \cos^2\!\theta\!\left[a^2(1 - \Egeo^2) + \frac{L_z^2}{\sin^2\!\theta}\right],
-\end{equation}
-with total Carter invariant $K = Q + (L_z - a\Egeo)^2$.
+Along any spacetime Killing vector $\xi^\mu$, collisionless trajectories preserve $\xi^\mu u_\mu$. In a stationary, axisymmetric Kerr spacetime of mass $M$ and spin parameter $a$, time translation and axial rotation invariance conserve geodesic energy $\Egeo = -u_t = \alpha W - \beta^i u_i$ and axial angular momentum $L_z = u_\phi$. Separability of the Hamilton--Jacobi equation additionally conserves the Carter constant $Q$ and total Carter invariant $\KC$ for both massive ($\varepsilon = 1$) and null ($\varepsilon = 0$) geodesics:
+\begin{align}\label{eq:carter_invariants}
+Q &= u_\theta^2 + \cos^2\!\theta\left[a^2(\varepsilon - \Egeo^2) + \frac{L_z^2}{\sin^2\!\theta}\right], \nonumber\\
+\KC &= Q + (L_z - a\Egeo)^2.
+\end{align}
 
-When two-body elastic scattering with reduced hard-sphere cross section $\sigma/\mu_p > 0$ operates, the collisional operator drives $\mathcal{F}$ toward the local relativistic Maxwell-J{\"u}ttner equilibrium evaluated in a normal-observer orthonormal tetrad $u_{\hat{\mu}}$ \cite{Israel:1963,Synge:1957}:
+\subsection{Collisional relaxation and Synge thermodynamics}\label{sec:system_synge}
+
+At nonvanishing elastic reduced cross section $\sigma/\mu_p > 0$ (for massive kinetic species $\varepsilon = 1$), binary collisions relax $\mathcal{F}$ toward the local relativistic Maxwell--J\"uttner equilibrium evaluated in an orthonormal tetrad $u^{\hat{\mu}}$~\cite{Synge:1957,Israel:1963},
 \begin{equation}\label{eq:maxwell_juttner}
 \mathcal{F}_{\rm MJ}(u^{\hat{\mu}}) = \frac{n_{\rm com}}{4\pi \theta K_2(1/\theta)} \exp\!\left(\frac{U_{\rm cm}^{\hat{\mu}} u_{\hat{\mu}}}{\theta}\right),
 \end{equation}
-where $n_{\rm com}$ is the comoving number density, $U_{\rm cm}^{\hat{\mu}}$ is the bulk four-velocity, $\theta \equiv k_B T / \mu_p$ is the dimensionless temperature, and $K_n$ denotes modified Bessel functions of the second kind. The Synge gas equation of state closes the thermodynamic state via specific relativistic enthalpy $h_{\rm rel}(\theta)$, mean comoving Lorentz factor $\bar{W}_{\rm com}(\theta)$, and adiabatic index $\Gamma_{\rm ad}(\theta) \in [4/3, 5/3]$:
-\begin{equation}\label{eq:synge_eos}
-\begin{aligned}
-h_{\rm rel}(\theta) &= \frac{K_3(1/\theta)}{K_2(1/\theta)}, \qquad \bar{W}_{\rm com}(\theta) = h_{\rm rel}(\theta) - \theta, \\
-\Gamma_{\rm ad}(\theta) &= 1 + \frac{1}{h_{\rm rel}'(\theta) - 1}.
-\end{aligned}
-\end{equation}
-In the collisionless limit $\sigma/\mu_p = 0$, Eq.~(\ref{eq:darboux_vlasov}) reduces to exact Hamiltonian phase-space conservation along geodesics.
+where $n_{\rm com}$ is the comoving number density, $U_{\rm cm}^{\hat{\mu}}$ is the bulk fluid four-velocity ($U_{\rm cm}^{\hat{\mu}} U_{{\rm cm}\,\hat{\mu}} = -1$), $\theta \equiv k_B T / \mu_p$ is the dimensionless temperature, and $K_n$ are modified Bessel functions of the second kind. The exact Synge gas equation of state closes the relativistic enthalpy $h_{\rm rel}(\theta)$, mean comoving Lorentz factor $\bar{W}_{\rm com}(\theta)$, adiabatic index $\Gamma_{\rm ad}(\theta) \in [4/3, 5/3]$, sound speed squared $c_s^2(\theta)$, and thermal-averaged M\o ller scattering speed $v_{\rm mol}(\theta)$:
+\begin{align}\label{eq:synge_eos}
+h_{\rm rel}(\theta) &= \frac{K_3(1/\theta)}{K_2(1/\theta)}, &
+\bar{W}_{\rm com}(\theta) &= h_{\rm rel}(\theta) - \theta, \nonumber\\
+\Gamma_{\rm ad}(\theta) &= 1 + \frac{1}{h'_{\rm rel}(\theta) - 1}, &
+c_s^2(\theta) &= \frac{\Gamma_{\rm ad}(\theta)\,\theta}{h_{\rm rel}(\theta)},
+\end{align}
+with $v_{\rm mol}(\theta) = 4\theta K_3(2/\theta)/K_2(1/\theta)^2$ governing the local binary collision frequency in the Anderson--Witting relaxation limit~\cite{Anderson:1974}. Setting $\sigma/\mu_p = 0$ reduces the Darboux Vlasov law identically to collisionless geodesic transport.

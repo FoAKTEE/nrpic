@@ -1,46 +1,113 @@
-\appendix
+\section{Testbed configurations and quantitative ledgers}\label{app:params}
 
-\section{Cubature parameters and testbed configurations}\label{app:params}
+Continuum MFM benchmarks adopt cubic-spline smoothing length closure $h_a^3 \bar{n}_a = 1$, Courant factor $\nu_{\rm CFL} = 0.3$, velocity-crossing slope threshold $\epsilon_v = 0.1$ (disabled in head-on shocks), and harmonic thermal conduction coefficient $\kappa_{\rm Noh} = 0.5$~\cite{Noh:1987}. Table~\ref{tab:configs} compiles domain extents, mesh refinement hierarchies, time steps, and particle counts across all relativistic and full three-plus-one scenarios.
 
-Each populated velocity basis $(a,\alpha)$ with positive rest mass $m_{a,\alpha} > 0$ expands into $Q_{\rm SCP}$ deterministic characteristic packets via the cubature packet expansion using the lower triangular Cholesky factor $\bm{L}_{a,\alpha}$ of the local velocity covariance $\Sigma_{a,\alpha}$ and an orthogonal rotation $\bm{R}_{a,\alpha} \in \mathrm{SO}(3)$ mapped from the base-$2,3,5$ Halton triplet $(h_2, h_3, h_5)$ through Shoemake's uniform unit quaternion
-\begin{multline}\label{eq:shoemake_q}
-\bm{q} = \big(\sqrt{1-h_2}\sin 2\pi h_3,\;\sqrt{1-h_2}\cos 2\pi h_3,\\
-\sqrt{h_2}\sin 2\pi h_5,\;\sqrt{h_2}\cos 2\pi h_5\big).
-\end{multline}
-Cold elements with $\mathrm{Tr}\,\Sigma_{a,\alpha} = 0$ collapse automatically to $Q_{\rm SCP} = 1$ packet ($\bm{\xi}_1 = \bm{0}$, $w_1 = 1$). Warm bases employ the fifth-degree fourteen-point symmetric Stroud rule \cite{Stroud:1971} summarized in Table~\ref{tab:stroud14}, $S^2$ spherical shells ($Q \in \{6, 12, 14, 26\}$) normalized by $\sqrt{3}$, or optional $Q_{\rm SCP} \in \{8, 27\}$ product lattices matching unit covariance up to third or fifth order.
-
-\begin{table}[ht]
-\caption{\label{tab:stroud14}%
-Fifth-degree fourteen-point symmetric Stroud cubature parameters for unit-covariance uniform top-hat ($[-\sqrt{3},\sqrt{3}]^3$) and Gaussian ($\mathcal{N}(\bm{0},\bm{I}_3)$) velocity bases.}
-\begin{ruledtabular}
-\begin{tabular}{lcccc}
-Basis & $a$ & $w_a$ & $b$ & $w_b$ \\
-\colrule
-Top-hat & $\sqrt{19/10}$ & $40/361$ & $\sqrt{19/11}$ & $121/2888$ \\
-Gaussian & $\sqrt{5/2}$ & $4/25$ & $\sqrt{5}$ & $1/200$ \\
-\end{tabular}
-\end{ruledtabular}
-\end{table}
-
-All continuum MFM runs use cubic-spline smoothing length closure $h_a^3 \bar{n}_a = 1$, CFL factor $\nu_{\rm CFL} = 0.3$, velocity-crossing slope threshold $\epsilon_v = 0.1$ (disabled under colliding shocks), and harmonic sound-speed thermal conduction coefficient $\kappa_{\rm Noh} = 0.5$ \cite{Noh:1987}. Table~\ref{tab:configs} lists domain extents, mesh parameters, time steps, and particle counts across all relativistic and full-GR testbeds.
-
-\begin{table*}[t]
+\begin{table*}[tbp]
 \caption{\label{tab:configs}%
-Configuration parameters for flat-space regimes, Kerr orbits and clusters, dynamic Z4c mergers, and full-GR collapse runs (cluster central redshifts $y_c \in \{0.900, 0.819, 0.756, 0.605, 0.500, 0.283\}$).}
+Configuration summary across flat-space kinetic transitions, stationary Kerr geodesics and light rings, dynamical puncture mergers, gravitational collapse suites, and massive-particle black hole back-reaction (cluster labels $y_c \in \{0.900, 0.819, 0.756, 0.605, 0.500, 0.283\}$).}
+\scriptsize
+\setlength{\tabcolsep}{2.5pt}
 \begin{ruledtabular}
 \begin{tabular}{lccccc}
 Testbed & Domain & Mesh & $\Delta t$ & Final $t$ & $N$ \\
 \colrule
 Warm wave & $[0,1]^3$ & $8^3$ & $0.001$ & $0.08$ & $8^3\text{--}24^3$ \\
 Two-stream & $[0,1]^3$ & $8^3$ & $0.005$ & $0.40$ & $10^3$ \\
-Colliding beams (MFM / BGK) & $[0,1]\times[0,1/19.2]^2$ & $16\times 4^2$ / $256\times 4^2$ & $0.002$ & $0.55\text{--}0.65$ & $2400$ / $49152$ \\
-Kerr cloud ($a=0.9M$) & $[-18,18]^3\,M^3$ & $16^3$ & $0.05\,M$ & $30\,M$ & $552\text{--}14328$ \\
-Kerr $e=0.99$ \& cluster & $[-64,64]^3\,M^3$ & $6$-lvl SMR & $0.01\text{--}0.05\,M$ & $200\text{--}600\,M$ & $1$ / $10^4\text{--}10^5$ \\
-Dynamic puncture (head-on) & $[-64,64]^3\,M^3$ & AMR Z4c & $0.25\,\Delta x$ & $100\text{--}250\,M$ & $6$ tracers \\
-Oppenheimer-Snyder ($R_0=5M$) & $[-155,155]^3\,M^3$ & $7\text{--}8$-lvl AMR & $0.25\text{--}0.45\,\Delta x$ & $25\,M$ & $9328\text{--}10^5$ \\
-Prolate spindle ($e=0.9$) & $[-128,128]^3\,M^3$ & $7$-lvl AMR ($M/16$) & $0.25\,\Delta x$ & $45\,M$ & $10^4\text{--}10^5$ \\
-Shapiro-Teukolsky clusters & $[-160,160]^3\,M^3$ & $7\text{--}9$-lvl AMR & $0.25\text{--}0.40\,\Delta x$ & $90\text{--}300\,M$ & $10^4\text{--}10^5$ \\
-Jeans binary cluster ($y_c=0.907$) & $[-80,80]^3\,M^3$ & $8$-lvl AMR ($M/64$) & $0.25\,\Delta x$ & $20\text{--}58\,M$ & $10^4$ \\
+Colliding beams (MFM/BGK) & $[0,1]\times[0,1/19.2]^2$ & $16\times 4^2$; $256\times 4^2$ & $0.002$ & $0.55\text{--}0.65$ & $2400$ / $49152$ \\
+Kerr sheared cloud ($a=0.9\,M$) & $[-18,18]^3\,M^3$ & $16^3$ & $0.05\,M$ & $30\,M$ & $552\text{--}14328$ \\
+Kerr $e=0.99$ \& $6$-lvl SMR cluster & $[-64,64]^3\,M^3$ & $6$-lvl ($\Delta x_{\min}=0.25M$) & $0.01\text{--}0.05\,M$ & $200\text{--}600\,M$ & $1$ / $10^4\text{--}10^5$ \\
+Near-extremal Kerr ($a=0.999\,M$) & analytic / $[-64,64]^3\,M^3$ & analytic / $6$-lvl SMR & $0.02\text{--}0.10\,M$ & $220\text{--}500\,M$ & $1$ \\
+Kerr light-ring separatrix ($a=0.9\,M$) & analytic ($\varepsilon = 0$) & analytic & $0.02\text{--}0.10\,M$ & $200\,M$ & $39$ \\
+Dynamic head-on puncture merger & $[-64,64]^3\,M^3$ & AMR Z4c & $0.25\,\Delta x$ & $100\text{--}250\,M$ & $6$ tracers \\
+Oppenheimer--Snyder ($R_0=5\,M$) & $[-155,155]^3\,M^3$ & $7\text{--}8$-lvl AMR & $0.25\text{--}0.45\,\Delta x$ & $25\,M$ & $9328\text{--}10^5$ \\
+Prolate spindle ($e=0.9, b=10\,M$) & $[-128,128]^3\,M^3$ & $7$-lvl AMR ($\Delta x_{\min}=M/16$) & $0.25\,\Delta x$ & $45\,M$ & $10^4\text{--}10^5$ \\
+Shapiro--Teukolsky star clusters & $[-160,160]^3\,M^3$ & $7\text{--}9$-lvl AMR & $0.25\text{--}0.40\,\Delta x$ & $90\text{--}300\,M$ & $10^4\text{--}10^5$ \\
+Jeans binary cluster ($y_c=0.907$) & $[-80,80]^3\,M^3$ & $8$-lvl AMR ($\Delta x_{\min}=M/64$) & $0.25\,\Delta x$ & $20\text{--}58\,M$ & $10^4\text{--}10^5$ \\
+Spinning BH + particle ($q$) & $[-64,64]^3\,M^3$ & $6$-lvl ($m_c=0.65M, S_z=0.7M^2$) & $0.25\text{--}0.45\,\Delta x$ & $80\,M$ & $1$ ($q \le 0.10$) \\
+\end{tabular}
+\end{ruledtabular}
+\end{table*}
+
+Tables~\ref{tab:bench_kerr_orbits}--\ref{tab:bench_speed_memory} compile verified quantitative invariant drifts, dynamical back-reaction diagnostics, filter conservation bounds, device memory footprints, and single-accelerator compute durations across our benchmark suites.
+
+\begin{table*}[tbp]
+\caption{\label{tab:bench_kerr_orbits}%
+Verified strong-field Kerr orbit, near-extremal zoom-whirl, null light-ring, and static-mesh invariant error ledger.}
+\scriptsize
+\setlength{\tabcolsep}{3.5pt}
+\begin{ruledtabular}
+\begin{tabular}{llcccc}
+Scenario & Scheme & $\Delta t$ [$M$] & $\max|\Delta\Egeo/\Egeo|$ & $\max|\Delta Q/Q_0|$ & End error / cluster median \\
+\colrule
+$a=0.9\,M, e=0.99$ CKS & Implicit Midpoint & $0.01$ & $6.2 \times 10^{-7}$ & $1.2 \times 10^{-6}$ & $|\Delta\bm{x}_{\rm end}| = 0.32\,M$ \\
+$a=0.9\,M, e=0.99$ CKS & Symplectic \texttt{GL4} & $0.01$ & $1.0 \times 10^{-13}$ & $3.0 \times 10^{-13}$ & $|\Delta\bm{x}_{\rm end}| = 4.6 \times 10^{-8}\,M$ \\
+$a=0.999\,M, e=0.999$ CKS & Implicit Midpoint & $0.02$ & $5.23 \times 10^{-6}$ & $3.63 \times 10^{-5}$ & $|\Delta\bm{x}_{\rm end}| = 5.76 \times 10^{-2}\,M$ \\
+$a=0.999\,M, e=0.999$ CKS & Spacetime Boris (sym.) & $0.02$ & $8.87 \times 10^{-6}$ & $3.02 \times 10^{-5}$ & $|\Delta\bm{x}_{\rm end}| = 7.08 \times 10^{-2}\,M$ \\
+$a=0.999\,M, e=0.999$ CKS & Symplectic \texttt{GL4} & $0.02$ & $5.94 \times 10^{-12}$ & $6.29 \times 10^{-11}$ & $|\Delta\bm{x}_{\rm end}| = 5.00 \times 10^{-8}\,M$ \\
+$a=0.999\,M$ $3$D rosette & Symplectic \texttt{GL4} & $0.02$ & $4.48 \times 10^{-12}$ & $2.17 \times 10^{-11}$ & $t_{\rm end} = 450\,M$ \\
+$a=0.999\,M$ mesh torus & Cubic Hermite + \texttt{GL4} & $0.05$ & $7.97 \times 10^{-6}$ & $9.64 \times 10^{-4}$ & $\Delta x = 0.25\,M, t = 500\,M$ \\
+$a=0.999\,M$ mesh torus & $C^2$ Quintic + \texttt{GL4} & $0.05$ & $1.65 \times 10^{-7}$ & $8.53 \times 10^{-6}$ & $48\times$ smaller $|\Delta\Egeo/\Egeo|$ \\
+$a=0.90\,M$ light ring ($\varepsilon=0$) & Midpoint / \texttt{GL4} & $0.02$ & --- & --- & $N_{\rm hold} = 3.40$ / $8.95$ \\
+$a=0.90\,M$ light ring ($\varepsilon=0$) & Midpoint / \texttt{GL4} & $0.05$ & --- & --- & $N_{\rm hold} = 2.65$ / $7.44$ \\
+$a=0.90\,M$ $6$-lvl SMR ($10^4$) & Cubic Hermite + \texttt{GL4} & $0.05$ & $1.05 \times 10^{-7}$ & $5.26 \times 10^{-7}$ & $|\Delta L_z/L_{z,0}|_{\rm med} = 3.31 \times 10^{-6}$ \\
+$a=0.90\,M$ $6$-lvl SMR ($10^4$) & Cubic B-spline + \texttt{GL4} & $0.05$ & $1.65 \times 10^{-9}$ & $2.01 \times 10^{-8}$ & $14260\,\mathrm{MiB}$ device mem. \\
+$a=0.90\,M$ $6$-lvl SMR ($10^4$) & $C^2$ Quintic + \texttt{GL4} & $0.05$ & $3.38 \times 10^{-10}$ & $2.36 \times 10^{-9}$ & $11880\,\mathrm{MiB}$ ($311\times$ vs Hermite) \\
+\end{tabular}
+\end{ruledtabular}
+\end{table*}
+
+\begin{table*}[tbp]
+\caption{\label{tab:bench_backreaction_compare}%
+Full $3+1$ dynamical back-reaction ledger comparing baseline second-order NRPIC against the high-order metric-conservative solver across spinning Bowen--York punctures, Jeans binary clusters, and Shapiro--Teukolsky collapses.}
+\scriptsize
+\setlength{\tabcolsep}{3.0pt}
+\begin{ruledtabular}
+\begin{tabular}{llccccccc}
+Suite & Variant & Duration [s] & $|\Delta E_{\rm filt}/E|_{\max}$ & Plunge / $t_{\rm AH}$ & $M_{\rm AH}$ [$M$] & $\chi_{\rm AH}$ & Recoil / Mom. & $r|\Psi_4^{22}|_{\rm peak}$ \\
+\colrule
+Spinning BH $q=0.00$ & High-order & $297.1$ & $8.93 \times 10^{-16}$ & unbound & $0.959$ & $0.763$ & $r_{\rm BH} = 0$ & $3.48 \times 10^{-6}$ \\
+Spinning BH $q=0.02$ & Baseline & $499.7$ & $2.35 \times 10^{-1}$ & $48.75\,M$ & $0.974$ & $0.772$ & $0.115\,M$ & $4.57 \times 10^{-3}$ \\
+Spinning BH $q=0.02$ & High-order & $283.1$ & $4.91 \times 10^{-16}$ & $33.60\,M$ & $0.972$ & $0.760$ & $0.120\,M$ & $1.96 \times 10^{-3}$ \\
+Spinning BH $q=0.05$ & Baseline & $497.8$ & $2.74 \times 10^{-1}$ & $38.63\,M$ & $0.988$ & $0.757$ & $0.481\,M$ & $7.28 \times 10^{-3}$ \\
+Spinning BH $q=0.05$ & High-order & $281.5$ & $4.08 \times 10^{-16}$ & $29.20\,M$ & $0.985$ & $0.734$ & $0.634\,M$ & $4.32 \times 10^{-3}$ \\
+Spinning BH $q=0.05$ & Multi-rate $s_{\rm m}=2$ & $240.4$ & $4.08 \times 10^{-16}$ & $28.74\,M$ & $0.985$ & --- & --- & $4.24 \times 10^{-3}$ \\
+Spinning BH $q=0.10$ & Baseline & $496.0$ & $3.23 \times 10^{-1}$ & $37.88\,M$ & $1.007$ & $0.731$ & $0.861\,M$ & $8.31 \times 10^{-3}$ \\
+Spinning BH $q=0.10$ & High-order & $280.5$ & $1.08 \times 10^{-15}$ & $29.60\,M$ & $1.001$ & $0.685$ & $1.764\,M$ & $1.79 \times 10^{-2}$ \\
+Jeans $10^4$ ($t \le 20\,M$) & Baseline & --- & $1.74 \times 10^{-1}$ & $d_{AB}=6.03\,M$ & --- & --- & $0.181$ & $|z_0|_{\max} = 0.289\,M$ \\
+Jeans $10^4$ ($t \le 20\,M$) & High-order & --- & $1.04 \times 10^{-15}$ & $d_{AB}=5.45\,M$ & --- & --- & $2.58 \times 10^{-2}$ & $|z_0|_{\max} = 0.070\,M$ \\
+Jeans $10^5$ ($t \le 20\,M$) & Baseline & --- & $1.66 \times 10^{-1}$ & $d_{AB}=6.65\,M$ & --- & --- & $0.195$ & $|z_0|_{\max} = 0.133\,M$ \\
+Jeans $10^5$ ($t \le 20\,M$) & High-order & --- & $1.04 \times 10^{-15}$ & $d_{AB}=6.03\,M$ & --- & --- & $5.49 \times 10^{-3}$ & $|z_0|_{\max} = 0.055\,M$ \\
+ST $y_c = 0.605$ & Baseline & $1578.8$ & --- & $191.00\,M$ & $0.999$ & --- & $0.229$ & $\alpha_{c,\rm AH} = 0.133$ \\
+ST $y_c = 0.605$ & High-order & $1616.6$ & --- & $118.44\,M$ & $1.000$ & --- & $1.69 \times 10^{-14}$ & $\alpha_{c,\rm AH} = 0.144$ \\
+ST $y_c = 0.500$ & Baseline & $1219.5$ & --- & $104.31\,M$ & $1.000$ & --- & $0.123$ & $\alpha_{c,\rm AH} = 0.106$ \\
+ST $y_c = 0.500$ & High-order & $314.7$ & $9.25 \times 10^{-16}$ & $76.70\,M$ & $1.001$ & --- & $3.93 \times 10^{-15}$ & $\alpha_{c,\rm AH} = 0.130$ \\
+\end{tabular}
+\end{ruledtabular}
+\end{table*}
+
+\begin{table*}[tbp]
+\caption{\label{tab:bench_speed_memory}%
+Single-accelerator timing scaling, filter choice, Courant number, and device memory benchmarks across Kerr SMR ($10^4$), Oppenheimer--Snyder ($R_0 = 5\,M$), and critical cluster collapse ($y_c = 0.500$).}
+\scriptsize
+\setlength{\tabcolsep}{3.0pt}
+\begin{ruledtabular}
+\begin{tabular}{llccccc}
+Benchmark & Configuration & Dur. [s] & Ratio & Mem. [MiB] & $t_{\rm AH}$ [$M$] & Outcome / metric \\
+\colrule
+Kerr SMR ($10^4$) & Dir.\ $n_{\rm f}=2$, Cubic & $205.4$ & $1.00\times$ & $11880$ & --- & $|\Delta\Egeo/\Egeo|_{\rm med}=1.05\times 10^{-7}$ \\
+Kerr SMR ($10^4$) & Dir.\ $n_{\rm f}=2$, Quintic & $209.3$ & $0.98\times$ & $11880$ & --- & $3.38\times 10^{-10}$ \\
+Kerr SMR ($10^4$) & Unsplit $n_{\rm f}=2$, Quintic & $98.9$ & $2.12\times$ & $11894$ & --- & $3.38\times 10^{-10}$ \\
+Kerr SMR ($10^4$) & Unsplit $n_{\rm f}=1$, Quintic & $65.6$ & $3.19\times$ & $11894$ & --- & $3.38\times 10^{-10}$ \\
+\colrule
+OS ($10^4$) & RK4 ($\nu=0.25$), dir.\ $n_{\rm f}=1$ & $164.7$ & $1.00\times$ & $68458$ & $16.20$ & $M_{\rm AH}=1.0008\,M$ \\
+OS ($10^4$) & SSP-RK3 ($\nu=0.40, s_{\rm m}=2$), dir. & $66.2$ & $2.49\times$ & $68408$ & $16.35$ & $0.9913\,M$ \\
+OS ($10^4$) & SSP-RK3 ($\nu=0.45, s_{\rm m}=2$), uns. & $55.9$ & $2.95\times$ & $68458$ & $16.22$ & $0.9973\,M$ \\
+OS ($10^5$) & RK4 ($\nu=0.25$), dir.\ $n_{\rm f}=1$ & $180.2$ & $1.00\times$ & $68456$ & $16.35$ & $1.0010\,M$ \\
+OS ($10^5$) & SSP-RK3 ($\nu=0.40, s_{\rm m}=2$), uns.\ $n_{\rm f}=3$ & $80.4$ & $2.24\times$ & $68418$ & $16.17$ & $1.0008\,M$ \\
+\colrule
+$y_c = 0.500$ ($10^4$) & RK4 ($\nu=0.25$), comp.\ $n_{\rm f}=4$ & $754.5$ & $1.00\times$ & $101084$ & $76.06$ & $1.0006\,M$ \\
+$y_c = 0.500$ ($10^4$) & SSP-RK3 ($\nu=0.40, s_{\rm m}=2$), comp. & $314.7$ & $2.40\times$ & $101042$ & $76.70$ & $1.0005\,M$ \\
+$y_c = 0.500$ ($10^4$) & SSP-RK3 ($\nu=0.40, s_{\rm m}=2$), uncomp. & $156.9$ & --- & $101092$ & no AH & Disperses ($H_{\max}=0.141$) \\
 \end{tabular}
 \end{ruledtabular}
 \end{table*}

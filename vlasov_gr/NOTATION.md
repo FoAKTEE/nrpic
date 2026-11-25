@@ -1,56 +1,81 @@
-# Notation: Hybrid SCP-AP General-Relativistic Kinetic Paper
+# Notation: PRX general-relativistic kinetic methodology paper
 
-Follows the conventions of the host NRPIC paper where shared (units $G = c = 1$, signature $(-,+,+,+)$). Greek indices $\mu,\nu$ run over spacetime coordinates, Latin indices $i,j,k$ over spatial coordinate components, and parenthesized indices $(m),(n)$ over orthonormal triad components of normal observers.
+Consistent mathematical dictionary across `main.tex`, all section files in `paper/sections/`, `appendix_sampling.tex`, `appendix_parameters.tex`, and `supplement.tex`. Every differential uses `\dd`; no symbol carries conflicting definitions within an equation or subsection.
+
+Units: geometrized $G = c = 1$, signature $(-,+,+,+)$. Greek indices $\mu, \nu, \rho, \sigma$ run over spacetime coordinates; Latin indices $i, j, k, l$ run over spatial coordinates; parenthesized indices $(m), (n), (k)$ label orthonormal normal-observer tetrad components.
 
 ## Symbols
 
 | Symbol | Macro | Definition | First defined |
 |---|---|---|---|
-| $g_{\mu\nu}$ | | spacetime metric | Sec. II |
-| $\alpha$, $\beta^i$, $\gamma_{ij}$, $\gamma$ | `\alpha`, `\beta^i`, `\gamma_{ij}` | lapse, shift, spatial three-metric, determinant $\det(\gamma_{ij})$ | Sec. II |
-| $n^\mu$, $K_{ij}$ | | normal-observer four-velocity and extrinsic curvature | Sec. II |
-| $x^i$, $u_i$, $W$ | | Darboux spatial coordinates, covariant spatial four-velocity, normal Lorentz factor $\sqrt{1+\gamma^{ij}u_i u_j}$ | Sec. II |
-| $\mathcal{F}$, $f$ | `\mathcal{F}` | scalar phase-space density and Darboux-weighted rest-mass density $\sqrt{\gamma}\,W\mathcal{F}$ | Sec. II |
-| $D$ | | coordinate rest-mass density $\sqrt{\gamma}\,\rho_0 = \int f\,\dd^3 u$ | Sec. II |
-| $E$, $S_i$, $S_{ij}$ | | normal-observer energy, momentum, and spatial stress densities | Sec. II |
-| $\mathcal{E}$, $\mathcal{S}_{ij}$ | `\mathcal{E}`, `\mathcal{S}` | densitized energy and stress per rest mass integrated on cubature nodes | Sec. III |
-| $N$, $N_b$ | | number of spatial elements and number of momentum bases per element | Sec. III |
-| $h_a$, $V_a$, $\bm{E}_a$ | | local smoothing length, effective coordinate volume $\bar{n}_a^{-1}$, and gradient moment matrix | Sec. III.A |
-| $m_{a,\alpha}$, $P_{a,\alpha,i}$, $\Pi_{a,\alpha,ij}$ | | conserved zeroth, first, and second covariant momentum moments of basis $\alpha$ in element $a$ | Sec. III.A |
-| $\bar{u}_{a,\alpha,i}$, $\Sigma_{a,\alpha,ij}$ | | basis mean covariant momentum and symmetric momentum covariance tensor | Sec. III.A |
-| $A_{ab,i}$, $\hat{n}_i$, $\beta_F$ | `\beta_F` | effective face area covector, unit face normal, and normal-observer face speed | Sec. III.A |
-| $\bm{L}_{a,\alpha}$, $\bm{R}_{a,\alpha}$, $\bm{\xi}_q$, $w_q$ | | Cholesky factor $\bm{L}\bm{L}^T = \Sigma$, Halton $\mathrm{SO}(3)$ frame, Stroud cubature nodes and weights | Sec. III.B |
-| $\theta$, $h_{\rm rel}$, $\Gamma_{\rm ad}$, $K_n$ | `\theta`, `h_{\rm rel}`, `\Gamma_{\rm ad}` | dimensionless kinetic temperature $k_B T/\mu_p$, specific enthalpy $K_3/K_2$, Synge adiabatic index, Bessel function | Sec. III.C |
-| $\sigma/\mu_p$, $\nu_a$, $w_c$ | | reduced hard-sphere cross section, Maxwell-J{\"u}ttner collision rate, asymptotic Knudsen blend factor | Sec. III.A |
-| $(c_r, a_{sr}, b_s)$, $w_{-1,0,1}$ | | two-stage Gauss-Legendre symplectic IRK tableau and non-uniform three-level quadratic Lagrange time weights | Sec. III.B |
-| $\bm{q}_p^*$, $s$, $M_{\rm inv}$ | | comoving post-collision momenta, convex projection rescaling factor, cell invariant mass | Sec. III.D |
-| $F_{c+1/2}$, $\sigma_{c+1/2}$ | | directional metric-weighted filter flux and harmonic face conductance $2\sqrt{\gamma}_c\sqrt{\gamma}_{c+1}/(\sqrt{\gamma}_c+\sqrt{\gamma}_{c+1})$ | Sec. III.E |
-| $\mathcal{H}$, $\mathcal{M}$ | `\Ham`, `\Mom` | $L_2$ norms of the Hamiltonian and momentum constraints | Sec. VI |
-| $M_{\rm AH}$, $a_{\rm AH}$, $I$ | `M_{\rm AH}` | apparent-horizon irreducible mass, dimensionless spin $S/M^2$, Kretschmann scalar | Sec. VI |
-| $M$, $a$, $\Egeo$, $L_z$, $Q$ | `M`, `a`, `\Egeo`, `L_z` | black hole mass, spin length, geodesic energy $-u_t$, axial angular momentum, Carter constant | Sec. II |
-| $R_0$, $y_c$, $\tau$, $\rho_0$ | `R_0`, `\tau` | initial collapse radius, cluster central redshift parameter, central proper time, proper rest-mass density | Sec. VI |
+| $g_{\mu\nu}, g^{\mu\nu}$ | | spacetime metric and inverse | system |
+| $\alpha, \beta^i$ | | ADM lapse function and shift vector | system |
+| $\gamma_{ij}, \gamma^{ij}, \gamma$ | | spatial three-metric, inverse, and determinant $\det(\gamma_{ij})$ | system |
+| $n^\mu, n_\mu$ | | future-directed unit normal to constant-$t$ hypersurfaces | system |
+| $K_{ij}, K$ | | extrinsic curvature and trace $\gamma^{ij} K_{ij}$ | system |
+| $\chi, \tilde{\gamma}_{ij}, \tilde{A}_{ij}, \hat{K}, \tilde{\Gamma}^i, \Theta$ | | Z4c conformal variables and constraint scalar | system |
+| $\kappa_1, \kappa_2, \mu_S, \eta, c_H$ | | Z4c constraint-damping, gauge, and relaxation parameters | system |
+| $\mathcal{H}, \mathcal{M}_i$ | `\Ham`, `\Mom` | ADM Hamiltonian and momentum constraint residuals | system |
+| $\varepsilon$ | | mass-shell indicator ($\varepsilon = 1$ massive, $\varepsilon = 0$ null) | system |
+| $u_\mu, u^i$ | | covariant four-velocity per unit mass (or affine null covector) | system |
+| $W$ | | normal-observer Lorentz factor or dimensionless energy $\sqrt{\varepsilon + \gamma^{ij} u_i u_j}$ | system |
+| $H(x^i, u_i)$ | | canonical Darboux Hamiltonian $-u_0 = \alpha W - \beta^i u_i$ | system |
+| $\mathcal{F}, f$ | | invariant phase-space distribution and Darboux density $\sqrt{\gamma} W \mathcal{F}$ | system |
+| $E, S_i, S_{ij}, D$ | | normal-observer energy density, momentum density, spatial stress, and $\sqrt{\gamma}\rho_0$ | system |
+| $\mu_p, m_p$ | | microscopic constituent mass and finite macroparticle rest mass | system |
+| $\mathcal{E}_{\rm geo}, L_z, Q, K_{\rm C}$ | `\Egeo`, `L_z`, `Q`, `\KC` | Kerr Killing energy, axial angular momentum, and Carter constants (distinct from $K$) | system |
+| $\sigma/\mu_p, \theta, h_{\rm rel}, \bar{W}_{\rm com}, \Gamma_{\rm ad}$ | | reduced cross section, dimensionless temperature, Synge enthalpy, mean Lorentz factor, adiabatic index | system |
+| $c_{1,2}, b_{1,2}, a_{rs}$ | | two-stage fourth-order Gauss--Legendre Butcher coefficients | method (pushers) |
+| $e^{(m)}_i, u_{(m)}, \tilde{E}_{(m)}, \tilde{B}_{(k)}$ | `\Et`, `\Bt` | normal-observer spatial triad, tetrad momentum, gravito-electric and gravito-magnetic fields | method (pushers) |
+| $r, w_{-1}, w_0, w_1$ | | step ratio $\Delta t_n/\Delta t_{n-1}$ and three-level quadratic Lagrange time weights | method (pushers) |
+| $h, \Delta x, s$ | | cell spacing and normalized subcell offset $s \in [0, 1)$ | method (reconstruction) |
+| $H_{ab}(s), w_{-2}\dots w_3$ | | quintic Hermite polynomial basis and six-node $C^2$ stencil weights | method (reconstruction) |
+| $B_1, B_2, B_3, \omega_{Cp}, \ell_p, \ell_{\rm cap}$ | `\lcap` | B-spline shape functions, AMR leaf weights, representation level, and cap | method (deposition) |
+| $\sigma_{c+1/2}, F_{c+1/2}, \kappa, w_1$ | | harmonic face metric conductance, intercell flux, and filter coupling | method (filter) |
+| $d_0, d_1, \theta_{\rm lim}, s_{\rm m}, \nu_{\rm CFL}$ | | causal stage base, rate/increment, causality limiter, multi-rate stride, Courant factor | method (coupling) |
+| $\psi, \psi_s, u, W_i, \bar{A}_{ij}$ | | York--Lichnerowicz conformal factor, analytical puncture piece, potential, and vector potential | method (ID & AMR) |
+| $q_{\rm AMR}, \varepsilon_i$ | | L\"ohner refinement monitor $\alpha\chi^{-7/4}$ and normalized second-difference indicator | method (ID & AMR) |
+| $\alpha_{\rm exc}, M_{\rm AH}, \chi_{\rm AH}, M_{\rm MS}, I$ | `\aexc` | lapse excision threshold, horizon mass, horizon dimensionless spin, Misner--Sharp mass, Kretschmann scalar | method (diagnostics) |
+| $N_{\rm ppc}, \bar{r}, y_c, q = m_p / M_0$ | `\Nppc`, `\rbar` | mean particle count per cell, isotropic radius, cluster central redshift, mass ratio | results & appendices |
 
-## Named results
+## Named equations and results
 
-Use these fixed descriptive names instead of `Eq.~\eqref{...}` (3.4):
-
-| Name | Relation it names | Section |
+| Name | Meaning | Section |
 |---|---|---|
-| the Darboux Vlasov law | conservative 6+1D kinetic equation without $\sqrt{\gamma}$ inside divergences | Sec. II |
-| the normal-observer characteristic equations | Hamilton's equations for $(\dd x^i/\dd t, \dd u_i/\dd t)$ | Sec. II |
-| the zero-mass-flux root condition | monotonic equation for the face velocity $\beta_F$ | Sec. III.A |
-| the sliced flux antiderivatives | analytical 1D parallel moment integrals over $(u_{(1)}/W - \beta_F)$ | Sec. III.A |
-| the cubature packet expansion | Halton-rotated fifth-degree Stroud expansion of warm bases into geodesic packets | Sec. III.B |
-| the Maxwell-J{\"u}ttner collision rate | M{\o}ller-averaged relativistic hard-sphere rate and Synge closure | Sec. III.C |
-| the asymptotic face blend | Knudsen-number exponential blend between kinetic one-sided and HLLC fluxes | Sec. III.C |
-| the relativistic Rankine-Hugoniot jump | exact Taub shock density and energy jump for a Synge gas | Sec. IV |
+| the Einstein--Vlasov system | coupled characteristic Vlasov equation and Einstein field equations | Sec.~\ref{sec:system} |
+| the ADM constraints | Hamiltonian $\Ham$ and momentum $\Mom_i$ constraint equations | Sec.~\ref{sec:system} |
+| the moving-puncture gauge | $1+\log$ lapse and Gamma-driver shift equations | Sec.~\ref{sec:system} |
+| the characteristic equations | Hamilton's equations for $(\dd x^i/\dd t, \dd u_i/\dd t)$ with metric parameter $\varepsilon$ | Sec.~\ref{sec:system} |
+| the Darboux Vlasov law | flux-conservative phase-space transport equation | Sec.~\ref{sec:system} |
+| the particle sources | normal-observer projections $(E, S_i, S_{ij})$ summed over packets | Sec.~\ref{sec:system} |
+| the Gauss--Legendre tableau | two-stage fourth-order symplectic implicit Runge--Kutta scheme | Sec.~\ref{sec:method_gl4} |
+| the tetrad equation of motion | gravito-electromagnetic Lorentz form in the normal-observer triad | Sec.~\ref{sec:method_gl4} |
+| the Boris rotation | kick--rotate--kick update in the orthonormal triad | Sec.~\ref{sec:method_gl4} |
+| the three-level time weights | quadratic Lagrange metric interpolation across $(t^{n-1}, t^n, t^{n+1})$ | Sec.~\ref{sec:method_gl4} |
+| the quintic Hermite basis | $C^2$ six-node spatial metric interpolation weights and derivatives | Sec.~\ref{sec:method_quintic} |
+| the conservation identity | proper-volume leaf integral of $(E, S_i, S_{ij})$ equals particle sums | Sec.~\ref{sec:method_dep} |
+| the harmonic face conductance | $\sigma_{c+1/2} = 2\sqrt{\gamma}_c\sqrt{\gamma}_{c+1}/(\sqrt{\gamma}_c+\sqrt{\gamma}_{c+1})$ | Sec.~\ref{sec:method_filter} |
+| the harmonic conservative filter | directional and unsplit seven-point self-adjoint flux filters | Sec.~\ref{sec:method_filter} |
+| the causal stage limiter | local positivity and subluminality limiter $\theta_{\rm lim} \in [0, 1]$ | Sec.~\ref{sec:method_coupling} |
+| the one-sided kinetic flux | MFM boosted normal-observer Riemann moment flux | Sec.~\ref{sec:method_closures} |
+| the Maxwell--J\"uttner majorant | globally dominating three-component Gamma-mixture envelope | Sec.~\ref{sec:method_closures} |
+| the convex momentum projection | exact four-momentum restoration for unequal packet weights | Sec.~\ref{sec:method_closures} |
+| the puncture-split constraint system | coupled Hamiltonian and Bowen--York vector momentum PDEs | Sec.~\ref{sec:method_numerical} |
+| the refinement indicator | L\"ohner second-difference ratio of $q_{\rm AMR} = \alpha\chi^{-7/4}$ | Sec.~\ref{sec:method_numerical} |
+| the Misner--Sharp mass | quasilocal spherical mass functional | Sec.~\ref{sec:method_numerical} |
+| the Kretschmann decomposition | Gauss--Codazzi--Ricci contraction of the Riemann tensor | Sec.~\ref{sec:method_numerical} |
 
 ## Preamble macros
 
-| Macro | Meaning |
-|---|---|
-| `\dd` | `\mathrm{d}` for every differential |
-| `\Ham`, `\Mom` | `\mathcal{H}`, `\mathcal{M}` constraint norms |
-| `\Egeo` | `\mathcal{E}_{\rm geo}`, geodesic energy per rest mass |
-| `\aexc` | `\alpha_{\rm exc}`, lapse excision threshold |
+`\dd`, `\aexc`, `\Ham`, `\Mom`, `\Egeo`, `\KC`, `\Et`, `\Bt`, `\Nppc`, `\lcap`, `\rbar`
 
+## Renames
+
+| Old | New | Reason |
+|---|---|---|
+| $K$ (Carter constant) | `\KC` ($K_{\rm C}$) | avoid collision with extrinsic curvature trace $K$ |
+| $q$ (AMR monitor) | $q_{\rm AMR}$ | avoid collision with back-reaction mass ratio $q = m_p/M_0$ and filter field $q_c$ |
+| $\chi$ (BH spin) | $\chi_{\rm AH}$ | avoid collision with Z4c conformal factor $\chi$ |
+| `\eqref` / `Eq.~(\ref{...})` | named equation reference | PRX / Physical Review house style |
+| `\texttt{rk3}` | SSP-RK3 | human prose naming rather than raw input keyword |
+| `\texttt{matter\_stride}` | multi-rate stride $s_{\rm m}$ | symbolic notation instead of config key |

@@ -1,136 +1,314 @@
-\section{Hybrid phase-space algorithm}\label{sec:method}
+\section{High-order symplectic, metric-conservative, and collisional algorithm}\label{sec:method}
 
-General-relativistic kinetic transport divides naturally by collisionality. Where $\sigma/\mu_p > 0$, frequent scattering suppresses velocity-space filamentation while driving shocks and thermodynamic relaxation, rewarding either conservative moving-finite-volume (MFM) velocity-basis closures with an asymptotic Riemann solver or an asymptotic-preserving particle Cell-BGK relaxation scheme. Where $\sigma/\mu_p = 0$, multi-stream caustics and orbital phase mixing challenge neighbor-averaged moment closures; evolving deterministic phase-space packets by fourth-order symplectic geodesic integration with low-discrepancy quasi-Monte Carlo (QMC) initialization eliminates neighbor diffusion and preserves Killing invariants near machine precision.
+Coupled general-relativistic kinetic evolution advances smooth curvature fields on a block-structured adaptive Eulerian mesh alongside Lagrangian phase-space packets or continuum velocity bases across a shared macro-step $\Delta t$ (or multi-rate substeps of coordinate duration $\Delta t/s_{\rm m}$ bounded by the spacetime Courant limit $\nu_{\rm CFL}\Delta x$ on the finest level). Inside a single closed cycle (Fig.~\ref{fig:cycle}), five modular stages operate sequentially with adaptive mesh regridding placed on a side branch:
+\begin{enumerate}
+\item \emph{Spacetime advance}: AthenaK evolves the constraint-damped Z4c system and moving-puncture gauge through SSP-RK3 or RK4 stages using causal density-slope matter sources $(d_0, d_1)$ divided by each stage's live spatial volume element.
+\item \emph{Metric reconstruction}: zero-copy buffer swaps retain three time levels $(t^{n-1}, t^n, t^{n+1})$ of $(\alpha, \beta^i, \gamma_{ij})$, from which cubic-order temporal Lagrange weights and a zero-overhead $C^2$ six-node quintic Hermite spatial stencil evaluate metric fields and first spatial derivatives at arbitrary stage coordinates.
+\item \emph{Kinetic step}: collisionless packets (both massive particles and null rays) advance by canonical fourth-order two-stage Gauss--Legendre symplectic integration; collisional packet ensembles relax via conservative Cell-BGK scattering; continuum runs advance velocity-basis moments by asymptotic-preserving MFM finite volumes.
+\item \emph{Excision and block assignment}: lapse thresholds and found apparent horizons excise trapped interior particles, nonfinite states are discarded, and surviving packets reassign to their enclosing mesh blocks.
+\item \emph{Deposition, filtering, and causal assembly}: surviving sources deposit onto leaf cells via B-spline clouds, undergo self-adjoint harmonic metric-weighted conservative filtering (with boundary-only adaptive flux matching), and assemble the updated causal $(d_0, d_1)$ stage representations.
+\end{enumerate}
+Whenever the L\"ohner refinement monitor triggers a mesh update, metric arrays, block ownership, and deposited sources rebuild on the new leaf hierarchy while particle states $(m_p, x_p^i, u_{i,p})$ remain untouched.
 
-\subsection{Moving-finite-volume basis discretization}\label{sec:method_mfm}
+\begin{figure}[tbp]
+\centering
+\includegraphics[width=\columnwidth]{figures/fig_cycle.pdf}
+\caption{\label{fig:cycle}%
+One cycle of the coupled multi-rate general-relativistic kinetic algorithm. Blue stages act on the Eulerian curvature mesh, red stages advance or excise kinetic carriers, and the green stage deposits and filters ADM sources across adaptive boundaries with harmonic refluxing.}
+\end{figure}
 
-On $N$ mesh-generating Lagrangian elements at positions $\bm{x}_a(t)$, a compact cubic spline kernel $W(\bm{r}, h_a)$ fixes each coordinate smoothing length $h_a$ and effective coordinate volume $V_a = \bar{n}_a^{-1}$ through $h_a^3 \bar{n}_a = 1$, alongside the coordinate kernel moment matrix $\bm{E}_a = \sum_c (\bm{x}_{ca}\otimes\bm{x}_{ca}) W(\bm{x}_{ca}, h_a)$ and exact antisymmetric effective face area covectors \cite{Hopkins:2015mfc,Hopkins:2026lbv}
-\begin{multline}\label{eq:mfm_faces}
-A_{ab,i} = V_a\!\left(\bm{E}_a^{-1}\bm{x}_{ba}\right)_i W(\bm{x}_{ba},h_a) \\
-+ V_b\!\left(\bm{E}_b^{-1}\bm{x}_{ba}\right)_i W(\bm{x}_{ba},h_b) = -A_{ba,i},
-\end{multline}
-where $\bm{x}_{ba} \equiv \bm{x}_b - \bm{x}_a$ and regularizing $\bm{E}_a$ on boundary vacuum stencils maintains exact antisymmetry $A_{ab,i} = -A_{ba,i}$.
+\subsection{Symplectic geodesic pushers and metric time interpolation}\label{sec:method_gl4}
 
-Within element $a$, $f$ is expanded over $N_b$ moving velocity bases $\alpha$ with compact top-hat or Gaussian support, evolving conserved moments $(m_{a,\alpha}, P_{a,\alpha,i}, \Pi_{a,\alpha,ij}) = V_a \int f_{a,\alpha}(1, u_i, u_i u_j)\,\dd^3 u$ that recover rest-mass density $D_{a,\alpha} = m_{a,\alpha}/V_a$, mean momentum $\bar{u}_{a,\alpha,i} = P_{a,\alpha,i}/m_{a,\alpha}$, and symmetric covariance $\Sigma_{a,\alpha,ij} = \Pi_{a,\alpha,ij}/m_{a,\alpha} - \bar{u}_{a,\alpha,i}\bar{u}_{a,\alpha,j}$. Sylvester minor tests verify positive-definiteness during weighted least-squares gradient limiting and realizability repair, reserving full eigendecomposition for nearly degenerate covariances. At each face $ab$, Cholesky orthonormalization maps the reconstructed basis moments into a normal-observer face triad $(\hat{e}_{(1)}^i, \hat{e}_{(2)}^i, \hat{e}_{(3)}^i)$ aligned with $\hat{e}_{(1)}^i \propto \gamma_f^{ij} A_{ab,j}$ and norm $\|A_{ab}\|_f = (\gamma_f^{ij}A_{ab,i}A_{ab,j})^{1/2}$. The one-sided kinetic triad flux of basis $(a,\alpha)$ into cell $b$ is
-\begin{multline}\label{eq:onesided_flux}
-\bm{F}_{a,\alpha\to b}^{\rm kin} = \alpha_f \|A_{ab}\|_f \!\int_{\frac{u_{(1)}}{W} > \beta_F} \!\!\left(\frac{u_{(1)}}{W} - \beta_F\right) \\
-\times \!\begin{pmatrix} 1 & u_{(m)} & u_{(m)}u_{(n)} & W \end{pmatrix}^{\!T} f_{a,\alpha}\,\dd^3 u,
-\end{multline}
-which collapses via analytical one-dimensional parallel antiderivatives on transverse quadrature nodes $\bm{u}_\perp$ with smooth Gauss-Legendre switchover in cold streams \cite{Hopkins:2026lbv}. Demanding zero net mass transfer across the moving interface determines the normal-observer face velocity $\beta_F \in (-1,1)$ as the unique root of $\Phi(\beta_F) \equiv \sum_\alpha F_{m,a,\alpha\to b}^{\rm kin}(\beta_F) - \sum_\beta F_{m,b,\beta\to a}^{\rm kin}(-\beta_F) = 0$, solved by safeguarded Newton iterations using exact analytical derivatives $\partial\Phi/\partial\beta_F$. Bases pair across faces by minimum dispersion cost in the boosted face rest frame at speed $\beta_F$, while the collisional flux blends smoothly into a relativistic Synge HLLC Riemann flux $\bm{F}_{ab}^{\rm HLLC}$ \cite{Mignone:2005ns} and Noh thermal conduction \cite{Noh:1987}:
-\begin{equation}\label{eq:ap_blend}
-\begin{aligned}
-\bm{F}_{ab} &= w_c \bm{F}_{ab}^{\rm kin} + (1 - w_c)\bm{F}_{ab}^{\rm HLLC}, \\
-w_c &= \exp\!\left(-\frac{\Delta x_{\rm prop} D_f}{\sqrt{\gamma_f}}\frac{\sigma}{\mu_p}\right),
-\end{aligned}
-\end{equation}
-yielding second-order accuracy from free streaming ($w_c = 1$) to dense relativistic hydrodynamics ($w_c \to 0$).
-
-\subsection{Symplectic integration and metric time interpolation}\label{sec:method_gl4}
-
-Along the normal-observer characteristic equations for canonical packet state $\bm{z} = (x^i, u_i)^T$, standard second-order implicit midpoint integration accumulates secular phase error along eccentric strong-field orbits. To push curved-space precision to fourth order, each packet evolves via the two-stage Gauss-Legendre implicit Runge-Kutta scheme over step $[t^n, t^n + \Delta t_n]$:
+Long-term collisionless equilibria, near-extremal Kerr zoom-whirl orbits, and critical photon-sphere separatrices require time integrators free of secular phase and invariant drift. Second-order pushers suffice for moderate trajectories yet accumulate noticeable phase error during ultrarelativistic pericenter passages. We eliminate this bottleneck by equipping canonical Darboux coordinates $\bm{z} = (x^i, u_i)^T$ with the two-stage fourth-order Gauss--Legendre implicit Runge--Kutta scheme (\texttt{GL4})~\cite{SanzSerna:1988}. Over step $[t^n, t^n + \Delta t_n]$, let $\bm{f}(t, \bm{z}) = (\dd x^i/\dd t,\, \dd u_i/\dd t)^T$ denote the right-hand side of the characteristic equations at mass-shell parameter $\varepsilon \in \{1, 0\}$. The Gauss--Legendre tableau advances $\bm{z}^n \mapsto \bm{z}^{n+1}$ through coupled internal stages $\bm{Z}_1, \bm{Z}_2$:
 \begin{align}\label{eq:gl4_tableau}
-\bm{Z}_s &= \bm{z}^n + \Delta t_n \sum_{r=1}^{2} a_{sr}\,\bm{f}(t^n + c_r \Delta t_n, \bm{Z}_r), \nonumber\\
-\bm{z}^{n+1} &= \bm{z}^n + \Delta t_n \sum_{s=1}^{2} b_s\,\bm{f}(t^n + c_s \Delta t_n, \bm{Z}_s),
+\bm{Z}_s &= \bm{z}^n + \Delta t_n \sum_{r=1}^{2} a_{sr}\,\bm{f}\bigl(t^n + c_r \Delta t_n,\, \bm{Z}_r\bigr), \nonumber\\
+\bm{z}^{n+1} &= \bm{z}^n + \Delta t_n \sum_{s=1}^{2} b_s\,\bm{f}\bigl(t^n + c_s \Delta t_n,\, \bm{Z}_s\bigr),
 \end{align}
-with collocation nodes $c_{1,2} = \frac{1}{2} \mp \frac{\sqrt{3}}{6}$, quadrature weights $b_1 = b_2 = \frac{1}{2}$, and Runge-Kutta matrix
-\begin{equation}\label{eq:gl4_A}
-A = \begin{pmatrix} \frac{1}{4} & \frac{1}{4} - \frac{\sqrt{3}}{6} \\ \frac{1}{4} + \frac{\sqrt{3}}{6} & \frac{1}{4} \end{pmatrix}.
+with Gaussian quadrature collocation nodes, weights, and Runge--Kutta coefficient matrix
+\begin{equation}\label{eq:gl4_coeffs}
+c_{1,2} = \frac{1}{2} \mp \frac{\sqrt{3}}{6},\; b_1 = b_2 = \frac{1}{2},\;
+A = \begin{pmatrix} \frac{1}{4} & \frac{1}{4} - \frac{\sqrt{3}}{6} \\[4pt] \frac{1}{4} + \frac{\sqrt{3}}{6} & \frac{1}{4} \end{pmatrix}.
 \end{equation}
-Because $b_r a_{rs} + b_s a_{sr} - b_r b_s = 0$ holds identically for $r,s \in \{1,2\}$, this pusher is canonical (symplectic), time-reversible, and $A$-stable, conserving $\dd\bm{x}\wedge\dd\bm{u}$ exactly and modified Hamiltonians to $\mathcal{O}(\Delta t_n^4)$. Both stage residuals converge cleanly in fixed-point iteration near machine precision.
+Proper time ($\varepsilon = 1$) or affine parameter ($\varepsilon = 0$) accumulates to matched order across the same Gaussian weights as $\Delta\tau = \frac{1}{2}\Delta t_n(\alpha_1/W_1 + \alpha_2/W_2)$, where $\alpha_s$ and $W_s$ are evaluated at stages $\bm{Z}_s$. Fixed-point iteration initializes from the explicit predictor $\bm{Z}_s^{(0)} = \bm{z}^n + c_s\Delta t_n\bm{f}(t^n, \bm{z}^n)$ and iterates until the largest phase-space increment across both stages drops below a tight tolerance.
 
-In dynamical Z4c spacetimes, stage metrics $\bm{g}_{\rm ADM}(t^n + c_s\Delta t_n, \bm{Z}_s)$ are evaluated across three stored metric time slices $(t^{n-1}, t^n, t^{n+1})$ without extra Z4c right-hand-side calls by retaining the previous slice via a zero-copy buffer swap. With step ratio $r = \Delta t_n / \Delta t_{n-1}$, quadratic Lagrange time interpolation at stage fraction $c \in (0, 1)$ uses
-\begin{equation}\label{eq:lagrange3}
-\begin{aligned}
-w_{-1}(c) &= \frac{r^2 c(c-1)}{1+r}, \qquad w_0(c) = (1-c)(1+rc), \\
+Direct matrix inspection proves three structural invariants of the Gauss--Legendre tableau simultaneously:
+\begin{enumerate}
+\item \emph{Exact symplecticity}: evaluating the symplectic condition $M_{rs} \equiv b_r a_{rs} + b_s a_{sr} - b_r b_s$ across $r, s \in \{1, 2\}$ yields $M_{11} = M_{22} = \frac{1}{4} - \frac{1}{4} = 0$ and $M_{12} = M_{21} = \frac{1}{2}(\frac{1}{4}-\frac{\sqrt{3}}{6}) + \frac{1}{2}(\frac{1}{4}+\frac{\sqrt{3}}{6}) - \frac{1}{4} = 0$. Consequently the discrete flow preserves the canonical wedge product $\dd x^i \wedge \dd u_i$ identically, prevents secular drift in bounded modified Hamiltonians to $\mathcal{O}(\Delta t_n^4)$, and remains $A$-stable and symmetric under $\Delta t_n \mapsto -\Delta t_n$.
+\item \emph{Exact cyclic-coordinate conservation}: whenever $x^k$ is cyclic ($\partial_k H = 0$), the canonical force component vanishes at every stage, so $u_k^{n+1} = u_k^n$ holds identically to floating-point rounding.
+\item \emph{Unified timelike and null transport}: because only the radicand $\varepsilon + \gamma^{ij}u_i u_j$ shifts between $\varepsilon = 1$ and $\varepsilon = 0$, identical Jacobian-free fixed-point loops advance both massive macroparticles and massless photons across horizons and ergospheres.
+\end{enumerate}
+
+To benchmark against established general-relativistic particle-in-cell schemes~\cite{Bacchini:2020cze,Olivares:2021cfa,Boyeneni:2025tsx,Wu:2026nrpic}, we also implement the second-order implicit midpoint pusher and spacetime Boris pusher. Evaluating stage fields at the phase-space midpoint $\bar{\bm{z}} = (\bm{z}^n + \bm{z}^{n+1})/2$ and averaging metric slices between $t^n$ and $t^{n+1}$ gives the midpoint update,
+\begin{align}\label{eq:midpoint_update}
+\frac{x^{i,n+1} - x^{i,n}}{\Delta t_n} &= \frac{\bar{\alpha}\bar{\gamma}^{ij}\bar{u}_j}{\bar{W}} - \bar{\beta}^i, \nonumber\\
+\frac{u_i^{n+1} - u_i^n}{\Delta t_n} &= -\bar{W}\partial_i\bar{\alpha} + \bar{u}_j\partial_i\bar{\beta}^j + \frac{\bar{\alpha}}{2\bar{W}}\bar{u}^l\bar{u}^m\partial_i\bar{\gamma}_{lm},
+\end{align}
+which equals the one-stage second-order Gauss--Legendre rule and likewise preserves cyclic momenta, while incurring $\mathcal{O}(\Delta t_n^2)$ phase error. Conversely, the spacetime Boris pusher~\cite{Olivares:2021cfa,Boyeneni:2025tsx,Wu:2026nrpic} projects massive momenta ($\varepsilon = 1$) onto an orthonormal spatial triad $e^{(m)}_i$ satisfying $\gamma_{ij} = \delta_{mn} e^{(m)}_i e^{(n)}_j$ and $e^i_{(m)} e^{(n)}_i = \delta^n_m$, defining tetrad components $u_{(m)} = e^i_{(m)} u_i$ and $W = \sqrt{1 + \delta^{mn}u_{(m)}u_{(n)}}$. Differentiating $u_i = e^{(n)}_i u_{(n)}$ along $\dd/\dd t = \partial_t + v^j\partial_j$ ($v^j = \alpha u^j/W - \beta^j$) and defining momentum-contracted triad connections $\Omega_{jk} = u_{(n)}\partial_j e^{(n)}_k$ and $\Omega^t_k = u_{(n)}\partial_t e^{(n)}_k$ cast geodesic motion into the normal-observer proper-time ($\dd\hat{t} = \alpha\,\dd t$) tetrad equation of motion,
+\begin{equation}\label{eq:tetrad_eom}
+\frac{\dd u_{(m)}}{\dd\hat{t}} = \Et_{(m)} + \frac{1}{W}\epsilon_{(m)(n)(k)} u_{(n)} \Bt_{(k)},
+\end{equation}
+where $\epsilon_{(m)(n)(k)}$ is the Levi-Civita symbol and the gravito-electric and gravito-magnetic fields read
+\begin{align}\label{eq:gravito_em}
+\alpha\Et_{(m)} &= e^i_{(m)}\bigl(-W\partial_i\alpha + u_l\partial_i\beta^l + \beta^j\Omega_{ji} - \Omega^t_i\bigr), \nonumber\\
+\Bt_{(k)} &= \epsilon_{(k)(m)(n)} e^p_{(m)} e^q_{(n)} \Omega_{pq}.
+\end{align}
+Setting $\Delta\hat{t} = \bar{\alpha}\Delta t_n$, $\bm{\vartheta} = (\Delta\hat{t}/2\bar{W})\bar{\bm{\Bt}}$, and midpoint-projected $\bm{u}_{\rm tet}^n$, $\bm{u}_{\rm tet}^{n+1}$ executes the kick--rotate--kick Boris rotation~\cite{boris1970relativistic},
+\begin{align}\label{eq:boris_rotation}
+\bm{u}^- &= \bm{u}_{\rm tet}^n + \frac{\Delta\hat{t}}{2}\bar{\bm{\Et}}, &
+\bm{u}' &= \bm{u}^- + \bm{u}^- \times \bm{\vartheta}, \nonumber\\
+\bm{u}^+ &= \bm{u}^- + \frac{2(\bm{u}' \times \bm{\vartheta})}{1 + |\bm{\vartheta}|^2}, &
+\bm{u}_{\rm tet}^{n+1} &= \bm{u}^+ + \frac{\Delta\hat{t}}{2}\bar{\bm{\Et}},
+\end{align}
+with endpoint conversion $u_i^{n+1} = e^{(m)}_i(t^{n+1},\bm{x}^{n+1})u_{(m)}^{n+1}$. Two tetrad gauges are supported: the symmetric square root $e^{(m)}_j = (\gamma^{1/2})_{mj}$ (whose variation solves the Sylvester equation $\gamma^{1/2}\,\dd S + \dd S\,\gamma^{1/2} = \dd\gamma$ in the metric eigenbasis) and the lower-triangular Cholesky factor $e^{(m)}_j = L_{jm}$~\cite{Wu:2026nrpic}. Comparing both frameworks highlights a clear trade-off: projecting and unprojecting momenta at endpoints while evaluating triad rotations at the midpoint introduces frame-dependent second-order truncation error absent in Cartesian Darboux coordinates, requires finite-difference time derivatives $\partial_t\gamma_{ij}$ across dynamical steps, and assumes massive scaling ($\varepsilon=1$), whereas coordinate-frame \texttt{GL4} operates at fourth order with zero triad overhead across both $\varepsilon = 1$ and $\varepsilon = 0$.
+
+In evolving Z4c spacetimes, stage evaluations at fractional offset $c \in (0, 1)$ across $[t^n, t^n + \Delta t_n]$ demand matching third-order temporal accuracy without extra right-hand-side calls. Retaining the metric buffer from $t^{n-1}$ alongside $t^n$ and $t^{n+1}$ via a zero-copy pointer swap gives three consecutive metric slices $(t^{n-1}, t^n, t^{n+1})$ with step ratio $r = \Delta t_n / \Delta t_{n-1}$. Constructing the unique quadratic Lagrange interpolant through $\{-1/r,\, 0,\, 1\}$ defines the three-level time weights,
+\begin{align}\label{eq:lagrange3}
+w_{-1}(c) &= \frac{r^2 c(c-1)}{1+r}, &
+w_0(c) &= (1-c)(1+rc), \nonumber\\
 w_1(c) &= \frac{c(1+rc)}{1+r},
-\end{aligned}
-\end{equation}
-reducing temporal metric truncation error from $\mathcal{O}(\Delta t^2)$ under linear two-level blending to $\mathcal{O}(\Delta t^3)$, with automatic linear fallback immediately following startup or adaptive regridding. Spatial mesh metric fields and derivatives use four-point cubic Hermite interpolation on the six-level static or adaptive refinement hierarchy \cite{Wu:2026nrpic}.
+\end{align}
+satisfying $w_{-1} + w_0 + w_1 = 1$, $w_{-1}(-1/r)=1$, $w_0(0)=1$, and $w_1(1)=1$ identically. By Taylor expansion around $t^n$, quadratic blending achieves $\mathcal{O}(\Delta t^3)$ local metric truncation error—matching fourth-order stage updates across nonuniform steps while reducing to linear two-level interpolation on startup steps or immediately following an adaptive regrid.
 
-\subsection{Cubature packets and quasi-Monte Carlo sampling}\label{sec:method_scp}
+\subsection{Zero-overhead \texorpdfstring{$C^2$}{C2} quintic Hermite spatial metric reconstruction}\label{sec:method_quintic}
 
-When $\sigma/\mu_p \le 0$, warm MFM velocity bases expand once at initialization into deterministic symplectic cubature packets \cite{Stroud:1971}:
-\begin{equation}\label{eq:scp_map}
-\bm{u}_{a,\alpha,q} = \bar{\bm{u}}_{a,\alpha} + \bm{L}_{a,\alpha}\bm{R}_{a,\alpha}\bm{\xi}_q, \qquad m_{a,\alpha,q} = m_{a,\alpha} w_q,
-\end{equation}
-where $\bm{L}_{a,\alpha}\bm{L}_{a,\alpha}^T = \Sigma_{a,\alpha}$ is the Cholesky factor and $\bm{R}_{a,\alpha} \in \mathrm{SO}(3)$ is drawn from the base-$2,3,5$ Halton quaternion sequence \cite{Halton:1960}. For isotropic Maxwellians and shells on $S^2$, rotational cubature sets $(\hat{\bm{n}}_q, w_q)$ of size $Q \in \{6, 12, 14, 26\}$ (octahedral, icosahedral, and Lebedev rules exact up to spherical-harmonic degree $\ell = 7$) satisfy $\sum_q w_q (\sqrt{3}\hat{\bm{n}}_q)(\sqrt{3}\hat{\bm{n}}_q)^T = \bm{I}_3$, matching arbitrary local pressure tensors to machine precision.
+Once temporal integration error drops below twelve digits under \texttt{GL4}, discrete spatial metric interpolation governs invariant conservation on Eulerian meshes. Cell centers store the ten covariant metric variables $(\alpha, \beta^i, \gamma_{ij})$; symmetric $3\times 3$ inversion is performed only after interpolating $\gamma_{ij}$ at the particle location so the inverse metric remains strictly symmetric positive definite.
 
-To suppress Poisson fluctuations in global self-gravitating initial data at finite packet budget $N = N_s Q$, spatial coordinates are drawn from radially rank-stratified five-dimensional scrambled Sobol sequences combined with symmetry-exact velocity pairings:
+In baseline NRPIC~\cite{Wu:2026nrpic}, interpolation along each axis uses a four-point cubic Hermite (Catmull--Rom) stencil over nodes $\{i_0-1, i_0, i_0+1, i_0+2\}$ with normalized offset $s = (x - x_{i_0})/h \in [0, 1)$ in cell units $h$, defined by the cubic Hermite weights
+\begin{align}\label{eq:hermite_weights}
+w_{-1}(s) &= \frac{-s + 2s^2 - s^3}{2}, &
+w_{0}(s) &= \frac{2 - 5s^2 + 3s^3}{2}, \nonumber\\
+w_{1}(s) &= \frac{s + 4s^2 - 3s^3}{2}, &
+w_{2}(s) &= \frac{-s^2 + s^3}{2},
+\end{align}
+and derivative weights $w'_a(s)/h$. Although continuous ($C^1$) at cell faces, cubic Hermite sets nodal slopes with second-order central differences that jump in second derivative at every cell interface, imprinting an $\mathcal{O}(h^3)$ force discontinuity whenever trajectories cross grid planes and creating a position-dependent wavenumber gradient bias of $-(kh)^2/6$ at nodes versus $+(kh)^2/12$ at cell midpoints. Global cubic B-splines remove face jumps at the cost of a global pre-sharpening solve and a second persistent 10-component metric array per time slice.
+
+Because evolved Z4c meshes already maintain $n_g = 4$ ghost cells per block to support sixth-order finite differences, a six-node stencil $\{i_0-2, i_0-1, i_0, i_0+1, i_0+2, i_0+3\}$ fits everywhere inside active and ghost storage with zero extra memory allocation. On $[0, 1]$, we construct the unique degree-five quintic Hermite interpolant matching endpoint values $(f_0, f_1)$, first derivatives $(h f'_0, h f'_1)$, and second derivatives $(h^2 f''_0, h^2 f''_1)$,
+\begin{align}\label{eq:quintic_basis}
+H_{00}(s) &= 1 - 10s^3 + 15s^4 - 6s^5, \nonumber\\
+H_{01}(s) &= 1 - H_{00}(s), \nonumber\\
+H_{10}(s) &= s - 6s^3 + 8s^4 - 3s^5, \nonumber\\
+H_{11}(s) &= -4s^3 + 7s^4 - 3s^5, \nonumber\\
+H_{20}(s) &= \frac{s^2 - 3s^3 + 3s^4 - s^5}{2}, \nonumber\\
+H_{21}(s) &= \frac{s^3 - 2s^4 + s^5}{2}.
+\end{align}
+Replacing endpoint derivatives with fourth-order centered five-point finite differences evaluated directly from the surrounding nodal metric values,
+\begin{align}\label{eq:quintic_endpoint_derivs}
+h f'_{k} &= \frac{1}{12}\bigl(f_{k-2} - 8f_{k-1} + 8f_{k+1} - f_{k+2}\bigr), \nonumber\\
+h^2 f''_{k} &= \frac{1}{12}\bigl(-f_{k-2} + 16f_{k-1} - 30f_k + 16f_{k+1} - f_{k+2}\bigr),
+\end{align}
+for $k \in \{0, 1\}$ and collecting coefficients of $f_{i_0+a}$ ($a \in \{-2,-1,0,1,2,3\}$) defines the closed-form quintic Hermite basis weights:
+\begin{align}\label{eq:quintic_weights}
+w_{-2}(s) &= \frac{H_{10} - H_{20}}{12}, \nonumber\\
+w_{-1}(s) &= \frac{-8H_{10} + H_{11} + 16H_{20} - H_{21}}{12}, \nonumber\\
+w_{0}(s) &= H_{00} + \frac{-8H_{11} - 30H_{20} + 16H_{21}}{12}, \nonumber\\
+w_{1}(s) &= H_{01} + \frac{8H_{10} + 16H_{20} - 30H_{21}}{12}, \nonumber\\
+w_{2}(s) &= \frac{-H_{10} + 8H_{11} - H_{20} + 16H_{21}}{12}, \nonumber\\
+w_{3}(s) &= \frac{-H_{11} - H_{21}}{12}.
+\end{align}
+Three properties follow immediately by direct differentiation of the quintic Hermite basis:
 \begin{enumerate}
-\item \textit{Antipodal four-tuple pairing} ($Q = 4$): pairing $\{(\pm\bm{x}, \pm\bm{u})\}$ at each Sobol radial sample zeroes the center of mass $\bm{X}_{\rm cm}$, total linear momentum $\bm{P}$, angular momentum $\bm{J}$, and local normal-observer momentum density $S_i$ algebraically to rounding precision while allocating $N_s = N/4$ spatial sites.
-\item \textit{Rotational $S^2$ Lebedev shells} ($Q = 14$): centering $14$-point Lebedev shells at $N_s = N/14$ sites reduces local stress-tensor anisotropy to machine precision ($\sim 10^{-16}$), proving optimal for large budgets ($N \ge 10^5$) where $N_s$ remains dense across adaptive mesh cells.
-\item \textit{Discrete reflection groups}: spherical dust models employ $24$-fold $O_h$ cubic symmetry ($Q_{xx}=Q_{yy}=Q_{zz}$), while axisymmetric prolate spheroids employ $16$-fold $(x \leftrightarrow y)$ octant reflections ($Q_{xx}=Q_{yy}$, zero off-diagonal quadrupole moments).
+\item \emph{Global $C^2$ regularity}: at the interface $s = 1^- \leftrightarrow 0^+$ between adjacent cells, both intervals evaluate the same fourth-order finite-difference formulas for $f_1$, $h f'_1$, and $h^2 f''_1$, so the reconstructed fields, first spatial gradients, and second derivatives (Hessians) are continuous across every cell face in three dimensions via separable tensor products $w_a(s_1) w_b(s_2) w_c(s_3)$.
+\item \emph{Fifth-order accuracy}: because the fourth-order centered differences are exact for every polynomial of degree $d \le 4$ and $H_{ab}$ reproduces all degree-five Hermite data, the tensor-product interpolant reproduces degree-four polynomials identically, yielding $\mathcal{O}(h^5)$ field error and $\mathcal{O}(h^4)$ gradient error—eliminating the cubic-Hermite $\mathcal{O}(h^3)$ gradient discontinuity cleanly.
+\item \emph{Zero memory overhead}: near block edges the index $i_0$ clamps smoothly inward into the four-cell ghost region so all 216 stencil evaluations remain local to a single mesh block without allocating pre-sharpened spline arrays.
 \end{enumerate}
 
-\subsection{Asymptotic-preserving conservative Cell-BGK operator}\label{sec:method_bgk}
+\subsection{Conservative adaptive-mesh stress-energy deposition}\label{sec:method_dep}
 
-Pure Monte Carlo binary pairing scales linearly with collision optical depth at high collisionality, whereas continuum MFM introduces gradient diffusion across collisionless streams. Equipping geodesic packets with an asymptotic-preserving conservative Cell-BGK relaxation operator handles both limits in $\mathcal{O}(1)$ work per step as $\sigma/\mu_p \to \infty$.
+Depositing discrete packet moments onto an adaptive spacetime mesh must preserve proper-volume ADM integrals across arbitrary refinement jumps. Each macroparticle $p$ deposits onto a virtual uniform lattice of spacing $h(\ell_p)$ associated with a single representation level $\ell_p$~\cite{Myers:2021gfn,Wu:2026nrpic}. Along each axis at normalized displacement $\xi = (x_q^i - x_p^i)/h$, the module supports tensor products of B-spline shape functions $B_k(\xi)$ of linear order ($k=1$, cloud-in-cell, two nodes), quadratic order ($k=2$, triangular-shaped cloud, three nodes), or cubic order ($k=3$, piecewise-cubic spline, four nodes):
+\begin{align}\label{eq:bspline_shapes}
+B_1(\xi) &= \max\bigl(0,\, 1 - |\xi|\bigr), \nonumber\\
+B_2(\xi) &= \begin{cases}
+\frac{3}{4} - \xi^2, & |\xi| \le \frac{1}{2}, \\[3pt]
+\frac{1}{2}\bigl(\frac{3}{2} - |\xi|\bigr)^2, & \frac{1}{2} < |\xi| < \frac{3}{2},
+\end{cases}
+\end{align}
+with $B_3(\xi)$ the standard $C^2$ cubic B-spline vanishing outside $|\xi| < 2$. On virtual lattice cells $q$ of volume $\Delta V_q$, the separable tensor weights $\tilde{\omega}_{qp} = \prod_{i=1}^3 B_k((x_q^i - x_p^i)/h)$ are strictly nonnegative and sum identically to unity.
 
-Packets are bucketed directly into computational subcells via global face tables independent of mesh-block decomposition. In each subcell $c$ containing rest mass $M_c = \sum_{p\in c} m_p$, normal-observer energy $E_c$, and momentum $\bm{P}_c$ measured in the local orthonormal ADM triad, invariant mass $M_{\rm inv} = \sqrt{E_c^2 - |\bm{P}_c|^2} > M_c$ determines comoving mean Lorentz factor $\bar{W}_{\rm com} = M_{\rm inv}/M_c$ and temperature $\theta$ by analytical Newton inversion of the Synge enthalpy in Eq.~(\ref{eq:synge_eos}). Each packet enters local thermal relaxation with exponential probability $p_{\rm coll} = 1 - e^{-\tau_{\rm coll}}$, where $\tau_{\rm coll} = M_c (\sigma/\mu_p) v_{\rm rel}\alpha\Delta t / (V_c U_0^2)$ and $v_{\rm rel}$ denotes the M{\o}ller relative speed.
-
-Post-collision comoving momenta $\bm{q}_p$ draw exact kinetic energies $x = W - 1 \ge 0$ from the isotropic Maxwell-J{\"u}ttner marginal $f(x) \propto x^{1/2}(1+x)\sqrt{2+x}\,e^{-x/\theta}$ using a global three-component Gamma-mixture majorant valid for all $\theta > 0$:
-\begin{multline}\label{eq:mj_majorant}
-h(x) = \left(\sqrt{2}\,x^{1/2} + 2\,x^{3/2} + x^2\right)e^{-x/\theta} \\
-\ge x^{1/2}(1+x)\sqrt{2+x}\,e^{-x/\theta},
-\end{multline}
-sampled directly from $\mathrm{Gamma}(3/2,\theta)$, $\mathrm{Gamma}(5/2,\theta)$, and $\mathrm{Gamma}(3,\theta)$ in proportions $1 : \frac{3}{\sqrt{2}}\theta : \sqrt{\frac{8}{\pi}}\theta^{3/2}$ via deterministic Philox random numbers. Writing $t = \sqrt{x} \ge 0$ proves global domination algebraically:
-\begin{multline}\label{eq:mj_proof}
-\left(\sqrt{2} + 2t^2 + t^3\right)^2 - (1 + t^2)^2(2 + t^2) \\
-= (4\sqrt{2} - 5)t^2 + 2\sqrt{2}\,t^3 + 4t^5 \ge 0,
-\end{multline}
-since $4\sqrt{2} - 5 > 0.65 > 0$, ensuring acceptance efficiency exceeding sixty-five percent across all nonrelativistic and ultrarelativistic temperatures.
-
-Finite-sample fluctuation in post-draw comoving four-momentum $(E_t, \bm{P}_t)$ is removed by an exact three-step cell projection for arbitrary unequal packet weights $m_p$:
-\begin{enumerate}
-\item Boost all post-draw momenta into the sample center-of-momentum frame ($\bm{P}_{\rm com} = \sum_p m_p \bm{q}_p^*$) and subtract roundoff drift $\bm{q}_p^* \leftarrow \bm{q}_p^* - \bm{P}_{\rm com}/M_c$.
-\item Rescale $\bm{q}_p^* \leftarrow s\,\bm{q}_p^*$ using the unique positive root $s > 0$ of the strictly increasing convex function
-\begin{equation}\label{eq:proj_convex}
-F(s) = \sum_{p\in c} m_p \sqrt{1 + s^2 |\bm{q}_p^*|^2} = M_{\rm inv},
+Mapping virtual weights onto adaptive leaf cells $C$ of refinement level $\ell_C$ and coordinate volume $\Delta V_C$ preserves unit total weight via
+\begin{equation}\label{eq:leaf_weights}
+\omega_{Cp} =
+\begin{cases}
+\displaystyle \sum_{q \subset C} \tilde{\omega}_{qp}, & \ell_C \le \ell_p, \\[10pt]
+\displaystyle \tilde{\omega}_{qp}\,\frac{\Delta V_C}{\Delta V_q}, & C \subset q,\ \ell_C > \ell_p,
+\end{cases}
 \end{equation}
-solved to machine precision via safeguarded Newton-bisection from $F(0) = M_c < M_{\rm inv}$.
-\item Boost $s\bm{q}_p^*$ forward by $U_{\rm cm}^{\hat{\mu}} = (E_c, \bm{P}_c)/M_{\rm inv}$, enforcing exact cell energy and three-momentum conservation down to rounding error.
-\end{enumerate}
+using finest-level clouds $\ell_p = \ell_{\rm loc}(p)$ (where $\ell_{\rm loc}(p)$ is the finest block level overlapping particle $p$'s local stencil, ensuring $\ell_C \le \ell_p$) or an optional density-adaptive level cap $\ell_p = \min(\ell_{\rm loc}(p), \lcap)$. Dividing accumulated moments in leaf cell $C$ by proper volume $\sqrt{\gamma_C}\Delta V_C$ yields the ten deposited sources,
+\begin{multline}\label{eq:deposited_sources}
+\bigl(E,\, S_i,\, S_{ij}\bigr)_C \\
+= \frac{1}{\sqrt{\gamma_C}\,\Delta V_C} \sum_{p=1}^{N} \omega_{Cp}\, m_p \left(W_p,\, u_{i,p},\, \frac{u_{i,p} u_{j,p}}{W_p}\right).
+\end{multline}
+Because $\sum_C \omega_{Cp} = 1$ for every interior cloud regardless of shape degree or coarse-fine geometry, summing across all leaf cells yields the exact discrete conservation identity,
+\begin{multline}\label{eq:conservation_identity}
+\sum_{C} \bigl(E, S_i, S_{ij}\bigr)_C \sqrt{\gamma_C}\Delta V_C \\
+= \sum_{p=1}^{N} m_p \left(W_p, u_{i,p}, \frac{u_{i,p} u_{j,p}}{W_p}\right),
+\end{multline}
+to floating-point rounding across arbitrary AMR and MPI block boundaries.
 
-\subsection{Self-adjoint metric-weighted conservative source filter}\label{sec:method_filter}
+\subsection{Self-adjoint metric-weighted flux-conservative filtering}\label{sec:method_filter}
 
-Packets deposit normal-observer moments onto the adaptive grid via cloud-in-cell or quadratic B-spline clouds \cite{Wu:2026nrpic}. Plain binomial filtering $(w_1, 1-2w_1, w_1)^3$ applied directly to physical fields $q = \{E, S_i, S_{ij}\}$ violates the proper-volume ADM integral $\int q\sqrt{\gamma}\,\dd^3 x$ wherever $\nabla\sqrt{\gamma} \ne 0$. Conversely, filtering densitized fields $\sqrt{\gamma}q$ on one pass preserves the integral on uniform grids but distorts constant curved states ($q = \text{const} \not\mapsto \text{const}$) and leaks energy across adaptive refinement boundaries without flux matching.
+Filtering grid-deposited moments $(E, S_i, S_{ij})$ suppresses finite-$\Nppc$ sampling fluctuations at Nyquist scales. Yet standard three-point binomial filtering with weights $(w_1, 1 - 2w_1, w_1)^3$ applied directly to physical fields $q \in \{E, S_i, S_{ij}\}$ breaks the conservation identity wherever $\nabla\sqrt{\gamma} \ne 0$ and across refinement interfaces: in steep black-hole metric gradients around moving punctures or binary collapse clumps, plain binomial filtering loses tens of percent of the proper-volume ADM energy integral $\sum_C \sqrt{\gamma}_C E_C \Delta V_C$. Conversely, filtering densitized fields $\sqrt{\gamma} q$ conserves volume integrals on uniform grids at the cost of distorting constant curved equilibria ($q \equiv q_0 \not\mapsto q_0$) and losing conservation across prolonged coarse-fine ghost zones.
 
-Both errors vanish under a self-adjoint metric-weighted flux-conservative filter sweeping coordinate directions $d \in \{1, 2, 3\}$:
-\begin{equation}\label{eq:mcons_filter}
-\begin{aligned}
-q_c^{\rm new} &= q_c - \frac{F_{c+1/2} - F_{c-1/2}}{\sqrt{\gamma}_c \Delta V_c}, \\
-F_{c+1/2} &= -w_1 \sigma_{c+1/2} \Delta V_{c+1/2}\,(q_{c+1} - q_c),
-\end{aligned}
-\end{equation}
-with harmonic face metric conductance
+We eliminate both biases simultaneously by formulating filtering directly as a discrete flux divergence weighted by the harmonic face metric conductance,
 \begin{equation}\label{eq:harmonic_cond}
-\sigma_{c+1/2} = \frac{2\sqrt{\gamma}_c \sqrt{\gamma}_{c+1}}{\sqrt{\gamma}_c + \sqrt{\gamma}_{c+1}},
+\sigma_{c+1/2} \equiv \frac{2\sqrt{\gamma}_c \sqrt{\gamma}_{c+1}}{\sqrt{\gamma}_c + \sqrt{\gamma}_{c+1}}
 \end{equation}
-and face flux matching (refluxing) accumulated across coarse-fine adaptive boundaries. By direct summation, this operator satisfies four algebraic guarantees simultaneously on any smooth or rough adaptive metric: constant physical fields are exact fixed points ($q_c \equiv q_0 \Rightarrow F_{c+1/2} \equiv 0$); proper-volume integrals $\sum_c \sqrt{\gamma}_c q_c \Delta V_c$ are conserved to machine precision across refinement jumps; the discrete filter is symmetric negative semi-definite (self-adjoint and $L^2(\sqrt{\gamma}\,\dd V)$-contractive) for $w_1 \le 1/4$; and pointwise positivity $q^{\rm new} \ge 0$ holds unconditionally when $w_1 \le 1/4$ because diagonal weights remain nonnegative since $\sigma_{c\pm 1/2} \le 2\sqrt{\gamma}_c$.
+(setting $\sigma_{c+1/2} = 0$ if either adjacent determinant vanishes). In the coordinate-split directional sweep along axis $d \in \{1, 2, 3\}$ with spacing $\Delta x_d$ and coupling parameter $\kappa$ (typically $\kappa = 1/4$ for smoothing passes), the intercell face flux and cell update read
+\begin{align}\label{eq:mcons_dir}
+F_{c+1/2}^{(d)} &= \kappa\,\Delta x_d\,\sigma_{c+1/2}^{(d)}\,\bigl(q_{c+1} - q_c\bigr), \nonumber\\
+q_c^{\rm new} &= q_c + \frac{F_{c+1/2}^{(d)} - F_{c-1/2}^{(d)}}{\sqrt{\gamma}_c\,\Delta x_d},
+\end{align}
+alternating $(x, y, z)$ and $(z, y, x)$ axis orderings across successive passes to minimize directional bias, and enforcing vanishing fluxes on non-periodic outer domain boundaries. When a fourth-order binomial compensation pass is enabled after $n_{\rm f}$ smoothing passes~\cite{1991ppcs.book.....B,Wu:2026nrpic}, setting a final pass with $\kappa = -c$ ($c = n_{\rm f}/4$ in flat space) produces the Fourier attenuation factor
+\begin{equation}\label{eq:comp_response}
+\widehat{F}(k) = (1 - s)^{n_{\rm f}}\,(1 + n_{\rm f} s) = 1 - \mathcal{O}\bigl((k\Delta x)^4\bigr),
+\end{equation}
+where $s = \sin^2(k\Delta x/2)$, cancelling the $\mathcal{O}((k\Delta x)^2)$ cloud broadening that otherwise artificially softens gravitational potential wells.
 
-To eliminate redundant inter-block synchronization, we also formulate an unsplit seven-point harmonic filter advancing all three axes in a single pass with isotropic face conductance $\sigma_{d\pm}$ and coupling parameter $\kappa$:
-\begin{equation}\label{eq:unsplit_mcons}
-\begin{aligned}
-q_c^{\rm new} = q_c + \frac{\kappa}{\sqrt{\gamma}_c \Delta V_c}\sum_{d=1}^{3}
-\Big[&\sigma_{d+}\Delta V_{d+}(q_{c+\hat{e}_d} - q_c) \\
-&- \sigma_{d-}\Delta V_{d-}(q_c - q_{c-\hat{e}_d})\Big],
-\end{aligned}
+Each directional pass exchanges ghosts and fluxes three times per pass. To eliminate redundant synchronization and skip empty exterior vacuum regions, we also formulate an unsplit seven-point harmonic filter advancing all three axes in one communication round,
+\begin{equation}\label{eq:mcons_unsplit}
+q_c^{\rm new} = q_c + \frac{1}{\sqrt{\gamma}_c}\sum_{d=1}^{3} \frac{F_{c+1/2}^{(d)} - F_{c-1/2}^{(d)}}{\Delta x_d},
 \end{equation}
-which cuts ghost-cell and flux-boundary exchanges threefold and skips empty vacuum blocks using an active-block mask and cached metric determinant. Unconditional positivity holds for $\kappa \le 1/12$ (since $\sigma_{d\pm} \le 2\sqrt{\gamma}_c$ bounds the diagonal weight above $1 - 12\kappa \ge 0$), preserving exact constant states ($0.00$), self-adjointness ($1.43 \times 10^{-16}$), rotational isotropy ($2.22 \times 10^{-16}$), and two-level adaptive conservation ($5.11 \times 10^{-16}$) as verified in Fig.~\ref{fig:iter3_mcons}. Its dispersion factor $1 - 4\kappa\sum_d \sin^2(k_d\Delta x/2)$ illustrates an algorithmic trade-off: at matched second moment ($\kappa = 1/6$ or $n_{\rm f}=2\text{--}3$ passes at $\kappa = 1/12$), unsplit filtering yields $2\times\text{--}3.2\times$ higher GPU throughput on static-metric and high-PPC ($10^5$) runs, whereas directional $w_1 = 1/4$ sweeps completely annihilate axis-aligned Nyquist modes $(\pi,0,0)$ in a single pass where $\kappa = 1/12$ retains factor $2/3$.
+combined with an active-block flag masking vacuum blocks whose active plus ghost zones vanish and caching nodal values of $\sqrt{\gamma}_c$ across passes. Across coarse-fine AMR block boundaries, only the six exterior block-boundary flux slabs per active block are communicated and refluxed—avoiding full-volume flux arrays and saving substantial device memory.
+
+Let $\langle u, v\rangle_\gamma \equiv \sum_c \sqrt{\gamma}_c \Delta V_c\,u_c v_c$ define the proper-volume inner product on the discrete leaf mesh. By direct summation and algebraic bounds, every pass of both the directional and unsplit harmonic conservative filter satisfies four discrete invariants simultaneously on arbitrary curved and adaptive metrics:
+\begin{enumerate}
+\item \emph{Exact constant-state fixed point}: any uniform physical equilibrium $q_c \equiv q_0$ renders $q_{c+1} - q_c \equiv 0$, so every face flux vanishes and $q_c^{\rm new} = q_c$ holds to zero rounding error.
+\item \emph{Machine-precision proper-volume conservation across AMR}: weighting the unsplit harmonic update (or each sweep of the directional update) by $\sqrt{\gamma}_c \Delta V_c$ yields
+\begin{multline}\label{eq:mcons_telescoping}
+\sum_{c} \sqrt{\gamma}_c\, q_c^{\rm new} \Delta V_c \\
+= \sum_{c} \sqrt{\gamma}_c\, q_c \Delta V_c + \sum_{\rm faces} \bigl(F_{\rm fine} - F_{\rm coarse}\bigr)\,\Delta A_{\rm face}.
+\end{multline}
+Adaptive boundary flux matching replaces each coarse face flux with the area-summed fine face fluxes before updating adjacent cells, cancelling every interior pair identically and preserving the conservation identity to rounding precision.
+\item \emph{Self-adjointness and $L^2(\sqrt{\gamma}\,\dd V)$ contractivity}: because the conductance $\sigma_{c+1/2} = \sigma_{c+1/2}^T$ is strictly symmetric and nonnegative, writing one pass as $q^{\rm new} = (I - L_\kappa) q$ yields
+\begin{align}\label{eq:self_adjoint}
+\langle u,\, L_\kappa v\rangle_\gamma &= \kappa \sum_{\rm faces} \sigma_{\rm face}\frac{\Delta V_{\rm face}}{\Delta x_{\rm face}}(u_+ - u_-)(v_+ - v_-) \nonumber\\
+&= \langle L_\kappa u,\, v\rangle_\gamma.
+\end{align}
+Thus $L_\kappa$ is self-adjoint and positive semidefinite for $\kappa \ge 0$, guaranteeing monotonic $L^2(\sqrt{\gamma}\,\dd V)$ energy smoothing whenever $\lambda_{\max}(L_\kappa) \le 2$.
+\item \emph{Unconditional pointwise positivity}: for any $\sqrt{\gamma}_c, \sqrt{\gamma}_n > 0$, the harmonic mean obeys the sharp bound $\sigma_{c\pm 1/2} = 2\sqrt{\gamma}_c\sqrt{\gamma}_n/(\sqrt{\gamma}_c + \sqrt{\gamma}_n) < 2\sqrt{\gamma}_c$ regardless of how steeply $\sqrt{\gamma}$ jumps at a black hole puncture (whereas arithmetic averaging $\frac{1}{2}(\sqrt{\gamma}_c+\sqrt{\gamma}_n)$ grows unbounded relative to $\sqrt{\gamma}_c$). Consequently, in each cell update $q_c^{\rm new} = \bigl[1 - \kappa\sum_{\rm nb}\sigma_{c,\rm nb}/\sqrt{\gamma}_c\bigr]q_c + \kappa\sum_{\rm nb}(\sigma_{c,\rm nb}/\sqrt{\gamma}_c)q_{\rm nb}$, the off-diagonal weights are nonnegative and the diagonal coefficient is strictly bounded below by $1 - 4\kappa$ for each one-dimensional sweep ($1 - 12\kappa$ for the three-dimensional seven-point stencil). Pointwise positivity $q_c \ge 0 \implies q_c^{\rm new} \ge 0$ holds unconditionally for $\kappa \le 1/4$ (directional) and $\kappa \le 1/12$ (unsplit).
+\end{enumerate}
+The dispersion factor of the unsplit filter, $\widehat{F}_{\rm uns}(k) = 1 - 4\kappa\sum_{d=1}^3 \sin^2(k_d\Delta x/2)$, reveals an informative trade-off (Fig.~\ref{fig:iter3_mcons}): at the unconditional positivity bound $\kappa = 1/12$, unsplit filtering retains factor $2/3$ at axis-aligned Nyquist modes $(\pi/\Delta x, 0, 0)$ (reaching zero in one pass at matched second moment $\kappa = 1/6$ or across two passes at $\kappa = 1/12$), whereas directional $w_1 = 1/4$ sweeps annihilate axis Nyquist modes in one pass at three times the inter-block communication cost.
 
 \begin{figure}[tbp]
 \centering
 \includegraphics[width=\columnwidth]{figures/fig_iter3_mcons_diagnostics.pdf}
 \caption{\label{fig:iter3_mcons}%
-Self-adjoint metric-weighted conservative filter properties on curved and adaptive meshes (Sec.~\ref{sec:method_filter}). Directional ($w_1 = 1/4$) and unsplit seven-point harmonic ($\kappa \le 1/12$) formulations both enforce constant preservation, machine-precision proper-volume conservation across refinement boundaries, and positivity.}
+Self-adjoint harmonic conservative filter verification on curved adaptive meshes. Both directional ($\kappa = 1/4$) and unsplit seven-point ($\kappa \le 1/12$) schemes enforce exact constant states, machine-precision proper-volume conservation across refinement jumps, self-adjointness, and positivity.}
 \end{figure}
 
-\subsection{Quintic metric reconstruction and multi-rate subcycling}\label{sec:method_quintic_multirate}
+\subsection{Causal stage-accurate spacetime coupling and multi-rate subcycling}\label{sec:method_coupling}
 
-High-order symplectic particle integration exposes spatial metric interpolation error once temporal drift falls below $\sim 10^{-12}$. Replacing four-point cubic Hermite interpolation with a zero-overhead $C^2$ six-node quintic Hermite stencil (within the standard four ghost-cell width $n_g = 4$) eliminates the $\mathcal{O}(\Delta x^3)$ gradient discontinuity without allocating auxiliary B-spline coefficient arrays, saving $2.38\,\mathrm{GiB}$ of device memory on $6$-level Kerr grids while tightening static-mesh orbit errors by two to three orders of magnitude.
+Standard staggered particle-mesh coupling holds matter sources $(E, S_i, S_{ij})$ frozen at $t^n$ throughout all Runge--Kutta stages advancing Z4c from $t^n$ to $t^{n+1}$. Rescaling frozen physical fields by $1/\sqrt{\gamma^{(s)}}$ via static step densitization removes only metric volume-element expansion while leaving true physical transport ($\partial_t(\sqrt{\gamma}E) \ne 0$) unrepresented across stages, injecting an $\mathcal{O}(\Delta t)$ phase and amplitude bias into dynamical collapses.
 
-For full $3+1$ self-gravitating evolution, throughput is governed equally by Z4c right-hand-side evaluations and conservative filter sweeps. Pairing continuous first-order proper-time integration (Scheme~A) with the three-stage strong-stability-preserving Z4c integrator (\texttt{rk3}) raises the stable CFL limit from $\nu_{\rm CFL} = 0.25$ (\texttt{rk4}) to $\nu_{\rm CFL} = 0.40\text{--}0.45$, while multi-rate kinetic subcycling advances particles once per macro-step of stride $s_{\rm m}$ using three-level quadratic metric reconstruction across substeps. Coupled linear-wave kernel tests confirm second-order accuracy ($p = 1.98$ under multi-rate \texttt{rk3} and \texttt{rk4}, vs $p = 0.99$ under frozen metrics) while cutting coupled GPU time to solution by $2.2\times\text{--}2.95\times$.
+We remove this coupling bias through causal stage-accurate source reconstruction evaluated solely on active interior cells. From the two most recent conservative source deposits converted to coordinate densities $U_{\rm den} \equiv \sqrt{\gamma}\,(E, S_i, S_{ij})$, the matter step records an interior base array $d_0 = U_{\rm den}^n$ and a temporal increment or coordinate-time rate $d_1$:
+\begin{equation}\label{eq:stagea_slope}
+d_1 =
+\begin{cases}
+\displaystyle \min\!\left(\frac{\Delta t_{\rm next}}{\Delta t},\, 2\right)\bigl(U_{\rm den}^n - U_{\rm den}^{n-1}\bigr), & s_{\rm m} = 1, \\[10pt]
+\displaystyle \frac{U_{\rm den}^n - U_{\rm den}^{n-s_{\rm m}}}{\Delta t_{\rm matter}}, & s_{\rm m} > 1,
+\end{cases}
+\end{equation}
+where $s_{\rm m}$ denotes the multi-rate matter stride and $\Delta t_{\rm matter}$ spans the preceding macro-step. Inside Z4c right-hand-side evaluation at Runge--Kutta stage $s$ with Butcher abscissa $c_s$ and elapsed subcycle offset $\tau$, linear causal reconstruction forms
+\begin{equation}\label{eq:stagea_recon}
+D^{(s)} = d_0 + \theta_{\rm lim}\,\delta_s\,d_1, \qquad
+\delta_s =
+\begin{cases}
+c_s, & s_{\rm m} = 1, \\
+\tau + c_s \Delta t, & s_{\rm m} > 1,
+\end{cases}
+\end{equation}
+before dividing each reconstructed component by the local stage volume element $\sqrt{\gamma^{(s)}}$. Here $\theta_{\rm lim} \in [0, 1]$ is a pointwise causal stage limiter initialized at unity, clamped first to prevent negative energy density ($D_E^{(s)} \ge 0$), and halved at most five times whenever extrapolated momentum violates the normal-observer light-cone bound $\gamma^{(s),ij} D_{S_i}^{(s)} D_{S_j}^{(s)} \le (1 + 10^{-12})(D_E^{(s)})^2$. Eliminating $\mathcal{O}(\Delta t)$ frozen-matter stage lag restores clean second-order coupled convergence and allows replacing the four-stage RK4 spacetime integrator with three-stage SSP-RK3 at Courant numbers $\nu_{\rm CFL} = 0.40\text{--}0.45$. Under multi-rate subcycling ($s_{\rm m} > 1$), Z4c advances through $s_{\rm m}$ fine steps per particle push—automatically synchronizing at output limits and adaptive-mesh check intervals—while kinetic trajectories reconstruct stage metrics across the full macro-step via the three-level time weights.
 
-\subsection{Task-list modularization and GPU kernel layout}\label{sec:method_gpu}
+\subsection{Deterministic sampling and collisional kinetic closures}\label{sec:method_closures}
 
-Both kinetic branches execute within an explicit modular task list inside AthenaK: step preparation, three-level metric synchronization, fourth-order geodesic or continuum finite-volume advance, Cell-BGK relaxation, lapse excision, metric-weighted deposit filtering with adaptive boundary refluxing, and Z4c source injection. Boundary-only reflux storage shrinks GPU filter memory by $6{,}064\,\mathrm{MiB}$ on adaptive collapse grids, while active-basis template specialization ($N_b \in \{1, 2, 4, 8\}$), mean-$\bar{h}$ spatial hash binning with symmetric gather-scatter neighbor lists, and compact plain-old-data kernel pointer packing eliminate register spills, constant-memory launch stalls, and quadratic neighbor scaling under strong shear without altering physical equations.
+To suppress $\Nppc^{-1/2}$ sampling noise at fixed particle budget $N$ while covering arbitrary optical depth $\sigma/\mu_p \in [0, \infty)$, the formulation pairs symmetry-exact quasi-Monte Carlo and deterministic cubature sampling with two complementary collisional discretizations.
+
+\subsubsection{Symmetry-exact QMC initialization and Stroud cubature}
+
+Self-gravitating initial distributions draw spatial coordinates from five-dimensional randomized or scrambled low-discrepancy Sobol sequences~\cite{Sobol:1967} combined with radial rank stratification and exact discrete velocity-space symmetries ($N = N_s Q$):
+\begin{enumerate}
+\item \emph{Antipodal four-tuple pairing} ($Q = 4$): placing $\{(\pm\bm{x}, \pm\bm{u})\}$ at each of $N_s = N/4$ stratified draws enforces zero center-of-mass offset, zero total linear momentum $\bm{P}$, zero angular momentum $\bm{J}$, and vanishing local normal-observer momentum density $S_i$ algebraically to rounding precision while preserving isotropic velocity moments.
+\item \emph{Spherical Lebedev and platonic shells} ($Q \in \{6, 12, 14, 26\}$): octahedral ($Q=6$), regular icosahedral ($Q=12$), and Lebedev--Laikov $O_h$ shells ($Q=14$, exact to degree $\ell = 5$; $Q=26$, exact to $\ell = 7$)~\cite{Lebedev:1976} satisfy $\sum_q w_q (\sqrt{3}\hat{\bm{n}}_q)(\sqrt{3}\hat{\bm{n}}_q)^T = \bm{I}_3$, reducing local stress-tensor anisotropy to machine precision at each spatial site.
+\item \emph{Discrete point-group reflections}: homogeneous dust spheres adopt $24$-fold $O_h$ cubic symmetry ($Q_{xx}=Q_{yy}=Q_{zz}$), while axisymmetric prolate spheroids adopt $16$-fold $(x \leftrightarrow y)$ octant reflections matching axial and equatorial quadrupole moments identically.
+\end{enumerate}
+When initializing from continuum velocity-basis elements with mean $\bar{\bm{u}}_{a,\alpha}$ and symmetric covariance $\Sigma_{a,\alpha} = \bm{L}_{a,\alpha}\bm{L}_{a,\alpha}^T$ in the collisionless limit $\sigma/\mu_p = 0$, each populated basis expands into $Q_{\rm SCP}$ deterministic symplectic cubature packets~\cite{Stroud:1971},
+\begin{equation}\label{eq:scp_map}
+\bm{u}_{a,\alpha,q} = \bar{\bm{u}}_{a,\alpha} + \bm{L}_{a,\alpha}\bm{R}_{a,\alpha}\bm{\xi}_q, \qquad m_{a,\alpha,q} = m_{a,\alpha} w_q,
+\end{equation}
+using fifth-degree 14-point top-hat or Gaussian rules $(\bm{\xi}_q, w_q)$ rotated locally by Halton-quaternion matrices $\bm{R}_{a,\alpha} \in \mathrm{SO}(3)$~\cite{Halton:1960} (or collapsing automatically to $Q_{\rm SCP} = 1$ in cold streams).
+
+\subsubsection{Moving-finite-volume velocity bases and AP Riemann flux}
+
+In collisional continuum mode, $N$ Lagrangian elements $\bm{x}_a(t)$ carry effective coordinate volumes $V_a = \bar{n}_a^{-1}$ set by a cubic-spline smoothing kernel $W(\bm{r}, h_a)$ with $h_a^3 \bar{n}_a = 1$, forming regularized coordinate moment tensors $\bm{E}_a = \sum_c (\bm{x}_{ca}\otimes\bm{x}_{ca})W(\bm{x}_{ca},h_a)$ and exact antisymmetric face area covectors~\cite{Hopkins:2015mfc,Hopkins:2026lbv},
+\begin{multline}\label{eq:mfm_faces}
+A_{ab,i} = V_a\bigl(\bm{E}_a^{-1}\bm{x}_{ba}\bigr)_i W(\bm{x}_{ba}, h_a) \\
++ V_b\bigl(\bm{E}_b^{-1}\bm{x}_{ba}\bigr)_i W(\bm{x}_{ba}, h_b) = -A_{ba,i}.
+\end{multline}
+Within each basis $\alpha$, conserved moments $(m_{a,\alpha}, P_{a,\alpha,i}, \Pi_{a,\alpha,ij}) = V_a\int f_{a,\alpha}(1, u_i, u_i u_j)\,\dd^3 u$ recover density $D_{a,\alpha}$, mean momentum $\bar{u}_{a,\alpha,i}$, and covariance $\Sigma_{a,\alpha,ij}$, guarded during gradient limiting by fast Sylvester minor checks with full eigendecomposition reserved for near-singular matrices. Cholesky orthonormalization maps reconstructed moments onto a normal-observer face triad aligned with $\hat{e}_{(1)}^i \propto \gamma_f^{ij}A_{ab,j}$ and invariant face area $\|A_{ab}\|_f = (\gamma_f^{ij}A_{ab,i}A_{ab,j})^{1/2}$. Integrating over incoming velocities $u_{(1)}/W > \beta_F$ defines the boosted one-sided kinetic flux~\cite{Hopkins:2026lbv},
+\begin{multline}\label{eq:onesided_flux}
+\bm{F}_{a,\alpha\to b}^{\rm kin} = \alpha_f \|A_{ab}\|_f \!\int_{\frac{u_{(1)}}{W} > \beta_F}\!\left(\frac{u_{(1)}}{W} - \beta_F\right) \\
+\times \begin{pmatrix} 1 & u_{(m)} & u_{(m)}u_{(n)} & W \end{pmatrix}^{\!T} f_{a,\alpha}\,\dd^3 u,
+\end{multline}
+reduced via analytical parallel antiderivatives on transverse Gauss--Legendre nodes. The Lagrangian face velocity $\beta_F \in (-1, 1)$ solves zero net mass transfer $\Phi(\beta_F) \equiv \sum_\alpha F_{m,a,\alpha\to b}^{\rm kin}(\beta_F) - \sum_\beta F_{m,b,\beta\to a}^{\rm kin}(-\beta_F) = 0$ via safeguarded analytical Newton iterations, bases pair across faces by minimum boosted dispersion distance, and total intercell fluxes blend exponentially by optical depth into a Synge relativistic HLLC Riemann solver~\cite{Mignone:2005ns} supplemented by harmonic Noh thermal conduction~\cite{Noh:1987}:
+\begin{align}\label{eq:ap_blend}
+\bm{F}_{ab} &= w_c \bm{F}_{ab}^{\rm kin} + (1 - w_c)\bm{F}_{ab}^{\rm HLLC}, \nonumber\\
+w_c &= \exp\!\left(-\frac{\Delta x_{\rm prop} D_f}{\sqrt{\gamma_f}}\frac{\sigma}{\mu_p}\right).
+\end{align}
+
+\subsubsection{Conservative Cell-BGK packet collisions and Gamma-mixture sampler}
+
+To bridge collisionless and hydrodynamic limits inside the packet representation itself at $\mathcal{O}(1)$ cost per step regardless of optical depth, our Cell-BGK operator hashes packets into subcells of proper volume $\sqrt{\gamma}_c V_c$. Summing rest mass $M_c = \sum_{p\in c} m_p$, normal-observer energy $E_c$, and orthonormal triad momentum $\bm{P}_c$ gives the invariant mass $M_{\rm inv} = \sqrt{E_c^2 - |\bm{P}_c|^2} > M_c$ and mean comoving Lorentz factor $\bar{W}_{\rm com} = M_{\rm inv}/M_c$, from which safeguarded Newton inversion of the Synge equation of state determines dimensionless temperature $\theta$. Each packet relaxes into the local thermal equilibrium with probability $p_{\rm coll} = 1 - e^{-\tau_{\rm coll}}$, where $\tau_{\rm coll} = M_c (\sigma/\mu_p) v_{\rm mol}(\theta)\alpha\Delta t / (V_c U_0^2)$ with bulk Lorentz factor $U_0 = E_c / M_{\rm inv}$.
+
+Relaxing packets draw isotropic comoving kinetic energies $x = W - 1 \ge 0$ from the exact Maxwell--J\"uttner energy distribution $f_{\rm MJ}(x) \propto x^{1/2}(1+x)\sqrt{2+x}\,e^{-x/\theta}$ via a three-component Gamma-mixture majorant envelope valid globally across all $\theta > 0$:
+\begin{equation}\label{eq:mj_majorant}
+h(x) = \left(\sqrt{2}\,x^{1/2} + 2\,x^{3/2} + x^2\right)e^{-x/\theta}.
+\end{equation}
+Setting $t = \sqrt{x} \ge 0$ proves $h(x) \ge x^{1/2}(1+x)\sqrt{2+x}\,e^{-x/\theta}$ algebraically by squaring the positive polynomial factors:
+\begin{multline}\label{eq:mj_proof}
+\left(\sqrt{2} + 2t^2 + t^3\right)^2 - (1 + t^2)^2(2 + t^2) \\
+= (4\sqrt{2} - 5)t^2 + 2\sqrt{2}\,t^3 + 4t^5 \ge 0,
+\end{multline}
+because $4\sqrt{2} - 5 > 0.65 > 0$. Components are sampled directly from $\mathrm{Gamma}(3/2,\theta)$, $\mathrm{Gamma}(5/2,\theta)$, and $\mathrm{Gamma}(3,\theta)$ in exact weight ratios $1 : \frac{3}{\sqrt{2}}\theta : \sqrt{\frac{8}{\pi}}\theta^{3/2}$ with acceptance efficiency exceeding sixty-five percent from cold nonrelativistic gas through ultrarelativistic plasmas. Because finite samples $\bm{q}_p^*$ draw from the continuous distribution with residual variance, an exact three-step convex momentum projection restores cell four-momentum to rounding precision for arbitrary unequal packet weights $m_p$: (1) subtract sample comoving drift $\bm{q}_p^* \leftarrow \bm{q}_p^* - (\sum_{p'\in c} m_{p'}\bm{q}_{p'}^*)/M_c$; (2) rescale $\bm{q}_p^* \leftarrow s\bm{q}_p^*$ by the unique positive root $s > 0$ of the strictly convex monotone equation
+\begin{equation}\label{eq:proj_convex}
+F(s) = \sum_{p\in c} m_p \sqrt{1 + s^2 |\bm{q}_p^*|^2} = M_{\rm inv},
+\end{equation}
+solved by Newton--bisection from $F(0) = M_c < M_{\rm inv}$; and (3) Lorentz-boost $s\bm{q}_p^*$ back by $U_{\rm cm}^{\hat{\mu}} = (E_c, \bm{P}_c)/M_{\rm inv}$.
+
+\subsection{Initial-data solver, adaptive mesh, excision, and diagnostics}\label{sec:method_numerical}
+
+End-to-end self-gravitating evolutions pair constraint-satisfying elliptic initial data with adaptive curvature tracking, black-hole excision, and gauge-invariant diagnostics.
+
+\subsubsection{Coupled puncture-split Bowen--York and matter constraint solver}
+
+General initial configurations superposing spinning or boosted Bowen--York black-hole punctures~\cite{Bowen:1980yu} alongside moving massive particles require self-consistent solutions of both the Hamiltonian and momentum constraints on the conformally flat trial slice $\gamma_{ij} = \psi^4\delta_{ij}$, $K_{ij} = \psi^{-2}\bar{A}_{ij} + \frac{1}{3}\psi^4\delta_{ij}K$. Writing $\psi = \psi_s + u$ with analytic Brill--Lindquist singular potential $\psi_s(\bm{x}) = 1 + \sum_c m_c/(2|\bm{x}-\bm{x}_c|)$ for bare puncture masses $m_c$, and decomposing the conformal extrinsic curvature as $\bar{A}_{ij} = \bar{A}_{ij}^{\rm BY} + \bar{A}_{ij}^{(t)} + (\mathbb{L}W)_{ij}$ using the divergence-free Bowen--York curvature $\bar{A}_{ij}^{\rm BY}$ and longitudinal operator $(\mathbb{L}W)_{ij} \equiv \partial_i W_j + \partial_j W_i - \frac{2}{3}\delta_{ij}\partial_k W^k$, yields the coupled puncture-split constraint system:
+\begin{align}\label{eq:idsolve_system}
+\nabla_{\rm flat}^2 u &= -\frac{1}{8}\psi^{-7}\bar{A}_{ij}\bar{A}^{ij} + \frac{1}{12}\psi^5 K^2 \nonumber\\
+&\quad - 2\pi\psi^5 E[\psi, \bm{W}], \nonumber\\
+\nabla_{\rm flat}^2 W_i + \frac{1}{3}\partial_i\partial_j W^j &= 8\pi\psi^6 S_i[\psi] \nonumber\\
+&\quad + \frac{2}{3}\psi^6\partial_i K - \partial_j\bar{A}^{(t)}_{ij},
+\end{align}
+where $E$ and $S_i$ are evaluated directly using the simulation's own particle cloud and harmonic filter. In the scalar equation, outer Newton steps solve $(-\nabla_7^2 + \sigma)\delta u = F_\psi$ with Jacobian coefficient $\sigma = \frac{7}{8}\psi^{-8}\bar{A}^2 + \frac{5}{12}\psi^4 K^2 + 2\pi\psi^4 E$ via conjugate gradients or BiCGStab preconditioned by geometric multigrid. In the vector equation, preconditioned Richardson updates $W_i \leftarrow W_i - \omega P^{-1} F_i$ apply the exact continuum Schur--Helmholtz preconditioner $P^{-1}\bm{F} = \nabla_{\rm flat}^{-2}\bigl[\bm{F} - \frac{1}{4}\nabla\nabla_{\rm flat}^{-2}(\nabla\cdot\bm{F})\bigr]$ at relaxation weight $\omega = 6/7$. Exterior boundaries apply multipole Robin asymptotics up to spherical degree $\ell_{\max} = 4$ (capturing directional $1/r$ Bowen--York angular asymptotics $W_i = -(7P_i + n_i n\cdot P)/(4r)$), while cells inside a prescribed puncture radius switch smoothly from discrete Z4c constraint monitors to compact seven-point stencil residuals. Simpler time-symmetric ($K_{ij} = 0$) collapse models use closed-form or radial Poisson superpositions detailed in Appendix~\ref{app:sampling}.
+
+\subsubsection{Octree adaptive mesh refinement}
+
+AthenaK organizes the domain as a block-structured octree splitting cubic blocks recursively into eight child blocks~\cite{2020ApJS..249....4S,2026ApJS..283...27S}. Dynamic refinement tracks the scalar monitor $q_{\rm AMR} = \alpha\chi^{-7/4}$ via the L\"ohner second-difference refinement indicator~\cite{1987CMAME..61..323L,Wu:2026nrpic},
+\begin{align}\label{eq:refinement_indicator}
+\varepsilon_i^2 &= \frac{\sum_{a,b=1}^{3} \bigl(\Delta_a q_{i+\bm{\iota}_b} - \Delta_a q_{i-\bm{\iota}_b}\bigr)^2}{\sum_{a,b=1}^{3} \bigl(|\Delta_a q_{i+\bm{\iota}_b}| + |\Delta_a q_{i-\bm{\iota}_b}| + \epsilon_0 q_{ab,i} + \delta_0\bigr)^2}, \nonumber\\
+q_{ab,i} &= \sum_{\sigma,\tau=\pm 1} \bigl|q_{i+\sigma\bm{\iota}_a+\tau\bm{\iota}_b}\bigr|,
+\end{align}
+writing $q_i \equiv q_{{\rm AMR},\,i}$ with centered difference $\Delta_a f_i = f_{i+\bm{\iota}_a} - f_{i-\bm{\iota}_a}$ along unit axis step $\bm{\iota}_a$, filter parameter $\epsilon_0 = 0.01$, and floor $\delta_0 = 10^{-99}$. Prescribed inner zones or moving puncture trackers guarantee minimum local refinement levels, and blocks refine above $\max_i \varepsilon_i = 0.2$ and derefine below $0.02$.
+
+\subsubsection{Excision, horizon tracking, curvature scalars, and waveforms}
+
+Particles trapped inside black holes are removed when local lapse drops below a cutoff $\alpha(t^n, \bm{x}_p^n) < \aexc$~\cite{Rosswog:2023nnl,Wu:2026nrpic} or when trajectories enter a fraction ($0.8\text{--}0.85$) of the minimum coordinate radius of a dynamically located apparent horizon. Pseudospectral FastFlow searches~\cite{Gundlach:1997us,Zhu:2024utz} locate apparent horizons by differentiating an eight-point Lagrange interpolant of ghost-filled metric blocks directly on trial spheres (avoiding unfilled block-edge finite-difference noise), returning irreducible mass $M_{\rm AH}$ and dimensionless spin $\chi_{\rm AH} = J / M_{\rm AH}^2$. Independent quasilocal checks evaluate the Misner--Sharp mass,
+\begin{equation}\label{eq:misner_sharp}
+M_{\rm MS} = \frac{R}{2}\bigl(1 - \gamma^{ij}\partial_i R\,\partial_j R + R^2 K_T^2\bigr),
+\end{equation}
+from areal radius $R$ and tangential extrinsic curvature $K_T$, alongside the central proper time $\tau_c(t) = \int_0^t \alpha_c(t')\,\dd t'$, the gauge-invariant Kretschmann decomposition~\cite{Wu:2026nrpic},
+\begin{align}\label{eq:kretschmann}
+I &= G_{ijkl}G^{ijkl} - 4 C_{ijk}C^{ijk} + 4 Z_{ij}Z^{ij}, \nonumber\\
+G_{ijkl} &= {}^{(3)}R_{ijkl} + K_{ik}K_{jl} - K_{il}K_{jk}, \nonumber\\
+C_{ijk} &= D_i K_{jk} - D_j K_{ik}, \nonumber\\
+Z_{ij} &= {}^{(3)}R_{ij} + K K_{ij} - K_{ik}K^k{}_j \nonumber\\
+&\quad - 8\pi\left[S_{ij} - \frac{1}{2}\gamma_{ij}(S - E)\right],
+\end{align}
+and outgoing multipolar gravitational waveforms $\Psi_4^{\ell m}$ extracted on coordinate spheres~\cite{Bishop:2016lgv}. All particle, finite-volume, filter, and elliptic kernels execute portably across multicore processors and graphics accelerators via Kokkos~\cite{2022ITPDS..33..805T,2026ApJS..283...27S} using template-specialized basis loops, spatial hashing, and compact pointer structures.

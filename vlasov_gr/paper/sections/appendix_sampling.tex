@@ -1,0 +1,54 @@
+\section{Initial data, cubature rules, and deterministic sampling}\label{app:sampling}
+
+Coupled Einstein--Vlasov evolutions require constraint-satisfying initial slices paired with low-noise phase-space representations. Time-symmetric self-gravitating initial data ($K_{ij} = 0$, $\beta^i = 0$) with conformally flat three-metric $\gamma_{ij} = \psi^4\delta_{ij}$ superpose flat-space Poisson potentials $u_c(\bm{x})$ around component centers $\bm{x}_c$ at isotropic distance $\rbar_c = |\bm{x} - \bm{x}_c|$~\cite{Wu:2026nrpic}:
+\begin{align}\label{eq:app_superposition}
+\psi(\bm{x}) &= 1 + \sum_c u_c(\bm{x}), \qquad
+\nabla_{\rm flat}^2 u_c = -2\pi\tilde{\rho}_c, \nonumber\\
+E &= \psi^{-5}\sum_c \tilde{\rho}_c.
+\end{align}
+Four component families enter the superposition: tabulated spherical equilibrium envelopes interpolated outside the surface onto $u_c = m_c/(2\rbar_c)$, vacuum Bowen--York black-hole punctures of bare mass $m_c$ evaluating $u_c = m_c/(2\rbar_c)$ directly, spherical Gaussian clouds of conformal mass $m_c$ and width $\sigma_c$,
+\begin{align}\label{eq:app_gaussian}
+\tilde{\rho}_c(\rbar_c) &= \frac{m_c}{(2\pi\sigma_c^2)^{3/2}}e^{-\rbar_c^2/(2\sigma_c^2)}, \nonumber\\
+u_c(\rbar_c) &= \frac{m_c}{2\rbar_c}\operatorname{erf}\!\left(\frac{\rbar_c}{\sqrt{2}\,\sigma_c}\right),
+\end{align}
+and homogeneous prolate spheroids of ADM mass $M$, polar semi-axis $b$ along $z$, eccentricity $e$, equatorial semi-axis $a_{\rm eq} = b\sqrt{1-e^2}$, and focal half-distance $d_{\rm f} = eb$~\cite{Shapiro:1991zza,Yoo:2016kzu}:
+\begin{align}\label{eq:app_spheroid}
+\tilde{\rho}_c &= \frac{3M}{4\pi a_{\rm eq}^2 b}, \nonumber\\
+u_c &= \frac{3M}{8}\Bigl[I_0 - (x^2+y^2)J_{\rm eq} - z^2 J_z\Bigr], \nonumber\\
+I_0(\lambda) &= \frac{2}{d_{\rm f}}\operatorname{arctanh}\!\left(\frac{d_{\rm f}}{\sqrt{b^2+\lambda}}\right), \nonumber\\
+J_{\rm eq}(\lambda) &= \frac{\sqrt{b^2+\lambda}}{d_{\rm f}^2(a_{\rm eq}^2+\lambda)} - \frac{I_0}{2d_{\rm f}^2},
+\end{align}
+with $J_z(\lambda) = [I_0(\lambda) - 2(b^2+\lambda)^{-1/2}]/d_{\rm f}^2$, where $\lambda = 0$ inside $(x^2+y^2)/a_{\rm eq}^2 + z^2/b^2 \le 1$ and $\lambda > 0$ solves $(x^2+y^2)/(a_{\rm eq}^2+\lambda) + z^2/(b^2+\lambda) = 1$ outside. Cold Oppenheimer--Snyder dust of areal radius $R_0$ and mass $M$ initializes isotropic radius $\rbar_0 = \frac{R_0}{2}(1 - M/R_0 + \sqrt{1 - 2M/R_0})$ with interior profile $\psi(\rbar) = \sqrt{(1 + \sqrt{1-2M/R_0})\rbar_0 R_0^2/(2\rbar_0^3 + M\rbar^2)}$~\cite{Staley:2011ss}, where $O_h$ cubic lattice particle masses apply a boundary-shell rescaling so $\sum_p m_p$ matches continuum rest mass $M_0$ exactly.
+
+Relativistic monoenergetic clusters~\cite{1985ApJ...298...34S} occupy a single conserved Killing energy $\Egeo = \alpha_{\rm s} = \sqrt{1 - 2M/R}$ integrated from dimensionless radial ODEs parameterized by central redshift label $y_c \in (0, 1)$, $\zeta = (1-y_c)/3$, and $g_y(y) = (y^{-1}-1)/(y_c^{-1}-1)$:
+\begin{align}\label{eq:app_structure}
+\frac{\dd y}{\dd\tilde{r}} &= \frac{2\zeta y}{\tilde{r}^2}\frac{\tilde{m} + \zeta\tilde{r}^3(y/y_c)^{-1/2}g_y^{3/2}}{1 - 2\zeta\tilde{m}/\tilde{r}}, \nonumber\\
+\frac{\dd\tilde{m}}{\dd\tilde{r}} &= \tilde{r}^2\left(\frac{y}{y_c}\right)^{\!-3/2}g_y^{1/2}, \nonumber\\
+\frac{\dd\tilde{m}_0}{\dd\tilde{r}} &= \frac{\tilde{r}^2 y_c^{1/2}(y/y_c)^{-1}g_y^{1/2}}{\sqrt{1 - 2\zeta\tilde{m}/\tilde{r}}}, \qquad
+\frac{\dd\ln\rbar}{\dd\ln\tilde{r}} = \frac{1}{\sqrt{1 - 2\zeta\tilde{m}/\tilde{r}}},
+\end{align}
+recovering $u_{\rm eq}(\rbar) = \sqrt{\alpha_{\rm s}^2/\alpha_{\rm eq}(\rbar)^2 - 1}$ with $u_{i,p} = \psi_{\rm eq}(\rbar_p)^2 u_{\rm eq}(\rbar_p)\hat{u}_{i,p}$. Composite two-overdensity runs superpose two Gaussian clouds on circular orbital velocity $v_{\rm orb}^2 = m_{\rm g}(d_{\rm orb})/d_{\rm orb} + m_c/(4d_{\rm orb})$ inside a $y_c = 0.907$ envelope~\cite{Wu:2026nrpic}.
+
+Each continuum velocity basis $(a,\alpha)$ expands into deterministic symplectic cubature packets~\cite{Stroud:1971} rotated by orthogonal matrices $\bm{R}_{a,\alpha} \in \mathrm{SO}(3)$ generated from base-$2,3,5$ Halton triplets $(h_2, h_3, h_5)$ through Shoemake's uniform unit quaternion
+\begin{multline}\label{eq:shoemake_q}
+\bm{q} = \big(\sqrt{1-h_2}\sin 2\pi h_3,\;\sqrt{1-h_2}\cos 2\pi h_3,\\
+\sqrt{h_2}\sin 2\pi h_5,\;\sqrt{h_2}\cos 2\pi h_5\big).
+\end{multline}
+Fifth-degree symmetric Stroud parameters for top-hat and Gaussian velocity bases appear in Table~\ref{tab:stroud14}, alongside the $S^2$ spherical-shell cubature weights used in collisionless and Cell-BGK simulations.
+
+\begin{table}[ht]
+\caption{\label{tab:stroud14}%
+Fifth-degree symmetric Stroud parameters for unit-covariance bases and Lebedev spherical shell weights.}
+\scriptsize
+\setlength{\tabcolsep}{3.0pt}
+\begin{ruledtabular}
+\begin{tabular}{lcccc}
+Rule / Basis & Nodes & $a, b$ & Weights & Deg. \\
+\colrule
+Stroud top-hat & $6{+}8$ & $\sqrt{\frac{19}{10}},\,\sqrt{\frac{19}{11}}$ & $\frac{40}{361},\,\frac{121}{2888}$ & $5$ \\
+Stroud Gaussian & $6{+}8$ & $\sqrt{5/2},\,\sqrt{5}$ & $4/25,\,1/200$ & $5$ \\
+Lebedev-$14$ & $6{+}8$ & unit $S^2$ & $1/15,\,3/40$ & $\ell=5$ \\
+Lebedev-$26$ & $6{+}12{+}8$ & unit $S^2$ & $\frac{1}{21},\frac{4}{105},\frac{9}{280}$ & $\ell=7$ \\
+\end{tabular}
+\end{ruledtabular}
+\end{table}

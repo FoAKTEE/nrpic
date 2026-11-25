@@ -1,4 +1,4 @@
-\documentclass[aps,prd,twocolumn,10pt,superscriptaddress,nofootinbib,longbibliography,floatfix]{revtex4-2}
+\documentclass[aps,prx,twocolumn,10pt,superscriptaddress,nofootinbib,longbibliography,floatfix]{revtex4-2}
 
 \usepackage{amsmath,amssymb,amsfonts}
 \usepackage{bm}
@@ -14,6 +14,12 @@
 \newcommand{\Ham}{\mathcal{H}}
 \newcommand{\Mom}{\mathcal{M}}
 \newcommand{\Egeo}{\mathcal{E}_{\rm geo}}
+\newcommand{\KC}{K_{\rm C}}
+\newcommand{\Et}{\tilde{E}}
+\newcommand{\Bt}{\tilde{B}}
+\newcommand{\Nppc}{N_{\rm ppc}}
+\newcommand{\lcap}{\ell_{\rm cap}}
+\newcommand{\rbar}{\bar{r}}
 
 \renewcommand{\topfraction}{0.9}
 \renewcommand{\dbltopfraction}{0.9}
@@ -34,9 +40,9 @@
 \IfFileExists{sections/conclusions.tex}{\input{sections/conclusions}}{}
 
 \appendix
+\IfFileExists{sections/appendix_sampling.tex}{\input{sections/appendix_sampling}}{}
 \IfFileExists{sections/appendix_parameters.tex}{\input{sections/appendix_parameters}}{}
 
 \bibliography{references}
 
 \end{document}
-

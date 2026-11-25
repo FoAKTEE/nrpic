@@ -1,100 +1,74 @@
-# Writing guide: Hybrid symplectic-cubature and moving-finite-volume solver for general-relativistic kinetic matter
+# Writing guide: PRX methodology paper on general-relativistic kinetic theory
 
-The per-paper layer of the paper-writing principles (Sec. 0). Sits one level above `paper/` (7.1).
+The per-paper layer of the paper-writing principles. This file and `NOTATION.md` sit one level above the manuscript directory `paper/`. Where this guide is more specific than the general principles, it governs this paper.
 
-## Journal and tone (2.8)
+## Journal and tone
 
-- Target journal: *Physical Review D* (`revtex4-2`, `aps,prd,twocolumn`).
-- Venue role: methods paper in `aps,prd`; the formulation and algorithm live in the main text, scenario parameters live in the Appendix table, and detailed error, convergence, and timing ledgers live in the Supplemental Material.
-- Tone: letter-like concision in American English, physical subjects and active verbs, zero hype, zero contrastive negations, zero trailing participial tails.
+- Target journal: Physical Review X (REVTeX 4.2, `aps,prx,twocolumn,10pt`).
+- Role of the paper: A comprehensive, self-contained methodology and validation paper written for numerical relativists, plasma and kinetic theorists, and computational astrophysicists. Every algorithmic stage carries its discrete equations, analytical conservation or regularity proofs, and domain of validity inside the main text (`system.tex` and `method.tex`).
+- Where raw numbers go: Scenario parameters, numerical discretization ledgers, and quantitative comparison metrics (runtimes, memory footprints, exact error exponents, horizon masses and spins) live cleanly in tables in the Appendices and the Supplemental Material. Main-text prose highlights physical mechanisms, scaling behavior, order-of-magnitude gains, and qualitative milestones without dense strings of inline decimals or percentages.
+- Tone: Authoritative, lucid Physical Review prose in American English. Zero hype, zero promotional adjectives, zero contrastive negation tics.
 
-## Readers (1.2)
+## Readers across PRX communities
 
-| Community | Minimum background the paper supplies |
+| Community | Minimum context the paper supplies |
 |---|---|
-| Numerical relativists (fluid or spacetime) | Lagrangian moving-finite-volume basis discretization of phase space, Maxwell-J{\"u}ttner relaxation, and deterministic cubature packets |
-| Plasma particle-in-cell practitioners | 3+1 ADM split ($\alpha$, $\beta^i$, $\gamma_{ij}$), canonical $(x^i, u_i)$ Darboux phase space, Z4c evolution, and moving-puncture gauge |
-| Astroparticle and collisional-kinetic readers | why collisionless Liouville transport admits exact symplectic packets while arbitrary mean free path needs a finite-volume Riemann solver and asymptotic-preserving HLLC blend |
+| Numerical relativists | why collisionless and collisional kinetic closures supplement fluid GRMHD; how particle clouds, B-spline weights, QMC initialization, and Cell-BGK operate on Z4c adaptive meshes |
+| Plasma and kinetic-theory practitioners | how 3+1 ADM foliations, Z4c constraint damping, moving-puncture gauges, Darboux canonical momenta, and harmonic metric-weighted refluxing generalize flat-space PIC |
+| Relativistic astrophysicists | how fourth-order symplectic integration, $C^2$ quintic metric reconstruction, and causality-limited stage coupling enable accurate strong-field photon/particle dynamics and black hole back-reaction |
 
-## Outline (2.1)
+## Outline
 
-| Level | Axis it splits along | Headings |
+| Level | Axis | Sections / Subsections |
 |---|---|---|
-| Section | Steps of the argument | Introduction; Relativistic kinetic system in 3+1 form; Hybrid phase-space algorithm; Kinetic-to-hydrodynamic transition in flat spacetime; Tidal shearing around a spinning black hole; Self-gravitating dust collapse and throughput scaling; Conclusions |
-| Subsection of Method | Regimes and kernels | Canonical basis discretization and moving finite volumes; Collisionless symplectic cubature packets; Collisional relaxation and asymptotic-preserving Riemann blend; Mesh coupling and GPU kernel structure |
-| Subsection of Results | Physical scenario | Special-relativistic convergence and advection; Collisional-to-collisionless shock transition; Warm sheared cloud on a Kerr background; Full-GR Oppenheimer-Snyder collapse; Strong throughput scaling |
+| Main sections | Argument structure | Introduction; General-relativistic kinetic system in 3+1 form; High-order symplectic, metric-conservative, and collisional algorithm; Special-relativistic convergence and optical-depth transition; Strong-field Kerr orbits, photon spheres, and static-mesh clusters; Dynamical three-plus-one collapse, massive-particle back-reaction, and end-to-end validation; Conclusions |
+| Method subsections | Cycle stage & closure | Symplectic geodesic pushers and metric time interpolation; Zero-overhead $C^2$ quintic Hermite spatial metric reconstruction; Conservative adaptive-mesh stress-energy deposition; Self-adjoint metric-weighted flux-conservative filtering; Causal stage-accurate spacetime coupling and multi-rate subcycling; Deterministic phase-space sampling and collisional closures; Initial-data constraint solvers, adaptive mesh refinement, and horizon diagnostics |
 
-Special cases entered as limits (2.2): non-relativistic Newtonian transport enters as the low-velocity weak-field limit; cold dust collapse enters as the zero-dispersion limit of warm phase-space packets; the fluid limit enters as the zero-mean-free-path asymptote of the Maxwell-J{\"u}ttner relaxation and HLLC Riemann flux blend.
+## Allowed main-text numbers
 
-## Allowed numbers (4.1)
+- Exact analytical constants and exponents: $8\pi$, $4\pi$, $1/2$, $1/3$, $1/4$, $1/12$, $1/6$, $\sqrt{3}/6$, $\psi^4$, $\psi^6$, $\chi^{-7/4}$, $\Nppc^{-1/2}$, four-tuple and $14$-point rules, fourth-order accuracy, $C^2$ regularity, two-stage Gauss--Legendre, three-stage SSP-RK3.
+- Defining physical labels and canonical testbed parameters: mass-shell parameter $\varepsilon \in \{0, 1\}$, black hole spins $a = 0.9\,M$, $0.95\,M$, and $0.999\,M$, eccentricities $e = 0.99$ and $0.999$, prograde light-ring radius $r_{\rm ph}^+$, photon-shell radius $r_{\rm sph} = 2.2\,M$, dust radius $R_0 = 5\,M$, spheroid eccentricity $e = 0.9$, equilibrium sequence labels $y_c \in \{0.900, 0.819, 0.756, 0.605, 0.500, 0.283\}$, back-reaction mass ratios $q \in \{0, 0.02, 0.05, 0.10\}$, particle budgets $N \sim 10^4\text{--}10^5$, and collisional couplings $\sigma/\mu_p \in \{0, 2, 15, 10^4\}$.
+- Detailed convergence tables, exact digit counts, hardware-timed runtimes, and memory savings reside in Appendix B tables (`appendix_parameters.tex`) and `supplement.tex`.
 
-- Exact analytic factors and powers: $1/2$, $1/3$, $\sqrt{3}$, $8\pi$, $4\pi$, $\sqrt{\gamma}$, adiabatic index bounds $4/3$ and $5/3$, fifth-order degree-$5$ cubature precision.
-- Structural integers: $6$ phase-space coordinates, $10$ covariant moments per velocity basis, $3$ spatial dimensions, $8$, $14$, and $27$ cubature nodes per packet expansion, $2$-stage second-order Runge-Kutta splitting, $4$-point cubic Hermite stencil.
-- Labels of cases: Kerr spin $a = 0.9 M$, Oppenheimer-Snyder initial areal radius $R_0 = 5 M$, collisionality parameter $\sigma / \mu_p$, and figure curve labels ($\sigma / \mu_p \in \{0, 2, 15, 10^4\}$ and reference packet counts $10^4$, $10^5$).
-- Speedup ratios between solver configurations and strong-scaling slopes may appear; wall times of individual runs, hardware model names, tolerances, and raw decimal error tables live only in the Supplemental Material.
+## Expert dictionary
 
-## Expert dictionary (Sec. 6)
+| Use | Instead of |
+|---|---|
+| black hole | hole (bare) |
+| macroparticle; phase-space packet | superparticle; marker (unclear); particle-in-cell test weight |
+| graphics accelerator | B200; A100; H100; GPU model name |
+| device memory | VRAM |
+| baseline second-order NRPIC method | NRPIC Original; baseline code |
+| high-order metric-conservative solver | Our Best; Iter 3; Iter 4; Iter 5; Iteration 3/4/5 |
+| SSP-RK3; three-stage strong-stability-preserving Runge--Kutta | `\texttt{rk3}` |
+| multi-rate stride $s_{\rm m}$ | `\texttt{matter\_stride}` |
+| eighth-order Dormand--Prince reference | `\texttt{DOP853}` (prose) |
+| four-stage fourth-order Runge--Kutta | `\texttt{rk4}` |
+| causal stage-accurate source extrapolation | `\texttt{Scheme A}` without mathematical definition; raw parameter names |
+| apparent horizon | horizon alone (when the finder surface is meant) |
+| moving-puncture gauge | puncture gauge without first naming $1+\log$ slicing and Gamma-driver shift |
+| monoenergetic cluster | ST model |
+| binary black hole formation in a relativistic cluster | Jeans run |
 
-| Use | Instead of | Field |
-|---|---|---|
-| black hole | hole | any |
-| numerical methods | pipeline, solver infrastructure | any |
-| numerical-relativity particle-in-cell (NRPIC) method | NRPIC code, PIC reproduction | kinetic GR |
-| moving-finite-volume (MFM) basis solver | meshless SPH kinetic code | computational astrophysics |
-| symplectic cubature packet (SCP) | deterministic PIC blob, macro-dot | kinetic theory |
-| asymptotic-preserving (AP) kinetic-fluid blend | shock fix, fluid patch | kinetic theory |
-| Einstein-Vlasov system | Vlasov-Einstein system | kinetic GR |
-| normal observer | Eulerian grid observer | 3+1 relativity |
-| apparent horizon | coordinate horizon | numerical relativity |
-| lapse excision | particle deletion, culling | numerical relativity |
-| sampling noise | shot noise, Monte Carlo jitter | particle-in-cell |
-| mean free path | collision length | kinetic theory |
+## Forbidden project names
 
-## Project names (7.7)
-
-Internal development names, cluster names, and code identifiers that never appear in the manuscript (including comments and scripts):
-
-- `B200`
-- `gb204`
-- `login05`
-- `Slurm`
-- `srun`
-- `nsys`
-- `cuobjdump`
-- `nrpic_vlasov`
-- `vlasov_mfm`
-- `vlasov_hybrid`
-- `vlasov_scp`
-- `GRLBV001`
-- `athinput`
-- `run_hybrid_benchmark`
-- `plot_stage`
-- `run_stage`
-- `s1d_`
-- `s2_grlbv`
-- `s3_grlbv`
-- `s3_nrpic`
-- `nrpic_cf`
-- `nrpic_geodesic`
-- `Opt MFM`
-- `Tier-1`
-- `Step B`
-- `Part A`
-- `Part B`
-- `NVTX`
-- `cudaEventSynchronize`
-- `ConstantMemory`
-
-## Figures (Sec. 9)
-
-| Figure | What the reader should see | Defining parameters |
-|---|---|---|
-| `fig_sr_regimes` | Second-order MFM convergence in 1D and smooth shock transition across four decades of collisionality to the Taub relativistic fluid limit | $\sigma / \mu_p \in \{0, 2, 15, 10^4\}$ |
-| `fig_pbgk_crossover` | Conservative Cell-BGK recovers free streaming and Taub shocks across four decades of optical depth at $O(1)$ step cost ($50\times$ faster than MC) | $\sigma / \mu_p \in \{0, 2, 15, 10^4\}$ |
-| `fig_kerr_pareto_arc` | Hybrid cubature packets populate the dominant cost-accuracy corner and match a hundred-thousand-particle Monte Carlo reference with lower azimuthal roughness | Kerr $a = 0.9 M$, $t = 30 M$ |
-| `fig_gl4_kerr_clusters` | Fourth-order Gauss-Legendre integration cuts $e=0.99$ energy drift by $7\times 10^6\times$, achieves $O(\Delta t^3)$ time interpolation, and exposes the $O(\Delta x^3)$ Hermite floor | Kerr $a = 0.9 M$, $e = 0.99$ |
-| `fig_physics_kerr_cluster_orbits` | Equatorial Kerr zoom orbit, Z4c head-on binary merger punctures/tracers, and $10^5$-particle $6$-level SMR phase-mixing ring + CDFs | Kerr $a = 0.9 M$, $t = 200\text{--}230\,M$ |
-| `fig_os_and_scaling` | Cold cubature-packet collapse matches Z4c metric, horizon mass, and constraint evolution while eliminating neighbor-search quadratic growth at large element counts | $R_0 = 5 M$, $a = 0.9 M$ |
-| `fig_selfgrav_collapse_st` | Densitized filtering, octant QMC, axisymmetric prolate $I_{\max}$ spike reduction, and Shapiro-Teukolsky momentum conservation | $R_0 = 5 M$, $e = 0.9$, $y_c \in [0.5, 0.9]$ |
-| `fig_physics_prolate_spindle` | Meridional Kretschmann curvature slices, core contours, axial $|I|$ peaks, apparent horizon cross section, and $M_{\rm AH}(t)$ in prolate collapse | $e = 0.9$, $b = 10 M$, $N = 10^5$ |
-| `fig_physics_st_phase_space` | Radial $(r, u_r)$ phase-space portraits, lapse bifurcation, $20\times$ spurious BH spin suppression, and $|\mathbf{P}|/M_0 \le 2\times 10^{-14}$ across $300M$ | $y_c \in \{0.900, 0.819, 0.756, 0.605\}$ |
+- Iter 3
+- Iter 4
+- Iter 5
+- Iteration 3
+- Iteration 4
+- Iteration 5
+- B200
+- A100
+- H100
+- VRAM
+- build_gpu
+- nrpic_cf
+- nrpic_geodesic
+- nrpic_grlbv
+- kernel_test
+- gb204
+- login05
+- DOP853
+- matter_stride
+- filter_mcons
