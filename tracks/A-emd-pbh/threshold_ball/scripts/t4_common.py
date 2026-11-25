@@ -46,10 +46,18 @@ def main():
     for n, tt in (("B-d0.42", tB), ("C-d0.42", tC)):
         sel = np.isin(tt, common)
         e = L[n][sel, 1] / L[n][sel, 2] - 1.0
+        ok = np.isfinite(e)
         err[n] = (L[n][sel, 0], e)
+        rd = json.load(open(os.path.join(a.ana, "threshold.json")))["members"][n]["run"]
+        st = [float(ln.split()[1]) for ln in open(os.path.join(rd, "ball.horizon_status_0.txt"))
+              if ln.strip() and not ln.startswith("#")]
+        st = np.array(st)
+        st = st[-int(np.sum(st >= st[-1] - 4.0)):]      # last 4 M of searches (rows written last)
+        e = e[ok]
         res[n] = dict(line_median_rel=float(np.median(e)), line_median_abs=float(np.median(np.abs(e))),
-                      line_maxabs=float(np.max(np.abs(e))),
-                      search_dt=float(np.median(np.diff(F[n][:, 0]))),
+                      line_maxabs=float(np.max(np.abs(e))), n_line=int(len(e)),
+                      n_line_nan=int(np.sum(~ok)),
+                      search_dt=float(np.median(np.diff(st))),
                       first_t=float(F[n][0, 0]), m_irr_first=float(F[n][0, 1]), m_irr_last=float(F[n][-1, 1]),
                       t_last=float(F[n][-1, 0]))
     res["ratio_C_over_B_line_median_abs"] = res["C-d0.42"]["line_median_abs"] / res["B-d0.42"]["line_median_abs"]
