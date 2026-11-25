@@ -378,3 +378,10 @@ while it ran (read only) and the order is on record in the analysis manifests' p
 - Defects of this session: a log of a background `nrpic-run finish` was written to
   `scratch/B-emd-gw/tmp_finish_p8.log` instead of `scratch/B-emd-gw/tmp/`; one `finish` was cut
   by a 110 s timeout before it wrote anything (manifest unchanged, rerun in the background).
+- Particle leg analysis (B-20261125-115657-91b61ec, comparison -121830-9ecb59c): judged in
+  population/JOURNAL 04:20 (Q1 part 2 fails, Q2 counts hold, mass at a = 64 fails); the particle
+  leg's finish ended with status failed (exit 1, the chain's cap), 127 files checksummed.
+- Stage verify G2 without checksums (export of 37439b2, 12:10Z): every check PASS but 'runs': seven
+  runs not yet closed at the export (five finishes still hashing, the mesh leg in Slurm, one
+  analysis running). Not a defect of the package; the full verify with checksums waits for q0007,
+  q0042, q0044 and the five finishes. G2 is not complete (stage/G2/OPEN.md); not listed for review.
