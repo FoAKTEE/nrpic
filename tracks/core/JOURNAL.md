@@ -2229,3 +2229,7 @@ Not done: the release card build has no check; the note was not rebuilt; inbox i
 1-10 and 14-15, 18 not answered beyond NEXT_SOURCE.md (C and F got the SIGTERM answer,
 E the provenance). Card time of this session: none. Processor time: R7 about 6 minutes on
 3 cores; tests and analyses under a minute each.
+
+Closed at 12:27Z: core-20261125-080049-dcc9ea1 completed (0.6294 card-hours, job 5274);
+core-20261124-130310-597d9ca stopped (0.8953 card-hours over jobs 5154, 5182, 5221, 5227),
+manifests committed by `nrpic-run finish`. Branch pushed.
