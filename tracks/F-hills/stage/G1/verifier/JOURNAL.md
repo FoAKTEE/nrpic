@@ -88,3 +88,31 @@ The claims I test, with where they are stated:
   the third digit of a mass.
 </content>
 </invoke>
+
+## Entry 1 (2026-11-25 09:58 PST): predictions for criterion (iii), written before vjunk.py ran
+
+Claims (from `junk_gauge/README.md` lines 9-31 and 69-91, the T3 evidence text): (K1) at m/8 the
+t = 0 Hamiltonian norm is 4.7e-5 (card smoke 4.713e-5); truncation converges at order 7.6-8; the
+corrected data's own residual 4.9e-7 is 1/33 of the uncorrected data (runs F-20261115-173547-a02af7d,
+-181434-b9c8916, card F-20261115-174602-c6879fe). (J1) The three-hole data's junk at P1's spheres
+r = 40, 48, 70, 90 M in the retarded-time window [-35, 6] M (record cut at u = 14, FFI omega_0 =
+0.2): 2.8, 2.6, 2.5, 2.5 e-6 M, l <= 8, 67-70 percent in l >= 4 (runs F-20261121-075600-4480a13,
+-075803-8e1955b). Scope criterion (iii): two radii agree within 20 percent.
+
+Seen before writing (no hiding it): the first history row of each E2 case (H-norm2 and Volume at
+t = 0, printed by a listing); so K1 is arithmetic on numbers I have looked at, not a blind test.
+Definitions I take: rms H = sqrt(H-norm2 / Volume) (history.cpp lines 226-231: H-norm2 is the
+proper-volume integral of H^2 outside the excised punctures); L9, L10, L11 = m/4, m/8, m/16.
+
+- K1 prediction: rms H(approx, L10) = 4.71e-5 to 3 digits; order between L9 and L10 7.6-8.0 for
+  both corrections; none/approx at L11 between 25 and 40 (claim 33). Refuted: rms H at L10 off in
+  the second digit, or the ratio outside 25-40.
+- J0 (analytic test of my energy pipeline, before use): a (2,2) wave h = A exp(-(t-t0)^2/s^2)
+  exp(-i w t) with w = 0.5, sampled every 0.25 M as psi4 = d2h/dt2, FFI with omega_0 = 0.2: radiated
+  energy (1/16 pi) int |dh/dt|^2 dt reproduced within 1 percent. Refuted: more than 1 percent off.
+- J1 prediction: my FFI (omega_0 = 0.2 for every mode, FFT over the record cut at u = 14 with the
+  mean of the record removed, no taper), u = t - r* with r* = r + 2 M_adm ln(r / (2 M_adm) - 1),
+  M_adm = 1.25, energy over u in [-35, 6]: each radius 1.5-3.9e-6 M and within 20 percent of the
+  others; l >= 4 share 0.6-0.75. Refuted: a radius outside 1.5-3.9e-6 or two radii more than 20
+  percent apart [JUDGEMENT: FFI edge effects and the choice of r* move the number at the tens of
+  percent level; the band is the lead's own spread over integration choices].
