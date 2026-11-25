@@ -1,0 +1,6 @@
+# population: the 0.028 box past its zero-shift stop. Restart rst/pop.00004.rst (t = 8) of
+# pop_s028_gr (run B-20261123-035002-bcc82bd) with the Gamma-driver shift of X2 (0.75, eta 1,
+# advection of shift and lapse) to t = 21.916 (a = 143); release core-v0.6 card executable (the
+# run's own; dt_gauge cannot be added at a restart of a v0.6 file). Predictions S1-S3: JOURNAL.md,
+# entry of 2026-11-25 04:00.
+s028_gd /data/haiyangw/nrpic/scratch/B-emd-gw/B-20261123-035002-bcc82bd/rst/pop.00004.rst time/tlim=21.916 z4c/shift_Gamma=0.75 z4c/shift_eta=1.0 z4c/shift_advect=1.0 z4c/lapse_advect=1.0

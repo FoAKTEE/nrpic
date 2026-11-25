@@ -572,3 +572,63 @@ reference build, or the particles) is not tested. Kept anyway: the cards are hel
 morning of 2026-11-25 and the result arrives before that. Card job 5167 was cancelled before it
 started (`nrpic-run stop`, then `finish`, which records it as failed with exit 1: it never ran);
 its slot goes to the gauge leg pop_s014_gr_gd through the sequencer.
+
+## 2026-11-25 04:00 PST (lead of batch 17): outcomes of X0-X3 and GD1; predictions for two continuations
+
+Queue entries q0004 (gauge leg, run B-20261124-210431-6bf48af, Slurm 5208), q0005 (X0-X3,
+B-20261124-210432-6c4d005, Slurm 5209) and q0006 (particle leg, B-20261124-223926-33194d9, Slurm
+5222, 5231, 5238) ended overnight. `nrpic-run finish` of the three was started before any analysis;
+the hashing of 45-62 GB per run takes longer than this session, so the analyses below were started
+while it ran (they only read the run directories). [VERIFIED by the runs named]
+
+X0-X3 (analysis run B-20261125-115619-ad8b3f4, `scripts/analyze_stop028.py`, figure
+`figs/pop_stop028.png`, looked at):
+- X0 HOLDS: the guard stop recurs at t = 9.08646 (cycle 599), the base run's time and cycle to
+  every printed digit; K_max, chi_min, Hr_mean of X0 equal the base's at every history row
+  (K_max 0.1984 at t = 8.977). The restart repeats the run here, although card runs with deposit
+  are not promised to repeat.
+- X1 HOLDS: half the step stops at t = 9.07865 (cycle 667), 0.008 before X0; K_max 0.227 at
+  t = 8.993. The step is not what stops the run.
+- X2 REFUTED (predicted: stops within 0.2 of X0, refuted if it passes 9.5): with the Gamma-driver
+  shift (0.75, eta 1, advection 1) from t = 8 the run reaches t = 10 (a = 36) with exit 0; the
+  largest K of the box turns negative within 0.25 of the restart (-0.011 at t = 8.48) and stays
+  negative (-0.0032 at t = 9.98) where the zero-shift run climbed to +0.2; the smallest lapse rises
+  (22.1 at t = 9.98) where it fell to 14. The price: Hr_mean 1.0e-2 at t = 8.98 against 4.7e-3 of
+  X0 at the same time, 2.1e-2 at t = 9.98, Mr_mean 0.21. With a run in which it could have failed:
+  the zero shift is implicated in the stop of the 0.028 core at t = 9.09 (its coordinates follow
+  the collapse); whether the shifted run lasts to a = 143 is not known.
+- X3 NOT RUN (exit 1 at start): `Parameter 'dt_lightspeed' in block 'z4c' on command line not
+  found`: a restart accepts on the command line only parameters its stored input has, and the base
+  deck had no `dt_lightspeed`. A setup error of this lead (batch 11), on record. Not retried: the
+  slicing leg needs a fresh start with `dt_lightspeed` in the deck, and X2 already separates the
+  candidates the restarts were for.
+- Card time of the batch: 13:45:41-13:48:31 PST, 0.05 card-h (predicted below 0.3: holds).
+
+GD1 (gauge leg) HOLDS in its first part: t = 21.916 (a = 143) at cycle 1421, exit 0, no guard file
+(chain events of the run; `chain/seg001.job5208.a1.log`). Its time part FAILS narrowly: one segment
+of 11.1 min (13:45:41-13:56:47), 0.185 card-h against the predicted 0.2-0.5.
+
+Particle leg (q0006): cut, not finished. Two segments, each ended by SIGTERM (preemption at
+15:42 and 17:08 PST); the chain script of release v0.6 counted both against MAX_SEGMENTS = 2 and
+ended the chain FAILED when job 5238 started at 20:16. Last history row t = 17.477 (a = 94.8,
+cycle 1136); newest restart rst/pop.00008.rst (t = 16.0, with .prt). Q1 (judged at a = 141)
+cannot be judged from this run; Q2 and the part of Q1 at a <= 95 are judged from analysis
+B-20261125-115657-91b61ec below.
+
+Two continuations, both card batches restarting a closed run's restart file into a new run
+directory (release v0.6 card executable, the runs' own; `dt_gauge` cannot be added at a restart
+of a v0.6 file for the reason X3 shows; the step stays 0.25 cells, below the bounds of decisions
+0027 and 0035). Predictions [JUDGEMENT], written before they are queued:
+- P8C (`inputs/batch_p8cont.list`, rst/pop.00008.rst of B-20261124-223926-33194d9 to
+  t = 21.916). P8C1: exit 0 at t = 21.916 without a guard stop, below 0.4 card-h. Refuted by a
+  stop or a non-zero exit. P8C2: the history rows at t = 16.0-17.48 equal the cut run's (Hr_mean
+  and K_max within 1e-6 relative; X0 repeated to every digit). Refuted above 1e-3. Q1 is judged
+  with the union of both directories.
+- S28GD (`inputs/batch_s028gd.list`, rst/pop.00004.rst of B-20261123-035002-bcc82bd, the X2
+  gauge from t = 8 to t = 21.916). S1: reaches t = 21.916 without a guard stop and with Hr_mean
+  below 0.2 at the end. Refuted by a stop or a larger Hr_mean (then the shifted gauge only delays
+  the failure). S2: halo counts above the common mass limit at a (0.028) equal those of the
+  0.014 gauge leg at the same stage (a' = 4a, 0.014 at a' = 64-143 against 0.028 at a = 16-36)
+  within 2 sqrt(N) + 2, largest mass within 10 per cent. S3: raw TT strain rms of 0.028 at a over
+  0.014 (gauge leg) at the same stage between 3 and 5.5 (square of the amplitude ratio, 4, as the
+  zero-shift companion paragraph found 3.8-4.2). Card time below 0.3 h.

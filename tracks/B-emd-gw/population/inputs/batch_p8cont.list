@@ -1,0 +1,5 @@
+# population: continuation of the particle leg pop_s014_gr_p8 (run B-20261124-223926-33194d9,
+# 128^3, 8 particles per cell, sigma1 = 0.014, zero shift), cut by the chain cap at t = 17.48 after
+# two preemptions; restart rst/pop.00008.rst (t = 16.0) to t = 21.916 (a = 143) with the run's own
+# card executable (release core-v0.6). Predictions P8C1-P8C2: JOURNAL.md, entry of 2026-11-25 04:00.
+p8_cont /data/haiyangw/nrpic/scratch/B-emd-gw/B-20261124-223926-33194d9/rst/pop.00008.rst time/tlim=21.916
