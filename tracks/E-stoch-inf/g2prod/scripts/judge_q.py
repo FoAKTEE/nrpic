@@ -115,9 +115,14 @@ def main():
         x.set_ylabel(f"even halving of {lab}, floor removed")
         x.legend(loc="lower left", fontsize=5.5)
     y = ax[2]
-    y.plot(z["cN"], cm["half"]["t"], "-", color=cols[0], label="s = 1/2")
-    y.plot(z["cN"], np.array(cm["quarter"]["t"]) * 4.0, "--", color=cols[2], label=r"s = 1/4, times 4")
+    # from cN = 1 on: at N* the odd part is the slice itself and the ratio is ill-defined (cref ~ 0
+    # for some modes), which hid the curves in the first version of this figure
+    zc = np.asarray(z["cN"])
+    late = zc >= 1.0
+    y.plot(zc[late], np.array(cm["half"]["t"])[late], "-", color=cols[0], label="s = 1/2")
+    y.plot(zc[late], np.array(cm["quarter"]["t"])[late] * 4.0, "--", color=cols[2], label=r"s = 1/4, times 4")
     y.axhline(-9.87e-6, **fs.GUIDE)
+    y.set_ylim(-1.4e-5, 3e-6)
     y.set_xlabel(r"$N-N_*$")
     y.set_ylabel(r"mean Re$(O/(s\,c_{\rm ref})-1)$, $k\leq16\,dk$")
     y.legend(loc="lower left", fontsize=6)
