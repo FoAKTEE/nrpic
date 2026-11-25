@@ -972,3 +972,21 @@ earlier than under GR (6.1-6.4 t_H), so the lag is not in the initial velocities
 reads them; it lies in the relativistic evolution or in the coordinates of the GR run (the reader measures
 coordinate separations; the Gamma-driver shift moves the coordinate lattice), and this control does not tell
 which. If N-f crosses at >= 5.5 t_H the data are implicated instead.
+
+### Outcome AZ1 (run A-20261125-160633-e38d321 member N-z; analyses A-20261125-162905-d0ef1d7 and A-20261125-162951-bb0fb26; fig_a2_crossing.png and fig_a2_compare.png looked at)
+
+- N-z (Newtonian, 64^3 Fourier, equal masses, p = x - q) first crosses along z, at the centre, at 4.55 t_H (snapshot
+  bracket 4.52-4.69), then x at 6.71; y not crossed by 9.9 t_H. Zel'dovich with the measured lambda_z = 0.063 (second
+  derivation above): 4.35 t_H. AZ1 as written ([3.7, 4.5]) is REFUTED, narrowly: late by 5 per cent against Zel'dovich,
+  the direction of the CIC softening caveat; N-z128 (same run, after N-f) tests that reading.
+- Min Delta_z/h at S1L's snapshot times (t/t_H: Zel'dovich / GR S1L / Newton N-z): 1.09: 0.603 / 0.626 / 0.620;
+  2.11: 0.382 / 0.467 / 0.398; 3.13: 0.196 / 0.326 / 0.209; 4.15: 0.030 / 0.200 / 0.052; 5.17: -0.123 / 0.093 / -0.069.
+  The Newtonian member follows the Zel'dovich line to within 0.02 until it crosses; S1L leaves it from t/t_H ~ 1-2 on.
+- What this establishes [VERIFIED by a run that could have failed]: the reference (D = a, a_H = r_m^2 = 6, the clock
+  t/t_H = (a/6)^1.5) and the reader reproduce a Newtonian evolution of the same positions to 5 per cent; the factor
+  1.46 of S1L (6.35 against 4.35) is not in the reference, the clock or the reader. Whether it is in the GR data
+  (masses carrying psi^6, u_i carrying psi^4) is AZ2 (N-f, running).
+Note on the IC script (defect of a diagnostic, not of the files): ic.json's median u/(x - q) is wrong (~1e-12): the
+median lattice offset (1.4e-3 to 1.9e-3 instead of 0) puts tiny-|d| particles into the ratio. N-z's momenta carry a
+uniform 1.4e-3 to 1.9e-3 (a bulk drift, harmless in a periodic box: neighbour separations do not see it). The
+correct ratio (offset 0, read at the start of this session) is 1.03 median, 1.00-1.38 at 5-95 per cent.
