@@ -1,21 +1,23 @@
 # Re-verification: D-bh-dress G2
 
-`harness/bin/nrpic-stage verify D-bh-dress G2` on 2026-11-25T12:25:08Z, clean export of commit `7cecfcd1a619` in `scratch/D-bh-dress/tmp/stage-verify/D-bh-dress-G2-7cecfcd-20261125T122110Z`. Result: **FAIL**.
+`harness/bin/nrpic-stage verify D-bh-dress G2` on 2026-11-25T16:11:48Z, clean export of commit `69f47d5f2ad8` in `scratch/D-bh-dress/tmp/stage-verify/D-bh-dress-G2-69f47d5-20261125T161012Z`. Result: **FAIL**.
 
 | Check | Result | Message |
 |---|---|---|
 | clean | PASS | worktree clean (outside the stage directory being assembled) |
-| sync | FAIL | main has commits not merged: run nrpic-ctx sync |
-| export | PASS | clean export of 7cecfcd1a619 (HEAD) in /data/haiyangw/nrpic/scratch/D-bh-dress/tmp/stage-verify/D-bh-dress-G2-7cecfcd-20261125T122110Z/tree |
+| sync | PASS | main is merged into the branch |
+| export | PASS | clean export of 69f47d5f2ad8 (HEAD) in /data/haiyangw/nrpic/scratch/D-bh-dress/tmp/stage-verify/D-bh-dress-G2-69f47d5-20261125T161012Z/tree |
 | size | PASS | no committed file of the track above 5 MB |
 | note | PASS | tracks/<ID>/note/main.tex present |
-| package | PASS | EVIDENCE.md, OPEN.md, CHECKLIST.md present (decision 0012); scoping text: scope/SCOPE.md; no verifier's report yet (VERIFIER.md, decision 0016) |
+| package | PASS | EVIDENCE.md, OPEN.md, CHECKLIST.md present (decision 0012); scoping text: scope/SCOPE.md; REVIEW.md present; no verifier's report yet (VERIFIER.md, decision 0016) |
 | note-pdf | PASS | note/main.pdf committed after the last .tex change |
 | style | PASS | 2 style copies equal harness/style/SHA256SUMS (czstyle.py, paperfig.py) |
 | fig-script | PASS | 13 figures, each with its script |
 | min-figs | PASS | 2 schematics and 11 data figures (brief 13.4 asks at least 1 and 5 at G2) |
-| runs | FAIL | 4 of 302 runs have problems |
-| run-notes | WARN | 102 runs read with defaults or not fully re-verifiable (nrpic-run lint) |
+| runs | FAIL | 2 of 311 runs have problems; 1 waived |
+| runs-waived | WARN | failures of the manifest check waived: 1 runs named in main's coord/WAIVERS.md (decision 0019 item 6): D-20261121-165420-5d1c245: superseded: the check run of the G1 gate reviewer; an input under scratch changed after the run; its result stands in the gate review of G1 and no later claim rests on it (decision 0039 item 4) |
+| run-notes | WARN | 99 runs read with defaults or not fully re-verifiable (nrpic-run lint) |
+| checksums | WARN | output checksums not re-verified (--no-checksums) |
 | status | PASS | STATUS.md has 40 lines |
 | rerun | PASS | 13 of 13 scripts and commands ran cleanly in the export |
 | compare | PASS | 37 regenerated files compared with the committed ones; 0 differ beyond tolerance (rtol 1e-06, atol 1e-12, PNG rms 0.005) |
@@ -25,18 +27,26 @@
 
 ```
 {
- "D-20261121-165420-5d1c245": [
-  "input /data/haiyangw/nrpic/scratch/D-bh-dress/tmp/gate_review_G1/review_checks.py changed since the run (sha256 differs)"
- ],
- "D-20261124-134157-b17938b": [
-  "status is submitted: not finished (nrpic-run finish)"
- ],
  "D-20261124-172725-2f426b6": [
   "status is submitted: not finished (nrpic-run finish)"
  ],
  "D-20261124-172745-72472ed": [
   "status is submitted: not finished (nrpic-run finish)"
  ]
+}
+```
+
+## runs-waived
+
+```
+{
+ "D-20261121-165420-5d1c245": {
+  "waived_by": "coord/WAIVERS.md",
+  "reason": "superseded: the check run of the G1 gate reviewer; an input under scratch changed after the run; its result stands in the gate review of G1 and no later claim rests on it (decision 0039 item 4)",
+  "problems": [
+   "input /data/haiyangw/nrpic/scratch/D-bh-dress/tmp/gate_review_G1/review_checks.py changed since the run (sha256 differs)"
+  ]
+ }
 }
 ```
 

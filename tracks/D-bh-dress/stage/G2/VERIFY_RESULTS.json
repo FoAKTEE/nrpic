@@ -1,9 +1,9 @@
 {
   "track": "D-bh-dress",
   "gate": "G2",
-  "commit": "7cecfcd1a619464d720aaa2c4dfac1470e5d867c",
-  "verified_utc": "2026-11-25T12:25:08Z",
-  "export": "/data/haiyangw/nrpic/scratch/D-bh-dress/tmp/stage-verify/D-bh-dress-G2-7cecfcd-20261125T122110Z",
+  "commit": "69f47d5f2ad8677cd462832a2a1f7e9036a9c13c",
+  "verified_utc": "2026-11-25T16:11:48Z",
+  "export": "/data/haiyangw/nrpic/scratch/D-bh-dress/tmp/stage-verify/D-bh-dress-G2-69f47d5-20261125T161012Z",
   "result": "FAIL",
   "checks": [
     {
@@ -14,14 +14,14 @@
     },
     {
       "check": "sync",
-      "status": "FAIL",
-      "message": "main has commits not merged: run nrpic-ctx sync",
+      "status": "PASS",
+      "message": "main is merged into the branch",
       "detail": null
     },
     {
       "check": "export",
       "status": "PASS",
-      "message": "clean export of 7cecfcd1a619 (HEAD) in /data/haiyangw/nrpic/scratch/D-bh-dress/tmp/stage-verify/D-bh-dress-G2-7cecfcd-20261125T122110Z/tree",
+      "message": "clean export of 69f47d5f2ad8 (HEAD) in /data/haiyangw/nrpic/scratch/D-bh-dress/tmp/stage-verify/D-bh-dress-G2-69f47d5-20261125T161012Z/tree",
       "detail": null
     },
     {
@@ -39,7 +39,7 @@
     {
       "check": "package",
       "status": "PASS",
-      "message": "EVIDENCE.md, OPEN.md, CHECKLIST.md present (decision 0012); scoping text: scope/SCOPE.md; no verifier's report yet (VERIFIER.md, decision 0016)",
+      "message": "EVIDENCE.md, OPEN.md, CHECKLIST.md present (decision 0012); scoping text: scope/SCOPE.md; REVIEW.md present; no verifier's report yet (VERIFIER.md, decision 0016)",
       "detail": null
     },
     {
@@ -69,14 +69,8 @@
     {
       "check": "runs",
       "status": "FAIL",
-      "message": "4 of 302 runs have problems",
+      "message": "2 of 311 runs have problems; 1 waived",
       "detail": {
-        "D-20261121-165420-5d1c245": [
-          "input /data/haiyangw/nrpic/scratch/D-bh-dress/tmp/gate_review_G1/review_checks.py changed since the run (sha256 differs)"
-        ],
-        "D-20261124-134157-b17938b": [
-          "status is submitted: not finished (nrpic-run finish)"
-        ],
         "D-20261124-172725-2f426b6": [
           "status is submitted: not finished (nrpic-run finish)"
         ],
@@ -86,9 +80,23 @@
       }
     },
     {
+      "check": "runs-waived",
+      "status": "WARN",
+      "message": "failures of the manifest check waived: 1 runs named in main's coord/WAIVERS.md (decision 0019 item 6): D-20261121-165420-5d1c245: superseded: the check run of the G1 gate reviewer; an input under scratch changed after the run; its result stands in the gate review of G1 and no later claim rests on it (decision 0039 item 4)",
+      "detail": {
+        "D-20261121-165420-5d1c245": {
+          "waived_by": "coord/WAIVERS.md",
+          "reason": "superseded: the check run of the G1 gate reviewer; an input under scratch changed after the run; its result stands in the gate review of G1 and no later claim rests on it (decision 0039 item 4)",
+          "problems": [
+            "input /data/haiyangw/nrpic/scratch/D-bh-dress/tmp/gate_review_G1/review_checks.py changed since the run (sha256 differs)"
+          ]
+        }
+      }
+    },
+    {
       "check": "run-notes",
       "status": "WARN",
-      "message": "102 runs read with defaults or not fully re-verifiable (nrpic-run lint)",
+      "message": "99 runs read with defaults or not fully re-verifiable (nrpic-run lint)",
       "detail": {
         "D-20261115-170700-b2c6d6e": [
           "hand-written (registered_by: hand: tracks/D-bh-dress/secondary_infall/nm_register.py, because harness/bin/nrp)",
@@ -215,15 +223,6 @@
           "hand-written (registered_by: hand: tracks/D-bh-dress/secondary_infall/nm_register.py, because harness/bin/nrp)",
           "input tracks/D-bh-dress/secondary_infall/nm_analyze.py changed since the run (sha256 differs)"
         ],
-        "D-20261123-022725-a553496": [
-          "hand-written (fields nrpic-run never writes: continuations)"
-        ],
-        "D-20261124-134157-b17938b": [
-          "hand-written (fields nrpic-run never writes: continuations)"
-        ],
-        "D-20261124-172725-2f426b6": [
-          "hand-written (fields nrpic-run never writes: continuations)"
-        ],
         "D-bh-dress-20261115-042626-f3da881": [
           "status None read as completed from exit code 0",
           "output directory read from a field other than outputs.dir",
@@ -251,8 +250,34 @@
           "no gate",
           "status None read as completed",
           "input /data/haiyangw/nrpic/wt/D-bh-dress/tracks/D-bh-dress/einstein_straus/code_t0_check.py changed since the run (sha256 differs)"
+        ],
+        "D-bh-dress-20261115-043033-4df1e76": [
+          "status None read as completed from exit code 0",
+          "output directory read from a field other than outputs.dir",
+          "no gate",
+          "status None read as completed",
+          "input /data/haiyangw/nrpic/wt/D-bh-dress/tracks/D-bh-dress/einstein_straus/code_t0_check.py changed since the run (sha256 differs)"
+        ],
+        "D-bh-dress-20261115-043327-4df1e76": [
+          "status None read as completed from exit code 0",
+          "output directory read from a field other than outputs.dir",
+          "no gate",
+          "status None read as completed",
+          "input /data/haiyangw/nrpic/wt/D-bh-dress/tracks/D-bh-dress/einstein_straus/code_t0_check.py changed since the run (sha256 differs)"
+        ],
+        "D-bh-dress-20261115-043406-4df1e76": [
+          "status None read as completed from exit code 0",
+          "output directory read from a field other than outputs.dir",
+          "no gate",
+          "status None read as completed"
         ]
       }
+    },
+    {
+      "check": "checksums",
+      "status": "WARN",
+      "message": "output checksums not re-verified (--no-checksums)",
+      "detail": null
     },
     {
       "check": "status",
