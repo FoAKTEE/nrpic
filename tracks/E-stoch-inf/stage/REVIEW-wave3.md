@@ -566,3 +566,37 @@ Every CHECKLIST item is PASS, NA by ruling, or FAIL on record with its ruling (C
 item 2 and 0036 item 2). Products added this session: g2prod entry 4, g2prod/README.md (rerun
 recipe, results), note Sec. IV and Appendix F with six figures and ledger Table XVI (R16
 E-20261125-035757-340bd1e). The package goes to independent review (decision 0016 item 4).
+
+# Part G. Batch 17 (lead of batch 17, 2026-11-25 early morning): after the signed G2
+
+Gate G2 is SIGNED, pass with reservations (coord/GATES.md 2026-11-24, tag
+`stage/E-stoch-inf/G2-pass-20261124`; decision 0038). No helper package finished since Part F; this
+part records what the lead did on the review's findings and on the floor test, from the artefacts.
+
+## G1. The gate review's findings (stage/G2/GATE_REVIEW.md section 5)
+
+| Finding | What the track did |
+|---|---|
+| F1 floor equation without 1/3 and max | note eq. (floor) corrected to f^2 = max[0, (4 o(1/2)^2 - o(1)^2)/3]; the judged numbers always used this form (judge_g2.py, verifier); g2prod JOURNAL 4.2 line 275 keeps its loose wording on record, corrected by this line |
+| F2 stale STAGE_REPORT texts | Verdict line (no G2-fail tag exists; gate signed), Figures table (the G2 figures of repro/note, gate items), Decision section replaced |
+| F3 fig_ladder box 1 lists +-1/4 | box 1 now +-1, +-1/2; box 1 of rung 2 says +-1/4 was added after the halving; caption likewise |
+| F4 ledger rows without estimator | the two rows name the pooled estimator sigma^2 = [rms(D1)^2 + rms(D2)^2]/34 (floor3.py lines 37-39, read by the lead) and quote the review's D1-only values 3.99924 and 7.6e-4 |
+| F5 provenance of the ablation executable | the file that ran is kept at scratch/core/exe/core_noise-level2_6ca93cba/athena_gpu; the lead hashed it: 468109496c82..., equal to the seven manifests; core asked to confirm (outbox 20261125T120431Z), orch asked for a harness pointer |
+| F6 duplicated rows of U256qp | core's open restart defect; readers keep the last line per cycle (runs.py); nothing to change |
+| F7 the reviewer's own failed run | on the reviewer's record |
+
+Registered note rerun R17 E-20261125-115608-b9c1b59 (repro/note/JOURNAL.md entries 27-28).
+
+## G2. Floor test FL128h (risk R28), checked by the lead from the dumps
+
+The first reading with the recipe of floor entry 1 gave P_NR/P_lin = 4 on every shell; the control F3
+refuted it, and the cause was found on the files (the .modes record of an s = 1/2 run carries the
+factor; R32). The corrected reading E-20261125-115344-a22128b: R = 1.90 and 2.00, signs kept, F3 0.97;
+figure fig_floor.png looked at: the s = 1/2 curve lies on the s = 1 curve divided by 2 on all ten
+shells. CONFIRMED at 128 (second order); NOT YET at 256 (q0038, job 5284 submitted during this session).
+
+## G3. G3 scope and pilot
+
+SCOPE 4d committed (cbe20398) and pushed before the first G3 submission (q0045, added after the push).
+Power estimate and the 128-band reference are registered runs with predictions written first; two
+of the power predictions (W2, W3) failed and are on record (g3/JOURNAL.md entry 1).

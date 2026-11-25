@@ -637,3 +637,26 @@ Predictions first, outcomes after, all on record in the package journals:
 - Inbox: four infos acknowledged (core SIGTERM restart, orch core-v0.7 release and checksum, kb
   claims superseded). Outbox: two posts to orch.
 Card-hours this session: 0. Floor runs q0037/q0038 still waiting in the shared queue (not read).
+
+## 2026-11-25 03:46-04:40 PST, lead of batch 17 (Opus): after the signed G2; floor at 128; G3 scope and pilot
+
+Gate G2 SIGNED, pass with reservations (coord/GATES.md 2026-11-24; decision 0038; tag
+stage/E-stoch-inf/G2-pass-20261124); U-A4'(a) stays FAILED as written in the gate record.
+- Review corrections F1-F4 (note eq. floor, STAGE_REPORT, fig_ladder, ledger estimator); note rerun
+  R17 E-20261125-115608-b9c1b59 with its prediction first (repro/note/JOURNAL.md entry 27).
+- Floor (R28): FL128h E-20261125-041742-71d74fb (0.031 card-h). First reading E-20261125-115056-983a32a
+  with the recipe of floor entry 1 doubled the amplitude factor (the .modes record already carries
+  it): the control F3 failed as designed; corrected reading E-20261125-115344-a22128b: F1, F2, F3 HOLD
+  at 128 (R = 1.90, 2.00); the floor is second order in the amplitude. Not blind (entry 2 says why).
+  FL256h q0038 dispatched as job 5284 (run E-20261125-115534-8414659) during the session.
+- G3 scope SCOPE 4d committed (cbe20398) and pushed before the first G3 submission. Power estimate
+  E-20261125-115822-29795d6: W1 holds; W2 and W3 FAILED (5.5e5 independent cells per box, not 1e3-1e5;
+  0.46 seeds suffice at nu = 3): S = 256 fixed from the reach to nu = 4. 128-band one-patch delta-N
+  reference E-20261125-115707-b845282 (2e5 paths): L1-L4 hold; lattice variant 0.980 of linear (R33).
+- Pilot q0045 G3P (priority 5, one batch job, 14 runs at 128^3 on build_gpu_v07, <= 0.95 card-h);
+  predictions g3/JOURNAL.md entry 2 (G3P-1..3).
+- Provenance (0038 item 3): the superseded level-2 executable is kept by core at
+  core_noise-level2_6ca93cba/athena_gpu; hash equal to the seven manifests (checked); outbox to core
+  and orch.
+Card-hours this session: 0 used by finished runs of this session (FL128h's 0.031 was spent on
+2026-11-24 20:45); pending: FL256h (<= 1.0), G3P (<= 0.95).

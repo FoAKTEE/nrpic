@@ -630,3 +630,16 @@ verifier's pooled form) and quote the gate review's D1-only values beside it. F2
 Prediction for R17 (registered run_all): every PNG byte-equal to R16 except fig_ladder.png; the ledger
 tables differ from R16 only in the two row labels; ledger checks all pass (no value moved); compile
 32 pages, PDF still below 5 MB; the pages with eq. (floor), Fig. 12 (ladder) and Table XVI read.
+
+## Entry 28 (2026-11-25 04:15 PST, lead of E, batch 17): outcome of R17 (E-20261125-115608-b9c1b59)
+
+R17 HELD as predicted: every PNG byte-equal to R16 except fig_ladder.png (and its raw copy); the
+ledger tables differ from R16 only in the two row labels of the three-amplitude level (run ids
+normalised); ledger checks without a failing row (97 yes, 18 differs, as before). Copied into
+manuscript/: fig_ladder.pdf, tables/ledger.{tex,csv}, tables/ledger_checks.json. Checker with
+--compile and the forbid list of the README plus `U256|U320|g2prod|judge_`: no undefined
+reference or citation, no overfull box; the candidate classes are those accepted before (script
+legends, long captions). 32 pages, PDF 5,055,530 bytes (below the 5 MiB hook). Pages read at 80
+dpi: 10 (Fig. 12 ladder: box 1 shows +-1, +-1/2; rung 2 says +-1/4 was added after the halving;
+caption likewise), 11 (eq. 8 with max and 1/3), 30 (Table XVI rows name the pooled estimator and
+the review's D1-only values; the caret of sigma^2 prints as text, accepted).

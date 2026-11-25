@@ -1,4 +1,4 @@
-# OPEN items of E-stoch-inf at G2 (lead of batch 15, 2026-11-24; replaces the list of batch 13)
+# OPEN items of E-stoch-inf at G2 (lead of batch 15, 2026-11-24; items 3 and 7 updated by the lead of batch 17 after the gate was signed)
 
 The package is complete for an independent review (decision 0016 item 4): every CHECKLIST item is
 PASS, NA by ruling, or FAIL on record with its ruling. On record, not open:
@@ -10,8 +10,9 @@ PASS, NA by ruling, or FAIL on record with its ruling. On record, not open:
 
 Open, not required by the G2 criteria:
 
-3. Floor of the SR spectral convergence (C2 context): FL128h q0037, FL256h q0038 (priority 2,
-   waiting in the shared queue since 2026-11-24 15:35 PST); predictions floor/JOURNAL.md entry 1.
+3. Floor of the SR spectral convergence (C2 context): FL128h ran (q0037, E-20261125-041742-71d74fb);
+   read in batch 17 (E-20261125-115344-a22128b): at 128^3 the floor is second order in the amplitude
+   (F1-F3 hold, floor/JOURNAL.md entry 3). FL256h (q0038) still waits; F1 at 256 and F4 then.
 4. Not checked by the fresh verifier (VERIFIER.md 4): the USR mode file at N* against Bunch-Davies
    data at N0 (rests on the usr package); the window scan ran on the scouting build at 128^3 (4c
    accepts it); U-R (i) at 320^3 without a 320^3 half pair; what the per-run part F_s is
@@ -27,7 +28,14 @@ Open, not required by the G2 criteria:
    scratch/core/exe/core_noise-level2/athena_gpu, that core republished after its review (sha256
    468109496c82... in the manifests, d7069a4e... now). Not a G2 criterion run; core's review says
    the runs stand (note: "a reviewed development version"); request to core for the superseded
-   build's provenance (outbox batch 15). Every other check PASS (rerun of 12 scripts, 24 figures
+   build's provenance (outbox batch 15). Batch 17: the file that ran is kept at
+   scratch/core/exe/core_noise-level2_6ca93cba/athena_gpu (sha256 468109496c82... checked by the lead
+   on 2026-11-25, equal to the seven manifests; COMMIT: source 6ca93cbaf of core/noise-level2);
+   core's answer (core/nrpic tracks/core/outbox/20261125T120549Z, acknowledged): the copy each run
+   executed is still in its own run directory (batch.list.exe, chain/athena), all seven hash
+   468109496c82...; source 6ca93cbabfe6 of core/noise-level2; record tracks/core/EXE_PROVENANCE.md.
+   Provenance SUPPLIED (decision 0038 item 3); the harness check still fails on the moved path (a
+   pointer asked of orch, outbox 20261125T120448Z). Every other check PASS (rerun of 12 scripts, 24 figures
    regenerated within tolerance, size, sync, package). It ran with --no-checksums (the checksum pass over about 280
    run directories, hundreds of GB, takes one to two hours); a full pass is owed before the gate
    is signed if the reviewer asks for it.
