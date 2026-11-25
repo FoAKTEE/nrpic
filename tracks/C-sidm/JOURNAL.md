@@ -889,3 +889,37 @@ kin did not collapse to 600 M (alpha_c change between -0.007 and -0.028); JOURNA
   bracket stay open (they are the next card request, not queued here).
 Cost [JUDGEMENT]: 2.5 card-hours each (the N6c line), D2eta1 0.6; the six N = 1e5 kicked
 continuations removed in this session (stage/G2/OPEN.md) free more than that.
+
+## 2026-11-25T12:21Z  session C-sidm lead (batch 17)  outcomes of N6c and M16, judged against entry 2026-11-24T13:14Z
+
+Runs closed with nrpic-run finish before any analysis: N6c C-20261124-221122-928c9eb (q0016),
+M16 C-20261125-044843-2d048b6 (q0017). Analyses: C-20261125-122010-fb3cc08 (nseries.py,
+fig_nseries.png read) and C-20261125-122020-031b67e (d2_analysis.py with m16, fig_d2.png read).
+- NS.1 HOLDS: the N = 1e6 control of y0 = 0.334032 on M/8 does not collapse in 600 M
+  (alpha_min never below 0.6586, at 563.25 M); alpha_c(t) - alpha_c(0) at 400 M (20 M mean)
+  = +0.0054, above -0.005. Over 600 M it stays in [-0.0022, +0.0115] (20 M means at 100-500 M
+  +0.0038, +0.0104, +0.0115, +0.0054, -0.0010; 580-600 M -0.0022): a slow pulsation, no
+  secular contraction. The N = 1e5 control of the same sample size seed collapsed at 534.8 M.
+- NS.2 FAILED as a prediction (no t_c in [455, 615] M): the scheme reading is refuted.
+- Also read: H-norm2 floor (100-300 M) 7.90e-4 against 7.86e-3 at N = 1e5, ratio 9.95 for an
+  N ratio of 10; the mean Lorentz factor of N1e6 moves by at most 0.005.
+- Consequence by the rule written with NS.1: the control collapse at N = 1e5 on M/8 is set by
+  the particle noise (relaxation), not by a secular error of the scheme; the threshold reading
+  needs N = 1e6 (or collapse times against controls of the same N). The cause is named after a
+  run in which it could have failed (NS.2 would have held for a scheme drift). [JUDGEMENT: one
+  seed at N = 1e6; N4c (q0018) is the third point of the particle-number leg.]
+- M16.1 HOLDS: t_c(M/16) = 158.42 M, in [140, 170]. Mesh series with collision cells of M/4:
+  206.64 (M/4), 163.41 (M/8), 158.42 M (M/16); differences 43.23 and 4.99 M, ratio 8.7
+  (arithmetic on the three numbers): faster than second order, i.e. M/4 is outside the
+  asymptotic range, as written. The M/8 -> M/16 shift is 3.1 per cent; the seed scatter of t_c
+  at M/8 is not known yet (D2f2s2 cut at 116.5 M; q0024), so whether 3 per cent is resolved is
+  open.
+- M16.2 HOLDS: collisions per particle per M over 0-100 M 8.8646e-3 against 8.8572e-3 (f = 2
+  on M/8), ratio 1.0008. Collisions per particle before t_c 2.109 (M/8: 2.213); energy budget
+  of the collisions 3.0e-16 of sum MH to the first excision.
+- Not judged here: A324s1c+ (C-20261123-032324-938ecbd) ended its chain at 600 M (DONE), but
+  qitem.sh close fails on it: nrpic-run finish now refuses a manifest with a `continuations`
+  field ("hand-written manifest"); it is to be closed by hand next session. A look at its
+  history (nseries.py into scratch/C-sidm/tmp, not registered, not a result) shows the
+  y0 = 0.324 control at N = 1e5 crossing alpha_min = 0.3 at about 600 M [TO VERIFY].
+Failed predictions of this entry: NS.2 (by design one of NS.1/NS.2 had to fail).
