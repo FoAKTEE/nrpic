@@ -694,3 +694,30 @@ t = 17.477) and the comparison of both legs with the base, B-20261125-121830-9ec
 - Q1 is judged in full when the continuation q0042 (P8C) has run; the leg is merged with the cut
   run's directory in the analysis (snapshots to t = 17 from the cut run, from t = 18 from the
   continuation).
+
+## 2026-11-25 09:10 PST (lead of batch 21): N2-N4 against both gauges; predictions
+
+The Newtonian analysis B-20261125-122434-060d53d (`analyze.py`, cases newton_s014, newton_s028 at
+128^3 with the GR runs' own particles, GW box at ng = 64) ended 12:49Z with exit 0 and is closed
+(`nrpic-run finish`, 8 files hashed). Its figures and `results/analysis_n128.json` were copied into
+the package by the script; committed now. Next: `scripts/compare_newton.py` twice, once with the
+zero-shift run's JSON (B-20261124-131918-e71996f/analysis_gr_s014.json), once with the
+Gamma-driver leg's (B-20261125-115558-2ab4161/analysis_gr_gd.json). N2-N4 (05:48 entry of
+2026-11-24) are judged as written, on each gauge separately.
+
+Disclosure before the predictions: while checking the JSON layouts I saw the largest masses at
+a = 132 (Newton 1.794, zero shift 1.743, Gamma driver 1.912) and the log's halo counts of the
+Newtonian runs; nothing else of the comparison.
+
+Added prediction [JUDGEMENT], before the runs:
+- GN1 (which gauge is closer to Newton). The Gamma driver drives the conformal connection to zero,
+  the transverse condition of the conformal metric, which is the spatial part of the Poisson
+  gauge, in which particle positions are the Newtonian ones to first order; zero shift lets the
+  metric take a longitudinal part, which displaces the coordinates of a collapsed halo. So the
+  median |M_GR/M_N - 1| over the matched ten largest halos, averaged over a = 81-132, is smaller in
+  the Gamma-driver leg than in the zero-shift leg. Refuted if it is larger (then the 10-16 per cent
+  gauge spread, R23, is not ordered by this argument).
+- GN2. N4's ratio Omega_qs(GR particles)/Omega_qs(Newton particles) is the same in both gauges to
+  10 per cent (the particles' estimate depends on the gauge only through the positions); the two
+  measures use different grids (the GR dumps' own mesh against ng = 64), so a departure of N4 that
+  grows with a in both gauges alike is first read as the grid, not as relativity.
