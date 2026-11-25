@@ -175,12 +175,12 @@ Let $\langle u, v\rangle_\gamma \equiv \sum_c \sqrt{\gamma}_c \Delta V_c\,u_c v_
 \item \emph{Machine-precision proper-volume conservation across AMR}: weighting the unsplit harmonic update (or each sweep of the directional update) by $\sqrt{\gamma}_c \Delta V_c$ yields
 \begin{multline}\label{eq:mcons_telescoping}
 \sum_{c} \sqrt{\gamma}_c\, q_c^{\rm new} \Delta V_c \\
-= \sum_{c} \sqrt{\gamma}_c\, q_c \Delta V_c + \sum_{\rm faces} \bigl(F_{\rm fine} - F_{\rm coarse}\bigr)\,\Delta A_{\rm face}.
+= \sum_{c} \sqrt{\gamma}_c\, q_c \Delta V_c + \sum_{\rm cf}\!\left(\sum_{f \subset C} F_f\,\Delta A_f - F_C\,\Delta A_C\right).
 \end{multline}
 Adaptive boundary flux matching replaces each coarse face flux with the area-summed fine face fluxes before updating adjacent cells, cancelling every interior pair identically and preserving the conservation identity to rounding precision.
-\item \emph{Self-adjointness and $L^2(\sqrt{\gamma}\,\dd V)$ contractivity}: because the conductance $\sigma_{c+1/2} = \sigma_{c+1/2}^T$ is strictly symmetric and nonnegative, writing one pass as $q^{\rm new} = (I - L_\kappa) q$ yields
+\item \emph{Self-adjointness and $L^2(\sqrt{\gamma}\,\dd V)$ contractivity}: because the face conductance $\sigma_{c+1/2} = \sigma_{(c+1)-1/2} \ge 0$ is symmetric across every face and nonnegative, writing one pass as $q^{\rm new} = (I - L_\kappa) q$ yields
 \begin{align}\label{eq:self_adjoint}
-\langle u,\, L_\kappa v\rangle_\gamma &= \kappa \sum_{\rm faces} \sigma_{\rm face}\frac{\Delta V_{\rm face}}{\Delta x_{\rm face}}(u_+ - u_-)(v_+ - v_-) \nonumber\\
+\langle u,\, L_\kappa v\rangle_\gamma &= \kappa \sum_{\rm faces} \sigma_{\rm face}\,\Delta V_{\rm face}\,(u_+ - u_-)(v_+ - v_-) \nonumber\\
 &= \langle L_\kappa u,\, v\rangle_\gamma.
 \end{align}
 Thus $L_\kappa$ is self-adjoint and positive semidefinite for $\kappa \ge 0$, guaranteeing monotonic $L^2(\sqrt{\gamma}\,\dd V)$ energy smoothing whenever $\lambda_{\max}(L_\kappa) \le 2$.
@@ -256,7 +256,7 @@ w_c &= \exp\!\left(-\frac{\Delta x_{\rm prop} D_f}{\sqrt{\gamma_f}}\frac{\sigma}
 
 \subsubsection{Conservative Cell-BGK packet collisions and Gamma-mixture sampler}
 
-To bridge collisionless and hydrodynamic limits inside the packet representation itself at $\mathcal{O}(1)$ cost per step regardless of optical depth, our Cell-BGK operator hashes packets into subcells of proper volume $\sqrt{\gamma}_c V_c$. Summing rest mass $M_c = \sum_{p\in c} m_p$, normal-observer energy $E_c$, and orthonormal triad momentum $\bm{P}_c$ gives the invariant mass $M_{\rm inv} = \sqrt{E_c^2 - |\bm{P}_c|^2} > M_c$ and mean comoving Lorentz factor $\bar{W}_{\rm com} = M_{\rm inv}/M_c$, from which safeguarded Newton inversion of the Synge equation of state determines dimensionless temperature $\theta$. Each packet relaxes into the local thermal equilibrium with probability $p_{\rm coll} = 1 - e^{-\tau_{\rm coll}}$, where $\tau_{\rm coll} = M_c (\sigma/\mu_p) v_{\rm mol}(\theta)\alpha\Delta t / (V_c U_0^2)$ with bulk Lorentz factor $U_0 = E_c / M_{\rm inv}$.
+To bridge collisionless and hydrodynamic limits inside the packet representation itself at $\mathcal{O}(1)$ cost per step regardless of optical depth, our Cell-BGK operator hashes packets into subcells of proper volume $\sqrt{\gamma}_c V_c$. Summing rest mass $M_c = \sum_{p\in c} m_p$, normal-observer energy $E_c$, and orthonormal triad momentum $\bm{P}_c$ gives the invariant mass $M_{\rm inv} = \sqrt{E_c^2 - |\bm{P}_c|^2} > M_c$ and mean comoving Lorentz factor $\bar{W}_{\rm com} = M_{\rm inv}/M_c$, from which safeguarded Newton inversion of the Synge equation of state determines dimensionless temperature $\theta$. Each packet relaxes into the local thermal equilibrium with probability $p_{\rm coll} = 1 - e^{-\tau_{\rm coll}}$, where $\tau_{\rm coll} = M_c (\sigma/\mu_p) v_{\rm mol}(\theta)\alpha\Delta t / (\sqrt{\gamma}_c V_c U_0^2)$ with bulk Lorentz factor $U_0 = E_c / M_{\rm inv}$.
 
 Relaxing packets draw isotropic comoving kinetic energies $x = W - 1 \ge 0$ from the exact Maxwell--J\"uttner energy distribution $f_{\rm MJ}(x) \propto x^{1/2}(1+x)\sqrt{2+x}\,e^{-x/\theta}$ via a three-component Gamma-mixture majorant envelope valid globally across all $\theta > 0$:
 \begin{equation}\label{eq:mj_majorant}
