@@ -823,3 +823,56 @@ sacct over 8 jobs, 59.4 GB checksummed). Predictions: entries 10 (N1-N4) and 12 
   below -1 M), like FK (29.5 per cent) and unlike ES-FL (0.23 per cent): the early removal goes with the
   ES-FLK set-up (initial_radius_0 1.6), not with the particle number [TO VERIFY: cause].
 The particle sequence now has N and 4N complete; N/4 (FNQ, q0010) runs.
+
+## Entry 23 (2026-11-25 08:25 PST, lead of batch 20, processors only): predictions before the readings
+
+Three readings of registered outputs, written before each analysis runs.
+
+**H, horizon searches (decision 0040 item 3).** Facts, not predictions: no D input sets `<fastflow>
+diagnostics` (grep of g2long/inputs, es_runs/inputs), and no `horizon_status_*` file exists under
+scratch/D-bh-dress (find, 0 files): every D run, card and processor, was made WITHOUT the diagnostics.
+So the recheck uses the two signatures that the source fixes [VERIFIED by reading athenak/src/z4c/
+fastflow.cpp:228-231 and 455-474]: the summary line writes `ah_prop[]`, which is set only by an accepted
+surface and is NaN until the first one of a process; a failed search therefore writes NaN (no surface
+accepted yet in this process, e.g. the first search after a restart) or the bit-identical values of the
+predecessor line. Disclosed: before writing this entry I counted V-1L's file once by hand (1000 lines, one
+bit-identical repeat, at 0.5 M); that count is not a prediction.
+- H1: in every G2 production summary (V-1L, V-1L16, V-1L4, ES-1L, ES-1L16, ES-1L4 FE4, ES-FL, FF4, FK,
+  FN4, FNQ partial) failed searches are fewer than 1 per cent of the lines after 20 M; on the V-1L and
+  V-1L16 plateaus (230-500 M) none. Refuted if any plateau line is a repeat or NaN, or any run has >= 1
+  per cent failed lines after 20 M.
+- H2: every re-search probe of FP and FP-ext (one fresh search per horizon per dump) is found: one finite
+  line per horizon (a failed first search would write NaN). For the four V-1L dumps (100, 250, 400, 500 M)
+  that core searched again with the diagnostics (core-20261125-144142-5858c3d, status found = 1), D's
+  tight-rule mass equals core's horizon-1 mass bit for bit. Refuted by a NaN line or a difference.
+- H3: the numbers of criteria G and N do not move in their quoted digits when failed lines are dropped:
+  fewer than 1 per cent of the removals take M_AH from a repeated line (first sample >= t_rem).
+  Refuted if >= 1 per cent do, or a quoted maximum changes in its second digit.
+
+**R, region norms of FN4 (C3, C11).** Shells from the sphere norms (sqrt<H^2> is volume-weighted, so
+H2^2 V adds): S_A1 = [1.2 r_AH, 6 M] (horizon sphere and sphere 1), S_A2 = [6, 30 M] (spheres 1 and 3).
+- R1: V_in + V_out = V at every record to 1e-10 relative; every column finite.
+- R2: FN4's shell norms at 100 and 200 M lie within a factor 2 of FN4's z = 0 plane norms on the same
+  annuli (xc_plane D-20261125-122849-43db157: A1 4.06e-4 at 100 M) [JUDGEMENT: the plane is a section of
+  the same shell; the volume weight favours its outer part, so the shell norm may be lower]. Refuted if
+  the two differ by more than a factor 3.
+- R3: FNQ (N/4) over FN4 (4N) shell-norm ratio at 100 M (FNQ readable to its second-newest restart) is 4
+  (N^-1/2 over a factor 16), inside [2.8, 5.6]; refuted (not particle noise) if <= 1.5.
+
+**T, the D4 timing (entries 19, 22).** D4 = tau_rem - tau_H(R0) per removed dust particle. Before 219 M
+ES-FL and FK remove by the same rule (horizon excision inside 0.8 rr_min; their horizon masses agree to
+1.8e-6), after it ES-FL removes by the lapse rule further in.
+- T1: restricted to t_rem <= 219 M, FK's fraction below 0 is that of ES-FL within a factor 2 and at most
+  1 per cent in both, minima within 0.1 M: FK's 29.5 per cent (FN4's 34.4) comes from the removals after
+  219 M, where FK keeps excising at 0.8 rr_min soon after the exact crossing while ES-FL removes deeper.
+  Refuted if FK's fraction before 219 M is 5 per cent or more (then the early removal has another cause,
+  e.g. the restart rule rr_min = -1 of nrpic.cpp:448-450).
+- T2: after 219 M FK's and FN4's fractions below 0 are larger than their whole-run values (29.5, 34.4).
+
+**Ruling 0039 item 4, decided here (no run).** The mesh leg of the null test is stated with two members
+(M/8, M/16) and no order, and no M/12 member is queued. Reason [JUDGEMENT]: with the converged finder the
+bubble-minus-vacuum difference is at the floor at both meshes (<= 7.3e-5 at M/8 on 100-500 M, <= 5.5e-5 at
+M/16 on 100-300 M, no trend; fp_analyse D-20261124-172508-c847ee4): there is no error above the floor
+whose order a third member could measure; an M/12 pair (bubble and vacuum) would add a third number at
+the floor for up to four card-hours in a week the usage ruling (0040 item 5) keeps tight and with the
+cards held since the morning. M/4 stays outside the regime (0039 item 4).
