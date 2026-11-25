@@ -1,6 +1,6 @@
 # Stage report: E-stoch-inf G3
 
-Date: 2026-11-25 · branch `track/E-stoch-inf` at `21cd418fcb82` · checklist
+Date: 2026-11-25 · branch `track/E-stoch-inf` at `c42d4e521df2` · checklist
 `tracks/E-stoch-inf/stage/G3/CHECKLIST.md` (from `nrpic-stage collect`)
 
 ## Verdict
@@ -8,7 +8,6 @@ Date: 2026-11-25 · branch `track/E-stoch-inf` at `21cd418fcb82` · checklist
 **FAIL**. Tag: `stage/E-stoch-inf/G3-fail-20261125` (created and pushed by the orchestrator after review, decision 0003).
 
 - 18 checklist items not PASS or NA: C1 OPEN, C2 OPEN, C3 OPEN, C4 OPEN, C5 OPEN, C6 OPEN, C7 OPEN, C9 OPEN, C10 OPEN, C11 OPEN, C12 OPEN, C13 OPEN
-- verify reported FAIL: clean, runs
 - no VERIFIER.md (step 7: verifier subagent; decision 0016 item 1, VERIFIER_REPORT.md accepted too)
 - no stage/G3/EVIDENCE.md (decision 0012)
 
@@ -16,7 +15,7 @@ Date: 2026-11-25 · branch `track/E-stoch-inf` at `21cd418fcb82` · checklist
 
 | Document | State |
 |---|---|
-| `stage/G3/STAGE_REPORT.md` | written by this command |
+| `stage/G3/STAGE_REPORT.md` | present |
 | `stage/G3/EVIDENCE.md` | MISSING |
 | `stage/G3/OPEN.md` | present |
 | `stage/G3/CHECKLIST.md` | present |
@@ -50,13 +49,13 @@ Date: 2026-11-25 · branch `track/E-stoch-inf` at `21cd418fcb82` · checklist
 
 ## Re-verification on a clean checkout (`nrpic-stage verify`)
 
-`nrpic-stage verify` on 2026-11-25T16:35:18Z, clean export of `21cd418fcb82`: **FAIL**. Details: `VERIFY_RESULTS.md`.
+`nrpic-stage verify` on 2026-11-25T16:50:43Z, clean export of `c42d4e521df2`: **PASS**. Details: `VERIFY_RESULTS.md`.
 
 | Check | Result | Message |
 |---|---|---|
-| clean | FAIL | 2 uncommitted paths: commit them first (tracks/E-stoch-inf/RISKS.md, tracks/E-stoch-inf/stage/REVIEW-wave3.md) |
+| clean | PASS | worktree clean (outside the stage directory being assembled) |
 | sync | PASS | main is merged into the branch |
-| export | PASS | clean export of 21cd418fcb82 (HEAD) in /data/haiyangw/nrpic/scratch/E-stoch-inf/tmp/stage-verify/E-stoch-inf-G3-21cd418-20261125T163310Z/tree |
+| export | PASS | clean export of c42d4e521df2 (HEAD) in /data/haiyangw/nrpic/scratch/E-stoch-inf/tmp/stage-verify/E-stoch-inf-G3-c42d4e5-20261125T165017Z/tree |
 | size | PASS | no committed file of the track above 5 MB |
 | note | PASS | tracks/<ID>/note/main.tex present |
 | package | WARN | stage/G3/ lacks EVIDENCE.md (decision 0012; STAGE_REPORT.md comes from `report`); scoping text: spec/scope/SCOPE.md; no verifier's report yet (VERIFIER.md, decision 0016) |
@@ -64,11 +63,11 @@ Date: 2026-11-25 · branch `track/E-stoch-inf` at `21cd418fcb82` · checklist
 | style | PASS | 2 style copies equal harness/style/SHA256SUMS (czstyle.py, paperfig.py) |
 | fig-script | PASS | 12 figures, each with its script |
 | min-figs | PASS | 3 schematics and 9 data figures (brief 13.4 asks at least 1 and 1 at G3) |
-| runs | FAIL | 1 of 317 runs have problems; 7 waived |
+| runs | PASS | 318 run manifests finished (30 hand-written, read as decision 0012 allows); failures of 7 runs waived by coord/WAIVERS.md (decision 0019) |
 | runs-waived | WARN | failures of the manifest check waived: 7 runs named in main's coord/WAIVERS.md (decision 0019 item 6): E-20261123-035724-b661081: records scratch/core/exe/core_noise-level2/athena_gpu (sha256 468109496c82...), replaced in place on 2026-11-24; the file that ran is kept unchanged as scratch/core/exe/core_noise-level2_6ca93cba/athena_gpu (tracks/core/EXE_PROVENANCE.md on core/nrpic); outputs unaffected (decision 0039 item 1); E-20261123-152119-38957ba: records scratch/core/exe/core_noise-level2/athena_gpu (sha256 468109496c82...), replaced in place on 2026-11-24; the file that ran is kept unchanged as scratch/core/exe/core_noise-level2_6ca93cba/athena_gpu (tracks/core/EXE_PROVENANCE.md on core/nrpic); outputs unaffected (decision 0039 item 1); E-20261123-153146-d965002: records scratch/core/exe/core_noise-level2/athena_gpu (sha256 468109496c82...), replaced in place on 2026-11-24; the file that ran is kept unchanged as scratch/core/exe/core_noise-level2_6ca93cba/athena_gpu (tracks/core/EXE_PROVENANCE.md on core/nrpic); outputs unaffected (decision 0039 item 1); E-20261123-153347-18e7c21: records scratch/core/exe/core_noise-level2/athena_gpu (sha256 468109496c82...), replaced in place on 2026-11-24; the file that ran is kept unchanged as scratch/core/exe/core_noise-level2_6ca93cba/athena_gpu (tracks/core/EXE_PROVENANCE.md on core/nrpic); outputs unaffected (decision 0039 item 1); E-20261123-164235-49b0945: records scratch/core/exe/core_noise-level2/athena_gpu (sha256 468109496c82...), replaced in place on 2026-11-24; the file that ran is kept unchanged as scratch/core/exe/core_noise-level2_6ca93cba/athena_gpu (tracks/core/EXE_PROVENANCE.md on core/nrpic); outputs unaffected (decision 0039 item 1) |
 | run-notes | WARN | 30 runs read with defaults or not fully re-verifiable (nrpic-run lint) |
 | checksums | WARN | output checksums not re-verified (--no-checksums) |
-| status | PASS | STATUS.md has 45 lines |
+| status | PASS | STATUS.md has 40 lines |
 | rerun | WARN | re-run skipped (--no-rerun) |
 
 ## Figures

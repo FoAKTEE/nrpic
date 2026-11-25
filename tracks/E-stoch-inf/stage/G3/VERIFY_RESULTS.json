@@ -1,15 +1,15 @@
 {
   "track": "E-stoch-inf",
   "gate": "G3",
-  "commit": "e0b7c8dc58ed4a22f40605df437547612733dc10",
-  "verified_utc": "2026-11-25T16:50:12Z",
-  "export": "/data/haiyangw/nrpic/scratch/E-stoch-inf/tmp/stage-verify/E-stoch-inf-G3-e0b7c8d-20261125T164945Z",
-  "result": "FAIL",
+  "commit": "c42d4e521df2e0b7f783d7f07974450d18337e51",
+  "verified_utc": "2026-11-25T16:50:43Z",
+  "export": "/data/haiyangw/nrpic/scratch/E-stoch-inf/tmp/stage-verify/E-stoch-inf-G3-c42d4e5-20261125T165017Z",
+  "result": "PASS",
   "checks": [
     {
       "check": "clean",
-      "status": "FAIL",
-      "message": "1 uncommitted paths: commit them first (tracks/E-stoch-inf/JOURNAL.md)",
+      "status": "PASS",
+      "message": "worktree clean (outside the stage directory being assembled)",
       "detail": null
     },
     {
@@ -21,7 +21,7 @@
     {
       "check": "export",
       "status": "PASS",
-      "message": "clean export of e0b7c8dc58ed (HEAD) in /data/haiyangw/nrpic/scratch/E-stoch-inf/tmp/stage-verify/E-stoch-inf-G3-e0b7c8d-20261125T164945Z/tree",
+      "message": "clean export of c42d4e521df2 (HEAD) in /data/haiyangw/nrpic/scratch/E-stoch-inf/tmp/stage-verify/E-stoch-inf-G3-c42d4e5-20261125T165017Z/tree",
       "detail": null
     },
     {

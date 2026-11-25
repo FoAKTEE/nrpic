@@ -1,12 +1,12 @@
 # Re-verification: E-stoch-inf G3
 
-`harness/bin/nrpic-stage verify E-stoch-inf G3` on 2026-11-25T16:50:12Z, clean export of commit `e0b7c8dc58ed` in `scratch/E-stoch-inf/tmp/stage-verify/E-stoch-inf-G3-e0b7c8d-20261125T164945Z`. Result: **FAIL**.
+`harness/bin/nrpic-stage verify E-stoch-inf G3` on 2026-11-25T16:50:43Z, clean export of commit `c42d4e521df2` in `scratch/E-stoch-inf/tmp/stage-verify/E-stoch-inf-G3-c42d4e5-20261125T165017Z`. Result: **PASS**.
 
 | Check | Result | Message |
 |---|---|---|
-| clean | FAIL | 1 uncommitted paths: commit them first (tracks/E-stoch-inf/JOURNAL.md) |
+| clean | PASS | worktree clean (outside the stage directory being assembled) |
 | sync | PASS | main is merged into the branch |
-| export | PASS | clean export of e0b7c8dc58ed (HEAD) in /data/haiyangw/nrpic/scratch/E-stoch-inf/tmp/stage-verify/E-stoch-inf-G3-e0b7c8d-20261125T164945Z/tree |
+| export | PASS | clean export of c42d4e521df2 (HEAD) in /data/haiyangw/nrpic/scratch/E-stoch-inf/tmp/stage-verify/E-stoch-inf-G3-c42d4e5-20261125T165017Z/tree |
 | size | PASS | no committed file of the track above 5 MB |
 | note | PASS | tracks/<ID>/note/main.tex present |
 | package | WARN | stage/G3/ lacks EVIDENCE.md (decision 0012; STAGE_REPORT.md comes from `report`); scoping text: spec/scope/SCOPE.md; no verifier's report yet (VERIFIER.md, decision 0016) |
