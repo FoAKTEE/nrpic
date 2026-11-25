@@ -17,16 +17,20 @@ last-result: Lead batch 19 (2026-11-25 07:04-08:00 PST):
                withdrawn (decision 0040), limitation stated. Predictions g3/JOURNAL.md entry 4.
              - Floor (R28) CLOSED: FL256h halves the floor at 256^3 (1.997, 2.000, no sign flip;
                E-20261125-151222-d5a5f2f); note sentences updated (no new number).
-             - Reference state at N_f implemented (A4); smoke run E-20261125-152619-d917a14: phi at
-               N_f already skewed by 0.023 (2e4) [TO VERIFY at 4e6; R35].
-             - Failed: prediction LB2 in part; run E-20261125-152419-40200ec (figure code), fixed.
+             - Reference proper, direct part (E-20261125-152832-c301e92, 4e6): gate 0.99865 +- 0.00058;
+               skewness 0.0199 +- 0.0012; phi at N_f Gaussian (0.0007 +- 0.0012): the non-Gaussianity
+               comes from the map; F_+(3), F_-(3) = 1.50e-3, 1.21e-3; A4 state at N_f implemented.
+             - zeta package: 32^3 mirrored pairs on core-v0.7 processors (E-20261125-153148-cfad424),
+               P1-P4 hold (E-20261125-155027-a9037d9): R_lin even part exactly quadratic in s.
+             - Failed: prediction LB2 in part; run E-20261125-152419-40200ec (figure code), fixed; my
+               reading of the 2e4 smoke run (phi skewed at N_f) refuted by the 4e6 run (R35 withdrawn).
 card plan:   q0050 G3P (pilot, re-entry of q0045, priority 2); q0051 G3C, q0052 G3R (priority 2);
              q0053 G3B00, q0054 G3B01 (baseline pairs 0-18, priority 5, after G3P).
-runs pending: E-20261125-152832-c301e92 (processors, 4e6 reference, background; read and finish it);
-             q0050-q0054 (cards; readers: g3 reader to write, judge_q-type three-amplitude reader).
-next:        1. Finish and read the 4e6 run (gate, skewness, state at N_f: R35); importance sampler
-                at nu = 4 (A9).
-             2. zeta reader with Z0-Z2 on processors (32^3, build_cpu_v07).
+runs pending: q0050-q0054 (cards; readers: g3 reader to write, judge_q-type three-amplitude reader).
+             No processor run in flight.
+next:        1. zeta reader with the map and Z0-Z2 on the existing 32^3 pairs; Z1's independent
+                integrator; the TO VERIFY of 4d.3 (model and landmarks).
+             2. Importance sampler at nu = 4 (A9), two tilted runs; lattice variant at sigma = 0.1.
              3. Read the pilot when it runs: cost per run into 4d.9 A12, then the rest of the
                 baseline (98 pairs) and level 2 (16 pairs).
 blockers:    none (cards held by another partition: R37).

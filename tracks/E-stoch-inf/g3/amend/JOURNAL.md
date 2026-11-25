@@ -108,3 +108,26 @@ N_f, the map Delta N_bg is nearly linear there, and the review's reading (S1, B3
 non-Gaussianity of zeta will come almost entirely from the map") does not hold for the reference; the box's
 d phi skewness at N_f (about 8e-4 from a_R, review run E-20261125-131002-ceefa2f) would then differ from the
 one-patch field's by a factor of about 30, which A4's comparison would show directly.
+
+## entry-6 (2026-11-25 07:55 PST): outcome of the 4e6 reference (entry 5)
+
+Run E-20261125-152832-c301e92 (4e6 paths each, s0.01_lattice and s0.1, 4 cores, 18 minutes;
+`langevin/results/ref_inflection_n32_4e6.json`, `langevin/fig/ref_inflection_n32_4e6_pdf.png` looked at).
+- Gate HOLDS: var/var_lattice_Ne = 0.99865 +- 0.00058 (within 0.002 and within three standard errors).
+- Skewness of s0.01_lattice at N_e 0.0199 +- 0.0012, excess kurtosis 0.0022 +- 0.0021: within two of the
+  pilot's standard errors of 0.0234 (HOLDS). At N_f: 0.0203 +- 0.0012.
+- SM2 HOLDS: var(phi at N_f)/(dphi/dN)^2/var_lattice = 0.99849; corr(phi, varpi) 0.999997.
+- The A4 prediction HOLDS and my smoke-run observation is REFUTED: the skewness of phi at N_f is
+  0.0007 +- 0.0012 (and of varpi 0.011). The 0.023 of the 2e4 smoke run was noise, as its own error bar
+  (+- 0.02) said; I should not have written it up as a possible contradiction of the review. The one-patch
+  field at N_f is Gaussian to 0.0012 while the first-passage delta N is skewed by 0.020: the non-Gaussianity
+  comes from the map (phi, varpi) -> N, as the review's B3 bullet 3 and S1 say. A4's direct comparison
+  therefore tests the NR evolution at a precision of about 0.0012 in skewness (the box's own R_lin
+  coefficient gives about 8e-4 at 128^3, review run E-20261125-131002-ceefa2f), and the zeta comparison tests
+  NR plus the map. R35 is withdrawn.
+- Tails (lattice variant, standardised with the lattice sigma, 4e6): F_+(3) = 1.5015e-3, F_-(3) = 1.2105e-3,
+  F_+(4) = 4.05e-5 (162 paths), F_-(4) = 2.325e-5 (93 paths); A(3) = 0.107. The relative standard error at
+  nu = 4 from direct sampling is 8-10 per cent: A9's sampler is still needed for nu = 4.
+- sigma = 0.1 (continuum density of states): skewness 0.0210 +- 0.0010, 0.0011 +- 0.0016 above the lattice
+  variant at sigma = 0.01: no coarse-graining dependence seen, but the bound at three standard errors (0.0047)
+  is not below 0.0027 as A10 wanted; a lattice variant at sigma = 0.1 of the same size would be the clean test.

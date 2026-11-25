@@ -677,8 +677,11 @@ Decision 0040 item 1 (amend 4d before any G3 production run; gauge leg withdrawn
   R28 closed; three note sentences changed without a new number, compiled (repro/note JOURNAL entry 29).
 - A4 implemented (langevin.py record_N; ref_spec state_Nf, variant filter). Smoke run failed once
   (E-20261125-152419-40200ec, figure code; fixed), rerun E-20261125-152619-d917a14: SM1, SM2 hold;
-  phi at N_f already skewed by 0.023 (R35, TO VERIFY). 4e6 direct reference E-20261125-152832-c301e92
-  started (s0.01_lattice, s0.1; 4 cores).
+  phi at N_f skewed by 0.023 at 2e4, which I wrote up as a possible contradiction of the review (R35);
+  the 4e6 direct reference E-20261125-152832-c301e92 refuted that reading: phi at N_f 0.0007 +- 0.0012,
+  delta N 0.0199 +- 0.0012, gate 0.99865 +- 0.00058 (g3/amend entry 6; R35 withdrawn).
+- zeta package: 32^3 mirrored pairs at s = +-1/4, +-1/2 on core-v0.7 processors (E-20261125-153148-cfad424);
+  P1-P4 hold (E-20261125-155027-a9037d9): the even part of R_lin scales exactly as s^2 (a ratio 1.00004).
 - Queue: q0045 removed and re-entered unchanged at priority 2 (q0050); q0051 G3C, q0052 G3R (priority 2);
   q0053 G3B00, q0054 G3B01 (priority 5, after G3P). Stage G3 collected (CHECKLIST, OPEN.md); REVIEW-wave3
   Part H. Inbox: four infos acknowledged. Outbox: request to core (field-dependent lapse, later), info to orch.

@@ -25,7 +25,7 @@ Run next: cd /data/haiyangw/nrpic/wt/E-stoch-inf && git merge --no-edit main && 
 
 | What | Where | Run id | Read by |
 |---|---|---|---|
-| 4e6 direct reference (s0.01_lattice with state at N_f, s0.1), processors, 4 cores, started 07:28 PST | background on anta | E-20261125-152832-c301e92 | `harness/bin/nrpic-run finish E-20261125-152832-c301e92` (if not yet finished), then commit `langevin/results/ref_inflection_n32_4e6.json` and `langevin/fig/ref_inflection_n32_4e6_*`; judge against g3/amend/JOURNAL.md entry 5 (gate within 0.002, skewness, SM2 within 0.99-1.01, phi skewness at N_f: R35) |
+| (done) 4e6 direct reference, finished and read (g3/amend entry 6) | - | E-20261125-152832-c301e92 | `langevin/results/ref_inflection_n32_4e6.json` |
 | G3P pilot (10 baseline seeds, 2 kdriver, 2 level 2; 128^3) | queue q0050 (priority 2; re-entry of q0045) | from `nrpic-queue show q0050` | the g3 reader (to write); G3P-1..3 of g3/JOURNAL entry 2; A8 record of k000/k001 |
 | G3C: seed 0 at s = +-1, +-1/2, +-1/4, 21 dumps with constraints | q0051 (priority 2) | idem | a three-amplitude reader of the track's own (as g2prod judge_q; risk R30) with A6 |
 | G3R: seed 0 at s = +-1, +-1/2 on 160^3 | q0052 (priority 2) | idem | Richardson reader (4d.5 with A7) against the 128^3 runs of G3C |
@@ -36,13 +36,15 @@ queue entries hold while `tracks/E-stoch-inf/g3/` has uncommitted files: keep th
 
 ## Next, in order
 
-1. The 4e6 run (above). If phi at N_f carries the skewness of delta N (R35), the G3 statement rests on A4
-   (box d phi against the one-patch phi at N_f); write that down in g3/JOURNAL before reading the pilot.
+1. zeta reader (4d.1 (ii)) with Z0-Z2 on processors: the 32^3 mirrored pairs exist
+   (E-20261125-153148-cfad424, zeta/JOURNAL.md entries 1-3); write the map Delta N_bg, Z1's independent
+   homogeneous integrator and the TO VERIFY of 4d.3 (HiggsInflection of sdn/models.py against the deck's
+   potential and landmarks within 1e-4 in N). Then A4 on the pilot: box d phi skewness at N_f against the
+   reference's 0.0007 +- 0.0012.
 2. Importance sampler at nu = 4 (A9): two tilted runs (bias of opposite sign), 1e5-path pilot to fix the
    shift so the tilted median lies in [3.5, 4.5] sigma_lin, validated against direct sampling at nu = 3.
-3. zeta reader (4d.1 (ii)) and Z0-Z2 on processors (32^3 USR, nmax2 = 64, `usr/inputs/modes_usr_n64.txt`,
-   `.work/build_cpu_v07/src/athena`); the independent homogeneous integrator for Z1; the TO VERIFY of 4d.3
-   (HiggsInflection of sdn/models.py against the deck's potential and landmarks within 1e-4 in N).
+3. A lattice variant at sigma = 0.1 with 4e6 paths (A10's coarse-graining bound; the continuum s0.1 gave
+   0.0011 +- 0.0016 above the lattice s0.01 skewness).
 4. When the pilot has run: cost per run into 4d.9 A12 (dated), then queue the remaining baseline pairs 19-127
    (14 runs a job) and level 2 (16 pairs), at most six entries a session.
 
