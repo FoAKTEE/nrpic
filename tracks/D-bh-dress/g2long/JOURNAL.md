@@ -877,7 +877,7 @@ whose order a third member could measure; an M/12 pair (bubble and vacuum) would
 the floor for up to four card-hours in a week the usage ruling (0040 item 5) keeps tight and with the
 cards held since the morning. M/4 stays outside the regime (0039 item 4).
 
-## Entry 24 (2026-11-25 08:12 PST, lead of batch 20): outcomes of H, R, T
+## Entry 24 (2026-11-25 08:05 PST, lead of batch 20): outcomes of H, R, T
 
 **H (horizon searches; hz_check D-20261125-160142-b1c51b5, figure of record D-20261125-160241-2b7ba3b,
 hz_check.png looked at; D-20261125-160123-f86d73c failed on the status-line comment, on record).**
