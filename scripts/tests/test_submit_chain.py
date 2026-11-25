@@ -254,7 +254,7 @@ def main():
         r.returncode != 0 and "used its 2 segments" in r.stderr
         and summary["N_start_at_cap"]["sbatch_calls"] == 2)
     # the name is the same for every segment of one chain and differs between chains
-    names = {n: summary[n]["comm"][0] for n in summary if summary[n]["comm"]}
+    names = {n: summary[n]["comm"][0] for n in SCENARIOS if summary[n]["comm"]}
     checks["names differ between chains"] = len(set(names.values())) == len(names)
     # a PROC_NAME that contains "athena" is refused at start
     d = os.path.join(out, "H_bad_name")
