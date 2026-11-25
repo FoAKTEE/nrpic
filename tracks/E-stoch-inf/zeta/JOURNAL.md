@@ -83,3 +83,38 @@ at eps = box rms. Added after that smoke and before the registered run, as diagn
 at 10 and 100 times eps. Prediction for them: the disagreement falls at least tenfold at 10 eps if it is the
 precision floor of the finite difference (refuted if it does not fall: then the two maps differ along Pi and
 the reader's Pi dependence must be checked before it judges anything). The registered run uses 4000 steps.
+
+## entry-6 (2026-11-25 08:22 PST): outcome of entries 4-5 (run E-20261125-161456-8d3f43c), and one prediction before a rerun of Z1
+
+Reading E-20261125-161456-8d3f43c (4000 RK4 steps; `zeta_tests.json`, `fig_zeta_tests.png` looked at: O_zeta on
+the diagonal against -O_R; the even part of both amplitudes on one line, closer to a_map - a_R than to a_map;
+Z1 errors per direction).
+- LM HOLDS: the deck is HiggsInflection(1.86e-6, 0.198) mapped to code units: vev, lambda, phi0, pi0 equal the
+  prediction to 1.1e-14 relative (H* = 9.3623e-6 Mpl); landmarks within 1.3e-9 in N (USR onset 1.2e-12,
+  inflection point 6.8e-11, USR end 1.3e-9), except the eps2 = 0 down crossing, 4.0e-7 (a flat zero of
+  dln eps1/dN), all far below 1e-4. N at the deck's tlim = 10.000000000000 after N* (N_f). The TO VERIFY of 4d.3
+  is settled [VERIFIED].
+- Z0 PASSES: 3.0e-5 at s = 1/4 and at 1/2 (bar 1e-3; predicted about 1e-4). alpha - 1 at most 3.0e-13; every
+  cell rolls forwards (v_min 2.83e-7).
+- Z1: along phi and along the box relation PASS (first coefficient 2.7e-9 and 6.8e-11, second 7.0e-5 and 4.7e-5);
+  along Pi alone the second coefficient FAILS as written (0.142 against 1 per cent), first passes (2.7e-6).
+  The diagnostics (entry 5): 5.1e-3 at 10 eps, 3.0e-6 at 100 eps: the disagreement falls 28-fold and then
+  4700-fold, so it is a precision floor (entry 5's prediction holds). Which side: the reader's second
+  coefficient per unit eps^2 is 1.33418e-9, 1.33414e-9, 1.33413e-9 at 1, 10, 100 eps (smooth); DOP853's is
+  1.16849e-9, 1.34097e-9, 1.33414e-9: the floor is the independent integrator's (N = ln a at an event, about
+  1e-10 in N), not the reader's. Not yet a cause: tested next.
+- Z2: (i) PASS: a_zeta = 6.76274e-3 (s = 1/4) and 6.76271e-3 (s = 1/2), ratio 0.999996; inside the predicted
+  [6.0e-3, 8.0e-3]; a_zeta sigma_lin(128) = 3.3e-3 inside g3 entry 4's [0.002, 0.008]. (iii) as written FAILS:
+  a_zeta/a_map - 1 = -2.89 per cent (a_map = 6.96379e-3, DOP853 along the box relation; predicted to fail by
+  about 2.6). (iii') PASSES: (a_zeta - (a_map - a_R))/a_map = -0.25 per cent (bar 0.5).
+- A4 preview HOLDS: box variance of d phi at s = 1 over the 8-band reference's (E-20261125-160705-5f75bb4) =
+  1.031, one box's Gaussian scatter 3.1 per cent; intrinsic skewness of d phi 7.4e-5 against 0.0002 +- 0.0020;
+  of zeta 0.00270 against the reference's delta-N skewness 0.0026 +- 0.0020; zeta variance 1.032 of the
+  reference's. The 32^3 box carries the one-patch non-Gaussianity through the map; its field is Gaussian to the
+  reference's precision.
+
+Prediction for the rerun with a second independent map (DOP853 in N on (phi - phi_e, v), event at phi_e, rtol
+3e-14; added to `zeta_reader.py`, the first one kept): along Pi alone at eps = box rms the reader agrees with it
+within 1 per cent in both coefficients, and along phi and the box relation within 0.1 per cent. Refuted if along
+Pi the second coefficient still differs by more than 1 per cent: then the floor is not the t-integrator's alone
+and the reader's Pi dependence is examined before it judges anything.

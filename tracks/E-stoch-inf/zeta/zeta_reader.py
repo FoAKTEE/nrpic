@@ -145,6 +145,22 @@ def map_dop(phi, pi):
     return float(r.y_events[0][0][2])
 
 
+# second independent map (batch 20, zeta/JOURNAL.md entry 6): DOP853 in N on (x = phi - phi_e, v) with an event at
+# x = 0; the first one (in t, N = ln a at the event) has a floor near 1e-10 in N that the second coefficient
+# along Pi alone (1.3e-9 in N at eps = box rms) does not clear.
+def map_dopN(phi, pi):
+    H = np.sqrt(PI8 / 3.0 * (0.5 * pi**2 + V(phi)))
+
+    def rhs(N, y):
+        x, v = y
+        p = x + PHI_E
+        return [v, -(3.0 - PI4 * v * v) * (v + dV(p) / (PI8 * V(p)))]
+    ev = lambda N, y: y[0]  # noqa: E731
+    ev.terminal = True
+    r = solve_ivp(rhs, (0.0, 1e3), [phi - PHI_E, pi / H], method="DOP853", rtol=3e-14, atol=1e-24, events=ev)
+    return float(r.t_events[0][0])
+
+
 # ------------------------------------------------------------ dumps
 VARS = ["phi", "Pi", "chi", "K", "alpha"]
 
@@ -231,15 +247,19 @@ for lab, (ep, eP) in {"phi": (eps_p, 0.0), "Pi": (0.0, eps_P), "box": (eps_p, ep
     Hs = np.sqrt(PI8 / 3.0 * (0.5 * pi**2 + V(ph)))   # a homogeneous state: Friedmann H
     nr = map_rk4(ph, pi / Hs)
     nd = np.array([map_dop(x, y) for x, y in zip(ph, pi)])
+    nN = np.array([map_dopN(x, y) for x, y in zip(ph, pi)])
     c1 = lambda n: (-n[4] + 8 * n[3] - 8 * n[1] + n[0]) / 12.0  # noqa: E731  (per unit step)
     c2 = lambda n: (-n[4] + 16 * n[3] - 30 * n[2] + 16 * n[1] - n[0]) / 12.0  # noqa: E731
     z1[lab] = dict(eps_phi=ep, eps_Pi=eP, N0_reader=float(nr[2]), N0_dop=float(nd[2]),
                    c1_reader=float(c1(nr)), c1_dop=float(c1(nd)), c2_reader=float(c2(nr)), c2_dop=float(c2(nd)),
                    rel_c1=float(c1(nr) / c1(nd) - 1), rel_c2=float(c2(nr) / c2(nd) - 1),
-                   a_map_dop=float(0.5 * c2(nd) / c1(nd)**2), a_map_reader=float(0.5 * c2(nr) / c1(nr)**2))
+                   a_map_dop=float(0.5 * c2(nd) / c1(nd)**2), a_map_reader=float(0.5 * c2(nr) / c1(nr)**2),
+                   c1_dopN=float(c1(nN)), c2_dopN=float(c2(nN)), rel_c1_N=float(c1(nr) / c1(nN) - 1),
+                   rel_c2_N=float(c2(nr) / c2(nN) - 1), N0_dopN=float(nN[2]))
     print("Z1", lab, z1[lab], flush=True)
 res["Z1"] = z1
 res["Z1_pass"] = bool(all(abs(z1[k]["rel_c1"]) < 0.01 and abs(z1[k]["rel_c2"]) < 0.01 for k in ("phi", "Pi", "box")))
+res["Z1_pass_dopN"] = bool(all(abs(z1[k]["rel_c1_N"]) < 0.01 and abs(z1[k]["rel_c2_N"]) < 0.01 for k in ("phi", "Pi", "box")))
 res["Z1_pass_phi_box"] = bool(all(abs(z1[k]["rel_c1"]) < 0.01 and abs(z1[k]["rel_c2"]) < 0.01 for k in ("phi", "box")))
 res["Z0_pass"] = bool(pairs["q"]["Z0"] < 1e-3)
 a_map = z1["box"]["a_map_dop"]
