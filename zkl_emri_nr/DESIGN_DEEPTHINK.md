@@ -3,7 +3,7 @@
 > **Important Clarifications**
 > 1. **Production Solver Requirement**: **All production ZKL runs use full 3+1 Numerical Relativity** (`Z4c` moving-puncture spacetime evolution coupled to self-gravitating relativistic particles in AthenaK/NRPIC). The pure-CPU 1PN+1.5PN EIH/Lense–Thirring scout (`tools/pn_zkl_scout.py`) is strictly a pre-flight parameter-selection tool and secular baseline reference.
 > 2. **Tooling Availability**: No `"neon"` CLI, MCP tool, plugin, or environment skill is installed or configured on this system. This design synthesis was performed directly from first-principles triple-GR analysis, source verification against `athenak/src/`, and the verified 1PN+1.5PN scout matrix (`data/zkl_scout_matrix.json`).
-> 3. **GPU Scheduling**: No GPU jobs will be launched until `gb204` is free from the currently active 24h `64^3` 1M-particle Kerr `0.90` disruption run (`PID 3917314`), or unless explicitly halted earlier by the user.
+> 3. **GPU Scheduling**: All GPU evolutions run exclusively on `gb204` (`NVIDIA B200`, Slurm job `1964821`, never using external B200 queues). Following Phase 0 calibration (`m16_64_L5`), late-time `t=200–300 M` artificial inspiral/resolution loss diagnosis (`G1..G5` gauge/stride ablation), and compact dynamic-AMR verification (`AMR_close`, `P0_compact_s1`), the flagship full-NR evolution **`GR_low_a082_amr`** (`amr_dyn`, `L5->L8`) is now running all the way toward ZKL-driven particle merger before launching the remaining 6 Phase 1 runs.
 
 ---
 
@@ -50,56 +50,44 @@ Exact algebraic inversion of this map recovers instantaneous local Fermi-frame $
 
 ---
 
-## 2. Cheaper, Stable Full-NR Architecture (AthenaK + High-Order NRPIC)
+## 2. Validated Zero-Drag Dynamic-AMR Full-NR Architecture (AthenaK + NRPIC on `gb204`)
 
-To make a systematic multi-run suite affordable on a single `gb204` GPU while preserving central puncture stability over $t \gtrsim 1800\,M$ and clean gravitational waveforms, we combine **`32^3` MeshBlocks**, **static hollow-ring orbital refinement**, **2 gravitating particles**, and **central puncture initial data solved by `id_solve`**.
+Earlier static circular-ring runs (`m16_64_L5`, `3,480` blocks, $\Delta x_{\rm bin} = M/16$, `matter_stride = 4`, `shift_eta = 2.0`, `damp_kappa1 = 0.02`) showed two late-time ($t \approx 200\text{–}300\,M$) bottlenecks: (i) spurious secular outer orbital inspiral caused by Z4c constraint/gauge drag (`matter_stride > 1` + standard $\eta = 2.0$, $\kappa_1 = 0.02$), and (ii) insufficient static resolution ($\Delta x_{\rm bin} = M/16$) during high-eccentricity ZKL pericenter passages ($r_{\min} \sim 0.11\,M$) and merger. Our production **`amr_dyn`** architecture resolves both simultaneously on `gb204`.
 
-### 2.1 Why Static `32^3` Hollow-Ring Refinement?
-1. **Zero AMR Regridding Noise in Waveforms**: Using `<mesh_refinement> refinement = static` with stacked `<refined_regionK>` boxes avoids dynamic block creation/destruction boundary reflections when extracting subtle ZKL waveform modulations at **`waveform_dt = 0.1`** ($5\times$ higher cadence than `0.5` in `kerr09_tde_1m.athinput`).
-2. **Symmetric Cell-Corner Puncture Placement**: Per `nrpic_idsolve.cpp`, a puncture cannot sit on a cell center (`IdFatal("<particles> id_solve: a puncture sits on a cell centre")`). A root domain `[-128.0, 128.0]^3` with `nx1=nx2=nx3=128` (`dx_0 = 2.0 M`, `4 x 4 x 4` blocks of `32^3`) places `(0,0,0)` strictly on a cell corner/face at all levels.
-3. **Hollow Orbital Slab Optimization**: Four non-overlapping static `<refined_region>` boxes forming a square annulus `max(|x|,|y|) in [12, 18] M`, `z in [-2, 2] M` cover the entire outer orbital belt $r_{\rm out} = 15 \pm 2.1\,M$ and inner tilted plane ($|z| \le a_{\rm in} \le 0.86\,M$) at fine orbital resolution while leaving the empty `|x|,|y| < 12` annular interior coarser (`dx = M/8`), cutting fine orbital blocks by ~44% relative to a solid slab:
+### 2.1 Zero-Drag Gauge/Stride Calibration & `amr_dyn` Moving Hierarchy
+1. **Self-Force Elimination & Conformal Initial Data**: Using **`deposit_shape = pcs`**, **`interp = quintic`**, split metric-conservative filtering (`filter_metric_conservative = true`, `filter_mcons_unsplit = false`), **`source_stage_extrap = true`**, **`rk3 cfl_number = 0.35, diss = 0.20`** with **`nfilter = 6`** ($\sigma_{\rm eff} = \sqrt{4/12 + 6/2}\,\Delta x = 1.826\,\Delta x = 0.1141\,M$ at $L_5 = M/16$), plus `<problem> ncomp = 3` conformal Gaussian wells and bare-mass compensation `m_bare = m_i (1 + m_i / (\sqrt{2\pi}\,\sigma_{\rm eff}))`, eliminates grid-aliasing self-force and matches ADM mass/momentum ($|\mathbf{P}_{\rm ADM}| \le 1.3\times 10^{-9}$).
+2. **Gauge & Matter-Stride Drag Fix (`G1..G5` Ablation on `gb204`)**: Ablating `matter_stride`, `nfilter`, `damp_kappa1`, and `shift_eta` at `L4–L5` established that **`matter_stride = 1`**, **`damp_kappa1 = 0.50`**, and tracker-following Gamma-driver shift damping (`shift_eta_profile = true`, `shift_eta = 0.07`, `shift_eta_mref = 2.0 / shift_eta = 28.5714`, `shift_eta_width = 2.0`) suppress specific orbital angular-momentum drift down to `|d ln L_z / dt| = 3.887e-5 M^-1` (`g_uy ~ -1.3e-5 to -3.7e-5 M^-1`, `H2(15) = 5.7e-5 to 1.83e-4`), whereas `matter_stride = 2` degraded drift to `-1.441e-4 M^-1`.
+3. **Separation-Adaptive `NRPICCFRefinement` (`amr_dyn`)**: Combining `z4c_amr/method = tracker` (`radius_0_rad = 24.0`, `radius_0_reflevel = 1`) with custom `NrpicCFRefinement` (`athenak/src/pgen/nrpic/nrpic_cf.cpp`, `<amr_criterion0> method = user`, `ncycle_check = refinement_interval = 16`, `max_nmb_per_rank = 2400`) maintains a compact wave-zone + SMBH puncture hierarchy while dynamically nesting `16^3` blocks around the comoving binary from `L5` ($\Delta x = M/16$) down to `L8` ($\Delta x = M/128$ = `0.0078125 M`) as separation $d_{\min}$ shrinks (`track_cells_between = 8.0`, `track_buffer_cells = 14.0`, `track_min_radius = 1.0`, `track_hysteresis = 2.50`, `track_spatial_hysteresis = 1.12`).
 
-| Level | Cell width $\Delta x$ | Static Region Box(es) | Purpose |
+| Level | Cell width $\Delta x$ | Dynamic / Static Zone | Purpose |
 |---|---|---|---|
-| `L0` | `2.0 M` | `[-128, 128]^3` (`4^3` blocks of `32^3`) | Outer asymptotic domain, Robin MG boundary |
-| `L1` | `1.0 M` | `[-64, 64]^3` | Buffer to wave zone |
-| `L2` | `0.5 M` | `[-48, 48]^3` | GW extraction spheres (`r = 22, 30, 38 M`, `extraction_nlev = 2`) |
-| `L3` | `0.25 M` | `[-24, 24]^3` | Near-field tidal zone |
-| `L4` | `0.125 M` (`M/8`) | `[-20, 20]^2 x [-4, 4]` | Outer orbital envelope & central BH skirt |
-| `L5` | `0.0625 M` (`M/16`) | 4 ring boxes: `x in [12,18]`, `x in [-18,-12]`, `y in [12,18]`, `y in [-18,-12]` (`z in [-2,2]`); plus `[-4,4]^3` around SMBH | Inner-binary orbit (`11.5–13.1` cells per $a_{\rm in}$, `m_i/dx = 0.064 << 1`) & central puncture L5 buffer |
-| `L6` | `0.03125 M` (`M/32`) | `[-2, 2]^3` around SMBH origin (`4^3 = 64` blocks) | Nonspinning SMBH ($\chi_0 = 0$) core (`32.0` cells/diameter at $t=0$, `~53` evolved); nested buffer for spinning runs |
-| `L7` | `0.015625 M` (`M/64`) | `[-1, 1]^3` around SMBH origin (`+64` blocks; spinning runs only) | Spinning Kerr SMBH ($|\chi_0| \in \{0.7, 0.9\}$) core (`>= 32` cells across evolved polar/mean horizon diameter) |
+| `L0` | `2.0 M` | `[-64, 64]^3` (`4^3` blocks of `16^3`) | Asymptotic domain, multipole Robin MG boundary & extraction sphere `r = 38 M` (`extraction_nlev = 2`) |
+| `L1` | `1.0 M` | `r <= 24.0 M` (`z4c_amr tracker`) | Compact wave zone (`extraction_radius = 22, 30, 38 M`, `waveform_dt = 0.1 M`) |
+| `L2–L4` | `0.5 – 0.125 M` | Automatic 2:1 AMR transition shells | Connects `L1` smoothly to central SMBH core and orbital binary patch |
+| `L5–L8` | `0.0625 – 0.0078125 M` (`M/16 – M/128`) | Dynamic binary box (`track_cells_between = 8`, `buffer = 14`) | Tracks shrinking pericenter ($r_{\min} \sim 0.11\,M$) toward merger (`596 -> 834` blocks vs `3,480` static) |
+| `L6 / L7` | `0.03125 / 0.015625 M` (`M/32 / M/64`) | `[-0.85, 0.85]^3` (`|\chi_0| \le 0.7`) or `[-0.48, 0.48]^3` ($\chi_0 = +0.9$) | Central SMBH puncture core (`D_AH = 32.0 -> 64.2` cells at $\chi_0=0$) |
 
-### 2.1.1 Enforcing $\ge 32$ Cells Across the Central Horizon Diameter
-Measurements from our active $\chi_0 = 0.90$ run (`kerr09_tde_1m.horizon_summary_0.txt`, `comp0_mass = 0.4535`, `M_AH ≈ 1.00–1.01 M`) show why `M/32` alone falls short at high spin:
-- At $t = 0$ (Bowen–York slice): `meanradius = 0.2283 M`, `minradius = 0.2280 M` $\implies D_0 = 0.456\,M$ (`14.6` cells at `M/32`, contributing to the initial relaxation drift from `M_AH = 1.0003` to `1.0110 M`).
-- After trumpet relaxation ($t = 57.6\,M$): `meanradius = 0.5467 M`, `minradius = 0.4637 M` $\implies$ polar diameter $D_{\min} = 0.9275\,M$ (`29.7` cells at `M/32` — **below the 32-cell threshold**) and mean diameter $D_{\rm mean} = 1.0935\,M$ (`35.0` cells at `M/32`).
-
-To guarantee $\ge 32$ cells across the central black hole horizon for every spin without inflating the outer orbital slab or wave zone:
-
-| Configuration | Core Level & $\Delta x_{\rm BH}$ | Total `32^3` Blocks (Cells) | Initial Diameter $D_0 / \Delta x_{\rm BH}$ | Evolved Diameter $D_{\min} / \Delta x_{\rm BH}$ ($D_{\rm mean}/\Delta x_{\rm BH}$) | RK3 CFL $\Delta t$ (`cfl=0.40`) | Cycles to `t=1800 M` |
-|---|---|---|---|---|---|---|
-| **$\chi_0 = 0$ (Suites 1 & 2, 7 runs)** | `L6`: `M/32` (`[-2, 2]^3`) | `~600` (`~19.7M`) | `32.0` ($D_0 \approx 1.00\,M$) | `~53` ($D_{\rm AH} \approx 1.66\,M$) | `0.0125 M` | `144,000` |
-| **$|\chi_0| = 0.7$ (Suites 3 & 4, 3 runs)** | `L7`: `M/64` (`[-1, 1]^3`) | `~664` (`~21.8M`) | `~45` ($D_0 \approx 0.70\,M$) | `~83` ($D_{\min} \approx 1.30\,M$) | `0.00625 M` | `288,000` |
-| **$\chi_0 = +0.9$ (`SPIN_p09`, 1 run)** | `L7`: `M/64` (`[-1, 1]^3`) | `~664` (`~21.8M`) | `29.2` (`>32` by $t=0.8\,M$) | `59.4` polar (`70.0` mean) | `0.00625 M` | `288,000` |
-| **Alt. Phase-0 Benchmark (`VAL_BH_42`)** | `L7`: `M/42.7` (`[-1.5, 1.5]^3` on `[-96,96]^3, nx=64`) | `~950` (`~31.1M`) | `19.5` ($\chi_0=0.9$) / `~30` ($0.7$) | `39.6` polar / `46.7` mean ($\chi_0=0.9$) | `0.00938 M` | `192,000` |
-
-Note the practical cost split: adding `L7` (`[-1, 1]^3`) adds only `+64` blocks (`+2.1M` cells, keeping all runs far smaller than the active `48M`-cell 1M cloud grid), while cutting the CFL timestep by $2\times$ (`0.00625 M` vs `0.0125 M`) exclusively for the 4 spinning runs (`SPIN_p07`, `SPIN_m07`, `SPIN_p09`, `OCT_q3_I80`), leaving all 7 Schwarzschild runs at `0.0125 M`. Tightening `a_out` (e.g., to `13 M`) remains a backup lever in Phase 0 if cycle throughput needs shorter `t_ZKL \propto a_{\rm out}^{3/2}`.
-
-- **Convergence & Horizon Calibration Check (Phase 0)**: Run `VAL_CONV_24` (`dx_0 = 1.5 M` on `[-144, 144]^3`, `nx = 192` $\implies$ `dx_bin = M/21.3`, `dx_BH = M/42.7`) and `VAL_BH_RES` (`\chi_0 = +0.9` comparing `M/32`, `M/42.7`, and `M/64` cores) over $t \le 300\,M$ to verify irreducible SMBH horizon mass $M_{\rm AH}$ and spin $\chi_{\rm AH}$ drift remain $< 10^{-3}$, confirm $\ge 32$ cells across evolved $D_{\min}$, and ensure two-particle binding holds without self-trapping (`m_i/\Delta x_{\rm bin} \le 0.1`).
-- **Projected Memory Footprint (scaling estimate, not yet benchmarked)**: Whereas the active 1M-particle `64^3` cloud mesh (`183` blocks $\approx 48.0\text{M}$ cells + $10^6$ particle buffers) occupies `122.8 GiB` on `gb204`, this `32^3` hollow-ring + core grid uses $\sim 600\text{–}664$ blocks ($\sim 19.7\text{–}21.8\text{M}$ cells) with only $N = 2$ particles (negligible particle push/deposit cost), fitting comfortably inside $\sim 35\text{–}45\text{ GiB}$ VRAM with substantially higher evolution speed ($M/\text{hr}$).
+### 2.1.1 Measured Validation, AMR Close-Encounter & Zero-Drag Benchmarks (`gb204`)
+| Calibration / Benchmark Run | Configuration & Mesh | Blocks & Peak VRAM / Speed | Constraint & Horizon | Orbital / Secular Fidelity |
+|---|---|---|---|---|
+| **`VAL_P0_GR_low_a082`** (`t = 25.0 M`) | Static `m16_64_L5`, `L6` (`M/32`), `ms=4, nf=4` | `3,480` blks, `134.6 GiB`, `77.11 M/hr` | `M_AH: 1.000205 -> 1.000143` (`-6.15e-5`), `32.0 -> 78.9` cells/D | `e_in in [0.0188, 0.1084]`, `r_prop = 0.8609 -> 0.7892 M` |
+| **`SPIN_p07` Calib.** (`nlim=1`) | Static `m16_64_L5`, $\chi_0=+0.7$, `comp0_mass=0.7518` | `3,480` blks, `133.8 GiB` | `M_AH(0) = 1.000138`, $S_z = 0.699999$ | `P_ADM = 9.82e-10` |
+| **`AMR_close`** (`t = 3.5 M`) | Close encounter, `L5->L8->L6` (`z4c_amr=trivial`) | `344 -> 820 -> 400` blks, `wall = 110.34 s`, `NaN = False` | Dynamic refine `5->6` (`0.5685 M`), `6->7` (`0.2928 M`), `7->8` (`0.1413 M`); derefine `8->7->6` | Tracks pericenter `d: 0.7000 -> 0.0555 -> 0.6486 M` |
+| **`P0_compact_s1`** (`t = 15.0 M`, **WINNER**) | `amr_dyn`, `L6` BH + `L5..L8` track, `ms=1, nf=6, k1=0.50, eta=0.07` | **`596 -> 834 -> 778`** blks, **`159.2 M/hr`** (`2.06x` vs static) | `M_AH0 = 1.0002`, `\|dM/M0\| = 7.26e-5`, `D_AH = 32.0 -> 64.2`, `H2(15) = 1.83e-4`, `M2(15) = 5.79e-5` | **`d ln L_z/dt = -3.887e-5 M^-1`**, `r_com = 15.00 -> 15.07`, `e15 = 0.097`, `max\|Psi4\| = 6.53e-4` |
+| **`P0_compact_s2`** (`t = 15.0 M`, rejected) | Same as `P0_compact_s1` with `matter_stride = 2` | `596 -> 834 -> 778` blks, `201.2 M/hr` | `H2(15) = 1.94e-4` | `d ln L_z/dt = -1.441e-4 M^-1` (`> 5e-5` cutoff) |
 
 ### 2.2 Verified AthenaK Solver & Initial-Data Configuration
-All keys below are verified against `athenak/src/` and `kerr09_tde_1m.athinput` / `tracers_single.athinput`:
-- **Spacetime (`<z4c>`)**: `lapse_oplog = 2.0`, `lapse_harmonicf = 1.0`, `lapse_harmonic = 0.0`, `lapse_advect = 1.0`, `shift_Gamma = 0.75`, `shift_eta = 2.0`, `shift_advect = 1.0`, `diss = 0.5`, `chi_div_floor = 1.0e-5`, `damp_kappa1 = 0.02`, `damp_kappa2 = 0.0`, `tracker_mode = ode`, `nrad_wave_extraction = 3`, `extraction_radius_0 = 22.0`, `extraction_radius_1 = 30.0`, `extraction_radius_2 = 38.0`, `extraction_nlev = 2`, **`waveform_dt = 0.1`** ($5\times$ higher cadence than `0.5`).
+All keys below are verified against `athenak/src/` and `P0_compact_s1` on `gb204` (`gen_zkl_run.py --mesh-preset amr_dyn`):
+- **Mesh & Refinement (`<mesh_refinement>`, `<z4c_amr>`, `<amr_criterion0>`, `<particles_amr>`)**: `refinement = adaptive`, `max_nmb_per_rank = 2400`, `num_levels = 10`, `ncycle_check = 16`, `refinement_interval = 16`, `<z4c_amr> method = tracker, radius_0_rad = 24.0, radius_0_reflevel = 1`, `<amr_criterion0> method = user`, `<particles_amr> track_particles = true, track_min_level = 5, track_max_level = 8, track_cells_between = 8.00, track_buffer_cells = 14.00, track_min_radius = 1.00, track_hysteresis = 2.50, track_spatial_hysteresis = 1.12`.
+- **Time Integration & Spacetime (`<time>`, `<z4c>`)**: `integrator = rk3`, `cfl_number = 0.35`, `lapse_oplog = 2.0`, `lapse_harmonicf = 1.0`, `lapse_harmonic = 0.0`, `lapse_advect = 1.0`, `shift_Gamma = 0.75`, `shift_eta = 0.07`, `shift_eta_profile = true`, `shift_eta_mref = 28.5714285714`, `shift_eta_width = 2.0`, `shift_advect = 1.0`, `diss = 0.20`, `chi_div_floor = 1.0e-5`, `damp_kappa1 = 0.50`, `damp_kappa2 = 0.0`, `tracker_mode = ode`, `nrad_wave_extraction = 3`, `extraction_radius_{0,1,2} = 22.0, 30.0, 38.0`, `extraction_nlev = 2`, **`waveform_dt = 0.1`**.
 - **Particles (`<particles>`)**:
-  `particle_type = nrpic`, `pusher = vlasov_hybrid`, `vlasov_mode = hybrid`, **`vlasov_pusher = gl4`**, **`vlasov_time_interp = quadratic`**, **`interp = quintic`**, `metric = mesh`, `tolerance = 2.0e-14`, `max_iterations = 200`, `deposit = true`, `deposit_shape = tsc`, `deposit_comp_c = 0.0`, `nfilter = 2`, **`filter_metric_conservative = true`**, **`filter_mcons_unsplit = true`**, **`source_stage_extrap = true`**, `matter_stride = 1` (update full particle self-gravity every metric step cleanly since $N=2$), `traj_ntrack = 2`, `traj_dcycle = 4`, `snap_dt = 2.5`.
+  `particle_type = nrpic`, `pusher = vlasov_hybrid`, `vlasov_mode = hybrid`, **`vlasov_pusher = gl4`**, **`vlasov_time_interp = quadratic`**, **`interp = quintic`**, `metric = mesh`, `tolerance = 2.0e-14`, `max_iterations = 200`, `deposit = true`, **`deposit_shape = pcs`**, `deposit_comp_c = 0.0`, **`nfilter = 6`**, **`filter_compensate = false`**, **`filter_metric_conservative = true`**, **`filter_mcons_unsplit = false`**, **`source_stage_extrap = true`**, **`matter_stride = 1`**, `traj_ntrack = 2`, `traj_dcycle = 4`, `snap_dt = 5.0`.
 - **Constraint Initial-Data Solver (`<particles>` + `<gravity>`)**:
-  `id_solve = true`, `id_vector = true`, `id_residual = stencil`, `id_vector_residual = stencil`, `id_psi_init = trial`, `id_puncture_radius = 1.0`, `id_far = multipole`, `id_tol = 1.0e-8`, `<gravity> four_pi_G = 1.0`, `threshold = 0.0`, `mg_bc = robin`, `robin_x1 = 0.0`, `robin_x2 = 0.0`, `robin_x3 = 0.0`.
-- **Central SMBH Puncture (`<problem>`)**:
-  `pgen_name = nrpic_cf`, `ncomp = 1`, `comp0_type = puncture`, `comp0_mass` calibrated so initial AH mass equals $1.000\,M$ (`~0.5000` for $\chi_0=0$, `~0.4535` for $\chi_0=0.9$), `comp0_p{1,2,3}` equal and opposite to the total particle ADM linear momentum (zero net triple momentum), `comp0_s3 = \chi_0 M_0^2`, `lapse = precollapsed`, `puncture_setup = false`.
+  `id_solve = true`, `id_vector = true`, `id_residual = stencil`, `id_vector_residual = stencil`, `id_psi_init = trial`, `id_puncture_radius = 1.0`, `id_far = multipole`, `id_tol = 1.0e-7`, `id_vector_tol = 1.0e-4`, `id_maxit = 25`, `<gravity> four_pi_G = 1.0`, `threshold = 0.0`, `mg_bc = robin`.
+- **Three-Component Conformally Flat IC (`<problem>`)**:
+  `pgen_name = nrpic_cf`, `ncomp = 3`, `comp0_type = puncture` (`comp0_mass` calibrated: `1.0000` for $\chi_0=0$, `0.7518` for $|\chi_0|=0.7$, `0.4535` for $\chi_0=0.9$, `comp0_p{1,2,3}` balancing particle ADM momenta, `comp0_s3 = \chi_0 M_0^2`), `comp1, comp2` stationary `gaussian` wells (`comp_mass = m_{1,2}`, `comp_sigma = sigma_eff`), `lapse = precollapsed`, `puncture_setup = false`.
 - **Checkpoints (`<output*>`)**:
-  `.hst` (`dt = 0.1`), `.rst` checkpoints (`dt = 100.0`, enabling safe resume/extend for each sweep run), 2D slices `z4c_alpha` and `con_H` in both `x-y` (`slice_x3 = 0.001`) and `x-z` (`slice_x2 = 0.001`) at `dt = 2.5`.
+  `.hst` (`dt = 0.5`), `.rst` checkpoints (`dt = 100.0`, wall-limit `-t 23:00:00`), 2D slices `alpha_xy`, `alpha_xz`, and `conH_xy` at `dt = 5.0`.
 
 ---
 
@@ -115,14 +103,16 @@ Outputs: Incremental `frame_NNNNN.png`, animated `*.webp` and `*.gif` (and `.mp4
 
 ---
 
-## 4. Phased Full-NR Production Schedule (Pending `gb204` Availability)
+## 4. Phased Full-NR Production Schedule (`gb204`, Slurm Job `1964821`)
 
-All production ZKL runs listed below are **full 3+1 Numerical Relativity simulations** and remain **queued (NOT started)** until the active 1M Kerr disruption run completes:
-1. **Phase 0 (Validation & Calibration, $t_{\rm max} = 300\,M$)**: Calibrate $\chi_0 \in \{0, \pm 0.7, +0.9\}$ bare masses and run `VAL_CONV_24` ($M/16$ vs $M/21.3$ orbital convergence) plus `VAL_BH_RES` (`M/32` vs `M/42.7` vs `M/64` central core benchmark) to confirm $\ge 32$ cells across evolved horizon diameter, horizon $M_{\rm AH}/\chi_{\rm AH}$ stability, and zero spurious Fermi IC eccentricity drift.
-2. **Phase 1 (Core Physics Matrix — 7 Key Full-NR Runs, $t_{\rm max} = 1800\,M$ each)**:
-   - Suite 1 (Inclination threshold): `I20_subcrit`, `FID_I82_chi0`, `I86_high`
-   - Suite 2 (GR quenching): `GR_low_a082`, `GR_high_a055`
-   - Suite 3 (Kerr spin): `SPIN_p07`, `SPIN_m07`
-3. **Phase 2 (Extended Spin & Octupole Completion — 4 Full-NR Runs)**:
-   - `I60_mild`, `GR_mid_a062`, `SPIN_p09`, `OCT_q3_I80`
-4. **Phase 3 (Paper Completion)**: Populate `[PENDING FULL-NR RUNS]` placeholders in `zkl_emri_nr/paper/main.tex` with full-NR ZKL orbital cycles, $r\Psi_4$ waveform modulation analysis at `0.1 M` cadence, constraint convergence figures, and finalize PRL submission.
+All production ZKL runs listed below use **full 3+1 Numerical Relativity** exclusively on `gb204` (`NVIDIA B200`, Slurm job `1964821`):
+1. **Phase 0 & Zero-Drag `amr_dyn` Calibration (COMPLETED)**:
+   - Static calibration (`VAL_P0_GR_low_a082`, `SPIN_p07` `comp0_mass = 0.7518`) verified `M_AH` accuracy (`|dM/M| < 1e-4`), horizon cell coverage (`>= 32`), and Fermi-harmonic IC (`|P_ADM| < 1e-9`).
+   - Gauge/stride ablation (`G1..G5`), isolated close-encounter tracking (`AMR_close`, `L5->L8->L6` down to `d = 0.0555 M`), and compact full-3+1 benchmark (`P0_compact_s1`, `amr_dyn`, `matter_stride = 1`, `nfilter = 6`, `damp_kappa1 = 0.50`, `shift_eta = 0.07`, `159.2 M/hr`, `|d ln L_z / dt| = 3.887e-5 M^-1`) resolved the `t = 200–300 M` artificial drag and pericenter resolution issues.
+2. **Phase 1A (Flagship Long Merger Run — ACTIVE on `gb204`)**:
+   - **`GR_low_a082_amr`** (`amr_dyn`, `L5->L8`, `tlim = 3000.0 M`, `rst_dt = 100.0 M`, `waveform_dt = 0.1 M`) running all the way through ZKL eccentricity growth toward particle merger (`t_merge ~ 2200 M` in 1PN+2.5PN scout) to verify merger waveforms and late-time AMR scaling before queueing the remaining suite.
+3. **Phase 1B (Remaining Core Physics Matrix — 6 Full-NR Runs on `amr_dyn`)**:
+   - `FID_I82_chi0`, `I20_subcrit`, `GR_high_a055`, `I86_high`, `SPIN_p07`, `SPIN_m07`.
+4. **Phase 2 (Extended Spin & Octupole Completion — 4 Full-NR Runs on `amr_dyn`)**:
+   - `I60_mild`, `GR_mid_a062`, `SPIN_p09`, `OCT_q3_I80`.
+5. **Phase 3 (Paper Completion)**: Populate `[PENDING FULL-NR RUNS]` placeholders in `zkl_emri_nr/paper/main.tex` with full-NR ZKL orbital cycles, $r\Psi_4$ waveform modulation analysis at `0.1 M` cadence, constraint convergence figures, and finalize PRL submission.

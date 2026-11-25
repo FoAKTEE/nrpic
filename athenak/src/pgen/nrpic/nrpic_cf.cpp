@@ -42,6 +42,8 @@
 //! <problem> puncture_setup = true adds a tracker, an initial refined region and a
 //! horizon finder for every puncture: nrpic_puncture_setup.hpp.
 
+#include <algorithm>
+#include <array>
 #include <cmath>
 #include <cstdio>
 #include <fstream>
@@ -176,8 +178,147 @@ Real CFExcess(const CFComp &c, const DvceArray1D<Real> &utab, const Real x, cons
   }
 }
 
+struct CFTrackAmr {
+  bool enabled = false;
+  bool z4c_trivial = true;
+  int min_level = 5;
+  int max_level = 9;
+  Real cells_between = 10.0;
+  Real buffer_cells = 18.0;
+  Real min_radius = 0.0;
+  Real hysteresis = 1.6;
+  Real spatial_hysteresis = 1.25;
+  bool verbose = false;
+  int cur_level = 5;
+};
+
+CFTrackAmr cf_track_amr;
+
 void NrpicCFRefinement(MeshBlockPack *pmbp) {
   pmbp->pz4c->pamr->Refine(pmbp);
+  if (!cf_track_amr.enabled) return;
+
+  Mesh *pmesh = pmbp->pmesh;
+  if (pmesh == nullptr || pmesh->pmr == nullptr || !pmesh->adaptive) return;
+  particles::Particles *ppart = pmbp->ppart;
+  if (ppart == nullptr || !ppart->is_nrpic || ppart->nprtcl_thispack <= 0) return;
+
+  auto rh = Kokkos::create_mirror_view_and_copy(HostMemSpace(), ppart->prtcl_rdata);
+  std::vector<std::array<Real, 3>> pts;
+  pts.reserve(ppart->nprtcl_thispack);
+  for (int p = 0; p < ppart->nprtcl_thispack; ++p) {
+    const Real m_p = rh(IPM, p);
+    const Real x = rh(IPX, p), y = rh(IPY, p), z = rh(IPZ, p);
+    if (m_p > 0.0 && std::isfinite(x) && std::isfinite(y) && std::isfinite(z)) {
+      pts.push_back({x, y, z});
+    }
+  }
+  if (pts.empty()) return;
+
+  std::vector<std::array<Real, 3>> centers = pts;
+  Real d_min = 1.0e300;
+  for (size_t a = 0; a < pts.size(); ++a) {
+    for (size_t b = a + 1; b < pts.size(); ++b) {
+      const Real dx = pts[b][0] - pts[a][0];
+      const Real dy = pts[b][1] - pts[a][1];
+      const Real dz = pts[b][2] - pts[a][2];
+      const Real d = std::sqrt(dx * dx + dy * dy + dz * dz);
+      if (d < d_min) d_min = d;
+      centers.push_back({
+          static_cast<Real>(0.5) * (pts[a][0] + pts[b][0]),
+          static_cast<Real>(0.5) * (pts[a][1] + pts[b][1]),
+          static_cast<Real>(0.5) * (pts[a][2] + pts[b][2])});
+    }
+  }
+
+  const Real dx0 = (pmesh->mesh_size.x1max - pmesh->mesh_size.x1min) /
+                   static_cast<Real>(pmesh->mesh_indcs.nx1);
+  const int phys_max = std::max(0, pmesh->max_level - pmesh->root_level);
+  const int lmin = std::max(0, std::min(cf_track_amr.min_level, phys_max));
+  const int lmax = std::max(lmin, std::min(cf_track_amr.max_level, phys_max));
+
+  int lvl = std::max(lmin, std::min(cf_track_amr.cur_level, lmax));
+  if (pts.size() < 2) {
+    lvl = lmin;
+  } else {
+    while (lvl < lmax &&
+           d_min < cf_track_amr.cells_between * (dx0 / static_cast<Real>(1 << lvl))) {
+      ++lvl;
+    }
+    while (lvl > lmin &&
+           d_min > cf_track_amr.hysteresis * cf_track_amr.cells_between *
+                       (dx0 / static_cast<Real>(1 << (lvl - 1)))) {
+      --lvl;
+    }
+  }
+  if (cf_track_amr.verbose && lvl != cf_track_amr.cur_level &&
+      global_variable::my_rank == 0) {
+    std::cout << "NRPIC_CF_AMR: t=" << pmesh->time << " cycle=" << pmesh->ncycle
+              << " d_min=" << d_min << " target_level " << cf_track_amr.cur_level
+              << " -> " << lvl << " (dx=" << (dx0 / static_cast<Real>(1 << lvl))
+              << ")" << std::endl;
+  }
+  cf_track_amr.cur_level = lvl;
+
+  auto &refine_flag = pmesh->pmr->refine_flag;
+  auto &size = pmbp->pmb->mb_size;
+  const int nmb = pmbp->nmb_thispack;
+  const int mbs = pmesh->gids_eachrank[global_variable::my_rank];
+
+  for (int m = 0; m < nmb; ++m) {
+    const int m_glob = m + mbs;
+    const int level = pmesh->lloc_eachmb[m_glob].level - pmesh->root_level;
+    const Real x1min = size.h_view(m).x1min, x1max = size.h_view(m).x1max;
+    const Real x2min = size.h_view(m).x2min, x2max = size.h_view(m).x2max;
+    const Real x3min = size.h_view(m).x3min, x3max = size.h_view(m).x3max;
+
+    Real dmin2 = 1.0e300;
+    for (const auto &c : centers) {
+      const Real cx = std::max(x1min, std::min(c[0], x1max));
+      const Real cy = std::max(x2min, std::min(c[1], x2max));
+      const Real cz = std::max(x3min, std::min(c[2], x3max));
+      const Real d2 = (c[0] - cx) * (c[0] - cx) + (c[1] - cy) * (c[1] - cy) +
+                      (c[2] - cz) * (c[2] - cz);
+      if (d2 < dmin2) dmin2 = d2;
+    }
+
+    int req_ref_lvl = -1;
+    int req_keep_lvl = -1;
+    const Real sh = std::max(static_cast<Real>(1.0), cf_track_amr.spatial_hysteresis);
+    for (int l = lmin; l <= lvl; ++l) {
+      const Real dx_l = dx0 / static_cast<Real>(1 << l);
+      Real rl = cf_track_amr.buffer_cells * dx_l;
+      if (l == lmin) {
+        rl = std::max(rl, cf_track_amr.min_radius);
+      }
+      const Real rl_keep = sh * rl;
+      if (dmin2 <= rl * rl) {
+        req_ref_lvl = l;
+      }
+      if (dmin2 <= rl_keep * rl_keep) {
+        req_keep_lvl = l;
+      }
+    }
+
+    int f_p = -1;
+    if (req_ref_lvl >= 0 && level < req_ref_lvl) {
+      f_p = 1;
+    } else if (req_keep_lvl >= 0 && level <= req_keep_lvl) {
+      f_p = 0;
+    }
+
+    if (cf_track_amr.z4c_trivial) {
+      refine_flag.h_view(m_glob) = f_p;
+    } else {
+      refine_flag.h_view(m_glob) = std::max(refine_flag.h_view(m_glob), f_p);
+    }
+  }
+
+  refine_flag.template modify<HostMemSpace>();
+  refine_flag.template sync<DevExeSpace>();
+  if (cf_track_amr.z4c_trivial) {
+    pmbp->pz4c->pamr->RefineRadii(pmbp);
+  }
 }
 
 void CFFatal(const std::string &msg) {
@@ -394,6 +535,36 @@ void CFSetExtrinsic(MeshBlockPack *pmbp, const CFComp &kc, const DvceArray1D<Rea
 
 void ProblemGenerator::NrpicConformallyFlat(ParameterInput *pin, const bool restart) {
   user_ref_func = NrpicCFRefinement;
+  cf_track_amr = CFTrackAmr();
+  if (pin->DoesParameterExist("z4c_amr", "method")) {
+    cf_track_amr.z4c_trivial = (pin->GetString("z4c_amr", "method") == "trivial");
+  }
+  if (pin->DoesParameterExist("particles_amr", "track_particles")) {
+    cf_track_amr.enabled = pin->GetBoolean("particles_amr", "track_particles");
+    if (cf_track_amr.enabled) {
+      cf_track_amr.min_level = pin->GetOrAddInteger("particles_amr", "track_min_level", 5);
+      cf_track_amr.max_level = pin->GetOrAddInteger("particles_amr", "track_max_level", 9);
+      cf_track_amr.cells_between = pin->GetOrAddReal("particles_amr", "track_cells_between", 10.0);
+      cf_track_amr.buffer_cells = pin->GetOrAddReal("particles_amr", "track_buffer_cells", 18.0);
+      cf_track_amr.min_radius = pin->GetOrAddReal("particles_amr", "track_min_radius", 0.0);
+      cf_track_amr.hysteresis = pin->GetOrAddReal("particles_amr", "track_hysteresis", 1.6);
+      cf_track_amr.spatial_hysteresis =
+          pin->GetOrAddReal("particles_amr", "track_spatial_hysteresis", 1.25);
+      cf_track_amr.verbose = pin->GetOrAddBoolean("particles_amr", "verbose", false);
+      cf_track_amr.cur_level = cf_track_amr.min_level;
+      if (global_variable::my_rank == 0) {
+        std::cout << "NRPIC_CF_AMR: tracking active particles, level in ["
+                  << cf_track_amr.min_level << ", " << cf_track_amr.max_level
+                  << "], cells_between=" << cf_track_amr.cells_between
+                  << ", buffer_cells=" << cf_track_amr.buffer_cells
+                  << ", min_radius=" << cf_track_amr.min_radius
+                  << ", hysteresis=" << cf_track_amr.hysteresis
+                  << ", spatial_hysteresis=" << cf_track_amr.spatial_hysteresis
+                  << ", z4c_trivial=" << (cf_track_amr.z4c_trivial ? "true" : "false")
+                  << std::endl;
+      }
+    }
+  }
   if (restart) return;
 
   MeshBlockPack *pmbp = pmy_mesh_->pmb_pack;
