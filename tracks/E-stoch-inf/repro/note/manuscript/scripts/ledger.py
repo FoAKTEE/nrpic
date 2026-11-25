@@ -110,7 +110,7 @@ SECNOTE = {
     "Ultra-slow-roll criteria": ("Release runs of the code on $256^3$ (first seed at noise amplitude $\\lambda = \\pm1, \\pm\\frac12, \\pm\\frac14$; second "
                                  "seed at $\\lambda = \\pm1$; a control with the momentum source flipped) and $320^3$ (first seed, $\\lambda = \\pm1$). "
                                  "Departure per mode: $|\\mathcal{R}^\\mathrm{odd}_k/\\mathcal{R}^\\mathrm{lin}_k - 1|$ of the odd part at $N_f$ against "
-                                 "the code's linear mode functions. Factor of the even part: $e(s)/e(s/2)$ of the rms of the even part of a "
+                                 "the code's linear mode functions. Factor of the even part: $e(\\lambda)/e(\\lambda/2)$ of the rms of the even part of a "
                                  "constraint, with a noise level removed (fixed in advance: from the odd parts of one pair; after the "
                                  "data: from three amplitudes). Common mode: mean of the real part of the relative odd-part error over "
                                  "$k \\le 16\\,\\Delta k$. The Check column of this table cites the fresh verifier of the G2 package "

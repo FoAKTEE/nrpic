@@ -570,3 +570,9 @@ table, which ends with its bottom rule on its page). Two places still wrote the 
 s (the window steepness in this note): the ladder schematic and the caption and rows of the new
 ledger table; changed to lambda. Prediction for R13: only fig_ladder.png and the ledger table
 change (text only); every other PNG and json byte-equal to R12.
+
+## Entry 22 (2026-11-24 19:58 PST): outcome of R13 (E-20261125-034920-07b5d5b); R14
+
+R13 HELD: only fig_ladder.png differs from R12 (lambda in the amplitude box). One s was left in the
+ledger caption (e(s)/e(s/2)); written e(lambda)/e(lambda/2). Prediction for R14: byte-equal to R13
+except tables/ledger.tex (caption only). R14 is the source of the committed figures and tables.
