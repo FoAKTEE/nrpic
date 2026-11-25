@@ -65,14 +65,14 @@ def main():
         x.axhline(4.0, color="0.6", lw=0.8)
         c, s = np.array(J[lab]["corr"]), np.array(J[lab]["sel_a"])
         x.plot(cN[s], c[s], "s", mfc="none", ms=5, mew=1.1, color=cols[1],
-               label=r"$s=1$ over $\frac{1}{2}$, level fixed in advance")
+               label=r"$\lambda=1$ over $\frac{1}{2}$, level fixed in advance")
         cq, sq = np.array(Q["UA4a_quarter"][lab]["corr"]), np.array(Q["UA4a_quarter"][lab]["sel_a"])
         x.plot(cNq[sq], cq[sq], "o", ms=3.5, color=cols[0],
-               label=r"$s=\frac{1}{2}$ over $\frac{1}{4}$, level fixed in advance")
+               label=r"$\lambda=\frac{1}{2}$ over $\frac{1}{4}$, level fixed in advance")
         r3 = np.array([r[lab]["ratio_sigma_1h"] for r in rows])
         j3 = np.array([r[lab]["judged_sigma_1h"] for r in rows])
         x.plot(cNf[j3], r3[j3], "x", ms=5, mew=1.1, color="k",
-               label=r"$s=1$ over $\frac{1}{2}$, level from three amplitudes")
+               label=r"$\lambda=1$ over $\frac{1}{2}$, level from three amplitudes")
         x.set_ylim(3.85, 4.17)
         x.set_ylabel("factor of the even part")
         x.text(0.03, 0.94, ("(a) Hamiltonian constraint" if lab == "H" else "(b) momentum constraint"),

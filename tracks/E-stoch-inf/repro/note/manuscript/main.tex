@@ -225,8 +225,10 @@ A reproduction asks whether a code returns what a paper prints. A verified capab
 
 Every stochastic source and the initial slice carry a common amplitude $\lambda$, equal to one in the reproduction. Two runs at $+\lambda$ and $-\lambda$ with the same random numbers split any output $X$ into an odd and an even part,
 \begin{equation}
-X_\mathrm{odd} = \tfrac{1}{2}\left[X(\lambda) - X(-\lambda)\right], \qquad
-X_\mathrm{even} = \tfrac{1}{2}\left[X(\lambda) + X(-\lambda)\right],
+\begin{aligned}
+X_\mathrm{odd} &= \tfrac{1}{2}\left[X(\lambda) - X(-\lambda)\right], \\
+X_\mathrm{even} &= \tfrac{1}{2}\left[X(\lambda) + X(-\lambda)\right],
+\end{aligned}
 \label{eq:oddeven}
 \end{equation}
 which carry the terms of odd and of even order in the noise. Halving $\lambda$ must halve the first-order part of $X_\mathrm{odd}$ and divide the second-order part of $X_\mathrm{even}$ by four. Eleven runs on the release of the code test this. Nine use $256^3$ cells: the first seed at $\lambda = \pm 1, \pm\frac12, \pm\frac14$, a second seed at $\lambda = \pm 1$, and a control with the sign of the momentum source flipped. Two put the first seed at $\lambda = \pm 1$ on $320^3$ cells with the same modes and random numbers. Figure~\ref{fig:mosaic} shows the field the criteria judge: the curvature perturbation at the end of the run, resolved down to the shortest mode of the noise, which spans four cells.
@@ -262,7 +264,7 @@ The third amplitude tested whether a fourth-order term in $\lambda$ causes the m
 
 \begin{figure}
 \includegraphics[width=\columnwidth]{fig_g2_halving}
-\caption{Factor by which the even part of the Hamiltonian (a) and momentum (b) constraint falls when the noise amplitude halves, at the record times the criterion judges. Squares and dots: the noise level fixed in advance, from amplitudes one and one half and from one half and one quarter. Crosses: the level from three amplitudes. The grey band is the accepted range, the yellow band USR.}
+\caption{Factor by which the even part of the Hamiltonian (a) and momentum (b) constraint falls when the noise amplitude halves, at the judged record times. Squares and dots: noise level fixed in advance; crosses: level from three amplitudes. Grey band: accepted range; yellow band: USR.}
 \label{fig:halving}
 \end{figure}
 

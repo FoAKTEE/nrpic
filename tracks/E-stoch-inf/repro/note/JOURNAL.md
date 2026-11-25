@@ -544,3 +544,17 @@ Predictions for R11 (run_all, registered):
 - P5: the ledger builds (every verifier string on its line); about 24 new rows; the note compiles
   with no undefined reference; the new tables and figures stay on their pages (read every changed
   page). Refuted if any of these fails; then fixed and rerun as R12.
+
+## Entry 20 (2026-11-24 19:50 PST): outcome of R11 (E-20261125-034431-d86678b); prediction for R12
+
+R11 completed (exit 0, two cores, about a minute). P1 HELD: checks.json 16 of 16 lattice jsons
+equal, langevin equal; every PNG of R10 repeats byte for byte in R11. P2 HELD: mosaic rms 0.89452,
+max 4.568. P3 HELD: M fixed-level outside value 3.9245 at N = 6.52 of 11, H 3.9916-4.0424 (9),
+three-amplitude 4.4e-3 (H), 1.2e-3 (M). P4 HELD: ratio medians 0.992 (|n| <= 20) and 2.91
+(|n| >= 40). P5: ledger built, 154 rows in 12 tables (21 new; checks: yes 97, differs 18, beyond
+reach 2, quote 11, rerun only 14, run joined 7, verifier's run 2, none 3); compile clean except
+one overfull box (the odd-even split on one line: split into two aligned lines) and a caption
+estimated at 5.4 lines (shortened). Figures looked at: fig_g2_halving (its legend wrote the
+amplitude as s, which the note uses for the window steepness: changed to lambda), fig_ladder,
+fig_g2_mosaic, fig_g2_resolution as drafted. Prediction for R12 (same command): everything of R11
+repeats byte for byte except fig_g2_halving (legend only); the ledger repeats with its run id.
