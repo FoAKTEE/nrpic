@@ -9,7 +9,11 @@
      than 120 base64 characters (a header with a stub, as in the harness's own tests);
   3. adds a run manifest tracks/<ID>/runs/<run_id>/manifest.json that is not a JSON object, whose
      run_id differs from its directory or is not <owner>-<YYYYMMDD-HHMMSS>-<commit7> (decision
-     0012; a hand-written manifest with other field names or status words is accepted and noted);
+     0012; a hand-written manifest with other field names or status words is accepted and noted),
+     or whose list `continuations` (records of a chain continued in place by a queue wrapper,
+     decision 0039 item 5) is malformed: the rules are those of nrpic-run, read from
+     harness/lib/nrpic_harness.py beside this hook (continuation_problems; if that file cannot be
+     imported, the field is not checked and a note says so);
   4. on an owner's branch, touches a path outside tracks/<ID>/ and the globs of that owner's
      OWNERSHIP (main's copy; the branch's own if main has none). Merge commits, proposal/<ID>/<slug>
      branches and main itself are exempt from this check.
@@ -35,6 +39,15 @@ import os
 import re
 import subprocess
 import sys
+
+try:                                     # one definition of the manifest's `continuations` (decision 0039 item 5)
+    sys.path.insert(0, os.path.join(os.path.dirname(os.path.realpath(__file__)), "..", "lib"))
+    from nrpic_harness import continuation_problems
+    LIB_ERROR = None
+except Exception as _e:                  # never block every commit because the library is broken
+    continuation_problems, LIB_ERROR = None, f"{type(_e).__name__}: {_e}"
+finally:
+    sys.path.pop(0)
 
 LIMIT = 5 * 1024 * 1024
 TRACKS = ("A-emd-pbh", "B-emd-gw", "C-sidm", "D-bh-dress", "E-stoch-inf", "F-hills")
@@ -319,6 +332,13 @@ def evaluate(view):
                              "(decision 0012)"))
         if doc.get("schema") != "nrpic-run-manifest/1":
             notes.append(f"{path}: hand-written manifest (accepted; `nrpic-run lint` shows how it is read)")
+        if "continuations" in doc:
+            if continuation_problems is None:
+                notes.append(f"{path}: `continuations` not checked (harness/lib/nrpic_harness.py: {LIB_ERROR})")
+            else:
+                for p in continuation_problems(doc["continuations"]):
+                    problems.append(("manifest", path, f"{path}: continuations: {p} (schema: harness/RULES.md, "
+                                     "nrpic-run; decision 0039 item 5)"))
     # 4. foreign paths
     owner = owner_of(view.branch)
     if owner and not view.merging:

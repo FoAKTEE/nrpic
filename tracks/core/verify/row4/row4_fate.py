@@ -22,6 +22,12 @@ supplement, the first collapse over the whole record (t_c_all) and 50-M window m
 alpha_c / alpha_c^eq (added 2026-11-24, batch 11, for the level-3 continuations to 600 M).
 
 A run still going is read as far as it got (its classes are then provisional and marked).
+
+A model whose control has not run yet is given as y_c=<member dir>, (empty control; added
+2026-11-25, batch 17): a member that collapses by 300 M makes the model UNSTABLE as the rule
+says; otherwise member and side are AWAITS_CONTROL, the model takes no side, and the bracket
+lists it under pending_inside when it lies between y_lo and y_hi (it is not UNDECIDED: it has
+not been classified).
 """
 import argparse
 import json
@@ -105,6 +111,16 @@ def windows(r, a0, width=50.0):
 
 def classify(y, m, c):
     a0 = float(stc.st_global(y)["alpha_c"])
+    if c is None:                        # control not run yet
+        coll = m["t_c"] is not None and m["t_c"] <= T_END
+        out = dict(yc=y, alpha_c_eq=a0,
+                   member={k: v for k, v in m.items() if k not in ("t", "alpha_c")}, control=None)
+        out["member"]["windows_50M"] = windows(m, a0)
+        out.update(D=None, member_class="COLLAPSE" if coll else "AWAITS_CONTROL",
+                   side="UNSTABLE" if coll else "AWAITS_CONTROL", provisional=not m["complete"],
+                   member_own_offset=None if m["mean_200_300"] is None else m["mean_200_300"] - a0,
+                   control_own_offset=None)
+        return out
     out = dict(yc=y, alpha_c_eq=a0, member={k: v for k, v in m.items() if k not in ("t", "alpha_c")},
                control={k: v for k, v in c.items() if k not in ("t", "alpha_c")})
     D = None
@@ -139,10 +155,13 @@ def bracket(res):
     sta = [r["yc"] for r in res if r["side"] == "STABLE"]
     lo, hi = (max(uns) if uns else None), (min(sta) if sta else None)
     ok = lo is not None and hi is not None and lo < hi and not any(
-        r["side"] not in ("UNSTABLE", "STABLE") and lo < r["yc"] < hi for r in res)
+        r["side"] not in ("UNSTABLE", "STABLE", "AWAITS_CONTROL") and lo < r["yc"] < hi for r in res)
     nonmono = any(s < u for s in sta for u in uns)
+    pend = [r["yc"] for r in res if r["side"] == "AWAITS_CONTROL"
+            and lo is not None and hi is not None and lo < r["yc"] < hi]
     return dict(y_lo=lo, y_hi=hi, valid=bool(ok), non_monotone=bool(nonmono),
-                next_midpoint=0.5 * (lo + hi) if ok else None)
+                pending_inside=pend,
+                next_midpoint=0.5 * (lo + hi) if (ok and not pend) else None)
 
 
 def figure(res, runs, out):
@@ -152,12 +171,14 @@ def figure(res, runs, out):
     # repeated colours from the sixth model on)
     cmap = plt.get_cmap("plasma")
     cols = [cmap(0.05 + 0.8 * i / max(1, len(res) - 1)) for i in range(len(res))]
-    tmax = max(max(runs[r["yc"]][0]["t"][-1], runs[r["yc"]][1]["t"][-1]) for r in res)
+    tmax = max(max(x["t"][-1] for x in runs[r["yc"]] if x is not None) for r in res)
     for i, r in enumerate(res):
         m, c = runs[r["yc"]]
         col = cols[i]
         ax[0].plot(m["t"], m["alpha_c"] / r["alpha_c_eq"], color=col, lw=1.0,
                    label=fr"$y_c={r['yc']:g}$ kick")
+        if c is None:                    # control not run yet: no panel-(b) curve
+            continue
         ax[0].plot(c["t"], c["alpha_c"] / r["alpha_c_eq"], color=col, lw=1.0, ls="--",
                    label=fr"$y_c={r['yc']:g}$ control")
         sel = m["t"] <= c["t"][-1]
@@ -193,19 +214,22 @@ def main():
         y, dirs = p.split("=")
         md, cd = dirs.split(",")
         y = float(y)
-        runs[y] = (run(md), run(cd))
+        runs[y] = (run(md), run(cd) if cd else None)
         res.append(classify(y, *runs[y]))
     res.sort(key=lambda r: r["yc"])
     br = bracket(res)
     json.dump(dict(rule="tracks/core/JOURNAL.md 2026-11-21T20:26Z", models=res, bracket=br),
               open(os.path.join(a.out, "row4_fate.json"), "w"), indent=1, default=float)
     for r in res:
+        cc = r["control"] or dict(t_c=None, t_end=None, t_c_all=None)
+        if r["control"] is None:
+            cc = dict(t_c="(not run)", t_end=float("nan"), t_c_all="(not run)")
         print(f"y_c={r['yc']:.3f} member {r['member_class']:10s} side {r['side']:9s} "
-              f"D={r['D']} t_c(member)={r['member']['t_c']} t_c(control)={r['control']['t_c']} "
-              f"t_end {r['member']['t_end']:.1f}/{r['control']['t_end']:.1f}"
+              f"D={r['D']} t_c(member)={r['member']['t_c']} t_c(control)={cc['t_c']} "
+              f"t_end {r['member']['t_end']:.1f}/{cc['t_end']:.1f}"
               + (" PROVISIONAL" if r["provisional"] else "")
               + (f" | whole record: t_c_all member {r['member']['t_c_all']} control "
-                 f"{r['control']['t_c_all']}" if max(r['member']['t_end'], r['control']['t_end']) > T_END + 1.0
+                 f"{cc['t_c_all']}" if max(r['member']['t_end'], cc['t_end'] or 0.0) > T_END + 1.0
                  else ""))
     print("bracket", json.dumps(br))
     figure(res, runs, a.out)

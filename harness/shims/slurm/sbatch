@@ -1,0 +1,5 @@
+#!/bin/bash
+# Stub of harness/shims/slurm (decision 0033, one route). nrpic-run (local runs) and nrpic-env exec put this
+# directory first on PATH outside a dispatch of the shared queue; inside a dispatch PATH is left alone.
+echo "$(basename "$0"): refused: card jobs reach Slurm only through the shared queue (decision 0033): harness/bin/nrpic-queue add --label <label> -- <the arguments of nrpic-run submit> (or --cmd '<wrapper>'). Nothing was submitted." >&2
+exit 2
