@@ -342,3 +342,13 @@ older V-1B, ES-1, ES-F runs).
     (16 of 41 early samples bit-equal). P7 (3e-4) holds.
 (e) FAILED (not refuted): M_AH of ES-FL at 499.5 M = 1.6090, below F2's [1.625, 1.665], inside
     its refutation range [1.56, 1.72].
+
+## Entry 7 (2026-11-25 22:31 PST): close of the package
+
+VERIFIER.md written (sections 1-8 before the lead's verdicts were read; section 9 the
+comparison after reading CHECKLIST via STAGE_REPORT and g2long entries 19, 24, 27). Not
+pushed (helper). `nrpic-stage verify D-bh-dress G2 --full` started at 22:09 PST in the
+background (pid 1210002, export a5bd88c), still running at 22:31; log
+scratch/D-bh-dress/tmp/stage_verify_G2_full_20261125-220931.log (empty until it ends). Not
+checked: converged-finder rows, plane norms, comparisons with V-1B/ES-1/ES-F, figures of the
+note (VERIFIER.md section 6).
