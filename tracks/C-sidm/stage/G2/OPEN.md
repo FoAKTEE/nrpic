@@ -1,73 +1,63 @@
 # C-sidm G2: what the gate still lacks
 
-State at the end of the lead session of batch 20 (2026-11-25). G2 is NOT met and the package is
-not ready for an independent review. Seven items pass (C3, C4, C8, C12, C14, C19, C20), four
-fail (C1, C2, C7, C9) and nine are open.
+State at the end of the lead session of batch 27 (2026-11-26). G2 is NOT met and the package is
+not ready for an independent review: three card runs that serve C1, C2, C7 and C9 have not been
+read (one, A16b344, ended during this session and is being closed). Seven items pass (C3, C4, C8,
+C12, C14, C19, C20); none fails as written any more; thirteen are open. Every collapse time of the
+package is the alpha_min = 0.3 lapse marker of a run made without the horizon finder
+(C-20261125-160207-05b6db1).
 
-## What changed in batch 20
+## What changed in batch 27
 
-- Block A closed (A324s1c+ finished; blockA_delta.py C-20261125-160056-a5b7282): the y0 = 0.324
-  control at N = 1e5 crosses alpha_min 0.3 at 599.99 M, so all three N = 1e5 controls fail (BA.1-BA.3
-  held). The N = 1e5 kin members still bracket y_max (0.344 at 229.79 M; 0.324 holds 600 M).
-- Decision 0040 item 3 (C-20261125-160207-05b6db1): no run of the package had the horizon finder or
-  its diagnostics; every t_c is the alpha_min = 0.3 lapse marker; the package makes no horizon claim.
-- Mesh and gauge legs of the N = 1e6 bracket queued (ruling 0039 item 3; B20.1-B20.3).
-- q0023 (A334s3c+) reruns that control from t = 0: its only restart file is the one at t = 0.
+- Closed (nrpic-run finish) and judged with registered analyses, figures read: N4c (NS.3 held:
+  t_c 295.78 M at N = 1e4), N6b344 (B17.5 held: t_c 252.31 M), N6b324 (B17.6 held: holds 600 M
+  within +-0.015), D2eta1 (B17.4 held: t_c 164.01 vs 163.41 M; the run itself FAILED on record,
+  guard stop at 190.4 M after collapse), N6b344e1 (B20.3 first half held: t_c 252.41 M), D2f2s2+
+  (D2.3 seed-pair part FAILED: 2.24 M against 2 M). Analyses C-20261126-114801-ea62ac3,
+  -120656-f5c62bb, -121702-b6b1eda, -121836-c7a76c1, -123219-f734997.
+- The threshold is bracketed at one mesh (M/8) and one N (1e6): (0.324, 0.344) contains
+  y_max = 0.334032; the same fates at N = 1e5. The gauge member of the unstable side agrees.
+- Closed without analysis (priority-5 continuations): A334s3c+ C-20261124-082221-7f03a8e
+  (completed 600 M); A334s2c+ C-20261124-053105-2fcc8af (finish running at the end of the session).
+- The working note has its G2 section (Sec. V, table VI).
 
-## What changed in batch 17
+## Item by item, and the queue entry each waits for
 
-- N6c (C-20261124-221122-928c9eb): the control of the threshold model at N = 1e6 on M/8 holds
-  600 M (NS.1 held, NS.2 failed; analysis C-20261125-122010-fb3cc08). The control collapse at
-  N = 1e5 is particle-noise relaxation, not a secular error of the scheme. The threshold is
-  therefore read at N = 1e6.
-- M16 (C-20261125-044843-2d048b6): collisional t_c 158.42 M on M/16 against 163.41 M on M/8 and
-  206.64 M on M/4 (analysis C-20261125-122020-031b67e; M16.1, M16.2 held).
-
-## Item by item, and the queue entry that serves it
-
-| Item | What is missing | Queue entry (shared queue) | Prediction |
+| Item | What is missing | Queue entry | Prediction |
 |---|---|---|---|
-| C1, C7, C9 threshold located and compared with the turning point | a bracket at N = 1e6 on M/8: a model below y_max that does not collapse when kicked inward, one above that does | q0046 N6b344 (y0 0.344 kin, N 1e6), q0047 N6b324 (y0 0.324 kin, N 1e6), priority 2 | B17.5, B17.6 (JOURNAL 2026-11-25T12:01Z) |
-| C2 particle number | third point of the N-series on M/8; seed scatter of the N = 1e5 control collapse time | q0018 N4c (priority 2); q0022 A334s2c+, q0023 A334s3c+ (priority 5) | NS.3 (2026-11-24T13:14Z) |
-| C2 mesh | seed scatter of the collisional t_c at M/8, to judge the 3.1 per cent shift M/8 -> M/16 | q0024 D2f2s2+ (priority 5) | D2.3 seed pair |
-| C2 gauge or boundary | no run existed | q0048 D2eta1 (shift_eta 1.0, priority 2) | B17.4 (2026-11-25T11:56Z) |
-| C2/C7 mesh and gauge legs of the threshold itself | the bracket on M/16 at N = 1e6 and with shift_eta 1.0 | A16b344, A16b324 (M/16), N6b344e1, N6b324e1 (gauge), priority 2, about 18.4 card-hours of the 20 of ruling 0039 item 3 | B20.1-B20.3 (JOURNAL 2026-11-25T16:02Z) |
-| C10, C11, C13, C15, C16, C17 figures and note | drawn once the bracket and the legs have data | none (processor work) | - |
-| C18 verifier | not started; scope below | none | - |
-| C5, C6 report and reproducibility package | complete only with the items above | none | - |
+| C1, C7, C9 threshold with three-way convergence | the bracket on M/16 at N = 1e6 | q0055 A16b344 (ENDED: C-20261126-043714-8ea1c35, 600 M, all particles excised; close and read with nseries.py beside N6b344), q0057 A16b324 (job 5382 pending) | B20.2, B20.1 (JOURNAL 2026-11-25T16:02Z) |
+| C1, C2, C7, C9 gauge leg of the stable member | y0 0.324 kin with shift_eta 1.0 | q0058 N6b324e1 (waiting) | B20.3 second half |
+| C2 seed scatter at N = 1e5 (not required for the bracket) | A334s2c+, A334s3c+ to read | none (closed or closing) | seed scatter of the control |
+| C10, C11, C13, C15, C16 figures | G2 note figures by one script each (run_all), ladder schematic, slice mosaic | none (processor work) | - |
+| C17 note | G2 figures in the note; final text once the legs are read | none | - |
+| C18 verifier | fresh verifier (ruling 0041 item 3) after q0055, q0057, q0058 are read | none | - |
+| C5, C6 report and reproducibility package | complete with the items above | none | - |
 
-Removed from the queue in this session (they serve no G2 item once the threshold is read at
-N = 1e6): q0019 A334s3o+, q0020 A344s1o+, q0021 A324s1o+, q0025 A334s2i+, q0026 A334s2o+,
-q0027 A334s3i+ (the kicked runs of block A at N = 1e5, whose bracket is unfit by A.4). Their
-partial records stay on record with their manifests.
+## What a G2 verifier must cover
 
-Housekeeping of batch 17 done in batch 20: A324s1c+ (C-20261123-032324-938ecbd) closed with
-`nrpic-run finish` (which now accepts runs continued in place); read with blockA_delta.py.
-`qitem.sh close` still passes `--status` for such runs: use `nrpic-run finish <run id>` directly.
-
-## What a G2 verifier must cover (unchanged items from batch 11, plus batch 17)
-
-- Recompute from the raw histories, with readers of its own: the collapse times and alpha_c
-  changes of block A (15 runs), D2 (5 runs and M16) and the N-series (N6c, later N4c, the
-  bracket at N = 1e6), and the collision counts per particle and per M.
-- The count test of the collision rate before t_c (z = -3.39 at f = 4; REVIEW-wave3 section 14).
-- The conductivity series (1.020 +- 0.004 at zero cell and k lambda).
-- Run (v): N.4 and N.6 with a trend estimator that separates the pulsation from a trend.
-- The resume of cut chains against an uninterrupted run within the card noise.
-- The block A noise model as written and as applied; every failed prediction (JOURNAL
-  2026-11-24T13:12Z, 2026-11-25T12:21Z).
-- That the decks of batch 17 differ from their series only where make_decks_b17.py says, and
-  that the N = 1e6 particle files are the same sampler and seed as N6c; the same for the decks of
-  batch 20 (make_decks_b20.py).
-- That no collapse time is a horizon time (decision 0040 item 3; C-20261125-160207-05b6db1), and
-  the two t_c this recheck did not cover: 206.64 M (M/4, decisive part runs) and 163.41 M (D2 f2).
+- Recompute from the raw histories, with readers of its own: collapse times and alpha_c changes of
+  the N-series (N4c, the N = 1e5 control, N6c), the bracket (N6b344, N6b324, their N = 1e5
+  members, the gauge and mesh members), block A (15 runs), D2 (ctrl, f1s1, f2s1, f4s1, f2s2, m16,
+  eta1), and the collision counts per particle and per M.
+- That every collapse time is the lapse marker (no horizon file in any run), including the two
+  t_c the batch-20 recheck did not cover: 206.64 M (M/4) and 163.41 M (D2 f2).
+- That the decks of batches 17 and 20 differ from their series only where make_decks_b17.py and
+  make_decks_b20.py say; that the N = 1e6 samples share the sampler and seed of N6c.
+- The count test of the collision rate before t_c (z = -3.39 at f = 4; REVIEW-wave3 section 14);
+  the conductivity series (1.020 +- 0.004); every failed prediction on record (JOURNAL
+  2026-11-24T13:12Z, 2026-11-25T12:21Z, 2026-11-26T12:20Z).
+- The reading of the D2 seed pair: whether the five M/8 variants may be pooled as realisations
+  (lead's JUDGEMENT, JOURNAL 2026-11-26T12:20Z).
 
 ## Reservations of G1 and where they stand
 
 | G1 reservation | State |
 |---|---|
-| 1 conductivity at the per-cent level | answered: kappa/kappa_1 = 1.020 +- 0.004 at zero cell and k lambda (batch 11) |
-| 2 threshold from collapse times or contraction against a control, three seeds | controls hold at N = 1e6 (N6c); the bracket runs at N = 1e6 have one seed each |
-| 3 quantities named after the data | the block A ripple window was changed after the data (labelled) |
+| 1 conductivity at the per-cent level | answered: kappa/kappa_1 = 1.020 +- 0.004 (batch 11) |
+| 2 threshold from collapse times or contraction against a control, three seeds | controls hold at N = 1e6; the bracket is read from fates against N6c; one seed per bracket member at N = 1e6 |
+| 3 quantities named after the data | the block A ripple window was changed after the data (labelled); the 20 M band of B17.6 was written before the run |
 | 4 card tests without a second check | open: verifier above |
-| 5 M/4 mesh does not hold the equilibrium | M/8 does not either at N = 1e5 over 600 M; M/8 at N = 1e6 does (N6c) |
+| 5 M/4 mesh does not hold the equilibrium | M/8 holds it at N = 1e6 (N6c); M/16 member read next |
+
+Removed from the queue in batch 17 (they serve no G2 item once the threshold is read at
+N = 1e6): q0019-q0021, q0025-q0027 (kicked N = 1e5 continuations); their partial records stay.

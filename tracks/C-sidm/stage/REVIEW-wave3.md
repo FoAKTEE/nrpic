@@ -431,3 +431,30 @@ executable and step rule of their controls, without the horizon finder (as the c
 legs judge fate and lapse t_c, not horizon times). The gauge variant is shift_eta 1.0, the
 variant of D2eta1, so the track's gauge leg is one change for both series; a slicing change was
 not chosen because the collapse marker is the lapse itself.
+
+## 17. Batch 27 (2026-11-26, eight queue runs ended): what the lead checked
+
+No helper package ran for C-sidm since batch 20; `git status` was clean after the merge of main.
+Eight card runs had ended. Each was closed with `nrpic-run finish` before any analysis (checksums
+of 50-80 GB each), then read with a registered analysis whose figure was looked at; every number
+is judged against the prediction written before the run (JOURNAL entries named).
+
+| Item | Runs (closed) | Analysis, figure read | Verdict of the lead |
+|---|---|---|---|
+| N4c, NS.3 (2026-11-24T13:14Z) | C-20261125-132112-edf3fbc (1.2892 card-h) | nseries.py C-20261126-120656-f5c62bb | [VERIFIED] relaxation branch holds: t_c 295.78 M < 300 M; floors scale as 1/N (ratios 9.78, 9.95) |
+| N6b344, B17.5 (2026-11-25T12:01Z) | C-20261125-224959-d1d4494 (1.7747) | nseries.py C-20261126-121836-c7a76c1 | [VERIFIED] holds: t_c 252.31 M in [200, 400] |
+| N6b324, B17.6 | C-20261126-020831-fabf2d7 (2.6283) | same | [VERIFIED] holds: no collapse, 20 M means in [-0.0119, +0.0150] |
+| D2eta1, B17.4 (2026-11-25T11:56Z) | C-20261126-034500-4b34b1c (0.4453, FAILED: guard stop 190.4 M) | d2_analysis.py C-20261126-114801-ea62ac3, -121702-b6b1eda | [VERIFIED] holds: t_c 164.01 vs 163.41 M; rate ratio 0.992. The first figure drew m16 and eta1 alike (fixed in the script, redrawn) |
+| D2f2s2+, D2.3 seed part (2026-11-21T20:25Z) | C-20261124-035054-c06503f (0.7228) | d2_analysis.py C-20261126-121702-b6b1eda | [VERIFIED] FAILED: 165.65 vs 163.41 M, 2.24 M against 2 M |
+| N6b344e1, B20.3 first half (2026-11-25T16:02Z) | C-20261126-050124-00e10ae (1.7831) | nseries.py C-20261126-123219-f734997 | [VERIFIED] holds: t_c 252.41 vs 252.31 M; central lapse differs by <= 3.1e-4 before collapse |
+| A334s3c+, A334s2c+ (priority 5) | C-20261124-082221-7f03a8e (1.6789), C-20261124-053105-2fcc8af (2.0081) | not read in this session | closed only; their seed scatter is not needed for the bracket |
+
+Reader changes made before the analyses and committed first: nseries.py `--title`, `--control`,
+`--band` and the 20 M band (ea62ac39); d2_analysis.py colours and line styles of m16 and eta1.
+
+Decision of the lead: items C7 and C9 are located at one mesh and one N (bracket (0.324, 0.344)
+around y_max = 0.334032 at N = 1e6 on M/8, fates repeated at N = 1e5, unstable side repeated with
+shift_eta 1.0). C1, C2, C7, C9 move from FAIL to OPEN: what was failed (the N = 1e5 controls)
+stays on record and no longer decides the items; they wait for q0055 (ended during the session),
+q0057 and q0058. The G2 package is therefore not handed to a verifier yet (ruling 0041 item 3:
+the verifier follows the legs). The G2 section of the note is written for what is settled.
