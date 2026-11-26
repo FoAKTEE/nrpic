@@ -2468,3 +2468,16 @@ was published (the branch's executables of the same source stay at
 (waits for 0.755); A's new request `finder-false-accept-and-stall-p0l6` not read. Card time
 of this session: none. Processor time: build 628 s on 4 jobs; tests and analyses on one
 core each, about 50 core-minutes in all (R8 30 min, F1 11 min, Q8 8 min).
+
+## 2026-11-26T11:55Z (03:55 PST), session core-lead-27 (batch 27): release core-v0.8; prediction for the MPI build
+
+Card check q0049 judged (outcome in `JOURNAL-restart-finder.md` entries 21 to 23): PASS for
+what the release changes; K3 failed for the rule without polishing. Release record final.
+MPI build of the merged tree: `.work/build_cpu_mpi_v08rc` (4 jobs, 11:51Z to 11:53Z; rc 0),
+copied to `scratch/core/exe/core_nrpic_v08/athena_cpu_mpi`. Prediction before its smoke test
+(`analysis/release/mpi_smoke_v08.py`, deck `problems/tests/restart_outputs.athinput`): M1 the
+MPI build started without mpirun writes every output file of the serial build of v0.8 byte
+for byte (logs and restart files excluded); M2 on two ranks status 0 and the records of
+`cons.hst`, the tracker file and the mesh history as on one rank, every column within 1e-6
+relative (the deposit in shared cells adds in another order; `mpi.md` section 7). Refuted by
+any differing file in M1 or any column above 1e-6 in M2.
