@@ -240,3 +240,31 @@ d tau_H / d ln m = +530 M at R0 = 28 M).
     deficit. Refuted (dynamics exact) if R_max agrees to 0.01 M and R(tau) to 0.02 M up to
     the horizon.
 (3) Either way G is untouched: the shift in (iii) is dM/dtau x 0.5 M ~ 6e-4 = 0.05 per cent.
+
+## Entry 4 (2026-11-25 22:27 PST): outcome of V6b (run D-20261126-062436-72c04d3; v6_tracers.png looked at)
+
+(1) Clock HELD: the code's proper time of the tracers equals my integral of alpha/W dt along
+    the trajectory samples to 6e-7 relative at t = 250 M for R0 = 28 M (5e-7 at 36 M, 5e-6 at
+    20 M, 6e-5 at 10 M where the samples cross the horizon early); in absolute terms below
+    2e-4 M everywhere except at the last samples inside the horizon. The clock is not off.
+(2) Dynamics: HELD (deviation found). My areal radius from the tangential metric component
+    reproduces R0 at t = 0 to 2e-6 M (the measure works). The tracers at R0 = 28 M turn around
+    below the exact R_max = 37.55 M (median -0.013 M ES-FL/FK, -0.021 M FN4, -0.004 M FL16)
+    and reach a given areal radius on the way in EARLIER in proper time than the cycloid:
+    at R = 9.4 M by 0.78 M (ES-FL, FK), 0.55 M (FN4), 0.40 M (FL16); at R0 = 20 M by 0.17,
+    0.10, 0.045 M; at R0 = 10 M by less than 0.01 M. The offset builds up before and around
+    turnaround (it is nearly the same at 0.75 R_max and at R = 4 M on the way in) and shrinks
+    with the cell size (M/16 about half of M/8) and with the particle number (4N about 0.7 of
+    N). R_sim - R_LTB reaches -0.1 M at tau = 300 M for R0 = 28 M at M/8.
+Verdict on the open point (6): the dust is not removed before it crosses the horizon of the
+run; it reaches that horizon early because the numerical shells run ahead of the exact
+LTB solution by ~0.2 per cent of their proper time (0.5-0.8 M at tau ~ 350 M), an error of
+the evolution that converges with mesh and particle number. The comparison clock is
+right; the comparison reference (the exact solution) is what the run departs from. In ES-FL
+the same early arrival is hidden because after 219 M removal happens deeper (lapse rule).
+(3) Effect on G (estimate, JUDGEMENT): an early arrival by 0.7 M shifts the (iii) ratio by
+dM/dtau x 0.7 / M_AH ~ 1.1e-3 x 0.7 / 1.35 = 6e-4 (0.06 per cent of the +-1 per cent band);
+D2 by dF/dt x ~0.5 M ~ 6e-4 against margins of 2.1e-3 or more. It moves D3 (bound 3e-4) and
+D4, which are diagnostics, not G.
+
+V4 prediction stands as in entry 0 (V4a-c).
