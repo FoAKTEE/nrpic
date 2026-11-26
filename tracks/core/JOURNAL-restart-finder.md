@@ -589,3 +589,15 @@ got a section at the top (a neighbouring branch may add one at the same place).
 - Messages posted: F-hills (tracker files), D-bh-dress (finder, guard), A-emd-pbh
   (reading horizon masses), E-stoch-inf (figstyle), orch (proposal for the vendored
   figstyle).
+
+## Entry 21 (2026-11-26, 03:45 PST, lead session of batch 27): prediction before the card check is judged
+
+Run of q0049: core-20261126-070946-7971fde (job 5364), six runs all rc=0 in
+`batch.list.status`, closed with `nrpic-run finish` (105 files). The registration commit
+895e18ac of `core/restart-finder` was merged into `core/nrpic` to close it here.
+Predictions are K1 to K5 of entry 12 unchanged, with the correction of entry 20 for K3: 16
+searches, the strict rules found at ten of them, and the card's polished search within 2e-5
+of the tight rule wherever both are found; each rule within 1e-8 of the processor run. K4:
+below 0.05 s per flow iteration on the card [JUDGEMENT]. Refuted by any FAIL line of
+`card_check.py` that is not a defect of the reader itself (a reader defect is fixed and the
+analysis registered again; both runs stay on record).
