@@ -1136,7 +1136,7 @@ C-20261124-035054-c06503f (closed again after its continuation in place: complet
   against 163.41 M for seed 1, a difference of 2.24 M against the bar of 2 M: FAILED (by 0.24 M).
   The collapse times of the five M/8 runs that differ only in collision seed, cell factor or
   shift damping (163.41, 165.65, 164.01, 165.97, 164.01 M) have mean 164.61 M and sample standard
-  deviation 1.14 M (arithmetic on the five numbers); the M/16 member (158.42 M) lies 6.2 M below
+  deviation 1.13 M (arithmetic on the five numbers; corrected from 1.14 at 12:24Z); the M/16 member (158.42 M) lies 6.2 M below
   that mean. [JUDGEMENT] The M/8 -> M/16 shift of the collisional collapse time (3.8 per cent of
   the mean) is resolved against the run-to-run scatter at M/8, if the cell-factor and gauge
   variants count as realisations (their effects were each below 2 per cent: D2.1, D2.3, B17.4).
