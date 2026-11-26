@@ -52,8 +52,9 @@ to 220 for SCOPE section 7, not a checklist item; read by job2_q.py and a2 scrip
 
 - `analyse_code_runs.py` takes ~1 min per dump at N = 64, ~8 at 128, ~60 at 256 (one core); run N256 detached.
 - A queue entry for a chain without a segment count runs ONE segment (MAX_SEGMENTS = 1): N256 stopped at tau 21.2.
-- The particle files hold x, u_i, m only: no Lorentz factor without the metric (a2_invariant.py's bound is empty);
-  the probe particle (nearest probe_x at t = 0; column 15 of nrpic.hst) is the dust clock at the origin.
+- The particle files hold x, u_i, m only: no Lorentz factor without the metric (a2_invariant.py's bound is empty).
+  The 'probe' (column 15 of nrpic.hst) is the normal observer's clock at a fixed COORDINATE point, not a particle;
+  the central particle of S1L is at rest (|u_i| < 1e-12), so int alpha_min dt bounds its proper time from below.
 - Found or not found is ONLY in `<base>.horizon_status_<n>.txt` (decision 0040 item 3), and even a "found" row can
   be false (P0L6 t = 118.1: check mass, mean and minimum radius, expansion).
 - Newtonian controls at one force cell per particle spacing run 26 per cent late (N-z vs N-z128).

@@ -511,8 +511,9 @@ Not done (outside this session's aim): judging and closing processor run A-20261
 - C3: G REFUTED (A-20261126-022624-c663e0f): orders 1.5, 1.07, 0.34, 0.36 at t = 0.25-1; C3 stays FAILED; a defect
   to explain under 0039 2(c).
 - A2: A2X (i) holds; (ii) as written not decidable (the dust-clock bound from snapshots is empty; three runs kept);
-  decided by the probe particle, which lies on a first-crossing worldline: (5.99, 6.80] t_H. The lag is not a
-  coordinate effect. N-z128 crosses at 3.62 t_H (AZ1 second clause refuted): the 64^3 Newtonian control was late
+  the probe column turned out to be a coordinate point's clock (source read; prediction PC, A-20261126-023551-f800cf5:
+  reading withdrawn), but the central particle is at rest and a vertex of the crossing cells, so its proper time
+  on the last uncrossed slice is >= int alpha_min dt = 5.99 t_H. The lag is not a coordinate effect. N-z128 crosses at 3.62 t_H (AZ1 second clause refuted): the 64^3 Newtonian control was late
   by 26 per cent. No card member queued. Runs A-20261126-022220-99b7be8, -022338-0edc27c, -022438-a08cc5f,
   -022545-5af99fb, -022631-dafbb4f; fig_a2x.png, fig_a2_compare.png looked at.
 - P0L6: D1, D5 hold; D2, D3, D4 refuted; the one "found" at t = 118.1 is a false acceptance (status file read

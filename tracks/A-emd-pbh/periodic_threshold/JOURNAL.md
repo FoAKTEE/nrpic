@@ -1105,3 +1105,18 @@ the probe point and has covariant |u_i| below 1e-6 at every snapshot to t = 70, 
 (|u_i| of order 0.01-1). Refuted if the offset or |u_i| exceeds 1e-3 before t = 70: then the probe clock is not a
 dust clock and the A2X conclusion "(5.99, 6.80] t_H on the dust's own clock" is withdrawn (the shift-invariant
 bracket of (i) stands, the slicing question reopens and a card member with geodesic slicing is the next test).
+
+### Outcome PC (A-20261126-023551-f800cf5, fig_a2_probe.png looked at)
+
+- The particle nearest the probe sits at the origin (lattice point (32, 32, 32)) and never moves: its offset from the
+  probe point is 1.73e-3 = |(0.001, 0.001, 0.001)| at every snapshot to t = 70, and its covariant |u_i| stays below
+  9e-13, while its neighbours reach |u_i| 3.9.
+- PC's offset clause is REFUTED as written (1.73e-3 > 1e-3: I wrote it about the probe point, which lies 0.09 of a
+  finest cell from the particle); its |u_i| clause holds. By the clause written before, the reading "(5.99, 6.80] t_H
+  on the dust's own clock" taken from the probe column is WITHDRAWN.
+- What stands without the probe column [VERIFIED, no judgement]: the central particle is at rest (W = 1 to 1e-24), so
+  its proper time is int alpha(0, t) dt >= int alpha_min dt = 58.03 at t = 60 (column 16 of nrpic.hst; the A2X runs),
+  i.e. >= 5.99 t_H, on the last slice on which no lattice cell has crossed; and it is a vertex of the cells that
+  have crossed by t = 70 (the 215-particle corner set). So the first crossing occurs at a dust proper time above
+  5.99 t_H on a crossing worldline: the lag against 4.35 (Zel'dovich) and 3.62 (Newton at 128^3) is not a
+  coordinate effect. The upper end of the bracket (6.80) rests on the probe column and is not claimed.
