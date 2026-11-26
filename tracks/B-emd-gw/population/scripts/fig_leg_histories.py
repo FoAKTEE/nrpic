@@ -5,7 +5,9 @@ shift, mesh leg, guard stop), 128^3 with 8 particles per cell (cut run and its c
 128^3 with the Gamma-driver shift (gauge leg), and the 0.028 box with zero shift (guard stop)
 and with the Gamma-driver shift from t = 8. One figure, pop_leg_histories.png (PDF beside), and
 leg_histories.json with the numbers that judge M1, M4, P8C2, Q1 (constraint part) and S1
-(JOURNAL.md, entries of 2026-11-24 06:10, 2026-11-25 04:00 and 18:35).
+(JOURNAL.md, entries of 2026-11-24 06:10, 2026-11-25 04:00 and 18:35), and from batch 28 the
+256^3 box with the Gamma-driver shift (q0060), whose numbers judge GM1 and GM4 (entry of
+2026-11-25 18:50, judged as the entry of 2026-11-26 13:22 says).
 
     python3 fig_leg_histories.py SCRATCH OUTDIR
 
@@ -28,6 +30,7 @@ RUNS = {   # name: (directories in order, label)
     "p8": (["B-20261124-223926-33194d9", "B-20261125-221742-5100a22/p8_cont"],
            r"$128^3$, 8 per cell, zero shift"),
     "gd": (["B-20261124-210431-6bf48af"], r"$128^3$, Gamma driver"),
+    "m256gd": (["B-20261126-105021-6343c13"], r"$256^3$, Gamma driver"),
     "s028": (["B-20261123-035002-bcc82bd"], r"$\sigma_1 = 0.028$, zero shift"),
     "s028gd": (["B-20261123-035002-bcc82bd", "B-20261126-011415-449c8ce/s028_gd"],
                r"$\sigma_1 = 0.028$, Gamma driver from $t = 8$"),
@@ -132,14 +135,30 @@ def main():
                  "Kmax_max_after_t8_5": float(hs[hs[:, 0] > 8.5, COL["K_max"]].max()),
                  "zero_shift_t_end": float(hz[-1, 0]),
                  "guard": os.path.exists(os.path.join(scr, RUNS["s028gd"][0][1], "pop.guard.txt"))}
+    # GM1 and GM4: the 256^3 box with the Gamma-driver shift against the 128^3 gauge leg
+    hq = H["m256gd"]
+    out["GM1"] = {"t_end_hst": float(hq[-1, 0]), "a_end_hst": float(scale(hq[-1, 0])),
+                  "guard": os.path.exists(os.path.join(scr, RUNS["m256gd"][0][0], "pop.guard.txt")),
+                  "Kmax_max_after_t9": float(hq[hq[:, 0] > 9, COL["K_max"]].max()),
+                  "n_rows_Kmax_pos_after_t9": int((hq[hq[:, 0] > 9, COL["K_max"]] > 0).sum()),
+                  "gd_Kmax_max_after_t9": out["gd_Kmax_max_after_t9"]}
+    out["GM4"] = []
+    for a0 in (25, 49, 64, 81, 100, 121, 141):
+        hg_, ag = at(hg, "Hr_mean", a0)
+        hq_, aq = at(hq, "Hr_mean", a0)
+        mg, _ = at(hg, "Mr_mean", a0)
+        mq, _ = at(hq, "Mr_mean", a0)
+        out["GM4"].append({"a": a0, "a_gd": ag, "a_m256gd": aq, "Hr_gd": hg_, "Hr_m256gd": hq_,
+                           "Hr_ratio_gd_over_m256gd": hg_/hq_, "Mr_gd": mg, "Mr_m256gd": mq,
+                           "Mr_ratio_m256gd_over_gd": mq/mg})
     with open(os.path.join(od, "leg_histories.json"), "w") as f:
         json.dump(out, f, indent=1)
     # figure
     fs.use_style()
     import matplotlib.pyplot as plt
-    fig, axs = plt.subplots(1, 3, figsize=(fs.FULL_WIDTH, 2.6), constrained_layout=True)
+    fig, axs = plt.subplots(1, 3, figsize=(fs.FULL_WIDTH, 3.0), constrained_layout=True)
     style = {"base": ("k", "-"), "m256": ("C3", "-"), "p8": ("C0", "--"), "gd": ("C2", "-"),
-             "s028": ("0.5", ":"), "s028gd": ("C1", "-.")}
+             "m256gd": ("C4", "-"), "s028": ("0.5", ":"), "s028gd": ("C1", "-.")}
     for k, h in H.items():
         a = scale(h[:, 0])
         c, ls = style[k]
@@ -158,7 +177,8 @@ def main():
     axs[0].set_title("largest $K$ of the box", fontsize=7)
     axs[1].set_title("Hamiltonian constraint", fontsize=7)
     axs[2].set_title("momentum constraint", fontsize=7)
-    axs[0].legend(fontsize=5, loc="lower left", frameon=False)
+    fig.legend(*axs[0].get_legend_handles_labels(), fontsize=5, loc="outside lower center", ncol=4,
+               frameon=False)
     fs.save(fig, os.path.join(od, "pop_leg_histories"))
     plt.close(fig)
     print(json.dumps({k: v for k, v in out.items() if k != "P8C2"}, indent=1))
