@@ -2497,3 +2497,14 @@ from `core/noise-level2` and `core/step-limit`). Predictions as written before t
 q0039 K7 of `RELEASE-v0.7.md` ("Card checks pending": all three of `card_v07.py`,
 `card_v06.py`, `card_v05.py` print CARD PASS); q0035 R5 of `JOURNAL-noise-level2.md` entry
 17; q0036 the predictions of `analysis/step_limit/HANDOFF.md`. Nothing added to them.
+
+## 2026-11-26T12:12Z (04:12 PST): q0036 and row 4 (q0032) judged next; predictions named
+
+- q0036 (step-limit card run core-20261126-080805-3a9a349): P4a, P4b, P4c of
+  `JOURNAL-step-limit.md` entry 3 with the bounds of entry 9 (bound 0.656 cells), as written
+  before the run. Added now, from entry 13's processor outcome (written before this run
+  existed): P4b on the card also to t = 6 with the level-4 step never above 0.59 cells.
+- Row 4: q0032 (0.755 control, 300-600 M) is closed; q0059 (0.755 member) is still pending in
+  Slurm (job 5378). P13 (journal 2026-11-24, before the runs) is judged for the control only:
+  no collapse before 450 M and the 400-450 M mean of alpha_c / alpha_c^eq at least 0.01 below
+  its 250-300 M mean 0.9640. The fates of the other models are not changed by this run.
