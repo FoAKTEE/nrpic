@@ -25,6 +25,7 @@ b755cdcf origin/core/restart-finder -- athenak python problems docs scripts` is 
 |---|---|---|
 | R8 byte regression, serial build of the merged tree (`scratch/core/b23_build_cpu`, not published) against `.work/build_cpu_v07/src/athena`, twelve set-ups | core-20261126-024438-1fa17dd (figure core-20261126-031446-af637b5) | 75 of 75 identical, REGRESSION PASS |
 | Q8 `restart_test.py`, restart outputs across cuts at every residue of the record interval and a chain | core-20261126-024518-e1e16dc | ALL OK (19 checks); the release loses tracker records, one `cons.hst` record, and repeats history headers |
+| MPI build smoke test: one rank against the serial build, two ranks against one (`analysis/release/mpi_smoke_v08.py`) | core-20261126-115451-893a30e | M1, M2 held: 17 files identical; two ranks identical to one rank (0.0) |
 | Branch tests (finder polishing, excision guard, two-puncture tracker files, figstyle) | `JOURNAL-restart-finder.md` entries 13-19 | held, except P9 (rule changed) and part of P17 |
 
 ## Executables

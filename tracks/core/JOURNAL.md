@@ -2481,3 +2481,10 @@ for byte (logs and restart files excluded); M2 on two ranks status 0 and the rec
 `cons.hst`, the tracker file and the mesh history as on one rank, every column within 1e-6
 relative (the deposit in shared cells adds in another order; `mpi.md` section 7). Refuted by
 any differing file in M1 or any column above 1e-6 in M2.
+
+Outcome (run core-20261126-115451-893a30e, figure `fig_mpi_smoke.png` looked at; its left
+panel clips the tick labels, the three curves lie on one another): **M1 held** (17 files of
+the MPI build on one rank identical to the serial build), **M2 held** (two ranks, 4
+MeshBlocks each, particles handed over every record: `cons.hst`, tracker file and mesh
+history identical to one rank, relative difference 0.0, tighter than predicted). Published
+`scratch/core/exe/core_nrpic_v08/` (COMMIT, SHA256SUMS, READY; four executables).
