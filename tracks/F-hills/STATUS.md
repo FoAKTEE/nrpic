@@ -19,12 +19,14 @@ last-result: - A2 to 133.0 M (F-20261126-054946-a21f229, fig_b21_a2_state read):
              - verifier requests (a)-(d) applied (README: fractions per M, no convergence order;
                conic 9.81 vs three-body 9.76 M; d_at_112 is at 112.38 M); criterion (iii) met at
                its edge (19.8 percent); F1 open with its plan
-             - R25 (processor test, F-20261126-054626-7301561): restart with `-i` holding
-               `<fastflow> diagnostics = true` on core-v0.5 through A2's wrapper: see JOURNAL
+             - R25 PASSED (F-20261126-054626-7301561, fig_diag_restart read): a restart with `-i`
+               holding `<fastflow> diagnostics = true` on core-v0.5 through A2's wrapper writes
+               the status file and leaves every other output byte-identical
 decision:    continue A2 in place from 133.0 M through one `--cmd` queue entry at priority 2,
              cap 28 counted segments (9 more, about 7.5 card-hours: 18.7 of A2's 19.5), with the
-             finder's status file if R25 holds (prediction C25 in JOURNAL)
-card jobs:   A2 continuation: see HANDOFF.md (queue id, wrapper, what reads it)
+             finder's status file (prediction C25 in JOURNAL)
+card jobs:   A2 continuation q0069 (F-A2c, prio 2, waiting), run F-20261124-210400-902c650 in
+             place, 133.0 -> 200 M; read by b21_a2_state.py, b11_passage.py, the status file
              B2 alone m/16 q0002 (submitted, Slurm 5357 pending), 107.85 -> 140 M, G2 5 h;
              read by b11_cards.py
              C2 P1b m/12  q0003 (after B2), 20 -> 200 M, G2 24 h; read by b11_passage.py

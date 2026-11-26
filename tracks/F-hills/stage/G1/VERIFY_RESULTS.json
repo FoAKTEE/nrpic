@@ -1,9 +1,9 @@
 {
   "track": "F-hills",
   "gate": "G1",
-  "commit": "4316c18556726f1e8b9b1d47704723fb9ca47845",
-  "verified_utc": "2026-11-25T17:12:40Z",
-  "export": "/data/haiyangw/nrpic/scratch/F-hills/tmp/stage-verify/F-hills-G1-4316c18-20261125T171144Z",
+  "commit": "2cee18dc5d8e0e8393d7984fa47bb3e8a83cac08",
+  "verified_utc": "2026-11-26T05:55:31Z",
+  "export": "/data/haiyangw/nrpic/scratch/F-hills/tmp/stage-verify/F-hills-G1-2cee18d-20261126T055328Z",
   "result": "FAIL",
   "checks": [
     {
@@ -21,7 +21,7 @@
     {
       "check": "export",
       "status": "PASS",
-      "message": "clean export of 4316c1855672 (HEAD) in /data/haiyangw/nrpic/scratch/F-hills/tmp/stage-verify/F-hills-G1-4316c18-20261125T171144Z/tree",
+      "message": "clean export of 2cee18dc5d8e (HEAD) in /data/haiyangw/nrpic/scratch/F-hills/tmp/stage-verify/F-hills-G1-2cee18d-20261126T055328Z/tree",
       "detail": null
     },
     {
@@ -39,7 +39,7 @@
     {
       "check": "package",
       "status": "PASS",
-      "message": "EVIDENCE.md, OPEN.md, CHECKLIST.md present (decision 0012); scoping text: novelty/scope/SCOPE.md; REVIEW.md present; no verifier's report yet (VERIFIER.md, decision 0016)",
+      "message": "EVIDENCE.md, OPEN.md, CHECKLIST.md present (decision 0012); scoping text: novelty/scope/SCOPE.md; REVIEW.md present; verifier's report VERIFIER.md",
       "detail": null
     },
     {
@@ -69,10 +69,16 @@
     {
       "check": "runs",
       "status": "FAIL",
-      "message": "1 of 258 runs have problems",
+      "message": "3 of 269 runs have problems",
       "detail": {
         "F-20261124-210400-902c650": [
           "status is submitted: not finished (nrpic-run finish)"
+        ],
+        "F-20261126-052133-10f9a5f": [
+          "status is submitted: not finished (nrpic-run finish)"
+        ],
+        "F-20261126-054626-7301561": [
+          "status is running: not finished (nrpic-run finish)"
         ]
       }
     },

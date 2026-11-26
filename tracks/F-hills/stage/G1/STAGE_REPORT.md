@@ -1,15 +1,15 @@
 # Stage report: F-hills G1
 
-Date: 2026-11-25 · branch `track/F-hills` at `4316c1855672` · checklist
+Date: 2026-11-26 · branch `track/F-hills` at `c2e621d9703d` · checklist
 `tracks/F-hills/stage/G1/CHECKLIST.md` (from `nrpic-stage collect`)
 
 ## Verdict
 
-**FAIL**. Tag: `stage/F-hills/G1-fail-20261125` (created and pushed by the orchestrator after review, decision 0003).
+**FAIL**. Tag: `stage/F-hills/G1-fail-20261126` (created and pushed by the orchestrator after review, decision 0003).
 
 - 2 checklist items not PASS or NA: C8 FAIL, C18 OPEN
+- verify ran on 2cee18d; files changed since: tracks/F-hills/JOURNAL.md, tracks/F-hills/RISKS.md, tracks/F-hills/STATUS.md, tracks/F-hills/outbox/20261126T060707Z__to-orch__a2-cap-and-continuation.md, tracks/F-hills/runs/F-20261126-054626-7301561/manifest.json (run verify again)
 - verify reported FAIL: runs
-- no VERIFIER.md (step 7: verifier subagent; decision 0016 item 1, VERIFIER_REPORT.md accepted too)
 
 ## Package documents (decision 0012)
 
@@ -19,7 +19,7 @@ Date: 2026-11-25 · branch `track/F-hills` at `4316c1855672` · checklist
 | `stage/G1/EVIDENCE.md` | present |
 | `stage/G1/OPEN.md` | present |
 | `stage/G1/CHECKLIST.md` | present |
-| `stage/G1/VERIFIER.md` (verifier's report) | MISSING (VERIFIER.md, decision 0016; VERIFIER_REPORT.md accepted too) |
+| `stage/G1/VERIFIER.md` (verifier's report) | present |
 | `stage/G1/REVIEW.md` | present |
 | scoping text | `novelty/scope/SCOPE.md` |
 
@@ -33,8 +33,8 @@ Date: 2026-11-25 · branch `track/F-hills` at `4316c1855672` · checklist
 | C4 | Baseline data and figures | newton3/figures (fig_skr_curves, fig_bkrs_and_h1, fig_general_pdis_energy, fig_finite_q, fig_energy_definition, fig_passages), geodesic_binary/figures (s1_sepfrac, s1_vinf), nr_first/figures/fig_baselines_p1.png; note figures fig_newton, fig_geodesic, fig_rp_scan, fig_passage; JSON in newton3/results, geodesic_binary/results, nr_first/results | PASS |
 | C5 | Interface documents | multi-puncture input written by newton3/scripts/puncture_input.py per coord/INTERFACES/multi_puncture.md section 2 (F's corrections taken in by core, dfix-answers); reader and wrapper interfaces documented in nr_first/README.md (nrread.py, athena_keep_trackers.sh, tree_check.py) | PASS |
 | C6 | F-pre-1 and F-pre-2 reproduce the curves of the literature | F-pre-1 met for 0911.1136, 1804.02911 (STATUS.md T1; G0 verifier K2, K3) and 1201.4794 (KHSR, package khsr_note: scan F-20261121-212757-77cdc15, checks F-20261121-213405-6596be1; the lead's rerun repeats all 1268 values, F-20261124-133112-db7d6b8; K1 and K2 rederived by hand, JOURNAL.md batch 11 L-K; figure khsr_note/figures/fig_khsr_ecc.png read). F-pre-2 met for 2404.16270 (verifier K5, F-20261121-032337-9c6d87a, -032325-f58a391) and in part for Kerr 2402.02178 (package kerr; F-20261121-132131-326dfd1, -132817-eacfe46, lead reruns F-20261121-155614-7997653, -155605-7d21f63). Deviations on record (STATUS.md T1, T2). 2026-11-24 batch 11 | PASS |
-| C7 | Constraint residuals and junk radiation of the three-puncture data are quantified | [JUDGEMENT, with reservations] Constraints quantified (nr_first E2, F-20261115-173547-a02af7d, -181434-b9c8916; card smoke F-20261115-174602-c6879fe). Junk: one member E/m = 7e-5 (4e-5 to 2e-4; F-20261120-222808-b65001c, -223018-a5c0838, -223121-c921d2d); three-hole data at P1's spheres: burst 0.40-0.63e-6 M at u of about -33 M, then a steady emission of 5.0-5.4e-8 M per M; window u in [-35, 6] holds 2.3-2.8e-6 M (junk_gauge J4b F-20261121-075600-4480a13; lead L5, L5b F-20261121-155457-5f36517, -155549-4359678). Reservations (OPEN.md 5): l <= 8 only; m/8 binary spirals in numerically; steady part not identified; remeasure at P1b. 2026-11-21 batch 4a | PASS |
-| C8 | One complete vacuum passage is done | NOT MET (PARTIAL). P1 (F-20261119-150017-b45ec5f): binary merged at 48.8 M (m/8; tracker s < 0.1 M at 48.79 M, common horizon accepted at 48.81 M by the failure signature, made without <fastflow> diagnostics: F-20261125-170632-5aa9786). P1b m/16: A (F-20261121-203144-b2cf16b, 11.77 card-hours, 0-61.8 M) + A2 (F-20261124-210400-902c650, chain q0001, 5.64 card-hours to 2026-11-25 06:28 PST, still running: next segment Slurm 5294 pending while the cards are held) joined to 96.23 M: tracker copies cover 0-96.23 M without a gap, recomputed stretches agree to 1e-12 M, horizon summaries, history and waveforms appended without loss (batch 21, F-20261125-170453-1175d44, fig_b21_a2_state). The pair passed its closest approach s = 2.11 M at 76.4 M without merging (A2-1 timing REFUTED: band 63-75 M); centre of mass 13.06 M from M at 96.25 M and closing at 0.24 M per M, so the passage's pericentre and the separation are still ahead (A2-2, A2-3 open; passage reader F-20261125-170646-6dd4ae4). Needs A2 to at least 170 M. | FAIL |
+| C7 | Constraint residuals and junk radiation of the three-puncture data are quantified | [JUDGEMENT, with reservations] Constraints quantified (nr_first E2, F-20261115-173547-a02af7d, -181434-b9c8916; card smoke F-20261115-174602-c6879fe). Junk: one member E/m = 7e-5 (4e-5 to 2e-4; F-20261120-222808-b65001c, -223018-a5c0838, -223121-c921d2d); three-hole data at P1's spheres: burst 0.40-0.63e-6 M at u of about -33 M, then a steady emission of 5.0-5.4e-8 M per M; window u in [-35, 6] holds 2.3-2.8e-6 M (junk_gauge J4b F-20261121-075600-4480a13; lead L5, L5b F-20261121-155457-5f36517, -155549-4359678). Reservations (OPEN.md 5): l <= 8 only; m/8 binary spirals in numerically; steady part not identified; remeasure at P1b. 2026-11-21 batch 4a. G1 verifier (VERIFIER.md 3.4, F4; run F-20261125-175931-32701e4): window energies 2.73, 2.50, 2.28, 2.36e-6 M at r = 40, 48, 70, 90 M reproduced within 3-9 percent; the four radii agree within 19.8 percent, so criterion (iii)'s "two radii within 20 percent" is MET AT ITS EDGE (batch 25). | PASS |
+| C8 | One complete vacuum passage is done | NOT MET (PARTIAL, batch 25). P1 (F-20261119-150017-b45ec5f): binary merged at 48.8 M (m/8; made without <fastflow> diagnostics: F-20261125-170632-5aa9786). P1b m/16: A (F-20261121-203144-b2cf16b, 11.77 card-hours, 0-61.8 M) + A2 (F-20261124-210400-902c650, queue q0001 done at its segment cap: 21 attempts, 11.15 card-hours, last record 133.0 M) joined 0-133.0 M without a gap (F-20261126-054946-a21f229, fig_b21_a2_state). The pair's closest approach 2.11 M at 76.4 M (A2-1 REFUTED on timing); the binary is disrupted between 120 and 133 M (two-body energy +1.59 units at 133 M); m1 falls almost radially into M (2.49 M from M at 133 M, deeply bound), m2 near its closest approach (8.74 M, marginal energy +0.08) (F-20261126-054957-6cdb7cf, fig_b11_passage). A2-2 REFUTED (the centre of mass has not turned by 133 M and is at 5.42 M); A2-5 refuted in part (heavy-hole mass change 1.55e-3 > 1e-3; finding F1 open); A2-4 holds to 133 M. Needs the continuation to at least 170 M (queue entry of batch 25, HANDOFF.md), with the finder's status file if R25 holds. | FAIL |
 | C9 | Track F (amends 0005). Mass ratio four for the convergence study and the first scan line; the passage at mass ratio ten follows when the mesh fits. The first passage of a clump binary comes right after the first black-hole passage. (0013) | followed: P1 and the convergence plan are at q = 4 (nr_first/inputs/p1_q4.athinput; STATUS.md); q = 10 waits for the mesh and for momenta from a GR parabola (V9a: the q = 10 input turns at 5.77 M in GR); the clump passage (object b) follows the first black-hole passage (core's wave-3a clump-table package) | PASS |
 | C10 | Schematic: Updated architecture | note/figures/schem_architecture.png updated to the state of core-v0.3 (exists / to be ported / new; multi-puncture data, trackers, finders, chain wrapper, readers, three references), script note/scripts/schem_architecture.py, run F-20261120-222908-4ffcfba (note package); PNG read by the note helper and by the lead on 2026-11-21. Drawn as of core-v0.3: two items it marks 'to be ported' (common horizon of one pair, mass-scaled shift damping) are in release core-v0.4 (`punc_pair_a_<n>`, `shift_eta_profile`); to update on the note's resume | PASS |
 | C11 | Schematic: Data-flow diagram | note/figures/schem_dataflow.png (input, chained card segments, output streams, readers, analyses with the references, note), script note/scripts/schem_dataflow.py, run F-20261120-222908-4ffcfba; PNG read by the note helper and by the lead on 2026-11-21 | PASS |
@@ -44,27 +44,27 @@ Date: 2026-11-25 · branch `track/F-hills` at `4316c1855672` · checklist
 | C15 | Data figures drawn with /zoom-figure-style from registered run outputs, one script per figure, every PNG looked at | note v2 (carried from khsr_note into note/ in batch 11): every data figure has its script in note/scripts (fig_elliptic.py, fig_binary.py, fig_p1_end.py new) and reads registered runs (figure run F-20261121-214141-256f945; the prediction of that run met: all PNGs identical, khsr_note/JOURNAL.md); figures looked at by the helper and, for pages 13-16, by the lead (rebuild in scratch, batch 11). nrpic-stage verify reruns them | PASS |
 | C16 | Schematics drawn with /sleep-paper-figure-style: track architecture (exists / to be ported / new) and the gate timeline | note/figures/schem_architecture.png and schem_timeline.png with note/scripts/paperfig.py (copy equal to harness/style/SHA256SUMS); their G1 updates are C10, C11 | PASS |
 | C17 | Working note written with /paper-writing; its manuscript checker passed with --compile | note/main.tex v2 (24 pages): latexmk compiles without an undefined reference and check_manuscript.py with the track's --forbid list is clean except the accepted run ids of the appendix ledger and one journal locator in the ledger (khsr_note package; repeated by the lead in a scratch rebuild, batch 11: 24 pages, 0 undefined). Reviewer step of the paper-writing procedure open (OPEN.md item 3) | PASS |
-| C18 | Verifier subagent (fresh context) wrote VERIFIER.md (decision 0016; VERIFIER_REPORT.md accepted too); every number of the Supplemental Material recomputed from the manifests | no verifier of the G1 material yet; to be asked when the passage A2 is done (OPEN.md item 2, with the list of material) | OPEN |
-| C19 | Null results and failed runs are on record (manifests and JOURNAL) | failed and stopped runs kept with manifests and journal entries: F-20261115-173601-2fae2dc (S3/S2, slot limit), F-20261115-173606-efcbf69 (withdrawn), F-20261115-173719-923135a, F-20261119-143851-47595bd, F-20261115-174959-9e8a361 (stopped), F-20261115-174142-2a79515 (superseded), F-20261115-175542-b49d687; failed predictions on record: nr_first/JOURNAL.md (E1(b), E3 items 1, 2, 5, E4 rerun counts, E7 first-search masses), newton3/JOURNAL.md (Q1, Q3, Q4 bounds), stage/G0/JOURNAL.md (SC0d, SC2, SC6), JOURNAL.md (V4-V7 of wave 1); batch 21: failed predictions A2-1 (timing), H2 (bands at the second digit), H4 (P1's heavy hole beyond 1 percent at t <= 0.125 M) in JOURNAL; horizon recheck of decision 0040 item 3: F-20261125-170540-aa39bea, F-20261125-170632-5aa9786 (no run of this track has the finder's status file) | PASS |
-| C20 | STATUS.md, JOURNAL.md and HANDOFF.md are current | STATUS.md, HANDOFF.md rewritten and a JOURNAL.md entry appended by the lead at the end of batch 11 (2026-11-24) | PASS |
+| C18 | Verifier subagent (fresh context) wrote VERIFIER.md (decision 0016; VERIFIER_REPORT.md accepted too); every number of the Supplemental Material recomputed from the manifests | PARTIAL. A fresh verifier (batch 22, VERIFIER.md, package verifier/, runs F-20261125-175931-32701e4, -180244-25c98a5) recomputed with its own readers the Newtonian reference, the passage to 96.23 M, the mesh members, P1 to 280 M, H1-H4, criterion (iii) and four KHSR points; requests (a)-(d) applied in batch 25 (stage/REVIEW-wave3.md, batch 25); F1 (heavy hole's two finder branches from 86.6 M) OPEN with a plan (OPEN.md item 1). Not checked by a verifier: F-pre-1 (0911.1136, 1804.02911), F-pre-2, eih, most of the note ledger, the passage beyond 96.23 M (its readers, verifier/scripts/run_all.sh, rerun on the completed passage). | OPEN |
+| C19 | Null results and failed runs are on record (manifests and JOURNAL) | failed and stopped runs kept with manifests and journal entries: F-20261115-173601-2fae2dc (S3/S2, slot limit), F-20261115-173606-efcbf69 (withdrawn), F-20261115-173719-923135a, F-20261119-143851-47595bd, F-20261115-174959-9e8a361 (stopped), F-20261115-174142-2a79515 (superseded), F-20261115-175542-b49d687; failed predictions on record: nr_first/JOURNAL.md (E1(b), E3 items 1, 2, 5, E4 rerun counts, E7 first-search masses), newton3/JOURNAL.md (Q1, Q3, Q4 bounds), stage/G0/JOURNAL.md (SC0d, SC2, SC6), JOURNAL.md (V4-V7 of wave 1); batch 21: A2-1 (timing), H2 (bands at the second digit), H4 (P1's heavy hole at t <= 0.125 M); batch 25: A2-2 and B25-2 (centre of mass not turned by 133 M), A2-5's heavy-hole clause (1.55e-3 > 1e-3), the batch-21 forecast of the centre of mass's turn before the cap (F-20261126-054946-a21f229, F-20261126-054957-6cdb7cf); the verifier's own failed predictions (VERIFIER.md section 4) | PASS |
+| C20 | STATUS.md, JOURNAL.md and HANDOFF.md are current | STATUS.md, HANDOFF.md rewritten and a JOURNAL.md entry appended by the lead at the end of batch 25 (2026-11-25) | PASS |
 
 ## Re-verification on a clean checkout (`nrpic-stage verify`)
 
-`nrpic-stage verify` on 2026-11-25T17:12:40Z, clean export of `4316c1855672`: **FAIL**. Details: `VERIFY_RESULTS.md`.
+`nrpic-stage verify` on 2026-11-26T05:55:31Z, clean export of `2cee18dc5d8e`: **FAIL**. Details: `VERIFY_RESULTS.md`.
 
 | Check | Result | Message |
 |---|---|---|
 | clean | PASS | worktree clean (outside the stage directory being assembled) |
 | sync | PASS | main is merged into the branch |
-| export | PASS | clean export of 4316c1855672 (HEAD) in /data/haiyangw/nrpic/scratch/F-hills/tmp/stage-verify/F-hills-G1-4316c18-20261125T171144Z/tree |
+| export | PASS | clean export of 2cee18dc5d8e (HEAD) in /data/haiyangw/nrpic/scratch/F-hills/tmp/stage-verify/F-hills-G1-2cee18d-20261126T055328Z/tree |
 | size | PASS | no committed file of the track above 5 MB |
 | note | PASS | tracks/<ID>/note/main.tex present |
-| package | PASS | EVIDENCE.md, OPEN.md, CHECKLIST.md present (decision 0012); scoping text: novelty/scope/SCOPE.md; REVIEW.md present; no verifier's report yet (VERIFIER.md, decision 0016) |
+| package | PASS | EVIDENCE.md, OPEN.md, CHECKLIST.md present (decision 0012); scoping text: novelty/scope/SCOPE.md; REVIEW.md present; verifier's report VERIFIER.md |
 | note-pdf | PASS | note/main.pdf committed after the last .tex change |
 | style | PASS | 2 style copies equal harness/style/SHA256SUMS (czstyle.py, paperfig.py) |
 | fig-script | PASS | 15 figures, each with its script |
 | min-figs | PASS | 3 schematics and 12 data figures (brief 13.4 asks at least 2 and 1 at G1) |
-| runs | FAIL | 1 of 258 runs have problems |
+| runs | FAIL | 3 of 269 runs have problems |
 | run-notes | WARN | 78 runs read with defaults or not fully re-verifiable (nrpic-run lint) |
 | checksums | WARN | output checksums not re-verified (--no-checksums) |
 | status | PASS | STATUS.md has 46 lines |
@@ -94,7 +94,20 @@ Date: 2026-11-25 · branch `track/F-hills` at `4316c1855672` · checklist
 
 ## Verifier report
 
-MISSING: the verifier subagent has not reported (`stage/G1/VERIFIER.md`, decision 0016).
+`tracks/F-hills/stage/G1/VERIFIER.md` present; its first lines:
+
+> # VERIFIER of G1, F-hills (checklist C18; decisions 0016 item 4, 0042 item 2)
+> 
+> Fresh verifier, batch 22, 2026-11-25 09:38-10:10 PST, processors only, 0 card-hours. Package:
+> `verifier/` (README, JOURNAL with predictions and outcomes, scripts, results, figures). Every
+> number below is from the registered run **F-20261125-175931-32701e4** (`verifier/scripts/run_all.sh`;
+> Sec. 3.5 from F-20261125-180244-25c98a5, `verifier/scripts/vkhsr.py`;
+> its passage numbers at the cut equal those of the earlier passes F-20261125-175038-4719d4a,
+> -175132-e7c6c68, -175235-e0fdde6, -175533-141e4f1, which it supersedes) unless another run id is given. Horizon numbers are all **made without the diagnostics** (no run of
+> this track has `<fastflow> diagnostics`); failed searches are found by the source's failure
+> signature (a non-finite or non-positive mass, or columns 3-12 identical to the previous row).
+> 
+> ## 1. What was done, and how independent it is
 
 ## Null results and failed runs
 
@@ -144,14 +157,16 @@ MISSING: the verifier subagent has not reported (`stage/G1/VERIFIER.md`, decisio
 ## Open risks
 
 
-Updated 2026-11-25 by the lead (batch 21: R4, R10, R20 revised, R22 new; earlier: batch 11, R14 and R19 retired, R20 and R21 new). Evidence and run ids: `stage/REVIEW-wave3.md`,
+Updated 2026-11-25 by the lead (batch 25: R22 revised, R23, R24 new; batch 21: R4, R10, R20 revised, R22 new; earlier: batch 11, R14 and R19 retired, R20 and R21 new). Evidence and run ids: `stage/REVIEW-wave3.md`,
 `stage/G0/VERIFIER.md`, `stage/G1/STATUS.md`, `JOURNAL.md`, `p1/JOURNAL.md`, `nr_first/JOURNAL.md`.
 
 | Risk | Likelihood | Effect | Watch | Response |
 |---|---|---|---|---|
+| R23 (new, batch 25) card memory at the merger of m1 with M: A2's peak is 78789 MiB of the A100's 80 GB (1.2 GB margin, F-20261126-054946-a21f229) and m1 is 2.49 M from M at 133 M | medium | a segment dies out of memory at the merger; the chain ends FAILED | segment logs (gpumem.csv per segment), chain events.log | restart files every 1 M: continue from the last one with `max_nmb_per_rank` unchanged and, if needed, one refinement level fewer around m1 after the merger (a new run id, prediction first) |
+| R24 (new, batch 25) the reversed fates (NR: m1 falls into M, m2 marginal; Newton: m1 ejected, m2 bound) rest on coordinate positions and coordinate energies (R6) | open until the horizons decide | a headline built on gauge data | finder 2's mass and status rows at the merger; the pair's energies after 140 M | state it only with the horizon evidence (a common horizon of m1 with M, M's mass jump); until then "tracker data, coordinate energies" |
 | R20 (highest) preemption by another user's partition (whole nights; since 2026-11-25 06:44 PST both cards held for about a day, decision 0041 item 6) while the core-v0.5 card build of A2 writes no restart on SIGTERM: a preempted attempt loses up to one restart interval (1 M of A2, about 8 min) | certain while that user is active | weeks of delay for the passage | chain events.log, sacct | restart files every 1 M; from A2's segment 15 on, the worktree's chain script (01747be45) no longer counts an attempt cut by a signal; A2 keeps its executable (core: restart files must be read by the build that wrote them); 6 counted segments left, then a `--cmd` continuation within 19.5 card-hours (JOURNAL batch 21) |
 | R21 (new) the passage's binary departs from the binary alone (A - B = -0.53 M at 60 M); Newtonian tide and the members' heavier horizon masses in M's conformal factor (mu = 1.015) give the size at 40-60 M but not the early part (F-20261124-132934-375a163) | open | a passage outcome could be read against the wrong isolated reference; the binary is tighter at the pericentre than planned | A2 vs B2, C2 vs A2 | report A against both B and the Newtonian references; the next binary's data should give the members the same horizon masses with and without M (core: id_punctures in the solve, core-v0.6) |
-| R22 (new) horizon statements without the finder's status file: no run of this track set `<fastflow> diagnostics`, and a chain cannot switch it on at a restart (a command-line parameter missing from the restart's block is fatal) | certain for A2, B2, C2 | a claim "found" or a mass at a time rests on the failure signature only (accepted for D, decision 0041 item 4) | horizon summaries, recheck script b21_horizon_recheck.py | say "made without the diagnostics" beside each number; new decks set diagnostics = true (0041 item 5); request to core (outbox finder-diagnostics-on-restart) |
+| R22 horizon statements without the finder's status file: no run of this track set `<fastflow> diagnostics` before 133 M; on the command line it is refused at a restart, but an extra input file `-i` carries it (decision 0043 item 5; processor test R25 of batch 25 on A2's build); A2's continuation carries it if R25 holds | certain for A2, B2, C2 | a claim "found" or a mass at a time rests on the failure signature only (accepted for D, decision 0041 item 4) | horizon summaries, recheck script b21_horizon_recheck.py | say "made without the diagnostics" beside each number; new decks set diagnostics = true (0041 item 5); request to core (outbox finder-diagnostics-on-restart) |
 | R15 members at m/8 do not hold their orbit: P1's binary merged at t = 48.8 M; the binary alone at m/8 decays the same way (R8, F-20261121-130358-6cf186a); at m/12 and m/16 the binary alone gives the same orbit within 0.002 M to 21 M (F-20261121-202021-3c4321e) | settled: m/8 invalid, m/12 and m/16 converged to 21 M | every m/8 passage invalid | analysis F-20261121-202021-3c4321e | P1b at m/16 and m/12 submitted (lead batch 5, rule P1b-D clause D1) |
 | R17 (new) no sharp 1PN reference for the binary: three 1PN-equivalent references of P1's start state differ by 0.019 M at 7.5 M and 0.158 M at 20 M (members at 0.11-0.33 c; lead run F-20261121-155353-e4d3354) | certain | "follows EIH within x" is not evidence of accuracy below about 0.02-0.16 M; orders from a deviation to one reference are unreliable | - | judge resolution by self-convergence (three resolutions, P1b-D D1); quote any 1PN comparison with all three variants |
 | R19 RETIRED 2026-11-24 (was highest): the converged isolated binary was feared to merge before the passage's pericentre (stretch fit 93-97 M). The m/16 pair alone (R16n + B) turns at s = 3.12 M at t = 73.9 M and rises to 4.59 M at 107.85 M: an eccentric start (reading E), no merger (lead batch 11, F-20261124-130009-33bef4d) | retired | - | B2 (next apocentre; decay per orbit) | none needed; the eccentric start (e about 0.23) is a property of the data to quote with every passage result (R8) |
@@ -174,7 +189,7 @@ Updated 2026-11-25 by the lead (batch 21: R4, R10, R20 revised, R22 new; earlier
 
 ## Decision requested from the group
 
-G1 NOT met (lead, batch 21): the complete vacuum passage (C8: A2 PARTIAL at 96.23 M of the at least 170 M needed; chain continues, cards held until 2026-11-26) and the fresh G1 verifier (C18) are missing. Verify fails only on A2, which is still running. Horizon numbers rechecked by the failure signature (no status files): F-20261125-170632-5aa9786.
+G1 NOT met: C8 (A2 at 133.0 M of >= 170 M; continuation q0069 queued) and C18 (verifier PARTIAL: passage to 96.23 M checked; F1 open). Not proposed for review.
 
 ## Lead's notes (wave 2b, 2026-11-19)
 

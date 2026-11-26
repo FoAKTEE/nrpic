@@ -1,20 +1,20 @@
 # Re-verification: F-hills G1
 
-`harness/bin/nrpic-stage verify F-hills G1` on 2026-11-25T17:12:40Z, clean export of commit `4316c1855672` in `scratch/F-hills/tmp/stage-verify/F-hills-G1-4316c18-20261125T171144Z`. Result: **FAIL**.
+`harness/bin/nrpic-stage verify F-hills G1` on 2026-11-26T05:55:31Z, clean export of commit `2cee18dc5d8e` in `scratch/F-hills/tmp/stage-verify/F-hills-G1-2cee18d-20261126T055328Z`. Result: **FAIL**.
 
 | Check | Result | Message |
 |---|---|---|
 | clean | PASS | worktree clean (outside the stage directory being assembled) |
 | sync | PASS | main is merged into the branch |
-| export | PASS | clean export of 4316c1855672 (HEAD) in /data/haiyangw/nrpic/scratch/F-hills/tmp/stage-verify/F-hills-G1-4316c18-20261125T171144Z/tree |
+| export | PASS | clean export of 2cee18dc5d8e (HEAD) in /data/haiyangw/nrpic/scratch/F-hills/tmp/stage-verify/F-hills-G1-2cee18d-20261126T055328Z/tree |
 | size | PASS | no committed file of the track above 5 MB |
 | note | PASS | tracks/<ID>/note/main.tex present |
-| package | PASS | EVIDENCE.md, OPEN.md, CHECKLIST.md present (decision 0012); scoping text: novelty/scope/SCOPE.md; REVIEW.md present; no verifier's report yet (VERIFIER.md, decision 0016) |
+| package | PASS | EVIDENCE.md, OPEN.md, CHECKLIST.md present (decision 0012); scoping text: novelty/scope/SCOPE.md; REVIEW.md present; verifier's report VERIFIER.md |
 | note-pdf | PASS | note/main.pdf committed after the last .tex change |
 | style | PASS | 2 style copies equal harness/style/SHA256SUMS (czstyle.py, paperfig.py) |
 | fig-script | PASS | 15 figures, each with its script |
 | min-figs | PASS | 3 schematics and 12 data figures (brief 13.4 asks at least 2 and 1 at G1) |
-| runs | FAIL | 1 of 258 runs have problems |
+| runs | FAIL | 3 of 269 runs have problems |
 | run-notes | WARN | 78 runs read with defaults or not fully re-verifiable (nrpic-run lint) |
 | checksums | WARN | output checksums not re-verified (--no-checksums) |
 | status | PASS | STATUS.md has 46 lines |
@@ -28,6 +28,12 @@
 {
  "F-20261124-210400-902c650": [
   "status is submitted: not finished (nrpic-run finish)"
+ ],
+ "F-20261126-052133-10f9a5f": [
+  "status is submitted: not finished (nrpic-run finish)"
+ ],
+ "F-20261126-054626-7301561": [
+  "status is running: not finished (nrpic-run finish)"
  ]
 }
 ```

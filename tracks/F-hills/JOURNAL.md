@@ -1267,3 +1267,14 @@ copy of the same release's card build; host-side parameter reading [JUDGEMENT]) 
 scripts/submit_chain.sh itself, which passes extra arguments verbatim into EXTRA_ARGS and appends
 them after `-r <rst> -d <dir> -t <wall>` (lines 149, 198, 297; the wrapper's dry run shows the
 line). Decision: A2's continuation carries `-i tracks/F-hills/binary_conv/inputs/fastflow_diag.athinput`.
+
+### Close of batch 25 (22:10 PST)
+
+Queue: A2's continuation is entry q0069 (F-A2c, priority 2, `--cmd` continue_chain.sh ... 28
+--extra-input .../fastflow_diag.athinput), waiting (the account was at five jobs). B2 q0002
+submitted (Slurm 5357 pending), C2 q0003 waits after it. Outbox: info to orch
+(a2-cap-and-continuation). Inbox: 4 messages acknowledged. Stage G1: collect (20 items; my
+earlier edit had dropped C19 and C20, which collect re-added empty; restored with their evidence),
+verify --no-checksums FAIL only on `runs` (A2 continuing, B2 queued, R25 then still running; rerun
+15/15, compare 42/42, regenerate 30/30), report written. G1 NOT met (C8, C18). Card-hours used in
+this session: 0 (processors: R25 one core 20 min; four reader runs one core each).
