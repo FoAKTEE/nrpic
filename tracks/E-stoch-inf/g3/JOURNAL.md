@@ -127,3 +127,35 @@ here; G3P-1..3, G3-C (as amended by A6), G3-R and G3-L2 of entry 2 stand. Refuta
   dt below 1e-3 sigma_lin.
 - A9: a tilted run of 4e6 paths per side reaches a relative standard error at or below 2 per cent at nu = 4
   [JUDGEMENT; refuted if above 3 per cent with the shift that centres the tilted median in [3.5, 4.5]].
+
+## entry-5 (2026-11-25 18:21 PST, lead of E, batch 23): the pilot has ended; predictions for its reading, written before any read
+
+The pilot (queue q0050, run E-20261126-002413-65295f3, job 5340, 17:46:42-18:07:51 PST) is closed by `nrpic-run
+finish` with status "failed (exit 1)": the ten baseline members b000-b009 ended with rc = 0; the four others
+stopped at start-up, before any step, because `athenak/src/parameter_input.cpp` line 400 only replaces lines the
+deck already has: `Parameter 'lapse_kdriver' in block 'z4c' on command line not found` (k000, k001) and
+`Parameter 'noise_mode_eq' in block 'scalar_field' on command line not found` (l000, l001). The deck
+`g2prod/inputs/usr_prod.athinput` has neither line. A defect of my list, not of the code; no card time was spent
+on them (1-2 s each). The other waiting lists (base00, base01, g3c, g3r) use only lines the deck has (checked
+with awk over every override of every list, this session).
+Predictions for the reading (only b000-b009 exist; `read_pilot.py`, `compare_readers.py`, `../zeta/z1_variational.py`):
+- G3P-1 (cost) for the baseline as written in entry 2: 0.02-0.06 card-hours a run. kdriver and level 2: not
+  measurable (failed); recorded as such, not as a pass.
+- G3P-2 and G3P-3 as written in entry 2 (H' as column 25 <|H-<H>|/[H]>, M as column 7 <|M|/[M]> of
+  `usr.sf.con.hst`, maximum over all records).
+- P5-1 (map applies): v = Pi/H_cell > 0 in every cell of every member.
+- P5-2 (readers per cell, b000 at N_f): the lead's map (zeta_reader.py's V, dV, map_rk4, verbatim through ast)
+  and the verifier's (zv_lib long-double RK4 in N, h = 2e-3, phi_e from the lockstep record) give per-cell zeta
+  (box means removed) with max |difference| below 1e-8 and rms below 2e-9 (basis: 2.2e-9 in N along the relation
+  for |zeta| <= 3, E-20261125-173501-2644c27). Refuted above 1e-6 at the maximum: then the 128 band carries
+  states where the two maps differ and the reader is not cleared for G3 at 128.
+- P5-3 (steps): the lead's map at 1000 steps against 4000 on 20000 random cells per member: max |dN| below 1e-9.
+- P5-4 (box relation at 128, single members): correlation of (Pi - <Pi>) with (phi - <phi>) above 0.999 and the
+  slope within 10 per cent of the 32^3 value 0.0132235 [JUDGEMENT: the high-k end of the 128 band left the
+  horizon later]. Refuted below 0.99.
+- P5-5 (zeta, ten single members; a preview of (T), not its judgement, which needs the pairs): sd(zeta)/sigma_lin
+  in [0.98, 1.02]; mean skewness of zeta in [0.015, 0.032]; skew(zeta) + skew(R^NR) per member (the part free of
+  Gaussian sample scatter) in [0.017, 0.023] (6 a_zeta sigma_lin with a_zeta = 6.76e-3 of the 32^3 pairs and
+  sigma_lin = 0.494); mean A(3) of zeta with its own sd in [0.05, 0.16]; mean F_+(4)/Q(4) in [1.1, 1.8],
+  F_-(4)/Q(4) in [0.5, 1.0]. For R^NR: mean skewness in [-0.002, 0.004] (per-member sample scatter about
+  sqrt(6/5.5e5) = 0.0033, entry 1's effective cell count).
