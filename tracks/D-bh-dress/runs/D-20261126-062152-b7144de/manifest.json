@@ -1,0 +1,244 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "D-20261126-062152-b7144de",
+  "track": "D-bh-dress",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "G2 verifier V3-V6: criterion G ((iii) to tau 650 M, D2), D1, D3, D4 timing and removal reasons of ES-FL, FK, FN4, FNQ, FL16, FF4 with own controls and own LTB reference (D-20261126-061848-ed8f297)",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "python3",
+    "tracks/D-bh-dress/stage/G2/verifier/tools/v3_growth.py",
+    "--scratch",
+    "/data/haiyangw/nrpic/scratch/D-bh-dress",
+    "--ref",
+    "/data/haiyangw/nrpic/scratch/D-bh-dress/D-20261126-061848-ed8f297",
+    "--out",
+    "$NRPIC_RUN_DIR"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "b7144de1d2fe0f7c92f735b74b09be6279337411",
+    "branch": "track/D-bh-dress",
+    "dirty": false,
+    "package": [
+      "tracks/D-bh-dress/stage/G2/verifier"
+    ],
+    "outside_package": {
+      "count": 0,
+      "first": []
+    },
+    "merge_base_main": "d9a2616b773625f731af90a8da4bdca76802cf7d",
+    "worktree": "wt/D-bh-dress"
+  },
+  "code": {
+    "core_tag": "core-v0.7",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "b7f7695d8e9720758c144dd9c0f272ce4fba8b46f921750462326664310fad51",
+    "machine_file_sha256": "ff4e45b0fd5bf6bee4bf1084a282d72b9adf66f4a455f4e937d9884a1fb07535",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/D-bh-dress/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "/data/haiyangw/nrpic/scratch/D-bh-dress/D-20261121-203150-15f2bad/esfl.removed.bin",
+      "role": "input",
+      "sha256": "e4cfbeac79b1c3724ced1c7de264cf2633726aa9ee869c6f2600d889b91f29b8",
+      "bytes": 23663376,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/D-bh-dress/D-20261121-203150-15f2bad/esfl.horizon_summary_0.txt",
+      "role": "input",
+      "sha256": "614acb35c7d3e8562755f1c558c5d48621dc410ffda4a836c0d7d3814a9d7036",
+      "bytes": 229520,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/D-bh-dress/D-20261121-203150-15f2bad/esfl.acc.hst",
+      "role": "input",
+      "sha256": "76138f7f1db0a829921b176ff61154c1893a7053821113ef3d2b3441eefacb1f",
+      "bytes": 1048649,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/D-bh-dress/D-20261123-022725-a553496/esflk.removed.bin",
+      "role": "input",
+      "sha256": "bc63ddce1bc6bbf25a6289fef449f7c619c155d00524bd4fa7dbf3d3a478b3e5",
+      "bytes": 24670416,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/D-bh-dress/D-20261123-022725-a553496/esflk.horizon_summary_0.txt",
+      "role": "input",
+      "sha256": "f9f0a24ab95c6ebe22d1e551503ed86a931c0e7c32ff871b99f6316c12f3c03f",
+      "bytes": 233734,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/D-bh-dress/D-20261123-022725-a553496/esflk.acc.hst",
+      "role": "input",
+      "sha256": "85da203a12b1155508a714fbdbe6d21fc409d4474022d86d5f589701b08394bf",
+      "bytes": 1062452,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/D-bh-dress/D-20261124-134157-b17938b/esflk4n.removed.bin",
+      "role": "input",
+      "sha256": "6dfac486c9fa47c0ab09f4a5671692513d34e50a0d2ae6e9ea8aa122c92ef880",
+      "bytes": 88801936,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/D-bh-dress/D-20261124-134157-b17938b/esflk4n.horizon_summary_0.txt",
+      "role": "input",
+      "sha256": "59ba547ad020dde3a9104856eb4a711ed2a384e4e2cbfc0488addab18b419200",
+      "bytes": 212116,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/D-bh-dress/D-20261124-134157-b17938b/esflk4n.acc.hst",
+      "role": "input",
+      "sha256": "ab39dca20381a1ac84fe40718b7ccdd9b427a160674211838cce250a650e1fa4",
+      "bytes": 972157,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/D-bh-dress/D-20261124-172725-2f426b6/esflkq.removed.bin",
+      "role": "input",
+      "sha256": "316c5dae337f579091de3ef861252fa9429b56c7aa2a4b396cc349b6f2f4112a",
+      "bytes": 4806416,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/D-bh-dress/D-20261124-172725-2f426b6/esflkq.horizon_summary_0.txt",
+      "role": "input",
+      "sha256": "6370fb52f520a20d91a9b2525e1f6fb14b62dcac2e7868e7b8d2dd1ac3ea7ef5",
+      "bytes": 183627,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/D-bh-dress/D-20261124-172725-2f426b6/esflkq.acc.hst",
+      "role": "input",
+      "sha256": "2071943625308d8771219c643e9bb3bcab34877b566c40cc9da72fd2d80dab9f",
+      "bytes": 833048,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/D-bh-dress/D-20261124-172745-72472ed/esfl16.removed.bin",
+      "role": "input",
+      "sha256": "72b027509e57d69984c05be71d2a1ed979eee027a16393919c13c021dd392820",
+      "bytes": 14526736,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/D-bh-dress/D-20261124-172745-72472ed/esfl16.horizon_summary_0.txt",
+      "role": "input",
+      "sha256": "703c82e26886e68485da42808d3f3658606b768951af29e64fa067cdfbeeada9",
+      "bytes": 288321,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/D-bh-dress/D-20261124-172745-72472ed/esfl16.acc.hst",
+      "role": "input",
+      "sha256": "bb23094657b5e27c472408afa7a1f1896cc019113380da4f583e9802aefb2487",
+      "bytes": 1306279,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/D-bh-dress/D-20261123-022727-1c17e73/esfl4.removed.bin",
+      "role": "input",
+      "sha256": "a661fc54257669e8477f526c61b259dbb67575e0b2920f208410599d0016bcdf",
+      "bytes": 27094736,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/D-bh-dress/D-20261123-022727-1c17e73/esfl4.horizon_summary_0.txt",
+      "role": "input",
+      "sha256": "24356d808072002a7ccea58ec882c23982bd4212b49c243bb0c295bc6125039c",
+      "bytes": 129986,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/D-bh-dress/D-20261123-022727-1c17e73/esfl4.acc.hst",
+      "role": "input",
+      "sha256": "7de4e1ac1270e8adab609a0b4b576b0422408523ed0418c7b75f89a9feebaab2",
+      "bytes": 599988,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "tracks/D-bh-dress/stage/G2/verifier/tools/v3_growth.py",
+      "role": "argv",
+      "sha256": "6d43a7df5bd36a95d2969a1d23a58065505315b649b58536a371a644a3bebf96",
+      "bytes": 12649,
+      "tracked": true
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 1,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/D-bh-dress/D-20261126-062152-b7144de",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-26T06:21:56Z",
+  "started": null,
+  "ended": null,
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 40.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 31.0737,
+    "gpu_hours_reserved": 0.0,
+    "gpu_hours_without_gate": 0.0,
+    "cores_busy": 0,
+    "runs": 326,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md + 0026-cards-loaded-allotment-cost.md + 0031-level2-branch-and-ablation.md + 0032-new-account-preemption-allotments.md + 0038-track-e-g2-signed-g3-scope.md + 0039-rulings-after-batch-17.md"
+  }
+}
