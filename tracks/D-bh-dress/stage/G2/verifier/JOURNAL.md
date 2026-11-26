@@ -151,3 +151,24 @@ half-weight lattice tau_H and the continuum tau_H of the same particle. Conseque
 V6: a single particle's 'exact' crossing time is defined only to ~0.4 M (N) if the
 dynamics feel the lattice mass inside it; I use the continuum (table) tau_H as the
 reference of record and the lattice one as the second reading.
+
+## Entry 2 (2026-11-25 22:24 PST): outcome of V2 (run D-20261126-062005-99c2399; v2_null.png looked at)
+
+V2a HELD, reproduced to the digits quoted: M/8 max |D_ES1L - D_V1L| on 100-500 M = 2.283e-4
+(at t = 256.5 M) against max(2 F_V(500), 1e-4) = 2.506e-4 (F_V = 1.253e-4): N holds, margin
+9 per cent. M/16 on 100-300 M: 1.986e-4 (t = 243 M) against 2.685e-4 (F_V16 = 1.342e-4):
+holds. M/4 on 100-300 M: 4.572e-3 (t = 299 M) against 3.952e-3 (F_V4 = 1.976e-3): the
+criterion's pass condition FAILS at M/4. Nuance not in the lead's wording: N's own
+refutation clause (|D_ES - D_V| > 3 max(F_V, 5e-5) = 5.93e-3 over more than 50 M) is not
+met at M/4, because the M/4 vacuum control drifts by -2.0e-3 itself; the M/4 null test is
+a failure of the pass condition by 16 per cent against its own floor, and a factor 20
+against the M/8 result (P5 as written is refuted: it predicted 1e-4 to 4e-4).
+The picture: at M/8 and M/16 the bubble-minus-vacuum difference rises to +1-2e-4 between
+100 and 160 M and then stays flat (M/8 at +7e-5 from 300 to 500 M), the same curve at both
+meshes, no trend; at M/4 vacuum and bubble separate linearly (vacuum -2e-3, bubble +1.5e-3
+by 175 M).
+V2b HELD: failure signature (NaN or bit-identical repeat of columns 3-12) in the 13
+summaries only at t <= 5 M (V-1L, ES-1L 0.5 M; ES-FL, FK, FN4, FNQ, ES-F 1 M; V-1L4,
+ES-1L4 1, 2, 4 M; FF4 0-5 M with 4 non-finite masses); none after 20 M in any; dropping
+failed lines leaves N unchanged. All horizon numbers here are made without the finder's
+diagnostics (no status files).
