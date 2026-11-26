@@ -142,7 +142,7 @@
   "parents": [
     "A-20261120-223422-8cc4241"
   ],
-  "notes": "",
+  "notes": "2026-11-26T11:36:47Z continued in place by queue entry q0067: job 5380, from szk.00005.rst, segments used 1, MAX_SEGMENTS 3, same exe/deck/args (threshold_ball/scripts/continue_chain.sh)",
   "budget_at_submit": {
     "gpu_hours_allotted": 60.0,
     "cores_allotted": 16,
@@ -153,5 +153,15 @@
     "runs": 290,
     "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md + 0026-cards-loaded-allotment-cost.md + 0031-level2-branch-and-ablation.md + 0032-new-account-preemption-allotments.md + 0038-track-e-g2-signed-g3-scope.md + 0039-rulings-after-batch-17.md"
   },
-  "finished": "2026-11-26T02:32:06Z"
+  "finished": "2026-11-26T02:32:06Z",
+  "continuations": [
+    {
+      "at": "2026-11-26T03:36:47-0800",
+      "from_restart": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261125-231808-0784bc9/rst/szk.00005.rst",
+      "segments_used_before": 1,
+      "max_segments": 3,
+      "via": "harness/bin/nrpic-queue --cmd tracks/A-emd-pbh/threshold_ball/scripts/continue_chain.sh (entry q0067)",
+      "job_id": "5380"
+    }
+  ]
 }
