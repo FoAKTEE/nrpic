@@ -461,3 +461,21 @@ beta = 0.5 where stream crossing is expected, draft.tex:369-370). Predictions [J
 If N7a and N7b hold, L2's non-convergence is attributed to stream crossing in a run that could
 have refuted it; the multi-code row then rests on S1-S4, M1, L1 and this series, and L2 is
 reported as the stream-crossing regime this code does not converge in at practical meshes.
+
+## 2026-11-26 14:29 PST (lead of batch 29): series 7, first member read (N_y = 64); design estimate too optimistic
+
+Run B-20261126-222544-f3a5176 (in progress, one core), its own analysis of N7_n64_ppc4 (rays.json):
+Delta = +0.05375 (quadratic shooting +0.05371), t_A = 4.118, t_B = 3.910; ray k_x, k_z drift 6e-15,
+tracer u_x drift 5e-13; largest relative constraint means up to the arrivals Hr 1.6e-5... [VERIFIED by
+the run's analysis] (cstat_max_to_arrival: Hr_mean 1e-5, Mr_mean 3.6e-4): two to three orders of
+magnitude below L2's 0.12-0.4 at the same mesh. Wall time 75 s (prediction: below 3 min, holds).
+A quick look with `scripts/crossing.py` on the snapshots to t = 3.75 (unregistered, into
+scratch/B-emd-gw/tmp/nc; the registered check runs on the finished series): the smallest
+neighbour spacing falls from 1 to 0.72 of the lattice spacing by t = 3.75, i.e. the compression
+grows two to three times faster than the Zel'dovich design estimate (its ratio to D(a) - 1 is
+0.14 early and 0.07 at t = 3.75 against the estimate's 0.043); extrapolated by a power law, the
+first crossing comes near t = 9-10, by the linear growth law near t = 6 [arithmetic on the quick
+look, not a result]. Either lies after t_A = 4.1, so N7a can still hold, but the design's claim
+"no crossing before tlim = 10" is likely refuted; the registered crossing check on all three
+meshes decides. The design estimate is recorded as too optimistic by a factor 2-3 in the
+compression rate.
