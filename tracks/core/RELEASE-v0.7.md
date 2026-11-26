@@ -174,7 +174,21 @@ Figure `scratch/core/core-20261125-023641-7a1c47d/fig_quick_v07.png` (looked at:
 five blue bars with no red showing; panel b 28 expectations, all blue; the labels of
 panel b are crowded at this size).
 
-## Card checks pending
+## Card checks (judged 2026-11-26, batch 27)
+
+**K7 HELD: CARD PASS.** q0039 ran as job 5355, run core-20261126-045719-019b478 (22 cases,
+every status 0; closed 2026-11-26). Judged by three registered analyses, figures looked at:
+core-20261126-115658-8af7dd7 (`card_v07.py`, the seven new cases: level-2 histories within
+6.3e-13 of the processors, bound 1e-9; step-limit example identical, 0.0; gauge and
+table-cluster cases within 5.3e-14, bound 1e-7; constraint means of the scalar field 6.8e-4,
+reported and not bounded), core-20261126-115708-140bafa (`card_v06.py`, six cases of
+core-v0.6: Newtonian histories within 2e-11, the solves with the same outer iterations,
+the faces cases held; the normalized constraint column of g_smr1 8.8e-4, reported and not
+bounded) and core-20261126-115725-9a8d381 (`card_v05.py`, nine cases of core-v0.5: K1 to K6
+held). So the card executable of core-v0.7 (`scratch/core/exe/core_nrpic_v07/athena_gpu`)
+agrees with its processor build on every case the release record names.
+
+## Card checks pending (as written at tagging; outcomes above and in the branch table)
 
 The cards have been held by another partition for two days (decision 0035 item 4):
 nothing of this session ran on a card, and nothing was waited for.
