@@ -78,9 +78,9 @@ def main():
         dmv = m * ref["EK"]
         mid = ltb.lattice_mid(ref["R0"], dmv, dust)
         Rt, mt = ltb.table_mass(os.path.join(d, "esf.tab"))
-        sel = (Rt > 3.0) & (Rt < 61.0)
-        tHt = ltb.tau_horizon(Rt[sel], mt[sel])
-        curve_tab = (tHt, mt[sel])
+        selt = (Rt > 3.0) & (Rt < 61.0)
+        tHt = ltb.tau_horizon(Rt[selt], mt[selt])
+        curve_tab = (tHt, mt[selt])
         m_tab_p = np.interp(ref["R0"], Rt, mt)
         tauH_tab = ltb.tau_horizon(ref["R0"], m_tab_p)
         tauH_mid = np.where(dust, ltb.tau_horizon(ref["R0"], np.where(dust, mid, 1.0)), np.nan)
@@ -109,7 +109,7 @@ def main():
             growth_datamaker=dict(zip(map(str, taus), theirs)),
             growth_maxdiff=float(np.max(np.abs(mine - np.array(theirs)))),
             tracers=trac,
-            m_tab_edge=float(mt[sel][-1] - 1.0), Dtot=info["Dtot"],
+            m_tab_edge=float(mt[selt][-1] - 1.0), Dtot=info["Dtot"],
             growth_tab=dict(zip(map(str, taus), map(float, ltb.growth_from_curve(curve_tab, np.array(taus, float))))),
             growth_tab_vs_dm=float(np.max(np.abs(ltb.growth_from_curve(curve_tab, np.array(taus, float)) - np.array(theirs)))),
             tab_monotonic=bool(np.all(np.diff(tHt) > 0)),
@@ -121,7 +121,7 @@ def main():
                             R0=ref["R0"], EK=ref["EK"], mdisc=ref["mdisc"],
                             tauH=ref["tauH"], m=m, tH_curve=tH, m_curve=mm,
                             mid=mid, tauH_mid=tauH_mid, m_tab_p=m_tab_p, tauH_tab=tauH_tab,
-                            tH_tab=tHt, m_tab=mt[sel])
+                            tH_tab=tHt, m_tab=mt[selt])
         curves[lab] = curve
         curves[lab + "_tab"] = curve_tab
         # continuum curve of the data maker
