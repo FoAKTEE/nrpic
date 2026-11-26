@@ -153,3 +153,5 @@ tracks/D-bh-dress/outbox/20261125T160850Z__to-orch__b20-horizon-recheck-null-mes
 tracks/A-emd-pbh/outbox/20261125T161356Z__to-orch__c3-smoothed-edge-result.md	2026-11-25T16:56:18Z	ruled on in coord/DECISIONS/0041
 tracks/E-stoch-inf/outbox/20261125T163619Z__to-orch__zeta-reader-rulings-z1-z2.md	2026-11-25T16:56:18Z	ruled on in coord/DECISIONS/0041
 tracks/A-emd-pbh/outbox/20261125T165308Z__to-orch__c3-f2-refuted.md	2026-11-25T16:56:18Z	ruled on in coord/DECISIONS/0041
+tracks/F-hills/outbox/20261125T171002Z__to-orch__a2-tail-plan.md	2026-11-25T17:37:50Z	ruled on in coord/DECISIONS/0042
+tracks/B-emd-gw/outbox/20261125T172252Z__to-all__gr-particle-mass-weight.md	2026-11-25T17:37:50Z	ruled on in coord/DECISIONS/0042
