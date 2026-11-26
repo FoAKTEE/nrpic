@@ -144,12 +144,15 @@ Defects and limits of core-v0.7 itself (found by the packages or at the merge):
   file. Reproduced with the candidate: case S2 of the quick test (run
   core-20261125-023641-7a1c47d) lacks the record at t = 1.6875 in the continued run;
   every other output of that case is byte-identical. The state of the run is not
-  affected (last restart file and `.prt` companion identical bit for bit). Not fixed.
+  affected (last restart file and `.prt` companion identical bit for bit). Not fixed in
+  core-v0.7; fixed on branch core/restart-finder (run core-20261125-142556-a424739), merged into
+  core/nrpic at b755cdcf on 2026-11-26, release core-v0.8 waits for its card check q0049.
 - b. **Restart defect 2** (same package, also in core-v0.6): the mesh history file
   (`<basename>.z4c.user.hst` and the other histories written by the mesh) gets its
   header lines again at every continuation (two header lines against four in cases S1
   and S2); the data lines are identical. Readers must skip comment lines anywhere in
-  the file. Not fixed.
+  the file. Not fixed in core-v0.7; fixed on core/restart-finder like item a (same merge,
+  same pending release).
 - c. **`lapse_leak_hole` is a mitigation, not a cure** (decision 0025 item 3). The defect
   it addresses stands: on a slice whose vacuum has diverging normal observers around a
   hole (Einstein-Straus bubble) `lapse_leak` stretches the coordinates of that vacuum
