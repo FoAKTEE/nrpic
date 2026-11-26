@@ -1,7 +1,7 @@
 {
  "name": "26 (2026-11-25 night)",
  "what": "fresh verifier for gate G2 of Track D",
- "note": "Releases core-v0.4 to v0.7 are on main. Rulings: coord/DECISIONS/0039 to 0044. The week's usage is tight: keep to the time given. Every number with its run id; prediction before every test; figures made by registered scripts and looked at; at most 6 cores; no card run.",
+ "note": "Releases core-v0.4 to v0.7 are on main. Rulings: coord/DECISIONS/0039 to 0044. The week's usage is tight: keep to the time given. Every number with its run id; prediction before every test; figures made by registered scripts and looked at; at most 6 cores; no card run. One more duty for the gate review that follows you: at your start launch `harness/bin/nrpic-stage verify D-bh-dress G2 --full` detached in the background from this worktree (it reads about 300 GB with four threads and takes hours; log under scratch/D-bh-dress/tmp/); do not wait for it; say in your report that it runs and where its log is; keep your own work to two cores while it runs.",
  "items": [
   {
    "type": "task",
