@@ -2522,3 +2522,13 @@ q0039 K7 of `RELEASE-v0.7.md` ("Card checks pending": all three of `card_v07.py`
   pending). P14 for joins still not computed by the script. Card cost of q0032: 0.6403
   card-hours for 300 M = 7.68 s per M (P15 bound 9 s per M: held).
 - `verify/LADDER.md` row 4: third reading added.
+
+## 2026-11-26T12:17Z (04:17 PST): outcome of R5 (q0035); session close
+
+R5 (run core-20261126-115933-9fb0e47, figure looked at): (i) 66 of 66 files identical to Track
+E's smoke runs, (ii) throughput ratio level 0 / level 2 at 256^3 = 1.0014 (at most 1.18
+predicted). Both held (`JOURNAL-noise-level2.md` entry 18). All four card checks of this batch
+are judged: q0049 PASS with K3 in part refuted (release v0.8 final), q0039 K7 CARD PASS, q0036
+P4a/P4c held and P4b held in its test, q0035 R5 held. Card time of this session: none
+submitted. Processor time: MPI build 2.5 min on 4 jobs; analyses on 1 to 2 cores, about 25
+core-minutes. Where I stopped: nothing half-done; q0059 (row 4, 0.755 member) pending in Slurm.
