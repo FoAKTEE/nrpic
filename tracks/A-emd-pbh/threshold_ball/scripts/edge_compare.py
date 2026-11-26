@@ -154,7 +154,8 @@ def main():
            "S2-A": (fs.PAL["red"], "-", "o"), "S2-A0": (fs.PAL["red"], "-", "o"), "S2-B0": (fs.PAL["red"], "--", "s"),
            "S2-B": (fs.PAL["red"], "--", "s"),
            "S2c-A": (fs.PAL["yellow"], "-", "o"), "S2c-A0": (fs.PAL["yellow"], "-", "o"),
-           "S2c-B0": (fs.PAL["yellow"], "--", "s"), "S2c-B": (fs.PAL["yellow"], "--", "s")}
+           "S2c-B0": (fs.PAL["yellow"], "--", "s"), "S2c-B": (fs.PAL["yellow"], "--", "s"),
+           "S2c-A8": (fs.PAL["green"], "-.", "^"), "S2c-A80": (fs.PAL["green"], "-.", "^")}
     for n, lr in lines.items():
         if not lr or n not in sty:
             continue
@@ -183,7 +184,7 @@ def main():
     ax[1].set_ylabel(r"volume $\|H\|_2$")
     ax[1].set_title("(b) Hamiltonian norm", fontsize=8)
     ax[1].legend(fontsize=5)
-    for n in ("tophat A (K4-ref)", "tophat B (card)", "S2-A0", "S2-B0", "S2c-A0", "S2c-B0"):
+    for n in ("tophat A (K4-ref)", "tophat B (card)", "S2-A0", "S2-B0", "S2c-A0", "S2c-B0", "S2c-A80"):
         lr = lines.get(n)
         if not lr:
             continue
