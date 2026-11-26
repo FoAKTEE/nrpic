@@ -19,7 +19,7 @@ C17, C18); `stage/REVIEW-wave3.md` section "Batch 28"; `population/JOURNAL.md` e
 | Run id | What | Then |
 |---|---|---|
 | B-20261126-212212-c54d979 | `analyze_gr.py --equal-mass --times 4,8,12,14,16,18,20,21 --halo-times 14,16,18,20,21` on the 256^3 Gamma-driver box (q0060 run B-20261126-105021-6343c13), 5 workers, about 30 GB each; started 13:22 PST | `nrpic-run finish` it (if its parent was killed with the session, its run.log ends with "# exit=" or not: if not and no python process of it is left, rerun the same command with fewer workers). Then register `compare_legs.py --base $S/B-20261125-115558-2ab4161/analysis_gr_gd.json --halo-base $S/B-20261126-022407-87e8803/analysis_gr_gd.json --leg m256gd:$S/B-20261126-212212-c54d979/analysis_gr_m256gd.json` and judge GM2 (band ratio within 5 per cent to a = 64, inside 0.8-1.2 before a = 100, within 20 per cent to a = 132; Omega_cor all shells at a = 121 1.0-2.0x, refuted outside 0.8-3) and GM3 (counts inside 2 sqrt(N) + 2 at a = 64-132, largest mass within 10 per cent), look at pop_legs.png |
-| `nrpic-run finish B-20261126-105021-6343c13` | closing q0060's run (hashing 261 GB) was started in the background at 13:20; it may have been cut with the session | `harness/bin/nrpic-run status B-20261126-105021-6343c13`; if not completed, run `finish` again (it continues from the checksum cache) |
+| (closed) | q0060's run B-20261126-105021-6343c13 closed completed at 13:59 (280 GB hashed, 3.7461 card-h) | nothing |
 
 `$S` = `/data/haiyangw/nrpic/scratch/B-emd-gw`.
 
