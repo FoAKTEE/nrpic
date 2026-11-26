@@ -134,3 +134,20 @@ wrong (14.8, 33.7 against 15.9, 39.6): a defect of my reader, found by printing 
 against the lattice: the areal radius rbar psi^2 is not monotonic inside the throat
 (rbar < M/2), so the interpolation in R mixed the two branches. Fixed (table restricted to
 rbar >= M/2); rerun with the same prediction.
+
+### Outcome of V1c (run D-20261126-061848-ed8f297; v1_reference.png looked at)
+
+HELD in its main part: the continuum of the evolved table (m = M + R^3 K_T^2/2) gives
+m(edge) = M + 2.7386556250 = D_tot exactly, M_LTB(tau) equal to the data maker's continuum
+to 1.9e-8 at all nine tau (25-600 M: 1.0062, 1.0218, 1.0655, 1.1168, 1.1711, 1.2263,
+1.2815, 1.3904, 1.5990), tau_H monotonic, and the tracer crossings 15.869, 39.613,
+156.333, 354.241, 727.735 M (R0 = 6, 10, 20, 28, 36 M) as esf.json. So the reference of
+criterion (iii) (esf_growth.csv) is reproduced independently from the slice the code
+evolved [VERIFIED]. FAILED: "half-weight lattice within 2e-4 of m_tab": the largest
+difference over 5 < R0 < 55 M is 2.2e-3 (N), 1.7e-3 (4N), 7.6e-3 (N/4); the lattice
+point-counting noise in the mass inside a particle's own radius is larger than I guessed.
+In crossing time it is an rms of 0.44 M (N), 0.24 M (4N), 1.34 M (N/4) between the
+half-weight lattice tau_H and the continuum tau_H of the same particle. Consequence for
+V6: a single particle's 'exact' crossing time is defined only to ~0.4 M (N) if the
+dynamics feel the lattice mass inside it; I use the continuum (table) tau_H as the
+reference of record and the lattice one as the second reading.
