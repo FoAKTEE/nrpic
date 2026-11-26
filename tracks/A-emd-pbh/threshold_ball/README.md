@@ -55,8 +55,12 @@ shell), equal to the synchronous time of the exact solution; the outer comoving 
 | C-R1.25 (conv_ball leg) | 9.551 | found in every search | 9.603 | +0.040 | -1.2e-4 |
 | C-d0.42 (M/64; A-20261125-115027-17b419e, entry 11) | 43.656 | 45.906 (163 of 936 searches, all from there) | 43.705 | -0.014 (-0.013 to +0.044 by interpolation) | [-4.2e-3, +5.9e-3] (committed +2.4e-2 outside: its smoothed trapped surface lies inside the outermost trapped tracked particle in the first-detection transient; common times: line MOTS 2.1e-3 vs 5.2e-3 on B, A-20261125-115550-fe60ff1) |
 
-- The code's bracket of the finite-duration threshold at t_end = 45 on mesh B (M/32) is (0.40, 0.42],
-  the exact one; linear interpolation of tau_det gives 0.4103 on B and 0.4103 exact (0.4083 on A from
+- Under the detection rule of entry 1 (which leaves out the constraint clause of SCOPE section 3), the
+  code's bracket of the finite-duration threshold at t_end = 45 on mesh B (M/32) is (0.40, 0.42], the
+  exact one. Under the outcome rule of SCOPE section 3 as written EVERY ball run is UNDECIDED: the line
+  ratio ||H||/||16 pi E|| outside the finder radius at the sample nearest the first persistent detection
+  is 1.11 (B-d0.42) and 1.44 (B-d0.40) in the bracket members, above 0.1 in all ten members with a
+  detection (gate review, run A-20261126-232456-42c8c8f; decision 0047). Under the entry-1 rule: linear interpolation of tau_det gives 0.4103 on B and 0.4103 exact (0.4083 on A from
   first detections). Mesh C (M/64): C-d0.42 is a black hole with tau_det 43.705 < 45, so the upper end
   holds on the finest mesh (entry 11); C-d0.40 was withdrawn unrun (no G2 item waits for it; T7 untested).
 - A-mesh guard stop (entry 5, A-20261124-132016-ecf12c3, A-20261125-120158-b76bfe3): deterministic

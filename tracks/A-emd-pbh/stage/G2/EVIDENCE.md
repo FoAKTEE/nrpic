@@ -1,8 +1,11 @@
-# Evidence of G2 of A-emd-pbh (interim; lead of batch 11, 2026-11-24, rows added to batch 23)
+# Evidence of G2 of A-emd-pbh (lead of batch 31, 2026-11-26; rows of batches 11-31)
 
-Interim package: G2 is NOT complete (OPEN.md). Run manifests: `../../runs/<run id>/manifest.json`;
-outputs under `/data/haiyangw/nrpic/scratch/A-emd-pbh/<run id>/`. Predictions and outcomes:
-the package journals named in each row.
+Gate G2 was NOT passed on the independent review (coord/GATES.md, decision 0047, GATE_REVIEW.md). This file maps
+each criterion to its runs; OPEN.md lists the five conditions of decision 0047 item 2 and their state. Run
+manifests: `../../runs/<run id>/manifest.json`; outputs under `/data/haiyangw/nrpic/scratch/A-emd-pbh/<run id>/`.
+Predictions and outcomes: the package journals named in each row. Batch 31 added: FP and FPb (finder on restart
+files; periodic_threshold JOURNAL 2026-11-26 15:35-15:45; A-20261126-233542-fd9f9f0 and the FPb run) and C3-F
+(constraint floor in the first 0.25 M; threshold_ball entry 16; A-20261126-234222-dbf8624).
 
 | Criterion | Main runs | Analysis (registered) | Journal |
 |---|---|---|---|
