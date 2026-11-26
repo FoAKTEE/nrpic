@@ -3,36 +3,39 @@
 gate:        G2 NOT MET (tracks/core/stage/G2/: CHECKLIST 18 items, 13 PASS, 5 FAIL:
              C1 ladder rows 3, 4 partial; C2 three-way convergence; C6 reproducibility
              package (open level-3 chains); C7 = C1; C12 no REVIEW.md/SCOPE.md).
-             Batch 17 (2026-11-25T11:47-12:30Z): round without AthenaK source change.
-headline:    Release core-v0.7 is on main (tag 5f75e5b9); its release processor build is
-             byte-identical to the candidate (75 of 75, core-20261125-115428-3670218). The
-             queue marker no longer reaches any job of scripts/ (decision 0037 item 4;
-             fake-Slurm tests PASS, control with the old scripts shows the leak). Row 4
-             level 3, two of six runs: the 0.726875 member collapses at 338.25 M, and the
-             0.73625 control, STABLE by the 300-M rule, collapses at 421.25 M (fates
-             core-20261125-120724-246d2a5): the 300-M bracket (0.7175, 0.73625) stands as
-             written but does not mark a stability threshold [JUDGEMENT, rest pending].
-last-result: M1 (marker) held: core-20261125-120211-08f4fb9, -120145-665b6a0 (both
-             registered by hand: the local launcher refuses fake-Slurm tests). R7 held.
-             Provenance: E's seven ablation runs used athena_gpu 468109496c82... (source
-             6ca93cba), verified on the copies in their run directories
-             (tracks/core/EXE_PROVENANCE.md); answered E.
-pending:     card runs in the shared queue (none waited for; all "waiting" at 12:10Z):
-             q0039 core-v07-card   card check K7 of the merged card executable
+             Batch 23 (2026-11-26T02:17-03:30Z): round without AthenaK source change.
+headline:    core/restart-finder merged into core/nrpic (b755cdcf, no conflict, source =
+             01d4aeeb); release core-v0.8 prepared on processors, waits for card check q0049.
+             Track A's PCS residual at static level faces is the documented deposit rule,
+             reproduced to 1.1e-15 by an independent emulation; found on the way: a defect
+             of deposit_fine_shape with CIC at level faces (NEXT_SOURCE item 0) and a
+             compensation that is not conservative across levels (item 0b). Row 4 level 3:
+             bracket (0.7175, 0.726875) by the 300-M rule; every model to 0.73625 collapses
+             by 421 M.
+last-result: deposit test core-20261126-022953-21b8455 (D1-D3 hold, D4 failed in both
+             parts, D5 holds in substance); row-4 fates core-20261126-023040-b755cdc (P10,
+             P11, P12, P15 hold); diagnostics after a restart core-20261126-023323-c8fad52
+             (F1: command line refused, `-i add.athinput` works); R8 byte regression
+             core-20261126-024438-1fa17dd and Q8 restart_test core-20261126-024518-e1e16dc
+             (outcomes in JOURNAL.md, last entry).
+pending:     card runs in the shared queue, none waited for (HANDOFF.md has the commands):
+             q0049 core-rf-card    card check of core/restart-finder (release gate v0.8)
+             q0039 core-v07-card   card check K7 of the merged card executable of v0.7
              q0035 nl2-review-R5   card run of the reviewed level-2 build (its package)
              q0036 step-limit-card card smoke run of the step-limit build (its package)
-             q0030-q0033           row 4 level 3: 0.726875 control, 0.73625 member
-                                   continued, 0.755 pair continued (HANDOFF.md)
-next:        1. when q0039 has run: judge it (RELEASE-v0.7.md, "Card checks pending");
-                then the CLAUDE.md sentence to orch
-             2. row 4 level 3 when q0030-q0033 have run: finish, row4_fate.py (HANDOFF)
-             3. the Fable source session: tracks/core/NEXT_SOURCE.md items 1-3
+             q0032 (job 5346)      row 4: 0.755 control continued 300-600 M
+             q0059                 row 4: 0.755 member continued, --after step-limit-card
+                                   (was q0033; re-added behind the four checks)
+next:        1. q0049: finish, card_check.py (JOURNAL-restart-finder.md entry 20), then the
+                release core-v0.8 (tag, executables .work/build_*_v08, READY, CLAUDE.md row)
+             2. q0039, q0035, q0036: judge (RELEASE-v0.7.md "Card checks pending")
+             3. row 4: q0032, q0059 -> P13; then the note (section III D)
+             4. Fable source session: NEXT_SOURCE.md items 0, 0b, 1
 blockers:    none
-needs:       orch: RULES text on the marker once core/nrpic is merged, and whether
-             fake-Slurm self-tests may be registered by the tool (outbox
-             20261125T121047Z); older: 20261125T030800Z, 20261121T233031Z, 20261121T204332Z
-offers:      scripts/tests/test_queue_marker.py; tracks/core/tools/hand_run.py;
-             tracks/core/NEXT_SOURCE.md; EXE_PROVENANCE.md (rule: no executable is
-             replaced in place)
-budget:      G2 card-hours: used 15.76, reserved 4.03, left 20.21 of 40 (nrpic-run
-             budget, 2026-11-25T12:15Z); this session used no card
+needs:       orch: CLAUDE.md sentence on the two restart defects once core-v0.8 is out;
+             older outbox items 20261125T121047Z, 20261125T030800Z
+offers:      tracks/core/analysis/deposit_levels/dep_levels.py (deposit across level faces
+             with a 1D emulation of the rule); analysis/restart_diag/diag_restart.py; the
+             `-i add.athinput` way to add a parameter on a restart (answered A, B, D, F)
+budget:      G2 card-hours: used 19.21, reserved 2.07, left 18.72 of 40 (nrpic-run budget,
+             2026-11-26T02:48Z); this session used no card
