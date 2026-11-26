@@ -520,7 +520,8 @@ Not done (outside this session's aim): judging and closing processor run A-20261
   critically); finder stalls on a resolved horizon from t = 136 (A-20261126-022753-f9e9c40; three figures looked at).
   Outbox to core: finder-false-accept-and-stall-p0l6.
 - Szekeres: the three-member analysis was too slow (~1 h per N256 dump) and was stopped by hand and closed
-  (A-20261126-022804-0bc68c2, stopped); N64/N128 read in session (A-20261126-023242-f3f0578), N128/N256 detached
-  (A-20261126-023245-1dd80ad).
+  (A-20261126-022804-0bc68c2, stopped), and so was the in-session N64/N128 run (A-20261126-023242-f3f0578, ~15 min
+  per N128 dump); both readers now run detached (A-20261126-024724-425ed7f, A-20261126-023245-1dd80ad). P17 refuted
+  for N128, holds for N64; P18 holds for N64 at tau 10 (szekeres entry 11).
 - Inbox: B's gr-particle-mass-weight acknowledged (it is the reading of AZ2's N-f: psi^6 masses read as density).
   Outbox to orch: g2-state-after-batch-23 (four rulings asked).

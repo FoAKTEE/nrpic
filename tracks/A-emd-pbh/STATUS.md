@@ -16,13 +16,13 @@ last-result: batch 23 (2026-11-25 evening, processors only; every ended run clos
              - P0L6 (q0013, 4.87 card-hours; A-20261126-022753-f9e9c40): D1, D5 hold; D2, D3, D4 refuted. The
                single "found" (t = 118.1) is a false acceptance; the finder stalls on a resolved horizon from t = 136.
              - Szekeres (q0040, q0041): N64, N128 guard-stopped at tau 30.25, 37.47 (P17 refuted for N128); N256 one
-               segment only (tau 21.2). Orders N64->N128: szekeres JOURNAL entry 11 (A-20261126-023242-f3f0578).
+               segment only (tau 21.2). P17 refuted for N128, P18 holds for N64 at tau 10 (entry 11); orders wait for the detached readers.
 cards:       none used this session. Queue: q0015 a-s1l-cont (waiting; SCOPE section 7, not a checklist item).
-processors:  detached: A-20261126-023245-1dd80ad (Szekeres N128/N256 reader, 1 core, ~3-4 h); close it with
-             `harness/bin/nrpic-run finish A-20261126-023245-1dd80ad`.
+processors:  detached Szekeres readers (1 core each): A-20261126-024724-425ed7f (N64/N128, ~1.5 h) and
+             A-20261126-023245-1dd80ad (N128/N256, ~3-4 h); close each with `harness/bin/nrpic-run finish <id>`.
 next:        1. Rulings (four asked): then write the note's G2 sections, schematics on v0.7, the rerun list
                 (stage/G2/VERIFY) and a slice mosaic from the Szekeres N256 dumps; collect/verify/report; verifier.
-             2. Read A-20261126-023245-1dd80ad (P19-P21 at 128 -> 256, tau 10 and 20).
+             2. Read the detached Szekeres readers (P18-P21; szekeres entry 12).
              3. C3: particle-number leg of S2c-A (x8, processors), prediction first; core's PCS answer.
 blockers:    C3 FAILED (defect not explained); C1 (ii) finder fails on P0L6; A2 FAILED (cause in the GR evolution,
              not named); Szekeres members do not reach tau = 40.

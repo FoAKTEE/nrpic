@@ -15,10 +15,11 @@ Files to read first: `STATUS.md`; `stage/G2/OPEN.md`; `stage/REVIEW-wave3.md` se
 `outbox/*g2-state-after-batch-23.md` and orch's answer (coord/DECISIONS, 0043 or later); `szekeres/JOURNAL.md`
 entry 11; `periodic_threshold/JOURNAL.md` last three entries; `threshold_ball/JOURNAL.md` entry 14.
 
-## Processor run still going (detached by this session)
+## Processor runs still going (detached by this session)
 
 | run | what | cores | read with |
 |---|---|---|---|
+| A-20261126-024724-425ed7f | Szekeres reader, members N64 and N128 (A-20261125-213939-0ad9f29), ~15 min per N128 dump, ends ~20:30 PST | 1 | close with `harness/bin/nrpic-run finish A-20261126-024724-425ed7f`; `code_runs_n64n128.json` and its figures give P18 (N128), P19 (64 -> 128), P20 at N = 128 |
 | A-20261126-023245-1dd80ad | Szekeres reader, members N128 (A-20261125-213939-0ad9f29) and N256 (A-20261125-231808-0784bc9, dumps tau 0, 10, 20), ~1 h per N256 dump, ends ~22:30 PST | 1 | close with `harness/bin/nrpic-run finish A-20261126-023245-1dd80ad`; its `code_runs_n128n256.json` and figures give P19 (128 -> 256), P20 at N = 256, P21; write the outcome as szekeres JOURNAL entry 12 |
 
 ## Card runs: none running or queued for G2. Shared queue: q0015 a-s1l-cont (waiting; continues S1L from t = 198.7
@@ -28,7 +29,7 @@ to 220 for SCOPE section 7, not a checklist item; read by job2_q.py and a2 scrip
 
 1. Read orch's rulings on the four questions (C3 with the failure on record; P0L6's finder failure; Szekeres N256 to
    tau 40 or judged at tau <= 20; a half-amplitude GR member for A2 before G2 or in G3). Do what they say.
-2. Close and read A-20261126-023245-1dd80ad (above).
+2. Close and read both Szekeres readers (above); write szekeres JOURNAL entry 12 (P18-P21) with their figures.
 3. If the rulings let G2 go on with its failures on record: write the G2 sections of the note (decision 0039 item 9,
    `/paper-writing`), the schematics on core-v0.7 (C16) and the ladder schematic (C10), the rerun list
    `stage/G2/VERIFY` (C6), convergence figures in zoom style (C11), a slice mosaic from the Szekeres N256 dumps
@@ -45,7 +46,7 @@ to 220 for SCOPE section 7, not a checklist item; read by job2_q.py and a2 scrip
 |---|---|---|
 | `threshold_ball/` | entry 14: C3 mesh leg judged (G refuted) | particle-number leg (entry 15) |
 | `periodic_threshold/` | A2X and AZ1 (N-z128) judged; P0L6 D1-D5 judged | finder rerun after core's answer; half-amplitude member if ruled |
-| `szekeres/` | series ran (q0040, q0041); N64/N128 read (entry 11) | N128/N256 reader (above) |
+| `szekeres/` | series ran (q0040, q0041); P17 judged, N64 rows read (entry 11) | the two detached readers (above) |
 | `conv_ball/` | | A-R1.35 ddet unchecked (verifier) |
 
 ## Traps

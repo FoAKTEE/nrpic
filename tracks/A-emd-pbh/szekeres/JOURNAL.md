@@ -397,3 +397,29 @@ every tau = 5 instead of 10 so that a segment cut by preemption loses less than 
 N = 64 and 128 as one batch job (`lists/card_n64_n128.list`). Cost as entry 8: about 1.0-1.2
 card-hours, cap 1.5. Queue entries: a-szk-n64-128 and a-szk-n256 (priority 2: G2 item C1 (iii)).
 Read by `scripts/analyse_code_runs.py` (smoke-tested at N = 16, entry 9).
+
+## Entry 11, 2026-11-25 18:50 PST (lead of batch 23): the card series ended; first reading against P17-P21
+
+Runs (closed before reading): N64 and N128 in one batch job A-20261125-213939-0ad9f29 (q0040; closed failed: both
+stopped by the non-finite guard, exit 3; 0.09 card-hours), N256 as a chain A-20261125-231808-0784bc9 (q0041; closed
+stopped: the queue entry gave no segment count, so the chain ran one segment, MAX_SEGMENTS = 1, and ended at
+tau = 21.2 of 40; ~0.98 card-hours). Field dumps every tau = 10: N64 at 0, 10, 20, 30; N128 at 0, 10, 20, 30; N256 at
+0, 10, 20.
+Reader: analyse_code_runs.py takes ~1 min per dump at N = 64, ~15 at N = 128 and an estimated hour at N = 256 on one
+loaded core. A three-member run (A-20261126-022804-0bc68c2) and an in-session N64/N128 run (A-20261126-023242-f3f0578)
+were stopped by hand and closed as stopped; both logs hold the N64 rows (identical). Detached for the next session:
+A-20261126-024724-425ed7f (N64, N128: orders 64 -> 128 and figures) and A-20261126-023245-1dd80ad (N128, N256).
+Outcomes so far (from athena.log of the members and the N64 rows of the stopped readers; no figure yet, so P18-P21
+are not judged here):
+- P17 (completion): N64 reaches tau = 30.25 (predicted >= 30: holds, barely); N128 is non-finite at tau = 37.47 (guard
+  stop) before tau = 40: REFUTED for N128; N256 not decidable (finite at tau = 21.2 when the segment cap ended it).
+  The breakdown time rises with N (N32 24-28, entry 9; N64 30.25; N128 37.47). alpha = 1 to 2.3e-13 (tau 10) and
+  4.6e-13 (tau 20) on N64; at tau = 0 the shell's max |K - K_ex|/H is 1.8e-15 and max |E - rho|/rho 5.9e-8 (the
+  clauses on alpha and tau = 0 hold on N64).
+- P18 for N64 at tau = 10: shell rms |K - K_ex|/H = 0.0268 (predicted 0.02, within the factor 3: holds); at tau = 40
+  no member exists. N64 at tau = 30: 1.04 (shell), the run is blowing up (guard 0.25 later).
+- P20 on N64 (not a clause; for orientation): shell max K error 0.102 against the non-spherical signal 0.68 at
+  tau = 10 (ratio 6.7), 0.26 against 1.42 at tau = 20 (5.5).
+Next: read the two detached analyses (P18 at N128/N256, P19 orders, P20 at N = 128 and 256, P21), look at their
+figures, entry 12. Whether N256 is continued to tau 40 (about 0.8 card-hour) is asked of orch
+(outbox g2-state-after-batch-23).
