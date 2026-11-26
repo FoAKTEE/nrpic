@@ -223,6 +223,8 @@ def emulate(shape, cap):
 
 # ---------------------------------------------------------------- AthenaK runs
 def read_tab(d):
+    if os.path.isdir(os.path.join(d, "tab")):
+        d = os.path.join(d, "tab")          # AthenaK writes tables into tab/
     files = sorted(f for f in os.listdir(d) if f.endswith(".tab") and "tmunu_E" in f)
     if not files:
         raise RuntimeError("no tab output in %s" % d)
