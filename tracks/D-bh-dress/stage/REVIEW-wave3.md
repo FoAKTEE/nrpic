@@ -542,3 +542,44 @@ of the runs), outcomes in entry 24, each figure looked at:
    diagnostics = true`; with core-v0.8 also `polish_iterations_0 = 100`, `mass_tol_0 = 1e-5` (core's
    finder_stop.md) once core has judged its card check (q0049).
 3. No new queue entry; q0010 (FNQ) and q0011 (FL16) kept.
+
+## 23. Lead session of batch 25 (2026-11-25 21:40 PST on, Opus; analysis round and G2 package)
+
+No helper package ended; the two card runs of the queue did (q0010 FNQ, q0011 FL16). Everything below was
+recomputed from the registered outputs by registered readers of this session, each figure looked at, each
+result compared with the prediction written before the run (g2long entries 10, 15; entry 25 committed in
+1fdfb6719 before any reading).
+
+| Item | Prediction | Outcome | Run | Figure |
+|---|---|---|---|---|
+| FNQ close | - | completed, 1.90 card-hours, 51.1 GB checksummed | D-20261124-172725-2f426b6 | - |
+| Q1 criterion G at N/4 | every bin within 2 per cent | CONFIRMED: max 0.290 per cent, D2 at 760 samples | D-20261126-054616-a13a888 | esf_criteria.png |
+| Q2 removed m E_K vs N | within 3 per cent | CONFIRMED: -0.86 to +0.49 per cent | D-20261126-054636-93618ee | np_partial.png |
+| Q3 cost | 1.6-2.3 | CONFIRMED 1.90 | - | - |
+| XQ plane norms N/4 over N | 1.4-2.9 | CONFIRMED 1.65-1.89 | D-20261126-054718-afa783e | xc_plane.png |
+| FL16 close | - | completed, 3.66 card-hours, 85.9 GB checksummed | D-20261124-172745-72472ed | - |
+| L1 finite, horizon every sample | - | CONFIRMED to 299.75 M | D-20261126-055158-30ae09c, D-20261126-055208-4e0fd0e | hz_check.png |
+| L2 criterion G at M/16 | every bin within 1 per cent | CONFIRMED max 0.485, D2 at 1120 | D-20261126-055158-30ae09c | esf_criteria.png |
+| L3 mesh ordering | fine < coarse at 100-300 M | HOLDS as written; M/4 outside the regime, so no order | D-20261126-055249-505b079 | conv3.png |
+| L4 cost | 3.0-4.0 | CONFIRMED 3.66 | - | - |
+| L5 A1 norm M/16 vs M/8 | >= 0.8 at one of two times | CONFIRMED 2.11, 1.08 | D-20261126-055159-6c40115 | xc_plane.png |
+| C2a, C2b, C2c (entry 25) | ordered; <= 3e-3; no failed search after 20 M | CONFIRMED (4 of 4; 4.4e-4 max; none) | D-20261126-055249-505b079, D-20261126-055208-4e0fd0e | conv3.png, hz_check.png |
+
+Wrong or not confirmed, on record (g2long entries 26-27): D3 fails at N/4 after ~220 M (not predicted, no
+bound in G); conv3's first registered reading D-20261126-055207-0137c53 dropped the 300 M mesh time (the
+reader skipped a named time 1 M past the common end); fixed after that reading and labelled post hoc; the
+particle reader np_partial.py still labels a whole reading "PARTIAL" (label only; chain_done is true for all
+three runs and the numbers are those of the ended runs).
+
+## 24. Lead's decisions of batch 25
+
+1. G2 package assembled: every CHECKLIST item PASS except C17; OPEN.md lists only failures on record with
+   their rulings (P5 and ruling 0039 item 4; mesh leg of the null test, ruling 0041 item 4) and the fresh
+   verifier. G2 is offered for the fresh-context verifier and the gate review (decision 0016 item 4).
+2. Item C2 is stated as: particle number three members ordered with N^-1/2 noise; mesh of the growth two
+   members in the regime agreeing to <= 4.4e-4, M/4 labelled outside the regime, no order claimed; null-test
+   mesh leg two members, no order; boundary three face distances; gauge plain 1+log only.
+3. No new card run is queued for G2. Core's guard test (ah_exc_max_growth) stays a G3 item after core's
+   card check q0049; new inputs set `<fastflow> diagnostics = true` (ruling 0041 item 5).
+4. stage verify ran with --no-checksums (PASS); the full checksum pass (--full) is left for the session
+   before the gate review, as harness/RULES.md asks.

@@ -604,3 +604,20 @@ changed my mind about: "FK's early removal is unexplained" - its location is now
   excision rule), its mechanism is not.
 open: FNQ (q0010, 353 M, job 5293 pending) and FL16 (q0011); note v3; G2 verifier; core's guard test on a
   card. Card-hours used this session: 0.
+
+## 2026-11-25 21:40-22:20 PST, lead of batch 25 (Opus; FNQ and FL16 ended, G2 package)  commits 1fdfb6719..(this)  runs D-20261126-054616-a13a888 .. D-20261126-055502-fbb1bec
+
+did: merged main; wrote g2long entry 25 (predictions C2a-C2c, reading plan) and committed it before any
+  reading; closed FNQ (D-20261124-172725-2f426b6, 1.90 card-hours) and FL16 (D-20261124-172745-72472ed,
+  3.66) with nrpic-run finish; nine registered readings (esf_criteria x2, np_partial, xc_plane x2,
+  region_norms, hz_check, conv3 x2), every figure looked at; new reader g2long/tools/conv3.py; note v3
+  (section V, fig_g2conv, ledger part 11, schematics on core-v0.7; build D-20261126-055502-fbb1bec;
+  checker clean; pages 11-14 looked at); stage collect, verify --no-checksums (PASS), report; rerun plan;
+  acks of four messages; outbox request to orch for the G2 verifier.
+found: Q1-Q3, XQ, L1-L5 hold; C2a (ordering 4 of 4, scatter ratio 1.9-3.1 against 2 for N^-1/2 noise),
+  C2b (M/16 - M/8 <= 4.4e-4), C2c (no failed search after 20 M) hold. D3 fails at N/4 after ~220 M.
+evidence: g2long/JOURNAL.md entries 26-27; stage/REVIEW-wave3.md sections 23-24; stage/G2/EVIDENCE.md.
+changed my mind about: nothing that a criterion rests on; the scatter ratio makes "particle noise" a
+  measured statement for the horizon mass, not only for the constraints.
+open: C17 (fresh verifier) and the gate review; full-checksum verify; G3 design (excision guard test after
+  core's q0049). Card-hours submitted this session: 0. Failed: D3 at N/4; conv3 first reading.

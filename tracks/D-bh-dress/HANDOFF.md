@@ -2,50 +2,46 @@
 
 Written for a reader with no memory of the last session. Rewritten at the end of every session.
 
-State (2026-11-25 08:30 PST, lead of batch 20): G0 and G1 signed (G1 with reservations, coord/GATES.md).
-G2 in scouting, package NOT complete (stage/G2/OPEN.md section 1). This session (processors only, no card)
-rechecked every G2 horizon number (decision 0040 item 3), read FN4/FNQ's region norms, split D4 at 219 M,
-wrote the rerun script (C6) and stated the null test's mesh leg with two members and no order (ruling 0039
-item 4). Owner D-bh-dress, branch `track/D-bh-dress`, worktree `wt/D-bh-dress`.
+State (2026-11-25 22:15 PST, lead of batch 25): G0 and G1 signed (G1 with reservations, coord/GATES.md).
+G2 package ASSEMBLED and offered for the fresh-context verifier and the gate review (outbox
+`20261126T060235Z__to-orch__g2-package-ready-for-verifier.md`). Every item of stage/G2/CHECKLIST.md is PASS
+except C17 (verifier); stage/G2/OPEN.md lists only failures on record with their rulings. No card job of this
+owner is queued or running. Owner D-bh-dress, branch `track/D-bh-dress`, worktree `wt/D-bh-dress`.
 
 Run next: `cd /data/haiyangw/nrpic/wt/D-bh-dress && git merge --no-edit main && harness/bin/nrpic-ctx inbox &&
-  git status --short && harness/bin/nrpic-queue list --owner D-bh-dress && squeue -u $USER -o '%i %j %T %r' |
-  grep ' D-'; harness/bin/nrpic-run status | grep -E '\?|\*'`
+  git status --short && harness/bin/nrpic-queue list --owner D-bh-dress; ls tracks/D-bh-dress/stage/G2/`
+  (look for VERIFIER.md or GATE_REVIEW.md from the orchestrator's agents).
 
-Files to read first: `STATUS.md`; `g2long/JOURNAL.md` entries 23-24 (this session), 18-22 (batch 17), 10
-(N1-N4, Q1-Q3, L1-L5), 12 (XN), 15 (XQ, L5); `stage/G2/OPEN.md`; `stage/REVIEW-wave3.md` sections 21-22.
+Files to read first: `STATUS.md`; `g2long/JOURNAL.md` entries 25-27 (this session), 23-24, 18-22;
+`stage/G2/OPEN.md`, `stage/G2/CHECKLIST.md`; `stage/REVIEW-wave3.md` sections 23-24; note v3
+(`note/main.pdf`, section V and ledger part 11).
 
-## Card runs (release core-v0.6 card executable, plain 1+log, faces +-768 M)
+## What this session established (batch 25)
 
-S = /data/haiyangw/nrpic/scratch/D-bh-dress; run directory = $S/<run id>.
+- FNQ (N/4) D-20261124-172725-2f426b6 and FL16 (M/16) D-20261124-172745-72472ed closed by nrpic-run finish
+  (1.90 and 3.66 card-hours). Q1-Q3, XQ, L1-L5 hold (entry 26). D3 fails at N/4 after ~220 M (on record).
+- C2 three-way convergence: conv3 D-20261126-055249-505b079 (entry 27; first reading -055207-0137c53
+  dropped 300 M, reader fixed after it, labelled post hoc).
+- Note v3: section V "Verified capability", fig_g2conv (note/scripts/fig_g2conv.py calls g2long/tools/
+  conv3.py), ledger part 11, schematics on release core-v0.7; build D-20261126-055502-fbb1bec; checker clean.
+- Stage: collect, verify --no-checksums (PASS), report (FAIL only for C17/no VERIFIER.md, as expected);
+  rerun plan stage/G2/rerun_plan.json.
 
-| Run | Run id | Queue | State (08:30 PST) | Read by |
-|---|---|---|---|---|
-| FNQ ES-FLKQ (N/4) | D-20261124-172725-2f426b6 | q0010 submitted | chain at 353 M of 400; next job 5293 pending (cards held) | Q1-Q3, XQ (entries 10, 15); np_partial.py, region_norms.py (`--running FNQ` until it ends) |
-| FL16 ES-FL16 (growth M/16) | D-20261124-172745-72472ed | q0011 waiting (prio 1 eff.) | never ran | L1-L5 (L3 with Delta M from 20 M); esf_criteria with control V-1L16 |
+## When the verifier or the gate review reports
 
-- Both are continued in place by `g2long/tools/continue_chain.sh` through the queue. If a chain ends "FAILED
-  (MAX_SEGMENTS reached)" before tlim: `harness/bin/nrpic-queue add --label D-FNQ-2 --priority 2 --cmd
-  'tracks/D-bh-dress/g2long/tools/continue_chain.sh <run id> [new max_segments]'` (dry run first).
-- Close each with `harness/bin/nrpic-run finish <run id>` (main accepts `continuations` since 2026-11-25;
-  `g2long/tools/close_by_hand.py` is the fallback); start closes in the background, one at a time (40 GB).
-- After FNQ ends: rerun `region_norms.py` without `--running`, np_partial, esf_criteria (Q1-Q3), xc_plane (XQ),
-  and `hz_check.py` on its summary.
-- No queue entry was added or removed this session.
+- Answer each finding in REVIEW-wave3.md (new section), fix small defects, rerun the affected reader as a
+  NEW registered run, re-collect/verify/report. Before the review: one `nrpic-stage verify D-bh-dress G2
+  --full` (hours: ~300 GB of card outputs; start it detached and do not wait).
+- Known label defect to fix if asked: np_partial.py says "PARTIAL" even when every chain is read whole.
 
-## Next card work (not queued; first when the cards free)
+## Next card work (G3, not queued)
 
-Core's long test of the excision guard (core/restart-finder message, 2026-11-25): ES-FL with `<particles>
-ah_exc_max_growth = 8` to 240 M, removals past 219.5 M, with `<fastflow> diagnostics = true`. Only with the
-executable of `scratch/core/exe/core_restart-finder/` AFTER core has judged its card check q0049; predictions
-first (compare with FK, D4 per bin as in d4_timing.py); post the outcome to core.
-
-## What G2 still lacks (stage/G2/OPEN.md)
-
-C1 G2 verifier; C2 FNQ, FL16; C3 XQ, L5; C5 report; C10 particle and mesh convergence figures (need FNQ,
-FL16); C13 closes with the package; C14-C16 note v3 and schematics; C17 fresh-context verifier. Done in
-batch 20: C6 (rerun_g2.py), C11 (region_norms.png), horizon recheck in C7/C8. The relaxed lapse is not
-used in G2 (OPEN.md section 2).
+Core's long test of the excision guard: ES-FL with `<particles> ah_exc_max_growth = 8` to 240 M, removals past
+219.5 M, `<fastflow> diagnostics = true` (ruling 0041 item 5), executable of `scratch/core/exe/
+core_restart-finder/` only AFTER core has judged its card check q0049; predictions first (compare with FK,
+D4 per bin as d4_timing.py); post the outcome to core. A continued run that needs the diagnostics gets them
+through `-r <rst> -i <file>` with `<fastflow>` / `diagnostics = true` (core message 2026-11-26; decision 0043
+item 5), never on the command line.
 
 ## Traps (kept from earlier sessions; new ones marked)
 
@@ -57,10 +53,11 @@ record (fluxio.read_horizon does). (9) Never kill by pattern; never remove files
 shell variable. (10) `nrpic-ctx ack` renumbers the inbox: ack by file name. (12) Restart numbers are not times.
 (13) `nrpic-run submit` refuses an unclean package: commit first. (16) Horizon excision stops once the smallest
 horizon radius exceeds 4 x initial_radius_0 (nrpic.cpp:451-455). (17) The production finder sits up to ~6e-5
-off the converged mass. (18) Removal records of preempted segments: fluxio.drop_overlaps. (20) The M/4 finder's
-early surfaces fail (FF4 NaN to 3 M): read growth at M/4 from 20 M, judge each mesh against its own-mesh
-vacuum control. (21) Closes of 40 GB chains take 10-25 min each. (22) NEW: no D run has a horizon status
-file; a failed search shows as NaN or a bit-identical repeat of the line before (hz_check.py); column 1 of the
-summary is the integrator stage, not the cycle. New inputs set `<fastflow> diagnostics = true`. (23) NEW:
-status files end each line with "# reason": strip comments before parsing. (24) NEW: the region file's
-`Hmax_in_h0` is NaN at t = 0 (empty horizon sphere).
+off the converged mass. (18) Removal records of preempted segments: fluxio.drop_overlaps. (20) Read growth at
+M/4 from 20 M and judge each mesh against its own-mesh vacuum control. (21) Closes of 40-90 GB chains take
+2-10 min each with nrpic-run finish. (22) No D run has a horizon status file; failed search = NaN or bit-identical
+repeat (hz_check.py). (23) Status files end each line with "# reason". (24) The region file's `Hmax_in_h0` is NaN
+at t = 0. (25) NEW: FL16 and its control V-1L16 end at 299-299.75 M; conv3 reads "300 M" at 299 M (labelled).
+(26) NEW: background local runs (`--background`) must be closed with `nrpic-run finish <id>` before
+note/scripts can read their outputs (common.run_file needs sha256sums.txt). (27) NEW: note/main.pdf is 1.1 MB
+(above the 1 MB guideline, as v2 at 1.08 MB; pre-commit allows 5 MB); gs recompression makes it larger.

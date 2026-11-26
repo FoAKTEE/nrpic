@@ -1,28 +1,27 @@
 # Re-verification: D-bh-dress G2
 
-`harness/bin/nrpic-stage verify D-bh-dress G2` on 2026-11-26T06:00:00Z, clean export of commit `b15d370c5649` in `scratch/D-bh-dress/tmp/stage-verify/D-bh-dress-G2-b15d370-20261126T055738Z`. Result: **FAIL**.
+`harness/bin/nrpic-stage verify D-bh-dress G2` on 2026-11-26T06:01:46Z, clean export of commit `332692691262` in `scratch/D-bh-dress/tmp/stage-verify/D-bh-dress-G2-3326926-20261126T060029Z`. Result: **PASS**.
 
 | Check | Result | Message |
 |---|---|---|
-| clean | FAIL | 21 uncommitted paths: commit them first (tracks/D-bh-dress/note/figures/fig_constraints.pdf, tracks/D-bh-dress/note/figures/fig_es.pdf, tracks/D-bh-dress/note/figures/fig_esf.pdf, tracks/D-bh-dress/note/figures/fig_esrun.pdf, tracks/D-bh-dress/note/figures/fig_floor.pdf) |
+| clean | PASS | worktree clean (outside the stage directory being assembled) |
 | sync | PASS | main is merged into the branch |
-| export | PASS | clean export of b15d370c5649 (HEAD) in /data/haiyangw/nrpic/scratch/D-bh-dress/tmp/stage-verify/D-bh-dress-G2-b15d370-20261126T055738Z/tree |
+| export | PASS | clean export of 332692691262 (HEAD) in /data/haiyangw/nrpic/scratch/D-bh-dress/tmp/stage-verify/D-bh-dress-G2-3326926-20261126T060029Z/tree |
 | size | PASS | no committed file of the track above 5 MB |
 | note | PASS | tracks/<ID>/note/main.tex present |
 | package | PASS | EVIDENCE.md, OPEN.md, CHECKLIST.md present (decision 0012); scoping text: scope/SCOPE.md; REVIEW.md present; no verifier's report yet (VERIFIER.md, decision 0016) |
-| note-pdf | WARN | note/main.pdf is older than the last change of its .tex files |
+| note-pdf | PASS | note/main.pdf committed after the last .tex change |
 | style | PASS | 2 style copies equal harness/style/SHA256SUMS (czstyle.py, paperfig.py) |
-| fig-script | PASS | 13 figures, each with its script |
-| min-figs | PASS | 2 schematics and 11 data figures (brief 13.4 asks at least 1 and 5 at G2) |
+| fig-script | PASS | 14 figures, each with its script |
+| min-figs | PASS | 2 schematics and 12 data figures (brief 13.4 asks at least 1 and 5 at G2) |
 | runs | PASS | 321 run manifests finished (106 hand-written, read as decision 0012 allows); failures of 1 runs waived by coord/WAIVERS.md (decision 0019) |
 | runs-waived | WARN | failures of the manifest check waived: 1 runs named in main's coord/WAIVERS.md (decision 0019 item 6): D-20261121-165420-5d1c245: superseded: the check run of the G1 gate reviewer; an input under scratch changed after the run; its result stands in the gate review of G1 and no later claim rests on it (decision 0039 item 4) |
 | run-notes | WARN | 99 runs read with defaults or not fully re-verifiable (nrpic-run lint) |
 | checksums | WARN | output checksums not re-verified (--no-checksums) |
 | status | PASS | STATUS.md has 40 lines |
 | rerun | PASS | 14 of 14 scripts and commands ran cleanly in the export |
-| compare | FAIL | 37 regenerated files compared with the committed ones; 2 differ beyond tolerance (rtol 1e-06, atol 1e-12, PNG rms 0.005) |
-| regenerate | PASS | all 26 committed figure files regenerated |
-| new-files | WARN | 3 files written by the scripts are not in the commit |
+| compare | PASS | 40 regenerated files compared with the committed ones; 0 differ beyond tolerance (rtol 1e-06, atol 1e-12, PNG rms 0.005) |
+| regenerate | PASS | all 28 committed figure files regenerated |
 
 ## runs-waived
 
@@ -155,6 +154,11 @@
   "identical"
  ],
  [
+  "note/figures/fig_g2conv_numbers.json",
+  "PASS",
+  "identical"
+ ],
+ [
   "note/figures/fig_kerr_seeds_numbers.json",
   "PASS",
   "identical"
@@ -191,8 +195,8 @@
  ],
  [
   "note/figures/schem_timeline.png",
-  "FAIL",
-  "pixel rms 0.0631381855466101"
+  "PASS",
+  "identical"
  ],
  [
   "note/figures/fig_newton.pdf",
@@ -206,6 +210,11 @@
  ],
  [
   "note/figures/fig_es_numbers.json",
+  "PASS",
+  "identical"
+ ],
+ [
+  "note/figures/fig_g2conv.png",
   "PASS",
   "identical"
  ],
@@ -301,8 +310,8 @@
  ],
  [
   "note/figures/schem_architecture.png",
-  "FAIL",
-  "pixel rms 0.08057503023056624"
+  "PASS",
+  "identical"
  ],
  [
   "note/figures/fig_kerr_seeds.pdf",
@@ -316,6 +325,11 @@
  ],
  [
   "note/figures/schem_timeline.svg",
+  "PASS",
+  "regenerated (vector files carry dates; the PNG preview is compared)"
+ ],
+ [
+  "note/figures/fig_g2conv.pdf",
   "PASS",
   "regenerated (vector files carry dates; the PNG preview is compared)"
  ],
@@ -334,15 +348,5 @@
   "PASS",
   "identical"
  ]
-]
-```
-
-## new-files
-
-```
-[
- "note/figures/fig_g2conv.pdf",
- "note/figures/fig_g2conv.png",
- "note/figures/fig_g2conv_numbers.json"
 ]
 ```

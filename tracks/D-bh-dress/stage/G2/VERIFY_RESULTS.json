@@ -1,15 +1,15 @@
 {
   "track": "D-bh-dress",
   "gate": "G2",
-  "commit": "b15d370c5649227b356cfa40f26fd2c00d113e1c",
-  "verified_utc": "2026-11-26T06:00:00Z",
-  "export": "/data/haiyangw/nrpic/scratch/D-bh-dress/tmp/stage-verify/D-bh-dress-G2-b15d370-20261126T055738Z",
-  "result": "FAIL",
+  "commit": "332692691262a5155fa6d29d2d55354300e3f511",
+  "verified_utc": "2026-11-26T06:01:46Z",
+  "export": "/data/haiyangw/nrpic/scratch/D-bh-dress/tmp/stage-verify/D-bh-dress-G2-3326926-20261126T060029Z",
+  "result": "PASS",
   "checks": [
     {
       "check": "clean",
-      "status": "FAIL",
-      "message": "21 uncommitted paths: commit them first (tracks/D-bh-dress/note/figures/fig_constraints.pdf, tracks/D-bh-dress/note/figures/fig_es.pdf, tracks/D-bh-dress/note/figures/fig_esf.pdf, tracks/D-bh-dress/note/figures/fig_esrun.pdf, tracks/D-bh-dress/note/figures/fig_floor.pdf)",
+      "status": "PASS",
+      "message": "worktree clean (outside the stage directory being assembled)",
       "detail": null
     },
     {
@@ -21,7 +21,7 @@
     {
       "check": "export",
       "status": "PASS",
-      "message": "clean export of b15d370c5649 (HEAD) in /data/haiyangw/nrpic/scratch/D-bh-dress/tmp/stage-verify/D-bh-dress-G2-b15d370-20261126T055738Z/tree",
+      "message": "clean export of 332692691262 (HEAD) in /data/haiyangw/nrpic/scratch/D-bh-dress/tmp/stage-verify/D-bh-dress-G2-3326926-20261126T060029Z/tree",
       "detail": null
     },
     {
@@ -44,8 +44,8 @@
     },
     {
       "check": "note-pdf",
-      "status": "WARN",
-      "message": "note/main.pdf is older than the last change of its .tex files",
+      "status": "PASS",
+      "message": "note/main.pdf committed after the last .tex change",
       "detail": null
     },
     {
@@ -57,13 +57,13 @@
     {
       "check": "fig-script",
       "status": "PASS",
-      "message": "13 figures, each with its script",
+      "message": "14 figures, each with its script",
       "detail": null
     },
     {
       "check": "min-figs",
       "status": "PASS",
-      "message": "2 schematics and 11 data figures (brief 13.4 asks at least 1 and 5 at G2)",
+      "message": "2 schematics and 12 data figures (brief 13.4 asks at least 1 and 5 at G2)",
       "detail": null
     },
     {
@@ -286,11 +286,16 @@
     },
     {
       "check": "compare",
-      "status": "FAIL",
-      "message": "37 regenerated files compared with the committed ones; 2 differ beyond tolerance (rtol 1e-06, atol 1e-12, PNG rms 0.005)",
+      "status": "PASS",
+      "message": "40 regenerated files compared with the committed ones; 0 differ beyond tolerance (rtol 1e-06, atol 1e-12, PNG rms 0.005)",
       "detail": [
         [
           "note/figures/fig_q16_numbers.json",
+          "PASS",
+          "identical"
+        ],
+        [
+          "note/figures/fig_g2conv_numbers.json",
           "PASS",
           "identical"
         ],
@@ -331,8 +336,8 @@
         ],
         [
           "note/figures/schem_timeline.png",
-          "FAIL",
-          "pixel rms 0.0631381855466101"
+          "PASS",
+          "identical"
         ],
         [
           "note/figures/fig_newton.pdf",
@@ -346,6 +351,11 @@
         ],
         [
           "note/figures/fig_es_numbers.json",
+          "PASS",
+          "identical"
+        ],
+        [
+          "note/figures/fig_g2conv.png",
           "PASS",
           "identical"
         ],
@@ -441,8 +451,8 @@
         ],
         [
           "note/figures/schem_architecture.png",
-          "FAIL",
-          "pixel rms 0.08057503023056624"
+          "PASS",
+          "identical"
         ],
         [
           "note/figures/fig_kerr_seeds.pdf",
@@ -456,6 +466,11 @@
         ],
         [
           "note/figures/schem_timeline.svg",
+          "PASS",
+          "regenerated (vector files carry dates; the PNG preview is compared)"
+        ],
+        [
+          "note/figures/fig_g2conv.pdf",
           "PASS",
           "regenerated (vector files carry dates; the PNG preview is compared)"
         ],
@@ -479,18 +494,8 @@
     {
       "check": "regenerate",
       "status": "PASS",
-      "message": "all 26 committed figure files regenerated",
+      "message": "all 28 committed figure files regenerated",
       "detail": null
-    },
-    {
-      "check": "new-files",
-      "status": "WARN",
-      "message": "3 files written by the scripts are not in the commit",
-      "detail": [
-        "note/figures/fig_g2conv.pdf",
-        "note/figures/fig_g2conv.png",
-        "note/figures/fig_g2conv_numbers.json"
-      ]
     }
   ]
 }
