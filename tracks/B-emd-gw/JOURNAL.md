@@ -476,3 +476,21 @@ part. No failed run.
 open: GM2, GM3 (analysis B-20261126-212212-c54d979 running); C17 GM paragraph and timeline
 schematic; C18 verifier; rulings on C1, C3.
 Card-hours: none submitted; closed q0060 3.75; G2 11.61.
+
+## 2026-11-26 14:18-15:05 PST, lead of batch 29 (wave 3; decision 0046 item 2)
+
+Start: merged main (0046); inbox empty. The GM analysis B-20261126-212212-c54d979 had ended with
+exit -15 after 42 min (killed with its session, no output) and was closed failed by the
+orchestrator: rerun in the background as B-20261126-221911-a0531db (4 workers). C1 (0046 2a):
+design script nocross_design.py (B-20261126-222532-5ab01ea; Zel'dovich estimate from the exact
+slice, figure looked at), beta = 0.125 chosen; crossing.py and series7_judge.py written;
+predictions N7a-c committed (shear/JOURNAL 14:25) before series 7 (B-20261126-222544-f3a5176,
+N_y = 64, 128, 256 at 4 per cell, release v0.8 processor build) was registered. C3 (0046 2b):
+predictions C3a-b committed (population/JOURNAL 14:25) before the 64^3 initial data
+(B-20261126-222552-2e44186) were registered; the card member waits for them (about 3 h). Outcomes
+of series 7: shear/JOURNAL entries 14:29 and the closing entry of this session. RISKS R19, R27,
+R28 updated. No stage package (task); no outbox post (no new request: the verifier of C18 is sent
+by the orchestrator once C1 and C3 are read, 0046).
+failed: B-20261126-212212-c54d979 (killed, closed failed by orch); the design estimate of the
+crossing time (too optimistic by 2-3 in the compression rate); the wall-time expectation of the
+64^3 initial data (3 h, not 30-60 min).
