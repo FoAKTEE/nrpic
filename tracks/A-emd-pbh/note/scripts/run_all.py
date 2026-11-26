@@ -22,7 +22,8 @@ def main():
         raise SystemExit("give --out DIR or run under nrpic-run (NRPIC_RUN_DIR)")
     scripts = sorted(f for f in os.listdir(HERE)
                      if f.endswith(".py") and (f.startswith("fig_") or f.startswith("schem_")))
-    jobs = [(f, os.path.join(a.out, "figures")) for f in scripts] + [("ledger.py", os.path.join(a.out, "tables"))]
+    jobs = [(f, os.path.join(a.out, "figures")) for f in scripts] + [("ledger.py", os.path.join(a.out, "tables")),
+                                                                     ("ledger_g2.py", os.path.join(a.out, "tables"))]
     bad = []
     for f, d in jobs:
         os.makedirs(d, exist_ok=True)

@@ -1185,3 +1185,23 @@ prediction SM-h (processor build v0.7, 4 cycles): starts, reads 262144 particles
 - Queued: q0068 `a-s1l-half` (priority 2, chain, --gpu-hours 2.0 = two segments, card build v0.7, argv in the queue
   entry). Read with a2_invariant.py, a2_crossing.py and a2_probe_check.py on its run directory (`--reference 12.3
   --band 12.5 15.2` for a2_invariant's band; the clock as for S1L), then A2H is judged here.
+
+### Outcome A2H (S1L-h closed completed: A-20261126-125306-0653547, 2 jobs, 1.18 card-hours; analyses A-20261126-213147-f274b2e, A-20261126-213150-1441107, A-20261126-213153-563fb0a, figure reruns with the member's own band and labels A-20261126-213414-261dd64, A-20261126-213459-0ce5ee6; fig_a2x.png, fig_a2_crossing.png, fig_a2_probe.png looked at) - 2026-11-26 13:36 PST, lead of batch 28
+
+- Shift-invariant measure (sign of det(dx/dq) on the particle lattice, forward and centred differences agree): min J
+  > 0 at t = 135.009 (t/t_H = 13.85; min J 0.0033) and <= 0 at t = 140.009 (14.36; 2 cells, the first-crossing cell
+  at the origin). Axis reading: z crosses first, bracket (13.85, 14.36] t_H, interpolated 14.27; x crosses at
+  (19.97, 20.48], y not by t = 220. The central particle stays at rest at the origin (|u_i| <= 5.6e-12, offset
+  1.7e-3 from the probe point), so its proper time on the crossing slice is >= int alpha_min dt = 14.07 t_H.
+  Horizon status file peak.horizon_status_0.txt: 288 searches, none found. alpha_min at the crossing 0.921 (> 0.8).
+- A2H HOLDS: the crossing bracket (13.85, 14.36] t_H, and the dust-clock bound 14.07, lie inside [12.5, 15.2];
+  the first crossing is along z at the centre; no horizon; lapse above 0.8. The lag against the scaled Newtonian
+  crossing (2.83 x 3.62 = 10.2 t_H) is 1.38 in time, 1.24 in a: inside the predicted 1.17-1.26 (the square root of
+  S1L's lag in a). Neither refutation (above 15.6: an amplitude-independent numerical delay; below 11.8) occurred.
+- What the hold shows [JUDGEMENT]: the relativistic lag falls with the amplitude as an effect first order in the
+  curvature perturbation does; an amplitude-independent numerical delay (one particle per root cell, deposit
+  smoothing) is disfavoured as the main cause. It does not separate the nonlinear zeta-delta relation from other
+  effects first order in the amplitude (written before the run). A2 stays FAILED as written (decision 0043 1(d)).
+- Figure defects found and fixed in this session: a2_invariant.py and a2_crossing.py drew S1L's band, reference
+  and title for every member (the numbers in the JSON used the arguments); both now take --band, --reference,
+  --label (commit cfb6a17b2); a2_probe_check.py still titles its figure "S1L" (cosmetic, left).

@@ -1,11 +1,14 @@
-"""Schematic: architecture of Track A's calculation in three states (note v0).
+"""Schematic: architecture of Track A's calculation in three states (note v0; states of gate G2,
+release core-v0.8, batch 28).
 
-Exists = in this repository now (AthenaK release core-v0.3, or the track's reference and
+Exists = in this repository now (AthenaK release core-v0.8, or the track's reference and
 analysis code); to be ported = exists for another setting in this repository and has to
 be carried over; new = to be written (by core inside AthenaK, decision 0010, or by the
 track outside it). Sources of the classification: stage/G0/OPEN.md item 3,
 the README of the periodic-box package (Requests, T2c, T3c), the scope text sections 4 and 6,
-CLAUDE.md (release core-v0.3). No data are read.
+CLAUDE.md (release core-v0.8); at G2 the journals of periodic_threshold (peak data solved on
+the torus, relaxed lapse, finder in the box and its failure on the resolved horizon, decision
+0043 item 1(b)) and threshold_ball (outcome rule and bracket). No data are read.
 """
 import os
 import sys
@@ -40,19 +43,19 @@ def main():
         ("expanding dust ball, spherical tables", EXISTS),
         ("lattice particles on the cell centres", EXISTS),
         ("deformed ball for the Newtonian mode", EXISTS),
-        ("periodic peak, torus constraint solve", PORT),
+        ("periodic peak, torus constraint solve", EXISTS),
         ("peak data on a constant-K slice", NEW),
         ("initial velocity dispersion", NEW),
         ("two peaks in one envelope", NEW),
     ])
-    column(ax, 10.3, "Evolution", "AthenaK, release core-v0.3", [
+    column(ax, 10.3, "Evolution", "AthenaK, release core-v0.8", [
         ("Z4c with particles: deposit, push", EXISTS),
         ("geodesic and conformal-time slicing", EXISTS),
         ("Newtonian reference gravity", EXISTS),
         ("apparent-horizon finder, area mass", EXISTS),
-        ("finder across periodic box faces", PORT),
-        ("refined mesh with periodic particles", PORT),
-        ("collapse slicing in a periodic box", NEW),
+        ("refined mesh with periodic particles", EXISTS),
+        ("relaxed lapse for collapse in a box", EXISTS),
+        ("finder on a resolved horizon in the box", NEW),
         ("horizon spin, projected rotation", NEW),
     ])
     column(ax, 20.4, "Analysis", "references outside the code", [
@@ -61,7 +64,7 @@ def main():
         ("Newtonian ellipsoid and top hat", EXISTS),
         ("invariants: areal radius, horizon mass", EXISTS),
         ("waveform against quadrupole", PORT),
-        ("outcome rule and threshold bracket", NEW),
+        ("outcome rule and threshold bracket", EXISTS),
     ])
     for x0, x1 in ((9.6, 10.3), (19.7, 20.4)):
         pf.arrow(ax, (x0, 9.0), (x1, 9.0), lw=1.2, head=8)

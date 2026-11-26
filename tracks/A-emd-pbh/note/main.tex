@@ -15,14 +15,14 @@
 
 \begin{document}
 
-\title{Collisionless collapse to primordial black holes in an early matter era:\\ Scope, set-up, and baseline tests (working note v1)}
+\title{Collisionless collapse to primordial black holes in an early matter era:\\ Scope, set-up, baseline tests, and verification (working note v2)}
 
 \author{Track A of the numerical-relativity particle-in-cell cosmology program}
 
-\date{Working note v1, state of 20 November 2026}
+\date{Working note v2, state of 26 November 2026}
 
 \begin{abstract}
-In an early era dominated by pressureless matter every overdensity grows until it collapses, and whether the collapse ends in a black hole is decided by what can halt it first: departures from spherical symmetry, velocity dispersion, angular momentum, or the end of the era. The analytic estimates of this threshold disagree with one another, and the one calculation with particles in full general relativity finds black holes an order of magnitude below the estimate from the hoop conjecture. This working note scopes a program that computes the threshold, the mass, the spin and the gravitational waves of these black holes with a particle-in-cell method coupled to numerical relativity, converged in particle number, cell size and domain size. It fixes a definition of the threshold for collisionless matter before any run, sets up an expanding ball with an exact interior solution for verification and a periodic box with the data of the earlier calculation for the threshold line, and records the tests done so far. The initial data satisfy the constraints at the order of the finite differences that check them; two independent constructions of the data, two readers of their tables and three solutions of the exact evolution agree to rounding error; the analytic criteria, coded from their papers, reproduce the published values and spread over two orders of magnitude in the predicted threshold. In its Newtonian limit the code follows the collapse of a top hat and of homogeneous ellipsoids at second order in the cell size. The first runs in full general relativity follow the expansion and turnaround of the bound core in two slicings, with errors that fall as the cells shrink; one slicing breaks down before the collapse, and in the other the first trapped sphere lies inside a single cell; reaching it needs a lapse that follows the proper time of the matter and data with a larger first trapped sphere. A verifier with a fresh context recomputed the numbers of the note from the raw outputs with code of its own, all but a cost estimate and a few diagnostics of the first runs, and confirmed them.
+In an early era dominated by pressureless matter every overdensity grows until it collapses, and whether the collapse ends in a black hole is decided by what can halt it first: departures from spherical symmetry, velocity dispersion, angular momentum, or the end of the era. The analytic estimates of this threshold disagree with one another, and the one calculation with particles in full general relativity finds black holes an order of magnitude below the estimate from the hoop conjecture. This working note scopes a program that computes the threshold, the mass, the spin and the gravitational waves of these black holes with a particle-in-cell method coupled to numerical relativity, converged in particle number, cell size and domain size. It fixes a definition of the threshold for collisionless matter before any run, sets up an expanding ball with an exact interior solution for verification and a periodic box with the data of the earlier calculation for the threshold line, and records the tests done so far. The initial data satisfy the constraints at the order of the finite differences that check them; two independent constructions of the data, two readers of their tables and three solutions of the exact evolution agree to rounding error; the analytic criteria, coded from their papers, reproduce the published values and spread over two orders of magnitude in the predicted threshold. In its Newtonian limit the code follows the collapse of a top hat and of homogeneous ellipsoids at second order in the cell size. The first runs in full general relativity follow the expansion and turnaround of the bound core in two slicings, with errors that fall as the cells shrink; one slicing breaks down before the collapse, and in the other the first trapped sphere lies inside a single cell; reaching it needs a lapse that follows the proper time of the matter and data with a larger first trapped sphere. A verifier with a fresh context recomputed the numbers of the note from the raw outputs with code of its own, all but a cost estimate and a few diagnostics of the first runs, and confirmed them. In the verification stage the horizon of the expanding ball forms at the exact time, with errors that fall as the cells shrink and that do not depend on the particle number, the ball radius or the outer boundary, and the code's threshold bracket of the ball equals the exact one. A dust solution without symmetry is followed at fourth order in the cell size until the shells near its core cross. Three tests fail on record: the constraint residual that the evolution builds falls with the mesh far more slowly than the scheme's order, for a cause not yet found; the apparent-horizon finder fails on a resolved horizon in the periodic box; and the first shell crossing of a triaxial peak lags the Zel'dovich time, by an amount that shrinks with the amplitude as an effect of first order in the curvature perturbation does.
 \end{abstract}
 
 \maketitle
@@ -35,7 +35,7 @@ The analytic estimates rest on different halting mechanisms: the hoop conjecture
 
 The numerical-relativity particle-in-cell method of Wu and Most \cite{Wu:2026nrpic} couples macroparticles on geodesics to the Z4c evolution of the spacetime on an adaptive mesh, with moving punctures and an apparent-horizon finder. It can continue a collapse past horizon formation, follow accretion, measure the mass and spin of the black hole and extract its waveform, and it can be run at several particle numbers and cell sizes. This program applies a version of that method, rebuilt for isolated systems and extended to periodic expanding domains in the code AthenaK, to the matter-era threshold. The work is carried out by large-language-model agents under human direction.
 
-This note records the scoping stage and the baseline tests. Section~\ref{sec:problem} states the problem, a definition of the threshold fixed before any run, and what the estimates predict. Section~\ref{sec:setup} gives the two set-ups and the numerical methods. Section~\ref{sec:tests} reports the tests done so far, and Sec.~\ref{sec:plan} the plan to the next gates and what is open. Table~\ref{tab:parameters} holds the parameters, and Tables~\ref{tab:ledger}--\ref{tab:ledger3} every number of the note with the registered run that produced it.
+This note records the scoping stage and the baseline tests. Section~\ref{sec:problem} states the problem, a definition of the threshold fixed before any run, and what the estimates predict. Section~\ref{sec:setup} gives the two set-ups and the numerical methods. Section~\ref{sec:tests} reports the baseline tests, Sec.~\ref{sec:verify} the verification of the code paths the threshold needs, and Sec.~\ref{sec:plan} the plan to the next gates and what is open. Table~\ref{tab:parameters} holds the parameters, and Tables~\ref{tab:ledger}--\ref{tab:ledger3} and~\ref{tab:ledger_g2} every number of the note with the registered run that produced it.
 
 \section{The threshold problem}\label{sec:problem}
 
@@ -172,6 +172,46 @@ Every result of the scoping stage was recomputed by a second agent from the comm
 
 The criteria of Fig.~\ref{fig:criteria} were coded from five papers, each function with the line of the formula it implements, and checked against values and curves printed in those papers. Every check passes. Two checks compare the last printed digit: one paper rounds a constant twice, and another evaluates two of its prefactors with slightly different values of the same constant; these checks allow one unit in the last printed digit and keep the exact comparison on record. Two checks compare a semi-analytic with a numerical spin threshold that the paper calls in agreement on a plot spanning many decades; the two agree within the resolution of that plot over its window, and their drift below it follows from a term that the approximation drops.
 
+\section{Verification of the code paths}\label{sec:verify}
+
+The threshold line will be read from runs that the exact references below cannot reach, so each code path those runs use is first tested where an exact answer exists. Figure~\ref{fig:ladder} orders the tests from the exact references to the threshold line. Each rung adds one ingredient: a horizon, a threshold, a non-spherical metric, the constraints, a periodic box with refinement, and a triaxial collapse.
+
+\begin{figure*}[t]
+\includegraphics[width=\textwidth]{schem_ladder.png}
+\caption{Verification ladder of the track, from the exact references (bottom) to the threshold line of the next stage (top). Each rung adds one ingredient of the threshold runs. Green: passed; slate: passed with prediction clauses refuted on record; red: failed on record; purple: next stage. Right: what each rung tests or found.}
+\label{fig:ladder}
+\end{figure*}
+
+\subsection{Expanding ball against its exact solution}\label{sec:verify_ball}
+
+The time reverse of Oppenheimer--Snyder collapse gives the moment at which each shell of the bound core becomes trapped. The code finds the first apparent horizon of the ball at that moment, and the error of the detection time and of the trapping time of the core edge fall as the cells shrink, between first and second order (Fig.~\ref{fig:g2conv}a). Eight particles per cell instead of one, a larger ball radius and an outer boundary twice as far change the detection time by less than halving the cell size does (Fig.~\ref{fig:g2conv}b,c). The horizon mass agrees with the exact mass at the level of the Oppenheimer--Snyder test of Ref.~\cite{Wu:2026nrpic}. Across eight amplitudes the code classifies every ball as the exact solution does, so its threshold bracket of the ball equals the exact bracket.
+
+\begin{figure*}[t]
+\includegraphics[width=\textwidth]{fig_g2_convergence.pdf}
+\caption{Errors of the expanding ball's horizon times against the exact solution. (a) Detection time of the first apparent horizon (blue) and trapping time of the core edge (red) against the cell size, with first- and second-order guides. (b) The same against the particles per cell on two meshes. (c) Detection-time error against the ball radius on two meshes; open circles: the outer boundary moved twice as far, on top of the fiducial points.}
+\label{fig:g2conv}
+\end{figure*}
+
+\subsection{A dust solution without symmetry}\label{sec:verify_szekeres}
+
+The quasi-spherical Szekeres solution is exact dust without any Killing vector; in geodesic slicing its particles stay at their cells, so the code's extrinsic curvature, density and conformal factor are compared cell by cell with the exact fields. On three meshes the errors in the shell that carries the non-spherical part fall between second and fourth order, close to fourth on the two finer meshes, the order of the time integrator, and stay far below the difference between the Szekeres and the spherical solution of the same mass: the test sees the part of the metric that a spherical code would miss. Each member breaks down where the core approaches its crunch; the breakdown comes later on finer meshes, and the finest member reaches the end of the test (Fig.~\ref{fig:mosaic}). Two clauses of the predictions failed: the Hamiltonian residual converges faster than the curvature error at late times, and the lapse, which geodesic slicing keeps at one, drifts by rounding error at a rate set by the number of steps.
+
+\begin{figure*}[t]
+\includegraphics[width=\textwidth]{fig_slice_mosaic.pdf}
+\caption{Szekeres dust in the periodic box at the end of the test, finest mesh, in the plane through the centre. Top: deposited density relative to its mean in the plane; bottom: local Hamiltonian residual relative to the density term. Left to right: the whole box, the shell on one side, the edge of the core; white boxes mark the next panel.}
+\label{fig:mosaic}
+\end{figure*}
+
+\subsection{Constraint residual of the evolution}\label{sec:verify_c3}
+
+The test plan bounds the Hamiltonian residual on a line through the ball by a fraction of the density term. A top-hat ball violates the bound already in its initial data, at its density jumps and at the faces of the refinement levels where the wider particle clouds do not tile a uniform density. A smoothed ball deposited with the narrowest cloud meets the bound at the start and converges there at high order. During the evolution the residual grows in every member, with any data and any cloud, and it falls with the mesh far more slowly than the scheme's order. Eight particles per cell leave it unchanged, so the sampling of the particles is not its cause. The cause has not been found; the remaining candidates are two properties of the deposit at the faces of refinement levels, which the code project corrects next, the outer taper of the data, and the gauge in the matter. The test stays failed until a run shows the cause.
+
+\subsection{Peaks in the periodic box}\label{sec:verify_box}
+
+A spherical peak in the periodic box is exact LTB dust. Its outer shells follow the LTB solution through turnaround and collapse, and the inner shells follow it less well on the finer mesh. The horizon finder accepts one surface that is not a horizon and then fails on a trapped sphere resolved by many cells; the horizon part of this test is failed on record, and a threshold run in the box that needs a horizon waits for a corrected finder.
+
+A triaxial peak first collapses along its short axis. In full general relativity this first shell crossing comes later than the Zel'dovich time and later than a converged Newtonian run of the same particles. The lag is no effect of the coordinates: the central particle stays at rest, and its proper time on the last slice before the crossing already exceeds the Zel'dovich time. At half the amplitude, with all else unchanged, the crossing falls inside the band predicted before the run from a lag of first order in the curvature perturbation, and outside the band an amplitude-independent numerical delay would give. The test against the Zel'dovich time stays failed on record; the half-amplitude member names the class of the cause without singling out one effect within it.
+
 \section{Plan to the next gates}\label{sec:plan}
 
 The test plan holds the rows of the program's verification suite owned by this track: the time reverse of Oppenheimer--Snyder collapse, run as the expanding ball with a bound core; oblate and prolate collapse with the first caustic against the Zel'dovich time; the LTB dust profile of Ref.~\cite{Yoo:2026mdpbh} against its exact solution; quasi-spherical Szekeres dust; and three track tests, the hoop line, the halting references of the Newtonian mode, and the hypotheses H1--H4. The gate of verified capability asks that in the spherical case the errors of the turnaround and horizon-formation times converge in particle number, cell size and ball radius, and that the horizon-mass error be of the same order as in the Oppenheimer--Snyder test of Ref.~\cite{Wu:2026nrpic}. The gate of science runs asks for the converged threshold line at five ellipticities, the four hypotheses decided, mass and spin at formation and after accretion, and one waveform against the quadrupole estimate of Ref.~\cite{Escriva:2026gw}. Figure~\ref{fig:timeline} places the gates in time.
@@ -213,6 +253,10 @@ Tables~\ref{tab:ledger}--\ref{tab:ledger3} give every number behind this note wi
 \end{figure*}
 
 \input{tables/ledger}
+
+Table~\ref{tab:ledger_g2} gives the numbers behind Sec.~\ref{sec:verify}, each read by the figure and table scripts from the output of the registered run it names and checked against that run's checksums.
+
+\input{tables/ledger_g2}
 
 \bibliography{references}
 

@@ -39,25 +39,31 @@ def main():
     t, n, E, H = read_plane(common.run_file("szk256", DUMP))
     half_box, h = 8.0, 16.0 / n
     x = -half_box + (np.arange(n) + 0.5) * h
-    halves = (8.0, 2.0, 0.5)
+    # (centre x, half width): the whole box, the shell on the +x side, the core edge inside it
+    views = ((0.0, 8.0), (3.5, 2.0), (2.75, 0.5))
     rel = np.log10(E / E.mean())
     res = np.log10(np.abs(H) / (16 * np.pi * E) + 1e-30)
-    fig, axes, cax = fs.slice_mosaic(2, 3, panel=2.1, left=0.95, bottom=0.45, fig_w=7.6, cbar="right",
+    fig, axes, cax = fs.slice_mosaic(2, 3, panel=2.05, left=0.75, bottom=0.45, fig_w=8.0, cbar="right",
                                      cbar_w=0.08, cbar_gap=0.1)
     ext = (x[0] - h / 2, x[-1] + h / 2, x[0] - h / 2, x[-1] + h / 2)
     vr = (np.percentile(rel, 0.5), np.percentile(rel, 99.95))
     vh = (np.percentile(res, 5), np.percentile(res, 99.9))
     for row, (img, cmap, vlim) in enumerate(((rel, fs.CMAP["dens"], vr), (res, "viridis", vh))):
-        for col, half in enumerate(halves):
+        for col, (xc, half) in enumerate(views):
             ax = axes[row, col]
             im = ax.imshow(img, origin="lower", extent=ext, cmap=cmap, vmin=vlim[0], vmax=vlim[1],
                            interpolation="nearest")
-            ax.set_xlim(-half, half)
+            ax.set_xlim(xc - half, xc + half)
             ax.set_ylim(-half, half)
-            if col + 1 < len(halves):
-                s = halves[col + 1]
-                ax.plot([-s, s, s, -s, -s], [-s, -s, s, s, -s], color="w", lw=1.0)
-            fs.slice_ticks(ax, half, show_x=(row == 1), show_y=(col == 0))
+            if col + 1 < len(views):
+                c2, s2 = views[col + 1]
+                ax.plot([c2 - s2, c2 + s2, c2 + s2, c2 - s2, c2 - s2], [-s2, -s2, s2, s2, -s2], color="w", lw=1.0)
+            ax.set_xticks([xc - half / 2, xc, xc + half / 2])
+            ax.set_yticks([-half / 2, 0, half / 2])
+            if row == 0:
+                ax.set_xticklabels([])
+            if col != 0:
+                ax.set_yticklabels([])
             if row == 1:
                 ax.set_xlabel("x")
             if col == 0:
