@@ -1141,3 +1141,14 @@ C-20261124-035054-c06503f (closed again after its continuation in place: complet
   the mean) is resolved against the run-to-run scatter at M/8, if the cell-factor and gauge
   variants count as realisations (their effects were each below 2 per cent: D2.1, D2.3, B17.4).
 Failed predictions of this entry: D2.3 seed-pair part (2.24 M against 2 M).
+
+## 2026-11-26T12:34Z  session C-sidm lead (batch 27)  outcome B20.3, first half (gauge member of y0 = 0.344)
+
+N6b344e1 C-20261126-050124-00e10ae closed before the analysis (completed, 1.7831 card-hours, 3 jobs).
+- B20.3 (0.344 half) HOLDS (nseries.py C-20261126-123219-f734997, control N6b344; fig read):
+  with shift_eta 1.0 the kicked y0 = 0.344 model collapses at t_c = 252.41 M against 252.31 M
+  with 2.0 (+0.04 per cent, bar 5); the central lapse of the two runs differs by at most 3.1e-4
+  (20 M means) up to the collapse, as written (the shift vanishes at the centre by symmetry).
+  After the collapse the lapse floor and the constraint norm differ between the gauges.
+- The other half of B20.3 (N6b324e1, q0058) and B20.1/B20.2 (q0057, q0055) are not run yet.
+Failed predictions of this entry: none.
