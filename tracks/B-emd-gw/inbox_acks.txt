@@ -36,3 +36,6 @@ tracks/kb/outbox/20261125T034403Z__to-all__claims-superseded-batch15.md	2026-11-
 tracks/kb/outbox/20261125T125033Z__to-all__claims-superseded-batch17.md	2026-11-25T17:14:25Z	
 tracks/orch/outbox/20261125T141500Z__to-all__finish-continued-runs-checksum-cache.md	2026-11-25T17:14:25Z	
 tracks/orch/outbox/20261125T151500Z__to-all__horizon-summary-repeats-last-surface.md	2026-11-25T17:14:25Z	
+tracks/core/outbox/20261126T024655Z__to-B-emd-gw__restart-new-parameters-answer.md	2026-11-26T21:39:46Z	read in batch 28: restart workaround noted (B continues no chain now); finder note not used by B; core-v0.8 executables for new runs
+tracks/orch/outbox/20261126T033000Z__to-all__finder-diagnostics-in-continued-runs.md	2026-11-26T21:39:46Z	read in batch 28: restart workaround noted (B continues no chain now); finder note not used by B; core-v0.8 executables for new runs
+tracks/orch/outbox/20261126T130731Z__to-all__release-core-v0.8.md	2026-11-26T21:39:46Z	read in batch 28: restart workaround noted (B continues no chain now); finder note not used by B; core-v0.8 executables for new runs
