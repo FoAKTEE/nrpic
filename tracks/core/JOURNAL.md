@@ -2451,3 +2451,20 @@ byte for byte; the four cuts K24-K27 (every residue of the record interval) and 
 the uninterrupted run, with restart and `.prt` files identical; the release, cut the same
 way, loses the tracker records before the cut, the `cons.hst` record at t = 1.6875 (cuts 26,
 27) and writes 4 header lines in the mesh history instead of 2 (the figure shows all three).
+
+### Outcome R8 (03:15Z), run core-20261126-024438-1fa17dd (figure core-20261126-031446-af637b5 looked at)
+
+**R8 HOLDS**: 75 of 75 items identical with release core-v0.7 (geo 2, boris 2, dep 1, east
+12, os 16, jeans 5, binary 1, c1 5, c2 3, c3 14, c4 4, c5 10; classes a, b, a+b, other
+empty), REGRESSION PASS, as the branch's build gave (core-20261125-142602-33f4005). The
+release candidate core-v0.8 (source 01d4aeeb, tree of core/nrpic b755cdcf) is prepared on
+processors; `RELEASE-v0.8.md` written with its card check PENDING (q0049). Not released.
+
+### Close of the session (03:17Z)
+
+Not done: q0049 has not run (nothing to judge with `card_check.py`); no executable of v0.8
+was published (the branch's executables of the same source stay at
+`scratch/core/exe/core_restart-finder/`); P14 for the 0.73625 member's join; the note
+(waits for 0.755); A's new request `finder-false-accept-and-stall-p0l6` not read. Card time
+of this session: none. Processor time: build 628 s on 4 jobs; tests and analyses on one
+core each, about 50 core-minutes in all (R8 30 min, F1 11 min, Q8 8 min).
