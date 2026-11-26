@@ -1,0 +1,80 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "A-20261126-212141-7eeb046",
+  "track": "A-emd-pbh",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "szekeres entry 12 (P24, P17, P19 at tau 30): reader of the N256 continuation dump tau 40 (q0067, run A-20261125-231808-0784bc9), member dir of one dump; rows compared with N128 tau 30 of A-20261126-023245-1dd80ad",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "bash",
+    "-c",
+    "OMP_NUM_THREADS=1 python -I tracks/A-emd-pbh/szekeres/scripts/analyse_code_runs.py --run /data/haiyangw/nrpic/scratch/A-emd-pbh/tmp/szk_members_b28 --prep /data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261120-223422-8cc4241 --members N256t40=N256 --label n256t40"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "7eeb046494b6ff261d080acc989244e06263f4e6",
+    "branch": "track/A-emd-pbh",
+    "dirty": false,
+    "merge_base_main": "57c00b18dc0544f48651b8aef5fa6e5c2de7f355",
+    "worktree": "wt/A-emd-pbh"
+  },
+  "code": {
+    "core_tag": "core-v0.8",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "c7e770b3e0be132ee7c21860fd4541200b8c7248ed832b31a0ce80d1b3c6bbf3",
+    "machine_file_sha256": "0b480f5c2078e1d9fef1d97a0babb27b14009b045b4021ee578d6fc3cd243dd1",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/A-emd-pbh/.venv"
+  },
+  "input": null,
+  "inputs": [],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 1,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/A-emd-pbh/A-20261126-212141-7eeb046",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-26T21:21:42Z",
+  "started": null,
+  "ended": null,
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 60.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 27.1828,
+    "gpu_hours_reserved": 4.9167,
+    "gpu_hours_without_gate": 0.1686,
+    "cores_busy": 1,
+    "runs": 308,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md + 0026-cards-loaded-allotment-cost.md + 0031-level2-branch-and-ablation.md + 0032-new-account-preemption-allotments.md + 0038-track-e-g2-signed-g3-scope.md + 0039-rulings-after-batch-17.md + 0045-track-d-g2-signed-release-v08.md"
+  }
+}
