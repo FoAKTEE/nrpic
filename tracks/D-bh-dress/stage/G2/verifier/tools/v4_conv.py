@@ -93,6 +93,17 @@ def main():
                             d8_4=d["ES-FL"]["dM"] - d["FF4"]["dM"],
                             d16_8_ctrl=d["FL16"]["dM_minus_ctrl"] - d["ES-FL"]["dM_minus_ctrl"],
                             d8_4_ctrl=d["ES-FL"]["dM_minus_ctrl"] - d["FF4"]["dM_minus_ctrl"])
+    tt0 = np.arange(20.0, 299.1, 0.5)
+    g = lambda lab: np.interp(tt0, *m[lab]) - at(*m[lab], 20.0)
+    d168 = g("FL16") - g("ES-FL")
+    d84 = g("ES-FL") - g("FF4")
+    w = tt0 >= 250
+    mesh["envelope_20_299"] = dict(d16_8_max_abs=float(np.max(np.abs(d168))),
+                                   d16_8_mean_250_299=float(np.mean(d168[w])),
+                                   d8_4_mean_250_299=float(np.mean(d84[w])),
+                                   d8_4_max_abs=float(np.max(np.abs(d84))))
+    pnoise = dict(sd_N_Nq=float(np.std(n - q)), sd_4N_N=float(np.std(f - n)))
+    res["particle_number"]["sample_sd"] = pnoise
     res["mesh"] = mesh
     # (c) exterior shells, N/4 over 4N
     tq, sq = shells(a.scratch, "FNQ")
