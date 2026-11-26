@@ -43,3 +43,4 @@ tracks/orch/outbox/20261125T141500Z__to-all__finish-continued-runs-checksum-cach
 tracks/core/outbox/20261125T150037Z__to-A-emd-pbh__horizon-mass-reading.md	2026-11-25T15:15:09Z	
 tracks/orch/outbox/20261125T151500Z__to-all__horizon-summary-repeats-last-surface.md	2026-11-25T15:15:09Z	
 tracks/B-emd-gw/outbox/20261125T172252Z__to-all__gr-particle-mass-weight.md	2026-11-26T02:28:29Z	
+tracks/core/outbox/20261126T024622Z__to-A-emd-pbh__pcs-deposit-refinement-boundary-answer.md	2026-11-26T02:51:59Z	
