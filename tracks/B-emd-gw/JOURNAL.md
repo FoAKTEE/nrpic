@@ -433,3 +433,20 @@ spread 0.028, Newtonian 2e-4); first band run B-20261125-170051-49ada01 compared
 open: q0007, q0042, q0044 (cards held until about 2026-11-26); analyze_gr.py rerun with equal
 masses; C15 script split; C17 after the runs; C18 verifier. Stage verify G2 without checksums: all
 PASS except 'runs' (q0007's chain in flight). Card-hours this session: none.
+
+## 2026-11-25 18:17-19:15 PST, lead of batch 23 (q0007, q0042, q0044 ended)
+
+predicted: M1-M4, Q1 (2026-11-24 06:10), P8C1-2, S1-S3 (2026-11-25 04:00) as written, the way
+each is judged fixed before the analyses (population/JOURNAL "18:35"); N2e, GN1e (18:30, after
+seeing the equal-mass largest masses, before the medians); GM1-GM4 for the new 256^3 shifted run.
+found: the 256^3 zero-shift run stops at a = 102 (M1 refuted; K_max > 0 from a = 80); M4 fails
+where reachable (Hr ratio 1.11-1.36); P8C1, P8C2 (4e-12), Q1 constraint part (2.93 at a = 141),
+S1 (Hr_mean 1.1e-2 at a = 141) hold (B-20261126-024849-87e72b7); with equal GR masses N2e and
+GN1e hold (B-20261126-024936-1ee0a16, -024941-647553b): the Gamma driver is the closer gauge and
+the rest-mass weight had made halos 5 per cent heavier. analyze_gr.py: --equal-mass, header dump
+times, time selection, run union. Note section VI, figure (b), ledger (B-20261126-025137-7686b91).
+Queued q0060 (256^3 Gamma driver, priority 2). G2 OPEN.md, CHECKLIST, REVIEW, RISKS (R26 new).
+failed: M1; M4 (reachable part); GN1 of batch 21 withdrawn (biased masses); the S2/S3 text's
+a' = 4a slip (batch 17); two journal header times of this session not read from the clock.
+open: three processor analyses running (M2, M3, Q1 high-k, S2, S3); q0060; C15, C17 checker, C18.
+Card-hours: none submitted to run; closed 3.58 (q0007 3.23, q0042 0.22, q0044 0.13); G2 7.86.

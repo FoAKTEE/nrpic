@@ -1,40 +1,36 @@
 # STATUS of B-emd-gw
 
 gate:        G0 PASS (2026-11-19), G1 PASS with reservations (2026-11-21, tag
-             stage/B-emd-gw/G1-pass-20261121). G2 package current (batch 21): C4, C6, C7, C10,
-             C12, C13, C16, C19, C20 PASS, C8 NA (0013), the rest OPEN (stage/G2/OPEN.md maps each
-             to its queue entry or processor work). G2 not met.
-headline:    Same particles, full GR against the Newtonian mode: halo counts agree in both gauges
-             and the ten largest masses to 2.5-2.8 per cent (median, a = 121); the largest halo is
-             lighter by 2-5 per cent with zero shift and heavier by 7-11 with the Gamma driver, so
-             FoF masses depend on the spatial gauge (R23) and the shift does not bring them closer
-last-result: batch 21 (2026-11-25): Newtonian analysis B-20261125-122434-060d53d closed;
-             compare_newton.py against both gauges (B-20261125-165836-70b17b6, -165845-0621554):
-             N2, N3 hold; N4 fails in both parts. Quasi-static part: analyze_gr.py deposits the
-             GR particles' rest-mass weight (spread 2.8 per cent) as mass (B-20261125-170535-84c9ba5;
-             with equal masses GR/Newton 1.01-0.94 at a = 2.3-36); the GR metric agrees with the
-             Newtonian particles within 11 per cent at a = 4-36 in both gauges. Radiated part:
-             0.29 against a factor 2 (B-20261125-172136-3e920ab), cause not tested. GN1 refuted.
-             Note: G2 section, fig_pop_gauge, G2 schematics, ledger Table VIII
-             (B-20261125-171148-563a6f0); stage/G2/REPRODUCE.md.
-running:     nothing on processors
-cards:       shared queue (cards held by another partition until about 2026-11-26, 0041 item 6):
-             q0007 pop_s014_gr256 (mesh leg, B-20261125-093500-242d3a3, Slurm 5283 pending,
-             segment 2 of 5); q0042 pop_s014_gr_p8_cont (P8C1-2, waiting); q0044 pop_s028_gd2
-             after q0042 (S1-S3, waiting); all priority 2; nothing partial read
-next:        1. analyze_gr.py without the rest-mass weight in hqs_particles (one flag), rerun on
-                the zero-shift and gauge-leg runs, prediction first; redo A1-A3, GD3 particle parts
-             2. read q0042, q0044, q0007 when they end (P8C, Q1; S1-S3; M1-M4); then C1-C3, C11
-                in the note and a fresh G2 verifier (C18)
-             3. C15: split analyze_b/analyze_f/analyze_gr/analyze figures into one script each;
-                a proper-distance halo mass (gauge of FoF, R23); N4 radiated part at one cadence
+             stage/B-emd-gw/G1-pass-20261121). G2 package current (batch 23): C4, C6, C7, C10,
+             C12, C13, C16, C19, C20 PASS, C8 NA (0013), the rest OPEN (stage/G2/OPEN.md: each
+             item with the queue entry or running analysis that serves it). G2 not met.
+headline:    The zero shift fails at the finer mesh: the 0.014 box at 256^3 stops at a = 102 after
+             K_max turns positive at a = 80 (q0007, B-20261125-093500-242d3a3); the shifted gauge
+             carries the 0.028 box to a = 141 (q0044). With equal GR particle masses the Gamma
+             driver is the gauge closer to Newton (median |dM| 3.8 against 5.7 per cent, a = 81-132)
+last-result: batch 23 (2026-11-25 18:17-19:15): M1 refuted, M4 fails where reachable (Hr 128^3
+             over 256^3 1.11-1.36); P8C1, P8C2 hold (continuation repeats to 4e-12); Q1 constraint
+             part holds (Mr 2.93 times smaller with 8 per cell at a = 141); S1 holds (Hr_mean
+             1.1e-2 at the end); N2e, GN1e hold with equal masses (B-20261126-024936-1ee0a16,
+             -024941-647553b): the rest-mass weight (R25) made GR halos 5 per cent heavier and
+             had reversed GN1 in batch 21. analyze_gr.py --equal-mass, header dump times, run
+             union. Note section VI and ledger updated (B-20261126-025137-7686b91).
+running:     processors (registered, read next session after `nrpic-run finish`):
+             B-20261126-022356-52c2460 (256^3 strain and halos, M2-M3, 3 cores),
+             B-20261126-022403-82f6e69 (0.028 shifted box, S2-S3 input, 2 cores),
+             B-20261126-022838-27fab1b (8 per cell joined, Q1 high-k, 1 core)
+cards:       q0060 pop_s014_gr256_gd waiting (256^3 Gamma driver, priority 2, ceiling 6 card-h,
+             GM1-GM4 in population/JOURNAL 2026-11-25 18:50); nothing else queued
+next:        1. close the three analyses; judge M2, M3, Q1 high-k, S2, S3 (judge_s028gd.py,
+                compare_legs.py), figures looked at
+             2. read q0060 when it ends (GM1-GM4); then C2, C3, C11 and the G2 abstract/summary
+             3. C15 split of the multi-figure scripts; strain parts of A1-A3, GD3 with equal
+                masses; then a fresh G2 verifier (C18)
 needs:       core: parameters added at a restart (outbox 20261125T121932Z); Fourier Newtonian
              solver with the threaded build (20261124T173601Z). kb: claim 861 [TO VERIFY].
-             orch: incremental checksums served (0039 item 5)
 offers:      gw_diag (TT, rho_K, spectra, E/B/Psi_4; gauge G_tot); population/scripts/
-             compare_newton.py, vel_check.py (same particles, one estimator), n4_band.py; finding
-             for every track that deposits GR particle files with a Newtonian estimator: the
-             file's masses carry the rest-mass weight W psi^6 (R25)
-budget:      card-hours toward G2: 4.27 used (no card this session); mesh leg in the queue (about
-             0.84 in its first segment); queued ceilings 5 (q0007), 0.5 (q0042), 0.5 (q0044);
-             G1 1.69; allotment 40 (0014)
+             analyze_gr.py --equal-mass; finding for every track that reads GR particle files
+             with a Newtonian estimator: the masses carry the rest-mass weight W psi^6 (R25),
+             which moves halo masses by about 5 per cent
+budget:      card-hours toward G2: 7.86 used (this session closed 3.58: q0007 3.23, q0042 0.22,
+             q0044 0.13; none submitted to run); q0060 ceiling 6; G1 1.69; allotment 40 (0014)

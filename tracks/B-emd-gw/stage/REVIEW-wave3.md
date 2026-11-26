@@ -428,3 +428,41 @@ open (package scripts that draw several figures). Stage verify without checksums
 PASS except 'runs' (q0007's chain B-20261125-093500-242d3a3 is in flight).
 
 Queue entries waiting for a card, nothing partial read: q0007 (job 5283 pending), q0042, q0044.
+
+## Batch 23 (2026-11-25 18:17-19:15 PST, lead): q0007, q0042, q0044 ended; equal particle masses
+
+No helper package this session; the three queue entries were checked from their outputs, each
+judged against the prediction written before it ran (population/JOURNAL 2026-11-24 06:10,
+2026-11-25 04:00), with registered analyses and figures looked at.
+
+Confirmed from the artefacts:
+- q0007 (mesh leg, 256^3, zero shift, B-20261125-093500-242d3a3, closed as failed, 3.23 card-h
+  over seven jobs): `pop.guard.txt` gives the non-finite stop at t = 18.2109 (a = 102); the
+  history (B-20261126-024849-87e72b7) shows K_max > 0 from a = 79.9, which neither 128^3 run has.
+  M1 refuted; M4 not judgeable at a = 141, fails at a = 36-100 (Hr ratio 1.11-1.36 against 2).
+- q0042 (P8C, B-20261125-221742-5100a22, 0.22 card-h): exit 0 at the time limit; continuation
+  repeats the cut run to 4.2e-12 (P8C1, P8C2 hold); Q1 constraint part holds (2.93 at a = 141).
+- q0044 (S28GD, B-20261126-011415-449c8ce, 0.13 card-h): exit 0 at the time limit, no guard,
+  Hr_mean 1.1e-2 at the end (S1 holds).
+- R25 applied to halo masses: the GR files' rest-mass weight made halo masses about 5 per cent
+  heavier (equal-mass catalogues B-20261126-022407-87e8803 against B-20261125-115558-2ab4161).
+  With equal masses N2e and GN1e hold (B-20261126-024936-1ee0a16, -024941-647553b): batch 21's
+  "zero shift is the closer gauge" is reversed, and the note (section VI, fig_pop_gauge (b),
+  ledger) now says so (B-20261126-025137-7686b91).
+
+Wrong or defective, and what the track does:
+- Batch 21's GN1 judgement and its note text used weighted masses: withdrawn on record, redone.
+- S2/S3 (batch 17) wrote a' = 4a for "the same stage"; the stage is sigma1 a, so a' = 2a. Judged
+  at the same stage; the written pairing reported beside it (judge_s028gd.py).
+- The two journal headers "18:35" and "18:50" of this session were not read from the clock
+  (corrected in the 18:30 entry; labels kept because manifests cite them).
+- analyze_gr.py assumed one dump per 0.25 in t from the file index; the 256^3 chain wrote every
+  0.5 with extra dumps at segment ends. Fixed (header time) before any 256^3 analysis.
+
+Not confirmed (running at the end of the session, registered, to be closed and read next):
+M2, M3 (B-20261126-022356-52c2460, 256^3 strain and halos to a = 100), Q1 high-k part
+(B-20261126-022838-27fab1b), S2, S3 (B-20261126-022403-82f6e69, then `judge_s028gd.py`).
+
+Decision: the gauge at a second mesh is needed (the zero shift fails at 256^3 and the track reads
+its strain in the shifted gauge); queued as q0060 (`pop_s014_gr256_gd`, priority 2, v0.7 card
+executable and chain, ceiling 6 card-h), predictions GM1-GM4 written before.
