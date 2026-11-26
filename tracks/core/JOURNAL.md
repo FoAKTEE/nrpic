@@ -2508,3 +2508,17 @@ q0039 K7 of `RELEASE-v0.7.md` ("Card checks pending": all three of `card_v07.py`
   Slurm (job 5378). P13 (journal 2026-11-24, before the runs) is judged for the control only:
   no collapse before 450 M and the 400-450 M mean of alpha_c / alpha_c^eq at least 0.01 below
   its 250-300 M mean 0.9640. The fates of the other models are not changed by this run.
+
+## 2026-11-26T12:15Z (04:15 PST): outcomes of q0036 and of row 4 with q0032
+
+- q0036: `JOURNAL-step-limit.md` entry 17 (run core-20261126-121103-1070457): P4a, P4c held;
+  P4b held in its test and failed in its time (t = 1.18, not 1.5-1.8), as on processors; the
+  statement added this morning held (step never above 0.577 cells, t = 6 reached).
+- Row 4, run core-20261126-121143-aaae1b7 (figure `fig_row4_m8.png` looked at): fates and
+  bracket unchanged, (0.7175, 0.726875). **P13 holds for the control**: 0.755 control does not
+  collapse by 600 M; 50-M means of alpha_c / alpha_c^eq 0.9640 (250-300 M), 0.9345 (400-450 M,
+  0.0295 below), 0.8022 (550-600 M, minimum 0.736). The drift goes on and speeds up; whether it
+  ends in a collapse beyond 600 M is open. Member half of P13 waits for q0059 (job 5378,
+  pending). P14 for joins still not computed by the script. Card cost of q0032: 0.6403
+  card-hours for 300 M = 7.68 s per M (P15 bound 9 s per M: held).
+- `verify/LADDER.md` row 4: third reading added.

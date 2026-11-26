@@ -353,6 +353,16 @@ hold; P15 holds (7.6 to 7.8 s of card time per M); P13 waits for 0.755. The 300-
 therefore the bracket of "collapse within 300 M", not of stability over any longer window
 [VERIFIED for the five models that collapse by 421 M; JUDGEMENT for what it means].
 
+Level 3, third reading 2026-11-26 (batch 27, journal entry 2026-11-26T12:15Z): q0032 closed
+(core-20261126-021633-50968b9, 0.755 control continued from core-20261121-204237-ae00ca2 at
+300 M to 600 M, 0.6403 card-hours, one job); fates run core-20261126-121143-aaae1b7 (figure
+looked at). Fates and bracket unchanged: **(0.7175, 0.726875)** by the 300-M rule. The 0.755
+control does not collapse by 600 M, but its central lapse keeps drifting: 50-M means of
+alpha_c / alpha_c^eq 0.9640 (250-300 M), 0.9345 (400-450 M), 0.8022 (550-600 M; minimum
+0.736). P13 holds for the control (no collapse before 450 M; 400-450 M mean 0.0295 below the
+250-300 M mean, at least 0.01 predicted). The member's continuation (q0059, job 5378) has not
+run.
+
 ## Supporting checks of the C2 steps (earlier, not re-run today)
 
 | Step | Number | Source |
