@@ -142,3 +142,24 @@ converging with mesh and particle number), not an excision outside the horizon a
 clock error, and G does not depend on it. Two reservations for the record: FF4's D2 uses a
 control past its end, and the single-sample convergence numbers understate their envelopes.
 I find no number of the claims that I could check and could not reproduce.
+
+## 9. Comparison with the lead's verdicts (written after sections 1-8)
+
+Read for this section only: stage/G2/CHECKLIST.md (via STAGE_REPORT's Result column),
+g2long/JOURNAL.md entries 19 (FK), 24 (T, D4 timing) and 27 (C2).
+
+| Item | Lead | Verifier | Agreement |
+|---|---|---|---|
+| C7 null test | PASS at M/8 (2.28e-4/2.51e-4) and M/16 (1.99e-4); M/4 fails (4.57e-3, "a factor 20"), on record | same numbers to 3 digits; M/4 fails its pass condition by 16 per cent against its own floor (3.95e-3) and does not meet N's refutation clause; "factor 20" is relative to M/8 | agree; wording nuance |
+| C8 growth | PASS: (iii) and D2 at every member, maxima 0.620/0.485/0.249/0.239/0.290/0.685 per cent; D3 fails at N/4 and M/4; early removals TO VERIFY | same maxima, bin and sample counts; D3 counts exact | agree, one reservation: FF4's "480 D2 samples with its own control" holds only with V-1L4 held at its last value after 299 M (280 samples within the control) |
+| C2 convergence | PASS: ordering 4 of 4, window ratios 3.1/2.5/2.5/1.9; M/8-M/16 agree to 4.4e-4, 1.2e-4, 8.6e-5; M/4 outside; no order | same numbers; the lead's own entry 27 notes the +5e-4 systematic offset of M/16 - M/8 from 150 M; the C2 row quotes only the single samples | agree; the row should carry the envelope (1.0e-3 max, +5.8e-4 mean over 250-299 M) |
+| Excision step (P9, X1) | VERIFIED by FK | reproduced (switch at 218.9/224.0 M, minradius 3.2 M at 219.5 M; FK medians 0.16-0.24 per cent) | agree |
+| FK = ES-FL to 219 M (P7) | "1.8e-6 at 1.5 M; zero to round-off from 50 to 219 M" | bit-identical from 50 to 163 M; from 163.5 M differences up to 2.2e-7 (at 200 M) | agree on P7; "zero to round-off to 219 M" is slightly too strong (immaterial) |
+| D3 of FK | "no violation (min margin -1.4e-4)" | 0 violations of D3 as written | agree on the count; the quoted negative margin reads as a violation and should be explained or removed |
+| Early removals (R28, C8 TO VERIFY) | cause not named; restart rule of the excision considered | decided: early arrival of the shells (evolution ahead of exact LTB by ~0.2 per cent of proper time at R0 = 28 M: 0.78 M at M/8 N, 0.55 M at 4N, 0.40 M at M/16); clock right to 6e-7; excision acts inside the run's horizon; G untouched | new finding; the restart-rule hypothesis would delay removals, not advance them. The earlier onset in FN4 (170 M against 235 M) fits a smaller removal margin before 219 M (median tau_rem - tau_H +0.140 M in FN4 against +0.180 M in FK) [JUDGEMENT] |
+| Failed predictions on record (C18) | V3, E2, E3, F2 at 400/500, F3 median and D1, F4 reason 3, H1, H2, P2, P5, P6, P11, P13, D3 N/4 | all of those I could read reproduce as failed (E3, P13 not re-read) | agree |
+
+Net: I reproduce every number of the claims I could check, agree with the PASS of C1, C2, C7
+and C8 as far as my readings reach, and add one decided open point (the early removals), one
+reservation on a ledger row (FF4's D2 past its control) and two wording corrections (C2's
+single-sample numbers, D3 margin of FK). Items I did not check are listed in section 6.
