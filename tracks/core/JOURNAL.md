@@ -2299,3 +2299,98 @@ fine leaf on the line next to the boundary that receives the PCS tail of a coars
 (cloud of fine width in x2, x3 on a lattice of coarse spacing) need not equal the planar
 emulation on a line at fixed x2, x3; D3 for the shifted cases is judged on the code's
 mass sum and on all other cells, and that one cell is reported.
+
+### Outcomes D1-D5 (02:30Z), runs core-20261126-022953-21b8455 (judged; figure looked at)
+
+Earlier attempts on record: core-20261126-022652-fa293a1 (failed: the reader looked for
+the tables beside the deck, AthenaK writes them into `tab/`), core-20261126-022724-382f943
+(failed: my emulation asked for the leaf of a root lattice cell whose centre lies on a
+fine face), core-20261126-022813-2d6c617 (same data as the judged run; its figure put the
+capped cases on a scale of 1e-13 and was unreadable). The script's verdict line says FAIL
+for every run: what failed is listed here.
+
+- **D1 HOLDS.** CIC, cell-centred lattice: E/rho0 - 1 = 0 exactly in all 48 leaf cells of
+  the line (also with the shift in x2, x3).
+- **D2 HOLDS, to the digit.** TSC: +0.1875 (first coarse cell, x1 = 8.5), -0.125 (9.5),
+  -0.125 (last fine cell, 7.75); PCS: +0.208333, -0.145833, -0.125, as computed by hand;
+  every cell more than three cells from the boundaries uniform to 2.2e-16. At the left
+  boundary (x1 = -8) PCS differs (+0.0625 at -8.5, +0.1458 at -9.5, -0.1458 at -10.5,
+  -0.125 at -7.75): the stencil that picks the level has four cells, offsets -1..+2 for a
+  particle at a cell centre, so two coarse particles on the left take the fine width and
+  one on the right (the fourth cell carries weight 0 but counts for the level). The
+  emulation reproduces it. The scripted "D2_mass" check failed only for the shifted PCS
+  lattice (line sum 31.977 instead of 32): the amended cell, below.
+- **D3 HOLDS where the emulation models the code** (every case without
+  `deposit_fine_shape` and without compensation, ten cases): code minus emulation at most
+  1.1e-15 in every leaf cell. Shifted PCS: the reported fine cell next to the boundary
+  differs by 0.0231 on the line x2 = x3 = 0.1, as the amendment foresaw; all other cells
+  8.9e-16. The scripted D3 failed on cases the emulation does not model: `pcs_capfs`
+  (3.9e-3: the slopes of deposit_fine_shape are not in the emulation) and `cic_fs` (below).
+  **So the boundary error of the PCS (and TSC) cloud is the rule of the deposit, coded as
+  documented: a property, not a coding defect.**
+- **D4 FAILED, in both parts.**
+  (a) Without a cap, `deposit_fine_shape = true` is inert for TSC and PCS (tables
+  byte-identical) but NOT for CIC: `cic_fs` puts -0.125 and +0.125 into the two fine cells
+  next to each boundary (x1 = 7.25, 7.75), mass conserved. Cause, by reading
+  (`nrpic.cpp` 993-1010, 1032-1072) [VERIFIED by this run against `cic`]: with the linear
+  cloud and fine shape the lattice cells BESIDE the cloud are visited too (`ns = nb + 2`);
+  for a coarse particle next to a finer block such a side cell lies in the fine block
+  (kd = 1 > 0) and enters the fine-shape branch, which gives it the tent integral minus a
+  constant (a zero-sum dipole), while the cloud's own cells are coarse leaves (kd = 0)
+  that keep the plain weight: the dipole that should cancel against the slope of the own
+  cells has nothing to cancel against. A defect of the option (it was meant for capped
+  clouds); it does not touch Track A, which deposits PCS without the option.
+  NEXT_SOURCE.md item 0.
+  (b) A level cap does NOT make the deposit uniform: with `deposit_max_level = 0`
+  (root-width clouds everywhere) CIC +0.125 (8.5) and -0.125 (7.25, 7.75), TSC 0.031, PCS
+  0.027, with and without fine shape; the code equals the emulation (0 to 5.6e-16). My
+  prediction was wrong because I took the fine particles as a union of 2^3 coarse
+  lattices, each uniform; each of those lattices ends at the boundary at a different
+  offset from the first coarse particle (0.75 and 1.25 coarse cells), so the particle
+  lattice itself has a seam there that any cloud wider than its own cell sees. The cap
+  makes TSC and PCS 6 to 8 times better, not exact.
+- **D5 HOLDS in substance, the scripted check FAILED.** With Track A's compensation the
+  largest boundary error of PCS grows by a factor 1.79 (0.373 against 0.208, inside the
+  predicted <= 2.13); the interior (|x1| < 6.25, |x1| > 12.5) stays uniform to 2e-16. The
+  check used a margin of three cells and the filter carries the error at -10.5 two cells
+  further (+0.046 at -11.5): my margin, not the code. Not predicted: the compensated
+  deposit is NOT conservative across the level boundary: the line sum is 32.0413 instead
+  of 32 (+0.13 per cent of the mass; by the symmetry in x2, x3 the same for the volume
+  integral). The non-flux pass (-c, 1+2c, -c) with ghost values from the other level is
+  not conservative at a level face. NEXT_SOURCE.md item 0b (`deposit_comp_limit > 0`, the
+  flux form, not tried).
+
+What this answers for Track A: the O(0.1) error of the PCS cloud in the first coarse cells
+of a lattice of one particle per local cell is the documented rule (level of a cloud =
+finest level among its stencil's owners; partition of unity holds only within one cloud
+width on one lattice spacing), made larger by the compensation (x1.8) and, for a
+spacing jump of the particle lattice, present even with a cap. CIC with particles at cell
+centres is exact on both sides (D1), which is A's factor of twenty. Answer posted to A.
+
+### Outcomes P10-P15 so far (02:31Z), run core-20261126-023040-b755cdc (figure looked at)
+
+Closed first: core-20261125-180320-3dad12c (q0030, 0.726875 control, 0-600 M, completed,
+1.2981 card-hours over 4 jobs of its chain) and core-20261125-225600-d2db1ed (q0031, 0.73625
+member continued from core-20261123-020458-dfc38d7 at 300 M, completed, 0.6325 card-hours,
+one job), by `nrpic-run finish` (manifests committed 846c3b6b, cdb695ab).
+
+- **P10 HOLDS.** 0.726875: neither run collapses by 300 M (member and control), D =
+  +0.0061 (|D| <= 0.01), member STAYS, model STABLE: **bracket by the 300-M rule
+  (0.7175, 0.726875)**, valid, nothing pending inside; next midpoint 0.7221875.
+- **P11 HOLDS.** 0.726875 beyond 300 M: member 338.25 M, control 333.75 M (lapse < 0.3),
+  both in 300-420 M, 4.5 M apart (<= 30).
+- **P12 HOLDS.** 0.73625: member 405.0 M, control 421.25 M, both in 320-500 M.
+- **P13 PENDING** (q0032 in Slurm as job 5346; the member is q0059 after the checks).
+- **P14** for the member's join: not computed in this session (`row4_fate.py` does not
+  print joins); the control's join held in batch 17.
+- **P15 HOLDS** on the bound (no run above 9 s per M): 3dad12c 1.2981 card-hours for 600 M
+  = 7.79 s per M over 4 jobs (two attempts preempted, their lost minutes included);
+  d2db1ed 7.59 s per M in one job.
+
+What it means (the reading written on 2026-11-24 before the runs): P11 and P12 hold, so
+the 300-M bisection measures how long a model resists a common inward drift, not a
+stability threshold: every model from 0.605 to 0.73625 collapses by 421 M on M/8, and the
+collapse time grows smoothly with y_c (180.5, 219.5, 244.25, 294.25, 338.25, 405.0 M for
+the members). Row 4 on M/8 is reported as "collapse within 300 M bracketed between 0.7175
+and 0.726875"; the drift (its dependence on cell size and particle number) is the open
+item [JUDGEMENT]. 0.755 (q0032, q0059) decides whether it reaches the most stable model.
