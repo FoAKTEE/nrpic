@@ -1,0 +1,152 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "A-20261126-232456-42c8c8f",
+  "track": "A-emd-pbh",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "G2 gate review of Track A: reviewer's checks G1-G4 (PREDICTIONS.md): finder status of S1L, S1L-h, P0L6; SCOPE section-3 constraint ratio of the eleven threshold_ball members at their detections; detection-time order for ball radius 1.25 R0; tick labels of note Fig. 7(a)",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "python3",
+    "/data/haiyangw/nrpic/scratch/A-emd-pbh/tmp/gate_review_g2/gr_checks.py",
+    "$NRPIC_RUN_DIR"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "42c8c8f3251fee5ff66b5eec546d613972546845",
+    "branch": "track/A-emd-pbh",
+    "dirty": false,
+    "merge_base_main": "87ac585e187d4c8c58d0c23d61585f37b42196ba",
+    "worktree": "wt/A-emd-pbh"
+  },
+  "code": {
+    "core_tag": "core-v0.8",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "c7e770b3e0be132ee7c21860fd4541200b8c7248ed832b31a0ce80d1b3c6bbf3",
+    "machine_file_sha256": "0b480f5c2078e1d9fef1d97a0babb27b14009b045b4021ee578d6fc3cd243dd1",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/A-emd-pbh/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "/data/haiyangw/nrpic/scratch/A-emd-pbh/tmp/gate_review_g2/PREDICTIONS.md",
+      "role": "input",
+      "sha256": "ab67684b9a6026e145fe9070790f9e4f140e6a4509b02af7f5f0ec3809c1caf3",
+      "bytes": 2178,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/A-emd-pbh/tmp/gate_review_g2/gr_checks.py",
+      "role": "input",
+      "sha256": "0e1eaf77799f53e0f31ce7f41c754af1f90949913da950baf8241994d55c9415",
+      "bytes": 9251,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261124-131120-5c974ce/threshold_series.json",
+      "role": "input",
+      "sha256": "7a091b1289fdf1484b481a6320574b65f58e71536a6ba95fec9b3ec4a83893c6",
+      "bytes": 62101,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261124-131120-5c974ce/threshold.md",
+      "role": "input",
+      "sha256": "5cfcda27241b38041325ab5cc0bdeb1192cffed685807b9fdeb39c8ddc270be5",
+      "bytes": 3137,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261121-120257-a2eb839/convergence.json",
+      "role": "input",
+      "sha256": "10a23940435d68de58b8c9046f2b250b4d1b57e952b72aa6371075bc41f40c09",
+      "bytes": 30932,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261123-025907-97bab8d/peak.horizon_status_0.txt",
+      "role": "input",
+      "sha256": "54efe1ebc86d5363bf17bd58c3e1b0814bd5a24018b2cd5b55ea119f9d3769ae",
+      "bytes": 89566,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261126-125306-0653547/peak.horizon_status_0.txt",
+      "role": "input",
+      "sha256": "d622fc811bd324eed652a4ff5a43b7a88165f874030f742d2648dd0cbdaf4677",
+      "bytes": 79188,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261125-044641-7d5bd16/peak.horizon_status_0.txt",
+      "role": "input",
+      "sha256": "4ad9c03640f267007f7164fc4cf2da3313aa81c6cf681c0e3f31861c622feaa4",
+      "bytes": 86812,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "tracks/A-emd-pbh/note/scripts/fig_g2_convergence.py",
+      "role": "input",
+      "sha256": "3b45aceecdfcad003d8e5433fc7c297c18d14575d7c1bcf068dc3b17c88d8473",
+      "bytes": 3627,
+      "tracked": true
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 1,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/A-emd-pbh/A-20261126-232456-42c8c8f",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-26T23:24:57Z",
+  "started": null,
+  "ended": null,
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 60.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 30.5062,
+    "gpu_hours_reserved": 0.0,
+    "gpu_hours_without_gate": 0.1686,
+    "cores_busy": 0,
+    "runs": 327,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md + 0026-cards-loaded-allotment-cost.md + 0031-level2-branch-and-ablation.md + 0032-new-account-preemption-allotments.md + 0038-track-e-g2-signed-g3-scope.md + 0039-rulings-after-batch-17.md + 0045-track-d-g2-signed-release-v08.md"
+  }
+}
