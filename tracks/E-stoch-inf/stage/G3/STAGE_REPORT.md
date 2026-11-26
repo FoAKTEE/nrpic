@@ -1,6 +1,6 @@
 # Stage report: E-stoch-inf G3
 
-Date: 2026-11-26 · branch `track/E-stoch-inf` at `7ca2752f332f` · checklist
+Date: 2026-11-26 · branch `track/E-stoch-inf` at `7d111eae8049` · checklist
 `tracks/E-stoch-inf/stage/G3/CHECKLIST.md` (from `nrpic-stage collect`)
 
 ## Verdict
@@ -8,7 +8,7 @@ Date: 2026-11-26 · branch `track/E-stoch-inf` at `7ca2752f332f` · checklist
 **FAIL**. Tag: `stage/E-stoch-inf/G3-fail-20261126` (created and pushed by the orchestrator after review, decision 0003).
 
 - 18 checklist items not PASS or NA: C1 OPEN, C2 OPEN, C3 OPEN, C4 OPEN, C5 OPEN, C6 OPEN, C7 OPEN, C9 OPEN, C10 OPEN, C11 OPEN, C12 OPEN, C13 OPEN
-- verify ran on c42d4e5; files changed since: coord/BOARD.md, coord/DECISIONS/0039-rulings-after-batch-17.md, coord/DECISIONS/0041-rulings-after-batch-20.md, coord/DECISIONS/0042-rulings-after-batch-21.md, harness/workflows/batch-21.json, harness/workflows/batch-22.json (run verify again)
+- verify ran on c42d4e5; files changed since: coord/BOARD.md, coord/DECISIONS/0039-rulings-after-batch-17.md, coord/DECISIONS/0041-rulings-after-batch-20.md, coord/DECISIONS/0042-rulings-after-batch-21.md, coord/DECISIONS/0043-rulings-after-batch-23.md, coord/DECISIONS/0044-rulings-after-batch-25.md (run verify again)
 - no VERIFIER.md (step 7: verifier subagent; decision 0016 item 1, VERIFIER_REPORT.md accepted too)
 - no stage/G3/EVIDENCE.md (decision 0012)
 
@@ -28,10 +28,10 @@ Date: 2026-11-26 · branch `track/E-stoch-inf` at `7ca2752f332f` · checklist
 
 | # | Criterion | Evidence (run id, figure, KB locator) | Result |
 |---|---|---|---|
-| C1 | The pre-registered scan is complete | not complete: pilot q0050 ran (E-20261126-002413-65295f3: ten baseline members ok, k000/k001/l000/l001 stopped at start-up on deck lines the deck lacks); G3C q0051 submitted (job 5348, E-20261126-030044-6933f21); G3R q0052, baseline G3B00-G3B06 (q0053, q0054, q0061-q0065: pairs 0-73) and level 2 G3L00 (q0066, pairs 0-4 + kdriver record) waiting; pairs 74-127 and level-2 pairs 5-15 not yet queued; zeta of the 128^3 dumps not readable at present cost (R41, g3/JOURNAL.md entry 8) | OPEN |
-| C2 | Robustness checks | planned: G3-C (4d.4 with A6), G3-R (4d.5 with A7), level 2 (4d.7 with A11); gauge leg withdrawn as a criterion, stated as a limitation (A8, decision 0040 item 1) | OPEN |
+| C1 | The pre-registered scan is complete | not complete (batch 27): pilot E-20261126-002413-65295f3 read (R^NR entry 9, zeta entry 13); G3C E-20261126-030044-6933f21 and G3R E-20261126-041110-0a78c93 done and read; baseline G3B00-G3B06 (q0053, q0054, q0061-q0065: 138 runs) and G3L00 (q0066) waiting, not moved since batch 23; pairs 74-127 (108 runs) and level-2 pairs 5-15 not yet queued; about 10.6 card-hours remain (stage/REVIEW-wave3.md K.3). The zeta reader is now cheap enough for 256 members (table map, R41 closed, entry 13) | OPEN |
+| C2 | Robustness checks | G3-C PASSES as written (E-20261126-115943-32970f2, fig_g3c.png); G3-R PASSES as written (E-20261126-120438-9d48377, fig_g3r.png); level 2 (4d.7 with A11) waits for G3L00 (q0066) and pairs 5-15; gauge leg withdrawn as a criterion, stated as a limitation (A8, decision 0040 item 1) | OPEN |
 | C3 | Comparison with the literature | reference: corrected one-patch delta N of the 128 band (A1; pilot E-20261125-151340-743c38c passes the variance gate 0.9993 +- 0.0032); 4e6 direct E-20261125-152832-c301e92 (gate 0.99865 +- 0.00058, skewness 0.0199 +- 0.0012); importance-sampled nu = 4 E-20261125-160658-855db8c (g3/amend entry 10); sigma = 0.1 lattice E-20261125-160722-a6d1f26 (gate failed, bound of A10 not reached; entry 9); model and landmarks of the reference = the deck (TO VERIFY of 4d.3 settled, E-20261125-161456-8d3f43c) | OPEN |
-| C4 | Null results and failed runs are on record | on record: batch 19-21 items as before (amend entries 4-9, zeta entries 6-7); batch 23: pilot members k/l failed at start-up (entry 5, R42); three reading runs stopped (E-20261126-022447-40a80b4, -022448-9510ee9, -024953-ed2d15f: map too slow, entries 7-8); G3P-3 sd clause failed by 0.3 per cent (entry 9); Z1 as run stays failed as written (zeta entry 9, decision 0042 item 1); Z2(iii) failed as written | OPEN |
+| C4 | Null results and failed runs are on record | on record: batch 19-21 items as before (amend entries 4-9, zeta entries 6-7); batch 23: pilot members k/l failed at start-up (entry 5, R42); three reading runs stopped (E-20261126-022447-40a80b4, -022448-9510ee9, -024953-ed2d15f: map too slow, entries 7-8); G3P-3 sd clause failed by 0.3 per cent (entry 9); Z1 as run stays failed as written (zeta entry 9, decision 0042 item 1); Z2(iii) failed as written; batch 27: TB-1 of the table failed as written (E-20261126-115112-43da266), both alternatives of the diagnostic refuted (E-20261126-115925-a2c6da5), the 16000-node pilot reading not judged (E-20261126-115929-84cd060), P5-3 failed as written (entry 13) | OPEN |
 | C5 | Result figures and tables | — | OPEN |
 | C6 | The numerical ledger in the Supplemental Material | — | OPEN |
 | C7 | Tail statistics, compared with E-pre-3 | the criterion of the track sheet; its statistic, estimator and criteria are SCOPE 4d + 4d.9 (A2 judges variance and tail shape apart) | OPEN |
@@ -45,8 +45,8 @@ Date: 2026-11-26 · branch `track/E-stoch-inf` at `7ca2752f332f` · checklist
 | C15 | Schematics drawn with /sleep-paper-figure-style: track architecture (exists / to be ported / new) and the gate timeline | — | OPEN |
 | C16 | Working note written with /paper-writing; its manuscript checker passed with --compile | — | OPEN |
 | C17 | Verifier subagent (fresh context) wrote VERIFIER.md (decision 0016; VERIFIER_REPORT.md accepted too); every number of the Supplemental Material recomputed from the manifests | — | OPEN |
-| C18 | Null results and failed runs are on record (manifests and JOURNAL) | manifests of every run above (status failed or stopped where so) and the journal entries g3 5-9, zeta 8-9 | OPEN |
-| C19 | STATUS.md, JOURNAL.md and HANDOFF.md are current | current at the end of batch 23 (STATUS.md, JOURNAL.md, HANDOFF.md) | OPEN |
+| C18 | Null results and failed runs are on record (manifests and JOURNAL) | manifests of every run above (status failed or stopped where so) and the journal entries g3 5-13, zeta 8-9 | OPEN |
+| C19 | STATUS.md, JOURNAL.md and HANDOFF.md are current | current at the end of batch 27 (STATUS.md, JOURNAL.md, HANDOFF.md) | OPEN |
 
 ## Re-verification on a clean checkout (`nrpic-stage verify`)
 
@@ -182,4 +182,4 @@ Labels as in the brief.
 
 ## Decision requested from the group
 
-G3 open: pilot read on R^NR; zeta of 128^3 dumps blocked by map cost (R41); baseline pairs 0-73 and level-2 pairs 0-4 queued
+Not ready for review (lead batch 27): G3-C and G3-R pass as written and the zeta reader is fast enough; the baseline (246 of 256 runs, about 8.6 card-hours) and level 2 (about 2.0) have not run; stage/G3/OPEN.md

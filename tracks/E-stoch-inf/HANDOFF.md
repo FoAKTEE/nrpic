@@ -34,6 +34,10 @@ Run next: cd /data/haiyangw/nrpic/wt/E-stoch-inf && git merge --no-edit main && 
 They wait at low priority (3-4) behind other tracks' gate runs and had not moved by the end of batch 27. Close each with
 `harness/bin/nrpic-run finish <run_id>` (run id: `harness/bin/nrpic-queue show <qid>`) before reading.
 
+Processor work left running: `harness/bin/nrpic-stage verify E-stoch-inf G3` (started 04:08 PST, PID 2045896, the first
+checksum pass over every run of the track, 77 GB read by 04:20; log scratch/E-stoch-inf/tmp/verify_g3.log). When it has
+ended it leaves stage/G3/VERIFY_RESULTS.{md,json} modified: look at them, commit them, rerun `nrpic-stage report`.
+
 ## Next, in order
 
 1. As baseline jobs end: close, read every member (`read_pilot.py OUT --run <run dir> --members <labels> --map table
