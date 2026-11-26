@@ -16,6 +16,10 @@ Per common time (dumps and snapshots matched in a within 1 per cent):
           Omega_cor and Omega_raw above shell 16 (|k| > 16 k_f) and in total;
   constraints Hr_mean, Mr_mean of pop.cstat.hst at the nearest history time.
 Writes $NRPIC_RUN_DIR/compare_legs.json and pop_legs.png (PDF beside).
+
+--halo-base FILE (batch 28): the halo catalogue of the base is read from FILE instead of --base,
+so that halos are compared with equal particle masses (R25: an equal-mass recount of the base,
+analyze_gr.py --equal-mass --halos-only) while the strain stays the base's metric strain.
 """
 import argparse
 import json
@@ -52,7 +56,7 @@ def nearest(t, arr, val):
     return arr[i]
 
 
-def compare(base, leg):
+def compare(base, leg, halo_base=None):
     rows = []
     B = {round(x["a"], 1): x for x in base["dumps"] if "spec_cor" in x}
     for x in leg["dumps"]:
@@ -79,7 +83,7 @@ def compare(base, leg):
             row["Om_qs_part_base"] = y["Omega_qs_part"]
         rows.append(row)
     H = []
-    Bh = {round(h["a"], 1): h for h in base["halos"]}
+    Bh = {round(h["a"], 1): h for h in (halo_base or base)["halos"]}
     for h in leg["halos"]:
         kb = min(Bh, key=lambda k: abs(k - h["a"]))
         if abs(kb - h["a"]) > 0.01*h["a"]:
@@ -108,13 +112,15 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--base", required=True)
     ap.add_argument("--leg", action="append", required=True, help="NAME:analysis_gr_<name>.json")
+    ap.add_argument("--halo-base", default=None, help="halo catalogue of the base (equal masses)")
     ap.add_argument("--out", default=os.environ.get("NRPIC_RUN_DIR", "."))
     args = ap.parse_args()
     base = load(args.base)
+    halo_base = load(args.halo_base) if args.halo_base else None
     R = {}
     for spec in args.leg:
         name, fn = spec.split(":", 1)
-        R[name] = compare(base, load(fn))
+        R[name] = compare(base, load(fn), halo_base)
     with open(os.path.join(args.out, "compare_legs.json"), "w") as f:
         json.dump(R, f, indent=1, default=float)
     for name, r in R.items():
