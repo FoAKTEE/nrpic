@@ -1099,3 +1099,13 @@ a = 143 (tlim of the deck). Predictions [JUDGEMENT]:
   and the statement of convergence of C3 fails as written).
 - The run reaches a = 143 without a guard stop; K_max of the box stays below zero after t = 9
   (as the 128^3 member).
+
+## 2026-11-26 14:36 PST (lead of batch 29): C3 step 1 under way; its wall-time expectation refuted
+
+The 64^3 initial data (B-20261126-222552-2e44186, one core, background) finished outer iteration
+0 after about 6 min (make_ic.log: 7 inner iterations, residual 1.33e-11, change of psi 2.57e-4,
+against 2.58e-4 for the 128^3 data's outer 0). At that rate the 36 outer iterations take about
+3 h, not the 30-60 min expected (the 128^3 solve took 9 min per outer iteration with eight times
+the particles): the wall-time expectation is REFUTED; the cost of the solve does not follow the
+particle number [arithmetic on the log times, the cause not named]. The card member is queued by
+the next session once the data are checked (HANDOFF has the line).
