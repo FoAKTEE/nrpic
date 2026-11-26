@@ -307,3 +307,24 @@ refuted), F3 (overall (iii) median +0.1 to +0.4 per cent; ES-FL +0.52; D1 in [0,
 (costs), D3 at N/4 (8352 violations after 221 M) and at M/4 (1704, before 219 M), and N at
 M/4 (pass condition). Held: N at M/8 and M/16, G in all six members, H3, P7-P10, P12, N1-N3,
 Q1-Q2, L1-L3, F4 (removed sum), F5 (no lost horizon).
+
+## Entry 6 (2026-11-25 22:33 PST, before the run): V7, remaining ledger rows (note v3 ledger part 11)
+
+Ledger part 11 (note/tables/ledger.tex, table ledger11) read after entries 0-5. My numbers
+already reproduce its rows for N at M/8, the six (iii) maxima and bin counts, the D2 sample
+counts except one, removed m E_K N/4 over N (-0.86, +0.49, +0.47, +0.28 per cent), the
+particle-number differences at four times, and the mesh differences. Not yet checked:
+(a) FF4 D2 "480 samples, all hold" with V-1L4: V-1L4 ends at 299 M, so 480 samples (20-499 M
+    at 1 M) mean the control was extended beyond its end. Prediction: with V-1L4 held at its
+    last value D2 holds to 499 M [p ~ 0.6]; with V-1L (to 500 M) it fails (the lead's own
+    P12 note says so); restricted to 299 M it holds (280 samples, entry 3).
+(b) rms ratio over +-25 M windows at 100, 200, 300, 399.5 M: 3.1, 2.5, 2.5, 1.9 (ledger) to two
+    digits.
+(c) P9: FK's (iii) medians for tau_rem 285-500 M in +0.10 to +0.40 per cent (held), ES-FL's
+    above +0.45.
+(d) FK against ES-FL: the t = 0 searches differ (initial radius 1.6 against 0.8), later ones
+    agree to 1e-12 up to 100 M or more.
+(e) M_AH of ES-FL at the last sample (499.5 M) in F2's predicted [1.625, 1.665].
+Not checked at all (stated in VERIFIER.md): the converged-finder row (6.53e-5, needs the FP
+probe outputs), the plane norms XQ (needs the con slices), V2/E1/F1 (comparison with the
+older V-1B, ES-1, ES-F runs).
