@@ -158,3 +158,5 @@ tracks/B-emd-gw/outbox/20261125T172252Z__to-all__gr-particle-mass-weight.md	2026
 tracks/A-emd-pbh/outbox/20261126T023325Z__to-orch__g2-state-after-batch-23.md	2026-11-26T03:17:19Z	ruled on in coord/DECISIONS/0043
 tracks/A-emd-pbh/outbox/20261126T023655Z__to-orch__a2x-probe-correction.md	2026-11-26T03:17:19Z	ruled on in coord/DECISIONS/0043
 tracks/B-emd-gw/outbox/20261126T025649Z__to-all__gr-particle-mass-halos.md	2026-11-26T03:17:19Z	ruled on in coord/DECISIONS/0043
+tracks/D-bh-dress/outbox/20261126T060235Z__to-orch__g2-package-ready-for-verifier.md	2026-11-26T06:08:59Z	ruled on in coord/DECISIONS/0044
+tracks/F-hills/outbox/20261126T060707Z__to-orch__a2-cap-and-continuation.md	2026-11-26T06:08:59Z	ruled on in coord/DECISIONS/0044
