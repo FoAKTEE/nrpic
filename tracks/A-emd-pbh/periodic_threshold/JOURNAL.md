@@ -1092,3 +1092,16 @@ a factor 1.65-1.9. A2 stays FAILED as written (0040 item 7).
 C1 (ii) of G2 therefore stands as: the spherical LTB peak is followed to 1-4 per cent outside r0 = 1.5 on four and
 six levels, trapped spheres appear on the line from t = 132-136 late in the slicing, and the horizon finder does
 not find the periodic LTB horizon on a slice that resolves it (failure on record; request to core).
+
+### A2X correction and check (18:40 PST, before running a2_probe_check.py)
+
+Correction found by reading the source (athenak/src/particles/nrpic_io.cpp, NrpicProbe): the "probe" is a fixed
+COORDINATE point and column 15 is the proper time of the normal observer there, int alpha dt, not of a particle. The
+A2X outcome above called it "the probe particle"; that is wrong as stated. It is the dust's clock only if the particle
+at the probe stays there with u_i = 0 (then W = 1 and dtau = alpha dt). For the peak centred at the origin the
+reflection symmetry of the data should keep the central particle at rest at the origin.
+Prediction PC [JUDGEMENT]: the particle nearest the probe at t = 0 (lattice point at the origin) stays within 1e-6 of
+the probe point and has covariant |u_i| below 1e-6 at every snapshot to t = 70, while its lattice neighbours move
+(|u_i| of order 0.01-1). Refuted if the offset or |u_i| exceeds 1e-3 before t = 70: then the probe clock is not a
+dust clock and the A2X conclusion "(5.99, 6.80] t_H on the dust's own clock" is withdrawn (the shift-invariant
+bracket of (i) stands, the slicing question reopens and a card member with geodesic slicing is the next test).
