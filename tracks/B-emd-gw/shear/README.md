@@ -29,6 +29,18 @@ B-20261124-172643-d1e88c7, `figs/fig_ppc.png`). The field carries relative const
 Verdict: L2 is not converged in this code; S1-S4, M1, L1 carry the comparison. Next: an amplitude
 between M2 and L2 without stream crossing before t_A (JOURNAL, series 6 outcome).
 
+## Results of series 7 (batch 29, 2026-11-26; decision 0046 item 2a)
+
+beta = 0.125 at H L = 4, N_y = 64, 128, 256 at 4 per cell along y (B-20261126-222544-f3a5176,
+judged by B-20261126-230056-294b265, `scripts/series7_judge.py`, `figs` not copied: series7.png in
+the run directory). No stream crosses before t_A = 4.118 (first crossing t = 9.0-9.25, after the
+arrivals). Delta = 0.053749, 0.053800, 0.053821: differences 5.1e-5, 2.1e-5 (ratio 0.40, order
+1.3), Richardson 0.05383 with error 1.4e-5: the observable converges in the mesh where streams do
+not cross, unlike L2. Constraint means to t_A 3.6e-6 to 2.6e-6 (Hr), 2.3e-4 to 1.6e-4 (Mr): small
+but not falling 1.5 times per doubling (prediction failed in that part). Design:
+`scripts/nocross_design.py` (B-20261126-222532-5ab01ea; its estimate was too optimistic), check
+`scripts/crossing.py`. Outcomes N7a-c: `JOURNAL.md`, entry of 2026-11-26 15:02.
+
 ## Contents
 
 | Path | What |

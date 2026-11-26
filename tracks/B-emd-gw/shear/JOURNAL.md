@@ -479,3 +479,37 @@ look, not a result]. Either lies after t_A = 4.1, so N7a can still hold, but the
 "no crossing before tlim = 10" is likely refuted; the registered crossing check on all three
 meshes decides. The design estimate is recorded as too optimistic by a factor 2-3 in the
 compression rate.
+
+## 2026-11-26 15:02 PST (lead of batch 29): outcomes of series 7 (C1, decision 0046 item 2a)
+
+Series B-20261126-222544-f3a5176 (closed completed; release v0.8 processor build, one core),
+judged by the registered B-20261126-230056-294b265 (`scripts/series7_judge.py`, series7.json,
+series7.png looked at: (a) Delta against 1/N_y with the Richardson point, (b) Hr/Mr means against
+t per mesh, (c) smallest neighbour spacing against t) [VERIFIED by these runs]:
+- Delta = 0.053749, 0.053800, 0.053821 at N_y = 64, 128, 256 (quadratic shooting 0.053710,
+  0.053761, 0.053782); t_A = 4.118, t_B = 3.910 at every mesh.
+- N7a HOLDS: no stream crosses before t_A at any mesh (smallest spacing 0.699 of the lattice
+  spacing at t_A); the first crossing comes at t = 9.25, 9.25, 9.0 (N_y = 64, 128, 256), before
+  tlim = 10, so the design claim "no crossing before tlim" is REFUTED (the Zel'dovich estimate
+  was too optimistic, 14:29 entry); the observable is fixed at t_A and is not touched by it.
+- N7b, Delta part HOLDS: differences 5.14e-5 (64-128) and 2.06e-5 (128-256), ratio 0.40 (bound
+  0.5; refutation at 0.7), observed order 1.32; Richardson value 0.053834, finest minus
+  extrapolated -1.4e-5 (bound 3e-3). Against L2 (differences 9.4e-3, 7.9e-3, ratio 0.84, moving
+  away): here the code converges in the mesh at fixed sampling.
+- N7b, constraint part FAILS as written: the means over 1 <= t <= t_A are Hr 3.6e-6, 2.7e-6,
+  2.6e-6 and Mr 2.3e-4, 1.7e-4, 1.6e-4, falling 1.32 and 1.07 (Hr), 1.40 and 1.01 (Mr) per
+  doubling, below the predicted 1.5: a floor that does not follow the mesh, four to five orders
+  of magnitude below L2's 0.12-0.15. No cause is named (candidates not tested here: the lattice
+  sampling at 4 per cell, the step limit dt_expansion = 0.01). Panel (b): both means climb by
+  three orders of magnitude from t = 6-7, while the spacing falls below about 0.4, up to the
+  crossing at t = 9: the constraint violation follows the approach to stream crossing.
+- N7c HOLDS: extrapolated Delta = +0.0538, inside 0.007-0.065 (2.4 times the beta^2 scaling of
+  M2's +3.45e-3, 0.022).
+- Wall time HOLDS: 75 s, about 6 min, 1547 s (bounds 3, 10, 35 min).
+Reading for C1 [JUDGEMENT, now tested by a run that could have refuted it]: at the same H L = 4
+and sampling, an amplitude without stream crossing before t_A gives an observable that converges
+in the mesh with a Richardson error of 1e-5, while L2, whose streams cross before t_A, does not
+converge; the failure of L2 is attributed to stream crossing (the physics of particles against a
+fluid at practical meshes), not to an error of the observable's pipeline. It does not make L2
+converge: L2 as run stays failed on record. The constraint floor of the no-crossing case is a
+separate open point (not mesh-converging at 1e-4 in Mr).
