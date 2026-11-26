@@ -83,6 +83,7 @@ def main():
     ap.add_argument("--gmax", type=float, default=1.5)
     ap.add_argument("--reference", type=float, default=4.35, help="Zel'dovich first-axis t/t_H (second derivation)")
     ap.add_argument("--band", type=float, nargs=2, default=[3.4, 5.0])
+    ap.add_argument("--label", default="S1L", help="member name in the figure title (batch 28)")
     a = ap.parse_args()
     os.makedirs(a.out, exist_ok=True)
     L, n = a.box, a.n
@@ -212,13 +213,13 @@ def main():
         ax.plot([r[key] for r in rows], [r[f"minJ_{kind}"] for r in rows], "o-", ms=3, lw=1.0, color=col, label=lab)
     ax.axhline(0, color="0.5", lw=0.6)
     ax.axvspan(a.band[0], a.band[1], color="0.85", zorder=0, label="predicted band (A2)")
-    ax.axvline(a.reference, color="0.3", ls="--", lw=0.8, label="Zel'dovich 4.35")
+    ax.axvline(a.reference, color="0.3", ls="--", lw=0.8, label=f"Zel'dovich {a.reference:g}")
     ax.set_xscale("log")
     ax.set_ylim(-0.6, 1.1)
     ax.set_xlabel(r"$t/t_H$")
     ax.set_ylabel(r"min over the lattice of $\det(\partial x/\partial q)$")
     ax.legend(fontsize=6, loc="lower left")
-    ax.set_title("S1L: sign of the Lagrangian Jacobian (shift-invariant)", fontsize=8)
+    ax.set_title(f"{a.label}: sign of the Lagrangian Jacobian (shift-invariant)", fontsize=8)
     ax = axs[1]
     tt = np.array([r["t"] for r in rows])
     ax.plot(tt, [r["t_over_tH_coord"] for r in rows], "o-", ms=3, color=fs.PAL["red"], label="coordinate time")

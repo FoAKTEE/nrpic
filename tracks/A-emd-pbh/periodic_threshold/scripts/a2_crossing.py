@@ -61,6 +61,8 @@ def main():
     ap.add_argument("--clock", choices=["coord", "newton"], default="coord",
                     help="batch 20: newton = conformal time of the Newtonian mode (a = (1 + eta/2)^2)")
     ap.add_argument("--label", default="S1L")
+    ap.add_argument("--band", type=float, nargs=2, default=[3.4, 5.0], help="predicted band in t/t_H (batch 28)")
+    ap.add_argument("--reference", type=float, default=4.2, help="Zel'dovich first-axis t/t_H drawn as a line (batch 28)")
     ap.add_argument("--overlay", action="append", default=[], help="batch 20: a2.json of other runs to draw (min along z)")
     a = ap.parse_args()
     global CLOCK
@@ -145,7 +147,7 @@ def main():
         clocks = dict(error=str(e))
     res = dict(run=os.path.abspath(a.run), clocks=clocks, lattice_one_to_one=bool(one_to_one), lattice_offset=off.tolist(),
                max_initial_displacement_over_h=disp0, rows=rows, first_crossing=first,
-               zeldovich_first_axis_t_over_tH=4.2, band=[3.4, 5.0], clock=CLOCK, label=a.label,
+               zeldovich_first_axis_t_over_tH=a.reference, band=list(a.band), clock=CLOCK, label=a.label,
                zeldovich_lambda=dict((ax, 1.0 - rows[0][f"min_{ax}"]) for ax in "xyz"),
                zeldovich_a_sc_z=1.0 / (1.0 - rows[0]["min_z"]),
                zeldovich_t_over_tH_z=float((1.0 / (1.0 - rows[0]["min_z"]) / 6.0) ** 1.5))
@@ -174,8 +176,8 @@ def main():
                  color=["0.2", "0.55"][k_ % 2], label=f"{o.get('label', 'S1L (GR)')} min $\\Delta_z/h$")
     ax_.set_ylim(-0.6, 1.1)
     ax_.axhline(0, color="0.5", lw=0.6)
-    ax_.axvspan(3.4, 5.0, color="0.85", zorder=0, label="predicted band")
-    ax_.axvline(4.2, color="0.4", ls="--", lw=0.8)
+    ax_.axvspan(a.band[0], a.band[1], color="0.85", zorder=0, label="predicted band")
+    ax_.axvline(a.reference, color="0.4", ls="--", lw=0.8)
     ax_.set_xscale("log")
     ax_.set_xlabel(r"$t/t_H$ (coordinate time as cosmic time)" if CLOCK == "coord" else r"$t/t_H$ (cosmic time of the Newtonian background)")
     ax_.set_ylabel(r"min neighbour separation / $h$")
