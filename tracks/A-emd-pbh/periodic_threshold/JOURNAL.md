@@ -1315,3 +1315,19 @@ Run FPb (same script, sets S1Lscan, S1Llong, P0L6scan; 2 jobs x 2 threads, besid
     (m 10.73, r 0.161); so a horizon formed before 19.4 t_H, inside S2's window, but the run's finder did not find it.
   - S3 HOLDS: the central lapse fell below 0.3 (t = 137.7) and E_max past 1e3 of the mean (t = 127.3) before any
     horizon was found, and before the first trapped round sphere on the restart files (t <= 190; dated by FPb).
+
+### Outcome FPb (run A-20261126-234232-84f3e98, completed, 8 dumps; figure redrawn with one colour per dump in A-20261126-234818-3c83420 after the first drew four dumps in black; replot attempt A-20261126-234811-9e42dae failed on a required --exe, kept; FPb/fig_finder_probe_box.png looked at) - 15:51 PST
+
+- FP6 REFUTED (narrowly): S1L's first trapped round sphere appears in (180, 190], not (190, 210]. Smallest expansion
+  integral of the round spheres r 0.02-0.3: t = 150 +81 (r 0.02), 170 +14.6 (0.08), 180 +0.62 (0.08, marginal), 190
+  -16.3 (0.08; negative at 0.05 and 0.08), 198.7 -28.2, 200 -30.5. In units of t_H = 9.78: first trapped round sphere
+  in (18.4, 19.4] t_H. A non-round trapped surface may exist earlier: the round-sphere test is sufficient, not necessary.
+- FP7 HOLDS: from 0.16 at t = 220 the v0.8 rule with a cap of 12000 converges after 1927 iterations, area mass 10.73,
+  mean radius 0.161, expansion integral -0.63 (inside the predicted 0.15-0.19 and 10.5-11.5). The S1L horizon is found
+  given a start radius near it; from 0.1, 0.2, 0.6 with 4000 iterations it was not (FP5).
+- FP8 HOLDS: P0L6 at t = 120.0 has no trapped round sphere (integral +33 to +134 at r 0.01-0.13): with FP3 (t = 130
+  none, t = 140 trapped from 0.03 to 0.10) the first trapped sphere of P0L6 lies in (130, 140], as the line said (136).
+Condition (b) of decision 0047 after FP and FPb: P0L6 found at t = 140 from the deck's start radius with 4000
+iterations (3444 used); S1L found at t = 220 only from a start radius near the surface; no false acceptance in 82 +
+57 searches; the false acceptance of the card run at t = 118.1 untested (no restart file). Request to core updated
+(outbox, batch 31).
