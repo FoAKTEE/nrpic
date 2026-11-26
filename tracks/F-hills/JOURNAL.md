@@ -1254,3 +1254,16 @@ without preemption: 18.7 of A2's 19.5; tlim stays 200).
   and M reduce the MeshBlocks) [JUDGEMENT; the margin is 1.2 GB, RISKS R23].
 - (C25-5) With the extra input file: a horizon_status file per finder from 133 M on; the history,
   tracker and summary outputs continue as before (R25-2 on processors).
+
+### Outcome R25 (registered F-20261126-054626-7301561, 1 core, 20 min; fig_diag_restart.png read)
+
+PASS, all three as predicted. Through A2's wrapper with the core-v0.5 processor build and the
+chain's argument order: b (`-r <own rst> -d <dir> -t 00:50:00 -i add.athinput time/nlim=5`) exit 0
+with 3 status records (cycles 2-4, all "found"); c (control) exit 0, no status file (R25-1).
+History, tracker, horizon summary, shape and verbose files of b and c byte-identical (R25-2). b's
+restart files carry `diagnostics = true` in `<fastflow>`; b2 (restart from b's last restart with
+the same `-i` again) exit 0 with one more record (R25-3). Not tested here: the card build (byte
+copy of the same release's card build; host-side parameter reading [JUDGEMENT]) and
+scripts/submit_chain.sh itself, which passes extra arguments verbatim into EXTRA_ARGS and appends
+them after `-r <rst> -d <dir> -t <wall>` (lines 149, 198, 297; the wrapper's dry run shows the
+line). Decision: A2's continuation carries `-i tracks/F-hills/binary_conv/inputs/fastflow_diag.athinput`.
