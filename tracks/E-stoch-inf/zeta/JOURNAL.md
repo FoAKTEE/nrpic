@@ -133,3 +133,18 @@ by 15 per cent: the evidence points at the independent integrator, but no cause 
 fail (a quadruple-precision or a series solution of the attractor map along Pi). Since the box's perturbations lie
 on the box relation (corr(d phi, d Pi) = 1 - 6e-12), the Pi-alone direction carries no weight in zeta; whether
 the reader judges G3 runs with Z1 failed in that direction is put to the orchestrator.
+
+## entry-8 (2026-11-25 18:25 PST, lead of E, batch 23): the verifier's two changes to the tests (decision 0042 item 1), prediction before the run
+
+Decision 0042 item 1: the failure of Z1 along the momentum alone (rel c2 = 0.142 against DOP853, run
+E-20261125-161456-8d3f43c) is a failure of the test's reference, below its round-off; it stays on record as failed as
+written, with that cause; expected values come from the variational coefficients at the box's own background.
+`z1_variational.py` applies both changes of g3/zeta_verify/README.md Requests 1-2: expected c1 = g.d and c2 = d.Hess.d
+from zv_lib's variational equations (long double, RK4 in N, steps 1e-3 and 5e-4), at the lockstep record of the 32^3
+pair at N_f (zp4/usr.sf.00001.modes), with the cells' convention v = Pi/H at fixed K; the reader's map unchanged
+(V, dV, map_rk4 verbatim through ast, 4000 steps), same eps as the record. Z2(iii) and (iii') with a_map of the same
+derivatives along the box relation.
+Prediction (refuted outside): Z1 passes in all three judged directions, |rel c1| below 1e-6 and |rel c2| below 2e-4
+(the verifier: reader +3.4e-5 along Pi, -6.1e-5 along phi and the relation, at the lead's state); the diagnostic
+directions Pi x10, x100 agree to the same level. Z2(iii) about -2.87 per cent (fails as written; A14 (b) foresaw it),
+(iii') about -0.23 per cent (passes the 0.5 per cent bar) (the verifier's lockstep values, VERIFY.md section 2).
