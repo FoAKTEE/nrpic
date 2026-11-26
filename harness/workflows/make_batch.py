@@ -6,6 +6,7 @@ spec = {"name": "...", "note": "...", "items": [
   {"type": "gate", "owner": ID, "gate": "G1"},        independent gate review
   {"type": "core-src", "key": K},                     core source package continued
   {"type": "core-merge", "version": "v0.5", "task": "..."},   merge by core's lead, then the release clerk
+  {"type": "clerk", "version": "v0.8"},                        the release clerk alone (the merge on core/nrpic is done)
   {"type": "core-task", "key": K, "task": "...", "fable": false}   a session of core's lead with a free task
 ]}"""
 import json, sys
@@ -17,6 +18,7 @@ def grab(src, name, nxt):
     i = src.index('const ' + name + ' = ') + len('const ' + name + ' = '); j = src.index('\nconst ' + nxt + ' = ', i); return json.loads(src[i:j])
 SRC = grab(core_js, 'SRC', 'CL'); CLERK = grab(core_js, 'CLERK', 'SLOT'); GATE = grab(rounds_js, 'GATE', 'AUX')
 CLERK.setdefault('v0.7', CLERK['v0.6'].replace('core-v0.6', 'core-v0.7').replace('RELEASE-v0.6', 'RELEASE-v0.7').replace('_v06', '_v07').replace('CLAUDE.md must stay under 200 lines', 'CLAUDE.md: also bring the two Machine bullets on the step limit with a Gamma-driver and on restarts up to the release (the wording core proposes in its outbox message to orch of 2026-11-25 00:43Z; from this release a run writes its restart files on the termination signal and a chain does not count an attempt cut by a signal); keep the QUEUE CAP bullet as it is; the release builds use no card. The card checks of the merged build wait in the shared queue: name them as pending in the row, as the row of core-v0.6 once did'))
+CLERK.setdefault('v0.8', "EXTRA PRECONDITION for this release: if tracks/core/RELEASE-v0.8.md on branch core/nrpic still contains the words NOT RELEASED, or says that the card check failed, change nothing and report that. " + CLERK['v0.6'].replace('core-v0.6', 'core-v0.8').replace('RELEASE-v0.6', 'RELEASE-v0.8').replace('_v06', '_v08').replace('CLAUDE.md must stay under 200 lines', "CLAUDE.md for this release: in the section Machine replace the sentence that begins 'Two older restart defects remain' by what release core-v0.8 does (a continued run keeps its tracker file and appends to it, writes the header lines of the mesh history once, and keeps the record of *.cons.hst on one rank; on several MPI ranks the record due at the next cycle is still lost: tracks/core/stage/G2/OPEN.md); in the row of core-v0.7 replace the words about its pending card check by the outcome core records (tracks/core/RELEASE-v0.7.md or RELEASE-v0.8.md on core/nrpic); keep the QUEUE CAP bullet exactly as it is; CLAUDE.md may grow to 215 lines. Also in your write scope for this release: harness/style/figstyle.py: apply core's proposal (git show core/nrpic:tracks/core/outbox/20261125T150036Z__to-orch__figstyle-pdf-without-date.md: the PDF is saved without a creation date, SOURCE_DATE_EPOCH honoured) so that it equals python/nrpic/figstyle.py of the release in that function, then run harness/tests/test_style.py (it must pass). The release builds use no card"))
 pre = core_js[core_js.index('const ROOT = '):core_js.index('const SRC = ')]
 fn = core_js[core_js.index('const CW = ROOT'):core_js.index('// release candidate v0.4')].replace("phase: v === 'v0.6' ? 'Round' : 'Release ' + v", "phase: 'Core'")
 OWN = {'A-emd-pbh': 'track/A-emd-pbh', 'B-emd-gw': 'track/B-emd-gw', 'C-sidm': 'track/C-sidm', 'D-bh-dress': 'track/D-bh-dress', 'E-stoch-inf': 'track/E-stoch-inf', 'F-hills': 'track/F-hills', 'kb': 'kb/main', 'core': 'core/nrpic'}
@@ -61,6 +63,10 @@ async function one(it) {
   if (it.type === 'core-src') {
     const r = await fable(solo(it, NOTE + '\n\n'), { label: 'core:' + it.key, phase: 'Core', schema: SUMMARY })
     return [{ label: 'core:' + it.key, r: brief(r) }]
+  }
+  if (it.type === 'clerk') {
+    const c = await clerk(it.version)
+    return [{ label: 'core:clerk-' + it.version, r: brief(c) }]
   }
   if (it.type === 'core-merge') {
     const m = await fable(leadCore(NOTE + '\n\n' + it.task), { label: 'core:merge-' + it.version, phase: 'Core', schema: SUMMARY })
