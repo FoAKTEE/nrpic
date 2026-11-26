@@ -2413,3 +2413,18 @@ then continued to cycle 2):
   header and one record per search of the continued run. (A workaround today, if it holds.)
 - **F1c** `-r <rst>` alone: exit 0, no status file.
 Refuted: F1a by a run that starts; F1b by a failure or a missing status file.
+
+### Predictions R8, Q8 (02:45Z): merge of core/restart-finder into core/nrpic
+
+Merge b755cdcf (no conflict; the changelog section of the branch sits at the top). The
+source of the merged tree (`athenak/src`, `python`, `problems`, `docs`, `scripts`) is the
+branch's (git diff empty against `origin/core/restart-finder`), i.e. source commit 01d4aeeb.
+Serial build `scratch/core/b23_build_cpu/src/athena` (628 s, 4 jobs; sha256 7599042f...,
+not the published branch binary's d7306809..., as build paths are in the debug data).
+- **R8** byte regression (`regress_v04.py`, twelve set-ups) against release core-v0.7
+  `.work/build_cpu_v07/src/athena`: 75 of 75 identical, as the branch's final build gave
+  (run core-20261125-142602-33f4005). Refuted by any item not identical.
+- **Q8** quick test of the release's new behaviour: `restart_test.py` (T1: restart outputs,
+  tracker and history files across a continuation) with the merged build against the
+  release: every check holds as in run core-20261125-142556-a424739 (branch final build).
+  Refuted by any failed check.
