@@ -1,0 +1,406 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "core-20261126-045719-019b478",
+  "track": "core",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "K7: card check of release candidate core-v0.7 (athena_gpu of 5f75e5b9): seven new cases against the processor runs of the quick test, fifteen cases of core-v0.6",
+  "preregistered_in": null,
+  "launcher": "batch",
+  "command": [
+    "scripts/gpu_batch.sh",
+    "/data/haiyangw/nrpic/scratch/core/core-20261126-045719-019b478/batch.list"
+  ],
+  "cwd": "scratch/core/core-20261126-045719-019b478",
+  "git": {
+    "sha": "019b47810f92443883f237bb60313339fd43ddbe",
+    "branch": "core/nrpic",
+    "dirty": false,
+    "merge_base_main": "f66c544327084e2d5e0f533565aaf4ad10ee256a",
+    "worktree": "wt/core"
+  },
+  "code": {
+    "core_tag": "core-v0.7",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": [
+      "nrpic_cf",
+      "nrpic_cosmo",
+      "nrpic_geodesic",
+      "nrpic_newton",
+      "scalar_field"
+    ],
+    "exe": "/data/haiyangw/nrpic/scratch/core/exe/core_nrpic_v07/athena_gpu",
+    "exe_sha256": "2d607ede5d6d5485ec3945b342921c92125ba33228f5c149a9382d89c670afc9",
+    "cmake_flags": null,
+    "toolchain": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "b7f7695d8e9720758c144dd9c0f272ce4fba8b46f921750462326664310fad51",
+    "machine_file_sha256": "ff4e45b0fd5bf6bee4bf1084a282d72b9adf66f4a455f4e937d9884a1fb07535",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": "NVIDIA A100 80GB (Slurm partition preempt)",
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/core/.venv"
+  },
+  "input": {
+    "file": "/data/haiyangw/nrpic/scratch/core/core-20261125-023641-7a1c47d/n_l2/new/in.athinput",
+    "sha256": "25c37ca37aad86534f0040087951a0041f4df351c43aaae119835a6d7d203dd2",
+    "overrides": {}
+  },
+  "inputs": [
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/exe/core_nrpic_v07/athena_gpu",
+      "role": "exe",
+      "sha256": "2d607ede5d6d5485ec3945b342921c92125ba33228f5c149a9382d89c670afc9",
+      "bytes": 111039328,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "tracks/core/analysis/release/card_v07.list",
+      "role": "list",
+      "sha256": "b4c8b2ab26b660217fa5c6bd2a1dbad03e3a8f4085d3103425d66a88d8bef086",
+      "bytes": 3029,
+      "tracked": true
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/core-20261125-023641-7a1c47d/n_l2/new/in.athinput",
+      "role": "athinput:n_l2",
+      "sha256": "25c37ca37aad86534f0040087951a0041f4df351c43aaae119835a6d7d203dd2",
+      "bytes": 1534,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/core-20261125-023641-7a1c47d/x_l2dt/new/in.athinput",
+      "role": "athinput:x_l2dt",
+      "sha256": "989dff81aa536fb26779e43999ac28450dbca0243816636e99369d193795c234",
+      "bytes": 1549,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/core-20261125-023641-7a1c47d/s_lim/new/in.athinput",
+      "role": "athinput:s_lim",
+      "sha256": "500fd3d09d8f2a74da4b74e79419562105901c36534e36ef19c2bed35f3820d8",
+      "bytes": 949,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/core-20261125-023641-7a1c47d/g_hole/new/in.athinput",
+      "role": "athinput:g_hole",
+      "sha256": "a030e78c30bdd54dc42db364b4f7f5fee17ad6d63fef1c00749b5fe109ad715b",
+      "bytes": 2459,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/core-20261125-023641-7a1c47d/x_holedt/new/in.athinput",
+      "role": "athinput:x_holedt",
+      "sha256": "b1db13171ca87f3df84f95eb8396924c787d3452b6da55914c0bebf158a03be5",
+      "bytes": 2474,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/core-20261125-023641-7a1c47d/c_static/new/in.athinput",
+      "role": "athinput:c_static",
+      "sha256": "f9aa844636ac13cecaf46632fe3b7f123cf8805021b22a9ce11b00a0753681b4",
+      "bytes": 1759,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/core-20261125-023641-7a1c47d/c_solve/new/in.athinput",
+      "role": "athinput:c_solve",
+      "sha256": "350a4159997a63f2d97f1a1e4c91fc3e23b975889fc38230ac5ecf02aab4c222",
+      "bytes": 1967,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/core-20261121-130813-710b3cc/n_sp/new/in.athinput",
+      "role": "athinput:n_sp",
+      "sha256": "055aecd386f8af8ba11b29df59e1f809ce079166b11a7348d76ab864f38c0c35",
+      "bytes": 1575,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/core-20261121-130813-710b3cc/n_7p/new/in.athinput",
+      "role": "athinput:n_7p",
+      "sha256": "cc393e02b7f451ff8bf93b23088b2f7ba68251165f9b449850041717ba1895d3",
+      "bytes": 1578,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/core-20261121-130813-710b3cc/f_full/new/in.athinput",
+      "role": "athinput:f_full",
+      "sha256": "44f2aa9e8c984bd1f53124f5d49314be7e65a136b4fdb013466e03e1e538dd96",
+      "bytes": 1587,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/core-20261121-130813-710b3cc/c_cd1/new/in.athinput",
+      "role": "athinput:c_cd1",
+      "sha256": "24fef8c7feae8d41934f0fedde76ca0823bc8877b46656c1547439a143d866f5",
+      "bytes": 1504,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/tmp/idsolve2/b2b/card_kc/p5_mov_n64/in.athinput",
+      "role": "athinput:p5_mov_n64",
+      "sha256": "7434c036a34d110f227a0a57e107d1ea534367f0c3a59b96dd02d8a0e7274d00",
+      "bytes": 3499,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/tmp/idsolve2/b2b/card_kc/g_smr1/in.athinput",
+      "role": "athinput:g_smr1",
+      "sha256": "9bbf676b57740e0eb2976da0947402f95bed579ea84166b1a78116415511ce3f",
+      "bytes": 3240,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/core-20261121-065009-29b855c/byte/s3g/new/deck.athinput",
+      "role": "athinput:s3g",
+      "sha256": "c377e153d3701255a37577072c8198fb30ed8f3cab84faa1cc3223a0bd2d5860",
+      "bytes": 1490,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/core-20261121-065009-29b855c/byte/usr/new/deck.athinput",
+      "role": "athinput:usr",
+      "sha256": "70f2868444fb0740a14253027df19d5f57aef2dce6fc9ea44f8dba2809ea5b54",
+      "bytes": 1499,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/core-20261121-065009-29b855c/byte/trk/new/deck.athinput",
+      "role": "athinput:trk",
+      "sha256": "3e52539fc2ad1ce4539d70f95733e27e28b9881a3ecf37f7e3578c2b312df87b",
+      "bytes": 2031,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/core-20261121-065009-29b855c/byte/peak/new/deck.athinput",
+      "role": "athinput:peak",
+      "sha256": "a9e594d82daee4519ecf9c6bb99b94cef5f080f876cad4c12c0168b51da4d791",
+      "bytes": 2415,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/core-20261121-065009-29b855c/threads/d_ser0/deck.athinput",
+      "role": "athinput:dep",
+      "sha256": "02b768868c415d875ae3846aebdc346f62bebe2dcb489ead95ec3d46219aa640",
+      "bytes": 1309,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/core-20261121-065009-29b855c/threads/d_ser/deck.athinput",
+      "role": "athinput:depp",
+      "sha256": "88fb0e5d1793189445d438b28952f8ca7039a270ac4df61c416916131ca60cee",
+      "bytes": 1335,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/core-20261121-065009-29b855c/threads/f_ser/deck.athinput",
+      "role": "athinput:fine",
+      "sha256": "2603aa8bf1fd662b740fc90db556f9c9c4bafdb801038f635914420077fcd850",
+      "bytes": 1355,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/core-20261121-065009-29b855c/threads/g_ser/deck.athinput",
+      "role": "athinput:finet",
+      "sha256": "55e1d020e5f2f87d57c317638368bd70832d1fd374da780f68f5ea020181f6cd",
+      "bytes": 1355,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "problems/tests/mpi_cluster.athinput",
+      "role": "athinput:cluster",
+      "sha256": "a68ccc15b6e88b73361ba00b1c0ca6dfacaf2589ea5010d28c29511cb16ce38b",
+      "bytes": 2408,
+      "tracked": true
+    }
+  ],
+  "batch_entries": [
+    {
+      "name": "n_l2",
+      "input": "/data/haiyangw/nrpic/scratch/core/core-20261125-023641-7a1c47d/n_l2/new/in.athinput",
+      "args": []
+    },
+    {
+      "name": "x_l2dt",
+      "input": "/data/haiyangw/nrpic/scratch/core/core-20261125-023641-7a1c47d/x_l2dt/new/in.athinput",
+      "args": []
+    },
+    {
+      "name": "s_lim",
+      "input": "/data/haiyangw/nrpic/scratch/core/core-20261125-023641-7a1c47d/s_lim/new/in.athinput",
+      "args": []
+    },
+    {
+      "name": "g_hole",
+      "input": "/data/haiyangw/nrpic/scratch/core/core-20261125-023641-7a1c47d/g_hole/new/in.athinput",
+      "args": []
+    },
+    {
+      "name": "x_holedt",
+      "input": "/data/haiyangw/nrpic/scratch/core/core-20261125-023641-7a1c47d/x_holedt/new/in.athinput",
+      "args": []
+    },
+    {
+      "name": "c_static",
+      "input": "/data/haiyangw/nrpic/scratch/core/core-20261125-023641-7a1c47d/c_static/new/in.athinput",
+      "args": []
+    },
+    {
+      "name": "c_solve",
+      "input": "/data/haiyangw/nrpic/scratch/core/core-20261125-023641-7a1c47d/c_solve/new/in.athinput",
+      "args": []
+    },
+    {
+      "name": "n_sp",
+      "input": "/data/haiyangw/nrpic/scratch/core/core-20261121-130813-710b3cc/n_sp/new/in.athinput",
+      "args": []
+    },
+    {
+      "name": "n_7p",
+      "input": "/data/haiyangw/nrpic/scratch/core/core-20261121-130813-710b3cc/n_7p/new/in.athinput",
+      "args": []
+    },
+    {
+      "name": "f_full",
+      "input": "/data/haiyangw/nrpic/scratch/core/core-20261121-130813-710b3cc/f_full/new/in.athinput",
+      "args": []
+    },
+    {
+      "name": "c_cd1",
+      "input": "/data/haiyangw/nrpic/scratch/core/core-20261121-130813-710b3cc/c_cd1/new/in.athinput",
+      "args": []
+    },
+    {
+      "name": "p5_mov_n64",
+      "input": "/data/haiyangw/nrpic/scratch/core/tmp/idsolve2/b2b/card_kc/p5_mov_n64/in.athinput",
+      "args": [
+        "particles/particle_file=/data/haiyangw/nrpic/scratch/core/tmp/idsolve2/b2b/card_kc/p5_mov_n64/shell.nrp"
+      ]
+    },
+    {
+      "name": "g_smr1",
+      "input": "/data/haiyangw/nrpic/scratch/core/tmp/idsolve2/b2b/card_kc/g_smr1/in.athinput",
+      "args": [
+        "particles/particle_file=/data/haiyangw/nrpic/scratch/core/tmp/idsolve2/b2b/card_kc/g_smr1/g.nrp"
+      ]
+    },
+    {
+      "name": "s3g",
+      "input": "/data/haiyangw/nrpic/scratch/core/core-20261121-065009-29b855c/byte/s3g/new/deck.athinput",
+      "args": []
+    },
+    {
+      "name": "usr",
+      "input": "/data/haiyangw/nrpic/scratch/core/core-20261121-065009-29b855c/byte/usr/new/deck.athinput",
+      "args": []
+    },
+    {
+      "name": "trk",
+      "input": "/data/haiyangw/nrpic/scratch/core/core-20261121-065009-29b855c/byte/trk/new/deck.athinput",
+      "args": []
+    },
+    {
+      "name": "peak",
+      "input": "/data/haiyangw/nrpic/scratch/core/core-20261121-065009-29b855c/byte/peak/new/deck.athinput",
+      "args": []
+    },
+    {
+      "name": "dep",
+      "input": "/data/haiyangw/nrpic/scratch/core/core-20261121-065009-29b855c/threads/d_ser0/deck.athinput",
+      "args": []
+    },
+    {
+      "name": "depp",
+      "input": "/data/haiyangw/nrpic/scratch/core/core-20261121-065009-29b855c/threads/d_ser/deck.athinput",
+      "args": []
+    },
+    {
+      "name": "fine",
+      "input": "/data/haiyangw/nrpic/scratch/core/core-20261121-065009-29b855c/threads/f_ser/deck.athinput",
+      "args": []
+    },
+    {
+      "name": "finet",
+      "input": "/data/haiyangw/nrpic/scratch/core/core-20261121-065009-29b855c/threads/g_ser/deck.athinput",
+      "args": []
+    },
+    {
+      "name": "cluster",
+      "input": "problems/tests/mpi_cluster.athinput",
+      "args": [
+        "particles/particle_file=/data/haiyangw/nrpic/scratch/core/core-20261121-065009-29b855c/mpi/t3_cluster/cluster.nrp",
+        "problem/comp0_file=/data/haiyangw/nrpic/scratch/core/core-20261121-065009-29b855c/mpi/t3_cluster/cluster.tab"
+      ]
+    }
+  ],
+  "resources": {
+    "nodes": 1,
+    "gpus": 1,
+    "cores": 1,
+    "walltime_s": null,
+    "wall_limit": "00:45:00",
+    "segments_max": null,
+    "gpu_hours_requested": 0.3,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": {
+    "partition": "preempt",
+    "job_name": "core-20261126-045719-019b478",
+    "job_ids": []
+  },
+  "outputs": {
+    "dir": "scratch/core/core-20261126-045719-019b478",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "submitted",
+  "exit_code": null,
+  "registered": "2026-11-26T04:57:23Z",
+  "started": null,
+  "ended": null,
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 40.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 19.214,
+    "gpu_hours_reserved": 2.3967,
+    "gpu_hours_without_gate": 5.8713,
+    "cores_busy": 0,
+    "runs": 1621,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md + 0026-cards-loaded-allotment-cost.md + 0031-level2-branch-and-ablation.md + 0032-new-account-preemption-allotments.md + 0038-track-e-g2-signed-g3-scope.md + 0039-rulings-after-batch-17.md"
+  }
+}
