@@ -449,3 +449,34 @@ A-20261126-024724-425ed7f and A-20261126-023245-1dd80ad, in their run.log): orde
 Read by `scripts/analyse_code_runs.py` on the dumps 00003-00004 (detached, ~1 h a dump on one core), P19 at tau 30
 from N128's tau 30 row; close the run again with `harness/bin/nrpic-run finish A-20261125-231808-0784bc9` once no job
 of it is in squeue.
+
+## Entry 13, 2026-11-26 13:25 PST (lead of batch 28): P17 for N256, P18-P21 from the two readers (figures looked at)
+
+Runs, closed before reading: readers A-20261126-024724-425ed7f (N64, N128; closed by batch 24) and
+A-20261126-023245-1dd80ad (N128, N256 dumps tau 0, 10, 20; closed completed 13:21 PST); the N256 chain
+A-20261125-231808-0784bc9 continued by q0067 (segment 2, job 5380, 0.76 h of card time, STATUS DONE at tau = 40.000,
+cycle 2560, exit 0). Figures looked at: fig_code_n64n128_convergence.png, fig_code_n128n256_errors.png,
+fig_code_n128n256_convergence.png (slopes between the h^2 and h^4 guides, steeper for the core).
+- P17 (completion). N256 reaches tau = 40 with finite fields (szk.nrpic.hst and szk.cstat.hst: no non-finite row to
+  t = 40; exit 0): the completion clause HOLDS for N256 (the crunch-distance reading of entry 12, breakdown ~41, is
+  not contradicted). The clause "alpha = 1 to 1e-12 throughout" is REFUTED as written for N128 and N256: max |alpha - 1|
+  over alpha_min and alpha_max of szk.nrpic.hst is 6.8e-13 (N64), 1.70e-12 (N128, above 1e-12 from tau = 22.25) and
+  3.64e-12 (N256, above 1e-12 from tau = 11.1), rising linearly in the cycle count at 1.4e-15 per cycle on both N128
+  (1200 cycles) and N256 (2560 cycles) [the rate is VERIFIED from the files; that it is round-off of the geodesic
+  lapse update is JUDGEMENT, the rate being the same on two meshes]. Entry 11 checked the clause on N64 only. The
+  breakdown series (N32 24-28, N64 30.25, N128 37.47, N256 > 40) stands.
+- P18 (shell rms |K - K_ex|/H). N64: 0.0268 at tau 10 (0.02 +- factor 3: holds); at tau 40 no value (broke at 30.25):
+  not met. N128: 0.00430 at tau 10 (0.004: holds); at tau 40 no value (broke at 37.47): not met. N256: 2.77e-4 at
+  tau 10 against 0.001: below a factor 3 (3.6): REFUTED as written (the member is better than predicted); tau 40 is
+  read by A-20261126-212141-7eeb046 (entry 14).
+- P19 (orders >= 1.5; 128->256 not lower than 64->128 by more than 0.3). 64->128 at tau 10, 20, 30: shell K 2.64,
+  2.33, 4.53; E and chi 2.82, 2.48, 2.45; core K 3.76, 3.66, 4.30; core E 3.39, 3.62, 3.68. 128->256 at tau 10, 20:
+  shell K 3.96, 3.62; E, chi 4.01, 3.69; core K 5.13, 4.22; core E 5.23, 4.57. HOLDS at tau 10 and 20 (every order >=
+  2.3, and 128->256 is higher than 64->128); tau 30 for 128->256 waits for A-20261126-212138-49b9a2d (entry 14).
+- P20 (the test sees the non-spherical part; ratio of the signal max to the error max). N256: K 0.686/0.00238 = 288
+  (tau 10), 1.43/0.00781 = 183 (20); E 0.714/0.000519 = 1376, 0.773/0.00194 = 398 (>= 10: holds). N128: K
+  0.685/0.0253 = 27, 1.42/0.0666 = 21, 3.45/0.582 = 5.9 (tau 30); E 110, 47, 41 (>= 5: holds, barely for K at tau 30).
+  HOLDS at N128 to tau 30 and at N256 to tau 20; N256 at tau 30 in entry 14.
+- P21 (constraint order equal to the K order within 0.5, 128->256, shell). tau 10: H 4.01 against K 3.96 (holds);
+  tau 20: H 4.65 against K 3.62 (difference 1.03): REFUTED at tau 20 (the Hamiltonian residual converges faster than
+  the K error; the K error is not a constraint violation alone).

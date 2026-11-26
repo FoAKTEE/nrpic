@@ -628,3 +628,27 @@ cell has a seam that any cloud wider than its cell sees). Recommendation: CIC wi
 slice. This explains the t = 0 floor of entry 13 (test D); it does not explain the evolution's floor (entries 13, 14),
 which no cloud removed. For entry 15 (x8 particles, CIC): with SUB = 2 the lattice still changes spacing at the faces;
 CIC clouds lie within their cells, so no seam term is expected at t = 0 [JUDGEMENT].
+
+### Entry 15, outcome H (S2c-A8 closed completed with A-20261126-024922-97a2f14; analyses A-20261126-212216-967f547 and, with the members drawn, A-20261126-212340-4ea9fb2; fig_edge.png of the second looked at)
+
+Section-3 x-line ratio ||H||/||16 pi E||, S2 with the CIC cloud on M/16, one particle per local cell (S2c-A) against
+eight (S2c-A8): t = 0: 0.0064 / 0.0609; 0.25: 0.050 / 0.055; 0.5: 0.098 / 0.122; 0.75: 0.097 / 0.108; 1.0: 0.129 /
+0.140 (+8 per cent); 1.5: 0.192 / 0.195 (+2); 2.0: 0.245 / 0.256 (+4). Volume ||H||_2 at t = 0, 1, 2: 0.0018 / 0.0193,
+0.0383 / 0.0412, 0.0824 / 0.0656.
+- The evolution clause of H HOLDS: at t = 1, 1.5 and 2 the x8 ratio lies within 20 per cent of S2c-A's (inside
+  0.103-0.155, 0.154-0.230, 0.196-0.294); it neither falls by 1.5 nor rises by more than 20 per cent. In the figure
+  (panel a) the green x8 curve lies on the yellow x1 curve from t = 0.5 on.
+- The t = 0 clause is REFUTED: the ratio rises 9.6-fold (0.0064 -> 0.0609), not "less than a factor 2". Panel (c)
+  shows where: S2c-A80's residual is ~1e-5 inside the ball (x < 0.9), where S2c-A0's is ~1e-10; it is not at a level
+  face. Reading [JUDGEMENT]: the data are solved for the density at cell centres; eight CIC sub-particles at h/4
+  from the centres deposit the density smoothed by O(h^2) (szekeres entry 8, P22: (3/32) h^2 d^2/dx^2), so the source
+  differs from the solved one inside the matter. The prediction leaned on core's "no seam term is expected at t = 0"
+  and missed the interior smoothing term. By t = 0.25 the two members agree to 10 per cent: the evolution erases it.
+C3 under decision 0043 item 1(a), the cause of the floor: the run that could have shown a sampling part did not
+(x8 particles leave the evolution's floor unchanged to 2-8 per cent at t = 1-2), so particle sampling at fixed
+particles per cell is EXCLUDED as the cause. The mesh leg (entry 14) gave order ~0.35 only. No run has shown the
+cause: the floor is stated as UNEXPLAINED. Candidates left untested [TO VERIFY]: core's two deposit defects at level
+faces (the compensation pass not conservative across a level face, 0.13 per cent of a line sum; deposit_fine_shape
+with CIC not inert there; decision 0043 item 1(a)), the outer taper, the gauge in the matter region. Core fixes the
+two defects in a source session after 2026-11-27 (decision 0043 item 4); C3 is retested on the fixed build then
+(S2c-A and S2c-B on M/16 and M/32 to t = 1, the same reading). C3 stays FAILED as written.
