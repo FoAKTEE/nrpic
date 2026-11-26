@@ -190,3 +190,13 @@ differences of x - q at the lattice point at the centre), r_m from the data's id
   3.98) and fails at tau 20 (4.73 vs 3.58), as the note says.
 - V1.6 HOLDS. max |alpha - 1| grows in proportion to the number of steps: N256 9.1e-13, 1.8e-12, 2.7e-12, 3.6e-12 at tau
   10-40; N128 1.4e-12 at tau 30; N64 below 1e-12. P17's alpha clause (1e-12) fails from tau 20 (N256).
+
+## Entry 5, 2026-11-26 15:25 PST: report written; comparison with the lead
+
+- stage/G2/VERIFIER.md written (sections 0-6 before reading the lead's verdicts; section 7 after reading the status and
+  evidence column of stage/G2/CHECKLIST.md and stage/G2/OPEN.md).
+- Agreement with the lead on every failure (C3, A2, C1 (ii) horizon part) and on A2H holding; disagreements: the
+  invariant Szekeres signal (P20 fails at N256 tau 30 against it), P0L6's shells during collapse (4-42 per cent), the
+  snapshots' proper times (A2X (ii) was decidable), the start of the finder's failures (121.4), "sampling excluded"
+  only from t = 1; P18 at tau 40 and AZ1's first clause missing from OPEN's list.
+- The full stage verify (pid 499738) was still running after about 65 minutes; its log is written at the end.
