@@ -172,3 +172,71 @@ summaries only at t <= 5 M (V-1L, ES-1L 0.5 M; ES-FL, FK, FN4, FNQ, ES-F 1 M; V-
 ES-1L4 1, 2, 4 M; FF4 0-5 M with 4 non-finite masses); none after 20 M in any; dropping
 failed lines leaves N unchanged. All horizon numbers here are made without the finder's
 diagnostics (no status files).
+
+## Entry 3 (2026-11-25 22:27 PST): outcomes of V3, V4 (in part), V5, first look at V6 (run D-20261126-062152-b7144de; v3_growth.png looked at)
+
+Reader checks: the rest mass in every dust removal record equals the particle file's at its
+tag (max relative difference 0: tag = index in the file, all six members). Duplicates of
+cut segments dropped by keeping each tag's last record: FK 34286 of 154190 (time ran
+backwards 6 times), FN4 75972 of 555012 (4), FL16 3208 (3), FF4 22166 (2), ES-FL and FNQ 0.
+
+V3a HELD, every number reproduced to the three digits quoted, with my table continuum as
+M_LTB (lattice reference in brackets): max |bin median| of (iii) ES-FL 0.620 per cent (0.596),
+61 bins to tau_rem 605 M; FL16 0.485 (0.472), 38 bins to 375 M; FK 0.249 (0.216), 50 bins;
+FN4 0.239 (0.235), 50; FNQ 0.290 (0.278), 50 (band 2 per cent); FF4 0.685 (0.703), 60 bins.
+No bin outside its band in any member. Overall medians +0.52 (ES-FL), +0.21 (FK), +0.22 (FN4),
++0.21 (FNQ), +0.08 (FL16), -0.08 (FF4) per cent.
+V3b HELD: D2 at every finder sample after 20 M: ES-FL 960 samples (smallest lower margin
+3.3e-3 at 187.5 M), FK 760 (3.0e-3), FN4 760 (3.9e-3), FNQ 760 (2.1e-3 at 393 M), FL16 1120
+with V-1L16 (2.9e-3), FF4 280 with V-1L4 to the control's end at 299 M (2.1e-3). Upper side
+never close (F_sph runs far ahead; >= 1.2e-2).
+V3c: D1 closure of ES-FL at 499.5 M: raw +1.80e-2, control-subtracted +9.4e-3: OUTSIDE the
+predicted [0, +8e-3] (F3's D1 part failed as written, by 1.4e-3). FK +2.2e-3, FN4 +2.6e-3,
+FNQ +2.7e-4 (control-subtracted, 399.5 M). F4 HELD: removed m E_K of ES-FL at 500 M 0.601
+(in 0.60-0.70). F2 (M_AH(500) of ES-FL in [1.56, 1.72]): the summary ends at 499.5 M; M_AH
+at 400 M = 1.4920 (FK at 300 M 1.3708); not re-judged further.
+D3 as written: ES-FL, FK, FN4, FL16 no violation; FNQ 8352 violations, the first at t_rem =
+221.6 M, none before 219 M (the lead's 8352 of 29984 reproduced exactly); FF4 1704, all
+before 219 M, the first at 7.75 M (early removals at M/4).
+V5 HELD: ES-FL's last reason-3 dust removal at 218.9 M, first reason-2 removal after 50 M at
+224.0 M, horizon minradius >= 4 x 0.8 M first at 219.5 M (FL16 220.0 / 224.3, FF4 225 /
+229.8); FK and FN4 remove dust only by reason 3 to 400 M (minradius 4.53 M at the end < 6.4
+M). FK equals ES-FL: M_AH at 100 M identical to 15 digits, at 200 M 2.2e-7 apart, at 219 M
+7e-11; removed m E_K identical at 100 and 200 M (0.105293, 0.239049). The (iii) step of
+ES-FL (+0.2 -> +0.6 per cent at tau_rem ~285 M) is absent in FK, FN4, FNQ, which keep
+excision: P9 holds; FL16 shows the same step at the same place (its excision also ends,
+220 M), FF4 too (225 M).
+V4a (part): removed m E_K at 100/200/300/399.5 M: N 0.10529/0.23905/0.36807/0.48921, 4N
+0.10462/0.23950/0.36857/0.48936, N/4 0.10439/0.24023/0.36978/0.49060: N/4 within 0.86 per
+cent of N (largest at 100 M), 4N within 0.64 per cent: as claimed.
+
+V6 first look (D4 with my continuum tau_H): ES-FL 0.23 per cent of dust removals before the
+exact crossing (none before 219 M, min -0.084 M); FK 29.5 per cent (none before 219 M; 68.5 per
+cent of those after 235 M; min -0.36 M); FN4 34.5 per cent (3.45 per cent before 219 M; min
+-0.66 M); FNQ 41 per cent (min -0.67 M). These reproduce the lead's numbers. The panel shows
+that tau_rem - tau_H falls SECULARLY with time in every member, from about +0.3 M at t ~ 50 M
+to about 0 at 200 M and -0.2 M at 400 M in FK and FN4 (excision kept); ES-FL jumps up after
+219 M only because removal moves deeper (lapse rule). The tracers make the same point
+without lattice noise: group R0 = 28 M (exact tau_H = 354.24 M) is removed in FK at t = 278.0
+M at tau_H - 0.39 M (reason 3), in FN4 at -0.16, FNQ -0.63, while in ES-FL the same tracers
+are removed 4.4 M of coordinate time later by the lapse rule (alpha < 0.05, deep inside)
+at only tau_H + 0.06 M. A particle deep inside the horizon with 0.06 M of proper time since
+its exact crossing is not on the exact trajectory: it is ahead of the LTB clock.
+My JUDGEMENT before the next test: excision does not remove dust outside the horizon; the
+particles reach the horizon earlier in proper time than the exact solution says, by a
+drift that grows with time (~0.1-0.15 per cent of tau). Either the code's proper time runs
+slow (clock) or the shells fall faster (dynamics: an initial velocity deficit of ~0.14 per
+cent, or a smaller bound energy |E|, would do it; a mass excess would do the opposite:
+d tau_H / d ln m = +530 M at R0 = 28 M).
+
+### Prediction V6b (before the run): tracer trajectories (traj.bin, trajmet.bin) of FK and ES-FL
+(1) Clock: integrating dtau = alpha / W dt (W = (1 + gamma^ij u_i u_j)^(1/2)) along each
+    tracer's samples reproduces the code's proper time to 1e-4 relative at t = 250 M
+    [p ~ 0.8]. If it does not, the clock is the cause.
+(2) Dynamics: the areal radius of the R0 = 28 M tracers, R = r (e_t.gamma.e_t)^(1/2) from
+    the tangential metric component, against my cycloid at the same proper time: R_sim < R_LTB
+    by a growing amount, and the maximum areal radius R_max below the exact m R0/M = 37.55 M
+    by 0.02-0.1 M [p ~ 0.6]. At R0 = 20 M (exact R_max 22.47 M) the same with a smaller
+    deficit. Refuted (dynamics exact) if R_max agrees to 0.01 M and R(tau) to 0.02 M up to
+    the horizon.
+(3) Either way G is untouched: the shift in (iii) is dM/dtau x 0.5 M ~ 6e-4 = 0.05 per cent.
