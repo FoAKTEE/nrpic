@@ -21,6 +21,7 @@ entry 11; `periodic_threshold/JOURNAL.md` last three entries; `threshold_ball/JO
 |---|---|---|---|
 | A-20261126-024724-425ed7f | Szekeres reader, members N64 and N128 (A-20261125-213939-0ad9f29), ~15 min per N128 dump, ends ~20:30 PST | 1 | close with `harness/bin/nrpic-run finish A-20261126-024724-425ed7f`; `code_runs_n64n128.json` and its figures give P18 (N128), P19 (64 -> 128), P20 at N = 128 |
 | A-20261126-023245-1dd80ad | Szekeres reader, members N128 (A-20261125-213939-0ad9f29) and N256 (A-20261125-231808-0784bc9, dumps tau 0, 10, 20), ~1 h per N256 dump, ends ~22:30 PST | 1 | close with `harness/bin/nrpic-run finish A-20261126-023245-1dd80ad`; its `code_runs_n128n256.json` and figures give P19 (128 -> 256), P20 at N = 256, P21; write the outcome as szekeres JOURNAL entry 12 |
+| A-20261126-024922-97a2f14 | C3 particle-number leg (threshold_ball entry 15, prediction H): data S2 on nestA8 (x8 particles), then S2c-A8 (M/16, CIC) t = 0 and to t = 2, 2 threads, several hours | 2 | close with `harness/bin/nrpic-run finish A-20261126-024922-97a2f14`; read with `threshold_ball/scripts/edge_compare.py --run /data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261125-160633-594a474 --extra S2c-A=<62ce3dc>/S2c-A --extra S2c-B=<62ce3dc>/S2c-B --extra S2c-A80=<run>/S2c-A80 --extra S2c-A8=<run>/S2c-A8 --out ...` (registered); judge H |
 
 ## Card runs: none running or queued for G2. Shared queue: q0015 a-s1l-cont (waiting; continues S1L from t = 198.7
 to 220 for SCOPE section 7, not a checklist item; read by job2_q.py and a2 scripts). No card time used in batch 23.
@@ -35,8 +36,8 @@ to 220 for SCOPE section 7, not a checklist item; read by job2_q.py and a2 scrip
    `stage/G2/VERIFY` (C6), convergence figures in zoom style (C11), a slice mosaic from the Szekeres N256 dumps
    (`scratch/A-emd-pbh/A-20261125-231808-0784bc9/szk.field.0000[0-2].bin`, uniform 256^3; C13); then
    `harness/bin/nrpic-stage collect/verify/report A-emd-pbh G2` and ask for the verifier of the whole gate.
-4. C3: the particle-number leg of S2c-A (S2 with the CIC cloud, mesh M/16, x8 particles, to t = 2, processors,
-   prediction first in threshold_ball entry 15); core's answer on the PCS deposit (core's batch-23 test).
+4. C3: read the particle-number leg (A-20261126-024922-97a2f14, prediction H in threshold_ball entry 15); core's
+   answer on the PCS deposit (core's batch-23 test).
 5. P0L6's finder: when core answers (outbox finder-false-accept-and-stall-p0l6), rerun the finder on P0L6's restart
    files at t = 136 and 140 on processors with the options core names.
 
@@ -44,7 +45,7 @@ to 220 for SCOPE section 7, not a checklist item; read by job2_q.py and a2 scrip
 
 | Package | State | What remains |
 |---|---|---|
-| `threshold_ball/` | entry 14: C3 mesh leg judged (G refuted) | particle-number leg (entry 15) |
+| `threshold_ball/` | entry 14: C3 mesh leg judged (G refuted); entry 15 prediction H written, run detached | read H |
 | `periodic_threshold/` | A2X and AZ1 (N-z128) judged; P0L6 D1-D5 judged | finder rerun after core's answer; half-amplitude member if ruled |
 | `szekeres/` | series ran (q0040, q0041); P17 judged, N64 rows read (entry 11) | the two detached readers (above) |
 | `conv_ball/` | | A-R1.35 ddet unchecked (verifier) |
