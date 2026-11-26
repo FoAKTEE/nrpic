@@ -131,10 +131,18 @@ def main():
        "(%d searches, max %s)" % (both.sum(), res["finder"]["pol_vs_tight_max"])] = bool(
         both.any() and np.all(dm[both] < 2.0e-5))
     for n in cpu_name:
-        same = T[n].shape == CT[n].shape and bool(np.all(T[n][:, 2] == CT[n][:, 2]))
-        f = T[n][:, 2] == 1.0
-        d_ = float(np.max(np.abs(S[n][f, 2] - C[n][f, 2]))) if same and f.any() else float("nan")
+        # status() keeps five columns, ft.status_rows seven: compare the rows and the found
+        # column (the first registered pass compared the shapes and gave nan; run
+        # core-20261126-114526-2b1f001)
+        nrow = len(T[n]) == len(CT[n]) and len(S[n]) == len(C[n])
+        same = nrow and bool(np.all(T[n][:, 2] == CT[n][:, 2]))
+        f = (T[n][:, 2] == 1.0) & (CT[n][:, 2] == 1.0) if nrow else np.zeros(0, bool)
+        d_ = float(np.max(np.abs(S[n][f, 2] - C[n][f, 2]))) if f.any() else float("nan")
         res["finder"]["card_vs_cpu_" + n] = d_
+        res["finder"]["card_vs_cpu_" + n + "_per_search"] = (
+            np.abs(S[n][:, 2] - C[n][:, 2]).tolist() if nrow else None)
+        res["finder"]["found_differs_at_cycles_" + n] = (
+            T[n][T[n][:, 2] != CT[n][:, 2], 0].tolist() if nrow else None)
         ck["K3: card against processors, %s: the same searches found, masses within 1e-8 "
            "(max %.1e)" % (n, d_)] = (same and d_ < 1.0e-8)
     cost = {}
@@ -173,19 +181,21 @@ def main():
     ax.set_xlabel("t"); ax.set_ylabel("mean of C^E_r (cons.hst)")
     ax.legend(loc="best", fontsize=7); fs.no_minor_labels(ax)
     ax = axs[1]
-    ax.semilogy(S["pol"][both, 1], np.maximum(dm[both], 1e-16), color=fs.PAL["red"], marker="o",
+    ax.semilogy(S["pol"][both, 1], np.maximum(dm[both], 1e-17), color=fs.PAL["red"], marker="o",
                 ms=3, label="card: polished - tight")
-    bp = (T["prod"][:, 2] == 1.0) & (T["tight"][:, 2] == 1.0)
-    ax.semilogy(S["prod"][bp, 1], np.maximum(np.abs(S["prod"][bp, 2] - S["tight"][bp, 2]), 1e-16),
-                color=fs.PAL["green"], marker="s", ms=3, label="card: 1e-5 - tight")
+    for n, col, mk, lab in (("prod", fs.PAL["green"], "s", "1e-5"), ("pol", fs.PAL["yellow"], "^",
+                            "1e-5 + 100"), ("tight", fs.PAL["blue"], "v", "tight")):
+        if len(S[n]) == len(C[n]):
+            ax.semilogy(S[n][:, 1], np.maximum(np.abs(S[n][:, 2] - C[n][:, 2]), 1e-17), color=col,
+                        marker=mk, ms=3, ls=":", label="card - processors, " + lab)
     ax.axhline(2.0e-5, **fs.MASK_LINE)
-    ax.set_xlabel("t / M"); ax.set_ylabel("|mass difference|")
+    ax.set_xlabel("t / M"); ax.set_ylabel("|mass difference| (floor 1e-17)")
     ax.legend(loc="best", fontsize=7); fs.no_minor_labels(ax)
     ax = axs[2]
     names = ["prod", "pol", "tight"]
     ax.bar(range(3), [cost[n]["wall_s"] or 0.0 for n in names],
            color=[fs.PAL["green"], fs.PAL["red"], fs.PAL["blue"]], width=0.6)
-    ax.set_xticks(range(3)); ax.set_xticklabels(["1e-5", "1e-2 + 100", "tight"], fontsize=8)
+    ax.set_xticks(range(3)); ax.set_xticklabels(["1e-5", "1e-5 + 100", "tight"], fontsize=8)
     ax.tick_params(axis="x", which="minor", bottom=False, top=False)
     ax.set_ylabel("wall time of the run on the card / s")
     figs = fs.save(fig, os.path.join(out, "fig_card_check"))

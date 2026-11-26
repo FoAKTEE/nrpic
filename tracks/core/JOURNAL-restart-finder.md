@@ -601,3 +601,21 @@ of the tight rule wherever both are found; each rule within 1e-8 of the processo
 below 0.05 s per flow iteration on the card [JUDGEMENT]. Refuted by any FAIL line of
 `card_check.py` that is not a defect of the reader itself (a reader defect is fixed and the
 analysis registered again; both runs stay on record).
+
+## Entry 22 (2026-11-26, 03:58 PST): first pass of the judgement failed on the reader; prediction for the second
+
+Run core-20261126-114526-2b1f001 (exit 1): K1, K2, K4, K5 ok; K3 card against processors
+FAIL with max nan for all three rules. Cause, read in the script before any rerun:
+`status()` of `card_check.py` keeps five columns and `finder_test.status_rows` seven, so the
+test `T.shape == CT.shape` was false for every rule. A look by hand (interactive, not a
+registered number) showed the second reason behind it for the rule 1e-5: the card and the
+processors accept different searches. The reader now compares rows and the found column and
+records the difference per search; the bar label of the polished run said "1e-2 + 100" and
+says "1e-5 + 100". Prediction for the second pass, written after that look and therefore no
+test of the cause: K3 card against processors FAILS for the rule 1e-5 (found at cycles 28 and
+32 on the card, not on processors; mass differences above 1e-8 from cycle 24) and holds for
+the polished and the tight rules (differences at most a few 1e-16); K1, K2, K4, K5 as in the
+first pass. The second pass is the run that could refute "the card build is deterministic and
+differs from the processors only in rounding": it would if the polished or tight rule differed
+by more than 1e-12 or if fp_g04 (the rule 1e-5 with another guard) differed from fp_prod in
+masses on the card.
