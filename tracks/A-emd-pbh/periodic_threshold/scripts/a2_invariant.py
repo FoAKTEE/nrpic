@@ -104,8 +104,9 @@ def main():
         grid[li] = x
         grid = grid.reshape(n, n, n, 3, order="F")
         J = jacobians(grid, L, h)
-        umax = max(umax, float(np.sqrt(np.max(np.sum(u * u, axis=1)))))
-        rec = dict(t=t, n_particles=int(len(tag)))
+        umax = max(umax, float(np.sqrt(np.max(np.sum(u * u, axis=1)))))   # running maximum to this snapshot
+        rec = dict(t=t, n_particles=int(len(tag)), u_max_to_here=umax,
+                   u_p99=float(np.sqrt(np.percentile(np.sum(u * u, axis=1), 99.0))))
         for kind, Jk in J.items():
             k = int(np.nanargmin(Jk))
             ijk = np.unravel_index(k, Jk.shape)
@@ -115,12 +116,17 @@ def main():
         rows.append(rec)
         print(f"t {t:8.3f}  minJ fwd {rec['minJ_fwd']:+.4f} ({rec['n_negJ_fwd']} cells <= 0)  "
               f"ctr {rec['minJ_ctr']:+.4f} ({rec['n_negJ_ctr']})  at {np.round(rec['argminJ_fwd_x'], 2)}", flush=True)
+    # batch 23 correction after the first run (A-20261126-022220-99b7be8): W_max over ALL snapshots is set by
+    # particles deep in the late collapse (|u| ~ 1.6e3 at t ~ 190) and makes the bound empty; the bound at the
+    # snapshot t_k uses the running maximum of |u| over the snapshots up to t_k (the largest |u| between two
+    # snapshots is not recorded: that is the JUDGEMENT of this bound)
     W_max = float(np.sqrt(1.0 + a.gmax * umax ** 2))
     hn = uniq(np.loadtxt(os.path.join(a.run, "peak.nrpic.hst"), comments="#", ndmin=2))
     ta, am, tp = hn[:, 0], hn[:, 15], hn[:, 14]
-    tau_lb = np.concatenate([[0.0], np.cumsum(0.5 * (am[1:] + am[:-1]) * np.diff(ta))]) / W_max
+    int_alpha = np.concatenate([[0.0], np.cumsum(0.5 * (am[1:] + am[:-1]) * np.diff(ta))])
     for r in rows:
-        r["tau_lb"] = float(np.interp(r["t"], ta, tau_lb))
+        r["W_max_to_here"] = float(np.sqrt(1.0 + a.gmax * r["u_max_to_here"] ** 2))
+        r["tau_lb"] = float(np.interp(r["t"], ta, int_alpha)) / r["W_max_to_here"]
         r["tau_probe"] = float(np.interp(r["t"], ta, tp))
         r["alpha_min"] = float(np.interp(r["t"], ta, am))
         r["t_over_tH_coord"] = float(tau_over_tH(r["t"]))
