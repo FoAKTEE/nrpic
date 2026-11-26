@@ -173,7 +173,7 @@ ES-1L4 1, 2, 4 M; FF4 0-5 M with 4 non-finite masses); none after 20 M in any; d
 failed lines leaves N unchanged. All horizon numbers here are made without the finder's
 diagnostics (no status files).
 
-## Entry 3 (2026-11-25 22:27 PST): outcomes of V3, V4 (in part), V5, first look at V6 (run D-20261126-062152-b7144de; v3_growth.png looked at)
+## Entry 3 (2026-11-25 22:23 PST): outcomes of V3, V4 (in part), V5, first look at V6 (run D-20261126-062152-b7144de; v3_growth.png looked at)
 
 Reader checks: the rest mass in every dust removal record equals the particle file's at its
 tag (max relative difference 0: tag = index in the file, all six members). Duplicates of
