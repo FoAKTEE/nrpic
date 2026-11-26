@@ -36,8 +36,8 @@ to 220 for SCOPE section 7, not a checklist item; read by job2_q.py and a2 scrip
    `stage/G2/VERIFY` (C6), convergence figures in zoom style (C11), a slice mosaic from the Szekeres N256 dumps
    (`scratch/A-emd-pbh/A-20261125-231808-0784bc9/szk.field.0000[0-2].bin`, uniform 256^3; C13); then
    `harness/bin/nrpic-stage collect/verify/report A-emd-pbh G2` and ask for the verifier of the whole gate.
-4. C3: read the particle-number leg (A-20261126-024922-97a2f14, prediction H in threshold_ball entry 15); core's
-   answer on the PCS deposit (core's batch-23 test).
+4. C3: read the particle-number leg (A-20261126-024922-97a2f14, prediction H in threshold_ball entry 15). Core has
+   answered the PCS question (threshold_ball journal after entry 15; acked).
 5. P0L6's finder: when core answers (outbox finder-false-accept-and-stall-p0l6), rerun the finder on P0L6's restart
    files at t = 136 and 140 on processors with the options core names.
 
