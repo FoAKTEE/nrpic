@@ -18,14 +18,16 @@ r0, M, E, age = z["r0B"], z["MB"], z["EB"], z["ageB"]
 u, idx = np.unique(np.round(r0, 9), return_index=True)
 o = idx[np.argsort(r0[idx])]
 out = dict(n_shells=int(len(o)), age_spread=[float(age.min()), float(age.max())], first_crossing=None)
-for tb in np.linspace(float(age.max()), float(age.max()) + 141.0, 1411):
-    R = np.array([cycloid_R(float(M[i]), float(E[i]), np.array([tb]))[0] for i in o])
+# the initial slice taken as one LTB time: each shell's time since its own bang is age_i + tau
+for tau in np.linspace(0.0, 141.0, 1411):
+    tb = tau
+    R = np.array([cycloid_R(float(M[i]), float(E[i]), np.array([age[i] + tau]))[0] for i in o])
     alive = R > 0
     d = np.diff(R[alive])
     if np.any(d <= 0):
         j = int(np.argmax(d <= 0))
         rr = r0[o][alive]
-        out["first_crossing"] = dict(t_since_bang=float(tb), tau=float(tb - age.max()), r0_pair=[float(rr[j]), float(rr[j + 1])])
+        out["first_crossing"] = dict(tau=float(tau), r0_pair=[float(rr[j]), float(rr[j + 1])])
         break
 print(json.dumps(out))
 with open(os.path.join(a.out, "ltb_crossing.json"), "w") as f:
