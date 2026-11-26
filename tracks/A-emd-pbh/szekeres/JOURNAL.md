@@ -480,3 +480,22 @@ fig_code_n128n256_convergence.png (slopes between the h^2 and h^4 guides, steepe
 - P21 (constraint order equal to the K order within 0.5, 128->256, shell). tau 10: H 4.01 against K 3.96 (holds);
   tau 20: H 4.65 against K 3.62 (difference 1.03): REFUTED at tau 20 (the Hamiltonian residual converges faster than
   the K error; the K error is not a constraint violation alone).
+
+## Entry 14, 2026-11-26 14:08 PST (lead of batch 28): N256 at tau 30 and 40, P24, P18 and P19/P20 at tau 30
+
+Readers (one dump each, member dirs of symlinks; closed completed): A-20261126-212138-49b9a2d (tau 30),
+A-20261126-212141-7eeb046 (tau 40). Figures looked at: fig_code_n256t30_profiles.png (code on the exact K and rho,
+error below the LTB-Szekeres difference in the shell), fig_code_n256t40_maps.png (E error rings at the core edge,
+|E - rho|/rho up to 0.027). No non-finite cell; max |alpha - 1| 2.7e-12 (tau 30), 3.6e-12 (tau 40).
+- P24 (shell rms |K - K_ex|/H): tau 30: 0.00365 against [0.004, 0.04]: REFUTED as written, 9 per cent below the lower
+  edge (the member is better than predicted at tau 30); tau 40: 0.0410 against [0.03, 1]: HOLDS.
+- P18 for N256 at tau 40 (0.01 within a factor 3): 0.041: REFUTED, as entry 12 expected (the member is within a few
+  tau of its breakdown).
+- P19 at tau 30, 128 -> 256: shell K 3.62, E 3.46; core K 3.23, E 3.76 (all >= 1.5: the first clause holds); against
+  64 -> 128 at tau 30 (shell K 4.53, core K 4.30) the order is lower by 0.91 and 1.07: the clause "not lower by more
+  than 0.3" is REFUTED at tau 30 (N64 at tau 30 was already blowing up, so its 64 -> 128 order is inflated
+  [JUDGEMENT]). P19 holds at tau 10 and 20.
+- P20 at N256, tau 30: K signal/error max 3.45/0.0439 = 79, E 1.49/0.00541 = 275 (>= 10): HOLDS to tau 30.
+Szekeres verdict for G2 (C1 (iii)): the code follows a dust solution without symmetry at third to fourth order in the
+shell through tau 30 on three meshes, with the error far below the non-spherical signal; clauses refuted on record:
+P17 lapse, P18 (N256 at 10 and 40), P19's second clause at tau 30, P21 at tau 20, P24 at tau 30.
