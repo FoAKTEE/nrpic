@@ -1,0 +1,43 @@
+{
+ "name": "27 (2026-11-26 early morning)",
+ "what": "independent review of gate G2 of Track D; core: the card checks judged and release core-v0.8 made final, then the release clerk; Track C: its bracket at a million particles; Track E: the two G3 criterion runs and a faster zeta map",
+ "note": "Releases core-v0.4 to v0.7 are on main. Rulings: coord/DECISIONS/0039 to 0044. After git merge main: nrpic-run finish closes runs continued in place; finish and verify keep a checksum cache (the first pass reads everything once: start it in the background and do not wait; one pass with --full before a gate review). Every new run that uses the horizon finder sets <fastflow> diagnostics = true; a continued run can switch it on with an input file at restart (0043 item 5). The week's usage is tight (0040 item 5): keep to the time given, read what the task needs. Close a finished run before you analyse it; every number with its run id; prediction before every new run; figures made by registered scripts and looked at; at most 6 cores.",
+ "stages": [
+  [
+   0,
+   1,
+   2,
+   3
+  ],
+  [
+   4
+  ]
+ ],
+ "items": [
+  {
+   "type": "gate",
+   "owner": "D-bh-dress",
+   "gate": "G2"
+  },
+  {
+   "type": "core-task",
+   "key": "release-v08",
+   "fable": false,
+   "task": "Round for core without a change of athenak/src or python/nrpic (about seventy-five minutes). FIRST PART, to be finished within forty minutes because the release clerk follows this session: the four card checks have run in the shared queue: q0049 core-rf-card (the card executable of the next release), q0039 core-v07-card, q0035 nl2-review-R5 and q0036 step-limit-card (core-v0.7). (1) Close q0049 and judge it with tracks/core/analysis/restart_finder/card_check.py as a registered analysis against predictions K1 to K5 (journal entry 20 of JOURNAL-restart-finder.md has the command), figure looked at. If it passes: make tracks/core/RELEASE-v0.8.md final (the words NOT RELEASED removed, the card check with its run id and outcome, the card cost per finder search), the changelog section core-v0.8 complete (options, changes without an option, what was not done: the stop on the residual, the guard relative to the last radius, the conservation record on several ranks, Track D's long card test of the guard), the interface documents under tracks/core/interfaces/ ready for the clerk to copy, the executables of the release published under scratch/core/exe/core_nrpic_v08/ with COMMIT, SHA256SUMS and READY (processor, threaded, MPI and card builds of the merged source; never replace a published directory), stage/G2/OPEN.md updated (restart defects a and b closed on one rank); commit and push core/nrpic. If it fails: leave NOT RELEASED in the file, write what failed, and say so first in your report. SECOND PART: (2) close and judge q0039, q0035 and q0036 against what RELEASE-v0.7.md and the branches' journals predicted; write the outcome into RELEASE-v0.7.md and send the orchestrator the words for the core-v0.7 row of CLAUDE.md (outbox) if the clerk has not already used them. (3) Row 4: close what has ended (q0032 and any other), fates by the rule, bracket, figure. (4) Tell Tracks D and F (outbox) which executable of the release serves the excision-guard test and the finder's polishing, with the recommended values. Records, commit, push."
+  },
+  {
+   "type": "lead",
+   "owner": "C-sidm",
+   "extra": "Extra for this session (about an hour). Ended since your last session: queue entries q0018 N4c, q0046 N6b344 and q0047 N6b324 (the bracket at a million particles), q0048 D2eta1 (the gauge member) and q0056 N6b344e1 (a leg of the bracket); q0055 runs, q0057 and q0058 wait. (1) Close each and judge it against its predictions (NS.3; B17.5 and B17.6 with N6c as the control; B17.4; B20.x for the leg that has ended) with registered analyses (nseries.py, d2_analysis.py) and figures you look at; every collapse time is the lapse marker, stated as such. (2) Items C7 and C9: is the threshold located at one mesh and one particle number now, and what do the legs that have ended say? (3) The G2 package item by item; write the G2 sections of the note for what is settled and name for each open item the queue entry it waits for; if what remains open is only failures on record with their rulings and the fresh verifier, run nrpic-stage collect, verify and report and list G2 in gates_complete."
+  },
+  {
+   "type": "lead",
+   "owner": "E-stoch-inf",
+   "extra": "Extra for this session (about seventy-five minutes). Ended since your last session: queue entries q0051 G3C (seed 0 at three amplitudes with constraint fields) and q0052 G3R (four runs at 160 cells); the baseline and level-2 entries q0053, q0054, q0061 to q0066 wait at low priority behind the other tracks' gate runs. (1) Close both and judge them against the amended criteria of scope 4d.9 (the constraint scaling with three amplitudes over its range of e-folds with the minimum count of judged dumps; Richardson in the square of the amplitude with its model test), registered analyses, figures looked at. (2) The zeta map on boxes of 128 cells costs about 1.5 core-hours per member: make it fast enough for 256 pairs (for example a table of N on the box's own relation between field and momentum with the second-order correction off it, validated cell by cell against the full map and against g3/zeta_verify/scripts/zv_lib.py on one pilot dump, bar fixed first), then read zeta of the pilot and judge the predictions P5-3 and P5-5 that were left open. (3) Stage G3: collect, and say what the gate lacks; if the baseline entries have not moved by the end of the session, say how many card-hours the gate still needs so that the orchestrator can raise their priority."
+  },
+  {
+   "type": "clerk",
+   "version": "v0.8"
+  }
+ ]
+}
