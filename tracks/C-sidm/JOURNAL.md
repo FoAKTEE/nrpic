@@ -1110,3 +1110,34 @@ alpha_min = 0.3 lapse marker of a run made without the horizon finder.
   [JUDGEMENT] t_c grows with N much more slowly than N (factor 1.81 from 1e4 to 1e5), so the
   collapse is not set by a relaxation time proportional to N/ln N alone.
 Failed predictions of this entry: none (NS.3's scheme branch was the alternative meant to fail).
+
+## 2026-11-26T12:20Z  session C-sidm lead (batch 27)  outcomes B17.5, B17.6 (the bracket at N = 1e6 on M/8) and the D2 seed pair
+
+Runs closed before the analyses: N6b344 C-20261125-224959-d1d4494 (completed, 1.7747 card-hours,
+3 jobs), N6b324 C-20261126-020831-fabf2d7 (completed, 2.6283 card-hours, 4 jobs), D2f2s2+
+C-20261124-035054-c06503f (closed again after its continuation in place: completed to 300 M,
+0.7228 card-hours over 4 jobs). Lapse markers, no horizon finder.
+- B17.5 HOLDS (nseries.py C-20261126-121836-c7a76c1, control N6c; fig_nseries.png read):
+  N6b344 (y0 = 0.344, kicked in, N = 1e6, M/8) collapses at t_c = 252.31 M, inside [200, 400] M.
+  The N = 1e5 member of the same model collapsed at 229.79 M (C-20261122-220118-ab099ac).
+- B17.6 HOLDS (same analysis): N6b324 (y0 = 0.324, kicked in, N = 1e6) does not collapse by 600 M
+  (alpha_min >= 0.6562); the 20 M block means of alpha_c - alpha_c(0) lie in [-0.0119, +0.0150],
+  inside [-0.03, +0.03]; its largest 20 M difference from the control N6c is 0.0179. H-norm2
+  floor 7.88e-4 (the control's 7.90e-4). The N = 1e5 member held 600 M too, with block means in
+  [-0.0248, -0.0024] (C-20261123-221955-a773578).
+- Consequence, as written with B17.5/B17.6: on M/8 at N = 1e6 the collisionless threshold of the
+  King b = 1 family lies in (0.324, 0.344), which contains the turning point y_max = 0.334032; a
+  bracket of +-3 per cent at one mesh and one N (C7/C9 at one mesh). The same two members bracket
+  it at N = 1e5 (0.344 collapses at 229.79 M, 0.324 holds 600 M), so the fates agree at two N.
+  [JUDGEMENT] One seed per member; a kick of one per cent; the bracket is the fate of two models,
+  not a located number inside it.
+- D2.3 seed-pair part (d2_analysis.py C-20261126-121702-b6b1eda; fig_d2.png read, now with the
+  M/16 member dashed and the gauge member dotted): f = 2 collision seed 2 collapses at 165.65 M
+  against 163.41 M for seed 1, a difference of 2.24 M against the bar of 2 M: FAILED (by 0.24 M).
+  The collapse times of the five M/8 runs that differ only in collision seed, cell factor or
+  shift damping (163.41, 165.65, 164.01, 165.97, 164.01 M) have mean 164.61 M and sample standard
+  deviation 1.14 M (arithmetic on the five numbers); the M/16 member (158.42 M) lies 6.2 M below
+  that mean. [JUDGEMENT] The M/8 -> M/16 shift of the collisional collapse time (3.8 per cent of
+  the mean) is resolved against the run-to-run scatter at M/8, if the cell-factor and gauge
+  variants count as realisations (their effects were each below 2 per cent: D2.1, D2.3, B17.4).
+Failed predictions of this entry: D2.3 seed-pair part (2.24 M against 2 M).
