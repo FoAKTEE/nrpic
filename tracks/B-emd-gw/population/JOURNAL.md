@@ -1029,3 +1029,43 @@ a = 143 ((t + 2)/23.916)^2 of the box, so t = 14, 16, 18, 20, 21 are a = 64, 81,
 - Q1 high-k part from B-20261126-022838-27fab1b against the base after a = 50.
 - S2, S3 with `judge_s028gd.py` on B-20261126-022403-82f6e69 at a' = 2a (as-written a' = 4a
   beside).
+
+## 2026-11-26 13:30 PST (lead of batch 28): outcomes GM1, GM4, M2, M3, Q1 (high-k part), S2, S3
+
+Runs (all closed, figures looked at): histories B-20261126-212502-e9e4f4e (`fig_leg_histories.py`
+with the 256^3 Gamma-driver leg, `pop_leg_histories.png`: the new purple curve keeps K_max below
+zero throughout and lies just under the 128^3 gauge leg in both constraint panels; the legend now
+sits below the panels); legs against the base B-20261126-212541-b647c59 (`compare_legs.py
+--halo-base`, halos with equal masses, `pop_legs.png` looked at); the 0.028 shifted box
+B-20261126-212604-a508e94 (`judge_s028gd.py`, `pop_s028gd.png` looked at; cosmetic defects: the
+log-axis tick labels of panels 1-2 overlap and the y label of panel 1 is cut). Card time of
+q0060 from the chain record: five jobs, 5377 to 5399 (sum by `nrpic-run finish`, in the
+manifest). [VERIFIED by these runs]
+- GM1 HOLDS: t = 21.916 (a = 143) at cycle 2806, chain DONE (tlim), no guard file; the largest K
+  of the box after t = 9 is -8.4e-4 at most, no history row positive (128^3 gauge leg: -1.4e-3).
+- GM4 REFUTED in its first part: Hr_mean at a = 141 is 5.41e-3 against GD's 5.98e-3, a ratio of
+  1.11 (predicted at least 1.5, refuted below 1.2); 1.17-1.36 at a = 25-100. Second part holds:
+  Mr_mean 0.180 against 0.203 (0.88; within 20 per cent). With either shift the mean
+  Hamiltonian constraint falls 1.1-1.4 times from 128^3 to 256^3 at one particle per cell
+  (M4 with zero shift: 1.11-1.36), while eight particles per cell at 128^3 lower it 1.6 times
+  and Mr_mean 2.3-4.7 times (Q1). [JUDGEMENT, not tested by a run that could fail] the late
+  constraint level follows particles per cell, not the spacing; a mesh pair at fixed particle
+  number per cell larger than one would test it.
+- M2: counts HOLD (7/11, 10/14, 13/15, 14/22, 14/23 at a = 64, 72, 81, 90, 100 against the
+  base's equal-mass catalogue, all inside 2 sqrt(N) + 2, but every one below the base); the
+  largest mass FAILS at a = 64 and 72 (ratios 1.37, 1.35) and holds at 81-100 (1.078-1.087).
+- M3 first part HOLDS to a = 50 (band ratio 0.993-0.999) and FAILS at a = 100 (1.214 against
+  1.2; 0.987-1.082 at a = 64-90). Second part HOLDS where reachable: Omega_cor above 16 k_f
+  256^3 over 128^3 is 1.9 (a = 49), 4.4, 6.6, 10.4, 13.5, 23.5 (a = 64-100), more than a factor
+  2 after a = 50, growing with the mesh: the zero-shift high-k excess is mesh-dependent, as GD3
+  found it gauge-dependent (950 times smaller with the shift).
+- Q1 high-k part REFUTED as written in full: Omega_cor above 16 k_f, 8 per cell over one per cell
+  0.978-1.007 at a = 56-132 (predicted at least two times smaller); the band strain is equal to
+  2e-3. Constraint part held (18:51 entry). Particle number moves the constraints and halos, not
+  the metric strain at this mesh.
+- S2 HOLDS at the same stage (0.028 at a against 0.014 at a' = 2a, equal masses): counts inside
+  the band at all six catalogues a = 30-64, largest mass ratio 0.98-1.09. As written (a' = 4a)
+  it fails (7 halos against 31 at a = 30); that pairing is the slip recorded in the 18:35 entry.
+- S3 HOLDS at the same stage: raw strain rms ratio 3.84-4.76 at a = 26-70 (bound 3-5.5),
+  corrected 3.91-4.71. As written (a' = 4a): 6.8-9.7, outside.
+- GM2 and GM3 wait for the analysis B-20261126-212212-c54d979 (registered, running; 5 workers).
