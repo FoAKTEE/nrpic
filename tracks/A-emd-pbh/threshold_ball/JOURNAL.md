@@ -674,3 +674,28 @@ ratio for the momentum constraint, ||M_x|| / ||8 pi S_x||; volume norms from the
   mismatch at t = 0 of data, source or gauge that the first update exposes; a linear rise places it in a source term
   of the evolution equations acting from t = 0 (for example a momentum-constraint violation, CF1).
 Neither outcome names the cause alone; the reading goes to core with the deposit-fix retest (decision 0047 item 2(a)).
+
+### Entry 16, outcome C3-F (run A-20261126-234222-dbf8624 completed, 16 cycles, 251 s on one core; reader A-20261126-234642-8a4784b; fig_c3_first_step.png looked at) - 15:48 PST
+
+- CF0 HOLDS: at t = 0.25 the rerun equals S2c-A to the printed digits (line ratio 0.05018, |H| 3.979e-2, |M_x| 1.763e-2,
+  volume H-norm2 5.52260e-2).
+- CF1 REFUTED as written, and the prediction's normalization was wrong: the deposited S_x on the x line is exactly zero
+  at t = 0 (the dust is at rest in the data's coordinates), so ||M_x||/||8 pi S_x|| is undefined at t = 0 (1118 after
+  one step, 6.0 at t = 0.25, 3-4 from t = 0.5 to 5). The momentum residual at t = 0 (volume 3.64e-2, twenty times H) is
+  NOT a data mismatch in the continuum: it falls 60-fold from M/16 to M/32 (S2c-B: 6.11e-4; same history files,
+  A-20261125-161154-62ce3dc). Panel (c): at t = 0 it sits at x ~ 1.5-5 with alternating sign (the taper and level faces
+  [JUDGEMENT on the figure; not localized by a run]).
+- CF2 HOLDS: no jump in the first step. Volume H-norm2 per cycle: 1.79e-3, 6.61e-3, 1.50e-2, 2.28e-2, 2.70e-2 (cycle 4),
+  then DOWN to 1.68e-2 (cycle 8) and up again to 5.55e-2 (cycle 15); M-norm2 falls from 3.64e-2 to 1.05e-2 (cycles 5-6)
+  while H rises, and rises while H falls: the t = 0 momentum residual is converted into H over ~0.06 M and the two
+  exchange with a period of ~0.2 M (constraint propagation).
+Reading [JUDGEMENT, from this run and the two history files]: the early rise of H (t < 0.5) is the propagation of the
+t = 0 momentum residual and converges fast (M(0) 60-fold, H(0.25) 18-fold from M/16 to M/32: 5.52e-2 to 3.00e-3). The
+floor that fails C3 is a different component: on M/32 H grows steadily from 3.0e-3 (t = 0.25) to 2.0e-2 (t = 1) while
+the initial transient has died, and A and B differ by only 1.9 at t = 1. So the cause of the floor is NOT in the initial
+slice; it is a source acting during the evolution (deposit, gauge or their coupling), consistent with K4 (step and
+source timing excluded) and K3 (not localized). The test that separates deposit from gauge next [TO VERIFY]: the same
+member with the particles frozen (or test particles: zero_mass) is not a constraint test; instead a member with the
+1+log lapse and Gamma-driver shift replaced by geodesic slicing and zero shift to t = 1 on M/16 and M/32 (where the
+exact solution is known on the comoving slice), the cheapest run that could exonerate or convict the gauge.
+C3 stays FAILED as written; this narrows the cause but does not name it (decision 0047 item 2(a)).
