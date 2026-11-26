@@ -52,12 +52,12 @@ def rms_win(tg, d, tq):
     return float(np.sqrt(np.mean(d[s] ** 2))) if s.any() else None
 
 
-def main():
+def main(argv=None, stem="conv3"):
     ap = argparse.ArgumentParser()
     ap.add_argument("--out", default=os.environ.get("NRPIC_RUN_DIR", "."))
     ap.add_argument("--part", action="append", required=True)
     ap.add_argument("--mesh", action="append", required=True)
-    a = ap.parse_args()
+    a = ap.parse_args(argv)
     os.makedirs(a.out, exist_ok=True)
     out = dict(note="horizon masses from runs made without <fastflow> diagnostics (decision 0041 item 4)",
                t0=T0, particle={}, mesh={})
@@ -123,13 +123,14 @@ def main():
     out["mesh"] = dict(members=[dict(name=x["name"], run=x["run"], h=x["h"], in_regime=x["inreg"], control=x["ctrl"],
                                      M_t0=at(x["t"], x["m"], T0), t_end=float(x["t"][-1])) for x in M],
                        t_end_common=float(tendm), at=mrows)
-    with open(os.path.join(a.out, "conv3.json"), "w") as f:
+    with open(os.path.join(a.out, stem + ("_numbers" if stem != "conv3" else "") + ".json"), "w") as f:
         json.dump(out, f, indent=1)
     print(json.dumps(out, indent=1))
-    figure(a.out, tg, d_lo, d_hi, P, tgm, M)
+    figure(a.out, tg, d_lo, d_hi, P, tgm, M, stem)
+    return out
 
 
-def figure(outdir, tg, d_lo, d_hi, P, tgm, M):
+def figure(outdir, tg, d_lo, d_hi, P, tgm, M, stem="conv3"):
     import figstyle as fs
     import matplotlib.pyplot as plt
     fs.use_style()
@@ -163,7 +164,7 @@ def figure(outdir, tg, d_lo, d_hi, P, tgm, M):
         x.set_title(ttl, loc="left", fontsize=8)
         x.legend(fontsize=6.0, frameon=False, loc="best")
     fig.suptitle("Horizon masses from runs made without the finder diagnostics; band: 3e-3 (D2)", fontsize=7, y=0.985)
-    fs.save(fig, os.path.join(outdir, "conv3"))
+    fs.save(fig, os.path.join(outdir, stem))
     plt.close(fig)
 
 

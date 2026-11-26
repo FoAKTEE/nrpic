@@ -1,4 +1,4 @@
-"""Schematic: stage timeline of Track D (note v2, state of wave 3 batch 6, 2026-11-21).
+"""Schematic: stage timeline of Track D (note v3, state of wave 3 batch 25, 2026-11-25).
 
 Gates and indicative times: coord/CHARTER.md section 9.2 (line 66); track criteria: brief
 sheet 9.7 (line 779) as made concrete in stage/G0/REPORT.md section 3. State: G0 signed PASS
@@ -7,7 +7,10 @@ on 2026-11-20 (coord/GATES.md line 11); G1 signed PASS with reservations on 2026
 against the flux at one resolution, g2runs/JOURNAL.md entry 10); the relaxed lapse kept out
 of the null test (coord/DECISIONS/0022 item 3, 0025 item 3); long runs with the faces at
 +-768 M and the M/16 pair on the cards (stage/REVIEW-wave3.md section 12). Gate positions
-are evenly spaced; the time labels give the charter's targets. No data are read.
+are evenly spaced; the time labels give the charter's targets. Note v3: the G2 package is
+assembled for its fresh verifier and review (stage/G2/OPEN.md; g2long/JOURNAL.md entries
+5-26): null test at M/8 and M/16 (M/4 outside the regime, decision 0039 item 4), growth
+against the flux at N/4, N, 4N and M/8, M/16. No data are read.
 """
 import os
 import sys
@@ -23,7 +26,7 @@ GATES = [
     ("G1 baseline", "week 8", pf.OLIVE,
      "passed with reservations:\ninfall at one resolution;\n9/4 law not tested"),
     ("G2 capability", "month 4", pf.SLATE,
-     "growth against flux met once\n(M/8, 200 M); null test and\nM/16 pair running"),
+     "package for review: null\ntest M/8, M/16; growth at\nN/4-4N and M/8, M/16"),
     ("G3 science", "month 9", pf.RED,
      "growth law and spike, three-\nway convergence; upper limit\non the coupling exponent"),
     ("G4 paper", "month 12", pf.RED,
@@ -48,17 +51,17 @@ def main():
         pf.callout(ax, x - cw / 2 + 0.1, 6.3, cw, 3.6, title, body, bar=col, size=7.0,
                    title_size=8.0, band=0.8)
         pf.line(ax, (x, y0 + 0.35), (x, 6.3), color=pf.GREY_LINE)
-    pf.text(ax, 0.9, 10.9, "now: G0 and G1 passed (G1 with reservations); first G2 result; "
-            "long runs on the cards", size=7.5, ha="left", italic=True)
-    ax.add_patch(pf.Polygon([(12.0, 5.75), (12.4, 5.75), (12.2, 5.45)], closed=True,
+    pf.text(ax, 0.9, 10.9, "now: G0 and G1 passed (G1 with reservations); G2 package "
+            "assembled, waiting for its verifier and review", size=7.5, ha="left", italic=True)
+    ax.add_patch(pf.Polygon([(16.6, 5.75), (17.0, 5.75), (16.8, 5.45)], closed=True,
                             fc=pf.RED, ec="none", zorder=8))
-    pf.text(ax, 12.2, 6.05, "now", size=7.0, color=pf.RED)
+    pf.text(ax, 16.8, 6.05, "now", size=7.0, color=pf.RED)
     pf.brace(ax, 3.6, 8.8, 3.6, "", below=True)
     pf.text(ax, 6.2, 2.25, "done: infall criterion ruled;\nnote checked by the review",
             size=7.0, color=pf.ROSE)
     pf.brace(ax, 9.6, 14.8, 3.6, "", below=True)
-    pf.text(ax, 12.2, 2.0, "null test off the relaxed lapse,\nfaces far out, to 500 M; M/16\n"
-            "pair; growth to 500 M; sampler", size=7.0, color=pf.ROSE)
+    pf.text(ax, 12.2, 2.0, "done: null test to 500 M off\nthe relaxed lapse; growth in\n"
+            "particles and mesh; M/4 out", size=7.0, color=pf.ROSE)
     pf.brace(ax, 15.6, 20.8, 3.6, "", below=True)
     pf.text(ax, 18.2, 2.0, "convergence at finer cells;\nwarm dust and spin; puncture\n"
             "in a periodic box; card time", size=7.0, color=pf.ROSE)

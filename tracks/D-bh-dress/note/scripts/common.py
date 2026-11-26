@@ -82,6 +82,28 @@ RUNS = {
     "kerr2_ana": "D-20261121-215955-0fb4ea2",  # its stationarity analysis (analyze_kerr.py)
     "kerr_seeds": "D-20261121-220011-d0deb0b", # pre-registered comparison of the two seeds
     "kerr_plunger": "D-20261121-220137-5123361",  # the one seed-2 particle that crossed r_+
+    # note v3 (batch 25): the G2 card runs (release core-v0.6 card executable, plain 1+log, faces +-768 M;
+    # every one made without <fastflow> diagnostics, decision 0041 item 4) and their registered readings
+    "v1l": "D-20261121-203124-a34cf1f",      # V-1L vacuum control, M/8, 500 M
+    "v1l16": "D-20261121-203151-37e7b2d",    # V-1L16 vacuum control, M/16, 300 M
+    "v1l4": "D-20261123-022715-ab5d983",     # V-1L4 vacuum control, M/4, 300 M
+    "esfl": "D-20261121-203150-15f2bad",     # ES-FL dust to the hole, M/8, 500 M (N)
+    "ff4": "D-20261123-022727-1c17e73",      # FF4 ES-FL4, M/4 (outside the convergent regime)
+    "fl16": "D-20261124-172745-72472ed",     # FL16 ES-FL16, M/16, 300 M
+    "fk": "D-20261123-022725-a553496",       # FK ES-FLK, N, excision kept on, 400 M
+    "fn4": "D-20261124-134157-b17938b",      # FN4 ES-FLK4N, 4N
+    "fnq": "D-20261124-172725-2f426b6",      # FNQ ES-FLKQ, N/4
+    "judge_long": "D-20261123-020550-f9a3482",  # criterion N at M/8 (judge_long.py)
+    "judge_conv": "D-20261125-122227-3eb563a",  # null test at M/4, M/8, M/16 (judge_conv.py)
+    "fp_ana": "D-20261124-172508-c847ee4",   # converged-finder re-search of the null pair (fp_analyse.py)
+    "crit_esfl": "D-20261123-020614-7ba5874",  # criterion G of ES-FL
+    "crit_fk": "D-20261125-115647-fd2f3f7",  # criterion G of FK
+    "crit_fn4": "D-20261125-122827-c5735f8", # criterion G of FN4
+    "crit_fnq": "D-20261126-054616-a13a888", # criterion G of FNQ
+    "crit_ff4": "D-20261125-121123-143a007", # criterion G of FF4 with its own-mesh control
+    "np_full": "D-20261126-054636-93618ee",  # particle sequence read whole (np_partial.py)
+    "xq": "D-20261126-054718-afa783e",       # plane constraint norms, N/4, N, 4N (xc_plane.py)
+    "region": "D-20261126-054736-10c837a",   # region shell norms, FN4 and FNQ (region_norms.py)
 }
 
 CHECKED = []   # (run_id, relative path, "sha256 ok" | "no sha256sums.txt (wave-1 run)")

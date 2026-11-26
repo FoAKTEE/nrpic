@@ -1,6 +1,6 @@
-"""Schematic: architecture of Track D's calculation (note v2, after gate G1; G1 item C9).
+"""Schematic: architecture of Track D's calculation (note v3, G2 package; G2 item C15).
 
-Three states. Exists = in this repository's AthenaK release core-v0.3 on main, or in the
+Three states. Exists = in this repository's AthenaK releases core-v0.3 to core-v0.7 on main, or in the
 track's own reference and analysis code; provided by core = on a tested branch of core with
 a published executable and a READY file (scratch/core/exe/<branch>/READY); new for Track D
 = still to be built or run by the track (inside AthenaK by core, decision 0010, or outside
@@ -16,7 +16,12 @@ and PLAN-wave3.md (round 1). Note v2 (batch 6): dust reaching the black hole and
 against the flux exist (ES-F, g2runs/JOURNAL.md entry 10); the relaxed lapse is kept out of
 the null test (coord/DECISIONS/0022 item 3, 0025 item 3); the drift control with the faces
 at +-384 M ran (stage/REVIEW-wave3.md section 3); the long runs are queued (section 12).
-No data are read. A label that is wider than
+Note v3 (batch 25, 2026-11-25): on release core-v0.7 the tracer rule, removal record, flux
+spheres, analytic-metric excision, point mass, relaxed lapse, threaded build, region
+constraint norms and finder diagnostics are released (CLAUDE.md rows core-v0.4, -v0.5,
+-v0.7); the excision guard past 4 x initial_radius is on core's tested branch
+core/restart-finder only (tracks/core/NEXT_SOURCE.md). Long runs, particle and mesh
+sequences ran (g2long/JOURNAL.md entries 5-25). No data are read. A label that is wider than
 its block is reported on stdout ("label wider than its block").
 """
 import os
@@ -76,7 +81,7 @@ def main():
         ("vacuum bubble in expanding dust (tables)", EXISTS),
         ("punctures with momentum and spin", EXISTS),
         ("lattice dust; vacuum control table", EXISTS),
-        ("tracers of zero mass on timelike orbits", CORE),
+        ("tracers of zero mass on timelike orbits", EXISTS),
         ("dust reaching the black hole", EXISTS),
         ("warm dust: velocity dispersion", NEW),
         ("puncture in a periodic dust box", NEW),
@@ -85,12 +90,12 @@ def main():
         ("Z4c with particles; 1+log, Gamma driver", EXISTS),
         ("moving puncture, horizon finder, removal", EXISTS),
         ("Newtonian mode; geodesics on analytic Kerr", EXISTS),
-        ("record of removed particles", CORE),
-        ("flux through spheres around the black hole", CORE),
-        ("excision on an analytic metric", CORE),
-        ("fixed point mass in the Newtonian mode", CORE),
-        ("lapse that relaxes in expanding dust", CORE),
-        ("threaded processor build", CORE),
+        ("record of removed particles", EXISTS),
+        ("flux through spheres around the black hole", EXISTS),
+        ("constraint norms in spheres; finder status", EXISTS),
+        ("fixed point mass in the Newtonian mode", EXISTS),
+        ("lapse that relaxes in expanding dust", EXISTS),
+        ("excision past four initial horizon radii", CORE),
     ])
     y3 = column(ax, 20.4, "Analysis", "references and reading of the output", [
         ("exact bubble: wall, infall, constant mass", EXISTS),
@@ -100,6 +105,7 @@ def main():
         ("tracer areal radius and proper time", EXISTS),
         ("growth against the integrated flux", EXISTS),
         ("controls of the late horizon drift", EXISTS),
+        ("convergence in particles and mesh", EXISTS),
         ("coupling exponent and its upper limit", NEW),
     ])
     ybot = min(y1, y2, y3)
@@ -113,10 +119,10 @@ def main():
             italic=True, ha="left")
     chain = [("bubble data", "done", pf.GREEN_DARK, pf.WHITE, 3.6),
              ("bubble run, vacuum control", "done", pf.GREEN_DARK, pf.WHITE, 5.6),
-             ("relaxed lapse", "ran; kept out of null test", pf.OLIVE, pf.WHITE, 3.9),
-             ("late-drift controls", "faces done; long runs queued", pf.OLIVE, pf.WHITE, 4.4),
-             ("dust to the black hole", "done once, M/8", pf.GREEN_DARK, pf.WHITE, 4.6),
-             ("growth law, null test", "goal", pf.PLUM, pf.WHITE, 4.5)]
+             ("relaxed lapse", "kept out of G2", pf.OLIVE, pf.WHITE, 3.9),
+             ("long runs, controls", "done, to 500 M", pf.GREEN_DARK, pf.WHITE, 4.4),
+             ("dust to the black hole", "N/4 to 4N; M/8, M/16", pf.GREEN_DARK, pf.WHITE, 4.6),
+             ("growth law, null test", "G3", pf.PLUM, pf.WHITE, 4.5)]
     gap = (29.6 - 0.4 - sum(c[4] for c in chain)) / (len(chain) - 1)
     x = 0.4
     for i, (lab, state, fill, tc, w) in enumerate(chain):

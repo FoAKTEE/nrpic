@@ -947,3 +947,30 @@ C2b (mesh, two members in the regime) |Delta M_16 - Delta M_8| <= 3e-3 (D2's tol
     300 M [JUDGEMENT]; refuted above 3e-3 at any of them. No order is claimed from two members.
 C2c (horizon searches, decision 0041 item 4) in FNQ (whole) and FL16 no failed search after 20 M by the
     signature (NaN or bit-identical repeat); refuted by any such line after 20 M.
+
+## Entry 26 (2026-11-25 21:49 PST, lead of batch 25): outcomes of FNQ (Q1-Q3, XQ, R3 to 400 M)
+
+FNQ ES-FLKQ D-20261124-172725-2f426b6 closed by `nrpic-run finish` (completed, exit 0; 168 files, 51.1 GB
+checksummed; 1.90 card-hours by sacct over 4 jobs, one continuation in place). Predictions: entries 10, 15.
+Horizon masses below are from a run made without `<fastflow> diagnostics` (decision 0041 item 4).
+- Q1 HOLDS (esf_criteria D-20261126-054616-a13a888, esf_criteria.png looked at): 50 counted (iii) bins to
+  tau_rem 500 M, largest |median| 0.290 per cent (bound 2; FK 0.249, FN4 0.239); D2 at all 760 samples after
+  20 M; all 29984 dust removals by reason 3; D1 closure with the control subtracted 2.7e-4 at 399.5 M.
+  Not predicted: D3 fails at N/4 (8352 of 29984 removals below -3e-4, min margin -8.6e-4, all after
+  ~220 M, panel c), where FK and FN4 hold it; D4 41 per cent before the exact crossing (min -0.669 M).
+- Q2 HOLDS (np_partial D-20261126-054636-93618ee, FK, FN4, FNQ all read whole; np_partial.png looked at):
+  FNQ's removed m E_K relative to FK at 100, 200, 300, 399.5 M: -0.86, +0.49, +0.47, +0.28 per cent
+  (bound 3). The tool's labels still say "partial" (its json label and panel title); every run was read
+  whole (chain_done true, t_cut 399.5 M for all three): a label defect of the reader, not of the numbers.
+- Q3 HOLDS: 1.90 card-hours (1.6-2.3).
+- N3's ordering (C2a) HOLDS at all four times: |M_4N - M_N| = 3.7e-4, 3.6e-4, 9.4e-6, 4.9e-4 against
+  |M_N - M_N/4| = 1.43e-3, 3.9e-4, 3.9e-4, 5.9e-4 at 100, 200, 300, 399.5 M (narrowly at 200 M). The
+  FNQ - FK curve carries noise of +-3.7e-3 peak (left panel), about 3.5 times FN4's, so the single-time
+  ordering is a weak statement; conv3 adds window rms values.
+- XQ HOLDS (xc_plane D-20261126-054718-afa783e, xc_plane.png looked at): N/4 over N of ||H|| on the
+  z = 0 plane = 1.89 (A1) and 1.65 (A2) at 100 M, 1.85 and 1.77 at 200 M, all in [1.4, 2.9] around
+  N^1/2 = 2 (||M|| 1.70-2.31). On A3 (30-100 M) 0.98 and 1.14 (deterministic residual early, as XN),
+  rising to 2.1 at 400 M. The three particle numbers order cleanly on A1 and A2 at every slice.
+- R3 to the end (region_norms D-20261126-054736-10c837a, both runs whole; region_norms.png looked at):
+  FNQ/FN4 on [1.2 r_AH, 6 M] and [6, 30] M stays in 3.2-5.2 from 20 to 400 M (3.41-4.39 at the named
+  times 50-300 M, unchanged from entry 24); [30, 60] M rises from 1.1 to ~4 by 400 M; outside 60 M 1.000.
