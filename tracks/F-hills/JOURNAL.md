@@ -1146,3 +1146,36 @@ checksum caches of A, C, P1, R16n, R8, R12 are being built in the background by 
 before the gate review will be short. G0 is signed (coord/GATES.md); nothing to add to stage/G0.
 Card-hours used in this session: 0. Nothing submitted (cards held; q0049 unjudged). Inbox: 13
 messages acknowledged. Pushed: track/F-hills.
+
+## 2026-11-26T05:45Z lead, batch 25 (A2 ended at its cap; continuation; G1 verifier's requests)
+
+State found (21:40 PST): queue entry q0001 (A2, F-20261124-210400-902c650) is done: chain STATUS
+FAILED "MAX_SEGMENTS=19 reached after attempt 21 (2 not counted)", last segment job 5349 stopped at
+its wall clock at t = 133.000 M (cycle 68096); newest restart hills.00105.rst. sacct over the 21
+jobs 5207-5349: 11.15 card-hours (Elapsed). The batch-21 prediction on the cap (125-140 M, 10-14
+card-hours) holds on both counts: 133.0 M, 11.15 card-hours. B2 (q0002) is submitted (job 5357
+pending); C2 (q0003) waits after it. Nothing of A2's analysis has been computed yet.
+
+### Prediction R25 before the processor test of a restart with an extra input file (0043 item 5)
+
+Test (script stage/review_wave3/b25_diag_restart.py; executable: the chain's wrapper
+binary_conv/scripts/athena_resume_bc.sh with NRPIC_REAL_ATHENA = .work/build_cpu_v05/src/athena,
+the processor build of the source of A2's card build core-v0.5; deck problems/tests/
+by_horizon_coarse.athinput, nrpic_cf puncture with AMR, tracker and finder every cycle, restart
+every cycle): a first run to cycle 2; then, each in its own directory holding a copy of that
+restart in rst/ (as A2's directory does, so the wrapper passes its arguments through), with the
+chain's argument order `-r rst/<file> -d <dir> -t 00:50:00 <extra> time/nlim=5`:
+b `-i add.athinput` (holding `<fastflow>` and `diagnostics = true`), c control; then b2 from b's
+last restart with the same `-i` again to nlim = 6.
+- (R25-1) b exits 0 and writes hc.horizon_status_0.txt with one record per cycle searched (3 or 4
+  records); c exits 0 and writes no status file. Refuted: b refused or no record, or c with one.
+- (R25-2) Every other file b and c write (history, horizon summary and shape, verbose finder
+  file, tracker file) is byte-identical between b and c. Refuted: any byte difference outside the
+  status file and the restart files (whose parameter header differs by the added line).
+- (R25-3) b's restart files carry `diagnostics` in their `<fastflow>` block, and b2 (restart from
+  one of them with the same `-i` again, as every later chain segment will do) exits 0 and appends
+  status records. Refuted: b2 refused (for instance as a duplicate parameter).
+If R25-1 to R25-3 hold, A2's continuation carries `-i <file>` in its EXTRA_ARGS; if any fails, the
+continuation goes without it and this entry says so. The test is on processors; the card build is
+a byte copy of the same release's card build [JUDGEMENT: parameter reading is host code, the same
+in both builds].
