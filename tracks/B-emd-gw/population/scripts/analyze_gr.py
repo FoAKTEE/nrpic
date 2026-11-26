@@ -57,6 +57,29 @@ L = 8.0
 N_NEWTON = 64                  # fidL8: the L = 4, 64^3 run scaled by 2
 BANDS = (4, 8, 16, 64)
 DESIGN_QS = 1.18e-8*2**6       # Omega_qs/a of the seed-1 field at L = 8, sigma1 = 0.0562
+# --equal-mass (batch 23, risk R25): the GR particle files carry the rest-mass weight of the
+# initial data, m W psi^6 (1 + dN - 2 psiN)/(1 + dN) (make_ic.py line 133), not the Newtonian
+# mass; with this switch every Newtonian estimator here (halo masses, S^TT of the particles)
+# uses the mean mass for every particle (VC2, run B-20261125-170535-84c9ba5).
+EQUAL_MASS = False
+TIMES = None                   # --times: only dumps and snapshots within 0.01 of these t
+HALO_TIMES = None              # --halo-times: friends-of-friends only at these t (default TIMES)
+HALOS_ONLY = False
+
+
+def masses(m):
+    return np.full_like(m, m.mean()) if EQUAL_MASS else m
+
+
+def dump_time(path):
+    """Time from the text preheader of a binary dump (the file index is not t/dt after restarts)."""
+    with open(path, "rb") as f:
+        head = f.read(400).decode("latin-1")
+    return float(head.split("time=")[1].split()[0])
+
+
+def selected(t, times):
+    return times is None or any(abs(t - x) < 0.01 for x in times)
 
 
 def scale(t):
@@ -64,8 +87,10 @@ def scale(t):
 
 
 def read_hst(fn):
-    """Rows of a history file, the last row of each time kept (restarts repeat rows)."""
-    rows = np.loadtxt(fn)
+    """Rows of a history file, the last row of each time kept (restarts repeat rows). fn may
+    be a list (a run and its continuation): rows concatenated in order, so the later wins."""
+    rows = np.concatenate([np.loadtxt(f, ndmin=2) for f in fn]) if isinstance(fn, list) \
+        else np.loadtxt(fn)
     out = []
     for r in rows:
         while out and out[-1][0] >= r[0]:
@@ -124,6 +149,7 @@ def tt_fourier_of_real(Treal, grid):
 def hqs_particles(fn, grid, md):
     """Weak-field quasi-static TT strain S^TT/k^2 of a GR particle snapshot (rfftn)."""
     t, cyc, x, u, m, tag = read_snapshot(fn)
+    m = masses(m)
     a = float(scale(t))
     n = grid.n[0]
     W = np.sqrt(1.0 + (u*u).sum(1)/a**2)
@@ -192,6 +218,7 @@ def _dump_job(args):
 def halo_job(args):
     fn, = args
     t, cyc, x, u, m, tag = read_snapshot(fn)
+    m = masses(m)
     a = float(scale(t))
     n = round(len(x)**(1/3))
     W = np.sqrt(1.0 + (u*u).sum(1)/a**2)
@@ -203,7 +230,8 @@ def halo_job(args):
             "n_halos_common": len(big), "masses": [h["M"] for h in hal],
             "x": [h["x"] for h in hal], "N": [h["N"] for h in hal],
             "r_half": [h["r_half"] for h in hal], "sigma_v": [h["sigma_v"] for h in hal],
-            "GM_over_r": [h["GM_over_r_phys"] for h in hal], "m_particle": float(m.mean())}
+            "GM_over_r": [h["GM_over_r_phys"] for h in hal], "m_particle": float(m.mean()),
+            "equal_mass": EQUAL_MASS}
 
 
 def periodic_dist(x, y):
@@ -213,9 +241,11 @@ def periodic_dist(x, y):
 
 # ---------------------------------------------------------------------------------------
 def analyse_run(name, d, sigma1, newton, workers, gauge_every):
-    res = {"name": name, "dir": d, "sigma1": sigma1, "stage_factor": sigma1/SIG_FID}
-    c = read_hst(os.path.join(d, "pop.cstat.hst"))
-    h = read_hst(os.path.join(d, "pop.nrpic.hst"))
+    res = {"name": name, "dir": d, "sigma1": sigma1, "stage_factor": sigma1/SIG_FID,
+           "equal_mass": EQUAL_MASS, "times": TIMES, "halo_times": HALO_TIMES}
+    ds = d.split("+")
+    c = read_hst([os.path.join(x, "pop.cstat.hst") for x in ds])
+    h = read_hst([os.path.join(x, "pop.nrpic.hst") for x in ds])
     res["cstat"] = {"t": c[:, 0].tolist(), "chi_min": c[:, 1].tolist(), "chi_max": c[:, 2].tolist(),
                     "K_min": c[:, 3].tolist(), "K_max": c[:, 4].tolist(),
                     "E_max": c[:, 6].tolist(), "H_mean": c[:, 9].tolist(),
@@ -224,24 +254,38 @@ def analyse_run(name, d, sigma1, newton, workers, gauge_every):
     res["nrpic"] = {"t": h[:, 0].tolist(), "alpha_min": h[:, 15].tolist(),
                     "alpha_max": h[:, 29].tolist(), "n_excised": h[:, 16].tolist(),
                     "push_maxit": h[:, 20].tolist(), "mean_K": h[:, 28].tolist()}
-    guard = os.path.join(d, "pop.guard.txt")
+    guard = os.path.join(ds[-1], "pop.guard.txt")
     res["guard"] = open(guard).read() if os.path.exists(guard) else None
-    snaps = sorted(glob.glob(os.path.join(d, "pop.part.*.bin")))
-    dumps = sorted(glob.glob(os.path.join(d, "bin", "pop.z4cd.*.bin")))
-    snap_t = []
-    for fn in snaps:
+    def by_time(files, tget):
+        out = {}
+        for fn in files:                          # later directories replace earlier ones
+            out[round(tget(fn), 6)] = fn
+        return [out[k] for k in sorted(out)]
+    def snap_time(fn):
         with open(fn, "rb") as f:
             f.read(8)
-            snap_t.append(float(np.frombuffer(f.read(8), "<f8")[0]))
-    snap_t = np.array(snap_t)
+            return float(np.frombuffer(f.read(8), "<f8")[0])
+    snaps = by_time([p for x in ds for p in sorted(glob.glob(os.path.join(x, "pop.part.*.bin")))],
+                    snap_time)
+    dumps = by_time([p for x in ds for p in sorted(glob.glob(os.path.join(x, "bin", "pop.z4cd.*.bin")))],
+                    dump_time)
+    snaps = [p for p in snaps if selected(snap_time(p), TIMES)]
+    dumps = [p for p in dumps if selected(dump_time(p), TIMES)]
+    snap_t = np.array([snap_time(p) for p in snaps])
+    res["snaps"], res["dump_files"] = snaps, dumps
     # halos
+    hsnaps = [p for p, t in zip(snaps, snap_t) if selected(t, HALO_TIMES)]
     with Pool(workers) as pool:
-        cats = pool.map(halo_job, [(fn,) for fn in snaps], chunksize=1)
+        cats = pool.map(halo_job, [(fn,) for fn in hsnaps], chunksize=1)
     res["halos"] = cats
+    if HALOS_ONLY:
+        res["dumps"] = []
+        res["dump_errors"] = []
+        dumps = []
     # dumps: raw everywhere; gauge-corrected and particle comparison at snapshot times
     tasks = []
     for i, p in enumerate(dumps):
-        ti = 0.25*int(os.path.basename(p).split(".")[-2])
+        ti = dump_time(p)
         j = int(np.argmin(np.abs(snap_t - ti))) if len(snap_t) else -1
         at_snap = j >= 0 and abs(snap_t[j] - ti) < 0.05
         do_g = at_snap and (int(round(ti)) % gauge_every == 0) and ti > 0
@@ -518,7 +562,22 @@ def main():
     ap.add_argument("--out", default=os.environ.get("NRPIC_RUN_DIR", "."))
     ap.add_argument("--from-json", default=None,
                     help="analysis_gr.json of an earlier run: figures and summary only")
+    ap.add_argument("--equal-mass", action="store_true",
+                    help="mean mass for every particle in the Newtonian estimators (R25)")
+    ap.add_argument("--times", default=None, help="comma list of t: only these dumps/snapshots")
+    ap.add_argument("--halo-times", default=None, help="comma list of t for friends-of-friends")
+    ap.add_argument("--halos-only", action="store_true", help="no dumps")
+    ap.add_argument("--no-stop", action="store_true", help="no stop diagnosis of a guard stop")
+    ap.add_argument("--no-figures", action="store_true")
     args = ap.parse_args()
+    global EQUAL_MASS, TIMES, HALO_TIMES, HALOS_ONLY
+    EQUAL_MASS = args.equal_mass
+    TIMES = [float(v) for v in args.times.split(",")] if args.times else None
+    if args.halo_times == "none":
+        HALO_TIMES = []
+    else:
+        HALO_TIMES = [float(v) for v in args.halo_times.split(",")] if args.halo_times else TIMES
+    HALOS_ONLY = args.halos_only
     os.makedirs(args.out, exist_ok=True)
     newton = json.load(open(args.newton))[0] if args.newton else None
     R, Z = [], None
@@ -529,7 +588,7 @@ def main():
     for spec in args.run:
         name, d, s = spec.split(":")
         r = analyse_run(name, d, float(s), newton, args.workers, args.gauge_every)
-        if r["guard"]:
+        if r["guard"] and not args.no_stop:
             Z = stop_diagnosis(r, d)
             r["stop"] = Z
         R.append(r)
@@ -539,8 +598,9 @@ def main():
     if not args.from_json:
         with open(os.path.join(args.out, "analysis_gr.json"), "w") as f:
             json.dump(R, f)
-    figures(R, newton, args.out)
-    figure_stop(Z, args.out)
+    if not args.no_figures:
+        figures(R, newton, args.out)
+        figure_stop(Z, args.out)
     # summary lines
     for r in R:
         D = [x for x in r["dumps"] if "Omega_cor" in x]

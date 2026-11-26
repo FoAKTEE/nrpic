@@ -867,3 +867,42 @@ boxes holds for the switch-off measure and not for the remainder; a run in which
 is the fidL8 box re-analysed at the 128^3 cadence, or the 128^3 box at fidL8's. N4 is FAILED as
 written in both parts; the GR question it was meant to serve (the GR metric against the
 Newtonian particles) is answered by the metric ratio above (within 11 per cent to a = 36).
+
+## 2026-11-25 18:35 PST (lead of batch 23): the three ended entries; what is judged and how
+
+q0007 (mesh leg B-20261125-093500-242d3a3, seven chain segments, Slurm 5278-5326), q0042 (P8C,
+B-20261125-221742-5100a22, job 5333) and q0044 (S28GD, B-20261126-011415-449c8ce, job 5342) have
+ended. `nrpic-run finish` started on all three before any analysis (q0042, q0044 closed
+completed; q0007 closed as failed, its hashing of 272 GB runs in the background).
+
+Disclosure before the analyses (seen while locating outputs; nothing else read): the mesh leg
+ended with a guard stop (`pop.guard.txt`: non-finite fields at t = 18.2109, cycle 2332, a = 102;
+chain FAILED, athena exit 3); its history shows K_max of the box above zero from t = 17 (0.0015)
+rising to 0.022 at t = 18.12, Hr_mean 0.0151 against the base's 0.0186 and Mr_mean 0.154 against
+0.168 at t = 18 (one-line history print, not a registered analysis). Both batch continuations
+end "Terminating on time limit" at t = 21.916 with exit 0 (P8C 13 min 25 s, S28GD 7 min 39 s).
+
+Method change, decided before the runs (risk R25, VC2 of batch 21): `analyze_gr.py` gets
+`--equal-mass` (every particle the mean mass in the halo finder's masses and in S^TT of the
+particles), the dump time read from the file header (the 256^3 chain wrote dumps every 0.5 with
+extra ones at segment ends, so index x 0.25 is wrong there), `--times`/`--halo-times` to restrict
+the 256^3 analysis to the snapshot times, and DIR1+DIR2 for a run and its continuation (later
+directory wins at equal t). Every halo number of this session is with equal masses, the base and
+the gauge leg recounted the same way (halos only), so the comparisons do not mix weights.
+
+How each prediction is judged (written before the analyses run):
+- M1 as written: refuted by the stop (judged from the guard file and history; compared with the
+  0.028 stop: K_max > 0, the zero shift, X2).
+- M2 at the snapshots a = 64, 72, 81, 90, 100 (the run ends at a = 102; a = 121, 132 do not
+  exist); M3 first part to a = 50 as written, second part at a = 81-100 instead of 132 (the
+  written refutation at a = 132 cannot be reached); M4 at a = 141 cannot be judged: reported at
+  equal a to 100 and marked not judgeable as written.
+- P8C1 (exit 0 at t = 21.916, below 0.4 card-h, no guard), P8C2 (history rows t = 16.0-17.48 of
+  the continuation against the cut run, relative 1e-6 holds, 1e-3 refutes).
+- Q1 at a = 141 over both directories (Mr_mean from the history row t = 21.727; the high-k
+  excess of the corrected strain above 16 k_f at every common gauge-corrected dump after a = 50).
+- S1 as written. S2 and S3 say "at the same stage" and then write a' = 4a; the stage is sigma1 a
+  (P4, analyze_gr.py), so the same stage of 0.028 at a is 0.014 at a' = 2a, as N3 and the
+  zero-shift companion paragraph used. The parenthesis is an error of the batch-17 prediction.
+  Judged at the same stage (a' = 2a, 0.028 at a = 32-72 against the 0.014 gauge leg at
+  a' = 64-143), the bounds as written; the as-written pairing a' = 4a reported beside it.
