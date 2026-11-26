@@ -12,14 +12,14 @@ headline:    release core-v0.8 made final: card check q0049 PASS (K1, K2, K4, K5
              MPI smoke test M1, M2 held). Waits for the clerk (merge, tag on 01d4aeeb,
              release builds, CLAUDE.md row: outbox 20261126T115635Z).
              core-v0.7 card checks: K7 CARD PASS (three analyses); step-limit card run P4a,
-             P4c held, P4b held in its test; level-2 review R5: see last-result.
+             P4c held, P4b held in its test; level-2 review R5 held (66 of 66 files identical,
+             level 2 as fast as level 0 on the mesh, ratio 1.0014).
              Row 4: bracket (0.7175, 0.726875) unchanged; 0.755 control does not collapse
              by 600 M but drifts (P13 holds for the control).
 last-result: card check core-20261126-114747-a6f2385 (of card run -070946-7971fde; first
              pass -114526-2b1f001 failed on the reader); MPI smoke -115451-893a30e;
              K7: -115658-8af7dd7, -115708-140bafa, -115725-9a8d381; step limit
-             -121103-1070457; row 4 -121143-aaae1b7; R5 -115933-9fb0e47 (see JOURNAL.md,
-             last entry, for its outcome).
+             -121103-1070457; row 4 -121143-aaae1b7; R5 -115933-9fb0e47.
 pending:     q0059 (job 5378, pending in Slurm): row 4, 0.755 member continued 300-600 M
              (member half of P13). No other entry of core in the queue.
 next:        1. clerk: merge core/nrpic, tag core-v0.8 on 01d4aeeb, builds, CLAUDE.md rows
