@@ -906,3 +906,34 @@ How each prediction is judged (written before the analyses run):
   zero-shift companion paragraph used. The parenthesis is an error of the batch-17 prediction.
   Judged at the same stage (a' = 2a, 0.028 at a = 32-72 against the 0.014 gauge leg at
   a' = 64-143), the bounds as written; the as-written pairing a' = 4a reported beside it.
+
+## 2026-11-25 18:50 PST (lead of batch 23): the gauge at a second mesh; decision and predictions
+
+Decision: a run is needed. The track reads the population's GW measure in the Gamma-driver gauge
+since GD3 (04:10 entry); the only second mesh, the zero-shift 256^3 leg, stopped at a = 102 with
+K_max of the box above zero before the stop (history, 18:35 entry), as the zero-shift 0.028 box
+did at 128^3 (Z, X2). So neither the mesh convergence of the measure the track uses nor any mesh
+convergence past a = 100 exists, and C2 (three-way convergence) and C11 (its figures) need the
+Gamma-driver box at 256^3. One queue entry, priority 2: `pop_s014_gr256_gd`, the q0007 command
+with the gauge-leg shift flags (shift_Gamma 0.75, shift_eta 1, shift and lapse advection 1), the
+256^3 initial data B-20261124-135030-b54972f, dumps every 1.0 (at the snapshot times, where the
+gauge-corrected strain is measured; halves the 120 GB of dumps of q0007), restart every 1.0
+(about 10 min of card time), the release core-v0.7 card executable and chain (writes a restart
+file on SIGTERM; a run without the signal writes the bytes of v0.6, CHANGELOG core-v0.7 item 1),
+ceiling 6 card-h, no dt_gauge (the gauge leg had none; cfl 0.25 is below the printed bounds).
+
+Predictions [JUDGEMENT], written before it is queued (GM = 256^3 Gamma driver, GD = the 128^3
+gauge leg B-20261124-210431-6bf48af, analyses with --equal-mass):
+- GM1. Reaches t = 21.916 (a = 143) without a guard stop; K_max of the box stays below zero after
+  t = 9 as in GD. Refuted by a stop or by K_max > 0 after t = 9.
+- GM2. Corrected TT strain over |k| <= 8 k_f within 5 per cent of GD's to a = 64 and within 20
+  per cent to a = 132. Omega_cor (all shells) at a = 121 is 1.0 to 2.0 times GD's (finer halo
+  cores add k^2-weighted power). Refuted if the band ratio leaves 0.8-1.2 before a = 100, or the
+  Omega ratio leaves 0.8-3.
+- GM3. Halo counts above the common mass limit within 2 sqrt(N) + 2 of GD's at a = 64-132, the
+  largest mass within 10 per cent (FoF in the same gauge at both meshes).
+- GM4. Hr_mean at a = 141 at least 1.5 times smaller than GD's 5.98e-3 (truncation error of the
+  shifted gauge); Mr_mean within 20 per cent of GD's 0.203 (particle noise, Q1). Refuted if the
+  Hr ratio is below 1.2.
+- Card time 3.5-5 card-h (q0007: 2332 cycles in 3.2 card-h including the cut attempts; this run
+  about 2840 cycles).
