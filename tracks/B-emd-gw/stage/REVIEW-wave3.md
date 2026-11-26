@@ -492,7 +492,7 @@ Wrong or defective, and what the track does:
   the current analyze_gr.py draws from the same JSON (changes since batch 11; the halo panel of
   batch 11 used weighted masses, R25). The G2 package now cites the batch-28 drawings.
 - Cosmetic: pop_s028gd.png tick labels overlap; pop_gr_constraints.png y labels cut.
-- The note's timeline schematic still says the legs are queued (C17, next writing session).
+- The note's G2 schematics named the legs as queued: refreshed (B-20261126-215051-2a5e90d).
 
 Not confirmed (running at the end of the session): GM2, GM3 (analysis B-20261126-212212-c54d979,
 registered, 5 workers).

@@ -40,8 +40,7 @@ C17, C18); `stage/REVIEW-wave3.md` section "Batch 28"; `population/JOURNAL.md` e
   pop_legs.png.
 - C17: one paragraph on GM2/GM3 in note section VI (`\subsection{What the legs decided...}`), a
   ledger row from the GM comparison (add its run key to note/scripts/common.py RUNS and a row in
-  ledger.py values_g2/LEDGER_G2), refresh the top line of schem_timeline_g2.py (still says the
-  legs are queued), registered run_all.py, copy outputs, compile, checker
+  ledger.py values_g2/LEDGER_G2), registered run_all.py, copy outputs, compile, checker
   (`python3 ~/.claude/skills/paper-writing/scripts/check_manuscript.py --main main.tex --compile`).
 - C1, C3: FAIL as written; apply the orchestrator's ruling (outbox 20261126T213945Z).
 - C18: fresh verifier (requested); then `nrpic-stage verify B-emd-gw G2 --full` once, and report.

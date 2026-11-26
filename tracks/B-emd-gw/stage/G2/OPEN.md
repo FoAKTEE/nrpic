@@ -19,7 +19,7 @@ Lacking, item by item of CHECKLIST.md:
 | C5 verification report | OPEN | C2, C17 |
 | C11 convergence figures | OPEN: particle number and gauge exist; mesh in the shifted gauge missing | the GM comparison above (its pop_legs.png) |
 | C15 one script per figure | OPEN | splitting analyze_b.py, analyze_f.py, analyze.py, analyze_gr.py into one script per figure over cached intermediates (no card) |
-| C17 working note | OPEN | section VI with GM1-GM4, M2, M3, Q1, S2, S3 and ledger rows; abstract and summary for G2; check_manuscript.py --compile with /paper-writing |
+| C17 working note | OPEN | done in batch 28: section VI with GM1, GM4, M2, M3, Q1, S2, S3, ledger rows, abstract and summary, schematics, checker; left: the GM2/GM3 paragraph and its ledger row |
 | C18 verifier | OPEN | a fresh-context verifier after C17 (requested) |
 
 Failures on record that need no further run: X3 (setup error), the time part of GD1 and of N1p,
