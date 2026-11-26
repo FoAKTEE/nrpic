@@ -328,3 +328,17 @@ particle-number differences at four times, and the mesh differences. Not yet che
 Not checked at all (stated in VERIFIER.md): the converged-finder row (6.53e-5, needs the FP
 probe outputs), the plane norms XQ (needs the con slices), V2/E1/F1 (comparison with the
 older V-1B, ES-1, ES-F runs).
+
+### Outcome of V7 (run D-20261126-062830-e947a9a)
+(a) HELD as predicted: FF4's D2 holds on 280 samples to 299 M with V-1L4; with V-1L4 held at
+    its last value after 299 M it holds on 480 samples (the ledger's count is reproduced only
+    this way: 200 of its 480 samples compare with a control that has ended); with V-1L as
+    control 207 of 480 samples violate D2 from 20 M on (lower margin down to -5.4e-3).
+(b) HELD: +-25 M windows give 3.12, 2.51, 2.51, 1.87 (ledger 3.1, 2.5, 2.5, 1.9).
+(c) HELD: FK's medians for tau_rem 285-500 M lie at +0.16 to +0.24 per cent (21 bins); FN4 +0.21
+    to +0.23, FNQ +0.11 to +0.28; ES-FL +0.52 to +0.62.
+(d) Partly: FK and ES-FL differ already at t = 0 by 3.7e-7 (0.99152073 against 0.99152110),
+    by at most 1.8e-6 in the first 20 M and 2.2e-7 from 20 to 219 M: close, not identical
+    (16 of 41 early samples bit-equal). P7 (3e-4) holds.
+(e) FAILED (not refuted): M_AH of ES-FL at 499.5 M = 1.6090, below F2's [1.625, 1.665], inside
+    its refutation range [1.56, 1.72].
