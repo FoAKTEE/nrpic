@@ -466,3 +466,33 @@ M2, M3 (B-20261126-022356-52c2460, 256^3 strain and halos to a = 100), Q1 high-k
 Decision: the gauge at a second mesh is needed (the zero shift fails at 256^3 and the track reads
 its strain in the shifted gauge); queued as q0060 (`pop_s014_gr256_gd`, priority 2, v0.7 card
 executable and chain, ceiling 6 card-h), predictions GM1-GM4 written before.
+
+## Batch 28 (2026-11-26 13:20- PST, lead): q0060 and the three detached analyses ended
+
+Checked from the artefacts (registered outputs, figures looked at), not from earlier summaries:
+- q0060 (B-20261126-105021-6343c13): chain DONE (tlim) at t = 21.916 after five jobs, no guard
+  file; closed with `nrpic-run finish` (261 GB hashed in the background). GM1 holds and GM4 is
+  refuted, both from its history (B-20261126-212502-e9e4f4e, pop_leg_histories.png).
+- B-20261126-022356-52c2460 (256^3 zero shift, equal masses), -022403-82f6e69 (shifted 0.028
+  box), -022838-27fab1b (8 per cell joined): exit 0, closed, read through `compare_legs.py
+  --halo-base` (B-20261126-212541-b647c59; the option added this session so the halos compare
+  with equal masses while the strain base keeps its metric strain) and `judge_s028gd.py`
+  (B-20261126-212604-a508e94). M2 counts hold, masses fail at a = 64-72; M3 holds to a = 50, fails
+  just at a = 100 (1.214), its high-k part holds (4-23 times with the mesh); Q1 high-k part
+  refuted (ratio 0.98-1.01); S2, S3 hold at the same stage. Every number in population/JOURNAL
+  2026-11-26 13:27 was read from these JSON files in this session.
+- C15: the four multi-figure analysis scripts split into one script per figure; the fifteen
+  figures equal the earlier drawings pixel for pixel (B-20261126-213450-f833a78).
+
+Wrong or defective, and what the track does:
+- GM4 (written by the batch-23 lead) expected truncation error to dominate the mean Hamiltonian
+  constraint in the shifted gauge; it does not (ratio 1.11). On record; C3 judged FAIL as written;
+  ruling requested (outbox 20261126T213945Z g2-rulings-l2-and-constraints).
+- pop_gr_halos and pop_gr_stop as drawn in batch 11 (B-20261124-133150-e9ef701) differ from what
+  the current analyze_gr.py draws from the same JSON (changes since batch 11; the halo panel of
+  batch 11 used weighted masses, R25). The G2 package now cites the batch-28 drawings.
+- Cosmetic: pop_s028gd.png tick labels overlap; pop_gr_constraints.png y labels cut.
+- The note's timeline schematic still says the legs are queued (C17, next writing session).
+
+Not confirmed (running at the end of the session): GM2, GM3 (analysis B-20261126-212212-c54d979,
+registered, 5 workers).
