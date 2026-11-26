@@ -1030,7 +1030,7 @@ a = 143 ((t + 2)/23.916)^2 of the box, so t = 14, 16, 18, 20, 21 are a = 64, 81,
 - S2, S3 with `judge_s028gd.py` on B-20261126-022403-82f6e69 at a' = 2a (as-written a' = 4a
   beside).
 
-## 2026-11-26 13:30 PST (lead of batch 28): outcomes GM1, GM4, M2, M3, Q1 (high-k part), S2, S3
+## 2026-11-26 13:27 PST (lead of batch 28): outcomes GM1, GM4, M2, M3, Q1 (high-k part), S2, S3
 
 Runs (all closed, figures looked at): histories B-20261126-212502-e9e4f4e (`fig_leg_histories.py`
 with the 256^3 Gamma-driver leg, `pop_leg_histories.png`: the new purple curve keeps K_max below
