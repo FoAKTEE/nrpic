@@ -699,3 +699,19 @@ member with the particles frozen (or test particles: zero_mass) is not a constra
 1+log lapse and Gamma-driver shift replaced by geodesic slicing and zero shift to t = 1 on M/16 and M/32 (where the
 exact solution is known on the comoving slice), the cheapest run that could exonerate or convict the gauge.
 C3 stays FAILED as written; this narrows the cause but does not name it (decision 0047 item 2(a)).
+
+## Entry 17, 2026-11-26 15:51 PST (lead of batch 31): C3-G, the smooth member with the gauge frozen, before the run
+
+C3-F placed the floor in a source acting during the evolution. Szekeres dust in geodesic slicing (particles at rest on
+their cells, no gauge dynamics) converges at second to fourth order in H (szekeres entries 11-14), the ball in 1+log
+with a Gamma-driver shift does not. Run C3-G: S2c-A exactly as C3-F (v0.6 threaded build, deck nest16_L16, CIC, S2
+data, lattice nestA) to t = 1 with the gauge frozen: lapse_oplog = 0, lapse_advect = 0, lapse_leak = 0 (the lapse stays
+at its table value), shift_Gamma = 0, shift_eta = 0, shift_advect = 0 (shift stays zero); four threads; outputs every
+0.25 as in S2c-A. Reader: c3_first_step.py against S2c-A.
+- G1 If the floor is made by the gauge dynamics or by particles moving across cells (both absent or much reduced when
+  the slice follows the dust), the x-line ratio at t = 1 falls below 0.05 (S2c-A: 0.129) and the volume H-norm2 at
+  t = 1 below 1.5e-2 (S2c-A: 3.83e-2). Prediction [JUDGEMENT]: it does fall, to below 0.05, because Szekeres in the same
+  code and the same deposit converges.
+- Refuted if the ratio at t = 1 stays within 30 per cent of 0.129 (then neither the gauge nor the motion across cells
+  makes the floor, and the deposit/source coupling of a static particle set or the evolution system itself is left).
+A fall does not separate gauge from motion across cells; a second member (frozen lapse, live shift) would.
