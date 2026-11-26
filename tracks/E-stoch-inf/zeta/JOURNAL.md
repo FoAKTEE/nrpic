@@ -148,3 +148,16 @@ Prediction (refuted outside): Z1 passes in all three judged directions, |rel c1|
 (the verifier: reader +3.4e-5 along Pi, -6.1e-5 along phi and the relation, at the lead's state); the diagnostic
 directions Pi x10, x100 agree to the same level. Z2(iii) about -2.87 per cent (fails as written; A14 (b) foresaw it),
 (iii') about -0.23 per cent (passes the 0.5 per cent bar) (the verifier's lockstep values, VERIFY.md section 2).
+
+## entry-9 (2026-11-25 19:11 PST, lead of E, batch 23): outcome of entry 8 (run E-20261126-030949-30c5d47)
+
+`z1_variational.json`, `fig_z1_variational.png` looked at. At the lockstep state (phi_b = -0.05581405834, Pi_b =
+2.6950083e-7, H of zp4/usr.sf.00001.modes), variational coefficients converged in the step (1e-3 -> 5e-4: 3e-15 first,
+5e-13 second order):
+- Z1 PASSES in every direction: |rel c1| at most 7.3e-9 (phi, box), 3.2e-10 (Pi); rel c2 = +7.5e-5 (phi), -3.8e-5 (Pi),
+  +7.5e-5 (box), -4.2e-7 (Pi x10), -1.1e-8 (Pi x100). Prediction (|c1| < 1e-6, |c2| < 2e-4) HOLDS.
+- Z2(iii) = -2.868 per cent (FAILS as written, predicted), Z2(iii') = -0.227 per cent (passes the 0.5 per cent bar);
+  a_map = 6.962410e-3 at the lockstep state, the verifier's value to all digits printed (VERIFY.md section 2).
+Record: Z1 as run in E-20261125-161456-8d3f43c stays FAILED as written along Pi alone (0.142), cause named by the
+verifier and ruled by decision 0042 item 1 (reference below its round-off); Z1 with the expected values the ruling names
+passes. The reader passes Z0, Z1 (this form), Z2(i), Z2(iii'); Z2(iii) fails as written for the reason A14 (b) names.

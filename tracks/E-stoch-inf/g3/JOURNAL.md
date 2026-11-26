@@ -196,3 +196,28 @@ G3P-3) are read now with `read_pilot.py --msteps 0` (no map). The zeta of G3 nee
 before the baseline can be read (R41: a table of the map along the box relation with its second-order correction
 across it, checked against map_rk4 on sampled cells, is the candidate); written into the handoff. The pilot holds or not
 on G3P-1..3 as entry 2 defined it (R^NR is the variable of G3P-3).
+
+## entry-9 (2026-11-25 19:11 PST, lead of E, batch 23): outcomes of entries 5 and 7 (pilot without zeta; readers cell by cell)
+
+Runs: pilot reading E-20261126-030904-76e7c72 (`read_pilot.py --msteps 0`, ten members; `pilot.json`, `fig_pilot.png`
+looked at); readers cell by cell E-20261126-024954-1c0a893 (`compare.json`, `fig_compare.png` looked at).
+- G3P-1 HOLDS for the baseline: 125-128 s a run, mean 0.0351 card-hours (batch status of job 5340). Level 2 and kdriver:
+  NOT MEASURED (their members stopped at start-up; entry 5).
+- G3P-2 HOLDS (ten members): all reach t = 10.4375 = tlim with finite records; max over records <|H-<H>|/[H]> = 7.15e-12
+  (bar 1e-9), max <|M|/[M]> = 0.0323 (bar 1e-1; G2 group 1 had 2.47e-2).
+- G3P-3: sigma(R^NR)/sigma_lin = 1.0002-1.0029 per member (bar 3 per cent): holds. Mean F_+(3)/Q(3) of R^NR over ten
+  members 1.0075 (band [0.9, 1.3]): holds; F_-(3)/Q(3) 0.994. Seed-to-seed sd of F_+(3) = 6.96e-5 against the Gaussian
+  4.96e-5: ratio 1.403, the bar was "within a factor 1.4": FAILED as written by 0.3 per cent of the bar. With ten members
+  the sd itself is uncertain by about 24 per cent (1/sqrt(18)); F_-(3) gives 0.84 of the Gaussian value. Recorded as a
+  failed clause, not a defect found [JUDGEMENT].
+- P5-1 HOLDS: no cell with v <= 0 in any member. P5-4 HOLDS: corr(d phi, d Pi) = 0.9999971 (bar 0.999), slope 0.0132252
+  against 0.0132235 at 32^3 (+0.013 per cent). rms dK/|K| at N_f = 5.0e-13.
+- P5-2 HOLDS: lead's map (4000 steps) and verifier's (long double, h = 2e-3) on 124402 cells of b000 (100000 random,
+  25668 with |R^NR| > 2.5 sigma_lin): max |difference| 4.26e-9 (bar 1e-8), rms 9.1e-10 (bar 2e-9); no cell changes side
+  at 3 or 4 sigma_lin; the two parsers read identical fields. The verifier's map took 967 s for 1.2e5 cells.
+- R^NR one-point, ten members: mean skewness 0.0006 (band [-0.002, 0.004]: holds), member scatter 0.0041 (entry 1's
+  sqrt(6/N_eff) = 0.0033); excess kurtosis -0.003; F_pm(4)/Q(4) 0.968, 0.976.
+- P5-3 and P5-5 (zeta): NOT JUDGED (entry 8).
+Reading: the pilot holds for the baseline on G3P-1..3 with one clause failed narrowly as written; the box is healthy and
+R^NR is Gaussian to one-box precision, as at 128^3 before (entry 3). The two zeta readers agree per cell at 1e-8 of
+sigma on the G3 box. What is not yet possible is reading zeta on 2.1e6 cells a member at acceptable cost (R41).
