@@ -185,7 +185,7 @@ def figure(out, recs):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("rst", nargs="*")
-    ap.add_argument("--exe", required=True)
+    ap.add_argument("--exe")
     ap.add_argument("--out", required=True)
     ap.add_argument("--set", action="append", default=[],
                     help="one per rst, in order, or one for all")
