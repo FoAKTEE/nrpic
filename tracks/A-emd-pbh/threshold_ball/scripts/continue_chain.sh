@@ -83,12 +83,21 @@ newjid=$(sed -nE 's/.*chain started in .*: job ([0-9]+).*/\1/p' <<<"$out" | tail
 
 # record the continuation in the manifest (notes) and commit that one path
 note="$(date -u +%Y-%m-%dT%H:%M:%SZ) continued in place by queue entry ${NRPIC_QUEUE_DISPATCH%%:*}: job ${newjid:-?}, from $(basename "$rst"), segments used $seg, MAX_SEGMENTS $MAXSEG, same exe/deck/args (threshold_ball/scripts/continue_chain.sh)"
-if python3 -I - "$WT/$MAN" "$note" <<'PY'
+if python3 -I - "$WT/$MAN" "$note" "$(date +%Y-%m-%dT%H:%M:%S%z)" "${newjid:-}" "$rst" "$seg" "$MAXSEG" \
+    "${NRPIC_QUEUE_DISPATCH%%:*}" <<'PY'
 import json, sys
-p, note = sys.argv[1], sys.argv[2]
+p, note, now, jid, rst, seg, ms, qid = sys.argv[1:9]
 m = json.load(open(p))
 old = m.get("notes") or ""
 m["notes"] = (old + "\n" if old else "") + note
+# the record nrpic-run reads (harness/RULES.md, "Runs continued in place", decision 0039 item 5)
+rec = {"at": now, "from_restart": rst or None, "segments_used_before": int(seg),
+       "max_segments": int(ms),
+       "via": "harness/bin/nrpic-queue --cmd tracks/A-emd-pbh/threshold_ball/scripts/continue_chain.sh"
+              + (f" (entry {qid})" if qid else "")}
+if jid.isdigit():
+    rec["job_id"] = jid
+m.setdefault("continuations", []).append(rec)
 with open(p + ".tmp", "w") as f:
     json.dump(m, f, indent=2)
     f.write("\n")

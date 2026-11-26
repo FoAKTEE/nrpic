@@ -423,3 +423,29 @@ are not judged here):
 Next: read the two detached analyses (P18 at N128/N256, P19 orders, P20 at N = 128 and 256, P21), look at their
 figures, entry 12. Whether N256 is continued to tau 40 (about 0.8 card-hour) is asked of orch
 (outbox g2-state-after-batch-23).
+
+## Entry 12, 2026-11-25 19:27 PST (batch 24): N256 continued to tau 40 (decision 0043 item 1(c)), prediction before the job
+
+What: chain A-20261125-231808-0784bc9 (N = 256) is continued in place from rst/szk.00005.rst (tau = 21.203, cycle
+1357) by `threshold_ball/scripts/continue_chain.sh A-20261125-231808-0784bc9 3` (same run, deck, executable and
+arguments; MAX_SEGMENTS 1 -> 3, so at most two more segments). The wrapper now also appends the `continuations` record
+that nrpic-run reads (harness/RULES.md, decision 0039 item 5). Field dumps at tau 30 and 40 are numbered 00003 and
+00004 (NrpicStartup skips the dump times already passed, nrpic_io.cpp 1357-1362), so the dumps 0-2 that the detached
+reader A-20261126-023245-1dd80ad is reading are not touched. Cost [measured in segment 1: 2.16 s a cycle at
+dt = 0.015625]: 1203 cycles to tau 40, ~44 min plus start-up, so one segment of 50 min is expected, two at most
+(~0.8 card-hours expected, cap 2).
+Basis for the numbers below: breakdown (guard stop) times N32 24-28, N64 30.25, N128 37.47 (entry 11); the core
+crunches at tau = 44.454. Two readings of the trend: an increment of 6-7 per doubling gives N256 at 43-45; a distance
+to the crunch that halves per doubling (14.2 at N64, 7.0 at N128) gives 3.5, i.e. N256 at ~41. Shell rms
+|K - K_ex|/H: N64 0.0268 (tau 10), 0.0616 (20), 1.04 (30); N128 0.0043 (10), 0.0123 (20) (reader rows of
+A-20261126-024724-425ed7f and A-20261126-023245-1dd80ad, in their run.log): orders 2.6 and 2.3.
+- P17 for N256 (stands as written in entry 8): finite fields to tau = 40, alpha = 1 to 1e-12. Expected to hold, with a
+  small margin (breakdown ~41 by the crunch-distance reading). Refuted by a guard stop (exit 3) or a non-finite dump
+  before tau = 40.
+- P24 [JUDGEMENT, new; P18 as written is still judged as written]: N256 shell rms |K - K_ex|/H at tau = 30 lies in
+  [0.004, 0.04] (N128 at tau 30 times 2^-2.3, with N128 at tau 30 between 0.02 and 0.2: it broke 7.5 later); at
+  tau = 40 it lies in [0.03, 1]: the member is within a few tau of its own breakdown, so P18's 0.01 at tau = 40
+  (factor 3: up to 0.03) is expected to FAIL. Refuted if tau 30 lies outside [0.004, 0.04] or tau 40 below 0.03.
+Read by `scripts/analyse_code_runs.py` on the dumps 00003-00004 (detached, ~1 h a dump on one core), P19 at tau 30
+from N128's tau 30 row; close the run again with `harness/bin/nrpic-run finish A-20261125-231808-0784bc9` once no job
+of it is in squeue.

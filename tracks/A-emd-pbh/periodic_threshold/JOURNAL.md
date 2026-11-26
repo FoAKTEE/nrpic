@@ -1120,3 +1120,50 @@ bracket of (i) stands, the slicing question reopens and a card member with geode
   have crossed by t = 70 (the 215-particle corner set). So the first crossing occurs at a dust proper time above
   5.99 t_H on a crossing worldline: the lag against 4.35 (Zel'dovich) and 3.62 (Newton at 128^3) is not a
   coordinate effect. The upper end of the bracket (6.80) rests on the probe column and is not claimed.
+
+## 2026-11-25 19:25 PST (batch 24): A2H, the relativistic member of S1L at half amplitude (decision 0043 item 1(d)), prediction before any run
+
+Why: S1L (mu = 0.3, e = 0.2) first crosses at a dust proper time above 5.99 t_H (central particle at rest, int alpha_min
+dt; outcome PC above) and in (6.19, 7.21] t_H on the coordinate clock (J sign, A2X (i)), against Newton at 128^3 3.62
+(bracket 3.59-3.73, N-z128) and first-order Zel'dovich 4.35. The one candidate named (A2X outcome, decision 0043 1(d)):
+the nonlinear relation between the curvature perturbation and the density contrast at zeta_max = 0.296. This member
+halves the amplitude and changes nothing else. A2 stays FAILED as written whatever it shows.
+Member S1L-h: data `make_peak_ic.py --mu 0.15 --e 0.2 --eps-i 1 --n 64 --nfilter 2 --compensate` (the S_mu0.3 command
+of A-emd-pbh-20261115-155802-9a6596f with mu halved); deck `inputs/peak_leak.athinput` unchanged (gauge, mesh, deposit,
+finder with diagnostics = true, cfl 0.5); overrides only id_file, particle_file, time/tlim = 220, particles/snap_dt =
+5.0 (0.51 t_H between snapshots instead of 1.02) and output7/dt = 30 (a restart file every ~9 min of wall time instead
+of ~15). Executable: card build of release core-v0.7 (S1L ran v0.6; v0.7 is byte-identical on the periodic set
+without new options, tracks/core/RELEASE-v0.7.md; dt_gauge is absent, so the step is S1L's). Read by the same scripts
+(a2_invariant.py for the sign of det(dx/dq), a2_crossing.py for the axis, a2_probe_check.py for the central particle).
+Scalings used [VERIFIED as arithmetic on the quantities named; the self-similarity is BACKGROUND]: Zel'dovich first
+axis lambda_z = 0.063 at a = 1 for mu = 0.3, first order in mu, so 0.0315 here: a_sc doubles and t/t_H = (a/6)^1.5
+grows by 2^1.5 = 2.83. Newtonian ellipsoidal collapse of the same shape (e unchanged) in EdS is self-similar in
+lambda a, so the Newtonian crossing scales by 2.83 too.
+- Linear relation (no nonlinear term; GR = Newton at these scales): 2.83 x 3.62 = 10.2 t_H (bracket 10.15-10.55,
+  N-z128 scaled); first-order Zel'dovich 2.83 x 4.35 = 12.3 t_H.
+- Candidate (its effect on the growing amplitude is a factor g with ln g proportional to zeta_peak, so halving mu
+  takes the square root of the lag in a): S1L's lag in a against Newton is (5.99/3.73)^(2/3) = 1.37 to (7.21/3.59)^(2/3)
+  = 1.59; at half amplitude 1.17-1.26 in a, 1.27-1.42 in t: crossing at 12.9-14.9 t_H (central 13.6).
+  Two versions of the factor, for orientation: the data's own conformal factor (psi_dict^4 = 1 + 1.2 zeta at the
+  peak, id.json max_abs_psi_dict_minus_1 = 0.078; the solve changes psi by 0.011) gives a lag in a of 1.36 at full
+  amplitude (crossing 5.7 t_H, just below S1L's lower bound 5.99) and 1.18 at half (13.1 t_H, inside the band); the
+  literal gradient-expansion factor e^(-2 zeta_peak) = 0.553 (id.json ge: delta_cmc/((5/3) delta_N) = 0.551) would
+  put S1L at 3.62 x 0.553^(-1.5) = 8.8 t_H and is already contradicted by S1L's coordinate bracket (<= 7.21).
+- Null (a lag independent of the amplitude, e.g. a self-similar numerical delay such as the source smoothing of one
+  particle per root cell with deposit_adaptive, ppc 2; one force cell per particle spacing delayed Newton by 26 per
+  cent, N-z vs N-z128): lag unchanged, crossing at 2.83 x (1.61-2.01) x 3.62 = 16.3-21.2 t_H.
+Prediction A2H [JUDGEMENT]: S1L-h first crosses along z at the centre, and the crossing bracket (last snapshot with
+min J > 0 to first with J <= 0, on the coordinate clock t/t_H = (1 + 1.5 t)/6^1.5, with the central particle's
+proper-time lower bound int alpha_min dt) lies inside [12.5, 15.2] t_H; no horizon is found and the lapse at the
+centre stays above 0.8 up to the crossing (top-hat collapse of the compaction shell at 2.83 x 16.1 = 45 t_H).
+Refuted toward an amplitude-independent lag if the bracket lies entirely above 15.6 t_H (then the candidate is out
+and a numerical delay is the next candidate, to be tested at a finer deposit); refuted the other way if it lies
+entirely below 11.8 t_H (the lag falls faster than first order in zeta); undecided if it straddles 15.2-15.6 or
+11.8-12.5. What a hold does not separate: any effect first order in the amplitude, e.g. a relativistic (aH/k)^2
+term (but (aH/k)^2 = 1/a is 0.04-0.06 at S1L's crossing, so it needs a coefficient near 8 to give S1L's lag).
+Cost [JUDGEMENT from S1L's segments, chain/seg003 and seg005: 0.18-0.20 s a cycle at dt = 0.00977]: ~22,500 cycles to
+t = 220, ~70 min of card time plus start-up: two segments, cap 2.0 card-hours, priority 2 (G2 waits for it, 0043).
+Data build prediction D-h: the solve converges as at mu = 0.2 and 0.3 (residual ~1e-11), zeta_max 0.148,
+delta_N_max 0.059 (half of 0.1176), jacobian_min ~0.94, change of the solve c between 0.03 and 0.14. Smoke test
+prediction SM-h (processor build v0.7, 4 cycles): starts, reads 262144 particles, first dt 3.36e-3 within 5 per cent
+(S1L's first step), finite fields, no guard stop. Refuted otherwise; then nothing is queued.
