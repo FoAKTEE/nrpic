@@ -32,8 +32,25 @@ repeat byte for byte; card runs with deposition do not, CLAUDE.md).
 | band test of N4 | `B-20261125-170116-0b635a0` | 0b635a018 | local | `python3 tracks/B-emd-gw/population/scripts/n4_band.py --newton $S/B-20261125-122434-060d53d/analysis_n128.j...` | - |
 | same particles, one estimator | `B-20261125-170535-84c9ba5` | 84c9ba525 | local | `python3 tracks/B-emd-gw/population/scripts/vel_check.py --gr $S/B-20261123-014847-f295ab4 --newton $S/B-202...` | - |
 | note: figures, schematics, ledger | `B-20261125-171148-563a6f0` | 563a6f027 | local | `.venv/bin/python tracks/B-emd-gw/note/scripts/run_all.py` | - |
+| radiated box measure, N4 second part | `B-20261125-172136-3e920ab` | 3e920ab | local | `python3 tracks/B-emd-gw/population/scripts/n4_rad.py --n128 $S/B-20261125-122434-060d53d/analysis_n1...` | - |
+| mesh leg 256^3, zero shift (q0007; guard stop a = 102, closed failed) | `B-20261125-093500-242d3a3` | 242d3a3 | chain | `scripts/submit_chain.sh $S/B-20261125-093500-242d3a3 ...` | `.work/build_gpu_v06/src/athena` |
+| particle leg continued, 8 per cell (q0042) | `B-20261125-221742-5100a22` | 5100a22 | batch | `scripts/gpu_batch.sh $S/B-20261125-221742-5100a22/batch.list` | `.work/build_gpu_v06/src/athena` |
+| 0.028 box, Gamma driver from t = 8 (q0044) | `B-20261126-011415-449c8ce` | 449c8ce | batch | `scripts/gpu_batch.sh $S/B-20261126-011415-449c8ce/batch.list` | `.work/build_gpu_v06/src/athena` |
+| gauge at a second mesh: 256^3, Gamma driver (q0060) | `B-20261126-105021-6343c13` | 6343c13 | chain | `scripts/submit_chain.sh $S/B-20261126-105021-6343c13 ...` | `.work/build_gpu_v07/src/athena` |
+| equal-mass analysis of the 256^3 zero-shift leg (M2, M3) | `B-20261126-022356-52c2460` | 52c2460 | local | `python3 tracks/B-emd-gw/population/scripts/analyze_gr.py --equal-mass --no-stop --no-figures --worke...` | - |
+| equal-mass analysis of the shifted 0.028 box (S2, S3) | `B-20261126-022403-82f6e69` | 82f6e69 | local | `python3 tracks/B-emd-gw/population/scripts/analyze_gr.py --equal-mass --no-figures --workers 2 --run...` | - |
+| equal-mass halo catalogues of base and gauge leg | `B-20261126-022407-87e8803` | 87e8803 | local | `python3 tracks/B-emd-gw/population/scripts/analyze_gr.py --equal-mass --halos-only --no-figures --wo...` | - |
+| equal-mass analysis of the joined particle leg (Q1) | `B-20261126-022838-27fab1b` | 27fab1b | local | `python3 tracks/B-emd-gw/population/scripts/analyze_gr.py --equal-mass --no-figures --workers 1 --tim...` | - |
+| histories of six legs (M1, M4, P8C2, Q1, S1) | `B-20261126-024849-87e72b7` | 87e72b7 | local | `python3 tracks/B-emd-gw/population/scripts/fig_leg_histories.py $S $NRPIC_RUN_DIR` | - |
+| GR against Newton, equal masses, zero shift (N2e, GN1e) | `B-20261126-024936-1ee0a16` | 1ee0a16 | local | `python3 tracks/B-emd-gw/population/scripts/compare_newton.py --gr $S/B-20261126-022407-87e8803/analy...` | - |
+| GR against Newton, equal masses, Gamma driver | `B-20261126-024941-647553b` | 647553b | local | `python3 tracks/B-emd-gw/population/scripts/compare_newton.py --gr $S/B-20261126-022407-87e8803/analy...` | - |
+| note: figures, schematics, ledger (batch 23) | `B-20261126-025137-7686b91` | 7686b91 | local | `python3 tracks/B-emd-gw/note/scripts/run_all.py` | - |
+| histories of seven legs (GM1, GM4) | `B-20261126-212502-e9e4f4e` | e9e4f4e | local | `python3 tracks/B-emd-gw/population/scripts/fig_leg_histories.py $S $NRPIC_RUN_DIR` | - |
+| legs against the base, equal-mass halos (M2, M3, Q1 high-k) | `B-20261126-212541-b647c59` | b647c59 | local | `python3 tracks/B-emd-gw/population/scripts/compare_legs.py --base $S/B-20261124-131918-e71996f/analy... --halo-base ...` | - |
+| shifted 0.028 box at the same stage (S2, S3) | `B-20261126-212604-a508e94` | a508e94 | local | `python3 tracks/B-emd-gw/population/scripts/judge_s028gd.py $S/B-20261126-022403-82f6e69/analysis_gr_...` | - |
+| equal-mass analysis of the 256^3 Gamma-driver box (GM2, GM3; running at the end of batch 28) | `B-20261126-212212-c54d979` | c54d979 | local | `python3 tracks/B-emd-gw/population/scripts/analyze_gr.py --equal-mass --no-stop --no-figures --workers 5 ...` | - |
 
 `$S` = `/data/haiyangw/nrpic/scratch/B-emd-gw/`. Decks: `tracks/B-emd-gw/population/inputs/`,
 `tracks/B-emd-gw/flrw_conv/inputs/`, `tracks/B-emd-gw/shear/inputs/`; scripts: the `scripts/` directory of each
-package; note: `tracks/B-emd-gw/note/scripts/run_all.py` (one script per figure). Open: the runs still in the
-queue (q0007, q0042, q0044) are added when they end.
+package; note: `tracks/B-emd-gw/note/scripts/run_all.py` (one script per figure). Batch 28 added the rows of
+batches 23 and 28 (commit column: the run id's suffix, the commit the run was registered at).

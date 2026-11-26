@@ -51,6 +51,31 @@ under `scratch/B-emd-gw/<run id>/`). Judgements in the package journals named pe
 | B-20261124-131438-5d7e049 | Newtonian reference at 128^3 with the GR runs' own particles, sigma1 = 0.014, 0.028 (Slurm 5167, queued) | card |
 | B-20261124-133533-cb0bb7d | four restarts of the 0.028 run from t = 8 (X0-X3; Slurm 5169, queued) | card |
 
+
+## Batches 23 and 28: legs of the population box (`population/JOURNAL.md` 2026-11-25 18:22-18:51, 2026-11-26 13:22-13:27)
+
+| Run | What it establishes | Kind |
+|---|---|---|
+| B-20261125-093500-242d3a3 | 256^3 zero shift (q0007): guard stop at a = 102 after K_max > 0 from a = 80 (M1 refuted), closed failed | card |
+| B-20261125-221742-5100a22 | particle leg continued to a = 143 (q0042; P8C1, P8C2 hold) | card |
+| B-20261126-011415-449c8ce | 0.028 box with the Gamma driver from t = 8 to a = 143 (q0044; S1 holds) | card |
+| B-20261126-105021-6343c13 | 256^3 Gamma driver (q0060) to a = 143, no guard stop (GM1 holds) | card |
+| B-20261126-022356-52c2460 | equal-mass analysis of the 256^3 zero-shift leg to a = 100 | analysis |
+| B-20261126-022403-82f6e69 | equal-mass analysis of the shifted 0.028 box | analysis |
+| B-20261126-022407-87e8803 | equal-mass halo catalogues of base and gauge leg | analysis |
+| B-20261126-022838-27fab1b | equal-mass analysis of the joined 8-per-cell leg | analysis |
+| B-20261126-024849-87e72b7 | histories of six legs: M1, M4, P8C2, Q1 (constraints), S1 | analysis |
+| B-20261126-024936-1ee0a16 | GR (zero shift) against Newton with equal masses: N2e, GN1e | analysis |
+| B-20261126-024941-647553b | GR (Gamma driver) against Newton with equal masses: N2e, GN1e | analysis |
+| B-20261126-025137-7686b91 | note figures and ledger of batch 23 | analysis |
+| B-20261126-212502-e9e4f4e | histories of seven legs: GM1 holds, GM4 refuted | analysis |
+| B-20261126-212541-b647c59 | M2 (counts hold, early masses fail), M3 (mixed), Q1 high-k part refuted | analysis |
+| B-20261126-212604-a508e94 | S2, S3 hold at the same stage | analysis |
+| B-20261126-212212-c54d979 | equal-mass analysis of the 256^3 Gamma-driver box (GM2, GM3); running at the end of batch 28 | analysis |
+
+Figures looked at in batch 28: `pop_leg_histories.png` (B-20261126-212502-e9e4f4e), `pop_legs.png`
+(B-20261126-212541-b647c59), `pop_s028gd.png` (B-20261126-212604-a508e94; overlapping tick labels).
+
 ## Figures looked at in batch 11
 
 `flrw_conv/figs/fig_step128.png`; `population/figs/pop_gr_constraints.png`, `pop_gr_halos.png`,
