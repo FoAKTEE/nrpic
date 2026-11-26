@@ -5,8 +5,8 @@ position noise; constraint histories.
     python3 analyze_f.py <runs.json> [<outdir>]     (default outdir $NRPIC_RUN_DIR)
 
 runs.json maps case names (f_n<N>_p<ppc per direction>_a<0|1|2>) to '<run id>/<name>'.
-Writes <outdir>/flrw_f.json and figures fig_f_lattice, fig_f_noise, fig_f_scaling,
-fig_f_constraints (PDF and PNG).
+Writes <outdir>/flrw_f.json; the figures fig_f_lattice, fig_f_noise, fig_f_scaling and
+fig_f_constraints are drawn by one script each (fig_f_*.py, G2 item C15) through load() below.
 """
 import json
 import os
@@ -48,10 +48,9 @@ def noise_part(d, ref, key, akey="a"):
     return np.abs(d[key] - e0)
 
 
-def main():
-    runs = json.load(open(sys.argv[1]))
-    out = sys.argv[2] if len(sys.argv) > 2 else os.environ["NRPIC_RUN_DIR"]
-    os.makedirs(out, exist_ok=True)
+def load(runs_path):
+    """Read every run of leg F named in runs.json; return the time series and the summary."""
+    runs = json.load(open(runs_path))
     data = {}
     for name, spec in sorted(runs.items()):
         if not name.startswith("f_"):
@@ -61,7 +60,6 @@ def main():
             print(f"missing {name}: {d}")
             continue
         data[name] = fl.flrw_errors(d)
-    fs.use_style()
     summ = {}
     for name, d in data.items():
         n, nc, ia = parse(name)
@@ -128,9 +126,13 @@ def main():
                         worst, wcol = r, f"{f}:{col}"
             summ[other]["lattice_reldiff_vs_p1"] = worst
             summ[other]["lattice_reldiff_column"] = wcol
-    fl.save_json(summ, os.path.join(out, "flrw_f.json"))
+    return {"data": data, "summ": summ}
 
-    # ---- figure 1: lattices -------------------------------------------------------
+
+def fig_lattice(ctx, out):
+    """fig_f_lattice: the four scale-factor errors of the lattices at rest."""
+    data, summ = ctx["data"], ctx["summ"]
+    fs.use_style()
     lat = [k for k in data if k.endswith("_a0")]
     cols = dict(zip(sorted(lat, key=lambda k: parse(k)[:2]), fs.series_colors(len(lat))))
     fig, axs = plt.subplots(2, 2, figsize=(fs.FULL_WIDTH, 5.2), sharex=True)
@@ -154,7 +156,12 @@ def main():
     fs.save(fig, os.path.join(out, "fig_f_lattice"))
     plt.close(fig)
 
-    # ---- figure 2: noise runs -----------------------------------------------------
+
+def fig_noise(ctx, out):
+    """fig_f_noise: runs with position noise against the lattices."""
+    data, summ = ctx["data"], ctx["summ"]
+    fs.use_style()
+    lat = [k for k in data if k.endswith("_a0")]
     noisy = sorted([k for k in data if not k.endswith("_a0")], key=lambda k: parse(k))
     colsn = dict(zip(noisy, fs.series_colors(max(len(noisy), 1), "viridis")))
     fig, axs = plt.subplots(2, 2, figsize=(fs.FULL_WIDTH, 5.2), sharex=True)
@@ -188,7 +195,12 @@ def main():
     fs.save(fig, os.path.join(out, "fig_f_noise"))
     plt.close(fig)
 
-    # ---- figure 3: scaling of the noise-induced part --------------------------------
+
+def fig_scaling(ctx, out):
+    """fig_f_scaling: scaling of the noise-induced part with N_c and N."""
+    data, summ = ctx["data"], ctx["summ"]
+    fs.use_style()
+    lat = [k for k in data if k.endswith("_a0")]
     fig, axs = plt.subplots(1, 2, figsize=(fs.FULL_WIDTH, 3.0))
     fig.subplots_adjust(left=0.09, right=0.99, bottom=0.16, top=0.95, wspace=0.3)
     mk = {"e_alpha": "o", "e_chi": "s", "e_V": "^", "e_K": "v"}
@@ -239,7 +251,12 @@ def main():
     fs.save(fig, os.path.join(out, "fig_f_scaling"))
     plt.close(fig)
 
-    # ---- figure 4: constraints ----------------------------------------------------
+
+def fig_constraints(ctx, out):
+    """fig_f_constraints: constraint histories of every run."""
+    data, summ = ctx["data"], ctx["summ"]
+    fs.use_style()
+    lat = [k for k in data if k.endswith("_a0")]
     allc = sorted(data, key=lambda k: parse(k))
     colsa = dict(zip(allc, fs.series_colors(len(allc), "viridis")))
     # The relative momentum constraint Mr = |M|/sqrt(sum of its terms squared)
@@ -264,6 +281,8 @@ def main():
     fs.save(fig, os.path.join(out, "fig_f_constraints"))
     plt.close(fig)
 
+
+def report(summ):
     for name, s in summ.items():
         line = " ".join(f"{k[2:]}={s[f'{k}_max']:.2e}" for k in MEAS)
         print(f"{name}: a_end={s['a_end']:.1f} max {line}; Hr start {s['Hr_max_start']:.1e} "
@@ -277,6 +296,14 @@ def main():
         if "e_alpha_noise_at" in s:
             print("   noise part alpha:", {k: f"{v:.2e}" for k, v in s["e_alpha_noise_at"].items()})
             print("   noise part V:    ", {k: f"{v:.2e}" for k, v in s["e_V_noise_at"].items()})
+
+
+def main():
+    out = sys.argv[2] if len(sys.argv) > 2 else os.environ["NRPIC_RUN_DIR"]
+    os.makedirs(out, exist_ok=True)
+    ctx = load(sys.argv[1])
+    fl.save_json(ctx["summ"], os.path.join(out, "flrw_f.json"))
+    report(ctx["summ"])
 
 
 if __name__ == "__main__":

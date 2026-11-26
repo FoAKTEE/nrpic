@@ -6,8 +6,9 @@
     python3 analyze_b.py <runs.json> [<outdir>]     (default outdir $NRPIC_RUN_DIR)
 
 runs.json maps case names (b_n<N>_p<ppc per direction>) to '<run id>/<name>'.
-Estimators and references: flrwlib.growth. Writes <outdir>/flrw_b.json and figures
-fig_b_growth, fig_b_error, fig_b_conv, fig_b_constraints.
+Estimators and references: flrwlib.growth. Writes <outdir>/flrw_b.json; the four figures are
+drawn by one script each (fig_b_growth.py, fig_b_error.py, fig_b_conv.py, fig_b_constraints.py;
+G2 item C15), which call load() below and one figure function.
 """
 import json
 import os
@@ -41,10 +42,9 @@ def at(g, key, a0):
     return float(np.interp(np.log(a0), np.log(a), g[key]))
 
 
-def main():
-    runs = json.load(open(sys.argv[1]))
-    out = sys.argv[2] if len(sys.argv) > 2 else os.environ["NRPIC_RUN_DIR"]
-    os.makedirs(out, exist_ok=True)
+def load(runs_path):
+    """Read every run of leg B named in runs.json; return the time series and the summary."""
+    runs = json.load(open(runs_path))
     data, cst = {}, {}
     for name, spec in sorted(runs.items()):
         if not name.startswith("b_"):
@@ -101,7 +101,10 @@ def main():
         s["bg_delta_end"] = float(g["bg_delta"][-1])
         s["bg_delta_maxabs"] = float(np.abs(g["bg_delta"]).max())
         summ[name] = s
-    fl.save_json(summ, os.path.join(out, "flrw_b.json"))
+    return {"data": data, "cst": cst, "summ": summ, "order": order}
+
+
+def make_style(order):
     fs.use_style()
     cols = dict(zip(order, fs.series_colors(len(order))))
 
@@ -109,8 +112,13 @@ def main():
         n, nc = parse(name)
         return dict(color=cols[name], lw=1.0, ls="-" if nc == 1 else ("--" if nc == 8 else ":"),
                     label=rf"$N={n}$, {nc}/cell")
+    return style
 
-    # ---- figure 1: f(a) and the dictionary ----------------------------------------
+
+def fig_growth(ctx, out):
+    """fig_b_growth: f(a) of the three estimators and |f_star - 1|."""
+    data, cst, summ, order = ctx["data"], ctx["cst"], ctx["summ"], ctx["order"]
+    style = make_style(order)
     fig, axs = plt.subplots(1, 2, figsize=(fs.FULL_WIDTH, 3.0))
     fig.subplots_adjust(left=0.08, right=0.99, bottom=0.16, top=0.95, wspace=0.3)
     ref = data[order[0]]
@@ -138,7 +146,11 @@ def main():
     fs.save(fig, os.path.join(out, "fig_b_growth"))
     plt.close(fig)
 
-    # ---- figure 2: errors of f and of the amplitude, three estimators -------------
+
+def fig_error(ctx, out):
+    """fig_b_error: errors of f and of the amplitude, three estimators."""
+    data, cst, summ, order = ctx["data"], ctx["cst"], ctx["summ"], ctx["order"]
+    style = make_style(order)
     fig, axs = plt.subplots(2, 3, figsize=(fs.FULL_WIDTH, 5.0), sharex=True)
     fig.subplots_adjust(left=0.08, right=0.99, bottom=0.09, top=0.95, wspace=0.32, hspace=0.1)
     for j, key in enumerate(EST):
@@ -155,9 +167,11 @@ def main():
     fs.save(fig, os.path.join(out, "fig_b_error"))
     plt.close(fig)
 
-    # ---- figure 3: convergence at fixed a ------------------------------------------
-    # Measures that do not pass through zero: the largest amplitude error over the run, the
-    # plateau of the f error (median over 3 <= a) and its early part (largest over a <= 2).
+
+def fig_conv(ctx, out):
+    """fig_b_conv: convergence in mesh and particle number at fixed a."""
+    data, cst, summ, order = ctx["data"], ctx["cst"], ctx["summ"], ctx["order"]
+    style = make_style(order)
     fig, axs = plt.subplots(1, 2, figsize=(fs.FULL_WIDTH, 3.0))
     fig.subplots_adjust(left=0.09, right=0.99, bottom=0.16, top=0.93, wspace=0.3)
     mesh = [k for k in order if parse(k)[1] == 1]
@@ -198,7 +212,11 @@ def main():
     fs.save(fig, os.path.join(out, "fig_b_conv"))
     plt.close(fig)
 
-    # ---- figure 4: constraints and potential ---------------------------------------
+
+def fig_constraints(ctx, out):
+    """fig_b_constraints: largest H_r and the potential amplitude."""
+    data, cst, summ, order = ctx["data"], ctx["cst"], ctx["summ"], ctx["order"]
+    style = make_style(order)
     fig, axs = plt.subplots(1, 2, figsize=(fs.FULL_WIDTH, 2.9))
     fig.subplots_adjust(left=0.08, right=0.99, bottom=0.17, top=0.95, wspace=0.3)
     for name in order:
@@ -215,6 +233,8 @@ def main():
     fs.save(fig, os.path.join(out, "fig_b_constraints"))
     plt.close(fig)
 
+
+def report(summ):
     for name, s in summ.items():
         print(f"== {name}: a_end {s['a_end']:.1f}, {s['records']} records; decaying eps "
               f"{s['decaying_fit']['eps']:+.2e} (A+/A {s['decaying_fit']['A_plus_over_A']:.7f})")
@@ -233,6 +253,14 @@ def main():
                           for k in ("1.1", "10", "900")))
         print(f"   Hr_max end {s['Hr_max_end']:.2e} max {s['Hr_max_max']:.2e}; mean-density "
               f"error max {s['bg_delta_maxabs']:.2e}; profile residual max {s['resid_max']:.2e}")
+
+
+def main():
+    out = sys.argv[2] if len(sys.argv) > 2 else os.environ["NRPIC_RUN_DIR"]
+    os.makedirs(out, exist_ok=True)
+    ctx = load(sys.argv[1])
+    fl.save_json(ctx["summ"], os.path.join(out, "flrw_b.json"))
+    report(ctx["summ"])
 
 
 if __name__ == "__main__":

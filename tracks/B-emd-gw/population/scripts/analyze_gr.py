@@ -390,7 +390,8 @@ def stop_diagnosis(res, d):
 
 
 # ---------------------------------------------------------------------------------------
-def figures(R, newton, od):
+def fig_constraints(R, newton, od):
+    """pop_gr_constraints.png: constraint means and the lapse range against the stage."""
     fs.use_style()
     import matplotlib.pyplot as plt
     cols = fs.SERIES
@@ -426,6 +427,12 @@ def figures(R, newton, od):
     fs.save(fig, os.path.join(od, "pop_gr_constraints"))
     plt.close(fig)
 
+
+def fig_halos(R, newton, od):
+    """pop_gr_halos.png: halos of the GR runs against the Newtonian population."""
+    fs.use_style()
+    import matplotlib.pyplot as plt
+    cols = fs.SERIES
     # 2. halos against the Newtonian population
     fig, axs = plt.subplots(1, 3, figsize=(fs.FULL_WIDTH, 2.8))
     fig.subplots_adjust(left=0.07, right=0.99, bottom=0.17, top=0.93, wspace=0.38)
@@ -467,6 +474,12 @@ def figures(R, newton, od):
     fs.save(fig, os.path.join(od, "pop_gr_halos"))
     plt.close(fig)
 
+
+def fig_gw(R, newton, od):
+    """pop_gr_gw.png: TT strain of the metric against the particles' near field and the design."""
+    fs.use_style()
+    import matplotlib.pyplot as plt
+    cols = fs.SERIES
     # 3. TT strain of the metric against the near field of the particles and the design
     fig, axs = plt.subplots(1, 3, figsize=(fs.FULL_WIDTH, 2.8))
     fig.subplots_adjust(left=0.08, right=0.99, bottom=0.17, top=0.93, wspace=0.40)
@@ -515,6 +528,14 @@ def figures(R, newton, od):
     axs[2].legend(fontsize=5.5, loc="lower left")
     fs.save(fig, os.path.join(od, "pop_gr_gw"))
     plt.close(fig)
+
+
+def figures(R, newton, od):
+    """All three (kept for --from-json use); the G2 figures are drawn one per script:
+    fig_pop_gr_constraints.py, fig_pop_gr_halos.py, fig_pop_gr_gw.py, fig_pop_gr_stop.py."""
+    fig_constraints(R, newton, od)
+    fig_halos(R, newton, od)
+    fig_gw(R, newton, od)
 
 
 def figure_stop(Z, od):
@@ -568,7 +589,7 @@ def main():
     ap.add_argument("--halo-times", default=None, help="comma list of t for friends-of-friends")
     ap.add_argument("--halos-only", action="store_true", help="no dumps")
     ap.add_argument("--no-stop", action="store_true", help="no stop diagnosis of a guard stop")
-    ap.add_argument("--no-figures", action="store_true")
+    ap.add_argument("--no-figures", action="store_true", help="no-op since batch 28 (no figures here)")
     args = ap.parse_args()
     global EQUAL_MASS, TIMES, HALO_TIMES, HALOS_ONLY
     EQUAL_MASS = args.equal_mass
@@ -598,9 +619,8 @@ def main():
     if not args.from_json:
         with open(os.path.join(args.out, "analysis_gr.json"), "w") as f:
             json.dump(R, f)
-    if not args.no_figures:
-        figures(R, newton, args.out)
-        figure_stop(Z, args.out)
+    # figures: one script each (fig_pop_gr_constraints.py, fig_pop_gr_halos.py, fig_pop_gr_gw.py,
+    # fig_pop_gr_stop.py; G2 item C15) from analysis_gr.json; --no-figures is kept as a no-op
     # summary lines
     for r in R:
         D = [x for x in r["dumps"] if "Omega_cor" in x]

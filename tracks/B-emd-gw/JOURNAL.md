@@ -450,3 +450,13 @@ failed: M1; M4 (reachable part); GN1 of batch 21 withdrawn (biased masses); the 
 a' = 4a slip (batch 17); two journal header times of this session not read from the clock.
 open: three processor analyses running (M2, M3, Q1 high-k, S2, S3); q0060; C15, C17 checker, C18.
 Card-hours: none submitted to run; closed 3.58 (q0007 3.23, q0042 0.22, q0044 0.13); G2 7.86.
+
+## 2026-11-26 13:34 PST, lead of batch 28 (wave 3)
+
+Prediction before the C15 run (B-emd-gw stage/G2/scripts/c15_figs.py, registered next): the
+fifteen one-figure scripts (eight of flrw_conv, seven of population) exit 0 and their PNGs equal
+pixel for pixel those of the multi-figure scripts before the split (checked unregistered in
+scratch/B-emd-gw/tmp/c15test against B-20261123-015452-18d2956, B-20261121-220428-7367d5e,
+B-20261119-160632-e1a1d05 and the pre-split analyze_gr.py run now; pop_gr_halos and pop_gr_stop
+differ from batch 11's drawing B-20261124-133150-e9ef701 already with the pre-split code, through
+changes made to analyze_gr.py since). Refuted by a non-zero exit or a differing PNG.

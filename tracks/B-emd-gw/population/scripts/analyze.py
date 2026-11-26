@@ -474,7 +474,8 @@ def analyze_case(name, d, gw, ng, nhalo_q, out, design=None, meta_path=None):
     return res
 
 
-def figures(results, od, gwname):
+def fig_halos(results, od, gwname=None):
+    """pop_halos.png: halo counts, mass fraction and mass function of every case."""
     fs.use_style()
     import matplotlib.pyplot as plt
     # 1. halo counts and mass fraction against a
@@ -504,6 +505,12 @@ def figures(results, od, gwname):
     axs[2].legend(fontsize=7)
     fs.save(fig, os.path.join(od, "pop_halos"))
     plt.close(fig)
+
+
+def fig_density(results, od, gwname):
+    """pop_density.png: projected density of the GW case at four epochs."""
+    fs.use_style()
+    import matplotlib.pyplot as plt
     # 2. projected density of the GW case at four epochs
     r = next(x for x in results if x["name"] == gwname)
     files = snapshots(r["dir"])
@@ -536,6 +543,14 @@ def figures(results, od, gwname):
         ax.set_aspect("equal")
     fs.save(fig, os.path.join(od, "pop_density"))
     plt.close(fig)
+
+
+def fig_gw(results, od, gwname):
+    """pop_gw.png: GW energy of the GW case against a, and its spectra."""
+    fs.use_style()
+    import matplotlib.pyplot as plt
+    r = next(x for x in results if x["name"] == gwname)
+    L = r["meta"]["L"]*LSCALE
     # 3. GW energy against a and spectra
     if "gw" in r:
         rows = np.array(r["gw"]["rows"])
@@ -584,6 +599,15 @@ def figures(results, od, gwname):
         plt.close(fig)
 
 
+def figures(results, od, gwname):
+    """All three, as before the split (main still calls it so that the copies into ../figs keep
+    their names); each figure also has a script of its own: fig_pop_halos.py, fig_pop_density.py,
+    fig_pop_gw.py (G2 item C15)."""
+    fig_halos(results, od, gwname)
+    fig_density(results, od, gwname)
+    fig_gw(results, od, gwname)
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--case", action="append", required=True,
@@ -615,7 +639,8 @@ def main():
             if r["name"] == a.gw:
                 r["design"] = {"a": dz["press_schechter"]["a"],
                                "Omega_rad": dz["Omega_rad_baseline_L4"]}
-    figures(results, od, a.gw or results[0]["name"])
+    # figures: one script each (fig_pop_halos.py, fig_pop_density.py, fig_pop_gw.py; G2 item
+    # C15), reading the analysis JSON written below
 
     def clean(o):
         if isinstance(o, dict):
@@ -630,10 +655,6 @@ def main():
         json.dump(clean(results), f, indent=1)
     if os.environ.get("NRPIC_RUN_DIR"):          # registered runs only: copies
         shutil.copy(os.path.join(od, fn), os.path.join(PKG, "results", fn))
-        for g in ("pop_halos", "pop_density", "pop_gw"):
-            if os.path.exists(os.path.join(od, g + ".png")):
-                shutil.copy(os.path.join(od, g + ".png"),
-                            os.path.join(PKG, "figs", f"{g}{a.tag}.png"))
     for r in results:
         print(r["name"], "first halo", r["first_halo"], "LI", r["layzer_irvine"])
         for c in r["catalogs"]:
