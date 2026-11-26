@@ -1,12 +1,12 @@
 # Re-verification: C-sidm G2
 
-`harness/bin/nrpic-stage verify C-sidm G2` on 2026-11-25T16:11:38Z, clean export of commit `e93561aad09a` in `scratch/C-sidm/tmp/stage-verify/C-sidm-G2-e93561a-20261125T161032Z`. Result: **FAIL**.
+`harness/bin/nrpic-stage verify C-sidm G2` on 2026-11-26T12:37:16Z, clean export of commit `fa27a2ab83e7` in `scratch/C-sidm/tmp/stage-verify/C-sidm-G2-fa27a2a-20261126T123403Z`. Result: **FAIL**.
 
 | Check | Result | Message |
 |---|---|---|
 | clean | PASS | worktree clean (outside the stage directory being assembled) |
 | sync | PASS | main is merged into the branch |
-| export | PASS | clean export of e93561aad09a (HEAD) in /data/haiyangw/nrpic/scratch/C-sidm/tmp/stage-verify/C-sidm-G2-e93561a-20261125T161032Z/tree |
+| export | PASS | clean export of fa27a2ab83e7 (HEAD) in /data/haiyangw/nrpic/scratch/C-sidm/tmp/stage-verify/C-sidm-G2-fa27a2a-20261126T123403Z/tree |
 | size | PASS | no committed file of the track above 5 MB |
 | note | PASS | tracks/<ID>/note/main.tex present |
 | package | PASS | EVIDENCE.md, OPEN.md, CHECKLIST.md present (decision 0012); scoping text: scope/SCOPE.md; no verifier's report yet (VERIFIER.md, decision 0016) |
@@ -14,7 +14,7 @@
 | style | PASS | 2 style copies equal harness/style/SHA256SUMS (czstyle.py, paperfig.py) |
 | fig-script | PASS | 11 figures, each with its script |
 | min-figs | PASS | 3 schematics and 8 data figures (brief 13.4 asks at least 1 and 5 at G2) |
-| runs | FAIL | 1 of 246 runs have problems |
+| runs | FAIL | 2 of 257 runs have problems |
 | run-notes | WARN | 25 runs read with defaults or not fully re-verifiable (nrpic-run lint) |
 | checksums | WARN | output checksums not re-verified (--no-checksums) |
 | status | PASS | STATUS.md has 34 lines |
@@ -26,7 +26,10 @@
 
 ```
 {
- "C-20261125-132112-edf3fbc": [
+ "C-20261126-043714-8ea1c35": [
+  "status is submitted: not finished (nrpic-run finish)"
+ ],
+ "C-20261126-121449-1d37e77": [
   "status is submitted: not finished (nrpic-run finish)"
  ]
 }

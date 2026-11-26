@@ -1,34 +1,34 @@
 # STATUS of C-sidm
 
 gate:        G0 PASS (2026-11-20), G1 PASS with reservations (2026-11-21; coord/GATES.md). G2 open
-             (stage/G2: 7 of 20 items pass, 4 fail, 9 open); NOT met, not ready for a verifier
-headline:    at N = 1e5 on M/8 all three block A controls collapse (534.8, 549.3, 599.99 M) while
-             the N = 1e6 control holds 600 M: particle-noise relaxation; the threshold is read at
-             N = 1e6 (bracket q0046/q0047) with its mesh and gauge legs now queued (q0055-q0058,
-             ruling 0039 item 3). No collapse time of the package rests on a horizon search
-last-result: batch-20 analyses (JOURNAL 2026-11-25T16:14Z; figures read):
-             - block A close-out C-20261125-160056-a5b7282: BA.1-BA.3 hold; A324s1c t_c 599.99 M;
-               0.324 kin holds 600 M (Delta +0.085 over 500-600 M), 0.344 kin collapses 229.79 M
-             - horizon recheck C-20261125-160207-05b6db1 (decision 0040 item 3): 24 simulations,
-               none with the finder or its diagnostics; t_c recomputed from alpha_min = 0.3
-             - batch 17: N6c holds 600 M at N = 1e6; collisional t_c 206.64, 163.41, 158.42 M on
-               M/4, M/8, M/16
-runs:        shared queue (HANDOFF.md table): q0046 N6b344, q0047 N6b324, q0048 D2eta1, q0018 N4c
-             (pending, job 5297), q0055 A16b344, q0056 N6b344e1, q0057 A16b324, q0058 N6b324e1
-             (priority 2); q0022, q0023, q0024 (priority 5). Nothing of C-sidm running.
-next:        1. read the bracket at N = 1e6 (q0046, q0047) against B17.5, B17.6 (C7, C9 at one
-                mesh)
-             2. read the legs q0055-q0058 against B20.1-B20.3 (mesh and gauge of the bracket);
-                read N4c (NS.3) and D2eta1 (B17.4)
-             3. figures, note sections and a G2 verifier once the bracket and legs are read
-blockers:    the cards are held by another partition (all five account jobs pending); the M/16
-             cost is an estimate (6.5 card-hours each)
-needs:       orch: budget file of nrpic-run to count 80 card-hours for C (ruling 0039 item 3);
-             a G2 verifier once the bracket and the legs are read
-offers:      readers longruns/scripts/{nseries,blockA_delta,d2_analysis,horizon_audit}.py;
-             N = 1e6 King samples of y0 0.324, 0.334032, 0.344 with kicks
-             (C-20261125-120426-f261c3e, C-20261124-130731-e1d24de, C-20261125-115759-77a6999);
-             collision tests and references (collide/); queue wrapper longruns/seq/qitem.sh
-budget:      G2 31.09 card-hours used by closed manifests (nrpic-run budget; it still shows the
-             old allotment 60, ruling 0039 item 3 gives 80): about 49 left of 80; waiting in the
-             queue about 7.5 (q0046-q0048, q0018, q0022-q0024) + 18.6 (q0055-q0058) [JUDGEMENT]
+             (stage/G2: 7 of 20 items pass, none fails as written, 13 open); NOT met, not ready
+             for a verifier: the mesh and gauge legs of the bracket are unread
+headline:    the collisionless threshold of the King b = 1 family is bracketed on M/8 at
+             N = 1e6: y0 0.344 kicked in collapses at 252.31 M, 0.324 kicked in holds 600 M
+             within +-0.015, so (0.324, 0.344) contains y_max = 0.334032; same fates at N = 1e5;
+             the unstable side repeats with shift_eta 1.0 (252.41 M). Lapse markers, no finder
+last-result: batch-27 analyses (JOURNAL 2026-11-26T12:10Z-12:34Z; figures read):
+             - NS.3 held: N = 1e4 control collapses at 295.78 M (C-20261126-120656-f5c62bb);
+               controls on M/8: 295.78 / 534.81 M / none at N = 1e4 / 1e5 / 1e6
+             - B17.5, B17.6 held (C-20261126-121836-c7a76c1); B20.3 first half held
+               (C-20261126-123219-f734997)
+             - B17.4 held: collisional t_c 164.01 M with shift_eta 1.0 vs 163.41 M
+               (C-20261126-114801-ea62ac3); D2.3 seed part FAILED: 2.24 M vs 2 M bar
+               (C-20261126-121702-b6b1eda); run D2eta1 FAILED on record (guard stop 190.4 M)
+             - note: G2 section (Sec. V) and ledger table VI written, compiled, checked
+runs:        q0055 A16b344 ENDED (C-20261126-043714-8ea1c35, 600 M, collapsed; `nrpic-run
+             finish` running at the end of the session, log scratch/C-sidm/tmp/
+             finish_a16b344.log); q0057 A16b324 (job 5382 pending); q0058 N6b324e1 waiting.
+             Nothing else of C-sidm queued
+next:        1. close A16b344 if the finish did not end; read it with nseries.py beside N6b344
+                (B20.2), then q0057 (B20.1) and q0058 (B20.3 second half) when they end
+             2. G2 figures by one script each (convergence in N, mesh, gauge; ladder schematic;
+                slice mosaic) via the note's run_all; then the fresh G2 verifier (0041 item 3)
+             3. G3 design: collapsed mass fraction against Kn with the finder's diagnostics on
+blockers:    none besides the queue (cards shared)
+needs:       orch: q0057, q0058 at priority 2; a fresh G2 verifier after they are read
+offers:      readers longruns/scripts/{nseries,d2_analysis,blockA_delta,horizon_audit}.py
+             (nseries now with --control, --band, --title); N = 1e6 King samples of y0 0.324,
+             0.334032, 0.344; collision tests and references (collide/)
+budget:      G2: 41.78 card-hours used by closed manifests, 11.80 reserved, 26.42 left of 80
+             (nrpic-run budget, 12:35Z; before A16b344 was closed)

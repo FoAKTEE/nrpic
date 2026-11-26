@@ -1152,3 +1152,26 @@ N6b344e1 C-20261126-050124-00e10ae closed before the analysis (completed, 1.7831
   After the collapse the lapse floor and the constraint norm differ between the gauges.
 - The other half of B20.3 (N6b324e1, q0058) and B20.1/B20.2 (q0057, q0055) are not run yet.
 Failed predictions of this entry: none.
+
+## 2026-11-26T12:40Z  session C-sidm lead (batch 27)  commits 46f40a1e..(this entry's commit)  runs C-20261126-114801-ea62ac3, -120656-f5c62bb, -121702-b6b1eda, -121836-c7a76c1, -123219-f734997 (closed: C-20261126-034500-4b34b1c (failed), C-20261125-132112-edf3fbc, C-20261125-224959-d1d4494, C-20261126-020831-fabf2d7, C-20261126-050124-00e10ae, C-20261124-035054-c06503f, C-20261124-082221-7f03a8e, C-20261124-053105-2fcc8af)
+
+- did: merged main; closed eight ended card runs with nrpic-run finish (two parallel streams; I
+  stopped one duplicate finish of A334s2c by PID when both streams reached it); five registered
+  analyses with figures read; judged NS.3, B17.4, B17.5, B17.6, B20.3 (first half) and the D2
+  seed pair; nseries.py and d2_analysis.py extended (control, band, styles) before use; wrote the
+  G2 section of the note (Sec. V, table VI; checker with --compile clean apart from the accepted
+  G1 exceptions; pages read); stage G2 checklist, OPEN, collect, verify --no-checksums (FAIL only
+  on the two unfinished M/16 runs), report; REVIEW-wave3 section 17; RISKS rows 5, 7, 18, 24, 26;
+  three acks; one request to orch.
+- found: the bracket (0.324, 0.344) around y_max holds on M/8 at N = 1e6 and at N = 1e5; the lapse
+  marker is insensitive to the shift damping before collapse (0.04 and 0.4 per cent); D2eta1 ends
+  non-finite after its collapse; A16b344 (q0055) ended at 600 M with all particles excised.
+- changed my mind about: C1, C2, C7, C9 are OPEN (waiting for legs), no longer FAIL: the N = 1e5
+  failures stay on record but no longer decide them.
+- failed predictions: D2.3 seed-pair part (2.24 M vs 2 M). Failed runs: D2eta1 (guard stop after
+  collapse, exit 3).
+- open: close and read A16b344 (finish started 12:32Z, log scratch/C-sidm/tmp/finish_a16b344.log);
+  q0057 (job 5382 pending), q0058 waiting; G2 figures; fresh verifier.
+- card-hours: none submitted by this session; closed this session 12.33 card-hours (0.4453 +
+  1.2892 + 1.7747 + 2.6283 + 1.7831 + 0.7228 + 1.6789 + 2.0081); nrpic-run budget at 12:35Z: G2
+  41.78 used, 11.80 reserved, 26.42 left of 80.

@@ -1,9 +1,9 @@
 {
   "track": "C-sidm",
   "gate": "G2",
-  "commit": "e93561aad09a76464ccb2d7628be5f069a4059fb",
-  "verified_utc": "2026-11-25T16:11:38Z",
-  "export": "/data/haiyangw/nrpic/scratch/C-sidm/tmp/stage-verify/C-sidm-G2-e93561a-20261125T161032Z",
+  "commit": "fa27a2ab83e7c1b5bed95de81e40907bacc4d867",
+  "verified_utc": "2026-11-26T12:37:16Z",
+  "export": "/data/haiyangw/nrpic/scratch/C-sidm/tmp/stage-verify/C-sidm-G2-fa27a2a-20261126T123403Z",
   "result": "FAIL",
   "checks": [
     {
@@ -21,7 +21,7 @@
     {
       "check": "export",
       "status": "PASS",
-      "message": "clean export of e93561aad09a (HEAD) in /data/haiyangw/nrpic/scratch/C-sidm/tmp/stage-verify/C-sidm-G2-e93561a-20261125T161032Z/tree",
+      "message": "clean export of fa27a2ab83e7 (HEAD) in /data/haiyangw/nrpic/scratch/C-sidm/tmp/stage-verify/C-sidm-G2-fa27a2a-20261126T123403Z/tree",
       "detail": null
     },
     {
@@ -69,9 +69,12 @@
     {
       "check": "runs",
       "status": "FAIL",
-      "message": "1 of 246 runs have problems",
+      "message": "2 of 257 runs have problems",
       "detail": {
-        "C-20261125-132112-edf3fbc": [
+        "C-20261126-043714-8ea1c35": [
+          "status is submitted: not finished (nrpic-run finish)"
+        ],
+        "C-20261126-121449-1d37e77": [
           "status is submitted: not finished (nrpic-run finish)"
         ]
       }
