@@ -280,3 +280,28 @@ The pilot reading with a table on 16000-step nodes (`read_pilot.py --map table -
 against 4000 steps of the full map on 20000 random cells per member, as written) is started beside the diagnostic to
 save time; its zeta numbers are judged against P5-5 only if the diagnostic meets the table16000 bar above, otherwise
 they are recorded as not judged.
+
+## entry-12 (2026-11-26 04:04 PST, lead of E, batch 27): outcome of entry 11; the rule for the table, before its reading
+
+Diagnostic E-20261126-115925-a2c6da5 (`diag.json`, `fig_diag.png` looked at; 20000 tail cells of b000), rms / max
+with means removed: rk4(4000) - verifier 0.99e-9 / 4.25e-9; rk4(16000) - verifier 3.55e-9 / 9.74e-9; table4000 -
+rk4(4000) 1.29e-9 / 5.42e-9; table16000 - rk4(16000) 4.86e-9 / 1.82e-8; table4000 - verifier 0.99e-9 / 3.87e-9;
+table16000 - verifier 3.36e-9 / 9.24e-9. Both alternatives of entry 11 are REFUTED: the step error is not the cause
+(16000 steps are four times further from the long-double map than 4000, not 256 times closer), and the table16000
+bar fails (max |d - b| 1.8e-8 > 1e-9). The prediction's "interpolation" flag is set by its rule but the reading is
+another one: the difference between rk4(16000) and rk4(4000) sits on discrete levels (fig_diag left panel), the mark
+of round-off in the double-precision fixed-step map (p += h accumulated m times misses phi_e by whole ulps, scaled
+by dN/dphi at the end), which grows with the number of steps. This run could have refuted that cause (16000 steps
+closer to the verifier) and did not. So map_rk4 at 4000 steps carries round-off noise of about 1e-9 per cell; a
+table built on it inherits noise of the same size; TB-1's bar (1e-10 against map_rk4) lay below the noise of its
+own reference: TB-1 stays FAILED as written. The pilot reading started with 16000-step nodes (E-20261126-115929-84cd060)
+fails the table16000 bar and its zeta numbers are NOT judged (its P5-3 part, full map 1000 against 4000 steps, is
+independent of the table and is judged).
+Rule from here (written before the reading below): the G3 reader of zeta is the table on 4000-step nodes (the
+lead's cleared map, unchanged) when (i) on b000 it agrees with the verifier's long-double map within the readers'
+agreement of entry 9 (max 4.3e-9) [post hoc for b000: measured as 3.87e-9 in E-20261126-115112-43da266 and
+E-20261126-115925-a2c6da5 before this rule], and (ii) on every member its spot check against map_rk4(4000) (4000
+cells: 2000 random, the 2000 largest |R^NR|) stays below 1e-8, twice the largest difference seen between two cleared
+maps. The noise (1e-9 = 2e-9 sigma_lin) moves a cell across nu = 3 with probability about 4e-12 per cell; no
+statistic of 4d.1 resolves it [JUDGEMENT]. Pilot reading on these terms: `read_pilot.py --map table --msteps 4000`,
+P5-3 and P5-5 judged as written in entry 5; prediction (ii) per member max below 6e-9.
