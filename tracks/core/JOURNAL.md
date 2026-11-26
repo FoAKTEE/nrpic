@@ -2233,3 +2233,69 @@ E the provenance). Card time of this session: none. Processor time: R7 about 6 m
 Closed at 12:27Z: core-20261125-080049-dcc9ea1 completed (0.6294 card-hours, job 5274);
 core-20261124-130310-597d9ca stopped (0.8953 card-hours over jobs 5154, 5182, 5221, 5227),
 manifests committed by `nrpic-run finish`. Branch pushed.
+
+## 2026-11-26T02:25Z (2026-11-25 18:25 PST), batch 23, session core-lead-23 (no change of athenak/src or python/nrpic)
+
+Task: (1) queue order of core's entries; (2) close q0030, q0031 of row 4 level 3; (3) Track
+A's question on the PCS cloud at boundaries of static refinement; (4) NEXT_SOURCE item
+for `<fastflow> diagnostics` on a continued run (0042 item 4); (5) merge of
+`origin/core/restart-finder` on processors, build, byte regression, quick tests; release
+waits for q0049.
+
+(1) Done 02:20Z: q0033 (`row4-l3-0p755-member`, waiting, priority 2, arguments saved in
+`scratch/core/tmp/b23_q0033.json`) removed and added again as **q0059** with the same 26
+arguments, priority 2, `--after step-limit-card` (q0036, the check the dispatcher takes
+last: effective priority 2 against 1 for q0035, q0039, q0049). q0032 (0.755 control) was
+already in Slurm (job 5346, pending): not touched. No other row-4 entry of core waits.
+
+### Predictions D1-D5 (deposit across a static refinement boundary), before any run
+
+Reading of `NrpicDepositSources` (`athenak/src/particles/nrpic.cpp` 739-1116) [VERIFIED
+by reading]: a particle's cloud is laid on the lattice of level `ldep` = the finest level
+among the MeshBlocks that own the nb^3 nearest cell centres of the lattice of the
+particle's own MeshBlock (lines 911-937); the part of a fine cloud that falls into a
+coarser MeshBlock goes into the coarse leaf cell that contains the virtual fine cell
+(1009-1021). The weights of each particle sum to one over the leaf cells (conservation),
+but nothing makes the clouds of a regular lattice add up to a uniform density across a
+level change: the first coarse particles next to a finer block get a cloud of the fine
+width while their neighbours keep the coarse width, and the partition of unity of the
+B-splines holds only for clouds of one width on a lattice of that spacing.
+`deposit_fine_shape` acts only where a leaf is finer than `ldep` (1022-1032), that is
+only with a level cap.
+
+Test (`tracks/core/analysis/deposit_levels/dep_levels.py`, release processor build
+core-v0.7): flat metric (`nrpic_geodesic`, no hole, `<adm> dynamic = false`), periodic box
+32 x 8 x 8 (cells of 1), one static level in the slab |x1| < 8 (cells of 1/2; planar
+boundaries at x1 = +-8), particles at rest, one per local cell at the cell centres
+(mass rho0 times the cell volume), one step; E on the x1 line, and the same with the
+lattice shifted by a quarter cell in x2 and x3. My own 1D emulation of the rule above
+(the problem is planar) is the reference.
+
+- **D1** CIC, cell-centred lattice: E uniform to round-off (|E/rho0 - 1| < 1e-13) on
+  both levels: every CIC cloud of a particle at a cell centre lies inside its own cell.
+- **D2** TSC: first coarse cell next to the fine level +18.75 per cent (1 + 1/8 + 1/16),
+  second coarse cell -12.5 per cent, last fine cell -12.5 per cent; all other cells
+  uniform to round-off. PCS: +20.83, -14.58, -12.5 per cent (46/48 + 1/6 + 1/12; 1/48 +
+  2/3 + 1/6; 1/12 + 1/3 + 1/48). Mass sum exact to round-off in every case.
+- **D3** AthenaK equals the emulation to 1e-12 relative in every leaf cell of the line,
+  for every shape and both lattices. A difference above that is a defect of the code (a
+  wrong cell or weight), not a property of the rule.
+- **D4** `deposit_fine_shape = true` without a level cap changes no byte of the output
+  (the branch is never entered). With `deposit_max_level = 0` (every cloud of root
+  width, spread over the fine leaves) E is uniform to round-off for all three shapes,
+  with and without `deposit_fine_shape`.
+- **D5** Track A's compensation (`deposit_comp_c = 1/6`, `deposit_comp_c2 = 0.4667`) on
+  the PCS case enlarges the boundary errors, by at most about a factor two (gain of the
+  pass at the grid scale in x1 only, 1 + 4c + c2 = 2.13), and leaves the interior
+  uniform.
+
+Refuted: D1 by any CIC cell off by more than 1e-13; D3 by a cell where code and emulation
+differ (a defect); D4 by a byte difference without a cap or a non-uniform capped deposit.
+If D3 holds, the answer to A is "property of the deposit rule", with the cap or CIC as
+the options for nested static meshes.
+
+Amendment to D3 (02:33Z, before any run): for the lattice shifted in x2 and x3, the one
+fine leaf on the line next to the boundary that receives the PCS tail of a coarse particle
+(cloud of fine width in x2, x3 on a lattice of coarse spacing) need not equal the planar
+emulation on a line at fixed x2, x3; D3 for the shifted cases is judged on the code's
+mass sum and on all other cells, and that one cell is reported.
