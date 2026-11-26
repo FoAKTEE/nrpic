@@ -96,6 +96,7 @@ def main():
     order = np.argsort(tag0)
     tag_sorted, lin_sorted = tag0[order], lin[order]
     rows, umax = [], 0.0
+    ulat, negcells = [], []          # |u| in lattice order per snapshot; forward-J <= 0 cells per snapshot
     for f in files:
         t, x, u, tag = read_snapshot(f)
         pos = np.searchsorted(tag_sorted, tag)
@@ -104,6 +105,10 @@ def main():
         grid[li] = x
         grid = grid.reshape(n, n, n, 3, order="F")
         J = jacobians(grid, L, h)
+        ul = np.full(n ** 3, np.nan)
+        ul[li] = np.sqrt(np.sum(u * u, axis=1))
+        ulat.append(ul.reshape(n, n, n, order="F"))
+        negcells.append(np.argwhere(J["fwd"] <= 0))
         umax = max(umax, float(np.sqrt(np.max(np.sum(u * u, axis=1)))))   # running maximum to this snapshot
         rec = dict(t=t, n_particles=int(len(tag)), u_max_to_here=umax,
                    u_p99=float(np.sqrt(np.percentile(np.sum(u * u, axis=1), 99.0))))
@@ -147,10 +152,30 @@ def main():
                                        tau_lb=first["t_over_tH_lb"], probe=first["t_over_tH_probe"]))
         else:
             res["first"][kind] = None
+    # batch 23, local bound: the worldlines that cross first are the corners of the cells with J <= 0 at the first
+    # non-positive snapshot; their largest |u| over the snapshots before it bounds their W (gamma^ij <= gmax)
     fw = res["first"].get("fwd")
     if fw:
-        lp = fw["last_positive"]["tau_lb"]
-        res["verdict"] = dict(
+        k = [r["t"] for r in rows].index(fw["first_nonpositive"]["t"])
+        cells = negcells[k]
+        corners = [cells]
+        for d in range(3):
+            c2 = cells.copy()
+            c2[:, d] = (c2[:, d] + 1) % n
+            corners.append(c2)
+        corners = np.unique(np.concatenate(corners), axis=0)
+        u_loc = max(float(np.nanmax(ulat[j][tuple(corners.T)])) for j in range(k))
+        W_loc = float(np.sqrt(1.0 + a.gmax * u_loc ** 2))
+        lp_t = fw["last_positive"]["t"]
+        tau_loc = float(np.interp(lp_t, ta, int_alpha)) / W_loc
+        fw["local"] = dict(n_cells=int(len(cells)), n_corner_particles=int(len(corners)), u_max=u_loc, W_max=W_loc,
+                           tau_lb_last_positive=tau_loc, t_over_tH_lb_last_positive=float(tau_over_tH(tau_loc)),
+                           int_alpha_min_to_last_positive=float(np.interp(lp_t, ta, int_alpha)))
+        for r in rows:
+            r["t_over_tH_lb_local"] = float(tau_over_tH(float(np.interp(r["t"], ta, int_alpha)) / W_loc))
+
+        lp = fw["local"]["t_over_tH_lb_last_positive"]
+        res["verdict"] = dict(global_bound_at_last_positive=fw["last_positive"]["tau_lb"],
             dust_clock_lower_bound_at_last_positive=lp,
             above_band_edge=bool(lp > a.band[1]),
             crossing_snapshot_after_5p17=bool(fw["last_positive"]["coord"] > 5.17 or fw["first_nonpositive"]["coord"] > 5.17))
@@ -169,7 +194,8 @@ def main():
     fig.subplots_adjust(left=0.08, right=0.985, bottom=0.17, top=0.88, wspace=0.28)
     ax = axs[0]
     for kind, key, col, lab in (("fwd", "t_over_tH_coord", fs.PAL["red"], "forward J, coordinate time"),
-                                ("fwd", "t_over_tH_lb", fs.PAL["blue"], "forward J, dust-clock lower bound"),
+                                ("fwd", "t_over_tH_lb_local" if fw else "t_over_tH_lb", fs.PAL["blue"],
+                                 "forward J, dust-clock bound (first-crossing particles)"),
                                 ("ctr", "t_over_tH_coord", "0.4", "centred J, coordinate time")):
         ax.plot([r[key] for r in rows], [r[f"minJ_{kind}"] for r in rows], "o-", ms=3, lw=1.0, color=col, label=lab)
     ax.axhline(0, color="0.5", lw=0.6)
@@ -185,7 +211,10 @@ def main():
     tt = np.array([r["t"] for r in rows])
     ax.plot(tt, [r["t_over_tH_coord"] for r in rows], "o-", ms=3, color=fs.PAL["red"], label="coordinate time")
     ax.plot(tt, [r["t_over_tH_probe"] for r in rows], "s-", ms=3, color=fs.PAL["yellow"], label="probe particle")
-    ax.plot(tt, [r["t_over_tH_lb"] for r in rows], "^-", ms=3, color=fs.PAL["blue"], label=r"lower bound $\int\alpha_{\min}/W_{\max}$")
+    ax.plot(tt, [r["t_over_tH_lb"] for r in rows], "^-", ms=3, color=fs.PAL["blue"], label=r"global bound $\int\alpha_{\min}/W_{\max}$")
+    if fw:
+        ax.plot(tt, [r["t_over_tH_lb_local"] for r in rows], "v-", ms=3, color=fs.PAL["green"],
+                label="bound for the first-crossing particles")
     ax.axhspan(a.band[0], a.band[1], color="0.85", zorder=0)
     if fw:
         ax.axvspan(fw["last_positive"]["t"], fw["first_nonpositive"]["t"], color=fs.PAL["red"], alpha=0.15,
