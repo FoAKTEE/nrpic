@@ -1070,3 +1070,32 @@ q0060: see the last item. [VERIFIED by these runs]
 - GM2 and GM3 wait for the analysis B-20261126-212212-c54d979 (registered, running; 5 workers).
 - Card time of q0060 HOLDS: five jobs 5377-5399, sacct ElapsedRaw 13486 s = 3.75 card-h
   (predicted 3.5-5).
+
+## 2026-11-26 14:25 PST (lead of batch 29): C3, the 64^3 member at eight particles per cell; predictions
+
+Decision 0046 item 2(b): the mesh pair at eight particles per cell, 64^3 against the existing
+128^3 member (runs B-20261124-223926-33194d9 and its continuation B-20261125-221742-5100a22, zero
+shift, initial data B-20261124-135029-3fe13f6 with --ppc 2). The predictions that failed at one
+particle per cell (M4, GM4) stay on record.
+
+Step 1, initial data (processor, one core, registered now): `run_gr_ic.sh 64 8 "--nc 3.2
+--sigma1 0.014 --seed 1 --ppc 2 --outer 36"`, the arguments of the 128^3 data. Expectation: the
+same 146 kept modes, sigma1_realized equal to the 128^3 data's 0.012343 within 1e-3 relative (the
+modes below k_c are the same draw), Hamiltonian residual below 1e-10, 2^21 particles, wall time
+30-60 min (the 128^3 data took 19821 s with eight times the particles). Refuted if the modes or
+sigma1 differ: then the pair is not one realization and is not run.
+
+Step 2, the card run (shared queue, priority 2, release core-v0.8 card build; one segment of at
+most one card-hour, 64^3 at 2^21 particles costs about one eighth of the 128^3 member's
+0.3-0.8 card-h): `pop_gr_run.athinput` with mesh 64^3, meshblock 32^3, the step-1 files, to
+a = 143 (tlim of the deck). Predictions [JUDGEMENT]:
+- C3a: Hr_mean(64^3)/Hr_mean(128^3) at fixed eight per cell lies between 1.5 and 4 at every common
+  history time with a = 25-141 (eight per cell lowers the sampling noise 2.8 times in amplitude
+  against one per cell, so the truncation part, which falls with the spacing, carries more of
+  the violation than in the one-per-cell pair 128-256, whose ratio was 1.1-1.4).
+- C3b: Mr_mean ratio 64/128 at least 1.2 at a = 49-141.
+- Refutation of convergence with the mesh at fixed sampling: the Hr_mean ratio below 1.2 at any
+  a >= 49 (then the constraints follow the sampling and not the spacing at eight per cell too,
+  and the statement of convergence of C3 fails as written).
+- The run reaches a = 143 without a guard stop; K_max of the box stays below zero after t = 9
+  (as the 128^3 member).

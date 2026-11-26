@@ -1,0 +1,10 @@
+# shear series 7 (batch 29, 2026-11-26; decision 0046 item 2a): the amplitude without stream
+# crossing at H L = 4, beta = 0.125 (design: scripts/nocross_design.py, first crossing in the
+# conservative Zel'dovich estimate at t = 10.7, after tlim = 10), at N_y = 64, 128, 256 with
+# 4 particles per cell along y as series 5-6. Fans centred on the first-order slopes of
+# beta = 0.125 (2.5 x those of M2), relative half width 1. Particle snapshots every 0.25 for
+# scripts/crossing.py. Release core-v0.8 processor executable. Prediction: JOURNAL.md, entry
+# of 2026-11-26 14:25.
+N7_n64_ppc4 0.125 4.0 64 tfac=2.5 ppc_y=4 fanA=-0.3888888888888889,1.0,41 fanB=0.03332911773284011,1.0,21 x:particles/snap_dt=0.25
+N7_n128_ppc4 0.125 4.0 128 tfac=2.5 ppc_y=4 fanA=-0.3888888888888889,1.0,41 fanB=0.03332911773284011,1.0,21 x:particles/snap_dt=0.25
+N7_n256_ppc4 0.125 4.0 256 tfac=2.5 ppc_y=4 fanA=-0.3888888888888889,1.0,41 fanB=0.03332911773284011,1.0,21 x:particles/snap_dt=0.25

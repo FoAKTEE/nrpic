@@ -419,3 +419,45 @@ B-20261124-172643-d1e88c7, `figs/fig_ppc.png` panel (b) looked at) [VERIFIED by 
   4 per cell (prediction to be written before it is queued). The track reports L2 as
   "not converged in this code" and uses S1-S4, M1 and L1 (which converge or sit inside the
   paper's bounds) for the weak-field comparison.
+
+## 2026-11-26 14:25 PST (lead of batch 29): series 7, the amplitude without stream crossing (C1, decision 0046 item 2a); prediction
+
+The case L2 as run stays failed on record (no mesh-converged number; each refinement moves away
+from CosmoGRaPH's -0.8183, draft.tex:360). Design of the discriminating run:
+`scripts/nocross_design.py` (registered with the series below) takes the exact initial slice
+(draft.tex:177-182, 515) at H L = 4 and estimates the first stream crossing along y by the
+plane-parallel Newtonian (Zel'dovich) growth in Einstein-de Sitter, the contrast carried by the
+particle masses and no initial velocity along y. Numbers (dry run of the script, to be repeated
+by the registered run): crossing at t = 2.1-2.2 for beta = 0.5 (L2's observer metric shows its
+first kink at t = 3.1, 2026-11-24 07:00 entry: the estimate is early, i.e. conservative), 3.8-5.0
+for 0.3, 6.2-8.5 for 0.2, 8.7-12.1 for 0.15, 10.7-14.9 for 0.125, 13.8-19.1 for 0.1 (lower value:
+active density rho_ADM + S; upper: rho_ADM alone) [JUDGEMENT: an estimate, not the code's
+dynamics]. Chosen: beta = 0.125, the largest grid value whose conservative crossing time lies
+after the run's end tlim = 10 (and after t_A, about 4-6 at this amplitude). The run checks the
+crossing itself: particle snapshots every 0.25 and `scripts/crossing.py` (smallest neighbour
+spacing along y over all columns; crossing when it reaches zero).
+
+Series 7 (`inputs/series7.txt`): beta = 0.125, H L = 4, N_y = 64, 128, 256 at 4 particles per cell
+along y (as series 5-6), tlim = 10, release core-v0.8 processor build. No code of the paper ran
+this amplitude, so there is no reference number at it; the reference statement is that without
+stream crossing the particle code (CosmoGRaPH) and the fluid code (ET) agree within their
+numerical accuracy (draft.tex:352-354 for beta = 0.05; ET and CosmoGRaPH part only at H L >= 1 for
+beta = 0.5 where stream crossing is expected, draft.tex:369-370). Predictions [JUDGEMENT]:
+- N7a (no crossing): s_min > 0 in every snapshot up to t_A at all three meshes. Refuted by any
+  crossing before t_A; then the series does not discriminate and the amplitude is halved.
+- N7b (mesh convergence at fixed sampling): |Delta(256) - Delta(128)| <= 0.5 |Delta(128) -
+  Delta(64)| (order >= 1), and the Richardson error (finest minus extrapolated) below 3e-3; the
+  relative constraint means over 1 <= t <= t_A fall by at least 1.5 per doubling (L2: 0.12-0.15
+  flat). Refuted if the 128-256 difference is 0.7 or more of the 64-128 difference, or if the
+  constraint means do not fall: then the code does not converge in the mesh even without stream
+  crossing, L2's failure is an error of the code and not the physics of particles against a
+  fluid, and the cause is looked for in the code (deposit, step, observer transport).
+- N7c (value): the extrapolated Delta lies between 0.007 and 0.065 in magnitude (a factor three
+  around the beta^2 scaling of M2's +3.45e-3 from beta = 0.05, 2.5^2 x 3.45e-3 = 0.022; the
+  paper's departures are O(b^2) relative, draft.tex:350), sign not predicted (M2 positive, L2
+  negative). A value outside does not refute N7b; it says the beta^2 scaling fails between M2 and
+  L2.
+- Wall time: below 3, 10, 35 minutes at N_y = 64, 128, 256 on one core (series 6: 27 min at 256).
+If N7a and N7b hold, L2's non-convergence is attributed to stream crossing in a run that could
+have refuted it; the multi-code row then rests on S1-S4, M1, L1 and this series, and L2 is
+reported as the stream-crossing regime this code does not converge in at practical meshes.
