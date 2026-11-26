@@ -151,3 +151,12 @@ differences of x - q at the lattice point at the centre), r_m from the data's id
   tau_at_horizon - tau_ah_exact = 9.60581 - 9.58922 = 0.01659 (Table V 0.0166). The exact tau_ah itself was not
   recomputed by me (the earlier verifier did, VERIFIER-C18.md). Delta t_trap(C) = -0.00775 was found in the output but
   not traced to its inputs.
+
+## Entry 3, 2026-11-26 14:46 PST: prediction for the Hamiltonian residual and the lapse of the Szekeres members (before szk_hcon.py runs)
+
+- V1.5 The shell rms of H/(16 pi rho_b(tau)) gives the orders of Table V's second column (64->128: 2.93, 2.79, 3.49 at
+  tau 10, 20, 30; 128->256: 4.01, 4.65 at tau 10, 20) within 0.1 (my masks differ at the shell's edges); hence P21
+  ("H order equals the K order within 0.5 between 128 and 256 at tau 10 and 20") holds at tau 10 and fails at tau 20
+  (4.65 against 3.62), as the note says.
+- V1.6 max |alpha - 1| grows with the number of steps, above 1e-12 in N256 at tau >= 20 (P17's alpha clause fails
+  there). Refuted if it stays below 1e-12 in every member and dump.
