@@ -15,9 +15,9 @@ headline:    core/restart-finder merged into core/nrpic (b755cdcf, no conflict, 
 last-result: deposit test core-20261126-022953-21b8455 (D1-D3 hold, D4 failed in both
              parts, D5 holds in substance); row-4 fates core-20261126-023040-b755cdc (P10,
              P11, P12, P15 hold); diagnostics after a restart core-20261126-023323-c8fad52
-             (F1: command line refused, `-i add.athinput` works); R8 byte regression
-             core-20261126-024438-1fa17dd and Q8 restart_test core-20261126-024518-e1e16dc
-             (outcomes in JOURNAL.md, last entry).
+             (F1: command line refused, `-i add.athinput` works); R8 held, 75 of 75
+             identical with core-v0.7 (core-20261126-024438-1fa17dd); Q8 held,
+             restart_test ALL OK (core-20261126-024518-e1e16dc); RELEASE-v0.8.md written.
 pending:     card runs in the shared queue, none waited for (HANDOFF.md has the commands):
              q0049 core-rf-card    card check of core/restart-finder (release gate v0.8)
              q0039 core-v07-card   card check K7 of the merged card executable of v0.7

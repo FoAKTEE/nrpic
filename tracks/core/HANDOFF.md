@@ -2,7 +2,7 @@
 
 Written for a reader with no memory of the last session. Rewritten at the end of every session.
 
-State (2026-11-26T03:05Z = 2026-11-25 19:05 PST, batch 23, session core-lead-23): a round
+State (2026-11-26T03:18Z = 2026-11-25 19:18 PST, batch 23, session core-lead-23): a round
 without AthenaK source change. **Nothing is half-done** except what the queue runs.
 Release core-v0.7 is on main (tag 5f75e5b9). `core/nrpic` now holds `core/restart-finder`
 (merge b755cdcf; source of the tree = 01d4aeeb of that branch) and is the candidate of
@@ -36,10 +36,11 @@ Owner: core, branch `core/nrpic`, worktree `/data/haiyangw/nrpic/wt/core`.
    prediction F1 held); source fix = `NEXT_SOURCE.md` item 1 with that test. Answered D, F
    and B (B's `restart-new-parameters` has the same cause); inbox items acked.
 5. **core-v0.8 prepared on processors**: merge b755cdcf; serial build
-   `scratch/core/b23_build_cpu/src/athena` (628 s); R8 byte regression run
-   core-20261126-024438-1fa17dd and Q8 `restart_test.py` run core-20261126-024518-e1e16dc
-   (outcomes: last journal entry). `CHANGELOG.md` heading of v0.8 and `OPEN.md` core-v0.7 items
-   a, b state the merge.
+   `scratch/core/b23_build_cpu/src/athena` (628 s); **R8 held**: byte regression 75 of 75
+   identical with core-v0.7 (run core-20261126-024438-1fa17dd, figure -031446-af637b5);
+   **Q8 held**: `restart_test.py` ALL OK (run core-20261126-024518-e1e16dc).
+   `RELEASE-v0.8.md` written (first line REGRESSION PASS, "NOT RELEASED", card check
+   PENDING); `CHANGELOG.md` heading of v0.8 and `OPEN.md` core-v0.7 items a, b state the merge.
 
 ## Pending in the shared queue (none waited for)
 
