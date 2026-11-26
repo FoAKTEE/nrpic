@@ -323,3 +323,52 @@ prediction are in JOURNAL.md, batch 21.
 
 Runs closed: B (F-20261121-203156-03efdd3) finished as stopped (9.28 card-hours, 153 files
 checksummed, 109.9 GB).
+
+## Batch 25 (lead, 2026-11-25 late evening): A2 at its cap; the G1 verifier's requests
+
+Artefacts read, not conclusions: A2's run directory (chain/events.log, the 21 segment logs, the
+kept tracker copies, the horizon summaries, history and waveforms) through the registered
+readers F-20261126-054946-a21f229 (b21_a2_state.py) and F-20261126-054957-6cdb7cf
+(b11_passage.py); both figures read. VERIFIER.md (batch 22) read in full.
+
+**A2 (q0001, F-20261124-210400-902c650), ended at MAX_SEGMENTS = 19 at 133.0 M, 11.15
+card-hours (sacct, 21 jobs 5207-5349).** Confirmed: the join A + A2 is complete to 133.0 M (one
+step largest gap; overlaps to 1.25e-9 M); waveforms complete. The batch-21 cap forecast holds
+(125-140 M, 10-14 card-hours). Wrong in the track's predictions: A2-2 (the centre of mass did not
+turn at 8-11 M by 115 M; at 133 M it is at 5.42 M and still closing, because the pair is
+disrupted and m1 falls almost radially into M), A2-5's heavy-hole clause (1.55e-3 > 1e-3 by 133
+M). Defect fixed: b21_a2_state.py drew its panels to a fixed 120 M; it now draws to the last
+record (commit before F-20261126-054946-a21f229). Not confirmable now: the fates (m1 bound and
+plunging, m2 marginal) are coordinate energies (R6) until the horizons show a merger of m1 with M.
+
+**The verifier's requests (VERIFIER.md section 8) and what the track does:**
+- (a) Fractional drifts. Applied: binary_conv/README.md row "member horizon drift, fraction of
+  the mass per M"; CHECKLIST, STATUS, JOURNAL batch 25 say "fractions of the mass per M" for
+  S6/H2 numbers (3.09e-5, -8.05e-6 over 65-95 M; m/8 0.9-1.7e-3; C 1.2-1.7e-4). RISKS R4 already
+  said "fractional".
+- (b) No order of convergence between the mesh members. Applied: binary_conv/README.md withdraws
+  ">= 3.3" and states "m/12 and m/16 agree within 2.1e-3 M to 21 M; m/8 differs by 0.06-0.38
+  M" (verifier F-20261125-175931-32701e4). The note's ledger row 194 (three-member "orders" 12,
+  14.5) is to be reworded in note v3 the same way (OPEN.md item 3).
+- (c) Newtonian pass of the centre of mass. Applied in wording: the three-body integration passes
+  the centre of mass at 9.762 M at 104.34 M; 9.81 M is the two-body conic pericentre of the
+  initial centre-of-mass state (9.8087 M), as SCOPING and G1/STATUS already call it ("conic").
+  JOURNAL batch 11's A2-2 text ("Newton 9.81 M at 104.35 M") stays as written (append-only); its
+  judgement does not depend on the 0.047 M.
+- (d) p1_280.json's d_at_112. Checked in the source: khsr_note/scripts/p1_280.py line 63 stores
+  np.interp(112.38, t, d) under the key d_at_112, so the stored 11.816 M is the remnant's distance
+  at 112.38 M (khsr_note/JOURNAL.md line 94 says "at t = 112.38 ... 11.82 M"), not at 112.0 M
+  (11.895 M, verifier). A label defect, not a wrong number; the key keeps its name in the
+  registered output; any text that quotes it says "at 112.38 M".
+- (e) F1, the heavy hole's two finder branches from 86.6 M: OPEN. Plan: A2's continuation carries
+  `<fastflow> diagnostics = true` through `-i` (decision 0043 item 5) if the processor test R25
+  holds; then each search of finder 2 has a status row (found, reason, iterations, expansion), and
+  the branches are told apart by their mean expansion and flow iterations from 133 M on. The rows
+  86.6-133 M stay "made without the diagnostics"; for them only the failure signature applies.
+  A2-5's heavy-hole clause is already refuted as written (1.55e-3 by 133 M) whatever F1 decides.
+- (f) Method behind "own residual 4.9e-7" and the baseline of "+0.32 percent": the baseline is the
+  accepted search at 4 M (verifier reproduced 1.004190 there); the 4.9e-7 is not reproduced from
+  the history (the ledger's raw m/16 value is 5.51e-7); the text is to say "5.5e-7 raw, about 30
+  times below the uncorrected 1.6e-5" in note v3 (OPEN.md item 3).
+- Junk-energy criterion (iii): the four radii agree within 19.8 percent: MET AT ITS EDGE
+  (CHECKLIST C7).
