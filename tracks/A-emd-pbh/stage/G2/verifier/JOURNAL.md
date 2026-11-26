@@ -91,3 +91,63 @@ differences of x - q at the lattice point at the centre), r_m from the data's id
 - V5.1 Every run id of Table V has a finished manifest and its output holds the number to the digits printed.
 - V5.2 Spot checks (conv_ball A-20261121-120257-a2eb839): mesh A Delta t_det = 0.193 and mesh C 0.0166 are in
   the run's numbers file and follow from the raw horizon summary of the members within 1e-3 M.
+
+## Entry 2, 2026-11-26 14:42 PST: outcomes V2 to V5 (figures looked at: fig_a2_verify.png, fig_c3_verify.png, fig_p0l6_verify.png)
+
+### V2 (run A-20261126-223151-8310871; lattice test passed: centred-difference lambda 1.2 per cent low at the runs' spacing, J sign change between a = 0.95/lambda and 1.05/lambda)
+- V2.1 HOLDS. Deformation tensor at the central site from snapshot 0: S1L lambda = (0.06258, 0.03935, 0.01613), axis of
+  the largest exactly z; ratios 1.59 : 1 : 0.41 (design 1+3e : 1 : 1-3e = 1.6 : 1 : 0.4). Zel'dovich first-axis time
+  4.346 t_H (second 8.72, third 33.2). S1L-h lambda = (0.03129, 0.01968, 0.00806), exactly half: 12.29 t_H. The newtonian
+  members read the same lambda (same positions). Truncation of the centred difference (lattice test): lambda may be
+  ~1 per cent low, the Zel'dovich time ~1.5 per cent high.
+- V2.2 HOLDS. Sign of det(dx/dq): S1L min J > 0 at t = 60.004 (6.192 t_H), <= 0 at 70.004 (7.213 t_H; 134 cells; deepest
+  cell at lattice (34, 32, 30), q = (0.63, 0.00, -0.62), two sites from the centre). S1L-h: (13.847, 14.358] t_H
+  (2 cells, at the centre). First axis z in both (z bracket = J bracket); S1L then x (8.23, 9.25], y (13.34, 14.36];
+  S1L-h x (19.97, 20.48]. NEW (not in the package): the snapshots carry each particle's proper time (nrpic_io.cpp
+  1115-1117; 72 bytes a particle in the files). On the dust's own clock: S1L corner particles of the first-crossing
+  cell 5.993-6.002 t_H on the last uncrossed snapshot and 6.835-6.943 on the first crossed one; S1L-h 13.684-13.698
+  and 14.155-14.168. The central particle stays at rest (|u_i| <= 1.1e-9 S1L, 5.6e-12 S1L-h).
+- V2.3 HOLDS. N-z (4.520, 4.689], N-z128 (3.588, 3.734] t_H, both along z first at the centre.
+- V2.4 HOLDS. A2 as written (band [3.4, 5.0]) FAILS: S1L crosses in (6.19, 7.21] coordinate, (5.99, 6.94] dust clock.
+  A2H HOLDS on both clocks: (13.85, 14.36] coordinate and (13.68, 14.17] dust clock inside [12.5, 15.2]; probe
+  prediction "above 13.5": 13.68 holds.
+
+### V3 (run A-20261126-223655-77df724; cycloid test passed to 1e-13; LTB crossing check A-20261126-224045-9d8fe53, after the
+### defective first version A-20261126-223953-c6606f6 that used one bang time for all shells)
+- Reference B reproduces the code's initial slice: R(0) to 2.2e-5, dR/dtau(0) to 3.7 per cent (difference over the
+  first three records, a crude derivative).
+- V3.1 PARTLY REFUTED. Shells with r0 > 1.5 (276 tracks, 47 radii): max |R/R_B - 1| up to the exact turnaround 3.3 per
+  cent (the lead's 1-4 per cent: reproduced). After turnaround and before their exact trapping, the 40 outer tracks that
+  turned depart by more: r0 = 1.52: +42 per cent (code shell larger, late), 1.58: 3.8, 1.83: -25 (code smaller, early),
+  2.13: -19, 2.15: -6.8; r0 >= 2.47 below 0.3 per cent to t = 140. The exact solution has no shell crossing among the
+  47 radii before tau = 141 (A-20261126-224045-9d8fe53, initial slice taken as one LTB time). Inner shells (r0 <= 1.5)
+  depart by factors (as the note says, "less well"). My prediction (within 1-4 per cent until trapping; refuted above
+  6) is refuted for r0 = 1.52, 1.83, 2.13, 2.15.
+- V3.2 HOLDS with a correction of the time. horizon_status_0.txt: 308 searches from t = 100.15; found = 1 once, at
+  t = 118.118 (area mass 562.2, mean coordinate radius 18.2 > half the box): no tracked shell is trapped in the code
+  then (first code-trapped track at t = 122.22) although 46 tracks are past their exact tau_ah: the accepted surface is
+  not a trapped surface (false acceptance). Every search from t = 121.40 to 140.0 (172 searches) ends with reason 6
+  ("iteration limit reached without convergence of the mass"), with area masses rising from ~3 to ~7, while 14 tracks
+  are trapped in the code from t = 122.2 (largest M 3.47, R = 5.95, coordinate radius 0.0168 at t = 136, i.e. 3.4
+  cells of the finest level, dx = 0.0049): the stall begins at 121.4, not at 136, and the outermost trapped track
+  spans 3.4 finest cells in radius (the trapped region may extend to the next, untracked radius).
+
+### V4 (run A-20261126-223246-89959bc; weights test passed: integral of x^2 to 0.18 per cent on a nested line)
+- V4.1 HOLDS. t = 0: top hat 0.278 (A), 0.174 (B); S1 0.185, 0.146; S2 (TSC/PCS) 0.134, 0.116; S2c 0.00636, 0.000578:
+  order 3.46 for S2c, 0.68 top hat, 0.34 S1, 0.20 S2.
+- V4.2 PARTLY REFUTED. S2c grows to 0.129 (A), 0.101 (B) at t = 1 (orders A->B: 1.50, 1.07, 0.34, 0.36 at t = 0.25, 0.5,
+  0.75, 1); the top hat grows to 0.93 (A) and 1.50 (B) at t = 1 (order -0.69, B worse), far above my 0.05-0.15. From
+  t ~ 1.5 every member lies on one curve, 0.3 at t = 2 rising to ~0.6 at t = 5 (figure). C3 as written FAILS: every
+  member exceeds 0.1 by t = 1 (S2c-B by 1 per cent).
+- V4.3 HOLDS. S2c-A8/S2c-A = 9.6 at t = 0, 1.11, 1.25, 1.12, 1.08, 1.04 at t = 0.25, 0.5, 0.75, 1, 2.
+
+### V5 (run A-20261126-223909-6859df2, after A-20261126-223902-c94b32f failed on an inf in an output; matcher test passed)
+- V5.1 HOLDS: all 24 rows of Table V: manifest present, status completed, every printed value occurs in the run's
+  output at the printed digits. The orders "1.5, 2" and "2, 1.5" are weak matches (small integers occur anywhere);
+  from the printed errors: log2(0.193/0.0675) = 1.52, log2(0.0675/0.0166) = 2.02, log2(0.0925/0.0224) = 2.05,
+  log2(0.0224/0.00775) = 1.53: consistent.
+- V5.2 HOLDS for the detection-time row: the raw horizon summary of member C (A-20261121-083336-6a82131) first finds a
+  surface at t = 10.75 with mass 0.6885454828, the analysis's numbers to all digits; Delta t_det(C) =
+  tau_at_horizon - tau_ah_exact = 9.60581 - 9.58922 = 0.01659 (Table V 0.0166). The exact tau_ah itself was not
+  recomputed by me (the earlier verifier did, VERIFIER-C18.md). Delta t_trap(C) = -0.00775 was found in the output but
+  not traced to its inputs.
