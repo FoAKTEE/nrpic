@@ -306,7 +306,13 @@ def main():
             ok_grid = len(xa) == len(xc) and np.allclose(xa, xc, atol=1e-12)
             r["grid_matches_emulation"] = bool(ok_grid)
             if ok_grid:
-                r["max_rel_code_minus_emulation"] = float(np.max(np.abs(ea - er)))
+                diff = np.abs(ea - er)
+                if shift != 0.0:
+                    # amendment of D3: the last fine leaf beside each boundary is reported
+                    edge = (np.abs(xa) > XF - 0.5) & (np.abs(xa) < XF)
+                    r["edge_fine_cell_code_minus_emulation"] = float(np.max(diff[edge]))
+                    diff = diff[~edge]
+                r["max_rel_code_minus_emulation"] = float(np.max(diff))
             dev = ea - 1.0
             r["max_abs_dev"] = float(np.max(np.abs(dev)))
             # deviations of the cells next to the boundary x1 = +8
