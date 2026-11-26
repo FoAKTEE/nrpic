@@ -1,0 +1,14 @@
+{
+ "name": "22 (2026-11-25 late morning, processors only)",
+ "what": "fresh verifier for gate G1 of Track F, everything but the tail of the passage",
+ "note": "Releases core-v0.4 to v0.7 are on main. Rulings: coord/DECISIONS/0037 to 0042. The cards are held by another partition until about the morning of 2026-11-26: processors only, submit nothing. The week's usage is tight: keep to the time given. Every number with its run id; prediction before every test; figures made by registered scripts and looked at; at most 6 cores.",
+ "items": [
+  {
+   "type": "task",
+   "owner": "F-hills",
+   "key": "stage/G1/verifier",
+   "title": "fresh verifier for gate G1 (everything but the tail of the passage)",
+   "task": "Fresh verifier for gate G1 of this track (checklist item C18; decision 0016 item 4; coord/DECISIONS/0042 item 2). About ninety minutes, processors only, no card run. Trust nothing and do not read the lead's verdicts first (stage/REVIEW-wave3.md, the outcome entries of JOURNAL.md, stage/G1/CHECKLIST.md): take what is claimed from stage/G1/OPEN.md item 2 (the lead's list of material for the verifier) and the result tables of the packages it names, the criteria from the track's scope text, and the predictions as they were written before the runs (git log shows when). With readers of your own, not the packages' scripts, recompute from the registered outputs: the Newtonian reference of the encounter with an integrator of your own (the three-body orbit, closest approaches, the fate and speed of each member for the registered initial data); the trajectories of the relativistic runs from the tracker files with your own parser (for the passage A + A2 join the kept copies under trk_keep/ with the live file and check the join yourself: overlaps agree, no gap); the closest approach of the pair and its time; masses and horizon numbers from the summaries (no run of this track has status files: use the failure signature, a failed search writes NaN or a bit-identical repeat of the line before, and say 'made without the diagnostics'); constraint norms; the convergence statements between the mesh members; the count of waveform samples. Test each reader on an analytic case first. A prediction before each recomputation, the outcome after it. The passage has reached 96 M of at least 170 M: verify it as far as it goes, and leave readers that run unchanged on the completed passage (say how in the report). Per claim: reproduced (to how many digits), not reproduced, or not checkable and why; predictions that failed as written are stated as failed (A2-1 on timing, H2 in part, H4). Figures you look at. Write stage/G1/VERIFIER.md; only after it is written, a last section that compares with the lead's verdicts."
+  }
+ ]
+}

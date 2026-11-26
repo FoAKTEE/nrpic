@@ -1,4 +1,4 @@
-# 0039 Rulings after batch 17
+# 0039 Rulings after batch 17 (amends 0006)
 
 Status: ACCEPTED · 2026-11-25 · orchestrator (decision 0017)
 
