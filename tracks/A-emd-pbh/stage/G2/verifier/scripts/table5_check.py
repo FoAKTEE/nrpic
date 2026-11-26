@@ -57,7 +57,9 @@ def numbers_in(d):
         with open(f, errors="replace") as fh:
             for m in NUM.finditer(fh.read()):
                 try:
-                    vals.append(float(m.group(0)))
+                    x = float(m.group(0))
+                    if math.isfinite(x):
+                        vals.append(x)
                 except ValueError:
                     pass
     return vals
