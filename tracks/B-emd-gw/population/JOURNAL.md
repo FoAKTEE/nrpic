@@ -1000,3 +1000,32 @@ from sacct: q0007 seven jobs 193.9 min = 3.23 card-h; q0042 13 min 25 s = 0.22; 
   121, 1.824/1.660 at 132).
 - Cores: the two comparisons ran for a few seconds each while three analyses held six cores (seven
   processes for about ten seconds).
+
+## 2026-11-26 13:22 PST (lead of batch 28): q0060 ended; how GM1-GM4 are judged, before any analysis
+
+q0060 (`pop_s014_gr256_gd`, run B-20261126-105021-6343c13, Slurm 5377, 5383, 5388, 5394, 5399)
+ended: chain STATUS DONE (tlim), last segment "finished: time=21.916 cycle=2806", no
+`pop.guard.txt` (seen while locating outputs; nothing else read). `nrpic-run finish` started
+before any analysis (261 GB to hash, in the background). The three detached analyses of batch 23
+(B-20261126-022356-52c2460, -022403-82f6e69, -022838-27fab1b) ended with exit 0 and are closed.
+
+How each waiting prediction is judged (written before the analyses run; times t -> a by
+a = 143 ((t + 2)/23.916)^2 of the box, so t = 14, 16, 18, 20, 21 are a = 64, 81, 100, 121, 132):
+- GM1 from `pop.cstat.hst` and the chain record: K_max of the box after t = 9, guard file, end time.
+- GM2 with `analyze_gr.py --equal-mass --times 4,8,12,14,16,18,20,21` on q0060 and
+  `compare_legs.py --base <gauge leg B-20261125-115558-2ab4161/analysis_gr_gd.json>` (the
+  metric strain carries no particle weight, so that weighted-era file is a valid base for the
+  strain); the band ratio |k| <= 8 k_f at a <= 64 against 5 per cent, before a = 100 against
+  0.8-1.2, to a = 132 against 20 per cent; Omega_cor (all shells) at a = 121 against 1.0-2.0
+  (refuted outside 0.8-3). Fewer dumps than the 18:50 entry listed (t = 2, 6, 10 dropped): the
+  bounds are read at the dumps listed only, to fit the session.
+- GM3 with the halos of the same analysis at t = 14, 16, 18, 20, 21 (equal masses) against the
+  equal-mass catalogue of the gauge leg in B-20261126-022407-87e8803/analysis_gr_gd.json.
+- GM4 from the histories: Hr_mean, Mr_mean at the row nearest t = 21.727 (a = 141) of q0060
+  against GD's B-20261124-210431-6bf48af.
+- M2 and M3 (second part at a = 81-100, the 18:35 entry) from B-20261126-022356-52c2460 with
+  `compare_legs.py` against the base B-20261124-131918-e71996f (strain) and the base's equal-mass
+  catalogue in B-20261126-022407-87e8803 (halos).
+- Q1 high-k part from B-20261126-022838-27fab1b against the base after a = 50.
+- S2, S3 with `judge_s028gd.py` on B-20261126-022403-82f6e69 at a' = 2a (as-written a' = 4a
+  beside).
