@@ -2488,3 +2488,12 @@ the MPI build on one rank identical to the serial build), **M2 held** (two ranks
 MeshBlocks each, particles handed over every record: `cons.hst`, tracker file and mesh
 history identical to one rank, relative difference 0.0, tighter than predicted). Published
 `scratch/core/exe/core_nrpic_v08/` (COMMIT, SHA256SUMS, READY; four executables).
+
+## 2026-11-26T11:57Z (03:57 PST): q0039, q0035, q0036 closed; predictions before judging
+
+All three ran (q0039 job 5355, 22 cases rc 0; q0035 job 5352, 4 rc 0; q0036 job 5368, 3 rc 0)
+and are closed (`nrpic-run finish`; the registration commits of q0035 and q0036 were merged
+from `core/noise-level2` and `core/step-limit`). Predictions as written before the runs:
+q0039 K7 of `RELEASE-v0.7.md` ("Card checks pending": all three of `card_v07.py`,
+`card_v06.py`, `card_v05.py` print CARD PASS); q0035 R5 of `JOURNAL-noise-level2.md` entry
+17; q0036 the predictions of `analysis/step_limit/HANDOFF.md`. Nothing added to them.
