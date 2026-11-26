@@ -1,23 +1,24 @@
-# What G2 of A-emd-pbh still lacks (lead of batch 28, 2026-11-26 afternoon)
+# What G2 of A-emd-pbh still lacks (lead of batch 31, 2026-11-26 evening)
 
-State: every run the rulings asked for before the verifier has ended and been judged (decision 0043 item 1). What
-remains open is (a) the failures on record with their rulings, which stay failures, (b) the fresh verifier of the
-whole gate (C18), and (c) the tau 30/40 Szekeres rows, judged in entry 14, are not yet in the note's Table V.
+Gate G2 was NOT passed on the independent review (coord/GATES.md; decision 0047; GATE_REVIEW.md). Decision 0047
+item 2 sets five conditions for the next review, each through a run that could have failed. Their state:
 
-| item | state | what is open | serves it |
+| condition (0047 item 2) | state after batch 31 | what remains | serves it |
 |---|---|---|---|
-| C1 (i) expanding ball, threshold of the ball | passed | | conv_ball A-20261121-120257-a2eb839, threshold_ball A-20261124-131120-5c974ce |
-| C1 (ii) LTB peak P0L6 | FAILED on record, horizon part (decision 0043 1(b)) | shells r0 >= 1.5 follow LTB to 1-4 per cent; the finder accepts one false surface (t = 118.1) and stalls on a resolved horizon (A-20261126-022753-f9e9c40) | core's finder fix (outbox finder-false-accept-and-stall-p0l6); a periodic science run that needs a horizon waits for it; G2 does not |
-| C1 (iii) Szekeres | passed with clauses refuted on record (szekeres entries 11, 13, 14) | none: readers A-20261126-212138-49b9a2d, A-20261126-212141-7eeb046 closed; P24 holds at tau 40, refuted at tau 30 (0.00365, better than [0.004, 0.04]); P20 holds to tau 30 | the tau 30/40 rows are not yet in the note's Table V (next note pass) |
-| C1 (iv) A2 | FAILED as written (decisions 0040 item 7, 0043 1(d)) | A2H HOLDS (A-20261126-213147-f274b2e: crossing (13.85, 14.36] t_H in [12.5, 15.2]): the lag scales as an effect first order in the amplitude; the effect within that class is not named | none before G2 |
-| C3 constraints | FAILED as written (decisions 0039 2(c), 0043 1(a)) | cause of the floor UNEXPLAINED: mesh leg order ~0.35 (G refuted, A-20261126-022624-c663e0f); particle-number leg H holds for the evolution (x8 particles change t = 1-2 by 2-8 per cent, A-20261126-212340-4ea9fb2), so sampling is excluded; t = 0 clause of H refuted (x9.6, interior CIC smoothing) | **retest after core's source session (after 2026-11-27)** that fixes the two deposit defects at level faces (compensation not conservative across a level face; deposit_fine_shape with CIC not inert there; tracks/core/NEXT_SOURCE.md items 0 and 0b): rerun S2c-A (M/16) and S2c-B (M/32) to t = 1 on the fixed build, same reading (edge_compare.py), prediction first |
-| C5, C14 package documents | written this session | | STAGE_REPORT.md by nrpic-stage report |
-| C6 rerun list | written | | stage/G2/RERUN.md (commands of every G2 number from the manifests), stage/G2/VERIFY |
-| C10, C16 schematics | drawn | | note schem_ladder.png, schem_architecture.png (core-v0.8), run A-20261126-214059-b32377a |
-| C11, C13 figures | drawn | gauge leg not run (charter 9.2: "gauge or boundary"; boundary leg chosen) | fig_g2_convergence, fig_slice_mosaic (same run) |
-| C17 note G2 sections | written, compiled, checker run (see CHECKLIST C17) | | note/main.tex Sec. "Verification of the code paths" |
-| C18 fresh verifier | OPEN | VERIFIER-C18.md covers conv_ball and threshold_ball only; nothing yet for Szekeres, A2/A2H, P0L6, the smoothed edge and the note's G2 ledger | the verifier of the whole gate (request to orch) |
+| (a) cause of the constraint floor shown; section-3 ratio < 0.1 at detection in ball members at the bracket, falling with the mesh at fixed particles per cell; retest after core's deposit fixes, run to the horizon | OPEN. Batch 31: C3-F (threshold_ball entry 16, A-20261126-234222-dbf8624) reads the first 0.25 M of S2c-A every cycle | core's two deposit fixes at level faces (source session after 2026-11-27); then B-d0.42/B-d0.40 (or smoothed CIC twins) on two meshes to the horizon, prediction first | core, then cards |
+| (b) finder finds the trapped surface on the restart files of the periodic chain and the triaxial run, no false acceptance | PARTLY MET on processors (FP, FPb: A-20261126-233542-fd9f9f0, A-20261126-234232-84f3e98): P0L6 t = 140 found with 4000 flow iterations (m 6.30, r 0.104; line 6.28 at 0.103); S1L t = 220 found from 0.16 in 1927 iterations (m 10.73, r 0.161) but not from 0.1, 0.2, 0.6 in 4000; nothing accepted where no round sphere is trapped (P0L6 t = 130) | the false acceptance of P0L6 at t = 118.1 is not retested (no restart file there); a deck rule that finds S1L's horizon from the deck's start radius; core's answer on the flow's convergence (outbox finder-slow-convergence-box) | core; then a deck change in G3 |
+| (c) cause of the lag of the triaxial crossing named within the first-order class | OPEN | a run that could refute a named effect (gate review section 5 item 3) | processors or cards |
+| (d) one triaxial phase-1 run to a found horizon with the bound met | OPEN (the horizon of S1L is found on its restart file at t = 220; the bound of section 3 is met nowhere) | follows from (a) and (b) | cards |
+| (e) corrections of text and figures (review section 6, second verifier) | DONE in batch 31 (note main.tex V.A-V.D, VI, Summary; Fig. 7(a) ticks; Table V orders as ranges and the same-cell signal named; READMEs; CHECKLIST C9, C18, C21-C23; EVIDENCE header; this file); note run A-20261126-234358-f761d8d, compiled | | |
 
-Failed criteria that stay failed: C3, A2, C1 (ii) horizon part; earlier T4, T5, T6, K, K2, K3, F1, F2, G, AZ1's second
-clause, D2-D4, A2X's bound. New in batch 28: P17's lapse clause on N128/N256, P18 for N256 at tau 10 (better than
-predicted), P21 at tau 20, H's t = 0 clause.
+The track's own G2 criteria of SCOPE section 7 are in CHECKLIST C21-C23 (open): A1 and A3 with three-way
+convergence (A3 fails), the horizon-mass error (passes with reservation), one triaxial run to horizon formation with
+the bound (fails).
+
+Failed criteria that stay failed on record: C3, A2, C1 (ii) horizon part of the card run; earlier T4, T5, T6, K, K2,
+K3, F1, F2, G, AZ1 (both clauses: the 5 per cent clause and the first clause, periodic_threshold outcome AZ1), D2-D4,
+A2X's bound, P17's lapse clause on N128/N256, P18 for N256 at tau 10 and at tau 40 (better than predicted), P21 at
+tau 20, H's t = 0 clause. Batch 31: FP4 refuted for P0L6 (the finder works with more iterations), FP6 refuted (S1L's
+first trapped round sphere is earlier than 190).
+
+No threshold amplitude of this track is compared with arXiv:2609.14218 before condition (c) is closed (0047 item 3).

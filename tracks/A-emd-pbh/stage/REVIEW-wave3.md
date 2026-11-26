@@ -358,3 +358,45 @@ Defects found and fixed in scripts this session: edge_compare.py did not draw ex
 and a2_crossing.py drew S1L's band and reference for every member (now arguments; reruns). Not fixed: a2_probe_check.py
 titles its figure "S1L" (cosmetic). Card time used by this session: none submitted; the two queue entries that ended
 used 0.76 + 1.18 card-hours by their manifests (q0067's chain total 1.60 over both segments).
+
+## 13. Batch 31 (2026-11-26 late afternoon, lead; processors only; after the gate review of batch 30)
+
+Gate G2 was NOT passed (coord/GATES.md, decision 0047, stage/G2/GATE_REVIEW.md). This session did the cheap tests the
+review named and the corrections it listed. No helper package finished since batch 28; nothing of another package was
+left uncommitted. The worktree held one uncommitted pair, the full checksum pass of the stage check (started by the gate
+reviewer at 14:18, on 3fcd428): kept as stage/G2/VERIFY_RESULTS_FULL-3fcd428.{md,json} (PASS, 31,404 files, every byte
+read), the cached result of 6d1d18a restored.
+
+### 13.1 Condition (b), the finder on restart files (FP, FPb)
+
+Predictions FP0-FP8 in periodic_threshold/JOURNAL.md before the runs; outcomes there. Confirmed from the status files
+(the only place 'found' is read): P0L6 t = 140 found with 4000 flow iterations, two start radii, masses 6.298-6.309 at
+mean radius 0.104 against the line's 6.28 at 0.103 [VERIFIED, A-20261126-233542-fd9f9f0]; S1L t = 220 found from 0.16
+with 1927 iterations, m 10.73 at 0.161 [VERIFIED, A-20261126-234232-84f3e98]; no acceptance anywhere without a trapped
+round sphere. Not confirmed: that the finder works from the decks' start radii in S1L (it does not in 4000
+iterations), and that polishing rejects the divergent flow of P0L6 at t = 118.1 (no restart file there). Wrong on
+record and corrected: the verifier's "tracked shells trapped in the code from t = 122.2" is not a trapped surface of
+the slice (at t = 130 no round sphere at r 0.005-0.5 is trapped; FP3); S1L's first trapped round sphere is earlier
+than predicted (FP6 refuted). The track's action: condition (b) is partly met; the request to core is updated (outbox
+finder-slow-convergence-box) with S1L's file as the reproducer; G3 decks get flow_iterations >= 4000 with polishing.
+
+### 13.2 Condition (a), the constraint floor (C3-F)
+
+Prediction in threshold_ball entry 16 before the run; outcome there.
+
+### 13.3 Second verifier's findings (VERIFIER.md section 4) and the gate review's corrections (section 6)
+
+1. Dust clock from the snapshots' proper time: adopted. S1L's first crossing is (5.99, 6.94] t_H on the dust's own clock
+   (verifier run A-20261126-223151-8310871), replacing the lead's bound from int alpha_min dt; A2X (ii) "not decidable"
+   and the HANDOFF trap "particle files hold x, u_i, m only" are withdrawn (the snapshots carry each particle's proper
+   time; periodic_threshold JOURNAL correction entry of batch 31).
+2. P0L6 stall dated from t = 121.4 (finder) and 136 (line): both stated, as different events (note V.D, OPEN).
+3. "Through turnaround and collapse" -> "to their turnaround within 3.3 per cent, up to 42 per cent apart in collapse"
+   (note V.D, CHECKLIST C21).
+4. Table V names the same-cell signal; the invariant one (3.5-15 times smaller) is stated beside it in the text (note V.B).
+5. "With finite fields" (note V.B).
+6. K4c: the processor member and the card member agree to 13 digits in the line ratio (verifier); CHECKLIST C3 keeps "to
+   1e-3" as the lead's measure and the verifier's 13 digits as the stronger one [record only, no verdict changes].
+Gate review section 6: items 1-7 done in note main.tex and the scripts (run A-20261126-234358-f761d8d, compiled, checker
+0 undefined, 0 overfull; page 7 read), item 8 done (STAGE_REPORT regenerated, EVIDENCE header, C9 text, C18 set,
+OPEN adds P18 at tau 40 and AZ1's first clause, S1-S3 of S1L judged: A-20261126-234332-ec02d47).

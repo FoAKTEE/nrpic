@@ -1296,3 +1296,22 @@ Run FPb (same script, sets S1Lscan, S1Llong, P0L6scan; 2 jobs x 2 threads, besid
   reproducer).
 - FP8 P0L6 at t = 120.0 (just before the tracked 'trapped in the code' time 122.2): no round sphere trapped at r
   0.01-0.13. Refuted if negative anywhere.
+
+### Corrections and judgements left open (batch 31, from the gate review C19 and VERIFIER.md section 4)
+
+- A2X (ii) correction (second verifier, finding 1): the particle snapshots of S1L and S1L-h carry each particle's proper
+  time (72 bytes a particle; nrpic_io.cpp 1115-1117, read by the verifier), so the dust clock of the first-crossing cell
+  is in the files: S1L 5.993-6.002 t_H on the last uncrossed snapshot, 6.835-6.943 on the first crossed, i.e. the first
+  crossing lies in (5.99, 6.94] t_H on the dust's own clock; S1L-h (13.68, 14.17] (verifier run
+  A-20261126-223151-8310871 [number of the verifier, read by it from the snapshots; not recomputed here]). "Not
+  decidable" in outcome A2X (ii) and "the particle files hold x, u_i, m only" (HANDOFF trap) were wrong; withdrawn.
+- S1-S3 of S1L's card job 2 (2026-11-21 23:15Z), judged from the history and the status file
+  (A-20261126-234332-ec02d47; fig_s1l_s123.png looked at: the smallest lapse falls through 0.3 at t = 137.7 and levels
+  off at 0.11 from t ~ 190; E_max over the mean deposit passes 1e3 at t = 127.3, peaks at 1140 near t = 135 and falls
+  to ~140 by t = 190):
+  - S1 HOLDS: the relaxed lapse carried the run to t = 220 (22.5 t_H) without a guard stop.
+  - S2 REFUTED as written: no apparent horizon was FOUND in 314 searches to t = 219.9. A trapped round sphere exists on
+    the restart files at t = 190 (FPb), 210 and 220 (FP), and the v0.8 finder finds the horizon at t = 220 from 0.16
+    (m 10.73, r 0.161); so a horizon formed before 19.4 t_H, inside S2's window, but the run's finder did not find it.
+  - S3 HOLDS: the central lapse fell below 0.3 (t = 137.7) and E_max past 1e3 of the mean (t = 127.3) before any
+    horizon was found, and before the first trapped round sphere on the restart files (t <= 190; dated by FPb).
