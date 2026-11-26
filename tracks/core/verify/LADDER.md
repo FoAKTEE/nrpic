@@ -335,6 +335,34 @@ pending (q0032, q0033); P14 holds for the control's join (first continued record
 4.4e-4 from the parent's at 300 M, largest step over 280-300 M 1.02e-3); P15 holds on the
 rate (dcc9ea1 2263 s of card time for 300 M, 7.54 s per M, one segment).
 
+Level 3, second reading 2026-11-26 (batch 23, journal entry 2026-11-26T02:25Z): four of the
+six runs have ended; fates by the same rule, run core-20261126-023040-b755cdc (figure
+`fig_row4_m8.png` looked at). q0032 (0.755 control, job 5346) and q0059 (0.755 member,
+queued after the four card checks) remain.
+
+| Run (queue entry) | What it covers | Collapse (lapse < 0.3) |
+|---|---|---|
+| core-20261125-180320-3dad12c (q0030) | 0.726875 control, 0 to 600 M (1.2981 card-hours, 4 jobs) | none by 300 M; 333.75 M |
+| core-20261125-225600-d2db1ed (q0031) | 0.73625 member continued from core-20261123-020458-dfc38d7 at 300 M to 600 M (0.6325 card-hours) | 405.0 M |
+
+By the rule (t <= 300 M) 0.726875 is STABLE (member STAYS, D = +0.0061, neither run
+collapses by 300 M): **bracket (0.7175, 0.726875)**, valid. Beyond the window every model
+from 0.605 to 0.73625 collapses on M/8, members at 180.5, 219.5, 244.25, 294.25, 338.25 and
+405.0 M; controls of 0.726875 and 0.73625 at 333.75 and 421.25 M. Predictions P10, P11, P12
+hold; P15 holds (7.6 to 7.8 s of card time per M); P13 waits for 0.755. The 300-M bracket is
+therefore the bracket of "collapse within 300 M", not of stability over any longer window
+[VERIFIED for the five models that collapse by 421 M; JUDGEMENT for what it means].
+
+Level 3, third reading 2026-11-26 (batch 27, journal entry 2026-11-26T12:15Z): q0032 closed
+(core-20261126-021633-50968b9, 0.755 control continued from core-20261121-204237-ae00ca2 at
+300 M to 600 M, 0.6403 card-hours, one job); fates run core-20261126-121143-aaae1b7 (figure
+looked at). Fates and bracket unchanged: **(0.7175, 0.726875)** by the 300-M rule. The 0.755
+control does not collapse by 600 M, but its central lapse keeps drifting: 50-M means of
+alpha_c / alpha_c^eq 0.9640 (250-300 M), 0.9345 (400-450 M), 0.8022 (550-600 M; minimum
+0.736). P13 holds for the control (no collapse before 450 M; 400-450 M mean 0.0295 below the
+250-300 M mean, at least 0.01 predicted). The member's continuation (q0059, job 5378) has not
+run.
+
 ## Supporting checks of the C2 steps (earlier, not re-run today)
 
 | Step | Number | Source |
