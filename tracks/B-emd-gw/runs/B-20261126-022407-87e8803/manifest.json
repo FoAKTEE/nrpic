@@ -1,0 +1,107 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "B-20261126-022407-87e8803",
+  "track": "B-emd-gw",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "population batch 23: halo catalogues with equal particle masses of the base (zero shift) and the 0.014 gauge leg at t = 12-21, the references of M2 and S2",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "python3",
+    "tracks/B-emd-gw/population/scripts/analyze_gr.py",
+    "--equal-mass",
+    "--halos-only",
+    "--no-figures",
+    "--workers",
+    "1",
+    "--times",
+    "12,13,14,15,16,17,18,19,20,21",
+    "--run",
+    "base:/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261123-014847-f295ab4:0.014",
+    "--run",
+    "gd:/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261124-210431-6bf48af:0.014",
+    "--out",
+    "$NRPIC_RUN_DIR"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "87e880304d69bd228a11e837baa28a788ea7570c",
+    "branch": "track/B-emd-gw",
+    "dirty": false,
+    "package": [
+      "tracks/B-emd-gw/population"
+    ],
+    "outside_package": {
+      "count": 0,
+      "first": []
+    },
+    "merge_base_main": "f66c544327084e2d5e0f533565aaf4ad10ee256a",
+    "worktree": "wt/B-emd-gw"
+  },
+  "code": {
+    "core_tag": "core-v0.7",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "b7f7695d8e9720758c144dd9c0f272ce4fba8b46f921750462326664310fad51",
+    "machine_file_sha256": "ff4e45b0fd5bf6bee4bf1084a282d72b9adf66f4a455f4e937d9884a1fb07535",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/B-emd-gw/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "tracks/B-emd-gw/population/scripts/analyze_gr.py",
+      "role": "argv",
+      "sha256": "20a3468b0449cb830f97a09ae548b96c15ca2bc8a78fdf2ce5d34137a9f21829",
+      "bytes": 31390,
+      "tracked": true
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 1,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/B-emd-gw/B-20261126-022407-87e8803",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-26T02:24:08Z",
+  "started": null,
+  "ended": null,
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 40.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 4.6266,
+    "gpu_hours_reserved": 4.9167,
+    "gpu_hours_without_gate": 0.481,
+    "cores_busy": 5,
+    "runs": 359,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md + 0026-cards-loaded-allotment-cost.md + 0031-level2-branch-and-ablation.md + 0032-new-account-preemption-allotments.md + 0038-track-e-g2-signed-g3-scope.md + 0039-rulings-after-batch-17.md"
+  }
+}
