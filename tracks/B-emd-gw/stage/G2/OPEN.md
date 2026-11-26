@@ -7,7 +7,7 @@ the shifted 0.028 box to a = 141 and its amplitude scaling against the 0.014 box
 hold), halo masses against the Newtonian mode with equal GR particle masses (N2e, GN1e hold),
 constraint norms against time, a slice mosaic with zoom boxes, the verification-ladder schematic,
 failed runs on record, the reproducibility list (C6), the G2 schematics (C16), the package
-documents (C14), the multi-code row (C9).
+documents (C14), the multi-code row (C9), one script per figure (C15, B-20261126-213450-f833a78).
 
 Lacking, item by item of CHECKLIST.md:
 
@@ -18,7 +18,6 @@ Lacking, item by item of CHECKLIST.md:
 | C3 constraints behave | FAIL as written for the mesh at one particle per cell (M4 and GM4 refuted: Hr_mean falls 1.1-1.4 times when the spacing halves, in both gauges); the constraints fall with particle number (Q1) | a ruling under decision 0039 item 2(c) (requested), or a mesh pair at a fixed number of particles per cell above one |
 | C5 verification report | OPEN | C2, C17 |
 | C11 convergence figures | OPEN: particle number and gauge exist; mesh in the shifted gauge missing | the GM comparison above (its pop_legs.png) |
-| C15 one script per figure | OPEN | splitting analyze_b.py, analyze_f.py, analyze.py, analyze_gr.py into one script per figure over cached intermediates (no card) |
 | C17 working note | OPEN | done in batch 28: section VI with GM1, GM4, M2, M3, Q1, S2, S3, ledger rows, abstract and summary, schematics, checker; left: the GM2/GM3 paragraph and its ledger row |
 | C18 verifier | OPEN | a fresh-context verifier after C17 (requested) |
 
@@ -29,5 +28,5 @@ M1 (B-20261125-093500-242d3a3 closed failed), M4 in its reachable part, GN1 of b
 the slip a' = 4a in S2/S3; batch 28: GM4 first part, M2 largest masses at a = 64-72, M3 first
 part at a = 100 (1.214 against 1.2), Q1 high-k part.
 
-G2 is not complete: C2 and C11 wait for a running processor analysis, C15 and C17 for writing,
+G2 is not complete: C2 and C11 wait for a running processor analysis, C17 for one paragraph,
 C18 for a verifier; C1 and C3 are failures as written that need a ruling. No card run is needed.
