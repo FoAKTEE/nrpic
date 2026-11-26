@@ -937,3 +937,24 @@ gauge leg B-20261124-210431-6bf48af, analyses with --equal-mass):
   Hr ratio is below 1.2.
 - Card time 3.5-5 card-h (q0007: 2332 cycles in 3.2 card-h including the cut attempts; this run
   about 2840 cycles).
+
+## 2026-11-25 18:30 PST (lead of batch 23): equal-mass catalogues of base and gauge leg; N2, GN1 redone, predicted
+
+Correction of the two previous headers: "18:35" and "18:50" were not read from the clock; `date`
+gave 18:22-18:25 PST when they were committed (52c2460e7, e6d4d20bc). The labels stay, because
+the manifests of this session and queue entry q0060 cite them.
+
+Run B-20261126-022407-87e8803 (closed) recounted the halos of the base and of the gauge leg with
+equal masses at t = 12-21. Seen in its log (disclosure): the largest halo with equal masses is
+1.250, 1.492, 1.660 (zero shift) and 1.399, 1.689, 1.824 (Gamma driver) at a = 100, 121, 132,
+against 1.476, 1.774, 1.912 (Gamma driver) with the file's weights in B-20261125-115558-2ab4161:
+the rest-mass weight made the largest halos about 5 per cent heavier. The Newtonian largest mass
+at a = 132, 1.794, was seen in batch 21. N2 and GN1 of batch 21 were judged with the weighted GR
+masses, so both are redone with `compare_newton.py` on the equal-mass catalogues (the GR JSON
+without dumps; N4 is not touched). Predictions [JUDGEMENT], written after seeing the largest
+masses above and before the medians:
+- N2e. Counts as in batch 21 (inside 2 sqrt(N) + 2 at every common catalogue a = 49-132), the
+  median |M_GR/M_N - 1| of the ten largest at a = 121 below 5 per cent in both gauges.
+- GN1e (GN1 as written, with the masses the Newtonian run uses): the mean over a = 81-132 of the
+  median |M_GR/M_N - 1| is smaller with the Gamma driver than with zero shift. Refuted if larger.
+  Batch 21's refutation of GN1 stands on record as a judgement made with biased masses.
