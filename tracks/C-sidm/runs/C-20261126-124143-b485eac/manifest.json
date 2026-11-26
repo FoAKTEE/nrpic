@@ -1,0 +1,100 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "C-20261126-124143-b485eac",
+  "track": "C-sidm",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "nseries (mesh leg): y0 0.344 kicked in at N = 1e6 on M/16 (A16b344) against M/8 (N6b344), B20.2 (JOURNAL 2026-11-25T16:02Z); t_c is the alpha_min = 0.3 lapse marker",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "env",
+    "OMP_NUM_THREADS=1",
+    "python3",
+    "tracks/C-sidm/longruns/scripts/nseries.py",
+    "--out",
+    "$NRPIC_RUN_DIR",
+    "--band",
+    "0.03",
+    "--control",
+    "N1e6_b344kin",
+    "--title",
+    "Mesh leg of the bracket: y0 = 0.344 kicked in, N = 1e6, M/8 and M/16",
+    "N1e6_c=C-20261124-221122-928c9eb",
+    "N1e6_b344kin=C-20261125-224959-d1d4494",
+    "N1e6_b344kin_M16=C-20261126-043714-8ea1c35"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "b485eac6e6d221e732ee57ba1b62b1f9a6297ed6",
+    "branch": "track/C-sidm",
+    "dirty": false,
+    "merge_base_main": "be42a847d2d93e47578ad819bd6e29f62ae2bf7c",
+    "worktree": "wt/C-sidm"
+  },
+  "code": {
+    "core_tag": "core-v0.7",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "b7f7695d8e9720758c144dd9c0f272ce4fba8b46f921750462326664310fad51",
+    "machine_file_sha256": "ff4e45b0fd5bf6bee4bf1084a282d72b9adf66f4a455f4e937d9884a1fb07535",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/C-sidm/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "tracks/C-sidm/longruns/scripts/nseries.py",
+      "role": "argv",
+      "sha256": "1f564016795992720a1b3a560b0f3c5337a2b5e823bbb8bb9d51f844fcc4fc5a",
+      "bytes": 10152,
+      "tracked": true
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 1,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/C-sidm/C-20261126-124143-b485eac",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-26T12:41:43Z",
+  "started": null,
+  "ended": null,
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 80.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 45.7559,
+    "gpu_hours_reserved": 5.9,
+    "gpu_hours_without_gate": 0.0,
+    "cores_busy": 0,
+    "runs": 257,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md + 0026-cards-loaded-allotment-cost.md + 0031-level2-branch-and-ablation.md + 0032-new-account-preemption-allotments.md + 0038-track-e-g2-signed-g3-scope.md + 0039-rulings-after-batch-17.md"
+  }
+}
