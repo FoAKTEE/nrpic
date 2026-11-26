@@ -99,3 +99,30 @@ follows the cycloid and the removal happens at R > 2 m(R0), removal is early; if
 lags by ~0.5 M of tau, the clock is off. Effect on G: (iii) shifts by at most dM/dtau x
 0.7 M ~ 8e-4 relative, inside +-1 per cent; D2 by about 1e-3, inside 3e-3. So G does not
 depend on it; D3 (diagnostic, bound 3e-4) can.
+
+## Entry 1 (2026-11-25 22:18 PST): outcome of V1 (run D-20261126-061541-31e3b4e); prediction V1c
+
+V1a HELD: the cycloid reproduces the closed-form fall time (pi/2)(R_max^3/2m)^(1/2) to
+2e-16, a quadrature of dtau = dR (2m/R - 2m/R0)^(-1/2) to 4e-13, and a DOP853 integration
+of d^2R/dtau^2 = -m/R^2 from the expanding start to 3.6e-12 (tau_H and R(tau)); max 3.6e-12.
+V1b mixed: the lattice Misner-Sharp sum at the outer edge equals the data maker's
+2.7386545133 to 2e-12 (N), 1e-11 (4N), 3e-13 (N/4): HELD. Particle counts 850724 (N),
+3402772 (4N), 213012 (N/4), 140 tracers in each (14 per radius, ten radii); u_i = 0 for
+all. tau_H(R0) of the lattice monotonic in R0 in all three. But my lattice M_LTB(tau)
+(inclusive cumulative sum: m(R0) counts every particle with R0' <= R0) lies 2.7e-4 to
+5.3e-4 above the continuum numbers for N (4N 2.4e-4, N/4 up to 1.05e-3): the 2e-4 bound
+FAILED for N, not refuted (below 1e-3); N/4 above 1e-3. Reason [JUDGEMENT]: the inclusive
+sum counts the particle's own lattice shell (up to 48 equal-radius points of a cubic
+lattice) into the mass inside it, which a continuum shell does not feel; the tracers'
+tau_H at R0 = 28 M move with it (353.88 N, 354.28 4N, 354.75 N/4 against the continuum's
+354.24). The lattice reference is therefore noisy at the level of the early removals
+(0.4-0.7 M), and cannot by itself decide V6.
+
+V1c (prediction before the rerun): an independent continuum from the slice the code
+actually evolves: the table esf.tab gives K_T(rbar), and the construction says K_T^2 =
+2 D(R)/R^3, so m_tab(R) = M + R^3 K_T^2 / 2 with R = rbar psi^2. Expected: m_tab at the
+outer edge = M + 2.7386556 (D_tot of esf.json) to 1e-6; M_LTB from m_tab equals the data
+maker's continuum numbers to 1e-5 at the nine tau; tau_H(R0 = 28 M) = 354.24 +- 0.01;
+the lattice with half-weight for its own shell (midpoint sum) within 2e-4 of m_tab
+everywhere in 5 < R0 < 55 M. Refuted (the table and the data maker's continuum are not the
+same slice) above 1e-4 in M_LTB.

@@ -74,6 +74,19 @@ def main():
         dust = ref["dust"]
         info = json.load(open(os.path.join(d, "esf.json")))
         tH, mm = curve
+        # V1c: half-weight lattice and the continuum of the evolved table
+        dmv = m * ref["EK"]
+        mid = ltb.lattice_mid(ref["R0"], dmv, dust)
+        Rt, mt = ltb.table_mass(os.path.join(d, "esf.tab"))
+        sel = (Rt > 3.0) & (Rt < 61.0)
+        tHt = ltb.tau_horizon(Rt[sel], mt[sel])
+        curve_tab = (tHt, mt[sel])
+        m_tab_p = np.interp(ref["R0"], Rt, mt)
+        tauH_tab = ltb.tau_horizon(ref["R0"], m_tab_p)
+        tauH_mid = np.where(dust, ltb.tau_horizon(ref["R0"], np.where(dust, mid, 1.0)), np.nan)
+        win = dust & (ref["R0"] > 5) & (ref["R0"] < 55)
+        mid_vs_tab = float(np.max(np.abs(mid[win] - m_tab_p[win])))
+        incl_vs_tab = float(np.max(np.abs(ref["mdisc"][win] - m_tab_p[win])))
         mono = bool(np.all(np.diff(tH) >= -1e-9))
         # non-monotone pairs: largest decrease
         dec = float(np.min(np.diff(tH))) if len(tH) > 1 else 0.0
@@ -96,11 +109,21 @@ def main():
             growth_datamaker=dict(zip(map(str, taus), theirs)),
             growth_maxdiff=float(np.max(np.abs(mine - np.array(theirs)))),
             tracers=trac,
+            m_tab_edge=float(mt[sel][-1] - 1.0), Dtot=info["Dtot"],
+            growth_tab=dict(zip(map(str, taus), map(float, ltb.growth_from_curve(curve_tab, np.array(taus, float))))),
+            growth_tab_vs_dm=float(np.max(np.abs(ltb.growth_from_curve(curve_tab, np.array(taus, float)) - np.array(theirs)))),
+            tab_monotonic=bool(np.all(np.diff(tHt) > 0)),
+            mid_vs_tab_max=mid_vs_tab, incl_vs_tab_max=incl_vs_tab,
+            tauH_tab_tracers={g: float(np.median(tauH_tab[~dust][np.abs(ref["R0"][~dust] - float(g)) < 1e-3])) for g in trac},
+            tauH_mid_minus_tab_dust_rms=float(np.sqrt(np.nanmean((tauH_mid - tauH_tab)[win] ** 2))),
         )
         np.savez_compressed(os.path.join(a.out, f"ltbref_{lab.replace('/', 'q')}.npz"),
                             R0=ref["R0"], EK=ref["EK"], mdisc=ref["mdisc"],
-                            tauH=ref["tauH"], m=m, tH_curve=tH, m_curve=mm)
+                            tauH=ref["tauH"], m=m, tH_curve=tH, m_curve=mm,
+                            mid=mid, tauH_mid=tauH_mid, m_tab_p=m_tab_p, tauH_tab=tauH_tab,
+                            tH_tab=tHt, m_tab=mt[sel])
         curves[lab] = curve
+        curves[lab + "_tab"] = curve_tab
         # continuum curve of the data maker
         g = np.loadtxt(os.path.join(d, "esf_growth.csv"), delimiter=",", skiprows=1)
         curves[lab + "_dm"] = (g[:, 2], g[:, 1])
@@ -115,6 +138,7 @@ def main():
     ax1.plot(tH, mm, color=fs.PAL["red"], label="lattice N (verifier)")
     tg, mg = curves["N_dm"]
     ax1.plot(tg, mg, color=fs.PAL["blue"], ls="--", label="continuum (data maker)")
+    ax1.plot(*curves["N_tab"], color="k", ls=":", label="continuum (from esf.tab, verifier)")
     ax1.set_xlim(0, 700)
     ax1.set_ylim(0.98, 1.75)
     ax1.set_xlabel(r"$\tau_H$ [M]")
@@ -125,6 +149,8 @@ def main():
     for lab, col in [("N", fs.PAL["red"]), ("4N", fs.PAL["yellow"]), ("N/4", fs.PAL["green"])]:
         ax2.plot(tt, ltb.growth_from_curve(curves[lab], tt) / cont - 1, color=col,
                  label=f"lattice {lab}")
+    ax2.plot(tt, ltb.growth_from_curve(curves["N_tab"], tt) / cont - 1, color="k", ls=":",
+             label="table continuum")
     ax2.axhline(0, color="k", lw=1, ls="--")
     ax2.set_xlabel(r"$\tau$ [M]")
     ax2.set_ylabel(r"$M_{\rm lattice}/M_{\rm continuum}-1$")

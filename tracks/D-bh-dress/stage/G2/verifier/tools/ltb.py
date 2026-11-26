@@ -71,6 +71,33 @@ def lattice_reference(x, m_rest, ntrac=140, M=MBH):
     return dict(R0=R0, EK=EK, mdisc=mdisc, tauH=tauH, dust=dust), curve
 
 
+def lattice_mid(R0, dm, dust):
+    """Mass inside each dust particle with half weight for the particles on its own
+    radius (a discrete shell feels half of itself)."""
+    Rd = R0[dust]
+    order = np.argsort(Rd, kind="stable")
+    Rs = Rd[order]
+    cs = np.concatenate([[0.0], np.cumsum(dm[dust][order])])
+    lo = np.searchsorted(Rs, Rs, side="left")
+    hi = np.searchsorted(Rs, Rs, side="right")
+    mid = MBH + cs[lo] + 0.5 * (cs[hi] - cs[lo])
+    out = np.full(len(R0), np.nan)
+    tmp = np.empty(len(Rd))
+    tmp[order] = mid
+    out[dust] = tmp
+    return out
+
+
+def table_mass(tab_path, M=MBH):
+    """Continuum m(R) from a format-2 table of the ES-F slice: K_T^2 = 2 D / R^3."""
+    a = np.loadtxt(tab_path, comments="#")
+    rbar, KT = a[:, 0], a[:, 3]
+    ok = rbar > 0
+    rbar, KT = rbar[ok], KT[ok]
+    R = areal_radius(rbar, M)
+    return R, M + 0.5 * R ** 3 * KT ** 2
+
+
 def growth_from_curve(curve, tau):
     """M_LTB(tau): the largest m among shells with tau_H <= tau (monotonic tau_H:
     interpolation on the lattice curve)."""
