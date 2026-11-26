@@ -569,6 +569,56 @@ def main():
     nclaim("stage/G1/VERIFIER.md", "32.5 and 34.5 per cent if r_ta is moved", ["32.5", "34.5"],
            [v2p["break_attempts_max_abs_dev"]["r_ta_x0.97"], v2p["break_attempts_max_abs_dev"]["r_ta_x1.03"]], ["verifier_v2"], scale=100)
 
+    # note v3 (batch 25): the G2 runs. Horizon masses from runs made without the finder diagnostics
+    # (decision 0041 item 4), rechecked by the failure signature (hz20, hz25).
+    g2 = "Gate G2: null test, growth against the flux, three-way convergence (horizon masses made without the finder diagnostics)"
+    jl = C.load_json("judge_long", "judge_long.json")["judgement"]["N"]
+    fp5 = C.load_json("fp_ana", "fp_analyse.json")["FP5"]
+    E += [(g2, r"null test, $M/8$: largest $|D_{\rm bubble}-D_{\rm vacuum}|$ over $100$--$500M$; pass threshold",
+           f"{fnum(jl['max_abs_100_500'])}; {fnum(jl['threshold_pass'])}", ["judge_long"]),
+          (g2, r"null test with the converged finder: largest difference at $M/8$ and $M/16$, $200$--$300M$",
+           fnum(fp5["max_abs"]), ["fp_ana"])]
+    for key, lab in (("crit_fnq", r"$N/4$"), ("crit_fk", r"$N$"), ("crit_fn4", r"$4N$"), ("crit_esfl", r"$M/8$"),
+                     ("crit_fl16", r"$M/16$"), ("crit_ff4", r"$M/4$ (outside the regime)")):
+        cj = C.load_json(key, "esf_criteria.json")
+        dd = cj["iii"]["dust"]
+        E.append((g2, rf"growth against the flux, {lab}: counted bins of $10M$; largest $|$bin median$|$ of $M_{{\rm AH}}/M_{{\rm LTB}}-1$ (per cent); D2 samples (all hold)",
+                  f"{dd['n_bins_counted']}; {100 * dd['max_abs_median']:.3f}; {cj['D2']['n']}" + ("" if cj["D2"]["holds"] else " (D2 fails)"), [key]))
+    npf = C.load_json("np_full", "np_partial.json")["runs"]
+    E.append((g2, r"removed $\sum mE_K$ of $N/4$ over $N$ at $100,200,300,399.5M$, minus one (per cent)",
+              ", ".join(f"{100 * (npf['FNQ']['at'][t]['removed_ratio_to_ref'] - 1):+.2f}" for t in ("100.0", "200.0", "300.0", "399.5")),
+              ["np_full"]))
+    cv = C.load_json("conv3", "conv3.json")
+    pa = cv["particle"]["at"]
+    E.append((g2, r"$|M_N-M_{N/4}|$ at $100,200,300,399.5M$",
+              ", ".join(fnum(abs(pa[t]["dM_N_minus_Nq"]), 2) for t in ("100.0", "200.0", "300.0", "399.5")), ["conv3"]))
+    E.append((g2, r"$|M_{4N}-M_N|$ at the same times",
+              ", ".join(fnum(abs(pa[t]["dM_4N_minus_N"]), 2) for t in ("100.0", "200.0", "300.0", "399.5")), ["conv3"]))
+    E.append((g2, r"rms over $\pm25M$ of $M_N-M_{N/4}$ over that of $M_{4N}-M_N$ (noise $\propto N^{-1/2}$ gives 2)",
+              ", ".join(f"{pa[t]['rms_win_N_minus_Nq'] / pa[t]['rms_win_4N_minus_N']:.1f}" for t in ("100.0", "200.0", "300.0", "399.5")), ["conv3"]))
+    ma = cv["mesh"]["at"]
+    E.append((g2, r"$|\Delta M_{16}-\Delta M_8|$, $\Delta M$ from $20M$, at $100,200,300M$ (the last read at $299M$)",
+              ", ".join(fnum(abs(ma[t]["DM_diffs"]["FL16-ES-FL"]), 2) for t in ("100.0", "200.0", "300.0")), ["conv3"]))
+    E.append((g2, r"the same with each own-mesh vacuum control subtracted",
+              ", ".join(fnum(abs(ma[t]["DMc_diffs"]["FL16-ES-FL"]), 2) for t in ("100.0", "200.0", "300.0")), ["conv3"]))
+    E.append((g2, r"$|\Delta M_8-\Delta M_4|$ at the same times ($M/4$ outside the convergent regime; no order claimed)",
+              ", ".join(fnum(abs(ma[t]["DM_diffs"]["ES-FL-FF4"]), 2) for t in ("100.0", "200.0", "300.0")), ["conv3"]))
+    xq = C.load_json("xq", "xc_plane.json")["runs"]
+
+    def xrow(R_, lab, t):
+        return next(r for r in R_[lab]["rows"] if abs(r["t"] - t) < 1e-6)
+    E.append((g2, r"plane norm of $\mathcal{H}$, $N/4$ over $N$, on $[1.2r_{\rm AH},6M]$ and $[6,30]M$ at $100$ and $200M$",
+              ", ".join(f"{xrow(xq, 'ES-FLKQ', t)[a]['H2'] / xrow(xq, 'ES-FLK', t)[a]['H2']:.2f}" for t in (100.0, 200.0) for a in ("A1", "A2")),
+              ["xq"]))
+    E.append((g2, r"the same, $4N$ over $N$",
+              ", ".join(f"{xrow(xq, 'ES-FLK4N', t)[a]['H2'] / xrow(xq, 'ES-FLK', t)[a]['H2']:.2f}" for t in (100.0, 200.0) for a in ("A1", "A2")),
+              ["xq"]))
+    hz = C.load_json("hz25", "hz_check.json")["runs"]
+    E.append((g2, r"failed finder searches after $20M$ (repeat or NaN line): $N/4$; $M/16$",
+              f"{sum(hz['FNQ'][k][0] for k in ('failed_20_100', 'failed_100_300', 'failed_300_500'))} of {sum(hz['FNQ'][k][1] for k in ('failed_20_100', 'failed_100_300', 'failed_300_500'))}; "
+              f"{sum(hz['FL16'][k][0] for k in ('failed_20_100', 'failed_100_300', 'failed_300_500'))} of {sum(hz['FL16'][k][1] for k in ('failed_20_100', 'failed_100_300', 'failed_300_500'))}",
+              ["hz25"]))
+
     # ---- write ----
     rows = ["% generated from registered run outputs; do not edit"]
     cur = None

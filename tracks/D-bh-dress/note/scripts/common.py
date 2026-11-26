@@ -104,6 +104,11 @@ RUNS = {
     "np_full": "D-20261126-054636-93618ee",  # particle sequence read whole (np_partial.py)
     "xq": "D-20261126-054718-afa783e",       # plane constraint norms, N/4, N, 4N (xc_plane.py)
     "region": "D-20261126-054736-10c837a",   # region shell norms, FN4 and FNQ (region_norms.py)
+    "crit_fl16": "D-20261126-055158-30ae09c",  # criterion G of FL16 with its own-mesh control V-1L16
+    "xl5": "D-20261126-055159-6c40115",      # plane constraint norms, ES-FL and ES-FL16 (xc_plane.py)
+    "hz25": "D-20261126-055208-4e0fd0e",     # failed-search signature, FNQ and FL16 (hz_check.py)
+    "conv3": "D-20261126-055249-505b079",    # three-way convergence of item C2 (conv3.py)
+    "hz20": "D-20261125-160142-b1c51b5",     # failed-search signature, 13 summaries (hz_check.py)
 }
 
 CHECKED = []   # (run_id, relative path, "sha256 ok" | "no sha256sums.txt (wave-1 run)")

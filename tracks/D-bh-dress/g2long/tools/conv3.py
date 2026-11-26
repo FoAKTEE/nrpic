@@ -147,7 +147,7 @@ def figure(outdir, tg, d_lo, d_hi, P, tgm, M, stem="conv3"):
     for tq in PT:
         x.axvline(tq, color="0.6", lw=0.6, ls=":")
     x.axhline(0.0, color="k", lw=0.5)
-    x.set_xlabel(r"$t/M$", labelpad=-2)
+    x.set_xlabel(r"$t/M$")
     x.set_ylabel(r"$\Delta M_{\rm AH}$ between members [$10^{-3}M$]")
     x.set_title("(a) particle number, M/8", loc="left", fontsize=8)
     x.legend(fontsize=6.5, frameon=False, loc="lower left")
@@ -164,7 +164,7 @@ def figure(outdir, tg, d_lo, d_hi, P, tgm, M, stem="conv3"):
         x.axhline(0.0, color="k", lw=0.5)
         for tq in MT:
             x.axvline(tq, color="0.6", lw=0.6, ls=":")
-        x.set_xlabel(r"$t/M$", labelpad=-2)
+        x.set_xlabel(r"$t/M$")
         x.set_ylabel(r"difference of $\Delta M$ [$10^{-3}M$]")
         x.set_title(ttl, loc="left", fontsize=8)
         x.legend(fontsize=6.0, frameon=False, loc="best")

@@ -974,3 +974,47 @@ Horizon masses below are from a run made without `<fastflow> diagnostics` (decis
 - R3 to the end (region_norms D-20261126-054736-10c837a, both runs whole; region_norms.png looked at):
   FNQ/FN4 on [1.2 r_AH, 6 M] and [6, 30] M stays in 3.2-5.2 from 20 to 400 M (3.41-4.39 at the named
   times 50-300 M, unchanged from entry 24); [30, 60] M rises from 1.1 to ~4 by 400 M; outside 60 M 1.000.
+
+FL16 ES-FL16 D-20261124-172745-72472ed closed by `nrpic-run finish` (completed, exit 0; 180 files, 85.9 GB
+checksummed; 3.66 card-hours by sacct over 8 jobs, one continuation in place). Predictions: entries 10, 15.
+Made without `<fastflow> diagnostics` (decision 0041 item 4).
+- L1 HOLDS: finite to 300 M (finder to 299.75 M, no gap above 1 M, every finder value finite; 763140
+  particles kept, none escaped; esf_criteria P6) and a horizon at every sample (hz_check below).
+- L2 HOLDS (esf_criteria D-20261126-055158-30ae09c with ES-FL's data and the same-mesh control V-1L16;
+  esf_criteria.png looked at): 38 counted (iii) bins to tau_rem 380 M, largest |median| 0.485 per cent
+  (bound 1); D2 at all 1120 samples after 20 M; D3 holds (min margin -1.5e-4); D4 every removal after the
+  exact crossing (min +0.227 M). The (iii) medians step from ~+0.1 to ~+0.48 per cent at tau_rem ~285 M,
+  and the D3 margin jumps at t_rem ~220 M: the end of horizon excision at 4 x initial_radius, as in ES-FL
+  (entry 19; 24112 removals by reason 2, 63416 by reason 3).
+- L4 HOLDS: 3.66 card-hours (3.0-4.0).
+- L5 HOLDS (xc_plane D-20261126-055159-6c40115, xc_plane.png looked at): ||H||_A1 of M/16 over M/8 = 2.11
+  at 100 M and 1.08 at 200 M (refuted only below 0.8 at both); A2 1.11 and 1.06; A3 1.00 and 1.02. The
+  M/16 excess on A1 fades by ~220 M and is 1.00 at 300 M.
+- C2c HOLDS (hz_check D-20261126-055208-4e0fd0e, hz_check.png looked at): FNQ one bit-identical repeat
+  at 1 M, none after; FL16 no failed search in 1252 lines. No failed search after 20 M in either.
+
+## Entry 27 (2026-11-25 21:58 PST, lead of batch 25): the three-way convergence of item C2 (L3, C2a, C2b)
+
+conv3 registered twice: D-20261126-055207-0137c53 read the mesh members only at 100 and 200 M, because the
+common end of FL16 and its control V-1L16 is 299 M and the reader skipped the named 300 M. The reader was
+changed after that reading (a named time at most 1.5 M past the common end is read at the end and
+labelled; commit after a13a888) and rerun as D-20261126-055249-505b079 (conv3.png looked at); this change
+is post hoc and labelled so; the 100 and 200 M numbers are identical in both runs.
+- C2a (particle number) HOLDS at all four times (entry 26). Not predicted: the rms over +-25 M windows of
+  M_N - M_N/4 is 0.85, 1.19, 1.49, 1.31e-3 and of M_4N - M_N 0.27, 0.48, 0.59, 0.70e-3 at 100, 200, 300,
+  399.5 M: ratios 3.1, 2.5, 2.5, 1.9, against sqrt(5/1.25) = 2 for independent sampling noise scaling as
+  N^-1/2 [JUDGEMENT]. The horizon mass converges in particle number with the noise of the deposit.
+- L3 HOLDS as written: |Delta M_16 - Delta M_8| = 4.4e-4, 1.2e-4, 8.6e-5 against |Delta M_8 - Delta M_4| =
+  1.24e-3, 9.4e-4, 1.22e-3 at 100, 200, 300 (read at 299) M. Ruling 0039 item 4 puts M/4 outside the
+  convergent regime, so this ordering is NOT an order of convergence and none is claimed.
+- C2b HOLDS: the two members in the regime agree in Delta M to 4.4e-4, 1.2e-4, 8.6e-5 (bound 3e-3); with
+  each own-mesh vacuum control subtracted 3.6e-4, 2.9e-5, 1.3e-5. Window rms of the M/16 - M/8 difference
+  3.2-6.3e-4. Not predicted: the raw difference rises from 0 to about +5e-4 by 150 M and stays there
+  (panel b), a systematic offset the size of the finder noise; the M/4 member departs by -1 to -2e-3 raw
+  and by up to -4e-3 with its control off (panel c), outside the D2 band after ~200 M.
+Statement for item C2: particle number, three members N/4, N, 4N, ordered, with N^-1/2 noise; mesh of the
+growth, two members in the regime (M/8, M/16) that agree to 4.4e-4 or better, M/4 drawn and labelled
+outside the regime; mesh of the null test, two members and no order (ruling 0041 item 4); boundary, three
+face distances (boundary_gauge D-20261124-131657-89cd963); gauge, plain 1+log only (the relaxed lapse
+cannot serve, OPEN.md section 2). Every horizon number made without the diagnostics, rechecked by the
+signature (entries 24, 26).
