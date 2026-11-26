@@ -101,6 +101,7 @@ NOTE_RUNS = {
     "v1": "B-20261119-142957-ae8b4e2",
     "v2": "B-20261120-223319-cc5320d",   # wave 3, round 1 (supersedes B-20261120-222732-13e3e41)
     "g2": "B-20261125-171148-563a6f0",   # wave 3 batch 21: G2 section, fig_pop_gauge, G2 schematics, table VII
+    "g2b23": "B-20261126-025137-7686b91",  # batch 23: equal-mass halo masses in fig_pop_gauge (b), ledger rows of the legs
 }
 
 # the claims check reads the lead's stage documents as they stood when the note v0 checked
