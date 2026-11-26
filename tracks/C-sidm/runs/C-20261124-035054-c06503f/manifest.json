@@ -130,5 +130,19 @@
     "runs": 210,
     "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md + 0026-cards-loaded-allotment-cost.md + 0031-level2-branch-and-ablation.md"
   },
-  "finished": "2026-11-24T05:31:05Z"
+  "finished": "2026-11-24T05:31:05Z",
+  "continuations": [
+    {
+      "at": "2026-11-26T09:04:13Z",
+      "by": "tracks/C-sidm/longruns/seq/qitem.sh D2f2s2+ (shared card queue, decision 0033)",
+      "kind": "in-place resume of a chain cut by preemption or stopped while waiting",
+      "status_before": "failed",
+      "from_restart": "/data/haiyangw/nrpic/scratch/C-sidm/C-20261124-035054-c06503f/rst/cc.00001.rst",
+      "max_segments": 15,
+      "extra_athena_args": [
+        "output2/dt=10"
+      ],
+      "predictions": "tracks/C-sidm/JOURNAL.md 2026-11-21T20:25Z; resume rule 2026-11-24 entry"
+    }
+  ]
 }
