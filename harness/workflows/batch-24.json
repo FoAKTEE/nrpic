@@ -1,0 +1,12 @@
+{
+ "name": "24 (2026-11-25 evening, short)",
+ "what": "Track A queues the two card runs that decision 0043 asks for",
+ "note": "Rulings: coord/DECISIONS/0039 to 0043. The week's usage is tight: this is a short session with one aim. Prediction before every new run; at most 6 cores.",
+ "items": [
+  {
+   "type": "lead",
+   "owner": "A-emd-pbh",
+   "extra": "Extra for this session: a SHORT one, about thirty minutes, with one aim: put the two card runs that decision 0043 item 1 asks for into the shared queue so that they run overnight. No review, no stage package, no note. (1) Item 1(c): continue the Szekeres member of 256 cells to tau 40 (one entry, priority 2), prediction first. (2) Item 1(d): the relativistic member of the triaxial run S1L at half amplitude (about two card-hours, priority 2, the release build, <fastflow> diagnostics = true if it uses the finder): write first the quantitative prediction of its first-crossing time on the nonlinear relation between the curvature perturbation and the density contrast, the value the linear relation would give, and what would refute the candidate; processor smoke test of the deck; then queue it. (3) One journal entry, HANDOFF updated with the two queue ids and how they are read, commit, push."
+  }
+ ]
+}
