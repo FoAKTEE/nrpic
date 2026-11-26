@@ -6,7 +6,7 @@ decision 0019 item 4). Tags that exist: core-v0.1 = 7daed19 (asymptotically flat
 core-v0.2 = 52c44eb (periodic particles and cosmological gauge; source of main a1c2237),
 core-v0.3 = 609a875 (below).
 
-## For core-v0.8: branch core/restart-finder (2026-11-25, not yet merged into core/nrpic)
+## For core-v0.8: branch core/restart-finder (2026-11-25; merged into core/nrpic at b755cdcf on 2026-11-26, release waits for the card check q0049)
 
 Entries of the branch, written by its session for the maintainer's merge. Journal
 `tracks/core/JOURNAL-restart-finder.md`; interface proposals

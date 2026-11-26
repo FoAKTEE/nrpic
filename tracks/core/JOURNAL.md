@@ -2428,3 +2428,16 @@ not the published branch binary's d7306809..., as build paths are in the debug d
   tracker and history files across a continuation) with the merged build against the
   release: every check holds as in run core-20261125-142556-a424739 (branch final build).
   Refuted by any failed check.
+
+### Outcome F1 (02:50Z), run core-20261126-023323-c8fad52 (figure looked at)
+
+- **F1a HOLDS**: `-r <rst> fastflow/diagnostics=true` exits with status 1 and "on command
+  line not found"; no status file.
+- **F1b HOLDS**: `-r <rst> -i add.athinput` (only `<fastflow> diagnostics = true`) exits 0
+  and writes `hc.horizon_status_0.txt` with its header and two records (cycles 0 and 1,
+  both found, 3 and 2 flow iterations). The continuation started from `hc.00000.rst` (the
+  first of the three restart files of the first run, written at t = 0), still a run read
+  from a restart file.
+- **F1c HOLDS**: the control writes no status file.
+So Tracks D and F can switch the status file on in a continued run today with `-i`; the
+source fix (add a parameter on restart) is NEXT_SOURCE.md item 1, with this test.
