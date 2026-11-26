@@ -6,6 +6,104 @@ decision 0019 item 4). Tags that exist: core-v0.1 = 7daed19 (asymptotically flat
 core-v0.2 = 52c44eb (periodic particles and cosmological gauge; source of main a1c2237),
 core-v0.3 = 609a875 (below).
 
+## For core-v0.8: branch core/restart-finder (2026-11-25, not yet merged into core/nrpic)
+
+Entries of the branch, written by its session for the maintainer's merge. Journal
+`tracks/core/JOURNAL-restart-finder.md`; interface proposals
+`tracks/core/interfaces/restart_outputs.md`, `finder_stop.md`; executables with READY
+`/data/haiyangw/nrpic/scratch/core/exe/core_restart-finder/`.
+
+### Behaviour that changes without an option
+
+All three concern a run that is started with `-r <restart file>`. A run that is never
+continued is not changed: byte regression against core-v0.7, 75 of 75 items identical
+(run core-20261125-134356-4a92c73); the uninterrupted runs of the tests equal the
+release byte for byte.
+
+1. **Tracker file of a continued run** (`z4c/compact_object_tracker.cpp`; every deck
+   with a compact-object tracker, also through `puncture_setup`). `<base>.co_<n>.txt`
+   was opened with truncation at the first record of every start, so a continued run
+   kept only the records from its own first cycle on. Now a run started with `-r` keeps
+   the file, removes the records of cycles at or after its first cycle (a segment
+   killed after its last restart file has written such records), and appends; the two
+   header lines are written only when a new file is started. Closes W2 (Track F,
+   `tracker-files-on-restart`).
+2. **Header of the mesh history** (`outputs/history.cpp`). A run started with `-r`
+   writes no header when the history file exists and is not empty; before, every start
+   wrote the two header lines again (restart defect 2 of `stage/G2/OPEN.md`).
+3. **Conservation record across a restart** (`particles/nrpic_io.cpp`; `<particles>
+   cons_dcycle > 0`, uniform mesh). A continued run lost the record of
+   `<base>.cons.hst` that was due one or two cycles after the restart (restart defect
+   1). Now the fields of the state of the restart are evaluated at start-up, and the
+   particle restart file `<rst>.prt` ends with a block `NRPCNS01` (32 bytes per cell)
+   when a record is due at the cycle after the dump. One rank; on several ranks only the
+   record due two cycles later is recovered. Restart files of core-v0.7 are read, and
+   core-v0.7 reads the new ones (it ignores the block); a chain that changes executable
+   at a restart loses at most the one record of that restart.
+
+Tests (processors): cuts by SIGTERM at cycles 24, 25, 26, 27 and twice (14, 27) of
+`problems/tests/restart_outputs.athinput` give all 17 output files byte-identical to
+the uninterrupted run, where core-v0.7 differs in the tracker file, the header and (26,
+27) one record (run core-20261125-133539-961dcbd); cases S2 and S1 of
+`analysis/preempt/term_test.py` give no differing file (run core-20261125-134353-9f7fdc3).
+Limits: `restart_outputs.md` section 6 (only the tracker file is cleaned of records
+beyond the restart; the other appended files hold an overlap twice after a kill
+without a restart file, as before).
+
+### Input options
+
+Two, both read only if present in the input:
+
+- `<fastflow> polish_iterations_<n>` (integer, 0 when absent, below
+  `flow_iterations_<n>`): after the mass rule `mass_tol_<n>` is first met the flow goes
+  on for that many iterations, and the surface is accepted at the first iteration
+  after them at which the rule holds again. For use with the tolerance of
+  `puncture_setup` (1e-5 m) or smaller, with 100: on a puncture in its first 2 M the
+  accepted masses are those of the tight rule (`mass_tol` 1e-9) within 6.3e-8, at the
+  same ten of sixteen searches, and no unconverged surface is accepted (run
+  core-20261125-141832-01d4aee); on Track D's settled puncture a first form of the rule
+  gave the tight mass within 6.3e-9 at eleven dumps from 100 to 500 M and within
+  4.5e-8 from 2 M outside, where `mass_tol` 1e-5 alone ends 6.0e-5 to 6.8e-5 low (run
+  core-20261125-131950-1fb387d). Not for the finder's default tolerance 1e-2 (it then
+  accepts unconverged surfaces while a horizon jumps). Closes item 2 of Track D's
+  `finder-stopping-rule`.
+- `<particles> ah_exc_max_growth` (real > 0, 4 when absent): the factor of the guard on
+  horizon excision (a horizon is used while its smallest radius is below this multiple
+  of `<fastflow> initial_radius_<n>`). Closes item 1 of Track D's
+  `ah-excision-growth-guard`.
+
+Interface lines that Track D asked for (what `mass_tol` means, the angular offset of
+`ntheta = 16`, the guard and its consequence, what `<base>.z4c.user.hst` integrates near
+a hole), and two facts found on the way (column 1 of the horizon summary is the stage
+of the integrator; the summary repeats the last accepted surface when a search fails,
+so found or not found is read from the status file): `finder_stop.md` sections 2 to 4.
+
+### Python
+
+`python/nrpic/figstyle.py` `save()`: PDF files without a creation date (with
+`SOURCE_DATE_EPOCH` set, that date), so that a figure script run twice gives the same
+bytes (Track E, `figstyle-reproducible-pdf`; run core-20261125-135435-e82c50d). The
+vendored copy `harness/style/figstyle.py` is the orchestrator's (proposal in the
+outbox).
+
+### Files and formats
+
+Block `NRPCNS01` at the end of `rst/<base>.NNNNN.rst.prt` (`docs/FORMATS.md`). Decks
+`problems/tests/restart_outputs.athinput`, `problems/tests/finder_polish.athinput`.
+
+### Evidence
+
+Final builds of source 01d4aeeb. Byte regression against core-v0.7, 75 of 75 items
+identical (run core-20261125-142602-33f4005; the first builds: core-20261125-134356-4a92c73).
+Restart tests with the final serial build: core-20261125-142556-a424739; S2 and S1 with
+SIGTERM and restart files across the two executables: core-20261125-134353-9f7fdc3
+(builds before the correction of the finder rule, which differ in `z4c/fastflow.cpp`
+only). Finder: core-20261125-141832-01d4aee, core-20261125-131950-1fb387d. Figure
+style: core-20261125-135435-e82c50d. Open when this was written: the corrected rule on
+four of Track D's dumps (core-20261125-144142-5858c3d), the two-puncture deck across a
+restart (core-20261125-142953-bf5a228), and the card check (shared-queue entry
+`core-rf-card`); their outcomes are in the journal and the READY.
+
 ## core-v0.7 (release candidate, 2026-11-24): four source branches (decision 0035 item 4)
 
 Record: `tracks/core/RELEASE-v0.7.md` (first line: source commit and regression

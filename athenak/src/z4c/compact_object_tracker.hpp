@@ -82,7 +82,10 @@ class CompactObjectTracker {
   int out_every;
   std::string ofname_;          // tracker file, opened at the first record
   bool file_open = false;
+  bool continued_ = false;      // the run was started from a restart file: append
+  int start_cycle_ = 0;         // cycle of the first record of this run
   void OpenOutput();
+  bool TrimForRestart();
   std::ofstream ofile;
   Real pos[NDIM];
 };
