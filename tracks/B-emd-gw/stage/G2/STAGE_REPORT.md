@@ -1,6 +1,6 @@
 # Stage report: B-emd-gw G2
 
-Date: 2026-11-26 · branch `track/B-emd-gw` at `3d40543cf196` · checklist
+Date: 2026-11-26 · branch `track/B-emd-gw` at `664bfbdf16b6` · checklist
 `tracks/B-emd-gw/stage/G2/CHECKLIST.md` (from `nrpic-stage collect`)
 
 ## Verdict
@@ -8,7 +8,6 @@ Date: 2026-11-26 · branch `track/B-emd-gw` at `3d40543cf196` · checklist
 **FAIL**. Tag: `stage/B-emd-gw/G2-fail-20261126` (created and pushed by the orchestrator after review, decision 0003).
 
 - 7 checklist items not PASS or NA: C1 FAIL, C2 OPEN, C3 FAIL, C5 OPEN, C11 OPEN, C17 OPEN, C18 OPEN
-- verify ran on 1777b55; files changed since: tracks/B-emd-gw/HANDOFF.md, tracks/B-emd-gw/note/figures/fig_baseline.pdf, tracks/B-emd-gw/note/figures/fig_gauge.pdf, tracks/B-emd-gw/note/figures/fig_newton.pdf, tracks/B-emd-gw/note/figures/fig_pancake.pdf, tracks/B-emd-gw/note/figures/fig_pop_gauge.pdf (run verify again)
 - verify reported FAIL: runs
 - no VERIFIER.md (step 7: verifier subagent; decision 0016 item 1, VERIFIER_REPORT.md accepted too)
 
@@ -51,13 +50,13 @@ Date: 2026-11-26 · branch `track/B-emd-gw` at `3d40543cf196` · checklist
 
 ## Re-verification on a clean checkout (`nrpic-stage verify`)
 
-`nrpic-stage verify` on 2026-11-26T21:48:52Z, clean export of `1777b55dd375`: **FAIL**. Details: `VERIFY_RESULTS.md`.
+`nrpic-stage verify` on 2026-11-26T22:03:36Z, clean export of `664bfbdf16b6`: **FAIL**. Details: `VERIFY_RESULTS.md`.
 
 | Check | Result | Message |
 |---|---|---|
 | clean | PASS | worktree clean (outside the stage directory being assembled) |
 | sync | PASS | main is merged into the branch |
-| export | PASS | clean export of 1777b55dd375 (HEAD) in /data/haiyangw/nrpic/scratch/B-emd-gw/tmp/stage-verify/B-emd-gw-G2-1777b55-20261126T214142Z/tree |
+| export | PASS | clean export of 664bfbdf16b6 (HEAD) in /data/haiyangw/nrpic/scratch/B-emd-gw/tmp/stage-verify/B-emd-gw-G2-664bfbd-20261126T215912Z/tree |
 | size | PASS | no committed file of the track above 5 MB |
 | note | PASS | tracks/<ID>/note/main.tex present |
 | package | PASS | EVIDENCE.md, OPEN.md, CHECKLIST.md present (decision 0012); scoping text: scope/SCOPE.md; no verifier's report yet (VERIFIER.md, decision 0016) |
@@ -65,7 +64,7 @@ Date: 2026-11-26 · branch `track/B-emd-gw` at `3d40543cf196` · checklist
 | style | PASS | 2 style copies equal harness/style/SHA256SUMS (czstyle.py, paperfig.py) |
 | fig-script | PASS | 15 figures, each with its script |
 | min-figs | PASS | 6 schematics and 9 data figures (brief 13.4 asks at least 1 and 5 at G2) |
-| runs | FAIL | 2 of 372 runs have problems |
+| runs | FAIL | 1 of 373 runs have problems |
 | run-notes | WARN | 78 runs read with defaults or not fully re-verifiable (nrpic-run lint) |
 | checksums | WARN | output checksums not re-verified (--no-checksums) |
 | status | PASS | STATUS.md has 35 lines |
