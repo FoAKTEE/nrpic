@@ -77,3 +77,22 @@ Batch 20 (lead, processors only; g2long entries 23-24; every figure looked at by
 
 Analysis tools added in batch 20: `g2long/tools/hz_check.py`, `g2long/tools/region_norms.py`,
 `g2long/tools/d4_timing.py`, `stage/G2/rerun_g2.py`.
+
+## Batch 25 (2026-11-25 late evening, lead): the last two G2 runs and the convergence of item C2
+
+All horizon numbers below from runs made without `<fastflow> diagnostics`, rechecked by the failure
+signature (decision 0041 item 4). Predictions: g2long/JOURNAL.md entries 10, 15, 25; outcomes entries 26-27.
+
+| Claim | Run(s) | Figure looked at |
+|---|---|---|
+| FNQ (N/4) closed, 1.90 card-hours; Q3 holds | D-20261124-172725-2f426b6 | - |
+| Q1: criterion G at N/4, 50 bins to 500 M, max 0.290 per cent, D2 at 760 samples; D3 fails late (not predicted) | D-20261126-054616-a13a888 | esf_criteria.png |
+| Q2: removed m E_K of N/4 within 0.86 per cent of N at 100-399.5 M | D-20261126-054636-93618ee | np_partial.png |
+| XQ: N/4 over N plane norms 1.65-1.89 on A1/A2 at 100, 200 M | D-20261126-054718-afa783e | xc_plane.png |
+| R3 to 400 M: FNQ/FN4 shells 3.2-5.2 | D-20261126-054736-10c837a | region_norms.png |
+| FL16 (M/16) closed, 3.66 card-hours; L1, L4 hold | D-20261124-172745-72472ed | - |
+| L2: criterion G at M/16 with V-1L16, 38 bins to 380 M, max 0.485 per cent, D2 at 1120 samples, D3 holds | D-20261126-055158-30ae09c | esf_criteria.png |
+| L5: M/16 over M/8 plane norm on A1 2.11 (100 M), 1.08 (200 M) | D-20261126-055159-6c40115 | xc_plane.png |
+| C2c: no failed finder search after 20 M in FNQ or FL16 | D-20261126-055208-4e0fd0e | hz_check.png |
+| C2a, L3, C2b: three-way convergence (particle ordering 4 of 4; M/16 - M/8 <= 4.4e-4; M/4 outside the regime) | D-20261126-055249-505b079 (first reading D-20261126-055207-0137c53 dropped 300 M) | conv3.png |
+| Note v3 build (15 of 15 scripts; fig_g2conv, ledger part 11, schematics on core-v0.7) | D-20261126-055502-fbb1bec | note pages 11-14 |

@@ -186,3 +186,27 @@ second sample: particles that crossed $r_+$; distance of its initial $C$ from th
 second sample, 0--4: time average over expected $-1$ with; without the plunged particle's later snapshots (per cent) & -1.06; -1.78 & \texttt{\scriptsize D-20261121-215955-0fb4ea2} \newline \texttt{\scriptsize D-20261121-220137-5123361} \\
 without the plunged particle: sum of the inner $z$ of the second sample; two-seed means in 0--4, 4--6, 6--10 (per cent); combined inner $z$ & -1.03; -3.0, -1.4, -0.5; -1.66 & \texttt{\scriptsize D-bh-dress-20261115-174954-786ddcc} \newline \texttt{\scriptsize D-20261121-215955-0fb4ea2} \newline \texttt{\scriptsize D-20261121-220011-d0deb0b} \newline \texttt{\scriptsize D-20261121-220137-5123361} \\
 \end{tabular}\end{ruledtabular}\end{table*}
+\begin{table*}
+\caption{Numerical ledger, part 11. Gate G2: null test, growth against the flux, three-way convergence (horizon masses made without the finder diagnostics): each value with the registered run that produced it.}
+\label{tab:ledger11}
+\begin{ruledtabular}\begin{tabular}{p{0.44\textwidth}p{0.19\textwidth}p{0.27\textwidth}}
+Quantity & Value & Run \\ \hline
+null test, $M/8$: largest $|D_{\rm bubble}-D_{\rm vacuum}|$ over $100$--$500M$; pass threshold & $2.28\times10^{-4}$; $2.51\times10^{-4}$ & \texttt{\scriptsize D-20261123-020550-f9a3482} \\
+null test with the converged finder: largest difference at $M/8$ and $M/16$, $200$--$300M$ & $6.53\times10^{-5}$ & \texttt{\scriptsize D-20261124-172508-c847ee4} \\
+growth against the flux, $N/4$: counted bins of $10M$; largest $|$bin median$|$ of $M_{\rm AH}/M_{\rm LTB}-1$ (per cent); D2 samples (all hold) & 50; 0.290; 760 & \texttt{\scriptsize D-20261126-054616-a13a888} \\
+growth against the flux, $N$: counted bins of $10M$; largest $|$bin median$|$ of $M_{\rm AH}/M_{\rm LTB}-1$ (per cent); D2 samples (all hold) & 50; 0.249; 760 & \texttt{\scriptsize D-20261125-115647-fd2f3f7} \\
+growth against the flux, $4N$: counted bins of $10M$; largest $|$bin median$|$ of $M_{\rm AH}/M_{\rm LTB}-1$ (per cent); D2 samples (all hold) & 50; 0.239; 760 & \texttt{\scriptsize D-20261125-122827-c5735f8} \\
+growth against the flux, $M/8$: counted bins of $10M$; largest $|$bin median$|$ of $M_{\rm AH}/M_{\rm LTB}-1$ (per cent); D2 samples (all hold) & 61; 0.620; 960 & \texttt{\scriptsize D-20261123-020614-7ba5874} \\
+growth against the flux, $M/16$: counted bins of $10M$; largest $|$bin median$|$ of $M_{\rm AH}/M_{\rm LTB}-1$ (per cent); D2 samples (all hold) & 38; 0.485; 1120 & \texttt{\scriptsize D-20261126-055158-30ae09c} \\
+growth against the flux, $M/4$ (outside the regime): counted bins of $10M$; largest $|$bin median$|$ of $M_{\rm AH}/M_{\rm LTB}-1$ (per cent); D2 samples (all hold) & 60; 0.685; 480 & \texttt{\scriptsize D-20261125-121123-143a007} \\
+removed $\sum mE_K$ of $N/4$ over $N$ at $100,200,300,399.5M$, minus one (per cent) & -0.86, +0.49, +0.47, +0.28 & \texttt{\scriptsize D-20261126-054636-93618ee} \\
+$|M_N-M_{N/4}|$ at $100,200,300,399.5M$ & 0.0014, $3.9\times10^{-4}$, $3.9\times10^{-4}$, $5.9\times10^{-4}$ & \texttt{\scriptsize D-20261126-055249-505b079} \\
+$|M_{4N}-M_N|$ at the same times & $3.7\times10^{-4}$, $3.6\times10^{-4}$, $9.4\times10^{-6}$, $4.9\times10^{-4}$ & \texttt{\scriptsize D-20261126-055249-505b079} \\
+rms over $\pm25M$ of $M_N-M_{N/4}$ over that of $M_{4N}-M_N$ (noise $\propto N^{-1/2}$ gives 2) & 3.1, 2.5, 2.5, 1.9 & \texttt{\scriptsize D-20261126-055249-505b079} \\
+$|\Delta M_{16}-\Delta M_8|$, $\Delta M$ from $20M$, at $100,200,300M$ (the last read at $299M$) & $4.4\times10^{-4}$, $1.2\times10^{-4}$, $8.6\times10^{-5}$ & \texttt{\scriptsize D-20261126-055249-505b079} \\
+the same with each own-mesh vacuum control subtracted & $3.6\times10^{-4}$, $2.9\times10^{-5}$, $1.3\times10^{-5}$ & \texttt{\scriptsize D-20261126-055249-505b079} \\
+$|\Delta M_8-\Delta M_4|$ at the same times ($M/4$ outside the convergent regime; no order claimed) & 0.0012, $9.4\times10^{-4}$, 0.0012 & \texttt{\scriptsize D-20261126-055249-505b079} \\
+plane norm of $\mathcal{H}$, $N/4$ over $N$, on $[1.2r_{\rm AH},6M]$ and $[6,30]M$ at $100$ and $200M$ & 1.89, 1.65, 1.85, 1.77 & \texttt{\scriptsize D-20261126-054718-afa783e} \\
+the same, $4N$ over $N$ & 0.49, 0.46, 0.43, 0.45 & \texttt{\scriptsize D-20261126-054718-afa783e} \\
+failed finder searches after $20M$ (repeat or NaN line): $N/4$; $M/16$ & 0 of 762; 0 of 1121 & \texttt{\scriptsize D-20261126-055208-4e0fd0e} \\
+\end{tabular}\end{ruledtabular}\end{table*}

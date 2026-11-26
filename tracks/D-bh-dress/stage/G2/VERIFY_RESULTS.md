@@ -1,40 +1,28 @@
 # Re-verification: D-bh-dress G2
 
-`harness/bin/nrpic-stage verify D-bh-dress G2` on 2026-11-25T16:11:48Z, clean export of commit `69f47d5f2ad8` in `scratch/D-bh-dress/tmp/stage-verify/D-bh-dress-G2-69f47d5-20261125T161012Z`. Result: **FAIL**.
+`harness/bin/nrpic-stage verify D-bh-dress G2` on 2026-11-26T06:00:00Z, clean export of commit `b15d370c5649` in `scratch/D-bh-dress/tmp/stage-verify/D-bh-dress-G2-b15d370-20261126T055738Z`. Result: **FAIL**.
 
 | Check | Result | Message |
 |---|---|---|
-| clean | PASS | worktree clean (outside the stage directory being assembled) |
+| clean | FAIL | 21 uncommitted paths: commit them first (tracks/D-bh-dress/note/figures/fig_constraints.pdf, tracks/D-bh-dress/note/figures/fig_es.pdf, tracks/D-bh-dress/note/figures/fig_esf.pdf, tracks/D-bh-dress/note/figures/fig_esrun.pdf, tracks/D-bh-dress/note/figures/fig_floor.pdf) |
 | sync | PASS | main is merged into the branch |
-| export | PASS | clean export of 69f47d5f2ad8 (HEAD) in /data/haiyangw/nrpic/scratch/D-bh-dress/tmp/stage-verify/D-bh-dress-G2-69f47d5-20261125T161012Z/tree |
+| export | PASS | clean export of b15d370c5649 (HEAD) in /data/haiyangw/nrpic/scratch/D-bh-dress/tmp/stage-verify/D-bh-dress-G2-b15d370-20261126T055738Z/tree |
 | size | PASS | no committed file of the track above 5 MB |
 | note | PASS | tracks/<ID>/note/main.tex present |
 | package | PASS | EVIDENCE.md, OPEN.md, CHECKLIST.md present (decision 0012); scoping text: scope/SCOPE.md; REVIEW.md present; no verifier's report yet (VERIFIER.md, decision 0016) |
-| note-pdf | PASS | note/main.pdf committed after the last .tex change |
+| note-pdf | WARN | note/main.pdf is older than the last change of its .tex files |
 | style | PASS | 2 style copies equal harness/style/SHA256SUMS (czstyle.py, paperfig.py) |
 | fig-script | PASS | 13 figures, each with its script |
 | min-figs | PASS | 2 schematics and 11 data figures (brief 13.4 asks at least 1 and 5 at G2) |
-| runs | FAIL | 2 of 311 runs have problems; 1 waived |
+| runs | PASS | 321 run manifests finished (106 hand-written, read as decision 0012 allows); failures of 1 runs waived by coord/WAIVERS.md (decision 0019) |
 | runs-waived | WARN | failures of the manifest check waived: 1 runs named in main's coord/WAIVERS.md (decision 0019 item 6): D-20261121-165420-5d1c245: superseded: the check run of the G1 gate reviewer; an input under scratch changed after the run; its result stands in the gate review of G1 and no later claim rests on it (decision 0039 item 4) |
 | run-notes | WARN | 99 runs read with defaults or not fully re-verifiable (nrpic-run lint) |
 | checksums | WARN | output checksums not re-verified (--no-checksums) |
 | status | PASS | STATUS.md has 40 lines |
-| rerun | PASS | 13 of 13 scripts and commands ran cleanly in the export |
-| compare | PASS | 37 regenerated files compared with the committed ones; 0 differ beyond tolerance (rtol 1e-06, atol 1e-12, PNG rms 0.005) |
+| rerun | PASS | 14 of 14 scripts and commands ran cleanly in the export |
+| compare | FAIL | 37 regenerated files compared with the committed ones; 2 differ beyond tolerance (rtol 1e-06, atol 1e-12, PNG rms 0.005) |
 | regenerate | PASS | all 26 committed figure files regenerated |
-
-## runs
-
-```
-{
- "D-20261124-172725-2f426b6": [
-  "status is submitted: not finished (nrpic-run finish)"
- ],
- "D-20261124-172745-72472ed": [
-  "status is submitted: not finished (nrpic-run finish)"
- ]
-}
-```
+| new-files | WARN | 3 files written by the scripts are not in the commit |
 
 ## runs-waived
 
@@ -203,8 +191,8 @@
  ],
  [
   "note/figures/schem_timeline.png",
-  "PASS",
-  "identical"
+  "FAIL",
+  "pixel rms 0.0631381855466101"
  ],
  [
   "note/figures/fig_newton.pdf",
@@ -313,8 +301,8 @@
  ],
  [
   "note/figures/schem_architecture.png",
-  "PASS",
-  "identical"
+  "FAIL",
+  "pixel rms 0.08057503023056624"
  ],
  [
   "note/figures/fig_kerr_seeds.pdf",
@@ -346,5 +334,15 @@
   "PASS",
   "identical"
  ]
+]
+```
+
+## new-files
+
+```
+[
+ "note/figures/fig_g2conv.pdf",
+ "note/figures/fig_g2conv.png",
+ "note/figures/fig_g2conv_numbers.json"
 ]
 ```

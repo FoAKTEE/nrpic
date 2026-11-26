@@ -6,7 +6,7 @@
   <rdf:RDF xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
    <cc:Work>
     <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
-    <dc:date>2026-11-21T14:07:47.424400</dc:date>
+    <dc:date>2026-11-25T21:55:54.444084</dc:date>
     <dc:format>image/svg+xml</dc:format>
     <dc:creator>
      <cc:Agent>
@@ -40,7 +40,7 @@ Q 3.456 14.688 3.456 30.24
 L 3.456 150.336 
 Q 3.456 165.888 19.008 165.888 
 z
-" clip-path="url(#p61a4b0a360)" style="fill: #fff9e5; stroke-dasharray: 4.4,2.75; stroke-dashoffset: 0; stroke: #c6c5cb; stroke-width: 1.1; stroke-linejoin: miter"/>
+" clip-path="url(#p93e996cf36)" style="fill: #fff9e5; stroke-dasharray: 4.4,2.75; stroke-dashoffset: 0; stroke: #c6c5cb; stroke-width: 1.1; stroke-linejoin: miter"/>
    </g>
    <g id="patch_3">
     <path d="M 193.536 200.448 
@@ -53,20 +53,20 @@ Q 177.984 14.688 177.984 30.24
 L 177.984 184.896 
 Q 177.984 200.448 193.536 200.448 
 z
-" clip-path="url(#p61a4b0a360)" style="fill: #fff9e5; stroke-dasharray: 4.4,2.75; stroke-dashoffset: 0; stroke: #c6c5cb; stroke-width: 1.1; stroke-linejoin: miter"/>
+" clip-path="url(#p93e996cf36)" style="fill: #fff9e5; stroke-dasharray: 4.4,2.75; stroke-dashoffset: 0; stroke: #c6c5cb; stroke-width: 1.1; stroke-linejoin: miter"/>
    </g>
    <g id="patch_4">
-    <path d="M 368.064 183.168 
-L 499.392 183.168 
-Q 514.944 183.168 514.944 167.616 
+    <path d="M 368.064 200.448 
+L 499.392 200.448 
+Q 514.944 200.448 514.944 184.896 
 L 514.944 30.24 
 Q 514.944 14.688 499.392 14.688 
 L 368.064 14.688 
 Q 352.512 14.688 352.512 30.24 
-L 352.512 167.616 
-Q 352.512 183.168 368.064 183.168 
+L 352.512 184.896 
+Q 352.512 200.448 368.064 200.448 
 z
-" clip-path="url(#p61a4b0a360)" style="fill: #fff9e5; stroke-dasharray: 4.4,2.75; stroke-dashoffset: 0; stroke: #c6c5cb; stroke-width: 1.1; stroke-linejoin: miter"/>
+" clip-path="url(#p93e996cf36)" style="fill: #fff9e5; stroke-dasharray: 4.4,2.75; stroke-dashoffset: 0; stroke: #c6c5cb; stroke-width: 1.1; stroke-linejoin: miter"/>
    </g>
    <g id="patch_5">
     <path d="M 214.272 299.808 
@@ -79,7 +79,7 @@ Q 207.36 283.392 207.36 290.304
 L 207.36 292.896 
 Q 207.36 299.808 214.272 299.808 
 z
-" clip-path="url(#p61a4b0a360)" style="fill: #f5efde; stroke-dasharray: 4.4,2.75; stroke-dashoffset: 0; stroke: #c6c5cb; stroke-width: 1.1; stroke-linejoin: miter"/>
+" clip-path="url(#p93e996cf36)" style="fill: #f5efde; stroke-dasharray: 4.4,2.75; stroke-dashoffset: 0; stroke: #c6c5cb; stroke-width: 1.1; stroke-linejoin: miter"/>
    </g>
    <g id="patch_6">
     <path d="M 14.1696 59.4432 
@@ -92,7 +92,7 @@ Q 10.368 44.928 10.368 48.7296
 L 10.368 55.6416 
 Q 10.368 59.4432 14.1696 59.4432 
 z
-" clip-path="url(#p61a4b0a360)" style="fill: #6c7869"/>
+" clip-path="url(#p93e996cf36)" style="fill: #6c7869"/>
    </g>
    <g id="patch_7">
     <path d="M 14.1696 76.7232 
@@ -105,7 +105,7 @@ Q 10.368 62.208 10.368 66.0096
 L 10.368 72.9216 
 Q 10.368 76.7232 14.1696 76.7232 
 z
-" clip-path="url(#p61a4b0a360)" style="fill: #6c7869"/>
+" clip-path="url(#p93e996cf36)" style="fill: #6c7869"/>
    </g>
    <g id="patch_8">
     <path d="M 14.1696 94.0032 
@@ -118,7 +118,7 @@ Q 10.368 79.488 10.368 83.2896
 L 10.368 90.2016 
 Q 10.368 94.0032 14.1696 94.0032 
 z
-" clip-path="url(#p61a4b0a360)" style="fill: #6c7869"/>
+" clip-path="url(#p93e996cf36)" style="fill: #6c7869"/>
    </g>
    <g id="patch_9">
     <path d="M 14.1696 111.2832 
@@ -131,7 +131,7 @@ Q 10.368 96.768 10.368 100.5696
 L 10.368 107.4816 
 Q 10.368 111.2832 14.1696 111.2832 
 z
-" clip-path="url(#p61a4b0a360)" style="fill: #76768d"/>
+" clip-path="url(#p93e996cf36)" style="fill: #6c7869"/>
    </g>
    <g id="patch_10">
     <path d="M 14.1696 128.5632 
@@ -144,7 +144,7 @@ Q 10.368 114.048 10.368 117.8496
 L 10.368 124.7616 
 Q 10.368 128.5632 14.1696 128.5632 
 z
-" clip-path="url(#p61a4b0a360)" style="fill: #6c7869"/>
+" clip-path="url(#p93e996cf36)" style="fill: #6c7869"/>
    </g>
    <g id="patch_11">
     <path d="M 14.1696 145.8432 
@@ -157,7 +157,7 @@ Q 10.368 131.328 10.368 135.1296
 L 10.368 142.0416 
 Q 10.368 145.8432 14.1696 145.8432 
 z
-" clip-path="url(#p61a4b0a360)" style="fill: #9b5353"/>
+" clip-path="url(#p93e996cf36)" style="fill: #9b5353"/>
    </g>
    <g id="patch_12">
     <path d="M 14.1696 163.1232 
@@ -170,7 +170,7 @@ Q 10.368 148.608 10.368 152.4096
 L 10.368 159.3216 
 Q 10.368 163.1232 14.1696 163.1232 
 z
-" clip-path="url(#p61a4b0a360)" style="fill: #9b5353"/>
+" clip-path="url(#p93e996cf36)" style="fill: #9b5353"/>
    </g>
    <g id="patch_13">
     <path d="M 188.6976 59.4432 
@@ -183,7 +183,7 @@ Q 184.896 44.928 184.896 48.7296
 L 184.896 55.6416 
 Q 184.896 59.4432 188.6976 59.4432 
 z
-" clip-path="url(#p61a4b0a360)" style="fill: #6c7869"/>
+" clip-path="url(#p93e996cf36)" style="fill: #6c7869"/>
    </g>
    <g id="patch_14">
     <path d="M 188.6976 76.7232 
@@ -196,7 +196,7 @@ Q 184.896 62.208 184.896 66.0096
 L 184.896 72.9216 
 Q 184.896 76.7232 188.6976 76.7232 
 z
-" clip-path="url(#p61a4b0a360)" style="fill: #6c7869"/>
+" clip-path="url(#p93e996cf36)" style="fill: #6c7869"/>
    </g>
    <g id="patch_15">
     <path d="M 188.6976 94.0032 
@@ -209,7 +209,7 @@ Q 184.896 79.488 184.896 83.2896
 L 184.896 90.2016 
 Q 184.896 94.0032 188.6976 94.0032 
 z
-" clip-path="url(#p61a4b0a360)" style="fill: #6c7869"/>
+" clip-path="url(#p93e996cf36)" style="fill: #6c7869"/>
    </g>
    <g id="patch_16">
     <path d="M 188.6976 111.2832 
@@ -222,7 +222,7 @@ Q 184.896 96.768 184.896 100.5696
 L 184.896 107.4816 
 Q 184.896 111.2832 188.6976 111.2832 
 z
-" clip-path="url(#p61a4b0a360)" style="fill: #76768d"/>
+" clip-path="url(#p93e996cf36)" style="fill: #6c7869"/>
    </g>
    <g id="patch_17">
     <path d="M 188.6976 128.5632 
@@ -235,7 +235,7 @@ Q 184.896 114.048 184.896 117.8496
 L 184.896 124.7616 
 Q 184.896 128.5632 188.6976 128.5632 
 z
-" clip-path="url(#p61a4b0a360)" style="fill: #76768d"/>
+" clip-path="url(#p93e996cf36)" style="fill: #6c7869"/>
    </g>
    <g id="patch_18">
     <path d="M 188.6976 145.8432 
@@ -248,7 +248,7 @@ Q 184.896 131.328 184.896 135.1296
 L 184.896 142.0416 
 Q 184.896 145.8432 188.6976 145.8432 
 z
-" clip-path="url(#p61a4b0a360)" style="fill: #76768d"/>
+" clip-path="url(#p93e996cf36)" style="fill: #6c7869"/>
    </g>
    <g id="patch_19">
     <path d="M 188.6976 163.1232 
@@ -261,7 +261,7 @@ Q 184.896 148.608 184.896 152.4096
 L 184.896 159.3216 
 Q 184.896 163.1232 188.6976 163.1232 
 z
-" clip-path="url(#p61a4b0a360)" style="fill: #76768d"/>
+" clip-path="url(#p93e996cf36)" style="fill: #6c7869"/>
    </g>
    <g id="patch_20">
     <path d="M 188.6976 180.4032 
@@ -274,7 +274,7 @@ Q 184.896 165.888 184.896 169.6896
 L 184.896 176.6016 
 Q 184.896 180.4032 188.6976 180.4032 
 z
-" clip-path="url(#p61a4b0a360)" style="fill: #76768d"/>
+" clip-path="url(#p93e996cf36)" style="fill: #6c7869"/>
    </g>
    <g id="patch_21">
     <path d="M 188.6976 197.6832 
@@ -287,7 +287,7 @@ Q 184.896 183.168 184.896 186.9696
 L 184.896 193.8816 
 Q 184.896 197.6832 188.6976 197.6832 
 z
-" clip-path="url(#p61a4b0a360)" style="fill: #76768d"/>
+" clip-path="url(#p93e996cf36)" style="fill: #76768d"/>
    </g>
    <g id="patch_22">
     <path d="M 363.2256 59.4432 
@@ -300,7 +300,7 @@ Q 359.424 44.928 359.424 48.7296
 L 359.424 55.6416 
 Q 359.424 59.4432 363.2256 59.4432 
 z
-" clip-path="url(#p61a4b0a360)" style="fill: #6c7869"/>
+" clip-path="url(#p93e996cf36)" style="fill: #6c7869"/>
    </g>
    <g id="patch_23">
     <path d="M 363.2256 76.7232 
@@ -313,7 +313,7 @@ Q 359.424 62.208 359.424 66.0096
 L 359.424 72.9216 
 Q 359.424 76.7232 363.2256 76.7232 
 z
-" clip-path="url(#p61a4b0a360)" style="fill: #6c7869"/>
+" clip-path="url(#p93e996cf36)" style="fill: #6c7869"/>
    </g>
    <g id="patch_24">
     <path d="M 363.2256 94.0032 
@@ -326,7 +326,7 @@ Q 359.424 79.488 359.424 83.2896
 L 359.424 90.2016 
 Q 359.424 94.0032 363.2256 94.0032 
 z
-" clip-path="url(#p61a4b0a360)" style="fill: #6c7869"/>
+" clip-path="url(#p93e996cf36)" style="fill: #6c7869"/>
    </g>
    <g id="patch_25">
     <path d="M 363.2256 111.2832 
@@ -339,7 +339,7 @@ Q 359.424 96.768 359.424 100.5696
 L 359.424 107.4816 
 Q 359.424 111.2832 363.2256 111.2832 
 z
-" clip-path="url(#p61a4b0a360)" style="fill: #6c7869"/>
+" clip-path="url(#p93e996cf36)" style="fill: #6c7869"/>
    </g>
    <g id="patch_26">
     <path d="M 363.2256 128.5632 
@@ -352,7 +352,7 @@ Q 359.424 114.048 359.424 117.8496
 L 359.424 124.7616 
 Q 359.424 128.5632 363.2256 128.5632 
 z
-" clip-path="url(#p61a4b0a360)" style="fill: #6c7869"/>
+" clip-path="url(#p93e996cf36)" style="fill: #6c7869"/>
    </g>
    <g id="patch_27">
     <path d="M 363.2256 145.8432 
@@ -365,7 +365,7 @@ Q 359.424 131.328 359.424 135.1296
 L 359.424 142.0416 
 Q 359.424 145.8432 363.2256 145.8432 
 z
-" clip-path="url(#p61a4b0a360)" style="fill: #6c7869"/>
+" clip-path="url(#p93e996cf36)" style="fill: #6c7869"/>
    </g>
    <g id="patch_28">
     <path d="M 363.2256 163.1232 
@@ -378,7 +378,7 @@ Q 359.424 148.608 359.424 152.4096
 L 359.424 159.3216 
 Q 359.424 163.1232 363.2256 163.1232 
 z
-" clip-path="url(#p61a4b0a360)" style="fill: #6c7869"/>
+" clip-path="url(#p93e996cf36)" style="fill: #6c7869"/>
    </g>
    <g id="patch_29">
     <path d="M 363.2256 180.4032 
@@ -391,9 +391,22 @@ Q 359.424 165.888 359.424 169.6896
 L 359.424 176.6016 
 Q 359.424 180.4032 363.2256 180.4032 
 z
-" clip-path="url(#p61a4b0a360)" style="fill: #9b5353"/>
+" clip-path="url(#p93e996cf36)" style="fill: #6c7869"/>
    </g>
    <g id="patch_30">
+    <path d="M 363.2256 197.6832 
+L 504.2304 197.6832 
+Q 508.032 197.6832 508.032 193.8816 
+L 508.032 186.9696 
+Q 508.032 183.168 504.2304 183.168 
+L 363.2256 183.168 
+Q 359.424 183.168 359.424 186.9696 
+L 359.424 193.8816 
+Q 359.424 197.6832 363.2256 197.6832 
+z
+" clip-path="url(#p93e996cf36)" style="fill: #9b5353"/>
+   </g>
+   <g id="patch_31">
     <path d="M 14.688 238.464 
 L 61.344 238.464 
 Q 69.12 238.464 69.12 230.688 
@@ -404,9 +417,9 @@ Q 6.912 222.912 6.912 230.688
 L 6.912 230.688 
 Q 6.912 238.464 14.688 238.464 
 z
-" clip-path="url(#p61a4b0a360)" style="fill: #6c7869"/>
+" clip-path="url(#p93e996cf36)" style="fill: #6c7869"/>
    </g>
-   <g id="patch_31">
+   <g id="patch_32">
     <path d="M 85.8816 238.464 
 L 167.0976 238.464 
 Q 174.8736 238.464 174.8736 230.688 
@@ -417,9 +430,9 @@ Q 78.1056 222.912 78.1056 230.688
 L 78.1056 230.688 
 Q 78.1056 238.464 85.8816 238.464 
 z
-" clip-path="url(#p61a4b0a360)" style="fill: #6c7869"/>
+" clip-path="url(#p93e996cf36)" style="fill: #6c7869"/>
    </g>
-   <g id="patch_32">
+   <g id="patch_33">
     <path d="M 191.6352 238.464 
 L 243.4752 238.464 
 Q 251.2512 238.464 251.2512 230.688 
@@ -430,9 +443,9 @@ Q 183.8592 222.912 183.8592 230.688
 L 183.8592 230.688 
 Q 183.8592 238.464 191.6352 238.464 
 z
-" clip-path="url(#p61a4b0a360)" style="fill: #8a8463"/>
+" clip-path="url(#p93e996cf36)" style="fill: #8a8463"/>
    </g>
-   <g id="patch_33">
+   <g id="patch_34">
     <path d="M 268.0128 238.464 
 L 328.4928 238.464 
 Q 336.2688 238.464 336.2688 230.688 
@@ -443,9 +456,9 @@ Q 260.2368 222.912 260.2368 230.688
 L 260.2368 230.688 
 Q 260.2368 238.464 268.0128 238.464 
 z
-" clip-path="url(#p61a4b0a360)" style="fill: #8a8463"/>
+" clip-path="url(#p93e996cf36)" style="fill: #6c7869"/>
    </g>
-   <g id="patch_34">
+   <g id="patch_35">
     <path d="M 353.0304 238.464 
 L 416.9664 238.464 
 Q 424.7424 238.464 424.7424 230.688 
@@ -456,9 +469,9 @@ Q 345.2544 222.912 345.2544 230.688
 L 345.2544 230.688 
 Q 345.2544 238.464 353.0304 238.464 
 z
-" clip-path="url(#p61a4b0a360)" style="fill: #6c7869"/>
+" clip-path="url(#p93e996cf36)" style="fill: #6c7869"/>
    </g>
-   <g id="patch_35">
+   <g id="patch_36">
     <path d="M 441.504 238.464 
 L 503.712 238.464 
 Q 511.488 238.464 511.488 230.688 
@@ -469,9 +482,9 @@ Q 433.728 222.912 433.728 230.688
 L 433.728 230.688 
 Q 433.728 238.464 441.504 238.464 
 z
-" clip-path="url(#p61a4b0a360)" style="fill: #7b576f"/>
+" clip-path="url(#p93e996cf36)" style="fill: #7b576f"/>
    </g>
-   <g id="patch_36">
+   <g id="patch_37">
     <path d="M 18.576 274.752 
 L 140.4 274.752 
 Q 148.608 274.752 148.608 266.544 
@@ -482,9 +495,9 @@ Q 10.368 258.336 10.368 266.544
 L 10.368 266.544 
 Q 10.368 274.752 18.576 274.752 
 z
-" clip-path="url(#p61a4b0a360)" style="fill: #7b576f"/>
+" clip-path="url(#p93e996cf36)" style="fill: #7b576f"/>
    </g>
-   <g id="patch_37">
+   <g id="patch_38">
     <path d="M 166.32 274.752 
 L 270.864 274.752 
 Q 279.072 274.752 279.072 266.544 
@@ -495,9 +508,9 @@ Q 158.112 258.336 158.112 266.544
 L 158.112 266.544 
 Q 158.112 274.752 166.32 274.752 
 z
-" clip-path="url(#p61a4b0a360)" style="fill: #7b576f"/>
+" clip-path="url(#p93e996cf36)" style="fill: #7b576f"/>
    </g>
-   <g id="patch_38">
+   <g id="patch_39">
     <path d="M 296.784 274.752 
 L 387.504 274.752 
 Q 395.712 274.752 395.712 266.544 
@@ -508,9 +521,9 @@ Q 288.576 258.336 288.576 266.544
 L 288.576 266.544 
 Q 288.576 274.752 296.784 274.752 
 z
-" clip-path="url(#p61a4b0a360)" style="fill: #7b576f"/>
+" clip-path="url(#p93e996cf36)" style="fill: #7b576f"/>
    </g>
-   <g id="patch_39">
+   <g id="patch_40">
     <path d="M 413.424 274.752 
 L 486.864 274.752 
 Q 495.072 274.752 495.072 266.544 
@@ -521,9 +534,9 @@ Q 405.216 258.336 405.216 266.544
 L 405.216 266.544 
 Q 405.216 274.752 413.424 274.752 
 z
-" clip-path="url(#p61a4b0a360)" style="fill: #7b576f"/>
+" clip-path="url(#p93e996cf36)" style="fill: #7b576f"/>
    </g>
-   <g id="patch_40">
+   <g id="patch_41">
     <path d="M 218.0736 296.352 
 L 236.3904 296.352 
 Q 238.464 296.352 238.464 294.2784 
@@ -534,9 +547,9 @@ Q 216 286.848 216 288.9216
 L 216 294.2784 
 Q 216 296.352 218.0736 296.352 
 z
-" clip-path="url(#p61a4b0a360)" style="fill: #6c7869"/>
+" clip-path="url(#p93e996cf36)" style="fill: #6c7869"/>
    </g>
-   <g id="patch_41">
+   <g id="patch_42">
     <path d="M 285.4656 296.352 
 L 303.7824 296.352 
 Q 305.856 296.352 305.856 294.2784 
@@ -547,9 +560,9 @@ Q 283.392 286.848 283.392 288.9216
 L 283.392 294.2784 
 Q 283.392 296.352 285.4656 296.352 
 z
-" clip-path="url(#p61a4b0a360)" style="fill: #76768d"/>
+" clip-path="url(#p93e996cf36)" style="fill: #76768d"/>
    </g>
-   <g id="patch_42">
+   <g id="patch_43">
     <path d="M 404.6976 296.352 
 L 423.0144 296.352 
 Q 425.088 296.352 425.088 294.2784 
@@ -560,77 +573,77 @@ Q 402.624 286.848 402.624 288.9216
 L 402.624 294.2784 
 Q 402.624 296.352 404.6976 296.352 
 z
-" clip-path="url(#p61a4b0a360)" style="fill: #9b5353"/>
+" clip-path="url(#p93e996cf36)" style="fill: #9b5353"/>
    </g>
-   <g id="patch_43">
+   <g id="patch_44">
     <path d="M 165.888 111.456 
 Q 171.936 111.456 176.642359 111.456 
-" clip-path="url(#p61a4b0a360)" style="fill: none; stroke: #1f1f1f; stroke-width: 1.2; stroke-linecap: round"/>
+" clip-path="url(#p93e996cf36)" style="fill: none; stroke: #1f1f1f; stroke-width: 1.2; stroke-linecap: round"/>
     <path d="M 173.442359 109.856 
 L 176.642359 111.456 
 L 173.442359 113.056 
 z
-" clip-path="url(#p61a4b0a360)" style="fill: #1f1f1f; stroke: #1f1f1f; stroke-width: 1.2; stroke-linecap: round"/>
+" clip-path="url(#p93e996cf36)" style="fill: #1f1f1f; stroke: #1f1f1f; stroke-width: 1.2; stroke-linecap: round"/>
    </g>
-   <g id="patch_44">
+   <g id="patch_45">
     <path d="M 340.416 111.456 
 Q 346.464 111.456 351.170359 111.456 
-" clip-path="url(#p61a4b0a360)" style="fill: none; stroke: #1f1f1f; stroke-width: 1.2; stroke-linecap: round"/>
+" clip-path="url(#p93e996cf36)" style="fill: none; stroke: #1f1f1f; stroke-width: 1.2; stroke-linecap: round"/>
     <path d="M 347.970359 109.856 
 L 351.170359 111.456 
 L 347.970359 113.056 
 z
-" clip-path="url(#p61a4b0a360)" style="fill: #1f1f1f; stroke: #1f1f1f; stroke-width: 1.2; stroke-linecap: round"/>
+" clip-path="url(#p93e996cf36)" style="fill: #1f1f1f; stroke: #1f1f1f; stroke-width: 1.2; stroke-linecap: round"/>
    </g>
-   <g id="patch_45">
+   <g id="patch_46">
     <path d="M 70.5024 230.688 
 Q 73.6128 230.688 75.605166 230.688 
-" clip-path="url(#p61a4b0a360)" style="fill: none; stroke: #1f1f1f; stroke-linecap: round"/>
+" clip-path="url(#p93e996cf36)" style="fill: none; stroke: #1f1f1f; stroke-linecap: round"/>
     <path d="M 72.805166 229.288 
 L 75.605166 230.688 
 L 72.805166 232.088 
 z
-" clip-path="url(#p61a4b0a360)" style="fill: #1f1f1f; stroke: #1f1f1f; stroke-linecap: round"/>
+" clip-path="url(#p93e996cf36)" style="fill: #1f1f1f; stroke: #1f1f1f; stroke-linecap: round"/>
    </g>
-   <g id="patch_46">
+   <g id="patch_47">
     <path d="M 176.256 230.688 
 Q 179.3664 230.688 181.358766 230.688 
-" clip-path="url(#p61a4b0a360)" style="fill: none; stroke: #1f1f1f; stroke-linecap: round"/>
+" clip-path="url(#p93e996cf36)" style="fill: none; stroke: #1f1f1f; stroke-linecap: round"/>
     <path d="M 178.558766 229.288 
 L 181.358766 230.688 
 L 178.558766 232.088 
 z
-" clip-path="url(#p61a4b0a360)" style="fill: #1f1f1f; stroke: #1f1f1f; stroke-linecap: round"/>
+" clip-path="url(#p93e996cf36)" style="fill: #1f1f1f; stroke: #1f1f1f; stroke-linecap: round"/>
    </g>
-   <g id="patch_47">
+   <g id="patch_48">
     <path d="M 252.6336 230.688 
 Q 255.744 230.688 257.736366 230.688 
-" clip-path="url(#p61a4b0a360)" style="fill: none; stroke: #1f1f1f; stroke-linecap: round"/>
+" clip-path="url(#p93e996cf36)" style="fill: none; stroke: #1f1f1f; stroke-linecap: round"/>
     <path d="M 254.936366 229.288 
 L 257.736366 230.688 
 L 254.936366 232.088 
 z
-" clip-path="url(#p61a4b0a360)" style="fill: #1f1f1f; stroke: #1f1f1f; stroke-linecap: round"/>
+" clip-path="url(#p93e996cf36)" style="fill: #1f1f1f; stroke: #1f1f1f; stroke-linecap: round"/>
    </g>
-   <g id="patch_48">
+   <g id="patch_49">
     <path d="M 337.6512 230.688 
 Q 340.7616 230.688 342.753966 230.688 
-" clip-path="url(#p61a4b0a360)" style="fill: none; stroke: #1f1f1f; stroke-linecap: round"/>
+" clip-path="url(#p93e996cf36)" style="fill: none; stroke: #1f1f1f; stroke-linecap: round"/>
     <path d="M 339.953966 229.288 
 L 342.753966 230.688 
 L 339.953966 232.088 
 z
-" clip-path="url(#p61a4b0a360)" style="fill: #1f1f1f; stroke: #1f1f1f; stroke-linecap: round"/>
+" clip-path="url(#p93e996cf36)" style="fill: #1f1f1f; stroke: #1f1f1f; stroke-linecap: round"/>
    </g>
-   <g id="patch_49">
+   <g id="patch_50">
     <path d="M 426.1248 230.688 
 Q 429.2352 230.688 431.227566 230.688 
-" clip-path="url(#p61a4b0a360)" style="fill: none; stroke: #1f1f1f; stroke-linecap: round"/>
+" clip-path="url(#p93e996cf36)" style="fill: none; stroke: #1f1f1f; stroke-linecap: round"/>
     <path d="M 428.427566 229.288 
 L 431.227566 230.688 
 L 428.427566 232.088 
 z
-" clip-path="url(#p61a4b0a360)" style="fill: #1f1f1f; stroke: #1f1f1f; stroke-linecap: round"/>
+" clip-path="url(#p93e996cf36)" style="fill: #1f1f1f; stroke: #1f1f1f; stroke-linecap: round"/>
    </g>
    <g id="text_1">
     <!-- Initial data -->
@@ -3149,38 +3162,50 @@ z
     </g>
    </g>
    <g id="text_17">
-    <!-- excision on an analytic metric -->
-    <g style="fill: #ffffff" transform="translate(216.282891 140.209272) scale(0.07 -0.07)">
-     <use xlink:href="#LinLibertineO-65"/>
-     <use xlink:href="#LinLibertineO-78" transform="translate(44.699997 0)"/>
-     <use xlink:href="#LinLibertineO-63" transform="translate(93.699982 0)"/>
-     <use xlink:href="#LinLibertineO-69" transform="translate(136.499969 0)"/>
-     <use xlink:href="#LinLibertineO-73" transform="translate(163.59996 0)"/>
-     <use xlink:href="#LinLibertineO-69" transform="translate(202.599945 0)"/>
-     <use xlink:href="#LinLibertineO-6f" transform="translate(229.699936 0)"/>
-     <use xlink:href="#LinLibertineO-6e" transform="translate(280.09993 0)"/>
-     <use xlink:href="#LinLibertineO-20" transform="translate(334.299927 0)"/>
-     <use xlink:href="#LinLibertineO-6f" transform="translate(359.299911 0)"/>
-     <use xlink:href="#LinLibertineO-6e" transform="translate(409.699905 0)"/>
-     <use xlink:href="#LinLibertineO-20" transform="translate(463.899902 0)"/>
-     <use xlink:href="#LinLibertineO-61" transform="translate(488.899887 0)"/>
-     <use xlink:href="#LinLibertineO-6e" transform="translate(534.599884 0)"/>
-     <use xlink:href="#LinLibertineO-20" transform="translate(588.799881 0)"/>
-     <use xlink:href="#LinLibertineO-61" transform="translate(613.799866 0)"/>
-     <use xlink:href="#LinLibertineO-6e" transform="translate(659.499863 0)"/>
-     <use xlink:href="#LinLibertineO-61" transform="translate(713.69986 0)"/>
-     <use xlink:href="#LinLibertineO-6c" transform="translate(759.399857 0)"/>
-     <use xlink:href="#LinLibertineO-79" transform="translate(785.79985 0)"/>
-     <use xlink:href="#LinLibertineO-74" transform="translate(837.299835 0)"/>
-     <use xlink:href="#LinLibertineO-69" transform="translate(868.899826 0)"/>
-     <use xlink:href="#LinLibertineO-63" transform="translate(895.999817 0)"/>
-     <use xlink:href="#LinLibertineO-20" transform="translate(938.799805 0)"/>
-     <use xlink:href="#LinLibertineO-6d" transform="translate(963.799789 0)"/>
-     <use xlink:href="#LinLibertineO-65" transform="translate(1042.799774 0)"/>
-     <use xlink:href="#LinLibertineO-74" transform="translate(1087.499771 0)"/>
-     <use xlink:href="#LinLibertineO-72" transform="translate(1119.099762 0)"/>
-     <use xlink:href="#LinLibertineO-69" transform="translate(1156.299759 0)"/>
-     <use xlink:href="#LinLibertineO-63" transform="translate(1183.39975 0)"/>
+    <!-- constraint norms in spheres; finder status -->
+    <g style="fill: #ffffff" transform="translate(199.749219 140.209272) scale(0.07 -0.07)">
+     <use xlink:href="#LinLibertineO-63"/>
+     <use xlink:href="#LinLibertineO-6f" transform="translate(42.799988 0)"/>
+     <use xlink:href="#LinLibertineO-6e" transform="translate(93.199982 0)"/>
+     <use xlink:href="#LinLibertineO-73" transform="translate(147.399979 0)"/>
+     <use xlink:href="#LinLibertineO-74" transform="translate(186.399963 0)"/>
+     <use xlink:href="#LinLibertineO-72" transform="translate(217.999954 0)"/>
+     <use xlink:href="#LinLibertineO-61" transform="translate(255.199951 0)"/>
+     <use xlink:href="#LinLibertineO-69" transform="translate(300.899948 0)"/>
+     <use xlink:href="#LinLibertineO-6e" transform="translate(327.999939 0)"/>
+     <use xlink:href="#LinLibertineO-74" transform="translate(382.199936 0)"/>
+     <use xlink:href="#LinLibertineO-20" transform="translate(413.799927 0)"/>
+     <use xlink:href="#LinLibertineO-6e" transform="translate(438.799911 0)"/>
+     <use xlink:href="#LinLibertineO-6f" transform="translate(492.999908 0)"/>
+     <use xlink:href="#LinLibertineO-72" transform="translate(543.399902 0)"/>
+     <use xlink:href="#LinLibertineO-6d" transform="translate(580.599899 0)"/>
+     <use xlink:href="#LinLibertineO-73" transform="translate(659.599884 0)"/>
+     <use xlink:href="#LinLibertineO-20" transform="translate(698.599869 0)"/>
+     <use xlink:href="#LinLibertineO-69" transform="translate(723.599854 0)"/>
+     <use xlink:href="#LinLibertineO-6e" transform="translate(750.699844 0)"/>
+     <use xlink:href="#LinLibertineO-20" transform="translate(804.899841 0)"/>
+     <use xlink:href="#LinLibertineO-73" transform="translate(829.899826 0)"/>
+     <use xlink:href="#LinLibertineO-70" transform="translate(868.899811 0)"/>
+     <use xlink:href="#LinLibertineO-68" transform="translate(920.799805 0)"/>
+     <use xlink:href="#LinLibertineO-65" transform="translate(974.599792 0)"/>
+     <use xlink:href="#LinLibertineO-72" transform="translate(1019.299789 0)"/>
+     <use xlink:href="#LinLibertineO-65" transform="translate(1056.499786 0)"/>
+     <use xlink:href="#LinLibertineO-73" transform="translate(1101.199783 0)"/>
+     <use xlink:href="#LinLibertineO-3b" transform="translate(1140.199768 0)"/>
+     <use xlink:href="#LinLibertineO-20" transform="translate(1163.799759 0)"/>
+     <use xlink:href="#LinLibertineO-66" transform="translate(1188.799744 0)"/>
+     <use xlink:href="#LinLibertineO-69" transform="translate(1219.799728 0)"/>
+     <use xlink:href="#LinLibertineO-6e" transform="translate(1246.899719 0)"/>
+     <use xlink:href="#LinLibertineO-64" transform="translate(1301.099716 0)"/>
+     <use xlink:href="#LinLibertineO-65" transform="translate(1351.699707 0)"/>
+     <use xlink:href="#LinLibertineO-72" transform="translate(1396.399704 0)"/>
+     <use xlink:href="#LinLibertineO-20" transform="translate(1433.599701 0)"/>
+     <use xlink:href="#LinLibertineO-73" transform="translate(1458.599686 0)"/>
+     <use xlink:href="#LinLibertineO-74" transform="translate(1497.59967 0)"/>
+     <use xlink:href="#LinLibertineO-61" transform="translate(1529.199661 0)"/>
+     <use xlink:href="#LinLibertineO-74" transform="translate(1574.899658 0)"/>
+     <use xlink:href="#LinLibertineO-75" transform="translate(1606.499649 0)"/>
+     <use xlink:href="#LinLibertineO-73" transform="translate(1659.59964 0)"/>
     </g>
    </g>
    <g id="text_18">
@@ -3268,32 +3293,48 @@ z
     </g>
    </g>
    <g id="text_20">
-    <!-- threaded processor build -->
-    <g style="fill: #ffffff" transform="translate(223.92 192.049272) scale(0.07 -0.07)">
-     <use xlink:href="#LinLibertineO-74"/>
-     <use xlink:href="#LinLibertineO-68" transform="translate(31.599991 0)"/>
-     <use xlink:href="#LinLibertineO-72" transform="translate(85.399979 0)"/>
-     <use xlink:href="#LinLibertineO-65" transform="translate(122.599976 0)"/>
-     <use xlink:href="#LinLibertineO-61" transform="translate(167.299973 0)"/>
-     <use xlink:href="#LinLibertineO-64" transform="translate(212.999969 0)"/>
-     <use xlink:href="#LinLibertineO-65" transform="translate(263.59996 0)"/>
-     <use xlink:href="#LinLibertineO-64" transform="translate(308.299957 0)"/>
-     <use xlink:href="#LinLibertineO-20" transform="translate(358.899948 0)"/>
-     <use xlink:href="#LinLibertineO-70" transform="translate(383.899933 0)"/>
-     <use xlink:href="#LinLibertineO-72" transform="translate(435.799927 0)"/>
-     <use xlink:href="#LinLibertineO-6f" transform="translate(472.999924 0)"/>
-     <use xlink:href="#LinLibertineO-63" transform="translate(523.399918 0)"/>
-     <use xlink:href="#LinLibertineO-65" transform="translate(566.199905 0)"/>
-     <use xlink:href="#LinLibertineO-73" transform="translate(610.899902 0)"/>
-     <use xlink:href="#LinLibertineO-73" transform="translate(649.899887 0)"/>
-     <use xlink:href="#LinLibertineO-6f" transform="translate(688.899872 0)"/>
-     <use xlink:href="#LinLibertineO-72" transform="translate(739.299866 0)"/>
-     <use xlink:href="#LinLibertineO-20" transform="translate(776.499863 0)"/>
-     <use xlink:href="#LinLibertineO-62" transform="translate(801.499847 0)"/>
-     <use xlink:href="#LinLibertineO-75" transform="translate(850.799835 0)"/>
-     <use xlink:href="#LinLibertineO-69" transform="translate(903.899826 0)"/>
-     <use xlink:href="#LinLibertineO-6c" transform="translate(930.999817 0)"/>
-     <use xlink:href="#LinLibertineO-64" transform="translate(957.399811 0)"/>
+    <!-- excision past four initial horizon radii -->
+    <g style="fill: #ffffff" transform="translate(205.244219 192.049272) scale(0.07 -0.07)">
+     <use xlink:href="#LinLibertineO-65"/>
+     <use xlink:href="#LinLibertineO-78" transform="translate(44.699997 0)"/>
+     <use xlink:href="#LinLibertineO-63" transform="translate(93.699982 0)"/>
+     <use xlink:href="#LinLibertineO-69" transform="translate(136.499969 0)"/>
+     <use xlink:href="#LinLibertineO-73" transform="translate(163.59996 0)"/>
+     <use xlink:href="#LinLibertineO-69" transform="translate(202.599945 0)"/>
+     <use xlink:href="#LinLibertineO-6f" transform="translate(229.699936 0)"/>
+     <use xlink:href="#LinLibertineO-6e" transform="translate(280.09993 0)"/>
+     <use xlink:href="#LinLibertineO-20" transform="translate(334.299927 0)"/>
+     <use xlink:href="#LinLibertineO-70" transform="translate(359.299911 0)"/>
+     <use xlink:href="#LinLibertineO-61" transform="translate(411.199905 0)"/>
+     <use xlink:href="#LinLibertineO-73" transform="translate(456.899902 0)"/>
+     <use xlink:href="#LinLibertineO-74" transform="translate(495.899887 0)"/>
+     <use xlink:href="#LinLibertineO-20" transform="translate(527.499878 0)"/>
+     <use xlink:href="#LinLibertineO-66" transform="translate(552.499863 0)"/>
+     <use xlink:href="#LinLibertineO-6f" transform="translate(583.499847 0)"/>
+     <use xlink:href="#LinLibertineO-75" transform="translate(633.899841 0)"/>
+     <use xlink:href="#LinLibertineO-72" transform="translate(686.999832 0)"/>
+     <use xlink:href="#LinLibertineO-20" transform="translate(724.199829 0)"/>
+     <use xlink:href="#LinLibertineO-69" transform="translate(749.199814 0)"/>
+     <use xlink:href="#LinLibertineO-6e" transform="translate(776.299805 0)"/>
+     <use xlink:href="#LinLibertineO-69" transform="translate(830.499802 0)"/>
+     <use xlink:href="#LinLibertineO-74" transform="translate(857.599792 0)"/>
+     <use xlink:href="#LinLibertineO-69" transform="translate(889.199783 0)"/>
+     <use xlink:href="#LinLibertineO-61" transform="translate(916.299774 0)"/>
+     <use xlink:href="#LinLibertineO-6c" transform="translate(961.999771 0)"/>
+     <use xlink:href="#LinLibertineO-20" transform="translate(988.399765 0)"/>
+     <use xlink:href="#LinLibertineO-68" transform="translate(1013.39975 0)"/>
+     <use xlink:href="#LinLibertineO-6f" transform="translate(1067.199738 0)"/>
+     <use xlink:href="#LinLibertineO-72" transform="translate(1117.599731 0)"/>
+     <use xlink:href="#LinLibertineO-69" transform="translate(1154.799728 0)"/>
+     <use xlink:href="#LinLibertineO-7a" transform="translate(1181.899719 0)"/>
+     <use xlink:href="#LinLibertineO-6f" transform="translate(1224.299713 0)"/>
+     <use xlink:href="#LinLibertineO-6e" transform="translate(1274.699707 0)"/>
+     <use xlink:href="#LinLibertineO-20" transform="translate(1328.899704 0)"/>
+     <use xlink:href="#LinLibertineO-72" transform="translate(1353.899689 0)"/>
+     <use xlink:href="#LinLibertineO-61" transform="translate(1391.099686 0)"/>
+     <use xlink:href="#LinLibertineO-64" transform="translate(1436.799683 0)"/>
+     <use xlink:href="#LinLibertineO-69" transform="translate(1487.399673 0)"/>
+     <use xlink:href="#LinLibertineO-69" transform="translate(1514.499664 0)"/>
     </g>
    </g>
    <g id="text_21">
@@ -3830,8 +3871,46 @@ z
     </g>
    </g>
    <g id="text_30">
+    <!-- convergence in particles and mesh -->
+    <g style="fill: #ffffff" transform="translate(384.373625 174.7556) scale(0.07 -0.07)">
+     <use xlink:href="#LinLibertineO-63"/>
+     <use xlink:href="#LinLibertineO-6f" transform="translate(42.799988 0)"/>
+     <use xlink:href="#LinLibertineO-6e" transform="translate(93.199982 0)"/>
+     <use xlink:href="#LinLibertineO-76" transform="translate(147.399979 0)"/>
+     <use xlink:href="#LinLibertineO-65" transform="translate(197.099976 0)"/>
+     <use xlink:href="#LinLibertineO-72" transform="translate(241.799973 0)"/>
+     <use xlink:href="#LinLibertineO-67" transform="translate(278.999969 0)"/>
+     <use xlink:href="#LinLibertineO-65" transform="translate(328.999954 0)"/>
+     <use xlink:href="#LinLibertineO-6e" transform="translate(373.699951 0)"/>
+     <use xlink:href="#LinLibertineO-63" transform="translate(427.899948 0)"/>
+     <use xlink:href="#LinLibertineO-65" transform="translate(470.699936 0)"/>
+     <use xlink:href="#LinLibertineO-20" transform="translate(515.399933 0)"/>
+     <use xlink:href="#LinLibertineO-69" transform="translate(540.399918 0)"/>
+     <use xlink:href="#LinLibertineO-6e" transform="translate(567.499908 0)"/>
+     <use xlink:href="#LinLibertineO-20" transform="translate(621.699905 0)"/>
+     <use xlink:href="#LinLibertineO-70" transform="translate(646.69989 0)"/>
+     <use xlink:href="#LinLibertineO-61" transform="translate(698.599884 0)"/>
+     <use xlink:href="#LinLibertineO-72" transform="translate(744.299881 0)"/>
+     <use xlink:href="#LinLibertineO-74" transform="translate(781.499878 0)"/>
+     <use xlink:href="#LinLibertineO-69" transform="translate(813.099869 0)"/>
+     <use xlink:href="#LinLibertineO-63" transform="translate(840.19986 0)"/>
+     <use xlink:href="#LinLibertineO-6c" transform="translate(882.999847 0)"/>
+     <use xlink:href="#LinLibertineO-65" transform="translate(909.399841 0)"/>
+     <use xlink:href="#LinLibertineO-73" transform="translate(954.099838 0)"/>
+     <use xlink:href="#LinLibertineO-20" transform="translate(993.099823 0)"/>
+     <use xlink:href="#LinLibertineO-61" transform="translate(1018.099808 0)"/>
+     <use xlink:href="#LinLibertineO-6e" transform="translate(1063.799805 0)"/>
+     <use xlink:href="#LinLibertineO-64" transform="translate(1117.999802 0)"/>
+     <use xlink:href="#LinLibertineO-20" transform="translate(1168.599792 0)"/>
+     <use xlink:href="#LinLibertineO-6d" transform="translate(1193.599777 0)"/>
+     <use xlink:href="#LinLibertineO-65" transform="translate(1272.599762 0)"/>
+     <use xlink:href="#LinLibertineO-73" transform="translate(1317.299759 0)"/>
+     <use xlink:href="#LinLibertineO-68" transform="translate(1356.299744 0)"/>
+    </g>
+   </g>
+   <g id="text_31">
     <!-- coupling exponent and its upper limit -->
-    <g style="fill: #ffffff" transform="translate(379.834562 174.7556) scale(0.07 -0.07)">
+    <g style="fill: #ffffff" transform="translate(379.834562 192.0356) scale(0.07 -0.07)">
      <use xlink:href="#LinLibertineO-63"/>
      <use xlink:href="#LinLibertineO-6f" transform="translate(42.799988 0)"/>
      <use xlink:href="#LinLibertineO-75" transform="translate(93.199982 0)"/>
@@ -3871,7 +3950,7 @@ z
      <use xlink:href="#LinLibertineO-74" transform="translate(1508.199692 0)"/>
     </g>
    </g>
-   <g id="text_31">
+   <g id="text_32">
     <!-- runs toward the growth law and the null test -->
     <g style="fill: #1f1f1f" transform="translate(10.368 215.133) scale(0.075 -0.075)">
      <use xlink:href="#LinLibertineOI-72"/>
@@ -3920,7 +3999,7 @@ z
      <use xlink:href="#LinLibertineOI-74" transform="translate(1733.699615 0)"/>
     </g>
    </g>
-   <g id="text_32">
+   <g id="text_33">
     <!-- bubble data -->
     <g style="fill: #ffffff" transform="translate(21.541937 232.311672) scale(0.07 -0.07)">
      <use xlink:href="#LinLibertineO-62"/>
@@ -3936,7 +4015,7 @@ z
      <use xlink:href="#LinLibertineO-61" transform="translate(424.999908 0)"/>
     </g>
    </g>
-   <g id="text_33">
+   <g id="text_34">
     <!-- done -->
     <g style="fill: #b57f7f" transform="translate(31.8945 247.2396) scale(0.066 -0.066)">
      <use xlink:href="#LinLibertineOI-64"/>
@@ -3945,7 +4024,7 @@ z
      <use xlink:href="#LinLibertineOI-65" transform="translate(145.399979 0)"/>
     </g>
    </g>
-   <g id="text_34">
+   <g id="text_35">
     <!-- bubble run, vacuum control -->
     <g style="fill: #ffffff" transform="translate(86.9396 232.311672) scale(0.07 -0.07)">
      <use xlink:href="#LinLibertineO-62"/>
@@ -3976,7 +4055,7 @@ z
      <use xlink:href="#LinLibertineO-6c" transform="translate(1103.599777 0)"/>
     </g>
    </g>
-   <g id="text_35">
+   <g id="text_36">
     <!-- done -->
     <g style="fill: #b57f7f" transform="translate(120.3681 247.2396) scale(0.066 -0.066)">
      <use xlink:href="#LinLibertineOI-64"/>
@@ -3985,7 +4064,7 @@ z
      <use xlink:href="#LinLibertineOI-65" transform="translate(145.399979 0)"/>
     </g>
    </g>
-   <g id="text_36">
+   <g id="text_37">
     <!-- relaxed lapse -->
     <g style="fill: #ffffff" transform="translate(198.969106 232.311672) scale(0.07 -0.07)">
      <use xlink:href="#LinLibertineO-72"/>
@@ -4003,26 +4082,10 @@ z
      <use xlink:href="#LinLibertineO-65" transform="translate(486.299911 0)"/>
     </g>
    </g>
-   <g id="text_37">
-    <!-- ran; kept out of null test -->
-    <g style="fill: #b57f7f" transform="translate(186.245419 247.2396) scale(0.066 -0.066)">
+   <g id="text_38">
+    <!-- kept out of G2 -->
+    <g style="fill: #b57f7f" transform="translate(199.150481 247.2396) scale(0.066 -0.066)">
      <defs>
-      <path id="LinLibertineOI-3b" d="M 454 288 
-C 454 134 550 58 672 26 
-C 774 0 870 -26 870 -141 
-C 870 -320 538 -621 198 -698 
-C 186 -755 205 -806 256 -845 
-C 998 -710 1178 -134 1178 198 
-C 1178 454 1030 608 832 608 
-C 640 608 454 486 454 288 
-z
-M 1197 2605 
-C 966 2605 800 2394 800 2221 
-C 800 2054 928 1926 1094 1926 
-C 1318 1926 1491 2131 1491 2323 
-C 1491 2483 1363 2605 1197 2605 
-z
-" transform="scale(0.015625)"/>
       <path id="LinLibertineOI-6b" d="M 563 461 
 C 538 333 486 173 486 109 
 C 486 0 544 -64 749 -64 
@@ -4059,158 +4122,143 @@ C 1318 3853 1306 3744 1274 3603
 L 563 461 
 z
 " transform="scale(0.015625)"/>
-     </defs>
-     <use xlink:href="#LinLibertineOI-72"/>
-     <use xlink:href="#LinLibertineOI-61" transform="translate(35.699997 0)"/>
-     <use xlink:href="#LinLibertineOI-6e" transform="translate(84.299988 0)"/>
-     <use xlink:href="#LinLibertineOI-3b" transform="translate(136.099976 0)"/>
-     <use xlink:href="#LinLibertineOI-20" transform="translate(157.999969 0)"/>
-     <use xlink:href="#LinLibertineOI-6b" transform="translate(182.999954 0)"/>
-     <use xlink:href="#LinLibertineOI-65" transform="translate(231.599945 0)"/>
-     <use xlink:href="#LinLibertineOI-70" transform="translate(271.699936 0)"/>
-     <use xlink:href="#LinLibertineOI-74" transform="translate(320.59993 0)"/>
-     <use xlink:href="#LinLibertineOI-20" transform="translate(351.299927 0)"/>
-     <use xlink:href="#LinLibertineOI-6f" transform="translate(376.299911 0)"/>
-     <use xlink:href="#LinLibertineOI-75" transform="translate(420.999908 0)"/>
-     <use xlink:href="#LinLibertineOI-74" transform="translate(473.099899 0)"/>
-     <use xlink:href="#LinLibertineOI-20" transform="translate(503.799896 0)"/>
-     <use xlink:href="#LinLibertineOI-6f" transform="translate(528.799881 0)"/>
-     <use xlink:href="#LinLibertineOI-66" transform="translate(573.499878 0)"/>
-     <use xlink:href="#LinLibertineOI-20" transform="translate(604.899872 0)"/>
-     <use xlink:href="#LinLibertineOI-6e" transform="translate(629.899857 0)"/>
-     <use xlink:href="#LinLibertineOI-75" transform="translate(681.699844 0)"/>
-     <use xlink:href="#LinLibertineOI-6c" transform="translate(733.799835 0)"/>
-     <use xlink:href="#LinLibertineOI-6c" transform="translate(760.399826 0)"/>
-     <use xlink:href="#LinLibertineOI-20" transform="translate(786.999817 0)"/>
-     <use xlink:href="#LinLibertineOI-74" transform="translate(811.999802 0)"/>
-     <use xlink:href="#LinLibertineOI-65" transform="translate(842.699799 0)"/>
-     <use xlink:href="#LinLibertineOI-73" transform="translate(882.799789 0)"/>
-     <use xlink:href="#LinLibertineOI-74" transform="translate(918.099777 0)"/>
-    </g>
-   </g>
-   <g id="text_38">
-    <!-- late-drift controls -->
-    <g style="fill: #ffffff" transform="translate(273.168191 232.311672) scale(0.07 -0.07)">
-     <use xlink:href="#LinLibertineO-6c"/>
-     <use xlink:href="#LinLibertineO-61" transform="translate(26.399994 0)"/>
-     <use xlink:href="#LinLibertineO-74" transform="translate(72.099991 0)"/>
-     <use xlink:href="#LinLibertineO-65" transform="translate(103.699982 0)"/>
-     <use xlink:href="#LinLibertineO-2d" transform="translate(148.399979 0)"/>
-     <use xlink:href="#LinLibertineO-64" transform="translate(182.199966 0)"/>
-     <use xlink:href="#LinLibertineO-72" transform="translate(232.799957 0)"/>
-     <use xlink:href="#LinLibertineO-69" transform="translate(269.999954 0)"/>
-     <use xlink:href="#LinLibertineO-66" transform="translate(297.099945 0)"/>
-     <use xlink:href="#LinLibertineO-74" transform="translate(328.09993 0)"/>
-     <use xlink:href="#LinLibertineO-20" transform="translate(359.699921 0)"/>
-     <use xlink:href="#LinLibertineO-63" transform="translate(384.699905 0)"/>
-     <use xlink:href="#LinLibertineO-6f" transform="translate(427.499893 0)"/>
-     <use xlink:href="#LinLibertineO-6e" transform="translate(477.899887 0)"/>
-     <use xlink:href="#LinLibertineO-74" transform="translate(532.099884 0)"/>
-     <use xlink:href="#LinLibertineO-72" transform="translate(563.699875 0)"/>
-     <use xlink:href="#LinLibertineO-6f" transform="translate(600.899872 0)"/>
-     <use xlink:href="#LinLibertineO-6c" transform="translate(651.299866 0)"/>
-     <use xlink:href="#LinLibertineO-73" transform="translate(677.69986 0)"/>
-    </g>
-   </g>
-   <g id="text_39">
-    <!-- faces done; long runs queued -->
-    <g style="fill: #b57f7f" transform="translate(260.970534 247.2396) scale(0.066 -0.066)">
-     <defs>
-      <path id="LinLibertineOI-71" d="M 2592 2112 
-C 2592 2010 2470 1510 2349 1152 
-C 2202 736 1638 205 1402 205 
-C 1146 205 1056 653 1056 1011 
-C 1056 1779 1549 2579 2202 2579 
-C 2432 2579 2592 2374 2592 2112 
+      <path id="LinLibertineOI-47" d="M 3117 4211 
+C 2061 4211 851 3373 576 1965 
+C 544 1824 531 1683 531 1555 
+C 531 640 1178 -64 2259 -64 
+C 2982 -64 3520 160 4013 531 
+C 3955 589 3936 640 3949 710 
+L 4096 1453 
+C 4134 1677 4243 1715 4422 1734 
+C 4454 1741 4480 1754 4486 1786 
+L 4518 1952 
+L 4506 1965 
+C 4320 1958 4186 1952 3936 1952 
+C 3699 1952 3450 1958 3162 1965 
+L 3149 1952 
+L 3117 1786 
+C 3110 1754 3130 1734 3155 1734 
+L 3309 1722 
+C 3514 1702 3603 1664 3603 1530 
+C 3603 1510 3597 1478 3597 1453 
+L 3405 474 
+C 3155 269 2778 166 2445 166 
+C 1504 166 1094 954 1094 1709 
+C 1094 1837 1107 1965 1133 2093 
+C 1350 3213 2157 3974 2989 3974 
+C 3878 3974 4102 3450 4154 2899 
+L 4346 2938 
+C 4346 3206 4358 3462 4403 3923 
+C 4032 3923 3866 4211 3117 4211 
 z
-M 1888 -1030 
-C 1843 -1210 1754 -1286 1549 -1318 
-L 1427 -1338 
-C 1395 -1344 1363 -1350 1363 -1389 
-L 1363 -1510 
-L 1376 -1523 
-C 1376 -1523 1818 -1491 2048 -1491 
-C 2298 -1491 2733 -1504 2733 -1504 
-L 2746 -1491 
-L 2746 -1363 
-C 2746 -1331 2733 -1318 2707 -1312 
-L 2586 -1293 
-C 2483 -1280 2323 -1248 2374 -1030 
-L 3232 2694 
-C 3238 2720 3245 2758 3245 2790 
-C 3245 2842 3194 2854 3174 2854 
-C 3130 2854 3046 2829 2976 2733 
-L 2790 2470 
-C 2643 2675 2438 2810 2176 2810 
-C 1498 2810 518 2042 518 941 
-C 518 461 666 -64 1267 -64 
-C 1581 -64 1894 90 2291 640 
-L 2310 634 
-L 1888 -1030 
+" transform="scale(0.015625)"/>
+      <path id="LinLibertineOI-32" d="M 947 2995 
+C 922 2861 1018 2746 1146 2746 
+C 1248 2746 1459 2861 1485 3002 
+C 1498 3053 1491 3091 1485 3136 
+C 1478 3181 1453 3238 1466 3290 
+C 1498 3450 1702 3680 2150 3680 
+C 2374 3680 2656 3520 2534 2906 
+C 2458 2496 2246 2163 1811 1779 
+L 1267 1312 
+C 538 672 378 365 307 -13 
+C 307 -13 627 0 826 0 
+L 1901 0 
+C 2099 0 2374 -13 2374 -13 
+C 2522 326 2675 806 2720 998 
+C 2688 1030 2611 1043 2547 1030 
+C 2355 576 2221 416 1997 416 
+L 902 416 
+C 960 723 1472 1158 1510 1190 
+L 2253 1811 
+C 2669 2163 2989 2445 3085 2931 
+C 3219 3622 2733 3904 2234 3904 
+C 1549 3904 1024 3379 947 2995 
 z
 " transform="scale(0.015625)"/>
      </defs>
-     <use xlink:href="#LinLibertineOI-66"/>
-     <use xlink:href="#LinLibertineOI-61" transform="translate(31.399994 0)"/>
-     <use xlink:href="#LinLibertineOI-63" transform="translate(79.999985 0)"/>
-     <use xlink:href="#LinLibertineOI-65" transform="translate(118.899979 0)"/>
-     <use xlink:href="#LinLibertineOI-73" transform="translate(158.999969 0)"/>
-     <use xlink:href="#LinLibertineOI-20" transform="translate(194.299957 0)"/>
-     <use xlink:href="#LinLibertineOI-64" transform="translate(219.299942 0)"/>
-     <use xlink:href="#LinLibertineOI-6f" transform="translate(268.199936 0)"/>
-     <use xlink:href="#LinLibertineOI-6e" transform="translate(312.899933 0)"/>
-     <use xlink:href="#LinLibertineOI-65" transform="translate(364.699921 0)"/>
-     <use xlink:href="#LinLibertineOI-3b" transform="translate(404.799911 0)"/>
-     <use xlink:href="#LinLibertineOI-20" transform="translate(426.699905 0)"/>
-     <use xlink:href="#LinLibertineOI-6c" transform="translate(451.69989 0)"/>
-     <use xlink:href="#LinLibertineOI-6f" transform="translate(478.299881 0)"/>
-     <use xlink:href="#LinLibertineOI-6e" transform="translate(522.999878 0)"/>
-     <use xlink:href="#LinLibertineOI-67" transform="translate(574.799866 0)"/>
-     <use xlink:href="#LinLibertineOI-20" transform="translate(622.499863 0)"/>
-     <use xlink:href="#LinLibertineOI-72" transform="translate(647.499847 0)"/>
-     <use xlink:href="#LinLibertineOI-75" transform="translate(683.199844 0)"/>
-     <use xlink:href="#LinLibertineOI-6e" transform="translate(735.299835 0)"/>
-     <use xlink:href="#LinLibertineOI-73" transform="translate(787.099823 0)"/>
-     <use xlink:href="#LinLibertineOI-20" transform="translate(822.399811 0)"/>
-     <use xlink:href="#LinLibertineOI-71" transform="translate(847.399796 0)"/>
-     <use xlink:href="#LinLibertineOI-75" transform="translate(896.499786 0)"/>
-     <use xlink:href="#LinLibertineOI-65" transform="translate(948.599777 0)"/>
-     <use xlink:href="#LinLibertineOI-75" transform="translate(988.699768 0)"/>
-     <use xlink:href="#LinLibertineOI-65" transform="translate(1040.799759 0)"/>
-     <use xlink:href="#LinLibertineOI-64" transform="translate(1080.89975 0)"/>
+     <use xlink:href="#LinLibertineOI-6b"/>
+     <use xlink:href="#LinLibertineOI-65" transform="translate(48.599991 0)"/>
+     <use xlink:href="#LinLibertineOI-70" transform="translate(88.699982 0)"/>
+     <use xlink:href="#LinLibertineOI-74" transform="translate(137.599976 0)"/>
+     <use xlink:href="#LinLibertineOI-20" transform="translate(168.299973 0)"/>
+     <use xlink:href="#LinLibertineOI-6f" transform="translate(193.299957 0)"/>
+     <use xlink:href="#LinLibertineOI-75" transform="translate(237.999954 0)"/>
+     <use xlink:href="#LinLibertineOI-74" transform="translate(290.099945 0)"/>
+     <use xlink:href="#LinLibertineOI-20" transform="translate(320.799942 0)"/>
+     <use xlink:href="#LinLibertineOI-6f" transform="translate(345.799927 0)"/>
+     <use xlink:href="#LinLibertineOI-66" transform="translate(390.499924 0)"/>
+     <use xlink:href="#LinLibertineOI-20" transform="translate(421.899918 0)"/>
+     <use xlink:href="#LinLibertineOI-47" transform="translate(446.899902 0)"/>
+     <use xlink:href="#LinLibertineOI-32" transform="translate(513.299896 0)"/>
+    </g>
+   </g>
+   <g id="text_39">
+    <!-- long runs, controls -->
+    <g style="fill: #ffffff" transform="translate(271.354206 232.298) scale(0.07 -0.07)">
+     <use xlink:href="#LinLibertineO-6c"/>
+     <use xlink:href="#LinLibertineO-6f" transform="translate(26.399994 0)"/>
+     <use xlink:href="#LinLibertineO-6e" transform="translate(76.799988 0)"/>
+     <use xlink:href="#LinLibertineO-67" transform="translate(130.999985 0)"/>
+     <use xlink:href="#LinLibertineO-20" transform="translate(180.999969 0)"/>
+     <use xlink:href="#LinLibertineO-72" transform="translate(205.999954 0)"/>
+     <use xlink:href="#LinLibertineO-75" transform="translate(243.199951 0)"/>
+     <use xlink:href="#LinLibertineO-6e" transform="translate(296.299942 0)"/>
+     <use xlink:href="#LinLibertineO-73" transform="translate(350.499939 0)"/>
+     <use xlink:href="#LinLibertineO-2c" transform="translate(389.499924 0)"/>
+     <use xlink:href="#LinLibertineO-20" transform="translate(411.499908 0)"/>
+     <use xlink:href="#LinLibertineO-63" transform="translate(436.499893 0)"/>
+     <use xlink:href="#LinLibertineO-6f" transform="translate(479.299881 0)"/>
+     <use xlink:href="#LinLibertineO-6e" transform="translate(529.699875 0)"/>
+     <use xlink:href="#LinLibertineO-74" transform="translate(583.899872 0)"/>
+     <use xlink:href="#LinLibertineO-72" transform="translate(615.499863 0)"/>
+     <use xlink:href="#LinLibertineO-6f" transform="translate(652.69986 0)"/>
+     <use xlink:href="#LinLibertineO-6c" transform="translate(703.099854 0)"/>
+     <use xlink:href="#LinLibertineO-73" transform="translate(729.499847 0)"/>
     </g>
    </g>
    <g id="text_40">
-    <!-- dust to the black hole -->
-    <g style="fill: #ffffff" transform="translate(354.300119 232.311672) scale(0.07 -0.07)">
-     <use xlink:href="#LinLibertineO-64"/>
-     <use xlink:href="#LinLibertineO-75" transform="translate(50.599991 0)"/>
-     <use xlink:href="#LinLibertineO-73" transform="translate(103.699982 0)"/>
-     <use xlink:href="#LinLibertineO-74" transform="translate(142.699966 0)"/>
-     <use xlink:href="#LinLibertineO-20" transform="translate(174.299957 0)"/>
-     <use xlink:href="#LinLibertineO-74" transform="translate(199.299942 0)"/>
-     <use xlink:href="#LinLibertineO-6f" transform="translate(230.899933 0)"/>
-     <use xlink:href="#LinLibertineO-20" transform="translate(281.299927 0)"/>
-     <use xlink:href="#LinLibertineO-74" transform="translate(306.299911 0)"/>
-     <use xlink:href="#LinLibertineO-68" transform="translate(337.899902 0)"/>
-     <use xlink:href="#LinLibertineO-65" transform="translate(391.69989 0)"/>
-     <use xlink:href="#LinLibertineO-20" transform="translate(436.399887 0)"/>
-     <use xlink:href="#LinLibertineO-62" transform="translate(461.399872 0)"/>
-     <use xlink:href="#LinLibertineO-6c" transform="translate(510.69986 0)"/>
-     <use xlink:href="#LinLibertineO-61" transform="translate(537.099854 0)"/>
-     <use xlink:href="#LinLibertineO-63" transform="translate(582.79985 0)"/>
-     <use xlink:href="#LinLibertineO-6b" transform="translate(625.599838 0)"/>
-     <use xlink:href="#LinLibertineO-20" transform="translate(676.799835 0)"/>
-     <use xlink:href="#LinLibertineO-68" transform="translate(701.79982 0)"/>
-     <use xlink:href="#LinLibertineO-6f" transform="translate(755.599808 0)"/>
-     <use xlink:href="#LinLibertineO-6c" transform="translate(805.999802 0)"/>
-     <use xlink:href="#LinLibertineO-65" transform="translate(832.399796 0)"/>
-    </g>
-   </g>
-   <g id="text_41">
-    <!-- done once, M/8 -->
-    <g style="fill: #b57f7f" transform="translate(365.633587 247.2396) scale(0.066 -0.066)">
+    <!-- done, to 500 M -->
+    <g style="fill: #b57f7f" transform="translate(279.395362 247.2396) scale(0.066 -0.066)">
      <defs>
+      <path id="LinLibertineOI-35" d="M 2208 1210 
+C 2093 602 1696 154 1325 154 
+C 1094 154 1050 314 979 442 
+C 922 550 832 646 704 646 
+C 589 646 448 538 422 410 
+C 371 147 851 -70 1203 -70 
+C 1965 -70 2624 518 2778 1325 
+C 2899 1946 2598 2502 1907 2502 
+C 1645 2502 1408 2445 1286 2400 
+L 1613 3469 
+C 1837 3443 2029 3411 2323 3411 
+C 2509 3411 2720 3424 2976 3450 
+L 3155 3885 
+L 3117 3910 
+C 2758 3872 2426 3840 2099 3840 
+C 1869 3840 1651 3853 1440 3872 
+L 870 2029 
+C 1222 2157 1459 2182 1683 2182 
+C 2080 2182 2342 1907 2208 1210 
+z
+" transform="scale(0.015625)"/>
+      <path id="LinLibertineOI-30" d="M 2202 3680 
+C 2304 3680 2400 3642 2458 3571 
+C 2618 3405 2682 2918 2515 2061 
+C 2400 1472 2304 1069 2157 742 
+C 1920 218 1606 160 1498 160 
+C 928 160 1075 1254 1184 1811 
+C 1491 3386 1926 3680 2202 3680 
+z
+M 1446 -64 
+C 1920 -64 2733 435 3027 1939 
+C 3149 2573 3110 3117 2912 3488 
+C 2797 3712 2579 3904 2246 3904 
+C 1638 3904 909 3149 666 1882 
+C 531 1197 608 557 877 205 
+C 1018 26 1210 -64 1446 -64 
+z
+" transform="scale(0.015625)"/>
       <path id="LinLibertineOI-4d" d="M 4192 557 
 C 4173 390 4083 198 3917 186 
 L 3750 173 
@@ -4267,11 +4315,75 @@ L 4576 3418
 L 4192 557 
 z
 " transform="scale(0.015625)"/>
+     </defs>
+     <use xlink:href="#LinLibertineOI-64"/>
+     <use xlink:href="#LinLibertineOI-6f" transform="translate(48.899994 0)"/>
+     <use xlink:href="#LinLibertineOI-6e" transform="translate(93.599991 0)"/>
+     <use xlink:href="#LinLibertineOI-65" transform="translate(145.399979 0)"/>
+     <use xlink:href="#LinLibertineOI-2c" transform="translate(185.499969 0)"/>
+     <use xlink:href="#LinLibertineOI-20" transform="translate(207.399963 0)"/>
+     <use xlink:href="#LinLibertineOI-74" transform="translate(232.399948 0)"/>
+     <use xlink:href="#LinLibertineOI-6f" transform="translate(263.099945 0)"/>
+     <use xlink:href="#LinLibertineOI-20" transform="translate(307.799942 0)"/>
+     <use xlink:href="#LinLibertineOI-35" transform="translate(332.799927 0)"/>
+     <use xlink:href="#LinLibertineOI-30" transform="translate(377.199921 0)"/>
+     <use xlink:href="#LinLibertineOI-30" transform="translate(421.599915 0)"/>
+     <use xlink:href="#LinLibertineOI-20" transform="translate(465.999908 0)"/>
+     <use xlink:href="#LinLibertineOI-4d" transform="translate(490.999893 0)"/>
+    </g>
+   </g>
+   <g id="text_41">
+    <!-- dust to the black hole -->
+    <g style="fill: #ffffff" transform="translate(354.300119 232.311672) scale(0.07 -0.07)">
+     <use xlink:href="#LinLibertineO-64"/>
+     <use xlink:href="#LinLibertineO-75" transform="translate(50.599991 0)"/>
+     <use xlink:href="#LinLibertineO-73" transform="translate(103.699982 0)"/>
+     <use xlink:href="#LinLibertineO-74" transform="translate(142.699966 0)"/>
+     <use xlink:href="#LinLibertineO-20" transform="translate(174.299957 0)"/>
+     <use xlink:href="#LinLibertineO-74" transform="translate(199.299942 0)"/>
+     <use xlink:href="#LinLibertineO-6f" transform="translate(230.899933 0)"/>
+     <use xlink:href="#LinLibertineO-20" transform="translate(281.299927 0)"/>
+     <use xlink:href="#LinLibertineO-74" transform="translate(306.299911 0)"/>
+     <use xlink:href="#LinLibertineO-68" transform="translate(337.899902 0)"/>
+     <use xlink:href="#LinLibertineO-65" transform="translate(391.69989 0)"/>
+     <use xlink:href="#LinLibertineO-20" transform="translate(436.399887 0)"/>
+     <use xlink:href="#LinLibertineO-62" transform="translate(461.399872 0)"/>
+     <use xlink:href="#LinLibertineO-6c" transform="translate(510.69986 0)"/>
+     <use xlink:href="#LinLibertineO-61" transform="translate(537.099854 0)"/>
+     <use xlink:href="#LinLibertineO-63" transform="translate(582.79985 0)"/>
+     <use xlink:href="#LinLibertineO-6b" transform="translate(625.599838 0)"/>
+     <use xlink:href="#LinLibertineO-20" transform="translate(676.799835 0)"/>
+     <use xlink:href="#LinLibertineO-68" transform="translate(701.79982 0)"/>
+     <use xlink:href="#LinLibertineO-6f" transform="translate(755.599808 0)"/>
+     <use xlink:href="#LinLibertineO-6c" transform="translate(805.999802 0)"/>
+     <use xlink:href="#LinLibertineO-65" transform="translate(832.399796 0)"/>
+    </g>
+   </g>
+   <g id="text_42">
+    <!-- N/4 to 4N; M/8, M/16 -->
+    <g style="fill: #b57f7f" transform="translate(357.854869 247.2396) scale(0.066 -0.066)">
+     <defs>
       <path id="LinLibertineOI-2f" d="M 2573 4365 
 L 2310 4365 
 L 0 -134 
 L 269 -134 
 L 2573 4365 
+z
+" transform="scale(0.015625)"/>
+      <path id="LinLibertineOI-3b" d="M 454 288 
+C 454 134 550 58 672 26 
+C 774 0 870 -26 870 -141 
+C 870 -320 538 -621 198 -698 
+C 186 -755 205 -806 256 -845 
+C 998 -710 1178 -134 1178 198 
+C 1178 454 1030 608 832 608 
+C 640 608 454 486 454 288 
+z
+M 1197 2605 
+C 966 2605 800 2394 800 2221 
+C 800 2054 928 1926 1094 1926 
+C 1318 1926 1491 2131 1491 2323 
+C 1491 2483 1363 2605 1197 2605 
 z
 " transform="scale(0.015625)"/>
       <path id="LinLibertineOI-38" d="M 2182 3680 
@@ -4302,24 +4414,65 @@ C 2298 1517 2394 1216 2336 909
 C 2214 269 1728 160 1453 160 
 z
 " transform="scale(0.015625)"/>
+      <path id="LinLibertineOI-31" d="M 2035 781 
+L 2470 3002 
+C 2547 3386 2630 3776 2656 3859 
+C 2662 3891 2643 3891 2624 3891 
+C 2240 3674 1882 3514 1293 3251 
+C 1286 3181 1312 3117 1357 3078 
+C 1658 3200 1805 3238 1920 3238 
+C 2022 3238 2016 3085 1971 2867 
+L 1562 781 
+C 1459 250 1293 218 858 198 
+C 813 160 781 26 813 -13 
+C 1114 -6 1338 0 1670 0 
+C 1965 0 2112 -6 2419 -13 
+C 2464 26 2490 160 2458 198 
+C 2029 218 1933 250 2035 781 
+z
+" transform="scale(0.015625)"/>
+      <path id="LinLibertineOI-36" d="M 1235 1965 
+C 1466 2099 1670 2112 1779 2112 
+C 2381 2112 2394 1498 2330 1178 
+C 2195 474 1875 154 1574 154 
+C 1190 154 883 371 1094 1466 
+C 1120 1606 1165 1779 1235 1965 
+z
+M 1338 2195 
+C 1619 2778 2138 3424 3014 3744 
+C 3027 3821 3021 3878 2976 3910 
+C 2317 3718 1882 3450 1459 3034 
+C 986 2573 678 1990 582 1485 
+C 333 186 992 -70 1466 -70 
+C 2272 -70 2758 742 2867 1293 
+C 2976 1843 2790 2336 1952 2336 
+C 1786 2336 1542 2285 1338 2195 
+z
+" transform="scale(0.015625)"/>
      </defs>
-     <use xlink:href="#LinLibertineOI-64"/>
-     <use xlink:href="#LinLibertineOI-6f" transform="translate(48.899994 0)"/>
-     <use xlink:href="#LinLibertineOI-6e" transform="translate(93.599991 0)"/>
-     <use xlink:href="#LinLibertineOI-65" transform="translate(145.399979 0)"/>
-     <use xlink:href="#LinLibertineOI-20" transform="translate(185.499969 0)"/>
-     <use xlink:href="#LinLibertineOI-6f" transform="translate(210.499954 0)"/>
-     <use xlink:href="#LinLibertineOI-6e" transform="translate(255.199951 0)"/>
-     <use xlink:href="#LinLibertineOI-63" transform="translate(306.999939 0)"/>
-     <use xlink:href="#LinLibertineOI-65" transform="translate(345.899933 0)"/>
-     <use xlink:href="#LinLibertineOI-2c" transform="translate(385.999924 0)"/>
-     <use xlink:href="#LinLibertineOI-20" transform="translate(407.899918 0)"/>
-     <use xlink:href="#LinLibertineOI-4d" transform="translate(432.899902 0)"/>
-     <use xlink:href="#LinLibertineOI-2f" transform="translate(513.299896 0)"/>
-     <use xlink:href="#LinLibertineOI-38" transform="translate(542.399887 0)"/>
+     <use xlink:href="#LinLibertineOI-4e"/>
+     <use xlink:href="#LinLibertineOI-2f" transform="translate(66.599991 0)"/>
+     <use xlink:href="#LinLibertineOI-34" transform="translate(95.699982 0)"/>
+     <use xlink:href="#LinLibertineOI-20" transform="translate(140.099976 0)"/>
+     <use xlink:href="#LinLibertineOI-74" transform="translate(165.09996 0)"/>
+     <use xlink:href="#LinLibertineOI-6f" transform="translate(195.799957 0)"/>
+     <use xlink:href="#LinLibertineOI-20" transform="translate(240.499954 0)"/>
+     <use xlink:href="#LinLibertineOI-34" transform="translate(265.499939 0)"/>
+     <use xlink:href="#LinLibertineOI-4e" transform="translate(309.899933 0)"/>
+     <use xlink:href="#LinLibertineOI-3b" transform="translate(376.499924 0)"/>
+     <use xlink:href="#LinLibertineOI-20" transform="translate(398.399918 0)"/>
+     <use xlink:href="#LinLibertineOI-4d" transform="translate(423.399902 0)"/>
+     <use xlink:href="#LinLibertineOI-2f" transform="translate(503.799896 0)"/>
+     <use xlink:href="#LinLibertineOI-38" transform="translate(532.899887 0)"/>
+     <use xlink:href="#LinLibertineOI-2c" transform="translate(577.299881 0)"/>
+     <use xlink:href="#LinLibertineOI-20" transform="translate(599.199875 0)"/>
+     <use xlink:href="#LinLibertineOI-4d" transform="translate(624.19986 0)"/>
+     <use xlink:href="#LinLibertineOI-2f" transform="translate(704.599854 0)"/>
+     <use xlink:href="#LinLibertineOI-31" transform="translate(733.699844 0)"/>
+     <use xlink:href="#LinLibertineOI-36" transform="translate(778.099838 0)"/>
     </g>
    </g>
-   <g id="text_42">
+   <g id="text_43">
     <!-- growth law, null test -->
     <g style="fill: #ffffff" transform="translate(442.909953 232.298) scale(0.07 -0.07)">
      <use xlink:href="#LinLibertineO-67"/>
@@ -4345,16 +4498,39 @@ z
      <use xlink:href="#LinLibertineO-74" transform="translate(816.899796 0)"/>
     </g>
    </g>
-   <g id="text_43">
-    <!-- goal -->
-    <g style="fill: #b57f7f" transform="translate(467.077406 247.2396) scale(0.066 -0.066)">
-     <use xlink:href="#LinLibertineOI-67"/>
-     <use xlink:href="#LinLibertineOI-6f" transform="translate(47.699997 0)"/>
-     <use xlink:href="#LinLibertineOI-61" transform="translate(92.399994 0)"/>
-     <use xlink:href="#LinLibertineOI-6c" transform="translate(140.999985 0)"/>
+   <g id="text_44">
+    <!-- G3 -->
+    <g style="fill: #b57f7f" transform="translate(468.951187 247.2396) scale(0.066 -0.066)">
+     <defs>
+      <path id="LinLibertineOI-33" d="M 2093 3680 
+C 2355 3680 2579 3514 2496 3104 
+C 2432 2784 1978 2291 1350 2202 
+L 1344 1997 
+C 1453 2010 1562 2010 1638 2010 
+C 1990 2010 2426 1907 2285 1184 
+C 2118 333 1542 160 1325 160 
+C 1011 160 986 307 934 422 
+C 890 512 826 589 704 589 
+C 576 589 416 467 397 365 
+C 346 109 832 -64 1203 -64 
+C 1933 -64 2675 429 2842 1274 
+C 2976 1971 2528 2221 2176 2285 
+L 2170 2298 
+C 2726 2547 2918 2810 2982 3149 
+C 3021 3341 3008 3494 2886 3654 
+C 2778 3795 2586 3904 2266 3904 
+C 1363 3904 986 3290 947 3078 
+C 928 2989 966 2861 1114 2861 
+C 1331 2861 1389 3072 1414 3194 
+C 1491 3603 1933 3680 2093 3680 
+z
+" transform="scale(0.015625)"/>
+     </defs>
+     <use xlink:href="#LinLibertineOI-47"/>
+     <use xlink:href="#LinLibertineOI-33" transform="translate(66.399994 0)"/>
     </g>
    </g>
-   <g id="text_44">
+   <g id="text_45">
     <!-- growth law of the black hole -->
     <g style="fill: #ffffff" transform="translate(37.305562 268.2) scale(0.072 -0.072)">
      <use xlink:href="#LinLibertineO-67"/>
@@ -4387,7 +4563,7 @@ z
      <use xlink:href="#LinLibertineO-65" transform="translate(1126.999725 0)"/>
     </g>
    </g>
-   <g id="text_45">
+   <g id="text_46">
     <!-- spike in the strong field -->
     <g style="fill: #ffffff" transform="translate(183.762 268.2) scale(0.072 -0.072)">
      <use xlink:href="#LinLibertineO-73"/>
@@ -4417,7 +4593,7 @@ z
      <use xlink:href="#LinLibertineO-64" transform="translate(916.89978 0)"/>
     </g>
    </g>
-   <g id="text_46">
+   <g id="text_47">
     <!-- null test of coupling -->
     <g style="fill: #ffffff" transform="translate(312.64875 268.2) scale(0.072 -0.072)">
      <use xlink:href="#LinLibertineO-6e"/>
@@ -4443,7 +4619,7 @@ z
      <use xlink:href="#LinLibertineO-67" transform="translate(769.29982 0)"/>
     </g>
    </g>
-   <g id="text_47">
+   <g id="text_48">
     <!-- dressed binaries -->
     <g style="fill: #ffffff" transform="translate(426.560625 268.214063) scale(0.072 -0.072)">
      <use xlink:href="#LinLibertineO-64"/>
@@ -4464,7 +4640,7 @@ z
      <use xlink:href="#LinLibertineO-73" transform="translate(616.099884 0)"/>
     </g>
    </g>
-   <g id="text_48">
+   <g id="text_49">
     <!-- deliverables of the track -->
     <g style="fill: #1f1f1f" transform="translate(10.368 285.981) scale(0.075 -0.075)">
      <defs>
@@ -4518,7 +4694,7 @@ z
      <use xlink:href="#LinLibertineOI-6b" transform="translate(892.299805 0)"/>
     </g>
    </g>
-   <g id="text_49">
+   <g id="text_50">
     <!-- exists -->
     <g style="fill: #1f1f1f" transform="translate(245.376 293.253248) scale(0.075 -0.075)">
      <defs>
@@ -4591,7 +4767,7 @@ z
      <use xlink:href="#LinLibertineOB-73" transform="translate(215.699966 0)"/>
     </g>
    </g>
-   <g id="text_50">
+   <g id="text_51">
     <!-- provided by core -->
     <g style="fill: #1f1f1f" transform="translate(312.768 293.253248) scale(0.075 -0.075)">
      <defs>
@@ -4708,7 +4884,7 @@ z
      <use xlink:href="#LinLibertineOB-65" transform="translate(705.69986 0)"/>
     </g>
    </g>
-   <g id="text_51">
+   <g id="text_52">
     <!-- new for Track D -->
     <g style="fill: #1f1f1f" transform="translate(432 293.253248) scale(0.075 -0.075)">
      <defs>
@@ -4879,7 +5055,7 @@ z
   </g>
  </g>
  <defs>
-  <clipPath id="p61a4b0a360">
+  <clipPath id="p93e996cf36">
    <rect x="0" y="0" width="518.4" height="302.4"/>
   </clipPath>
  </defs>
