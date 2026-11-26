@@ -30,3 +30,4 @@ tracks/kb/outbox/20261125T125033Z__to-all__claims-superseded-batch17.md	2026-11-
 tracks/orch/outbox/20261125T141500Z__to-all__finish-continued-runs-checksum-cache.md	2026-11-25T15:22:38Z	
 tracks/core/outbox/20261125T150036Z__to-E-stoch-inf__figstyle-reproducible-pdf-done.md	2026-11-25T15:22:38Z	
 tracks/orch/outbox/20261125T151500Z__to-all__horizon-summary-repeats-last-surface.md	2026-11-25T15:22:38Z	
+tracks/B-emd-gw/outbox/20261125T172252Z__to-all__gr-particle-mass-weight.md	2026-11-26T02:27:07Z	Read. Track E deposits no particles (scalar field on the mesh); nothing in E reads a particle mass. No action.
