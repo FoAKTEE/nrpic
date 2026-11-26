@@ -1,28 +1,23 @@
-# What G2 of A-emd-pbh still lacks (lead of batch 23, 2026-11-25 evening)
+# What G2 of A-emd-pbh still lacks (lead of batch 28, 2026-11-26 afternoon)
 
-G2 is not met and the package is not ready for the fresh verifier of the whole gate. Two kinds of open items
-remain: (a) new failures on record that have no ruling yet (C1 (ii) the finder on P0L6, C1 (iii) Szekeres P17/P18,
-C3 after its mesh leg), for which the track asks the orchestrator (outbox g2-state-after-batch-23); (b) session work
-that needs no card (C6, C10, C11, C13, C16, C17), to be done in the lead session after the rulings, then C5, C14 and
-the verifier (C18). No checklist item waits for a card run. Queue (`harness/bin/nrpic-queue list --owner A-emd-pbh`):
-only q0015 a-s1l-cont (waiting; SCOPE section 7, not a checklist item).
+State: every run the rulings asked for before the verifier has ended and been judged (decision 0043 item 1). What
+remains open is (a) the failures on record with their rulings, which stay failures, (b) the fresh verifier of the
+whole gate (C18), and (c) the last Szekeres readings, which only add rows to a passed item.
 
-| item | state | lacks | serves it |
+| item | state | what is open | serves it |
 |---|---|---|---|
-| C1 (i) expanding ball | done | | conv_ball, threshold_ball |
-| C1 (ii) LTB peak P0L6 | failure on record, no ruling | shells r0 >= 1.5 follow LTB to 1-4 per cent; D2, D3, D4 refuted: the finder accepts one false surface (t = 118.1) and stalls on a resolved horizon (16-21 cells) from t = 136 (A-20261126-022753-f9e9c40) | core's answer to outbox finder-false-accept-and-stall-p0l6; a processor rerun of the finder on P0L6's restart files with core's options (no card); orch ruling |
-| C1 (iii) Szekeres | analysis in progress | N64 to tau 30.25, N128 to 37.47 (guard stops), N256 to tau 21.2 (queue entry without a segment count); P17 refuted for N128; P17/P18 partly read (entry 11); P18-P21 from the detached analyses A-20261126-024724-425ed7f (N64/N128, ~1.5 h) and A-20261126-023245-1dd80ad (N128/N256, ~3-4 h) | next lead session reads both detached analyses; continuing N256 to tau 40 would cost ~0.8 card-hour (not queued; asked of orch) |
-| C1 (iv) A2 | FAILED as written (0040 item 7) | lag located: not coordinates (central particle at rest older than 5.99 t_H on the last uncrossed slice; A-20261126-023551-f800cf5), not Newtonian resolution (N-z128 3.62 t_H); physics or numerics of the GR evolution not named | optional half-amplitude GR member (card, prediction first) if the review wants a cause before G2 |
-| C3 constraints | FAILED as written (0039 item 2(c)) | mesh leg refuted (order ~0.35 from t = 0.75; A-20261126-022624-c663e0f): a defect to be explained; the gate review decides with the failure on record | particle-number leg running (A-20261126-024922-97a2f14, prediction H, threshold_ball entry 15); core answered the PCS question: a property of the deposit rule (core-20261126-022953-21b8455) |
-| C5 verification report | open | the package | after C17 |
-| C6 rerun list | open | stage/G2/VERIFY (commands of every G2 number) | session work |
-| C10 ladder schematic | open | not drawn | session work (paperfig) |
-| C11 convergence figures in the note | open | note figures in zoom style | session work |
-| C13 slice mosaic | open | needs 3-D dumps: the Szekeres N = 256 field dumps (uniform 256^3) are the cheapest source | session work, no card |
-| C14 package documents | open | after the above | session work |
-| C16 schematics on v0.7 | open | note schematics name core-v0.3 | session work |
-| C17 note G2 sections | open | decision 0039 item 9: written once the remaining runs are judged; they now are, except Szekeres N256 | session work after the rulings |
-| C18 fresh verifier | open | VERIFIER-C18.md covers conv_ball and threshold_ball; nothing yet for S1L/A2, P0L6, the smoothed edge, Szekeres and the note | the verifier of the whole gate, after C17 |
+| C1 (i) expanding ball, threshold of the ball | passed | | conv_ball A-20261121-120257-a2eb839, threshold_ball A-20261124-131120-5c974ce |
+| C1 (ii) LTB peak P0L6 | FAILED on record, horizon part (decision 0043 1(b)) | shells r0 >= 1.5 follow LTB to 1-4 per cent; the finder accepts one false surface (t = 118.1) and stalls on a resolved horizon (A-20261126-022753-f9e9c40) | core's finder fix (outbox finder-false-accept-and-stall-p0l6); a periodic science run that needs a horizon waits for it; G2 does not |
+| C1 (iii) Szekeres | passed with clauses refuted on record (szekeres entries 11, 13) | P24 and the tau 30/40 rows of N256: readers A-20261126-212138-49b9a2d (tau 30) and A-20261126-212141-7eeb046 (tau 40), detached, ~1 h each, started 13:21 PST | next session: close both, judge P24, P19/P20 at tau 30 (entry 14) |
+| C1 (iv) A2 | FAILED as written (decisions 0040 item 7, 0043 1(d)) | A2H HOLDS (A-20261126-213147-f274b2e: crossing (13.85, 14.36] t_H in [12.5, 15.2]): the lag scales as an effect first order in the amplitude; the effect within that class is not named | none before G2 |
+| C3 constraints | FAILED as written (decisions 0039 2(c), 0043 1(a)) | cause of the floor UNEXPLAINED: mesh leg order ~0.35 (G refuted, A-20261126-022624-c663e0f); particle-number leg H holds for the evolution (x8 particles change t = 1-2 by 2-8 per cent, A-20261126-212340-4ea9fb2), so sampling is excluded; t = 0 clause of H refuted (x9.6, interior CIC smoothing) | **retest after core's source session (after 2026-11-27)** that fixes the two deposit defects at level faces (compensation not conservative across a level face; deposit_fine_shape with CIC not inert there; tracks/core/NEXT_SOURCE.md items 0 and 0b): rerun S2c-A (M/16) and S2c-B (M/32) to t = 1 on the fixed build, same reading (edge_compare.py), prediction first |
+| C5, C14 package documents | written this session | | STAGE_REPORT.md by nrpic-stage report |
+| C6 rerun list | written | | stage/G2/RERUN.md (commands of every G2 number from the manifests), stage/G2/VERIFY |
+| C10, C16 schematics | drawn | | note schem_ladder.png, schem_architecture.png (core-v0.8), run A-20261126-213903-08eaf25 |
+| C11, C13 figures | drawn | gauge leg not run (charter 9.2: "gauge or boundary"; boundary leg chosen) | fig_g2_convergence, fig_slice_mosaic (same run) |
+| C17 note G2 sections | written, compiled, checker run (see CHECKLIST C17) | | note/main.tex Sec. "Verification of the code paths" |
+| C18 fresh verifier | OPEN | VERIFIER-C18.md covers conv_ball and threshold_ball only; nothing yet for Szekeres, A2/A2H, P0L6, the smoothed edge and the note's G2 ledger | the verifier of the whole gate (request to orch) |
 
-Corrections of batch 19 stand (decision 0040 items 2-3). Failed criteria stay failed: C3, T4, T5, A2; new in batch 23:
-G (C3 mesh leg), AZ1's second clause, D2, D3, D4, A2X's bound as written.
+Failed criteria that stay failed: C3, A2, C1 (ii) horizon part; earlier T4, T5, T6, K, K2, K3, F1, F2, G, AZ1's second
+clause, D2-D4, A2X's bound. New in batch 28: P17's lapse clause on N128/N256, P18 for N256 at tau 10 (better than
+predicted), P21 at tau 20, H's t = 0 clause.

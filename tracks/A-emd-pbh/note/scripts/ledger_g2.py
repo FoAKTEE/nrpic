@@ -20,6 +20,9 @@ common.RUNS.update({
 })
 
 
+TO = " $\\to$ "
+
+
 def f(v, nd=3):
     return f"{v:.{nd}g}"
 
@@ -47,7 +50,8 @@ def main():
                                  common.RUNS[key]))
         for o in d["orders"]:
             if o["tau1"] > 0:
-                rows.append((f"Szekeres {o['pair']}, $\\tau = {o['tau1']:.0f}$: order of shell $K$, $H$",
+                pair = o["pair"].replace("->", TO)
+                rows.append((f"Szekeres {pair}, $\\tau = {o['tau1']:.0f}$: order of shell $K$, $H$",
                              f"{f(o['shell']['K_err_over_H_rms'], 3)}, {f(o['shell']['H_over_16pirho_rms'], 3)}",
                              common.RUNS[key]))
     e = common.load_json("edge", "edge.json")["members"]

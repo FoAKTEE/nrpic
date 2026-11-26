@@ -1,0 +1,4 @@
+# Commands nrpic-stage verify re-runs in the clean export (cwd = export root), beside every
+# note/scripts/fig_*.py and schem_*.py. The G2 ledger table is regenerated and compared.
+# The full rerun list of every G2 number (registered analyses and their runs) is RERUN.md.
+cd tracks/A-emd-pbh/note/scripts && python ledger_g2.py
