@@ -20,8 +20,8 @@ Evidence of the green boxes added since G1 (run ids under tracks/B-emd-gw/runs/;
   shearing dust of arXiv:2003.08014 (S1-S4, M1, L1): B-20261123-015919-dec4392;
   FLRW dust converging in mesh and particle number: flrw_conv (J3 B-20261121-202335-3e6a898).
 Slate: restart on the termination signal and v0.7 chains (coord/INTERFACES/preempted_runs.md),
-  step limit by the gauge speeds (step_limit.md), the 256^3 mesh leg (queue q0007).
-Red: particle estimator without the rest-mass weight (population/JOURNAL.md 2026-11-25 09:07),
+  step limit by the gauge speeds (step_limit.md), the 256^3 legs (q0007 zero shift, stopped; q0060 Gamma driver, to a = 143).
+Green since batch 28: particle estimator without the rest-mass weight (analyze_gr.py --equal-mass, runs B-20261126-022356-52c2460 and -022407-87e8803). Red:
   halo masses by proper distance, York TT part on the curved slice, L2 of the shearing dust
   converged in the mesh (stage/G2/OPEN.md). No data are read.
 """
@@ -69,7 +69,7 @@ def main():
         ("Gamma-driver shift in the population box", DONE),
         ("Newtonian mode, Fourier Poisson solver", DONE),
         ("non-finite stop and restarts from t = 8", DONE),
-        ("256^3 mesh leg (queue q0007)", BRANCH),
+        ("256^3: zero shift stops, driven shift passes", DONE),
         ("restart on SIGTERM, v0.7 chains", BRANCH),
         ("step limit by the gauge speeds", BRANCH),
         ("refinement on particles per cell", BRANCH),
@@ -79,7 +79,7 @@ def main():
         ("FoF halos, same-particle matching", DONE),
         ("radiated measure of the Newtonian box", DONE),
         ("metric strain against particle S^TT/k^2", DONE),
-        ("particle estimator without rest-mass weight", NEW),
+        ("particle estimator without rest-mass weight", DONE),
         ("halo masses by proper distance", NEW),
         ("York TT part on the curved slice", NEW),
         ("shearing-dust L2 converged in the mesh", NEW),

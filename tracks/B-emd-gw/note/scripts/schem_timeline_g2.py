@@ -2,7 +2,7 @@
 
 Gates and targets: coord/CHARTER.md section 9.2 and the Track B sheet (9.5); G0 passed
 2026-11-19 and G1 passed with reservations 2026-11-21 (coord/GATES.md); what G2 still lacks:
-stage/G2/OPEN.md (queue entries q0007, q0042, q0044; writing items C5, C6, C15-C18). Gate
+stage/G2/OPEN.md (batch 28: the GM analysis, rulings on C1 and C3, verifier C18). Gate
 positions are evenly spaced; the labels give the targets. No data are read.
 """
 import os
@@ -44,7 +44,7 @@ def main():
         pf.callout(ax, x - cw / 2 + 0.1, 6.3, cw, 3.6, title, body, bar=col, size=7.0,
                    title_size=8.0, band=0.8)
         pf.line(ax, (x, y0 + 0.35), (x, 6.3), color=pf.GREY_LINE)
-    pf.text(ax, 0.9, 10.9, "now: the population box read in the Gamma-driver gauge; mesh, particle and 0.028 legs queued",
+    pf.text(ax, 0.9, 10.9, "now: the Gamma-driver box at two meshes, eight particles per cell and twice the amplitude; mesh convergence being read",
             size=7.5, ha="left", italic=True)
     ax.add_patch(pf.Polygon([(14.2, 5.75), (14.6, 5.75), (14.4, 5.45)], closed=True,
                             fc=pf.RED, ec="none", zorder=8))
@@ -56,8 +56,8 @@ def main():
     pf.text(ax, 12.2, 2.0, "FLRW dust converged; shearing\ndust run (L2 not converged);\n"
             "gauge leg of the population box", size=7.0, color=pf.ROSE)
     pf.brace(ax, 15.6, 20.8, 3.6, "", below=True)
-    pf.text(ax, 18.2, 2.0, "mesh leg q0007, particle leg\nq0042, shifted 0.028 box q0044;\n"
-            "note sections, verifier", size=7.0, color=pf.ROSE)
+    pf.text(ax, 18.2, 2.0, "strain at the second mesh read;\nrulings on L2 and constraints;\n"
+            "fresh verifier", size=7.0, color=pf.ROSE)
     pf.brace(ax, 21.6, 26.6, 3.6, "", below=True)
     pf.text(ax, 24.1, 2.25, "Newtonian box spectra\nof the literature read", size=7.0,
             color=pf.ROSE)
