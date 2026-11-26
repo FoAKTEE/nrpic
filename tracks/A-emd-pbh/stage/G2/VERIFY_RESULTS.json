@@ -1,9 +1,9 @@
 {
   "track": "A-emd-pbh",
   "gate": "G2",
-  "commit": "6d1d18ad902ef170b146d43d549a510e0f8cbf6c",
-  "verified_utc": "2026-11-26T23:19:04Z",
-  "export": "/data/haiyangw/nrpic/scratch/A-emd-pbh/tmp/stage-verify/A-emd-pbh-G2-6d1d18a-20261126T231729Z",
+  "commit": "ff78cb3762f0105061c66fcb353c414243ab3e20",
+  "verified_utc": "2026-11-26T23:56:29Z",
+  "export": "/data/haiyangw/nrpic/scratch/A-emd-pbh/tmp/stage-verify/A-emd-pbh-G2-ff78cb3-20261126T235541Z",
   "result": "PASS",
   "checks": [
     {
@@ -21,7 +21,7 @@
     {
       "check": "export",
       "status": "PASS",
-      "message": "clean export of 6d1d18ad902e (HEAD) in /data/haiyangw/nrpic/scratch/A-emd-pbh/tmp/stage-verify/A-emd-pbh-G2-6d1d18a-20261126T231729Z/tree",
+      "message": "clean export of ff78cb3762f0 (HEAD) in /data/haiyangw/nrpic/scratch/A-emd-pbh/tmp/stage-verify/A-emd-pbh-G2-ff78cb3-20261126T235541Z/tree",
       "detail": null
     },
     {
@@ -69,7 +69,7 @@
     {
       "check": "runs",
       "status": "PASS",
-      "message": "327 run manifests finished (102 hand-written, read as decision 0012 allows); failures of 1 runs waived by coord/WAIVERS.md (decision 0019), output checksums verified where recorded",
+      "message": "339 run manifests finished (102 hand-written, read as decision 0012 allows); failures of 1 runs waived by coord/WAIVERS.md (decision 0019), output checksums verified where recorded",
       "detail": null
     },
     {
@@ -260,12 +260,12 @@
     {
       "check": "checksums",
       "status": "WARN",
-      "message": "31429 output files: 15 hashed again (bytes read, 0.5 MB), 31414 taken from the cache (809.60 GB); a checksum taken from the cache proves unchanged size and modification time since it was hashed, not bytes read again; --full reads every byte",
+      "message": "32034 output files: 74 hashed again (bytes read, 0.62 GB), 31960 taken from the cache (810.24 GB); a checksum taken from the cache proves unchanged size and modification time since it was hashed, not bytes read again; --full reads every byte",
       "detail": {
-        "rehashed_files": 15,
-        "rehashed_bytes": 534110,
-        "cached_files": 31414,
-        "cached_bytes": 809603714552,
+        "rehashed_files": 74,
+        "rehashed_bytes": 622833402,
+        "cached_files": 31960,
+        "cached_bytes": 810239631851,
         "full": false,
         "meaning_of_a_cached_entry": "a checksum taken from the cache proves unchanged size and modification time since it was hashed, not bytes read again",
         "notes": []
@@ -274,7 +274,7 @@
     {
       "check": "status",
       "status": "PASS",
-      "message": "STATUS.md has 31 lines",
+      "message": "STATUS.md has 38 lines",
       "detail": null
     },
     {

@@ -1,12 +1,12 @@
 # Re-verification: A-emd-pbh G2
 
-`harness/bin/nrpic-stage verify A-emd-pbh G2` on 2026-11-26T23:19:04Z, clean export of commit `6d1d18ad902e` in `scratch/A-emd-pbh/tmp/stage-verify/A-emd-pbh-G2-6d1d18a-20261126T231729Z`. Result: **PASS**.
+`harness/bin/nrpic-stage verify A-emd-pbh G2` on 2026-11-26T23:56:29Z, clean export of commit `ff78cb3762f0` in `scratch/A-emd-pbh/tmp/stage-verify/A-emd-pbh-G2-ff78cb3-20261126T235541Z`. Result: **PASS**.
 
 | Check | Result | Message |
 |---|---|---|
 | clean | PASS | worktree clean (outside the stage directory being assembled) |
 | sync | PASS | main is merged into the branch |
-| export | PASS | clean export of 6d1d18ad902e (HEAD) in /data/haiyangw/nrpic/scratch/A-emd-pbh/tmp/stage-verify/A-emd-pbh-G2-6d1d18a-20261126T231729Z/tree |
+| export | PASS | clean export of ff78cb3762f0 (HEAD) in /data/haiyangw/nrpic/scratch/A-emd-pbh/tmp/stage-verify/A-emd-pbh-G2-ff78cb3-20261126T235541Z/tree |
 | size | PASS | no committed file of the track above 5 MB |
 | note | PASS | tracks/<ID>/note/main.tex present |
 | package | PASS | EVIDENCE.md, OPEN.md, CHECKLIST.md present (decision 0012); scoping text: scope/SCOPE.md; verifier's report VERIFIER.md |
@@ -14,11 +14,11 @@
 | style | PASS | 3 style copies equal harness/style/SHA256SUMS (czstyle.py, paperfig.py, figstyle.py) |
 | fig-script | PASS | 10 figures, each with its script |
 | min-figs | PASS | 4 schematics and 6 data figures (brief 13.4 asks at least 1 and 5 at G2) |
-| runs | PASS | 327 run manifests finished (102 hand-written, read as decision 0012 allows); failures of 1 runs waived by coord/WAIVERS.md (decision 0019), output checksums verified where recorded |
+| runs | PASS | 339 run manifests finished (102 hand-written, read as decision 0012 allows); failures of 1 runs waived by coord/WAIVERS.md (decision 0019), output checksums verified where recorded |
 | runs-waived | WARN | failures of the manifest check waived: 1 runs named in main's coord/WAIVERS.md (decision 0019 item 6): A-20261121-064515-aa13c8f: the gate reviewer's failed first attempt; its scratch script was edited for the rerun A-20261121-064537-2bcf310 |
 | run-notes | WARN | 80 runs read with defaults or not fully re-verifiable (nrpic-run lint) |
-| checksums | WARN | 31429 output files: 15 hashed again (bytes read, 0.5 MB), 31414 taken from the cache (809.60 GB); a checksum taken from the cache proves unchanged size and modification time since it was hashed, not bytes read again; --full reads every byte |
-| status | PASS | STATUS.md has 31 lines |
+| checksums | WARN | 32034 output files: 74 hashed again (bytes read, 0.62 GB), 31960 taken from the cache (810.24 GB); a checksum taken from the cache proves unchanged size and modification time since it was hashed, not bytes read again; --full reads every byte |
+| status | PASS | STATUS.md has 38 lines |
 | rerun | PASS | 11 of 11 scripts and commands ran cleanly in the export |
 | compare | PASS | 21 regenerated files compared with the committed ones; 0 differ beyond tolerance (rtol 1e-06, atol 1e-12, PNG rms 0.005) |
 | regenerate | PASS | all 20 committed figure files regenerated |
@@ -138,10 +138,10 @@
 
 ```
 {
- "rehashed_files": 15,
- "rehashed_bytes": 534110,
- "cached_files": 31414,
- "cached_bytes": 809603714552,
+ "rehashed_files": 74,
+ "rehashed_bytes": 622833402,
+ "cached_files": 31960,
+ "cached_bytes": 810239631851,
  "full": false,
  "meaning_of_a_cached_entry": "a checksum taken from the cache proves unchanged size and modification time since it was hashed, not bytes read again",
  "notes": []
