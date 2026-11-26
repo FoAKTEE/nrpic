@@ -8,11 +8,11 @@ in VERIFY_RESULTS.md (`nrpic-stage verify`), not here.
 ## Evidence required at every track's G2 (Verified capability; charter 9.2)
 
 - [ ] **C1** The code paths used by the track pass their tests of §10
-  - status: FAIL
-  - evidence: Collision operator rows of brief section 10 pass (G1, signed; heat series: kappa/kappa_1 = 1.020 +- 0.004, run C-20261124-131012-f920f45). Row 'Einstein-Vlasov steady states and their stability threshold': the steady state FAILED at N = 1e5 on M/8 (controls of y0 = 0.334032, 0.344 collapse at 534.8, 549.3 M; C-20261124-130634-3338d9b, on record) and HOLDS at N = 1e6 (control N6c C-20261124-221122-928c9eb: no collapse in 600 M, alpha_c within [-0.0022, +0.0115]; analysis C-20261125-122010-fb3cc08, fig_nseries.png read; NS.1 held, NS.2 failed, JOURNAL 2026-11-25T12:21Z). The threshold part is not located: bracket at N = 1e6 queued (q0046 N6b344, q0047 N6b324). Stays FAIL until the bracket is read. Batch 20: block A closed (C-20261125-160056-a5b7282): the y0 = 0.324 control at N = 1e5 also crosses alpha_min 0.3 (599.99 M), so all three N = 1e5 controls fail; collapse times are lapse markers, no run had the horizon finder (C-20261125-160207-05b6db1, decision 0040 item 3).
+  - status: OPEN
+  - evidence: Collision-operator rows of brief section 10 pass (G1 signed; conductivity 1.020 +- 0.004, C-20261124-131012-f920f45). Row 'Einstein-Vlasov steady states and their stability threshold', batch 27: the steady state holds at N = 1e6 on M/8 (N6c, no collapse in 600 M) and fails at N = 1e5 and 1e4 by particle-noise relaxation (controls collapse at 534.81 and 295.78 M; NS.1 and NS.3 held, nseries C-20261126-120656-f5c62bb, fig read); the threshold is bracketed at N = 1e6 on M/8: y0 0.344 kicked in collapses at 252.31 M, 0.324 kicked in holds 600 M inside +-0.015 (B17.5, B17.6 held; C-20261126-121836-c7a76c1, fig read). Waits for the mesh leg (q0055 A16b344 running, q0057 A16b324) and the gauge leg of the stable member (q0058 N6b324e1). The N = 1e5 control failures stay on record (A.4, BA.3). Lapse markers throughout (alpha_min = 0.3; no run had the horizon finder, C-20261125-160207-05b6db1).
 - [ ] **C2** Three-way convergence in particle number, mesh spacing, and gauge or boundary
-  - status: FAIL
-  - evidence: Particle number on M/8: N = 1e5 control collapses at 534.8 M, N = 1e6 holds 600 M (C-20261125-122010-fb3cc08); H-norm2 floor ratio 9.95 for N ratio 10; third point N4c queued (q0018); seed scatter at 1e5 from q0022, q0023. Mesh (collisional t_c, collision cells M/4): 206.64 (M/4), 163.41 (M/8), 158.42 M (M/16), differences 43.23 and 4.99 M (C-20261125-122020-031b67e, fig_d2.png read; M16.1, M16.2 held); the seed scatter at M/8 that judges the 3.1 per cent M/8->M/16 shift waits for q0024 (D2f2s2+). Gauge or boundary: no run yet; D2 with shift_eta 1.0 queued (q0048, B17.4). Collisionless mesh leg of the threshold (M/16 at N = 1e6) and its gauge leg (shift_eta 1.0): queued in batch 20 under ruling 0039 item 3 (A16b344, A16b324, N6b344e1, N6b324e1; predictions B20.1-B20.3, JOURNAL 2026-11-25T16:02Z; decks smoke-tested, C-20261125-155959-866b049).
+  - status: OPEN
+  - evidence: Particle number: control of y0 0.334032 on M/8 at N = 1e4, 1e5, 1e6: t_c 295.78, 534.81 M, none by 600 M; H-norm2 floor ratios 9.78 and 9.95 for N ratios 10 (C-20261126-120656-f5c62bb); the bracket members have the same fates at N = 1e5 and 1e6 (C-20261126-121836-c7a76c1). Mesh: collisional t_c 206.64 (M/4), 163.41 (M/8), 158.42 M (M/16); M/8 scatter over collision seed, cell and gauge 1.13 M (five runs, mean 164.61 M), so the M/8 -> M/16 shift of 6.2 M is resolved [JUDGEMENT]; the f = 2 seed pair differs by 2.24 M against the 2 M bar of D2.3 (FAILED on record) (C-20261126-121702-b6b1eda, fig read). Gauge: shift_eta 1.0 moves the collisional t_c from 163.41 to 164.01 M and the collision rate by 0.8 per cent (B17.4 held); the run stops non-finite at 190.4 M after collapse (C-20261126-034500-4b34b1c, failed on record). Threshold legs: gauge member of y0 0.344 (N6b344e1, C-20261126-050124-00e10ae) being closed in this session, B20.3; open: q0055 A16b344 (running), q0057 A16b324, q0058 N6b324e1 (B20.1-B20.3). Lapse markers throughout (alpha_min = 0.3; no run had the horizon finder, C-20261125-160207-05b6db1).
 - [x] **C3** Constraints behave
   - status: PASS
   - evidence: H-norm2 of the controls flat after 50 M at a floor set by the deposit noise: 8.6e-4 (N = 1e5) and 8.5e-3 (N = 1e4) on M/4, ratio 9.97 = the N ratio (C-20261124-130021-5c9c207, fig_cc2_N.png, panel 3); on M/8 the floor is 9.3 times that of M/4 at equal N (drift entry 12), close to the factor 8 of the particles per cell. No growth before collapse in any run read; after collapse the guard or the excision ends the record. [JUDGEMENT: "behave" read as bounded and scaling with the particle noise; convergence of the floor with the mesh is not expected at fixed N.]
@@ -32,8 +32,8 @@ in VERIFY_RESULTS.md (`nrpic-stage verify`), not here.
 ## Track-specific criteria of C-sidm for G2 (9.6 Track C: relativistic collapse of an SIDM core (S3))
 
 - [ ] **C7** The collisionless threshold reproduces the literature value with three-way convergence
-  - status: FAIL
-  - evidence: Not located. At N = 1e5 on M/8 block A is unfit by its own refutation rule (A.4 failed; C-20261124-130634-3338d9b, on record). N6c shows the cause is particle noise (NS.1 held), so the reading moves to N = 1e6: bracket y0 = 0.324 / 0.344 kicked inward at N = 1e6 queued (q0046, q0047; predictions B17.5, B17.6, JOURNAL 2026-11-25T12:01Z). Three-way convergence of the threshold: mesh (M/16) and gauge (shift_eta 1.0) members queued in batch 20 (B20.1-B20.3); the particle-number leg of the bracket has the N = 1e5 kin members of block A (0.344 kin collapses at 229.79 M, 0.324 kin holds 600 M; C-20261125-160056-a5b7282), whose controls fail.
+  - status: OPEN
+  - evidence: At one mesh (M/8) and one N (1e6), in one gauge: the threshold of the King b = 1 family lies in (0.324, 0.344), which contains the turning point y_max = 0.334032 (B17.5, B17.6 held, C-20261126-121836-c7a76c1); the same fates at N = 1e5 (229.79 M; holds 600 M). Three-way convergence waits for the mesh leg q0055 A16b344 (running) and q0057 A16b324 (B20.1, B20.2) and the gauge member q0058 N6b324e1 (B20.3). The literature value is the turning point printed in arXiv:2009.08163 (y_max = 0.334, paper.tex line 953; recomputed 0.334032 in G1). Lapse markers throughout (alpha_min = 0.3; no run had the horizon finder, C-20261125-160207-05b6db1).
 - [x] **C8** Once the collision module is in core, the budgets of conserved quantities close in curved spacetime
   - status: PASS
   - evidence: Collision budget in curved spacetime, coll_energy = particle, D2 on M/8: summed dH_particles / sum MH below 3.2e-16 up to the first excision for f = 1, 2, 4; rest-mass budget 2.7e-14; deposit identity 1e-15 (C-20261124-130442-0819c88, d2.json). Open item for the verifier: the collision-count test before t_c gives z = -3.39 at f = 4 (REVIEW-wave3 section 14).
@@ -41,8 +41,8 @@ in VERIFY_RESULTS.md (`nrpic-stage verify`), not here.
 ## Rulings of the orchestrator on the criteria (coord/DECISIONS; check that they apply to G2)
 
 - [ ] **C9** Track C. The references and the wording that the lead corrected are taken into `coord/BRIEF_ERRATA.md`; the G2 criterion reads "the collisionless threshold is located with three-way convergence and compared with the turning-point criterion". (0013)
-  - status: FAIL
-  - evidence: As C7: the threshold is not yet located; comparison with the turning point y_max = 0.334032 follows from the N = 1e6 bracket (q0046, q0047) at one mesh and one N; mesh and gauge legs of the bracket queued in batch 20 (ruling 0039 item 3; B20.1-B20.3).
+  - status: OPEN
+  - evidence: As C7: located as a bracket of +-3 per cent around the turning point at one mesh and one N; compared with the turning-point criterion (y_max = 0.334032 inside the bracket). Mesh and gauge legs: q0055, q0057, q0058.
 
 ## Minimum figures at G2 (brief 13.4)
 
@@ -51,7 +51,7 @@ in VERIFY_RESULTS.md (`nrpic-stage verify`), not here.
   - evidence: No verification-ladder schematic for G2 yet (G1 schematics in tracks/C-sidm/note/).
 - [ ] **C11** Data figure: Convergence figures (one each for particle number, mesh, gauge)
   - status: OPEN
-  - evidence: Particle number: fig_nseries.png (C-20261125-122010-fb3cc08, N = 1e5 vs 1e6 on M/8; read) and fig_cc2_N.png, fig_diffusion.png (M/4; C-20261124-130021-5c9c207, -130222-6a4924d); mesh: fig_d2.png with M/16 (C-20261125-122020-031b67e; read); gauge: none until q0048. Note figures not drawn.
+  - evidence: Registered analysis figures exist and were read for all three legs: particle number fig_nseries.png (C-20261126-120656-f5c62bb), the bracket at two N (C-20261126-121836-c7a76c1); mesh fig_d2.png with M/4, M/8, M/16 (C-20261126-121702-b6b1eda); gauge fig_d2.png (eta1 dotted) and the threshold gauge leg (this session). Note figures of G2 not drawn (one script per figure via run_all).
 - [x] **C12** Data figure: Constraint norms against time
   - status: PASS
   - evidence: Constraint norms against time: fig_cc2_N.png panel 3 (C-20261124-130021-5c9c207), looked at.
@@ -72,13 +72,13 @@ in VERIFY_RESULTS.md (`nrpic-stage verify`), not here.
   - evidence: G2 schematics not drawn.
 - [ ] **C17** Working note written with /paper-writing; its manuscript checker passed with --compile
   - status: OPEN
-  - evidence: The working note has its G1 sections only.
+  - evidence: G2 section written into the note (Sec. V 'Toward the capability gate', table VI with run ids; checker with --compile: 0 undefined references, 1 overfull box of 1.1 pt as at G1; pages 11 and 18 read). Open: the G2 figures and the mesh and gauge legs of the bracket.
 - [ ] **C18** Verifier subagent (fresh context) wrote VERIFIER.md (decision 0016; VERIFIER_REPORT.md accepted too); every number of the Supplemental Material recomputed from the manifests
   - status: OPEN
   - evidence: No G2 verifier yet; what it must cover: OPEN.md section "What a G2 verifier must cover".
 - [x] **C19** Null results and failed runs are on record (manifests and JOURNAL)
   - status: PASS
-  - evidence: Failed predictions and runs on record: JOURNAL 2026-11-24T13:12Z (N.3, D2.2, A.1 kout part, A.3, A.4) and 2026-11-25T12:21Z (NS.2); withdrawn unqueued predictions B17.1-B17.3 (2026-11-25T12:01Z); failed analysis runs of batch 11 (own script bugs, rerun); preempted chains keep their manifests; six N = 1e5 continuations removed from the queue with the reason (stage/G2/OPEN.md).
+  - evidence: Failed predictions and runs on record: JOURNAL 2026-11-24T13:12Z (N.3, D2.2, A.1 kout part, A.3, A.4), 2026-11-25T12:21Z (NS.2), 2026-11-26T12:20Z (D2.3 seed-pair part, 2.24 M against 2 M); failed run D2eta1 (guard stop after collapse, C-20261126-034500-4b34b1c); withdrawn predictions B17.1-B17.3; failed analysis runs of batch 11; preempted chains keep their manifests; six N = 1e5 continuations removed from the queue with the reason (OPEN.md).
 - [x] **C20** STATUS.md, JOURNAL.md and HANDOFF.md are current
   - status: PASS
-  - evidence: Rewritten at the end of the batch-20 lead session (2026-11-25).
+  - evidence: Rewritten at the end of the batch-27 lead session (2026-11-26).
