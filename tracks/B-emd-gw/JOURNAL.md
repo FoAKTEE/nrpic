@@ -494,3 +494,11 @@ by the orchestrator once C1 and C3 are read, 0046).
 failed: B-20261126-212212-c54d979 (killed, closed failed by orch); the design estimate of the
 crossing time (too optimistic by 2-3 in the compression rate); the wall-time expectation of the
 64^3 initial data (3 h, not 30-60 min).
+Close (15:02): series 7 ended and is judged (B-20261126-230056-294b265, figure looked at): N7a
+holds (crossing at t = 9.0-9.25, after t_A = 4.12), N7b Delta part holds (differences 5.1e-5,
+2.1e-5, ratio 0.40, Richardson error 1.4e-5), N7b constraint part FAILS (Hr, Mr means fall only
+1.0-1.4 times per doubling, at 2.6e-6 and 1.6e-4), N7c holds (0.0538). C1: L2's failure is
+attributed to stream crossing in a run that could have refuted it; L2 as run stays failed.
+Running at the end: GM analysis B-20261126-221911-a0531db, 64^3 data B-20261126-222552-2e44186
+(about 3 h). Nothing queued on cards. Card-hours: none.
+failed (added): N7b constraint part; the design's "no crossing before tlim = 10".

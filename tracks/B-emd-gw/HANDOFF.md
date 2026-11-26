@@ -5,8 +5,9 @@ Written for a reader with no memory of the last session (lead of batch 29, wave 
 analysis restarted). Rewritten at the end of every session.
 
 State in three lines: G0 and G1 are signed (coord/GATES.md); G2 is not met (stage/G2/OPEN.md,
-not changed this session: no stage package in batch 29). Three processor runs of B go on in the
+not changed this session: no stage package in batch 29). Two processor runs of B go on in the
 background; nothing of B is in the card queue (the C3 card member waits for its initial data).
+C1's run (shear series 7) ended and is judged: shear/JOURNAL 2026-11-26 15:02.
 Owner: B-emd-gw, branch `track/B-emd-gw`, worktree `/data/haiyangw/nrpic/wt/B-emd-gw`.
 Run next: `cd /data/haiyangw/nrpic/wt/B-emd-gw && git merge --no-edit main && harness/bin/nrpic-ctx inbox && git status --short && harness/bin/nrpic-run status | grep -E "submitted|running"`
 
@@ -21,7 +22,7 @@ Files to read first: `STATUS.md`; `coord/DECISIONS/0046-rulings-after-batch-28.m
 
 | Run id | What | How it is read |
 |---|---|---|
-| B-20261126-222544-f3a5176 | shear series 7 (C1): beta = 0.125, H L = 4, N_y = 64, 128, 256 at 4 per cell along y, snapshots every 0.25, release v0.8 processor build; about 35 min from 14:25 | finish; then register `python3 tracks/B-emd-gw/shear/scripts/series7_judge.py --run $S/B-20261126-222544-f3a5176 --out '$NRPIC_RUN_DIR'` (`--package tracks/B-emd-gw/shear`, one core); look at series7.png; judge N7a (no crossing before t_A), N7b (128-256 difference at most half the 64-128 one, Richardson error below 3e-3, constraint means falling 1.5x per doubling; refuted at a ratio of 0.7 or more), N7c (abs Delta extrapolated 0.007-0.065) in shear/JOURNAL.md; C1 per decision 0046: converges => L2's failure attributed to stream crossing; not => an error of the code |
+| (closed) B-20261126-222544-f3a5176 | shear series 7 (C1), judged by B-20261126-230056-294b265: N7a holds, N7b Delta part holds (ratio 0.40, Richardson error 1.4e-5), constraint part fails (floor), N7c holds | nothing; write the C1 paragraph into note section VI and OPEN.md C1 at the next stage session |
 | B-20261126-222552-2e44186 | 64^3 relativistic initial data at 8 per cell (C3 step 1): `run_gr_ic.sh 64 8 "--nc 3.2 --sigma1 0.014 --seed 1 --ppc 2 --outer 36"`; started 14:25; outer iteration 0 took 6 min, so the 36 iterations take about 3 h (the predicted 30-60 min is refuted: the solve does not scale with the particle number), end near 17:30 PST; `make_ic.log` shows the outer iterations | finish; check `$S/B-20261126-222552-2e44186/gr_L8_n64/meta.json`: mesh_modes_kept 146 and sigma1_realized 0.012343 (the 128^3 data's, within 1e-3 relative), max_hamiltonian_residual below 1e-10; then queue the card member (line below) |
 | B-20261126-221911-a0531db | GM2/GM3 analysis: `analyze_gr.py --equal-mass --workers 4 --times 4,8,12,14,16,18,20,21 --halo-times 14,16,18,20,21` on the 256^3 Gamma-driver box (q0060's run B-20261126-105021-6343c13); started 14:19; the first try (B-20261126-212212-c54d979, 5 workers, foreground) was killed by SIGTERM with its session after 42 min and closed failed | finish; register `compare_legs.py --base $S/B-20261125-115558-2ab4161/analysis_gr_gd.json --halo-base $S/B-20261126-022407-87e8803/analysis_gr_gd.json --leg m256gd:$S/B-20261126-221911-a0531db/analysis_gr_m256gd.json`; look at pop_legs.png; judge GM2 (band ratio within 5 per cent to a = 64, 0.8-1.2 before a = 100, within 20 per cent to a = 132; Omega_cor all shells at a = 121 1.0-2.0x, refuted outside 0.8-3) and GM3 (counts inside 2 sqrt(N) + 2 at a = 64-132, largest mass within 10 per cent) as predicted in population/JOURNAL 2026-11-26 13:22 |
 
@@ -43,7 +44,9 @@ C3b (Mr ratio at least 1.2 at a = 49-141), with a figure.
 
 ## What G2 still needs (stage/G2/OPEN.md)
 
-- C1: series 7 judged (above); the case L2 as run stays failed on record.
+- C1: series 7 judged (shear/JOURNAL 15:02): the observable converges without stream crossing; L2 as
+  run stays failed on record; the constraint floor of series 7 (Mr 1.6e-4, not falling with the
+  mesh) is open, cause not named. Update OPEN.md/CHECKLIST C1 with the run ids at the stage session.
 - C3: the 64^3 member judged (above); the predictions that failed at one per cell stay on record.
 - C2, C11: GM2/GM3 (above); the mesh figure in the shifted gauge is that comparison's pop_legs.png.
 - C17: one paragraph on GM2/GM3 (and on C1, C3 outcomes) in note section VI, a ledger row (run key
@@ -57,6 +60,6 @@ Traps:
   session's shell: that is what killed B-20261126-212212-c54d979).
 - GR particle files carry the rest-mass weight (R25): use `--equal-mass`.
 - The shear design estimate (Zel'dovich) underestimates the compression 2-3 times: at beta = 0.125
-  the N_y = 64 member crosses at t = 9.25 (after t_A = 4.12); judge crossing before t_A only.
+  the streams cross at t = 9.0-9.25 (after t_A = 4.12); judge crossing before t_A only.
 - Card runs only via `harness/bin/nrpic-queue add`; commit before adding; at most 6 cores
   (this session used 6: 4 GM workers, 1 shear, 1 initial data).
