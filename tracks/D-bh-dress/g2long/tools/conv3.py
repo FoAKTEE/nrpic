@@ -101,8 +101,12 @@ def main(argv=None, stem="conv3"):
         x["DM"] = np.interp(tgm, x["t"], x["m"]) - at(x["t"], x["m"], T0)
         x["DMc"] = x["DM"] - (np.interp(tgm, x["ct"], x["cm"]) - at(x["ct"], x["cm"], T0))
     mrows = {}
-    for tq in MT:
-        if tq > tendm + 1e-9:
+    for tq0 in MT:
+        # a named time just past the common end of the mesh members (FL16 and its control end at
+        # 299-299.75 M) is read at the common end and labelled so (added in batch 25 after the first
+        # registered reading D-20261126-055207-0137c53 dropped 300 M: entry 27)
+        tq = tq0 if tq0 <= tendm + 1e-9 else (tendm if tq0 - tendm <= 1.5 else None)
+        if tq is None:
             continue
         r = dict(DM={x["name"]: float(np.interp(tq, tgm, x["DM"])) for x in M},
                  DMc={x["name"]: float(np.interp(tq, tgm, x["DMc"])) for x in M})
@@ -119,7 +123,8 @@ def main(argv=None, stem="conv3"):
         if len(fin) >= 2:
             r["C2b_in_regime_absdiff"] = abs(r["DM"][fin[-1]["name"]] - r["DM"][fin[-2]["name"]])
             r["C2b_holds"] = bool(r["C2b_in_regime_absdiff"] <= TOL)
-        mrows[str(tq)] = r
+        r["t_named"], r["t_used"] = tq0, float(tq)
+        mrows[str(tq0)] = r
     out["mesh"] = dict(members=[dict(name=x["name"], run=x["run"], h=x["h"], in_regime=x["inreg"], control=x["ctrl"],
                                      M_t0=at(x["t"], x["m"], T0), t_end=float(x["t"][-1])) for x in M],
                        t_end_common=float(tendm), at=mrows)
