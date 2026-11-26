@@ -45,7 +45,7 @@ This note records the scoping stage and the baseline tests:
 \item the operator conducts heat with the Chapman--Enskog conductivity of hard spheres, at relativistic temperatures as well (Sec.~\ref{sec:t-heat});
 \item the first King clusters with collisions contract relative to their collisionless twins and collapse, within limits that the mesh and a single seed set (Sec.~\ref{sec:t-clusters}).
 \end{itemize}
-Section~\ref{sec:problem} states the problem, Sec.~\ref{sec:setup} the set-up and the numerical methods, Sec.~\ref{sec:tests} the tests, and Sec.~\ref{sec:plan} the plan to the next gates and what is open. Table~\ref{tab:parameters} holds the parameters of the equilibrium models, and Tables~\ref{tab:ledger}--\ref{tab:ledger4} every number of the note with the registered run that produced it.
+Section~\ref{sec:problem} states the problem, Sec.~\ref{sec:setup} the set-up and the numerical methods, Sec.~\ref{sec:tests} the tests, Sec.~\ref{sec:g2} the collisionless threshold toward the capability gate, and Sec.~\ref{sec:plan} the plan to the next gates and what is open. Table~\ref{tab:parameters} holds the parameters of the equilibrium models, and Tables~\ref{tab:ledger}--\ref{tab:ledger4} every number of the note with the registered run that produced it.
 
 \section{From gravothermal collapse to a relativistic instability}\label{sec:problem}
 
@@ -234,6 +234,22 @@ The first of these runs sharpen the limits (Table~\ref{tab:ledger4}). The collap
 \label{fig:cluster}
 \end{figure*}
 
+\section{Toward the capability gate: the collisionless threshold}\label{sec:g2}
+
+A King cluster beyond the turning point of its equilibrium sequence collapses once its radial mode is kicked inward; a cluster before the turning point oscillates and keeps its particles bound. The code locates the collisionless threshold by evolving two King models that sit on either side of the turning point, each kicked inward by the same small fraction of its radial velocity, beside unkicked controls that must hold their equilibrium over the whole evolved time. A run counts as collapsed when the smallest lapse on the mesh falls below a fixed marker value. None of these runs carries an apparent-horizon finder, so every collapse time below is a lapse marker. The models, meshes and markers are listed in Table~\ref{tab:ledgerG2}.
+
+\subsection{Particle noise sets the life of a control}\label{sec:g2-noise}
+
+The controls decide which particle number can locate the threshold. At the intermediate particle number of the scan all three controls collapse late in the evolved time, in an order unrelated to their compactness, and a kicked stable model outlives its own control. The control of the threshold model collapses earlier with ten times fewer particles and holds its equilibrium with ten times more, where it pulsates slowly with no secular contraction. Across the three particle numbers the floor of the Hamiltonian constraint falls as the inverse particle number, the signature of the deposit noise of the particles. The collapse time of a control grows with the particle number, though much more slowly than the particle number itself. Particle noise therefore drives the control collapse, and the threshold is read at the largest particle number.
+
+\subsection{The bracket at a million particles}\label{sec:g2-bracket}
+
+At the largest particle number on the standard mesh the two kicked models part ways. The more compact model collapses within the first half of the evolved time; the less compact one oscillates inside a narrow band around the control of the threshold model to the end. The two models straddle the turning point of the King family (Table~\ref{tab:parameters}), so the code places the collisionless threshold between them, as the turning-point criterion of Ref.~\cite{Gunther:2020ev} requires. The same pair has the same fates at ten times fewer particles, where the unstable member collapses somewhat earlier. Each member has one seed, and the bracket rests on one mesh and one gauge; the members on the finer mesh and with weaker shift damping are the last runs of the capability gate.
+
+\subsection{Collisional collapse on three meshes and in two gauges}\label{sec:g2-collisional}
+
+With collisions at $\Kn_c=10$ the cluster CC2 collapses on all three meshes. The coarsest mesh lies outside the asymptotic range: its collapse comes much later than on the two finer meshes, which differ by a few times the scatter between runs on the standard mesh that change only the collision seed, the collision cell or the shift damping. Halving the shift damping moves the collapse time by less than that scatter and leaves the collision rate unchanged; after the collapse, the run with weaker damping ends in non-finite fields on the static mesh. The collisions conserve energy to rounding in the curved spacetime on both finer meshes and in both gauges (Table~\ref{tab:ledgerG2}).
+
 \section{Plan and open questions}\label{sec:plan}
 
 Figure~\ref{fig:timeline} shows the gates of the track. The scoping gate is complete with this note. For the baseline gate the spherical baseline, the box tests of the operator, the conduction at both ends of the mean free path and the fluid anchor are in this note, and an independent recomputation of the baseline numbers from the run outputs has been made. The capability gate locates the collisionless thresholds of the three families with three-way convergence and closes the conservation budgets of the collisions in curved spacetime. The science gate gives the collapsed mass fraction against the Knudsen number for thermal cores on both sides of the collisionless threshold.
@@ -268,6 +284,28 @@ Table~\ref{tab:parameters} lists the equilibrium models at the instability crite
 Tables~\ref{tab:ledger}--\ref{tab:ledger4} give every number behind this note with the registered run that produced it; the inputs of each figure and table were checked against the checksums their runs recorded, and Fig.~\ref{fig:dataflow} shows the path from the initial data to the figures. The figures and tables of this version were made in run \texttt{\input{tables/runinfo}\unskip}; the scoping-stage numbers equal those of runs C-20261115-171741-0e0da67 and C-20261115-170415-385069e. Numbers quoted from the literature, with their locators in the arXiv sources of the knowledge base: the black hole of the fluid calculation, about $200\,M_\odot$ at $580\,t_0$ for a fiducial halo with $\sigma/m=5\,$cm$^2$/g, a collapse fraction of about $3\times10^{-8}$ (Ref.~\cite{Gu:2026sidm}, \texttt{SIDM\_MS.tex} lines 68, 384, 481); the seed of the J1205-0000 benchmark, $1.9\times10^{9}\,M_\odot$ (Ref.~\cite{Feng:2021instab}, \texttt{main.tex} line 349); the printed King thresholds $y_{\max}=0.334$ and $y_{\rm zero}=0.784$ (Ref.~\cite{Gunther:2020ev}, \texttt{paper.tex} line 953); the printed binding-energy maximum $0.0352$ at $Z(0)=0.548$ for $b=0.1$ (Ref.~\cite{Feng:2021instab}, \texttt{main.tex} line 280); its trial-function onset $Z(0)=0.750$ and its remark that the onset is insensitive to the trial function (\texttt{main.tex} lines 274 and 220), and the exact mode with the same index recomputed independently in run C-20261121-080313-84094f1; the agreement of $N$-body and conducting fluid for $\Kn\ge1$ (Ref.~\cite{Koda:2011sidm}, \texttt{sidm1.tex} lines 1482--1491); the conduction coefficient $b=25\sqrt{\pi}/32$ (Ref.~\cite{Koda:2011sidm}, \texttt{sidm1.tex} lines 409--412; Ref.~\cite{Gurian:2025sidm}, \texttt{sidm.tex} line 163) and $25\pi/(32\sqrt6)$ (Ref.~\cite{Balberg:2002gt}, \texttt{SIDMGT\_Xiv2.tex} line 394); the kinetic code of Ref.~\cite{Gurian:2025sidm} reproduces the Chapman--Enskog conductivity to within two percent (\texttt{sidm.tex} line 94). The second driver of the kernel test is core's run core-20261115-132556-a7dc8ab (the same largest errors to all printed digits). \input{tables/claims_summary}\unskip: the stage documents bound the deviation from the printed table of Ref.~\cite{Feng:2021instab} by a value that three columns exceed at one row, give the fastest gravothermal phase as at least $10^5$ dynamical times where the run gives a lower bound of $8.5\times10^4$, and quote radius ranges of the thermal-core models that hold for a narrower range of central redshift than stated. The conduction runs on graphics cards are runs C-20261119-150335-73fd40f and C-20261119-150347-e100007, reduced in runs C-20261120-221630-fd17a2d and C-20261120-222329-3a77ad6.
 
 \input{tables/ledger}
+
+\begin{table*}
+\caption{Numbers behind Sec.~\ref{sec:g2}, written from the registered analyses named in the last column (one seed per run unless stated). A run collapses when the smallest lapse on the mesh falls below $0.3$; no run carries a horizon finder. Kicks are inward, one percent of the radial velocity. M/8 and M/16: cell size of the core region in units of the ADM mass; the shift damping is $2$ unless stated.}
+\label{tab:ledgerG2}
+\footnotesize
+\begin{ruledtabular}
+\begin{tabular}{p{5.6cm}p{3.0cm}p{3.9cm}p{4.2cm}}
+Quantity & Runs & Value & Analysis \\
+\hline
+Control $y_0=0.334032$, M/8: collapse time & $N=10^4$, $10^5$, $10^6$ & $295.78$, $534.81\,M$, none by $600\,M$ & C-20261126-120656-f5c62bb \\
+Same: Hamiltonian-constraint floor, $100$--$300\,M$ & $N=10^4$, $10^5$, $10^6$ & $7.68\times10^{-2}$, $7.86\times10^{-3}$, $7.90\times10^{-4}$ & same \\
+Controls $y_0=0.344$, $0.324$, $N=10^5$: collapse time & M/8 & $549.26$, $599.99\,M$ & C-20261125-160056-a5b7282 \\
+Kicked $y_0=0.344$: collapse time & $N=10^6$, $10^5$ & $252.31$, $229.79\,M$ & C-20261126-121836-c7a76c1 \\
+Kicked $y_0=0.324$: central lapse change, $20\,M$ means to $600\,M$ & $N=10^6$ & $-0.0119$ to $+0.0150$, no collapse & same \\
+Same & $N=10^5$ & $-0.0248$ to $-0.0024$, no collapse & same \\
+CC2, $\Kn_c=10$: collapse time on M/4, M/8, M/16 & collision cell M/4 & $206.64$, $163.41$, $158.42\,M$ & C-20261126-121702-b6b1eda (M/4: mean of earlier seeds) \\
+Same on M/8: other collision seed, cells M/8, M/2, shift damping $1$ & one change each & $165.65$, $164.01$, $165.97$, $164.01\,M$ & same \\
+Same: collisions per particle per $M$, $0$--$100\,M$ & M/8, M/16, shift damping $1$ & $8.857$, $8.865$, $8.782\times10^{-3}$ & same \\
+Same: collision energy over total $MH$ to first excision & M/8, M/16, shift damping $1$ & below $3.5\times10^{-16}$ & same \\
+\end{tabular}
+\end{ruledtabular}
+\end{table*}
 
 \begin{figure*}
 \centering
