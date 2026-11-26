@@ -1,54 +1,54 @@
 # HANDOFF of E-stoch-inf
 
 State in three lines: Track E (stochastic inflation in NR, S11) passed G0, G1 and G2 (the last two with reservations,
-coord/GATES.md). G3 (tail statistics) is scoped in `spec/scope/SCOPE.md` 4d with amendments 4d.9 A1-A14; its card runs
-wait in the shared queue (cards held by another partition); the processor side (reference, zeta reader) is built.
+coord/GATES.md). G3 (tail statistics of zeta, SCOPE 4d with amendments 4d.9 A1-A14) is in production on the cards; the
+zeta reader is cleared (decision 0042 item 1) but is too slow on 128^3 dumps to read the baseline (R41): that is next.
 
 Run next: cd /data/haiyangw/nrpic/wt/E-stoch-inf && git merge --no-edit main && git status --short && harness/bin/nrpic-ctx inbox --show && harness/bin/nrpic-queue list --owner E-stoch-inf
 
 ## Where things are
 
-- Scope of G3: SCOPE 4d (original), 4d.9 A1-A14 (govern). Predictions: `g3/JOURNAL.md` entries 2 and 4;
-  `g3/amend/JOURNAL.md` entries 5-10 (reference); `zeta/JOURNAL.md` entries 1-7 (reader).
-- Reference (one-patch delta N, 128 band, `langevin/`): direct 4e6 `results/ref_inflection_n32_4e6.json`
-  (E-20261125-152832-c301e92); tilted nu = 4 `results/ref_inflection_n32_tilt.json` (E-20261125-160658-855db8c,
-  `scripts/ref_tilt.py`); lattice sigma = 0.1 `results/ref_inflection_n32_s01lat.json` (E-20261125-160722-a6d1f26); direct repeat `results/ref_inflection_n32_4e6rep2.json` (E-20261125-163825-ca2ebaa);
-  32^3 band `results/ref_inflection_n8.json` (E-20261125-160705-5f75bb4).
-- zeta reader: `zeta/zeta_reader.py` (map RK4 in phi; Z0-Z2; LM; A4 preview), record E-20261125-161456-8d3f43c.
-  Its status: Z0, Z2(i), Z2(iii') pass; Z1 along Pi alone and Z2(iii) FAILED as written; ruling asked (outbox).
-- Review record: `stage/REVIEW-wave3.md` Part I; open items `stage/G3/OPEN.md`; risks R38-R41 new.
+- Scope of G3: `spec/scope/SCOPE.md` 4d and 4d.9 A1-A14 (A12 has the measured pilot cost, 2026-11-25 batch 23).
+- Predictions and outcomes: `g3/JOURNAL.md` entries 2, 4 (criteria), 5-9 (pilot, reading, next entries); `zeta/JOURNAL.md`
+  entries 4-9 (reader tests; entry 9: Z1 with variational expected values passes); `g3/amend/JOURNAL.md` (reference).
+- Reader scripts: `g3/read_pilot.py` (R^NR, health, cost, relation; zeta with --msteps > 0, too slow at 128^3),
+  `g3/compare_readers.py` (lead's vs verifier's map on sampled and tail cells), `zeta/zeta_reader.py` (map_rk4),
+  `zeta/z1_variational.py`, `g3/check_lists.py` (run it on every new list: overrides must exist in the deck).
+- Independent check of the reader: `g3/zeta_verify/VERIFY.md` (verifier's library `scripts/zv_lib.py`).
+- Review record: `stage/REVIEW-wave3.md` Part J; open items `stage/G3/OPEN.md`; risks R41 (map cost), R42 (lists).
 
-## Runs in flight
+## Runs in flight (shared card queue; nothing to wait for)
 
-| What | Where | Run id | Read by |
-|---|---|---|---|
-| G3P pilot (10 baseline seeds, 2 kdriver, 2 level 2; 128^3) | queue q0050 (priority 2), waiting | `nrpic-queue show q0050` | g3 reader (to extend with zeta), G3P-1..3, A8 record |
-| G3C: seed 0 at s = +-1, +-1/2, +-1/4, 21 dumps | q0051 (priority 2), waiting | idem | own three-amplitude reader (R30) with A6 |
-| G3R: seed 0 at s = +-1, +-1/2 on 160^3 | q0052 (priority 2), waiting | idem | Richardson reader with A7 |
-| G3B00, G3B01: baseline pairs | q0053, q0054 (priority 5, after G3P) | idem | g3 reader; V and T |
+| Entry | What | Read by |
+|---|---|---|
+| q0051 G3C, job 5348, run E-20261126-030044-6933f21 | seed 0 at s = +-1, +-1/2, +-1/4, 21 dumps with constraints | three-amplitude reader with A6 (G3-C) |
+| q0052 G3R (priority 2) | seed 0 at s = +-1, +-1/2 on 160^3 | Richardson reader with A7 (G3-R) |
+| q0053, q0054 G3B00/01 | minus members of pairs 0-9, pairs 10-18 | read_pilot.py (R^NR now), zeta reader later |
+| q0061-q0065 G3B02-06 | mirrored pairs 19-73, 22 runs a job | idem; C6-1 cost check (entry 6) |
+| q0066 G3L00 | level-2 pairs 0-4 + k000/k001 on usr_prod_kd.athinput | C6-2 cost, C6-4 preview, A8 record |
 
-Card runs are closed with `harness/bin/nrpic-run finish <run_id>`. Keep `tracks/E-stoch-inf/g3/` clean while entries
-wait (the queue holds entries of a package with uncommitted files).
+Close each with `harness/bin/nrpic-run finish <run_id>` (run id: `harness/bin/nrpic-queue show <qid>`); checksums of 16 GB
+take some minutes.
 
 ## Next, in order
 
-1. The orchestrator's ruling on the reader (Z1 along Pi, Z2(iii)) and on A14; if Z1 must pass as written, a map
-   along Pi in a form that does not cancel near rounding (series about the attractor, or long double).
-2. Cost of the zeta map on 128^3 (R41: about 11 core-minutes per dump at 4000 steps): fewer steps with a
-   Richardson check, or a table of the map along the box relation; then extend `g3/read_seed.py` with zeta.
-3. When q0050 ends: cost per run into A12 (dated), A8 record of k000/k001, reader on the b and l members; then the
-   remaining baseline pairs (at most six entries a session) and level 2 (16 pairs).
-4. Coarse-graining bound (R39): paired-noise reference at sigma = 0.01, 0.05, 0.1 (same noise per path).
-5. (done in batch 20) The independent direct repeat E-20261125-163825-ca2ebaa (NRPIC_REF_SEEDTAG=_rep2) settled the
-   nu = 3 validation: pooled direct and tilted agree on both sides (g3/amend entry 12).
+1. zeta at 128^3 (blocking): the map costs about 1.5 core-hours a member at 1000 steps (memory-bound on 2.1e6 cells).
+   Candidate: tabulate the reader's map_rk4 along the box relation (corr 0.999997, slope 0.0132252 at 128^3) on a fine
+   grid in d phi, plus the first and second derivative across it (variational, zv_lib), interpolate per cell; check
+   against map_rk4 on 1e5 random cells and every cell beyond 2.5 sigma_lin (bar 1e-8 in zeta); prediction first.
+   Then read the pilot's zeta (P5-3 is moot; P5-5 stands) and the baseline pairs.
+2. Read G3C (q0051) and G3R (q0052) when they end (A6, A7).
+3. After G3L00: the measured level-2 cost into A12, then level-2 pairs 5-15 and baseline pairs 74-127 (about five
+   jobs of 22 runs), at most six queue entries a session; every list through check_lists.py.
+4. Coarse-graining bound of the reference (R39): paired-noise runs at sigma = 0.01, 0.05, 0.1.
 
 ## Traps
 
-- Card runs only through `harness/bin/nrpic-queue add`; production runs need `--preregistered <file>#entry-N`.
-- `nrpic-run submit` refuses when its `--package` has uncommitted files (ref_spec.py and ref_tilt.py write into
-  `langevin/fig` and `langevin/results`: commit them after each run).
-- zeta = -R^NR at first order; a_zeta = a_map - a_R at second order (A14 (b)).
-- The map's second independent integrator (DOP853 in N) is off by default: near rounding it takes millions of steps.
+- AthenaK takes command-line overrides only for lines the deck has (parameter_input.cpp line 400): check lists.
+- Level 2 needs only `scalar_field/noise_level=2` (mesh mode is its default); kdriver needs `usr_prod_kd.athinput`.
+- Card runs only through `harness/bin/nrpic-queue add`; production runs need `--preregistered <file>#entry-N`; the queue
+  refuses packages with uncommitted files.
+- zeta = -R^NR at first order; F_+ of zeta corresponds to F_- of R^NR (A2).
 - A run with noise_mode_scale = s has a .modes record that already carries s (R32).
-- Never read the brief whole; line ranges: S11 445-465, track sheet 785-802, gates 674-686, verification
-  suite 834-860, context protocol 957-1004.
+- Never read the brief whole; line ranges: S11 445-465, track sheet 785-802, gates 674-686, verification suite
+  834-860, context protocol 957-1004.

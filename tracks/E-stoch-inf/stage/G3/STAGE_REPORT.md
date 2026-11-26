@@ -1,13 +1,14 @@
 # Stage report: E-stoch-inf G3
 
-Date: 2026-11-25 · branch `track/E-stoch-inf` at `c42d4e521df2` · checklist
+Date: 2026-11-26 · branch `track/E-stoch-inf` at `7ca2752f332f` · checklist
 `tracks/E-stoch-inf/stage/G3/CHECKLIST.md` (from `nrpic-stage collect`)
 
 ## Verdict
 
-**FAIL**. Tag: `stage/E-stoch-inf/G3-fail-20261125` (created and pushed by the orchestrator after review, decision 0003).
+**FAIL**. Tag: `stage/E-stoch-inf/G3-fail-20261126` (created and pushed by the orchestrator after review, decision 0003).
 
 - 18 checklist items not PASS or NA: C1 OPEN, C2 OPEN, C3 OPEN, C4 OPEN, C5 OPEN, C6 OPEN, C7 OPEN, C9 OPEN, C10 OPEN, C11 OPEN, C12 OPEN, C13 OPEN
+- verify ran on c42d4e5; files changed since: coord/BOARD.md, coord/DECISIONS/0039-rulings-after-batch-17.md, coord/DECISIONS/0041-rulings-after-batch-20.md, coord/DECISIONS/0042-rulings-after-batch-21.md, harness/workflows/batch-21.json, harness/workflows/batch-22.json (run verify again)
 - no VERIFIER.md (step 7: verifier subagent; decision 0016 item 1, VERIFIER_REPORT.md accepted too)
 - no stage/G3/EVIDENCE.md (decision 0012)
 
@@ -27,10 +28,10 @@ Date: 2026-11-25 · branch `track/E-stoch-inf` at `c42d4e521df2` · checklist
 
 | # | Criterion | Evidence (run id, figure, KB locator) | Result |
 |---|---|---|---|
-| C1 | The pre-registered scan is complete | not started: scope fixed (spec/scope/SCOPE.md 4d with the dated amendments 4d.9, commit 905feb7c0, before any production run); pilot q0050, G3-C q0051, G3-R q0052, baseline q0053-q0054 in the shared queue (2026-11-25 batch 19) | OPEN |
+| C1 | The pre-registered scan is complete | not complete: pilot q0050 ran (E-20261126-002413-65295f3: ten baseline members ok, k000/k001/l000/l001 stopped at start-up on deck lines the deck lacks); G3C q0051 submitted (job 5348, E-20261126-030044-6933f21); G3R q0052, baseline G3B00-G3B06 (q0053, q0054, q0061-q0065: pairs 0-73) and level 2 G3L00 (q0066, pairs 0-4 + kdriver record) waiting; pairs 74-127 and level-2 pairs 5-15 not yet queued; zeta of the 128^3 dumps not readable at present cost (R41, g3/JOURNAL.md entry 8) | OPEN |
 | C2 | Robustness checks | planned: G3-C (4d.4 with A6), G3-R (4d.5 with A7), level 2 (4d.7 with A11); gauge leg withdrawn as a criterion, stated as a limitation (A8, decision 0040 item 1) | OPEN |
 | C3 | Comparison with the literature | reference: corrected one-patch delta N of the 128 band (A1; pilot E-20261125-151340-743c38c passes the variance gate 0.9993 +- 0.0032); 4e6 direct E-20261125-152832-c301e92 (gate 0.99865 +- 0.00058, skewness 0.0199 +- 0.0012); importance-sampled nu = 4 E-20261125-160658-855db8c (g3/amend entry 10); sigma = 0.1 lattice E-20261125-160722-a6d1f26 (gate failed, bound of A10 not reached; entry 9); model and landmarks of the reference = the deck (TO VERIFY of 4d.3 settled, E-20261125-161456-8d3f43c) | OPEN |
-| C4 | Null results and failed runs are on record | on record so far: smoke run E-20261125-152619-d917a14 preceded by the failed E-20261125-152419-40200ec (g3/amend/JOURNAL.md entry 5); refuted prediction LB2 (entry 4); batch 20: TS1 failed (entry 9), the constant shift of A9 failed its smoke test (entry 8), zeta Z1 along Pi and Z2(iii) failed as written (zeta/JOURNAL.md entries 6-7), rerun E-20261125-161757-fb0eb95 stopped (too slow) | OPEN |
+| C4 | Null results and failed runs are on record | on record: batch 19-21 items as before (amend entries 4-9, zeta entries 6-7); batch 23: pilot members k/l failed at start-up (entry 5, R42); three reading runs stopped (E-20261126-022447-40a80b4, -022448-9510ee9, -024953-ed2d15f: map too slow, entries 7-8); G3P-3 sd clause failed by 0.3 per cent (entry 9); Z1 as run stays failed as written (zeta entry 9, decision 0042 item 1); Z2(iii) failed as written | OPEN |
 | C5 | Result figures and tables | — | OPEN |
 | C6 | The numerical ledger in the Supplemental Material | — | OPEN |
 | C7 | Tail statistics, compared with E-pre-3 | the criterion of the track sheet; its statistic, estimator and criteria are SCOPE 4d + 4d.9 (A2 judges variance and tail shape apart) | OPEN |
@@ -44,8 +45,8 @@ Date: 2026-11-25 · branch `track/E-stoch-inf` at `c42d4e521df2` · checklist
 | C15 | Schematics drawn with /sleep-paper-figure-style: track architecture (exists / to be ported / new) and the gate timeline | — | OPEN |
 | C16 | Working note written with /paper-writing; its manuscript checker passed with --compile | — | OPEN |
 | C17 | Verifier subagent (fresh context) wrote VERIFIER.md (decision 0016; VERIFIER_REPORT.md accepted too); every number of the Supplemental Material recomputed from the manifests | — | OPEN |
-| C18 | Null results and failed runs are on record (manifests and JOURNAL) | — | OPEN |
-| C19 | STATUS.md, JOURNAL.md and HANDOFF.md are current | current at the end of batch 20 (STATUS.md, JOURNAL.md, HANDOFF.md) | OPEN |
+| C18 | Null results and failed runs are on record (manifests and JOURNAL) | manifests of every run above (status failed or stopped where so) and the journal entries g3 5-9, zeta 8-9 | OPEN |
+| C19 | STATUS.md, JOURNAL.md and HANDOFF.md are current | current at the end of batch 23 (STATUS.md, JOURNAL.md, HANDOFF.md) | OPEN |
 
 ## Re-verification on a clean checkout (`nrpic-stage verify`)
 
@@ -129,6 +130,10 @@ MISSING: the verifier subagent has not reported (`stage/G3/VERIFIER.md`, decisio
 - `E-20261125-043414-daca69d`: failed (exit 1), Gate review G2 of E (reviewer's own check): U-A4'(a)-(d) recomputed from the raw dumps of seed A at s = +-1, +-1/2, +-1/4 and the control with an own NRSFDMP2 reader; three-amplitude statistics; record maxima U-A4'(c) of the eleven release runs; dump-time pairing; sha256 of the files read. Predictions: stage/G2/GATE_REVIEW.md section 1 (commit daca69df)
 - `E-20261125-152419-40200ec`: failed (exit 1), smoke run of the reference with the state at N_f (SCOPE 4d.9 A4): ref_spec.py inflection 2e4, NLAT 32, s0.01_lattice only, suffix _smoke; SM1-SM2 of g3/amend/JOURNAL.md entry 5
 - `E-20261125-161757-fb0eb95`: failed (exit -15), zeta reader rerun with a second independent map for Z1 (DOP853 in N on (phi - phi_e, v)); everything else as E-20261125-161456-8d3f43c; prediction zeta/JOURNAL.md entry 6
+- `E-20261126-002413-65295f3`: failed (exit 1), G3 pilot: 128^3 USR, ten baseline seeds (20262000-09), two kdriver, two level 2 on release core-v0.7; cost per seed and the estimator on real output before the full set; scope spec/scope/SCOPE.md 4d, predictions g3/JOURNAL.md entry 2 (G3P-1..3)
+- `E-20261126-022447-40a80b4`: stopped (exit -15), G3 pilot read (g3/JOURNAL.md entries 2, 4, 5): R^NR and zeta (lead's reader, 4000 steps) on the ten baseline members of E-20261126-002413-65295f3; G3P-1..3, P5-1, P5-3..5
+- `E-20261126-022448-9510ee9`: stopped (exit -15), G3: the lead's and the verifier's zeta readers cell by cell on pilot member b000 at N_f (g3/JOURNAL.md entry 5, P5-2; zeta_verify README Request 3)
+- `E-20261126-024953-ed2d15f`: stopped (exit -15), G3 pilot read (g3/JOURNAL.md entries 2, 4, 5, 7): R^NR and zeta (lead's reader, 1000 steps, 4000-step check on 20000 cells) on the ten baseline members of E-20261126-002413-65295f3; G3P-1..3, P5-1, P5-3..5
 - `E-stoch-inf-20261115-125316-dafadc4`: failed (exit 1), V2: quadratic inflation m = M_Pl, phi_in = phi_UV = sqrt42 (2206.11234 Fig. 2): Monte Carlo (direct and importance sampling) vs closed-form characteristic function, BDF2 survival solver, moment recursion; pole structure
 - `E-stoch-inf-20261115-131526-629fed8`: failed (exit 1), T-N6 of noise/JOURNAL.md: calibration of the A3 decisions (KS of |w|^2 and arg w, fourth moment) on correct amplitudes, 2000 seeds of the base case; single-decision calibration and family-wise false-alarm rate per validation
 
@@ -177,6 +182,4 @@ Labels as in the brief.
 
 ## Decision requested from the group
 
-One paragraph: accept G3 of E-stoch-inf, or what is missing.
-
-TO WRITE by the track before the package is submitted (`nrpic-stage report ... --decision "..."`).
+G3 open: pilot read on R^NR; zeta of 128^3 dumps blocked by map cost (R41); baseline pairs 0-73 and level-2 pairs 0-4 queued

@@ -1,21 +1,20 @@
-# G3 of Track E: what is open (batch 20, 2026-11-25)
+# G3 of Track E: what is open (batch 23, 2026-11-25 evening)
 
-G3 is not ready for review. The scope is fixed (spec/scope/SCOPE.md 4d with the amendments 4d.9 A1-A14; A14 written in
-batch 20 after smoke tests and before the registered runs it governs); no G3 production run on the cards has run yet.
+G3 is not ready for review. Scope: spec/scope/SCOPE.md 4d with 4d.9 A1-A14 (A12 now carries the measured pilot cost).
 
-1. Reference proper: direct 4e6 (E-20261125-152832-c301e92: gate 0.99865 +- 0.00058, skewness 0.0199 +- 0.0012);
-   importance-sampled nu = 4 (A9 with A14 (a)): E-20261125-160658-855db8c, 0.11 per cent per side; validation at
-   nu = 3 against the pooled direct runs (E-20261125-152832-c301e92 and the repeat E-20261125-163825-ca2ebaa) holds
-   on both sides (A9 met; against the first run alone side + failed by 2.07 s.e., on record);
-   lattice sigma = 0.1 (E-20261125-160722-a6d1f26): variance gate FAILED (1.00245 +- 0.00050), skewness 0.0182 +-
-   0.0014; the coarse-graining bound of A10 (below 0.0027) is NOT reached (R39).
-2. zeta reader (zeta/zeta_reader.py, E-20261125-161456-8d3f43c): Z0, Z2(i), Z2(iii') pass; Z2(iii) FAILED as written
-   (-2.89 per cent; predicted); Z1 FAILED as written along Pi alone (0.142; passes along phi and the box relation).
-   The reader judges no G3 run until the orchestrator rules (outbox 2026-11-25 batch 20). TO VERIFY of 4d.3 settled.
-3. Cost of the zeta map on 128^3 (R41): about 11 core-minutes per dump; to be cut before the baseline is read.
-4. Card runs in the shared queue, all waiting (cards held by another partition): q0050 G3P (pilot), q0051 G3C,
-   q0052 G3R (priority 2), q0053 G3B00, q0054 G3B01 (priority 5, after G3P). The remaining baseline pairs and the
-   16 level-2 pairs wait for the pilot's measured cost (A12).
-5. Reservations carried: geodesic slicing only (A8); U-A4'(a) of G2 stays FAILED as written (answered by G3-C).
-6. Package items (C5, C6, C9-C17): result figures, ledger, schematic of the parameter space, working-note section,
-   fresh verifier: after the runs.
+1. Reference proper: as in batch 20 (direct 4e6 E-20261125-152832-c301e92 and repeat E-20261125-163825-ca2ebaa; tilted
+   nu = 4 E-20261125-160658-855db8c, A9 met); the sigma = 0.1 coarse-graining bound of A10 NOT reached (R39).
+2. zeta reader: cleared to judge G3 runs (decision 0042 item 1). Passes Z0, Z1 with the variational expected values at the
+   lockstep state (E-20261126-030949-30c5d47), Z2(i), Z2(iii'); Z2(iii) and Z1 as first run stay FAILED as written.
+   On the 128^3 pilot dump b000 the lead's and the verifier's maps agree per cell to 4.3e-9 (E-20261126-024954-1c0a893).
+3. BLOCKING for reading G3: the map costs of order 1.5 core-hours a 128^3 member at 1000 steps and about 6 at 4000 on this
+   machine (R41; g3/JOURNAL.md entries 7-8). A cheaper evaluation of the same map (table along the box relation plus the
+   second-order correction across it, checked against map_rk4 on sampled and tail cells) is needed before the baseline
+   is read; zeta of the pilot (P5-3, P5-5) is not judged.
+4. Pilot (E-20261126-002413-65295f3): G3P-1 (baseline 0.0351 card-h a run) and G3P-2 hold; G3P-3 holds except its sd
+   clause (1.403 against 1.4); level 2 and kdriver not measured (failed at start-up, R42); A8 record owed (G3L00).
+5. Card runs: G3C q0051 running (job 5348); waiting G3R q0052, G3B00/G3B01 q0053/q0054, G3B02-06 q0061-q0065 (pairs
+   19-73), G3L00 q0066. Not yet queued: pairs 74-127 (54 pairs, about 5 jobs), level-2 pairs 5-15 (after G3L00 measures
+   the level-2 cost).
+6. Reservations carried: geodesic slicing only (A8); U-A4'(a) of G2 stays FAILED as written (answered by G3-C).
+7. Package items (C5, C6, C9-C17): result figures, ledger, schematic, working-note section, fresh verifier: after the runs.

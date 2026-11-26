@@ -698,3 +698,32 @@ to the orchestrator, who ruled in decision 0042 item 1) and the card pilot q0050
   3) is far too low on this machine (J.3).
 - Failed predictions of the package on record: P8 on the background trajectory (1.8e-9 against a 1e-9 bar; predicted as
   narrow), Z1 along Pi alone (the reference, not the reader).
+
+### J.2 The verifier's two changes to the tests (decision 0042 item 1)
+- Done: `zeta/z1_variational.py`, run E-20261126-030949-30c5d47 (prediction zeta/JOURNAL.md entry 8, outcome entry 9,
+  `fig_z1_variational.png` looked at). Expected values = variational coefficients at the lockstep state of the 32^3 pair
+  at N_f; Z1 passes in all directions (|rel c1| <= 7.3e-9, |rel c2| <= 7.5e-5); Z2(iii) -2.868 per cent (fails as
+  written), Z2(iii') -0.227 per cent (passes); a_map 6.962410e-3 = the verifier's lockstep value.
+- What the track does with the verifier's NOT-CONFIRMED item (Z1 along Pi alone as first run): it stays on record as
+  failed as written with the cause the ruling names; the test of record is now the variational form.
+
+### J.3 Pilot q0050 (E-20261126-002413-65295f3), read from the dumps
+- Closed with `nrpic-run finish`: status failed (exit 1) because four of fourteen members (k000, k001, l000, l001)
+  stopped at start-up on overrides the deck lacks (`parameter_input.cpp` line 400). My defect in `pilot.list`; no card
+  time lost (1-2 s each). New `g3/check_lists.py` checks every list against its deck (all other lists clean).
+- Read (E-20261126-030904-76e7c72, `fig_pilot.png` looked at: R^NR density/Gaussian flat to 1 within the bin noise
+  from -4 to 4; F(3)/Q per member 0.91-1.07; skewness per member within about 1.3 times the Gaussian sample scatter):
+  G3P-1 holds for the baseline (0.0351 card-h a run, written into SCOPE A12), G3P-2 holds, G3P-3 holds except the
+  seed-to-seed sd clause of F_+(3) (1.403 against "within 1.4"), P5-1 and P5-4 hold.
+- Readers cell by cell on b000 (E-20261126-024954-1c0a893, `fig_compare.png` looked at): max 4.26e-9, rms 9.1e-10,
+  no cell changes side at 3 or 4 sigma; the verifier's Request 3 is closed on sampled and tail cells (124402 cells,
+  every cell beyond 2.5 sigma_lin), not on all 2.1e6.
+- Not done: zeta of the pilot (P5-3, P5-5). Three registered reading runs were stopped (E-20261126-022447-40a80b4,
+  -022448-9510ee9, -024953-ed2d15f): the map on 2.1e6 cells is memory-bound, of order 1.5 core-hours a member at 1000
+  steps (R41 restated). This is the blocking item for reading G3 (stage/G3/OPEN.md item 3).
+
+### J.4 Queue and gates
+- Queued (six entries, priority 5, preregistered): G3B02-G3B06 = q0061-q0065 (mirrored pairs 19-73, 22 runs a job,
+  about 0.8 card-h each) and G3L00 = q0066 (level-2 pairs 0-4 with k000/k001 for A8; measures the level-2 cost).
+  Already in the queue: G3C q0051 (submitted, job 5348), G3R q0052, G3B00/G3B01 q0053/q0054.
+- G0, G1, G2 are signed (coord/GATES.md). G3 is not complete: see stage/G3/OPEN.md.

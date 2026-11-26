@@ -714,3 +714,15 @@ Predictions before every registered run: zeta/JOURNAL.md entries 4-6, g3/amend/J
 - Failed predictions: TS1; TL1 (moot, constant shift); TL3 on side + against the first direct run; TL4; Z1 along
   Pi (as written); Z2(iii) failed as predicted. Failed or stopped runs: E-20261125-161757-fb0eb95 (stopped).
 Card-hours this session: 0.
+
+## 2026-11-25 18:17-19:35 PST, lead of E, batch 23 (processors; six queue entries)
+
+- Merged main (decisions 0042, batch 22-23 specs). Pilot q0050 closed (E-20261126-002413-65295f3, failed: k/l members
+  stopped at start-up on deck lines the deck lacks; ten baseline members fine). Measured cost 0.0351 card-h a run into
+  SCOPE A12.
+- Predictions first (g3 entries 5-6, zeta entry 8). Outcomes (g3 entry 9, zeta entry 9): G3P-1 (baseline), G3P-2 hold;
+  G3P-3 holds except the sd clause (1.403 vs 1.4, failed as written); readers agree per cell to 4.3e-9 on b000 (P5-2);
+  Z1 with variational expected values at the lockstep state passes; Z2(iii) fails as written, (iii') passes.
+- Failed/stopped: three reading runs stopped (map too slow on 128^3; entries 7-8); P5-3, P5-5 not judged; R41 restated.
+- Queued q0061-q0066 (baseline pairs 19-73, level-2 pairs 0-4 + kdriver record). G3C q0051 started (job 5348).
+- Review stage/REVIEW-wave3.md Part J; stage G3 collected and reported (open); B's info message acknowledged.

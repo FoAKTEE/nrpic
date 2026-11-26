@@ -9,7 +9,7 @@ in VERIFY_RESULTS.md (`nrpic-stage verify`), not here.
 
 - [ ] **C1** The pre-registered scan is complete
   - status: OPEN
-  - evidence: not started: scope fixed (spec/scope/SCOPE.md 4d with the dated amendments 4d.9, commit 905feb7c0, before any production run); pilot q0050, G3-C q0051, G3-R q0052, baseline q0053-q0054 in the shared queue (2026-11-25 batch 19)
+  - evidence: not complete: pilot q0050 ran (E-20261126-002413-65295f3: ten baseline members ok, k000/k001/l000/l001 stopped at start-up on deck lines the deck lacks); G3C q0051 submitted (job 5348, E-20261126-030044-6933f21); G3R q0052, baseline G3B00-G3B06 (q0053, q0054, q0061-q0065: pairs 0-73) and level 2 G3L00 (q0066, pairs 0-4 + kdriver record) waiting; pairs 74-127 and level-2 pairs 5-15 not yet queued; zeta of the 128^3 dumps not readable at present cost (R41, g3/JOURNAL.md entry 8)
 - [ ] **C2** Robustness checks
   - status: OPEN
   - evidence: planned: G3-C (4d.4 with A6), G3-R (4d.5 with A7), level 2 (4d.7 with A11); gauge leg withdrawn as a criterion, stated as a limitation (A8, decision 0040 item 1)
@@ -18,7 +18,7 @@ in VERIFY_RESULTS.md (`nrpic-stage verify`), not here.
   - evidence: reference: corrected one-patch delta N of the 128 band (A1; pilot E-20261125-151340-743c38c passes the variance gate 0.9993 +- 0.0032); 4e6 direct E-20261125-152832-c301e92 (gate 0.99865 +- 0.00058, skewness 0.0199 +- 0.0012); importance-sampled nu = 4 E-20261125-160658-855db8c (g3/amend entry 10); sigma = 0.1 lattice E-20261125-160722-a6d1f26 (gate failed, bound of A10 not reached; entry 9); model and landmarks of the reference = the deck (TO VERIFY of 4d.3 settled, E-20261125-161456-8d3f43c)
 - [ ] **C4** Null results and failed runs are on record
   - status: OPEN
-  - evidence: on record so far: smoke run E-20261125-152619-d917a14 preceded by the failed E-20261125-152419-40200ec (g3/amend/JOURNAL.md entry 5); refuted prediction LB2 (entry 4); batch 20: TS1 failed (entry 9), the constant shift of A9 failed its smoke test (entry 8), zeta Z1 along Pi and Z2(iii) failed as written (zeta/JOURNAL.md entries 6-7), rerun E-20261125-161757-fb0eb95 stopped (too slow)
+  - evidence: on record: batch 19-21 items as before (amend entries 4-9, zeta entries 6-7); batch 23: pilot members k/l failed at start-up (entry 5, R42); three reading runs stopped (E-20261126-022447-40a80b4, -022448-9510ee9, -024953-ed2d15f: map too slow, entries 7-8); G3P-3 sd clause failed by 0.3 per cent (entry 9); Z1 as run stays failed as written (zeta entry 9, decision 0042 item 1); Z2(iii) failed as written
 
 ## Main products of G3 (charter 9.2)
 
@@ -75,7 +75,7 @@ in VERIFY_RESULTS.md (`nrpic-stage verify`), not here.
   - evidence: 
 - [ ] **C18** Null results and failed runs are on record (manifests and JOURNAL)
   - status: OPEN
-  - evidence: 
+  - evidence: manifests of every run above (status failed or stopped where so) and the journal entries g3 5-9, zeta 8-9
 - [ ] **C19** STATUS.md, JOURNAL.md and HANDOFF.md are current
   - status: OPEN
-  - evidence: current at the end of batch 20 (STATUS.md, JOURNAL.md, HANDOFF.md)
+  - evidence: current at the end of batch 23 (STATUS.md, JOURNAL.md, HANDOFF.md)
