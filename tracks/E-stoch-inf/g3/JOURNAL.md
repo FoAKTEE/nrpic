@@ -221,3 +221,38 @@ looked at); readers cell by cell E-20261126-024954-1c0a893 (`compare.json`, `fig
 Reading: the pilot holds for the baseline on G3P-1..3 with one clause failed narrowly as written; the box is healthy and
 R^NR is Gaussian to one-box precision, as at 128^3 before (entry 3). The two zeta readers agree per cell at 1e-8 of
 sigma on the G3 box. What is not yet possible is reading zeta on 2.1e6 cells a member at acceptable cost (R41).
+
+## entry-10 (2026-11-26 03:50 PST, lead of E, batch 27): readings of G3C and G3R, and the table map; predictions before any read
+
+G3C (q0051, run E-20261126-030044-6933f21, job 5348) and G3R (q0052, run E-20261126-041110-0a78c93, job 5353) have
+ended (batch status rc = 0 for all six and all four members); `nrpic-run finish` closes them before any read. Nothing
+of them has been read yet. Readers written this session, before any read: `read_g3c.py` (4d.4 with A6, own code on
+card_lib.read_fields; D1, D2, sigma per cell as 4d.4 says; M = (Mx, My, Mz) together, box mean removed per component;
+cN from the efolds column of c_p1's con.hst at the dump's cycle; the 4c estimator of judge_g2.floor_halving beside it
+for both amplitude pairs) and `read_g3r.py` (4d.5 with A7; per-mode coefficients of card_lib.Extractor, reference
+card_lib.ShellReference on modes_usr_n1024.txt with alpha_n of rng_seed 20262000; modes |n| <= 16; for A7's "sign"
+of the complex ratio L_n/cref_n - 1 the sign of its real part, fixed here; the imaginary part is reported).
+Predictions are those of entry 2 (G3-C, G3-R) and entry 4 (G3-C with A6, G3-R with A7), unchanged. Restated for the
+record: G3-C every judged factor within 4 +- 0.05, M judged at >= 4 dumps for both factors, H for 1 over 1/2 at >= 4,
+H for 1/2 over 1/4 possibly "not testable" (even odds), model test holding at >= 2/3 of the dumps in the range;
+G3-R factor of max and median of D^L in [2.3, 4.0] (bar [2.0, 4.5]), sign agreement > 90 per cent, T changes < 10
+per cent. One addition before the read [JUDGEMENT]: at 128^3 the M factor at the late dumps (cN near 6.5) is where
+G2 missed at 256^3 (3.9245); the three-amplitude level is expected to bring it inside the band here too.
+
+Table map for zeta (R41; `zeta_table.py`, written this session, nothing run yet). Per member, from the member's own
+dump at N_f: v = Pi/(-K/3); the box relation v = v0 + b (phi - <phi>) by least squares; u = phi - <phi>, w = v - v0 -
+b u. Table of the lead's map_rk4 (4000 steps, verbatim through ast as read_pilot.py does) on 4097 uniform nodes in u
+over the box range (2 per cent margin) times 7 Chebyshev nodes in w over the box range (5 per cent margin); per cell
+a not-a-knot cubic spline in u at each w node and the Lagrange polynomial through the 7 w nodes. Cost: 28679 map
+evaluations instead of 2.1e6.
+- TB-1 (bar, validation on b000 of the pilot at N_f, the 124402 cells of compare_readers.py: 100000 random with
+  seed 11 plus every cell with |R^NR| > 2.5 sigma_lin): zeta of the table against zeta of map_rk4 at 4000 steps on
+  every one of these cells: max |difference| <= 1e-10, rms <= 2e-11 (two orders under the readers' agreement,
+  4.26e-9, entry 9). Refuted above 1e-9 at the maximum: then the table is not used and the baseline waits.
+- TB-2: table against the verifier's map (zv_lib, long double, h = 2e-3) on the 25668 tail cells of b000: max
+  |difference| (means removed) below 1e-8 and rms below 2e-9, the P5-2 bar. Refuted above 1e-6.
+- TB-3 (cost): table plus evaluation under 3 core-minutes a member at 128^3 on this machine (load about 50).
+  Refuted above 10.
+Then the pilot's zeta with the table, ten members, P5-3 (1000 against 4000 steps on 20000 random cells per member,
+max |dN| below 1e-9) and P5-5 (as written in entry 5) judged as written; per member a spot check of the table
+against map_rk4 at 4000 steps on 4000 cells (2000 random, 2000 of the largest |R^NR|) with TB-1's bar.
