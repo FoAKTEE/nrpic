@@ -958,3 +958,45 @@ masses above and before the medians:
 - GN1e (GN1 as written, with the masses the Newtonian run uses): the mean over a = 81-132 of the
   median |M_GR/M_N - 1| is smaller with the Gamma driver than with zero shift. Refuted if larger.
   Batch 21's refutation of GN1 stands on record as a judgement made with biased masses.
+
+## 2026-11-25 18:51 PST (lead of batch 23): outcomes M1, M4, P8C1-2, Q1 (constraints), S1, N2e, GN1e
+
+Runs: histories B-20261126-024849-87e72b7 (`fig_leg_histories.py`, figure `pop_leg_histories.png`
+in its run directory, looked at: K_max, Hr_mean, Mr_mean against a for six legs; cosmetic: the
+legend of the left panel lies over the early curves); equal-mass comparisons with the Newtonian
+mode B-20261126-024936-1ee0a16 (zero shift) and B-20261126-024941-647553b (Gamma driver), figure
+`fig_gr_newton.png` looked at (its third panel is empty: N4 needs dumps, not rerun). Card time
+from sacct: q0007 seven jobs 193.9 min = 3.23 card-h; q0042 13 min 25 s = 0.22; q0044 7 min 39 s
+= 0.13. [VERIFIED by these runs]
+- M1 REFUTED: guard stop at t = 18.2109 (a = 102.1), non-finite fields in 10.4 million values,
+  2.25 million of 16.8 million particles excised in the last step; the history's largest K of
+  the box turns positive at t = 15.875 (a = 79.9) and reaches 0.022 at t = 18.125, where the
+  128^3 zero-shift base stays below -7e-4 after t = 9 and the 128^3 gauge leg below -1.4e-3. The
+  same signature as the 0.028 stop (Z, X2): the zero-shift slice fails in the densest core once
+  the mesh resolves it. M2 and M3 wait for the analysis B-20261126-022356-52c2460 (running).
+- M4 NOT JUDGEABLE as written (a = 141 not reached); in its reachable part it FAILS: Hr_mean base
+  over 256^3 is 1.11, 1.35, 1.36, 1.29, 1.26, 1.23 at a = 36, 49, 64, 81, 90, 100 (bound 2).
+  Mr_mean base over 256^3 1.09-1.15: one particle per cell at either mesh carries the same
+  momentum-constraint level.
+- P8C1 HOLDS: exit 0 at t = 21.916 ("Terminating on time limit"), no guard file, 0.22 card-h
+  (bound 0.4). P8C2 HOLDS: at the six common history rows t = 16.23-17.48 the continuation's
+  Hr_mean, K_max and Mr_mean equal the cut run's within 4.2e-12 relative (bound 1e-6).
+- Q1, constraint part, HOLDS: Mr_mean one per cell over eight per cell at a = 141 (row t = 21.727)
+  is 0.2026/0.0691 = 2.93 (bound 2); 2.35, 4.71, 3.79, 3.43, 3.23 at a = 25, 49, 81, 100, 121.
+  Hr_mean falls 1.55-1.67 times at every a. The high-k part waits for B-20261126-022838-27fab1b.
+- S1 HOLDS: t = 21.916 without a guard file; Hr_mean 1.06e-2 at the last row (a = 140.7), largest
+  2.2e-2 after t = 8 (bound 0.2). Not predicted: K_max of the box turns positive in short episodes
+  (largest 6.7e-3 after t = 8.5, near a = 80 and 120 in the figure) and returns below zero; Mr_mean
+  peaks at 0.25 near a = 40 and falls to 0.061 at the end.
+- N2e HOLDS: counts inside 2 sqrt(N) + 2 at every common catalogue a = 49-132 in both gauges; the
+  median |M_GR/M_N - 1| of the ten largest at a = 121 is 0.026 (zero shift) and 0.012 (Gamma
+  driver).
+- GN1e HOLDS: mean over a = 81-132 of that median, 0.057 (zero shift) against 0.038 (Gamma
+  driver). The largest halo is 6.9-10.9 per cent lighter than Newton's with zero shift and 1.7-5.5
+  per cent heavier with the Gamma driver at a = 72-132. Batch 21's refutation of GN1 came from the
+  rest-mass weight, which made GR halo masses about 5 per cent heavier; it is withdrawn here as a
+  judgement made with biased masses (on record, not erased). R23 stays: the two gauges' largest
+  masses differ by 10-17 per cent with equal masses too (1.399/1.250 at a = 100, 1.689/1.492 at
+  121, 1.824/1.660 at 132).
+- Cores: the two comparisons ran for a few seconds each while three analyses held six cores (seven
+  processes for about ten seconds).
