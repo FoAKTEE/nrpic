@@ -921,3 +921,29 @@ hz_check.png looked at; D-20261125-160123-f86d73c failed on the status-line comm
 - Open [TO VERIFY]: why horizon excision at 0.8 rr_min removes dust up to 0.66 M of proper time before the
   exact LTB crossing once the hole has grown, and why the onset moves from ~235 M (N) to ~170 M (4N). No
   criterion depends on it (D4 has no bound; (iii), D2, D3 hold); not named as a cause.
+
+## Entry 25 (2026-11-25 21:45 PST, lead of batch 25, before any reading of the ended runs): plan and predictions
+
+State: both chains ended at tlim (chain STATUS DONE): FNQ ES-FLKQ D-20261124-172725-2f426b6 at 400 M
+(job 5293, 10:02 PST), FL16 ES-FL16 D-20261124-172745-72472ed at 300 M (job 5347, 20:09 PST). Nothing of
+FNQ after 350 M and nothing of FL16 has been read. Both are closed with `nrpic-run finish` (started
+21:41 in the background, one after the other) before any reading below.
+
+Judged with the predictions written before the runs (entries 10 and 15), unchanged: Q1-Q3 and XQ for FNQ;
+L1-L5 for FL16 (L3 with Delta M(t) = M_AH(t) - M_AH(20 M)). Readers (all registered, each figure looked at):
+g2runs/tools/esf_criteria.py (Q1 with FNQ's data D-20261124-131050-ed0a535 and control V-1L; L2 with ES-FL's
+data D-20261121-203042-82deeec and the same-mesh control V-1L16 D-20261121-203151-37e7b2d, as entry 20 judged
+each mesh against its own-mesh vacuum control); np_partial.py (FNQ whole now: Q2, N3's ordering);
+xc_plane.py (XQ: ES-FLK against ES-FLKQ; L5: ES-FL against ES-FL16); region_norms.py without --running;
+hz_check.py on FNQ and FL16 (decision 0041 item 4: made without the diagnostics, rechecked by the signature).
+
+New reader tools/conv3.py (written now, before it runs): the three-way convergence of item C2 in one
+figure, (a) particle number N/4 (FNQ), N (FK), 4N (FN4) at 100, 200, 300, 399.5 M; (b) mesh of the growth
+M/8 (ES-FL), M/16 (FL16), with M/4 (FF4) drawn and labelled "outside the convergent regime" (ruling 0039
+item 4), Delta M from 20 M; (c) the same mesh members with each own-mesh vacuum control subtracted (as D2).
+Predictions for what conv3 adds (beyond N3 and L3, which stand as written):
+C2a (particle) |M_4N - M_N| <= |M_N - M_N/4| at three of the four times (this is N3's ordering, p ~ 0.6).
+C2b (mesh, two members in the regime) |Delta M_16 - Delta M_8| <= 3e-3 (D2's tolerance) at 100, 200 and
+    300 M [JUDGEMENT]; refuted above 3e-3 at any of them. No order is claimed from two members.
+C2c (horizon searches, decision 0041 item 4) in FNQ (whole) and FL16 no failed search after 20 M by the
+    signature (NaN or bit-identical repeat); refuted by any such line after 20 M.
