@@ -168,6 +168,18 @@ def main():
         W_loc = float(np.sqrt(1.0 + a.gmax * u_loc ** 2))
         lp_t = fw["last_positive"]["t"]
         tau_loc = float(np.interp(lp_t, ta, int_alpha)) / W_loc
+        # is the probe particle (nearest to probe_x = 0.001 at t = 0, whose proper time the code integrates in
+        # column 15) one of the first-crossing worldlines? lattice distance of its index to the corner set
+        p0 = np.argmin(np.sum((x0 - 0.001) ** 2, axis=1))
+        pidx = idx[p0]
+        dl = np.abs(corners - pidx)
+        dl = np.minimum(dl, n - dl)
+        fw["probe"] = dict(lattice_index=[int(v) for v in pidx], x0=[float(v) for v in x0[p0]],
+                           lattice_distance_to_corner_set=int(np.min(np.max(dl, axis=1))),
+                           corner_set_x0_extent=[[float((c.min() + 0.5) * h - L / 2), float((c.max() + 0.5) * h - L / 2)]
+                                                 for c in corners.T],
+                           tau_probe_t_over_tH_last_positive=fw["last_positive"]["probe"],
+                           tau_probe_t_over_tH_first_nonpositive=fw["first_nonpositive"]["probe"])
         fw["local"] = dict(n_cells=int(len(cells)), n_corner_particles=int(len(corners)), u_max=u_loc, W_max=W_loc,
                            tau_lb_last_positive=tau_loc, t_over_tH_lb_last_positive=float(tau_over_tH(tau_loc)),
                            int_alpha_min_to_last_positive=float(np.interp(lp_t, ta, int_alpha)))
