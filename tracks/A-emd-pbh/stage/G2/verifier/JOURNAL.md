@@ -160,3 +160,33 @@ differences of x - q at the lattice point at the centre), r_m from the data's id
   (4.65 against 3.62), as the note says.
 - V1.6 max |alpha - 1| grows with the number of steps, above 1e-12 in N256 at tau >= 20 (P17's alpha clause fails
   there). Refuted if it stays below 1e-12 in every member and dump.
+
+## Entry 4, 2026-11-26 15:15 PST: outcomes V1.0-V1.6 (runs A-20261126-222856-952faf8, A-20261126-224402-693c506; fig_szk_verify.png looked at)
+
+- Reference test: the closed form agrees with the integrated dust equations (Raychaudhuri, continuity, Friedmann of the
+  shell) to 2.1e-12 for seven elements, bound and unbound, to tau = 30.
+- V1.0 HOLDS. KL predicted from (KT, rho_i) equals the file's KL to 2.2e-10, 1.3e-9, 1.7e-9 H_i (N64, N128, N256); the
+  code's K at tau = 0 equals my K to 2e-11 H (shell max). The data are simultaneous-bang Szekeres cell by cell.
+- V1.1 HOLDS (within 4 per cent). Shell rms |K - K_ex|/H(tau): N64 0.0268, 0.0599, 1.078 (tau 10, 20, 30; Table V
+  0.0268, 0.0616, 1.04); N128 0.00442, 0.0123, 0.0443 (0.0043, 0.0123, 0.045); N256 0.000281, 0.00103 (0.000277, 0.001),
+  and 0.00377 at tau 30, 0.0413 at tau 40. Shell cells 49831 / 399461 / 3194484 (my mask).
+- V1.2 HOLDS. Orders of the shell K rms: 64->128 2.60, 2.28, 4.61 (Table V 2.64, 2.33, 4.53); 128->256 3.98, 3.58
+  (3.96, 3.62) and 3.55 at tau 30. E rms: 2.78, 2.45, 2.42 and 4.05, 3.70, 3.42. Core K rms: 3.96, 3.40, 3.23 and 4.09,
+  4.49, 4.33.
+- V1.3 FAILED as written, by definition. My non-spherical signal (difference between the Szekeres element and the LTB
+  element of the same shell, an invariant) is 0.17-0.23 H at tau 0-30 (0.57 at tau 40), 3.5 to 15 times smaller than
+  Table V's (0.68-3.45), which compares Szekeres and LTB at the same code cell and so contains the displacement of the
+  shells' centres. Against my signal, P20 (max error <= signal/10 at N256, /5 at N128, every dump to tau 30) holds for
+  N256 at tau 10 and 20 (70x, 22x) and fails at tau 30 (5.1x); for N128 it holds at tau 10 (7.2x) and fails at 20
+  (3.4x) and 30 (0.84x). Against Table V's signal it holds everywhere (numbers found in the lead's output, not
+  recomputed). The rms error stays 44 (N256, tau 30) to 590 (tau 10) times below my signal.
+- V1.4 HOLDS. Guard stops N64 at tau = 30.25, N128 at 37.47 (szk.guard.txt); N256 has no guard file, its history ends
+  at tau = 40.0 and its tau = 40 dump has no non-finite value. At tau = 40 N256's shell error (max 0.59, rms 0.041) is
+  as large as my signal (0.57), and its shell H rms is 28.9 times 16 pi rho_b: it reaches the end of the test with
+  finite fields, not with a small error. P18 for N256 at tau 40 (0.01, factor 3) fails (0.041); P24 holds at tau 40
+  (>= 0.03) and fails at tau 30 (0.00377, below its band [0.004, 0.04]: better than predicted).
+- V1.5 PARTLY HOLDS. Shell rms H/(16 pi rho_b) orders: 64->128 2.96, 2.81, 3.49 (Table V 2.93, 2.79, 3.49); 128->256
+  4.15, 4.73, 5.01 (Table V 4.01, 4.65): 0.14 off at tau 10, outside my 0.1 (masks). P21 holds at tau 10 (4.15 vs K
+  3.98) and fails at tau 20 (4.73 vs 3.58), as the note says.
+- V1.6 HOLDS. max |alpha - 1| grows in proportion to the number of steps: N256 9.1e-13, 1.8e-12, 2.7e-12, 3.6e-12 at tau
+  10-40; N128 1.4e-12 at tau 30; N64 below 1e-12. P17's alpha clause (1e-12) fails from tau 20 (N256).
