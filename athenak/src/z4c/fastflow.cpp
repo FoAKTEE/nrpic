@@ -83,6 +83,20 @@ FastFlow::FastFlow(MeshBlockPack *pmbp, ParameterInput *pin, int n):
   // Convergence parameters
   hmean_tol = pin->GetOrAddReal("fastflow", "hmean_tol_" + n_str, 100.);
   mass_tol = pin->GetOrAddReal("fastflow", "mass_tol_" + n_str, 1e-2);
+  // <fastflow> polish_iterations_<n> = N: after the mass rule is first met the flow goes
+  // on for N iterations, and the surface is accepted at the first iteration after them
+  // whose mass again differs from the one before by less than mass_tol (0 when absent:
+  // the flow stops at the first iteration that meets the rule)
+  if (pin->DoesParameterExist("fastflow", "polish_iterations_" + n_str)) {
+    polish_iterations = pin->GetInteger("fastflow", "polish_iterations_" + n_str);
+    if (polish_iterations < 0 || polish_iterations >= flow_iterations) {
+      std::cout << "### FATAL ERROR in " << __FILE__ << " at line " << __LINE__
+                << std::endl << "<fastflow> polish_iterations_" << n_str
+                << " must be at least 0 and below flow_iterations_" << n_str
+                << " (" << flow_iterations << ")" << std::endl;
+      exit(EXIT_FAILURE);
+    }
+  }
   find_every = pin->GetOrAddInteger("fastflow", "find_every", 1);
   // "stored": finite differences on the mesh, interpolated to the surface (original);
   // "interpolant": derivative of the interpolant of the metric at the surface points
@@ -791,6 +805,7 @@ void FastFlow::FastFlowLoop() {
   Real Sz = 0;
   Real S = 0;
   bool failed = false;
+  int polish_left = -1;         // -1 until the mass rule is met, then iterations to go
 
   if (verbose && ioproc) {
     fprintf(pofile_verbose, "\nSearching for horizon %d\n", nh);
@@ -910,12 +925,18 @@ void FastFlow::FastFlowLoop() {
       break;
     }
 
-    // End flow when mass difference is small
-    if (Kokkos::fabs(mass_prev-mass) < mass_tol) {
+    // End flow when mass difference is small; with polish_iterations = N, when it is
+    // small again at least N iterations after it first was
+    const bool mass_rule = (Kokkos::fabs(mass_prev-mass) < mass_tol);
+    if (polish_left < 0 && mass_rule) {
+      polish_left = polish_iterations;
+    }
+    if (polish_left == 0 && mass_rule) {
       ah_found = true;
       fail_reason = 0;
       break;
     }
+    if (polish_left > 0) { --polish_left; }
 
     // Step 5: Find new spectral components.
     UpdateFlowSpectralComponents();
