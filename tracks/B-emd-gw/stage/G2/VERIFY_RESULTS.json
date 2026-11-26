@@ -1,9 +1,9 @@
 {
   "track": "B-emd-gw",
   "gate": "G2",
-  "commit": "26f92304bbd52aba0a3194e6057393f13dec9b08",
-  "verified_utc": "2026-11-25T17:21:04Z",
-  "export": "/data/haiyangw/nrpic/scratch/B-emd-gw/tmp/stage-verify/B-emd-gw-G2-26f9230-20261125T171510Z",
+  "commit": "5f09918b9edd950f853a42059346a12a8b352276",
+  "verified_utc": "2026-11-26T02:59:47Z",
+  "export": "/data/haiyangw/nrpic/scratch/B-emd-gw/tmp/stage-verify/B-emd-gw-G2-5f09918-20261126T025658Z",
   "result": "FAIL",
   "checks": [
     {
@@ -21,7 +21,7 @@
     {
       "check": "export",
       "status": "PASS",
-      "message": "clean export of 26f92304bbd5 (HEAD) in /data/haiyangw/nrpic/scratch/B-emd-gw/tmp/stage-verify/B-emd-gw-G2-26f9230-20261125T171510Z/tree",
+      "message": "clean export of 5f09918b9edd (HEAD) in /data/haiyangw/nrpic/scratch/B-emd-gw/tmp/stage-verify/B-emd-gw-G2-5f09918-20261126T025658Z/tree",
       "detail": null
     },
     {
@@ -69,10 +69,16 @@
     {
       "check": "runs",
       "status": "FAIL",
-      "message": "1 of 354 runs have problems",
+      "message": "3 of 365 runs have problems",
       "detail": {
-        "B-20261125-093500-242d3a3": [
-          "status is submitted: not finished (nrpic-run finish)"
+        "B-20261126-022356-52c2460": [
+          "status is running: not finished (nrpic-run finish)"
+        ],
+        "B-20261126-022403-82f6e69": [
+          "status is running: not finished (nrpic-run finish)"
+        ],
+        "B-20261126-022838-27fab1b": [
+          "status is running: not finished (nrpic-run finish)"
         ]
       }
     },
@@ -314,7 +320,7 @@
     {
       "check": "status",
       "status": "PASS",
-      "message": "STATUS.md has 41 lines",
+      "message": "STATUS.md has 36 lines",
       "detail": null
     },
     {
@@ -326,7 +332,7 @@
     {
       "check": "compare",
       "status": "PASS",
-      "message": "29 regenerated files compared with the committed ones; 0 differ beyond tolerance (rtol 1e-06, atol 1e-12, PNG rms 0.005)",
+      "message": "30 regenerated files compared with the committed ones; 0 differ beyond tolerance (rtol 1e-06, atol 1e-12, PNG rms 0.005)",
       "detail": [
         [
           "note/figures/fig_gauge.png",
@@ -434,6 +440,11 @@
           "regenerated (vector files carry dates; the PNG preview is compared)"
         ],
         [
+          "note/figures/schem_ladder.svg",
+          "PASS",
+          "regenerated (vector files carry dates; the PNG preview is compared)"
+        ],
+        [
           "note/figures/fig_baseline.png",
           "PASS",
           "identical"
@@ -478,16 +489,8 @@
     {
       "check": "regenerate",
       "status": "PASS",
-      "message": "all 29 committed figure files regenerated",
+      "message": "all 30 committed figure files regenerated",
       "detail": null
-    },
-    {
-      "check": "new-files",
-      "status": "WARN",
-      "message": "1 files written by the scripts are not in the commit",
-      "detail": [
-        "note/figures/schem_ladder.svg"
-      ]
     }
   ]
 }
