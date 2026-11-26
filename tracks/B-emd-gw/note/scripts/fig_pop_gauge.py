@@ -37,6 +37,8 @@ def main():
     cz_ = common.load_json("pop_cmp_zs", "compare_newton.json")
     cg = common.load_json("pop_cmp_gd", "compare_newton.json")
     vc = common.load_json("pop_velchk", "vel_check.json")
+    cze = common.load_json("pop_cmp_zs_eq", "compare_newton.json")   # equal GR masses (R25)
+    cge = common.load_json("pop_cmp_gd_eq", "compare_newton.json")
     fig, (a1, a2, a3) = plt.subplots(1, 3, figsize=(7.0, 2.5))
     fig.subplots_adjust(left=0.105, right=0.99, top=0.96, bottom=0.18, wspace=0.48)
 
@@ -53,7 +55,7 @@ def main():
     a1.legend(frameon=False, fontsize=7, loc="upper left")
     a1.text(0.96, 0.05, "(a)", transform=a1.transAxes, ha="right", va="bottom")
 
-    for c, col, lab in ((cz_, ZS, "zero shift"), (cg, GD, "Gamma driver")):
+    for c, col, lab in ((cze, ZS, "zero shift"), (cge, GD, "Gamma driver")):
         R = [r for r in c["N2"] if r["M1_N"] and r["a_GR"] > 60]
         aa = np.array([r["a_GR"] for r in R])
         a2.plot(aa, [r["M1_GR"]/r["M1_N"] - 1 for r in R], "o-", color=col, ms=3.5, lw=1.0,
@@ -65,7 +67,7 @@ def main():
     a2.set_xlabel(r"$a$")
     a2.set_ylabel(r"$M_{\rm GR}/M_{\rm N}-1$")
     a2.legend(frameon=False, fontsize=6, loc="upper right", ncol=1)
-    a2.set_ylim(-0.08, 0.2)
+    a2.set_ylim(-0.14, 0.2)
     a2.text(0.04, 0.05, "(b)", transform=a2.transAxes, ha="left", va="bottom")
 
     for c, col, lab in ((cz_, ZS, "metric, zero shift"), (cg, GD, "metric, Gamma driver")):

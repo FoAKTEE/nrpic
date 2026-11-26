@@ -189,6 +189,9 @@ def values_g2(v):
     st = common.load_json("pop_stop028", "stop028.json")
     zs = common.load_json("pop_cmp_zs", "compare_newton.json")
     gd = common.load_json("pop_cmp_gd", "compare_newton.json")
+    zse = common.load_json("pop_cmp_zs_eq", "compare_newton.json")   # halo masses with equal GR masses
+    gde = common.load_json("pop_cmp_gd_eq", "compare_newton.json")
+    hi = common.load_json("pop_hist", "leg_histories.json")
     vc = common.load_json("pop_velchk", "vel_check.json")
     lg = common.load_json("pop_legs", "compare_legs.json")
     a_of = lambda t: (1.0 + 0.5*t)**2
@@ -210,12 +213,25 @@ def values_g2(v):
                    max(abs(r["rms8_cor_ratio"] - 1) for r in sp)], "pop_legs")
     late = lambda c: [r for r in c["N2"] if r["M1_N"] and 80 <= r["a_GR"] <= 133]
     r121 = lambda c: min(c["N2"], key=lambda r: abs(r["a_GR"] - 121))
-    v["g2_cnt"] = ([r121(zs)["n_GR"], r121(gd)["n_GR"], r121(zs)["n_N"]], ("pop_cmp_zs", "pop_cmp_gd"))
-    v["g2_med121"] = ([r121(zs)["median_abs_dM"], r121(gd)["median_abs_dM"]], ("pop_cmp_zs", "pop_cmp_gd"))
+    EQ = ("pop_cmp_zs_eq", "pop_cmp_gd_eq")
+    v["g2_cnt"] = ([r121(zse)["n_GR"], r121(gde)["n_GR"], r121(zse)["n_N"]], EQ)
+    v["g2_med121"] = ([r121(zse)["median_abs_dM"], r121(gde)["median_abs_dM"]], EQ)
     m1 = lambda c: [r["M1_GR"]/r["M1_N"] - 1 for r in late(c)]
-    v["g2_M1"] = ([min(m1(zs)), max(m1(zs)), min(m1(gd)), max(m1(gd))], ("pop_cmp_zs", "pop_cmp_gd"))
-    v["g2_meanmed"] = ([float(np.mean([r["median_abs_dM"] for r in late(zs)])),
-                        float(np.mean([r["median_abs_dM"] for r in late(gd)]))], ("pop_cmp_zs", "pop_cmp_gd"))
+    v["g2_M1"] = ([min(m1(zse)), max(m1(zse)), min(m1(gde)), max(m1(gde))], EQ)
+    v["g2_meanmed"] = ([float(np.mean([r["median_abs_dM"] for r in late(zse)])),
+                        float(np.mean([r["median_abs_dM"] for r in late(gde)]))], EQ)
+    v["g2_meanmed_w"] = ([float(np.mean([r["median_abs_dM"] for r in late(zs)])),
+                          float(np.mean([r["median_abs_dM"] for r in late(gd)]))], ("pop_cmp_zs", "pop_cmp_gd"))
+    M1 = hi["M1"]
+    v["g2_m256"] = ([M1["a_end_hst"], M1["a_first_Kmax_pos"], M1["Kmax_last"]], "pop_hist")
+    v["g2_m4"] = ([min(r["Hr_ratio_base_over_m256"] for r in hi["M4"]),
+                   max(r["Hr_ratio_base_over_m256"] for r in hi["M4"]),
+                   min(r["Mr_ratio_base_over_m256"] for r in hi["M4"]),
+                   max(r["Mr_ratio_base_over_m256"] for r in hi["M4"])], "pop_hist")
+    q141 = max(hi["Q1_constraints"], key=lambda r: r["a"])
+    v["g2_q1"] = ([q141["a_p8"], q141["Mr_ratio_base_over_p8"], q141["Hr_ratio_base_over_p8"],
+                   hi["P8C2"]["max_rel"]], "pop_hist")
+    v["g2_s1"] = ([hi["S1"]["a_end"], hi["S1"]["Hr_mean_end"], hi["S1"]["Hr_mean_max"]], "pop_hist")
     q = lambda c: [r for r in c["N4"] if r["Omega_metric_cor"] and 3.5 <= r["a"] <= 37]
     cor = [r["Omega_metric_cor"]/r["Omega_qs_Npart"] for c in (zs, gd) for r in q(c)]
     v["g2_cor"] = ([min(cor), max(cor)], ("pop_cmp_zs", "pop_cmp_gd"))
@@ -591,10 +607,15 @@ LEDGER_G2 = [
         ("g2_band", "corrected strain over $|\\mathbf k|\\le 8k_f$, Gamma driver over zero shift, at $a=100$"),
         ("g2_hr", "$a$; mean relative Hamiltonian constraint, zero shift and Gamma driver; momentum, zero shift and Gamma driver"),
         ("g2_p8", "eight particles per cell: last $a$ of the cut run; mean momentum constraint, one over eight per cell, at $a=25,49,81$: smallest, largest; largest $|$strain ratio over $|\\mathbf k|\\le8k_f-1|$"),
-        ("g2_cnt", "FoF halos ($\\ge100$ particles) at $a=121$: zero shift, Gamma driver, Newtonian mode"),
-        ("g2_med121", "median $|M_{\\rm GR}/M_{\\rm N}-1|$ of the ten largest at $a=121$: zero shift, Gamma driver"),
-        ("g2_M1", "largest halo, $M_{\\rm GR}/M_{\\rm N}-1$ for $81\\le a\\le132$: smallest, largest, zero shift; the same, Gamma driver"),
-        ("g2_meanmed", "median of the ten largest averaged over $81\\le a\\le132$: zero shift, Gamma driver"),
+        ("g2_cnt", "FoF halos ($\\ge100$ particles) at $a=121$, equal GR masses: zero shift, Gamma driver, Newtonian mode"),
+        ("g2_med121", "median $|M_{\\rm GR}/M_{\\rm N}-1|$ of the ten largest at $a=121$, equal GR masses: zero shift, Gamma driver"),
+        ("g2_M1", "largest halo, $M_{\\rm GR}/M_{\\rm N}-1$ for $81\\le a\\le132$, equal GR masses: smallest, largest, zero shift; the same, Gamma driver"),
+        ("g2_meanmed", "median of the ten largest averaged over $81\\le a\\le132$, equal GR masses: zero shift, Gamma driver"),
+        ("g2_meanmed_w", "the same with the GR file's rest-mass weights as masses (superseded): zero shift, Gamma driver"),
+        ("g2_m256", "$256^3$, zero shift: $a$ of the last record before the non-finite stop; $a$ where the largest $K$ turns positive; largest $K$ at the last record"),
+        ("g2_m4", "mean Hamiltonian constraint, $128^3$ over $256^3$, $36\\le a\\le100$: smallest, largest; momentum: smallest, largest"),
+        ("g2_q1", "eight particles per cell, joined runs: last $a$; momentum and Hamiltonian constraint means, one over eight per cell, there; largest relative difference of the continuation from the cut run"),
+        ("g2_s1", "$\\sigma_1=0.028$, Gamma driver from $t=8$: last $a$; mean Hamiltonian constraint there and its largest value"),
         ("g2_cor", "metric quasi-static TT measure over the Newtonian particles' estimate, $4\\le a\\le36$, both gauges: smallest, largest"),
         ("g2_cor132", "$a$; the same ratio, zero shift, Gamma driver"),
         ("g2_vc_a", "epochs of the same-particle check"),

@@ -88,6 +88,10 @@ RUNS = {
     "pop_cmp_zs": "B-20261125-165836-70b17b6",    # compare_newton.py, zero shift
     "pop_cmp_gd": "B-20261125-165845-0621554",    # compare_newton.py, Gamma driver
     "pop_velchk": "B-20261125-170535-84c9ba5",    # vel_check.py: same particles, one estimator, masses exchanged
+    # batch 23: equal GR particle masses (R25) and the legs that ended on 2026-11-25
+    "pop_cmp_zs_eq": "B-20261126-024936-1ee0a16",  # compare_newton.py, zero shift, equal masses
+    "pop_cmp_gd_eq": "B-20261126-024941-647553b",  # compare_newton.py, Gamma driver, equal masses
+    "pop_hist": "B-20261126-024849-87e72b7",       # fig_leg_histories.py: M1, M4, P8C2, Q1 constraints, S1
 }
 
 # the registered runs of this note package that produced the committed figures/ and tables/
