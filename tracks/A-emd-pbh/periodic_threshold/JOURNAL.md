@@ -1033,3 +1033,36 @@ tau_lb at the last positive snapshot is below 5.0 t_H (the slicing could hide a 
 member with geodesic slicing and zero shift is queued, prediction first, priority 2).
 N-z128 (A-20261125-160633-e38d321, ended): AZ1's second clause, within 5 per cent of N-z (4.55 t_H), is read
 with a2_compare.py in the same session.
+
+### Outcome A2X (analyses A-20261126-022220-99b7be8, A-20261126-022338-0edc27c, A-20261126-022438-a08cc5f, A-20261126-022545-5af99fb; fig_a2x.png looked at)
+
+- (i) HOLDS. det(dx/dq) on the lattice (forward and centred) stays positive through t = 60 (min 0.0011; 6.19 t_H on
+  the coordinate clock) and is <= 0 in 134 cells at t = 70 (7.21 t_H): the same bracket as the z reader; no earlier
+  crossing was missed by reading coordinate separations. The shift cannot move this event.
+- (ii) AS WRITTEN NOT DECIDABLE (the bound is empty). The first run took W from the largest |u_i| of all snapshots
+  (1.6e3, deep in the late collapse) and gave a bound of 0.07 t_H; the second, the running maximum (|u_i| 9.4 by
+  t = 60); the third, only the 215 particles at the corners of the first-crossing cells: they carry covariant |u_i|
+  up to 7.3 before crossing. Without gamma^ij at the particles (the snapshots hold x, u_i, m only) W is not bounded,
+  and the "lower bounds" (0.58, 0.73 t_H) say nothing. Three runs of a defective bound are on record.
+- Decided instead by the probe particle, the cross-check named before the reading: the code integrates the proper
+  time of the particle nearest probe_x = (0.001, 0.001, 0.001), which is lattice point (32, 32, 32) at the origin and
+  one of the 215 first-crossing particles (lattice distance 0; fourth run). Its proper time is 5.99 t_H on the last
+  slice with J > 0 and 6.80 t_H on the first with J <= 0. On the dust's own clock the first crossing lies in
+  (5.99, 6.80] t_H, above the band edge 5.0 and the Zel'dovich time 4.35. [VERIFIED as far as the code's proper-time
+  integration of that worldline; that the probe is a crossing worldline was found after the run.]
+- Consequence: S1L's lag is not a coordinate effect, neither of the shift (sign of J) nor of the slicing (proper time
+  of a crossing worldline). It lies in the relativistic evolution or its data (physics or numerics; not named).
+  No card member is queued for the coordinate question. A candidate to test, not a cause [JUDGEMENT]: at zeta_max
+  0.3 the nonlinear relation between curvature and density (density contrast ~ e^(-2 zeta) times the linear one at
+  the peak) lowers the physical first-axis eigenvalue below the coordinate 0.063 that the reference reads from
+  snapshot 0; a member at half the amplitude would show a smaller lag if so (card, prediction first, next session).
+
+### Outcome AZ1, second clause (N-z128; analysis A-20261126-022631-dafbb4f, fig_a2_compare.png with four curves looked at)
+
+N-z128 (Newton, 128^3 Fourier mesh, same particles as N-z) first crosses along z at 3.62 t_H (bracket 3.59-3.73),
+then x at 5.23, y at 8.54; N-z (64^3) crosses at 4.55. "N-z128 within 5 per cent of N-z" is REFUTED: the force
+resolution of 64^3 (one cell per particle spacing) delayed the Newtonian crossing by 26 per cent. The converged
+Newtonian time lies near or below 3.6 t_H, ahead of first-order Zel'dovich (4.35), as second-order ellipsoidal
+collapse should (the batch-20 reading of N-z as "following Zel'dovich to 5 per cent" was a resolution accident).
+So the GR lag is larger than stated in batch 20: S1L on the dust clock (5.99-6.80) against Newton at 128^3 (3.62) is
+a factor 1.65-1.9. A2 stays FAILED as written (0040 item 7).

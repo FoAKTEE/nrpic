@@ -582,3 +582,20 @@ and below 0.1 at t = 1. Refuted if B/A > 0.5 at any of the four times (then the 
 at first order: under 0039 item 2(c) a defect to be explained, not a bound to move). If the order is >= 1, C3 is
 stated as "the smoothed member converges during the evolution, at order p, and meets the bound on M/32 to t = 1";
 the bound on M/16 stays violated and G2 is judged by the review on that record.
+
+### Entry 14, outcome G (S2c-B closed with A-20261125-161154-62ce3dc; analysis A-20261126-022624-c663e0f, fig_edge.png looked at): REFUTED
+
+Section-3 x-line ratio, S2 with the CIC cloud, M/16 (S2c-A) against M/32 (S2c-B):
+t = 0: 0.0064 / 0.00058 (B/A 0.091, order 3.5); 0.25: 0.0502 / 0.0178 (0.354, 1.5); 0.5: 0.0978 / 0.0467 (0.477, 1.07);
+0.75: 0.0966 / 0.0761 (0.788, 0.34); 1.0: 0.1294 / 0.1011 (0.781, 0.36). Volume ||H||_2: 0.25: 0.0552 / 0.0030 (order
+4.2); 0.5: 0.0415 / 0.0067 (2.6); 1.0: 0.0383 / 0.0203 (0.92). G's first two times hold; from t = 0.75 the line ratio
+falls only at order ~0.35 and S2c-B is at 0.101 at t = 1: G is REFUTED. The figure shows S2c-B catching up with S2c-A
+by t = 1, and on M/16 every member (top hat, PCS twin, CIC) converging to the same 0.4-0.6 by t = 3-5, whatever the
+data and the cloud.
+C3 under 0039 item 2(c): the violation the evolution builds falls with the mesh, but at order ~0.35 against the
+scheme's 4; extrapolated, 0.1 at t = 4-5 would need a mesh more than a hundred times finer. It is a defect to be
+explained, not a bound to be moved. C3 stays FAILED; the gate review decides with the failure on record. Not named:
+the cause. Untested candidates [TO VERIFY]: the particle sampling at fixed particles per cell (the top hat's floor
+was flat in particle number at t <= 4, K2; the smooth CIC member's was not tested), the outer taper, the gauge
+(1+log with Gamma-driver) in the matter region. The next test that could fail is the particle-number leg of S2c-A
+(x8 particles, M/16, to t = 2, processors, about 3 h on one core): prediction first, next session.
