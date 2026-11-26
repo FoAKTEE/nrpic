@@ -460,3 +460,19 @@ scratch/B-emd-gw/tmp/c15test against B-20261123-015452-18d2956, B-20261121-22042
 B-20261119-160632-e1a1d05 and the pre-split analyze_gr.py run now; pop_gr_halos and pop_gr_stop
 differ from batch 11's drawing B-20261124-133150-e9ef701 already with the pre-split code, through
 changes made to analyze_gr.py since). Refuted by a non-zero exit or a differing PNG.
+Then (13:20-13:45 PST): closed the three detached analyses (exit 0) and started `nrpic-run
+finish` on q0060's run (261 GB, background). Judged with registered analyses and figures looked at
+(population/JOURNAL 13:22 plan, 13:27 outcomes): GM1 holds; GM4 refuted (Hr 128^3/256^3 1.11 at
+a = 141 in the shifted gauge); M2 counts hold, early largest masses fail; M3 first part holds to
+a = 50 and fails at a = 100 (1.214), second part holds; Q1 high-k part refuted; S2, S3 hold at the
+same stage. q0060 3.75 card-h (holds). C15 prediction above HOLDS: fifteen one-figure scripts,
+exit 0, pixel-identical (B-20261126-213450-f833a78). Note v3 (paper-writing loaded): section VI,
+intro (xi)-(xii), abstract, summary, ledger rows g2_gm1..g2_s3 (B-20261126-213742-dcee645);
+compiled 25 pages, checker 0 undefined / 0 overfull; pages 1, 15, 16 read. G2 checklist: C1, C3
+FAIL as written (rulings requested), C9, C14, C15 PASS; OPEN C2, C5, C11, C17, C18. Two requests
+to orch (rulings; verifier). Inbox 3 acknowledged. RISKS R27, R28.
+failed: GM4 (first part); M2 largest masses at a = 64-72; M3 first part at a = 100; Q1 high-k
+part. No failed run.
+open: GM2, GM3 (analysis B-20261126-212212-c54d979 running); C17 GM paragraph and timeline
+schematic; C18 verifier; rulings on C1, C3.
+Card-hours: none submitted; closed q0060 3.75; G2 11.61.

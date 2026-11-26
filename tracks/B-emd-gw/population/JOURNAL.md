@@ -1039,8 +1039,7 @@ sits below the panels); legs against the base B-20261126-212541-b647c59 (`compar
 --halo-base`, halos with equal masses, `pop_legs.png` looked at); the 0.028 shifted box
 B-20261126-212604-a508e94 (`judge_s028gd.py`, `pop_s028gd.png` looked at; cosmetic defects: the
 log-axis tick labels of panels 1-2 overlap and the y label of panel 1 is cut). Card time of
-q0060 from the chain record: five jobs, 5377 to 5399 (sum by `nrpic-run finish`, in the
-manifest). [VERIFIED by these runs]
+q0060: see the last item. [VERIFIED by these runs]
 - GM1 HOLDS: t = 21.916 (a = 143) at cycle 2806, chain DONE (tlim), no guard file; the largest K
   of the box after t = 9 is -8.4e-4 at most, no history row positive (128^3 gauge leg: -1.4e-3).
 - GM4 REFUTED in its first part: Hr_mean at a = 141 is 5.41e-3 against GD's 5.98e-3, a ratio of
@@ -1069,3 +1068,5 @@ manifest). [VERIFIED by these runs]
 - S3 HOLDS at the same stage: raw strain rms ratio 3.84-4.76 at a = 26-70 (bound 3-5.5),
   corrected 3.91-4.71. As written (a' = 4a): 6.8-9.7, outside.
 - GM2 and GM3 wait for the analysis B-20261126-212212-c54d979 (registered, running; 5 workers).
+- Card time of q0060 HOLDS: five jobs 5377-5399, sacct ElapsedRaw 13486 s = 3.75 card-h
+  (predicted 3.5-5).

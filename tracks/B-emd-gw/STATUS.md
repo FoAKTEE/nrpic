@@ -1,36 +1,35 @@
 # STATUS of B-emd-gw
 
 gate:        G0 PASS (2026-11-19), G1 PASS with reservations (2026-11-21, tag
-             stage/B-emd-gw/G1-pass-20261121). G2 package current (batch 23): C4, C6, C7, C10,
-             C12, C13, C16, C19, C20 PASS, C8 NA (0013), the rest OPEN (stage/G2/OPEN.md: each
-             item with the queue entry or running analysis that serves it). G2 not met.
-headline:    The zero shift fails at the finer mesh: the 0.014 box at 256^3 stops at a = 102 after
-             K_max turns positive at a = 80 (q0007, B-20261125-093500-242d3a3); the shifted gauge
-             carries the 0.028 box to a = 141 (q0044). With equal GR particle masses the Gamma
-             driver is the gauge closer to Newton (median |dM| 3.8 against 5.7 per cent, a = 81-132)
-last-result: batch 23 (2026-11-25 18:17-19:15): M1 refuted, M4 fails where reachable (Hr 128^3
-             over 256^3 1.11-1.36); P8C1, P8C2 hold (continuation repeats to 4e-12); Q1 constraint
-             part holds (Mr 2.93 times smaller with 8 per cell at a = 141); S1 holds (Hr_mean
-             1.1e-2 at the end); N2e, GN1e hold with equal masses (B-20261126-024936-1ee0a16,
-             -024941-647553b): the rest-mass weight (R25) made GR halos 5 per cent heavier and
-             had reversed GN1 in batch 21. analyze_gr.py --equal-mass, header dump times, run
-             union. Note section VI and ledger updated (B-20261126-025137-7686b91).
-running:     processors (registered, read next session after `nrpic-run finish`):
-             B-20261126-022356-52c2460 (256^3 strain and halos, M2-M3, 3 cores),
-             B-20261126-022403-82f6e69 (0.028 shifted box, S2-S3 input, 2 cores),
-             B-20261126-022838-27fab1b (8 per cell joined, Q1 high-k, 1 core)
-cards:       q0060 pop_s014_gr256_gd waiting (256^3 Gamma driver, priority 2, ceiling 6 card-h,
-             GM1-GM4 in population/JOURNAL 2026-11-25 18:50); nothing else queued
-next:        1. close the three analyses; judge M2, M3, Q1 high-k, S2, S3 (judge_s028gd.py,
-                compare_legs.py), figures looked at
-             2. read q0060 when it ends (GM1-GM4); then C2, C3, C11 and the G2 abstract/summary
-             3. C15 split of the multi-figure scripts; strain parts of A1-A3, GD3 with equal
-                masses; then a fresh G2 verifier (C18)
-needs:       core: parameters added at a restart (outbox 20261125T121932Z); Fourier Newtonian
-             solver with the threaded build (20261124T173601Z). kb: claim 861 [TO VERIFY].
-offers:      gw_diag (TT, rho_K, spectra, E/B/Psi_4; gauge G_tot); population/scripts/
-             analyze_gr.py --equal-mass; finding for every track that reads GR particle files
-             with a Newtonian estimator: the masses carry the rest-mass weight W psi^6 (R25),
-             which moves halo masses by about 5 per cent
-budget:      card-hours toward G2: 7.86 used (this session closed 3.58: q0007 3.23, q0042 0.22,
-             q0044 0.13; none submitted to run); q0060 ceiling 6; G1 1.69; allotment 40 (0014)
+             stage/B-emd-gw/G1-pass-20261121). G2 package current (batch 28): C4, C6, C7, C9,
+             C10, C12-C16, C19, C20 PASS; C8 NA (0013); C1 (shearing-dust L2) and C3 (constraints
+             in the mesh) FAIL as written, rulings requested; C2, C11 wait for a running
+             analysis; C5, C17 for its paragraph; C18 for a verifier. G2 not met.
+headline:    The shifted (Gamma-driver) population box passes the finer mesh: 256^3 to a = 143
+             with K_max < 0 (q0060, GM1). The late constraint level follows particles per cell,
+             not spacing (Hr 128^3/256^3 only 1.11 at a = 141, GM4 refuted; 8 per cell lowers it
+             1.6x, Mr 2.9x). The 0.028 box matches the 0.014 box at equal stage sigma1 a (S2, S3).
+last-result: batch 28 (2026-11-26 13:20-): GM1 holds, GM4 refuted (B-20261126-212502-e9e4f4e);
+             M2 counts hold, largest masses fail at a = 64-72 (1.35-1.37); M3 holds to a = 50,
+             1.214 at a = 100, high-k part holds (4-23x with mesh) (B-20261126-212541-b647c59);
+             Q1 high-k part refuted (0.98-1.01); S2, S3 hold at a' = 2a (B-20261126-212604-a508e94).
+             C15 done: one script per G2 figure, pixel-identical (B-20261126-213450-f833a78).
+             Note v3: section VI, abstract, summary, ledger rows; compiled, checker clean
+             (B-20261126-213742-dcee645).
+running:     processor analysis B-20261126-212212-c54d979 (GM2, GM3: 256^3 shifted strain and
+             halos, equal masses, 5 cores, started 13:22 PST); close with `nrpic-run finish`
+cards:       nothing queued or running for B (q0060 done: 3.75 card-h, predicted 3.5-5)
+next:        1. close B-20261126-212212-c54d979; compare_legs.py --base <gauge leg
+                B-20261125-115558-2ab4161/analysis_gr_gd.json> --halo-base
+                <B-20261126-022407-87e8803/analysis_gr_gd.json> --leg m256gd:<json>; judge GM2,
+                GM3; C2 and C11 then; the GM paragraph in note section VI, timeline schematic
+             2. apply the orchestrator's rulings on C1 (L2) and C3 (outbox 20261126T213945Z)
+             3. fresh verifier for C18 (requested), then nrpic-stage verify --full and report
+needs:       orch: rulings C1/C3; a verifier for C18. core: parameters added at a restart
+             (NEXT_SOURCE item 1); Fourier Newtonian solver with the threaded build.
+offers:      gw_diag (TT, rho_K, spectra, E/B/Psi_4; gauge G_tot); analyze_gr.py --equal-mass;
+             compare_legs.py --halo-base; findings for all: GR particle files carry the
+             rest-mass weight (R25); zero shift fails in resolved periodic cores (R26); the
+             constraint level after collapse follows particles per cell (R27)
+budget:      card-hours toward G2: 11.61 used (q0060 3.75 this session); G1 1.69; allotment 40
+             (0014); nothing submitted this session
