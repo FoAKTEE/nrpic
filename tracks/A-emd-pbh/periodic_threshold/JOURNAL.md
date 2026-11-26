@@ -1066,3 +1066,29 @@ Newtonian time lies near or below 3.6 t_H, ahead of first-order Zel'dovich (4.35
 collapse should (the batch-20 reading of N-z as "following Zel'dovich to 5 per cent" was a resolution accident).
 So the GR lag is larger than stated in batch 20: S1L on the dust clock (5.99-6.80) against Newton at 128^3 (3.62) is
 a factor 1.65-1.9. A2 stays FAILED as written (0040 item 7).
+
+## 2026-11-25 18:35 PST (lead of batch 23): outcomes D1-D5 of P0L6 (chain A-20261125-044641-7d5bd16 closed: completed at t = 140, 4.87 card-hours over 8 jobs; analysis A-20261126-022753-f9e9c40; fig_job2_q.png, fig_line_trapped.png, fig_compare_ltb_P0L6.png looked at)
+
+- D1 HOLDS: no guard stop to t = 140; the L2 norm of H changes by at most a factor 0.95 between records in t 1.5-6
+  (Q1a repeated on six levels).
+- D2 REFUTED: the x line first holds a trapped sphere at t = 136.0 (four levels: 132), not before 125; the outermost
+  marginally trapped sphere at t = 140 has r = 0.103 (21 cells of level 6), R = 12.6, m = 6.28 against the four-level
+  5.0 (26 per cent, outside 10). By the clause written before the run: the late trapping is the slicing (central
+  lapse 3e-6 by t = 140), not the central resolution.
+- D3 REFUTED, read from the status file only (decision 0040 item 3): 308 searches from t = 100.1 to 140.0, 307 not
+  found (181 "iteration limit reached without convergence of the mass", 126 "mean radius negative") and ONE row
+  "found" at t = 118.12. That row is not a horizon: area mass 562 (the line's trapped mass is ~6, and the line holds
+  no trapped sphere before t = 136), mean coordinate radius 18.2 in a box of half-width 10, minimum radius -3.6
+  (not a surface around the centre), mean expansion +2.1e5; the searches before and after it fail. It is a false
+  acceptance of the mass-convergence test after a divergent flow. After t = 136, with a trapped sphere of 16-21
+  level-6 cells on the line, every search stalls just outside it (mean radius 0.123-0.130, m 6.58-6.86, mean
+  expansion +18 to +22): by the clause written before the run, the finder itself fails on this slice. Request to
+  core (outbox): the false "found" and the stall on a resolved horizon, with the status file.
+- D4 REFUTED: turnaround of r0 = 1.21 is 26 per cent late against B (four levels: 4.9) and of r0 = 0.91 82 per cent
+  (8.6); shells r0 >= 1.5 stay within 1-4 per cent (0.95 per cent at 1.52). Neither improves; the inner shells are
+  WORSE with two more levels, which no prediction anticipated. The clause written before ("then the inner error is
+  the particles'") is the reading on record; not tested.
+- D5 HOLDS: 58,500 steps (predicted about 57,000) and 4.87 card-hours (sacct over the 8 jobs; predicted 4-5.5).
+C1 (ii) of G2 therefore stands as: the spherical LTB peak is followed to 1-4 per cent outside r0 = 1.5 on four and
+six levels, trapped spheres appear on the line from t = 132-136 late in the slicing, and the horizon finder does
+not find the periodic LTB horizon on a slice that resolves it (failure on record; request to core).
