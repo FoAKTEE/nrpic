@@ -167,3 +167,4 @@ tracks/C-sidm/outbox/20261126T123350Z__to-orch__bracket-1e6-holds-legs-pending.m
 tracks/B-emd-gw/outbox/20261126T213945Z__to-orch__g2-fresh-verifier-c18.md	2026-11-26T22:18:02Z	ruled on in coord/DECISIONS/0046
 tracks/B-emd-gw/outbox/20261126T213945Z__to-orch__g2-rulings-l2-and-constraints.md	2026-11-26T22:18:02Z	ruled on in coord/DECISIONS/0046
 tracks/A-emd-pbh/outbox/20261126T215535Z__to-orch__g2-package-batch-28.md	2026-11-26T22:18:02Z	ruled on in coord/DECISIONS/0046
+tracks/A-emd-pbh/outbox/20261126T234921Z__to-orch__g2-after-batch-31.md	2026-11-26T23:57:22Z	read; decision 0047; the second review of G2 is limited to conditions (a) to (d)
