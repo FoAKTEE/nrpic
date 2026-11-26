@@ -8,9 +8,12 @@
 #include <unistd.h>
 
 #include <cmath>
+#include <cstdio>
+#include <cstdlib>
 #include <fstream>
 #include <iomanip>
 #include <iostream>
+#include <iterator>
 #include <limits>
 #include <sstream>
 #include <string>
@@ -79,15 +82,26 @@ CompactObjectTracker::CompactObjectTracker(Mesh *pmesh, ParameterInput *pin, int
   }
 
   ofname_ = ofname;
+  // a run started with -r continues the tracker file (main.cpp sets <job> restart_file)
+  continued_ = pin->DoesParameterExist("job", "restart_file");
 }
 
 //----------------------------------------------------------------------------------------
 //! opens the tracker file at the first record (or at the end of a run without one), not
-//! in the constructor, which runs before the driver changes to the run directory (-d)
+//! in the constructor, which runs before the driver changes to the run directory (-d).
+//! A new run starts a new file with its header.  A run continued from a restart file
+//! keeps the file of the earlier segments and appends to it (TrimForRestart); it writes
+//! the header only when there is no file to continue.
 void CompactObjectTracker::OpenOutput() {
   if (file_open) return;
   file_open = true;
   if (0 == global_variable::my_rank) {
+    const bool append = continued_ && TrimForRestart();
+    if (append) {
+      ofile.open(ofname_.c_str(), std::ios::out | std::ios::app);
+      ofile << std::setprecision(19);
+      return;
+    }
     ofile.open(ofname_.c_str());
 
     if (type == BlackHole) {
@@ -104,7 +118,59 @@ void CompactObjectTracker::OpenOutput() {
 }
 
 //----------------------------------------------------------------------------------------
-CompactObjectTracker::~CompactObjectTracker() { OpenOutput(); }
+//! prepares the tracker file of the earlier segments of a continued run for appending:
+//! records of cycles at or after the cycle this run starts with are removed (a segment
+//! that was killed after its last restart file has written such records, and this run
+//! writes them again), as is a last line without its end.  Returns false if there is no
+//! file with a header to continue; the caller then starts a new file.
+bool CompactObjectTracker::TrimForRestart() {
+  std::ifstream fin(ofname_.c_str());
+  if (!fin.is_open()) return false;
+  std::string text((std::istreambuf_iterator<char>(fin)), std::istreambuf_iterator<char>());
+  fin.close();
+  std::string kept;
+  bool header = false, dropped = false;
+  std::size_t beg = 0;
+  while (beg < text.size()) {
+    const std::size_t end = text.find('\n', beg);
+    if (end == std::string::npos) { dropped = true; break; }     // line without its end
+    const std::string line = text.substr(beg, end - beg + 1);
+    beg = end + 1;
+    if (line[0] == '#') {
+      header = true;
+      kept += line;
+      continue;
+    }
+    char *rest = nullptr;
+    const long iter = std::strtol(line.c_str(), &rest, 10);
+    if (rest == line.c_str() || iter >= static_cast<long>(start_cycle_)) {
+      dropped = true;
+    } else {
+      kept += line;
+    }
+  }
+  if (!header) return false;
+  if (dropped) {
+    const std::string tmp = ofname_ + ".tmp";
+    std::ofstream fout(tmp.c_str(), std::ios::out | std::ios::trunc);
+    fout << kept;
+    fout.close();
+    if (!fout || std::rename(tmp.c_str(), ofname_.c_str()) != 0) {
+      std::cout << "### FATAL ERROR in " << __FILE__ << " at line " << __LINE__
+                << std::endl << "Could not rewrite the tracker file '" << ofname_
+                << "' for a continued run" << std::endl;
+      std::exit(EXIT_FAILURE);
+    }
+  }
+  return true;
+}
+
+//----------------------------------------------------------------------------------------
+CompactObjectTracker::~CompactObjectTracker() {
+  // a run without a record still leaves a file with the header; a continued run leaves
+  // the file of the earlier segments as it is
+  if (!continued_) OpenOutput();
+}
 
 //----------------------------------------------------------------------------------------
 void CompactObjectTracker::InterpolateVelocity(MeshBlockPack *pmbp) {
@@ -284,6 +350,7 @@ void CompactObjectTracker::EvolveTracker(MeshBlockPack *pmbp) {
 
 //----------------------------------------------------------------------------------------
 void CompactObjectTracker::WriteTracker() {
+  if (!file_open) start_cycle_ = pmesh->ncycle;   // first cycle of this run
   OpenOutput();
   if (0 == global_variable::my_rank && 0 == pmesh->ncycle % out_every) {
     ofile << pmesh->ncycle << " "

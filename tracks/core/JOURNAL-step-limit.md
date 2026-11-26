@@ -1008,3 +1008,27 @@ Not done:
 4. Named for a later session: the survey of the tracks' puncture and horizon decks with
    `dt_gauge = 1.0` before the option could become the default; the two restart defects
    (one record of `*.cons.hst`, the repeated header of the mesh history).
+
+## Entry 17 (2026-11-26, 04:12 PST, lead of core, batch 27): outcome of T4 on a card (q0036)
+
+Card run core-20261126-080805-3a9a349 (shared-queue entry q0036, job 5368; R0, R0g, R1 all
+status 0; closed 2026-11-26), judged by run
+core-20261126-121103-1070457 (`analyse_runs.py`, bound 0.656, t_max 6), figure
+`fig_refined_card.png` looked at (four panels: step, largest |H|, lapse extrema,
+cell-to-cell alternation).
+- **P4a held.** R0 (no dt_gauge, cfl 1.0) goes above the bound from t of about 1.6 to 0.83
+  cells at t = 2.45 and up to 0.905; the largest |H| jumps from 0.02 to 508 after t = 2.38
+  (onset), and the alternation of beta^x grows to 6.5e-4: job 4799 repeated with this
+  executable.
+- **P4b held in its test, failed in its time**, as on processors (entry 16): "set by
+  dt_gauge, sector Gamma-driver shift" at t = 1.180 (predicted 1.5 to 1.8; the light-speed
+  limit releases the step earlier); the step stays at or below 0.577 cells (predicted at
+  most 0.614; 0.571 on processors); no jump: the largest |H| at t = 6 is 0.0070 against
+  0.0070 of R1; the run reaches t = 6 without a guard stop. The statement added on
+  2026-11-26 (to t = 6, never above 0.59 cells) held.
+- **P4c held.** R1 (cfl 0.5) smooth to t = 6; steps to t = 6: R0g 589, R1 874, ratio 0.674
+  (predicted 0.6 to 0.75).
+- **Card time held:** 58 s, 107 s and 156 s of main loop (under ten minutes for the three).
+So the final card build of core/step-limit, merged into core-v0.7, does on a card what the
+processor build did: `dt_gauge = 0.9` carries Track A's refined deck at `cfl_number` 1.0
+through the time of its failure.

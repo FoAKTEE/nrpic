@@ -1,60 +1,86 @@
-# Next source session of core (one Fable session of about two hours, before Friday 2026-11-27)
+# Next source session of core (one Fable session of about two hours)
 
-Written 2026-11-25T12:20Z by the core lead (batch 17) from `interfaces/REQUESTS_WAVE3.md`,
-`stage/G2/OPEN.md` (sections core-v0.7 and core-v0.6) and the requests in core's inbox
-(`harness/bin/nrpic-ctx inbox`, items 1-22). Order: what a gate waits for first, small and
-default-off items before large ones, so that the session can close what it starts. Every item
-leaves runs without its option byte-identical (byte regression `analysis/release/regress_v04.py`
-against `.work/build_cpu_v07/src/athena`, 75 items) and goes onto its own branch from
-`core/nrpic` with a READY and a new directory under `scratch/core/exe/` (never replacing a
-published one: `EXE_PROVENANCE.md`). Source facts below were read at the source of `core/nrpic`
-on 2026-11-25 [VERIFIED by reading]; numbers of tracks are theirs, not recomputed by core.
+Written 2026-11-25T12:20Z by the core lead (batch 17); rewritten 2026-11-26T02:55Z (batch 23).
+Items 1-3 of batch 17 are DONE on branch `core/restart-finder` (source 01d4aeeb), merged into
+`core/nrpic` at b755cdcf; the release (core-v0.8) waits for its card check q0049. Order below:
+defects first, then what a gate waits for, small and default-off items before large ones.
+Every item leaves runs without its option byte-identical (byte regression
+`analysis/release/regress_v04.py` against the release then current, 75 items) and goes onto
+its own branch from `core/nrpic` with a READY and a new directory under `scratch/core/exe/`
+(never replacing a published one: `EXE_PROVENANCE.md`). Source facts below were read at
+`core/nrpic` b755cdcf [VERIFIED by reading]; numbers of tracks are theirs.
 
 ## For the Fable session, in this order
 
-1. **Outputs that survive a restart** (gates: Track F G1, criterion C8, the vacuum passage A2
-   runs as a chain that preemptions cut many times; core G2, C6 reproducibility; every chained
-   run of every track).
-   - (a) Tracker file (W2, F `tracker-files-on-restart`, accepted 2026-11-19): 
-     `z4c/compact_object_tracker.cpp` `OpenOutput` opens `<base>.co_<n>.txt` with truncation
-     at the first record of every start, so a continued run loses the earlier trajectory.
-     Fix: append when the mesh starts from a restart file, header only on a fresh start.
-   - (b) Restart defect 2 (OPEN.md core-v0.7 item b): the mesh history files get their header
-     lines again at every continuation. Fix: no header when continuing.
-   - (c) Restart defect 1 (item a): `<base>.cons.hst` loses one record when the restart file
-     was written one or two cycles before the record is due (the deposits of those cycles
-     are not in the restart file). Fix: carry the pending deposit sums in the `.prt`
-     companion, or write the record from the state at the restart.
-   - Test: case S2 of `analysis/release/quick_v07.py` (continuation from a restart written
-     just before a record) and a tracker deck (`problems/puncture/by_binary.athinput`, two
-     segments): every output of the continued run equal, line for line, to the uninterrupted
-     run (headers once, the record at t = 1.6875 present, the tracker file the union of both
-     segments). Reference: the uninterrupted runs, which exist (S2 of run
-     core-20261125-023641-7a1c47d; to be made for the tracker deck on processors).
-2. **Horizon finder: a converged mass, and excision that follows a growing hole** (gates:
-   Track D G2, the null-test floor and the growth criterion of `g2long`; Track A G2 reads
-   horizon masses to 1e-4 in its threshold scan).
-   - (a) D `finder-stopping-rule` item 2: `fastflow.cpp:914` stops at the first iteration
-     whose mass changes by less than `mass_tol_<n>` (absolute; default 1e-2). Add, off by
-     default, a stop on the residual (summary column 9, area mean of the squared expansion)
-     or a fixed number of polishing iterations after the mass rule is met.
-   - (b) D `ah-excision-growth-guard`: `particles/nrpic.cpp:455` excises only while
-     `rr_min < 4.0*initial_radius`. Add `<particles> ah_exc_max_growth` (default 4, nothing
-     changes) or a guard relative to the last accepted radius.
-   - Tests: (a) re-search of D's V-1L restart dumps on processors with D's tools
-     (`git show track/D-bh-dress:tracks/D-bh-dress/g2long/tools/probe_long.py`): with the
-     new rule and the default `mass_tol` the mass at every dump from 100 to 500 M within
-     2e-5 of the tight rule; cost per call on a card stated. (b) D's ES-FL deck to 240 M
-     with the option: removals by reason 3 continue past 219.5 M. References: D's
-     tight-rule masses V-1L 1.000980-1.000998 (judgement run D-20261124-172508-c847ee4,
-     `fp_analyse.json`); D's workaround run ES-FLK (`initial_radius_0 = 1.6`).
-   - With it, the interface lines D asks for (item 1 of both requests: what `mass_tol`
-     means, the 1.8e-4 angular offset of ntheta 16, the guard, what `z4c.user.hst`
-     integrates near a hole).
-3. **figstyle without a creation date** (Track E `figstyle-reproducible-pdf`, not blocking,
-   five minutes): `python/nrpic/figstyle.py` `save()` calls `fig.savefig(...)` without
-   metadata; pass `metadata={"CreationDate": None}` for the PDF (and honour
-   `SOURCE_DATE_EPOCH`). Test: one figure script run twice gives byte-identical PDFs.
+0. **Defect: `deposit_fine_shape` with the linear cloud (CIC) is not inert at a level
+   boundary without a cap** (found by core's test for Track A's question, run
+   core-20261126-022953-21b8455, case `cic_fs`; JOURNAL 2026-11-26T02:25Z, outcome D4a).
+   - Where: `athenak/src/particles/nrpic.cpp`, `NrpicDepositSources`: with fine shape and
+     the linear cloud the lattice cells beside the cloud are visited (`nx = 1`, `ns = nb +
+     2`, lines 812-814, 993-1003); a side cell (`own == false`) that lies in a finer block
+     (`kd > 0`) enters the fine-shape branch (1032-1072) and receives the tent integral minus
+     a constant, a zero-sum dipole, while the cloud's own cells are coarse leaves (`kd <= 0`,
+     1009-1021) that keep the plain weight. Without a cap `ldep` is the finest level of the
+     stencil's owners, so the own cells are never subdivided and nothing cancels the dipole:
+     a uniform lattice of one particle per local cell gets -0.125 and +0.125 in the two fine
+     cells next to each boundary (x1 = 7.25, 7.75 of the test), mass conserved. TSC and PCS
+     are inert (byte-identical tables), as is every run without the option.
+   - Fix (proposal): visit side cells only when the cloud was capped (`lev0 > lcap`, or
+     `lmax > lcap` before the clamp at 932): carry a flag `capped` from step (1) and
+     `if (!own && !capped) continue;` before the branch on `kd`. Check by reading whether a
+     capped cloud whose own cells straddle a level face has the same mismatch (case
+     `cic_capfs` of the test equals `cic_cap`, so not on the line tested).
+   - Test: `tracks/core/analysis/deposit_levels/dep_levels.py --exe <new> --out DIR`: case
+     `cic_fs` byte-identical to `cic` (D4a), every other case unchanged against
+     core-20261126-022953-21b8455 (tables of `tsc*`, `pcs*`, `*_cap*` byte-identical; `cic_capfs`
+     too if the flag leaves capped clouds alone); byte regression 75 of 75 (no regression
+     set-up uses the option).
+0b. **The compensation of the cloud is not conservative across a level face** (same run,
+   case `pcs_comp`: line sum 32.0413 instead of 32, +0.13 per cent of the mass; by the
+   symmetry of the set-up the same for the volume integral). Where: `nrpic.cpp` 1123-1139,
+   `NrpicFilterPass(1 + 2c, -c)` / `NrpicCompensateLimited` on each level with ghost values
+   from the other level. Cause by reading, not isolated by a run [TO VERIFY]: a pass in
+   non-flux form is conservative on one uniform grid only. Options: the flux form that
+   exists (`deposit_comp_limit > 0`; not tried on this set-up) or correct the face fluxes
+   as the conservative deposit does (fine faces summed onto the coarse face). Test: case
+   `pcs_comp` of `dep_levels.py` with line sum 32 to round-off. Track A runs PCS with
+   `deposit_comp_c = 1/6`, `deposit_comp_c2 = 0.4667` on nested static meshes: the error is
+   O(1e-3) of the mass per level face there [JUDGEMENT; A's set-up not rerun].
+1. **`<fastflow> diagnostics` (any new parameter) in a run continued from a restart file**
+   (decision 0042 item 4; Tracks D and F: chains started without the option never get a
+   status file; Track B's inbox item 21 `restart-new-parameters`, the same cause for
+   `<z4c> dt_gauge`, `dt_lightspeed` on its population restarts; F's item 29
+   `finder-diagnostics-on-restart`).
+   - Where: `athenak/src/parameter_input.cpp` 370-409, `ParameterInput::ModifyFromCmdline`,
+     exits with "Parameter '<name>' in block '<block>' on command line not found" for any
+     parameter that is not in the parameter set already loaded; on a restart that set is
+     the one stored in the restart file (`main.cpp` 279-291), so a parameter added after
+     the run started cannot be given on the command line. `fastflow.cpp` 299-300 reads
+     `diagnostics` only if present, and the status file is opened for appending with its
+     header only when new (454-457): nothing else stands in the way.
+   - Workaround that exists today [VERIFIED, run core-20261126-023323-c8fad52, prediction F1
+     of JOURNAL 2026-11-26T02:36Z]: `athena -r <file>.rst -i add.athinput ...` where
+     `add.athinput` holds only `<fastflow>` / `diagnostics = true`: `-i` after `-r` adds the
+     line (`LoadFromFile`), and the continued run writes `<basename>.horizon_status_0.txt`
+     (two records, exit 0); the same on the command line exits with status 1. A chain needs
+     its continuation line to carry `-i add.athinput` (the chain script takes the restart
+     line from its own state: check `scripts/submit_chain.sh` before telling a track it
+     works inside a chain).
+   - Fix (proposal): on a restart only (`res_flag`), let `ModifyFromCmdline` add a missing
+     parameter (and a missing block) with a line in the log ("added from the command line
+     on restart: <block>/<name>"); keep the fatal error on a fresh start, where it catches
+     typos. Alternatively an explicit form `+block/name=value` that adds. F's smaller
+     proposal, `GetOrAddBoolean("fastflow", "diagnostics", false)` in `fastflow.cpp`, makes
+     restart files written from then on carry the line, but helps neither restart files
+     that exist nor B's step-limit options, and it adds a line to every parameter dump
+     (check the byte regression: the stored input is part of a restart file). Test:
+     `tracks/core/analysis/restart_diag/diag_restart.py` with the new build: case a must then
+     start and write the status file like case b (change F1a's expectation in the script),
+     b and c unchanged; byte regression 75 of 75.
+2. (was 1-3 of batch 17) **Done on `core/restart-finder`**: outputs that survive a restart
+   (tracker file, history headers, the lost `cons.hst` record), finder polishing and the
+   excision growth guard (`ah_exc_max_growth`), figstyle without a creation date. Release
+   after card check q0049 (`JOURNAL-restart-finder.md` entry 20).
 
 ## Not for this session, in order (named so that the next round can plan them)
 
@@ -68,7 +94,8 @@ on 2026-11-25 [VERIFIED by reading]; numbers of tracks are theirs, not recompute
 5. **The drift of collisionless clusters on the M/8 mesh** (gates: core G2 ladder row 4;
    Track C G2, whose King controls collapse on their own at 534.8 and 549.3 M). Not a source
    item yet: diagnosis first. Core's row-4 control of y_c = 0.73625, STABLE by the 300-M
-   rule, collapses at 421.25 M (fates run core-20261125-120724-246d2a5). Whether the drift
+   rule, collapses at 421.25 M (fates run core-20261125-120724-246d2a5); with level 3 every
+   model from 0.605 to 0.73625 collapses by 421 M (core-20261126-023040-b755cdc). Whether the drift
    rate depends on N (particle noise) or not (the scheme) is decided by runs at a second N:
    Track C queued N = 1e4 and 1e6 controls; core's row 4 has a second cell size or N as its
    open item. Only an N-independent drift becomes a source item, with C's reproducing deck.
