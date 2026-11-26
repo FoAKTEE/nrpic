@@ -35,4 +35,49 @@ Status: ACCEPTED · 2026-11-24 · orchestrator (decision 0017)
    it in `scripts/` in its next source session; wrappers call `nrpic-queue
    check-dispatch`); the detector of Slurm commands is a heuristic; this round of fixes
    has had no second reviewer.
+5. Added 2026-11-25 04:40 PST: the cap keeper never cancels a job that is not this
+   program's. The account is also the user's own login, and the keeper of item 4 would
+   have cancelled first a job the user submits by hand (it has no queue entry); found by
+   the orchestrator on reading the routine, no such job existed. From 03:45 to the
+   restart the live dispatcher ran with the cancel step off. Now a job is ours when it
+   belongs to a queue entry, or its name is a run id, or its working directory lies
+   under the repository; every other job of the account counts toward the five and is
+   never cancelled: with an excess the keeper cancels our own pending jobs, and an
+   excess that only the user's jobs make is recorded without halting the queue. Known
+   consequences: a job submitted by hand from inside the repository counts as ours; a
+   pending segment of a chain started before the queue existed is cancelled first.
+   Regression checks: seven more (queue tool 100 of 100; runner rerun by the
+   orchestrator, no file failing). A second reviewer of items 4 and 5 is sent next.
+6. Added 2026-11-25 04:50 PST: the cap keeper reports and cancels nothing. A second
+   independent review (scratch/harness/review-queue2/REVIEW.md; reproductions against
+   the fake Slurm) showed that the automatic cancel of items 4 and 5 can still hit a
+   job that is not the program's (a job named like an entry's job, a job whose id a
+   wrapper prints, a working directory printed as null or relative) and can cost the
+   program its own runs (a chain waiting between two segments is cancelled, requeued and
+   rerun from the start). The keeper was live with the cancel on from 20:32 to 03:45 and
+   from 04:12 to 04:41 PST and cancelled nothing in that time (queue log). From 04:41
+   the dispatcher runs with the cancel off, and the cancel is being removed from the
+   tool: the dispatcher is the only submitter and holds while the count is at or above
+   five, so an excess decays by itself; removing one by hand is the orchestrator's.
+   The same review showed that the textual detector of Slurm commands in the run tool
+   and the environment tool misses ordinary forms and blocks legitimate ones; it is
+   being replaced by stubs for sbatch, srun and salloc placed first in the PATH of a
+   local run outside a dispatch. The check for more than one new job around a dispatch
+   becomes strict again. Still open at user level, as before: a call of sbatch by
+   absolute path or from a session's own shell (Slurm-side limit; tool-guard hook).
+   Stale copies of the run tool in idle worktrees of finished branches stay as they are:
+   no session is sent there; a session that starts in a worktree merges main first.
+7. Added 2026-11-25 05:45 PST: item 6 is done and deployed. The queue tool calls no
+   scancel; an excess that lasts is written as one ALERT record that does not halt the
+   queue. Outside a dispatch a local run of the run tool and the environment tool find
+   stubs for sbatch, srun and salloc first on their PATH (harness/shims/slurm), which
+   refuse; the text detector is gone, and with it its false refusals. The check for
+   more than one new job around a dispatch is strict again; a job belongs to an entry
+   by its id, by name only when the name is the entry's run id. Checks: the second
+   reviewer's file run unchanged gives 36 of 46, the ten failures being checks written
+   against the cancel that no longer exists; queue tool 108 of 108, run tool 103 of
+   103; the whole runner rerun by the orchestrator, no file failing. Core's change of
+   2026-11-25 (main 685fa17b7) removes the dispatcher's marker from every job, which
+   closes the open point of item 4. Left open, known: a call of sbatch by absolute
+   path or with a PATH of its own, and from a session's own shell.
 
