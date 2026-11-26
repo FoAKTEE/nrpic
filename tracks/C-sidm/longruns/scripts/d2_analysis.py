@@ -118,16 +118,20 @@ def main():
     import matplotlib.pyplot as plt
     from nrpic import figstyle as fs
     fs.use_style()
-    cols = dict(zip(("ctrl", "f1s1", "f2s1", "f4s1", "f2s2"), fs.series_colors(5)))
+    known = ("ctrl", "f1s1", "f2s1", "f4s1", "f2s2", "m16", "eta1")
+    cols = dict(zip(known, fs.series_colors(len(known))))
+    # the mesh member dashed, the gauge member dotted, so that no two series share a look
+    styles = {"m16": "--", "eta1": ":"}
     fig, axs = plt.subplots(1, 3, figsize=(10.0, 3.2))
     for lab, h in ser.items():
         c = cols.get(lab, "k")
-        axs[0].plot(h["time"], h["alpha_probe"] - h["alpha_probe"][0], color=c, lw=0.9, label=lab)
-        axs[1].plot(h["time"], h["alpha_min"], color=c, lw=0.9, label=lab)
+        ls = styles.get(lab, "-")
+        axs[0].plot(h["time"], h["alpha_probe"] - h["alpha_probe"][0], color=c, lw=0.9, ls=ls, label=lab)
+        axs[1].plot(h["time"], h["alpha_min"], color=c, lw=0.9, ls=ls, label=lab)
         ch = os.path.join(dirs[lab], "cc.coll.hst")
         if os.path.exists(ch):
             cc = read_dedup(ch)
-            axs[2].plot(cc["time"], 2.0 * np.cumsum(cc["n_coll"]) / N_PART, color=c, lw=0.9, label=lab)
+            axs[2].plot(cc["time"], 2.0 * np.cumsum(cc["n_coll"]) / N_PART, color=c, lw=0.9, ls=ls, label=lab)
     axs[1].axhline(0.3, **fs.GUIDE)
     axs[2].axhline(REF_M4["coll_per_particle"], **fs.GUIDE)
     axs[2].axvline(REF_M4["t_c"], **fs.GUIDE)
