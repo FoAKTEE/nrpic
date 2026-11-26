@@ -223,6 +223,7 @@ def main():
     ax.set_ylabel(r"max $|\Delta x|$ at common cycles [$M$]")
     ax.set_xlabel(r"start of the recomputed stretch [$M$]")
     ax.legend(fontsize=6, ncol=3)
+    t_end_plot = float(max(t[-1], tc[-1]))  # batch 25: axes to the last record, not a fixed 120 M
     ax = axs[2]
     ax.plot(t, s, color=fs.PAL["red"], lw=1.0, label="NR m/16, A + A2 joined")
     ax.add_patch(plt.Rectangle((63, 2.0), 12, 0.7, color=fs.PAL["blue"], alpha=0.15, label="A2-1 band"))
@@ -239,10 +240,10 @@ def main():
     ax.axvline(61.8, color="0.5", lw=0.6, ls=":")
     ax.set_ylabel(r"distance to $M$ [$M$]")
     ax.set_xlabel(r"$t$ [$M$]")
-    ax.set_xlim(0, 120)
+    ax.set_xlim(0, max(120.0, float(np.ceil(t_end_plot))))
     ax.legend(fontsize=6)
     for a in axs[2:]:
-        a.set_xlim(0, 120)
+        a.set_xlim(0, max(120.0, float(np.ceil(t_end_plot))))
     fig.tight_layout()
     fs.save(fig, os.path.join(o.out, "fig_b21_a2_state"))
     short = {k: res[k] for k in ("S1", "S2", "S4", "S5")}
