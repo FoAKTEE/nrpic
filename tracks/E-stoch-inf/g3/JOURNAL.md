@@ -159,3 +159,19 @@ Predictions for the reading (only b000-b009 exist; `read_pilot.py`, `compare_rea
   sigma_lin = 0.494); mean A(3) of zeta with its own sd in [0.05, 0.16]; mean F_+(4)/Q(4) in [1.1, 1.8],
   F_-(4)/Q(4) in [0.5, 1.0]. For R^NR: mean skewness in [-0.002, 0.004] (per-member sample scatter about
   sqrt(6/5.5e5) = 0.0033, entry 1's effective cell count).
+
+## entry-6 (2026-11-25 18:27 PST, lead of E, batch 23): predictions for the next card entries, written before they are queued
+
+To be queued only if the pilot's reading (entry 5) holds. Lists (every override checked against its deck with
+`check_lists.py`): `inputs/base02.list` .. `base06.list` (mirrored pairs 19-29, 30-40, 41-51, 52-62, 63-73; 22 runs a
+job; queue labels G3B02..G3B06, preregistered to entry 4 like G3B00/G3B01) and `inputs/l2_00.list` (level 2, mirrored
+pairs 0-4 at noise_level = 2, mesh mode by default, the same seeds and modes as baseline pairs 0-4; with k000, k001 of
+the pilot on `inputs/usr_prod_kd.athinput`, the production deck with the line lapse_kdriver = 0.0 added; label G3L00).
+- C6-1 (cost, baseline): 0.033-0.038 card-hours a run (pilot 0.0351, 125-128 s), a job of 22 in 45-50 minutes.
+  Refuted if a job reaches its 55-minute limit.
+- C6-2 (cost, level 2 at 128^3): wall per run 1.1-1.7 times the baseline run (core's interface: 1.14-1.16 at 64^3,
+  1.63 at 256^3; coord/INTERFACES/noise_level2.md); kdriver within 1.2 times (G3P-1). Refuted outside.
+- C6-3 (health): G3P-2 of entry 2 for every member of every job.
+- C6-4 (level 2, preview on five pairs; G3-L2 of entry 2 is judged on all 16): per pair, level 2 changes F_pm(3) of
+  zeta by less than 10 per cent and the skewness by less than 0.02 against the level-0 pair of the same seed.
+- A8 (entry 4) for k000/k001: rms(alpha - 1) at N_f below 1e-5 and rms of H int (alpha - 1) dt below 1e-3 sigma_lin.
