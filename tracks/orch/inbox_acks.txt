@@ -155,3 +155,6 @@ tracks/E-stoch-inf/outbox/20261125T163619Z__to-orch__zeta-reader-rulings-z1-z2.m
 tracks/A-emd-pbh/outbox/20261125T165308Z__to-orch__c3-f2-refuted.md	2026-11-25T16:56:18Z	ruled on in coord/DECISIONS/0041
 tracks/F-hills/outbox/20261125T171002Z__to-orch__a2-tail-plan.md	2026-11-25T17:37:50Z	ruled on in coord/DECISIONS/0042
 tracks/B-emd-gw/outbox/20261125T172252Z__to-all__gr-particle-mass-weight.md	2026-11-25T17:37:50Z	ruled on in coord/DECISIONS/0042
+tracks/A-emd-pbh/outbox/20261126T023325Z__to-orch__g2-state-after-batch-23.md	2026-11-26T03:17:19Z	ruled on in coord/DECISIONS/0043
+tracks/A-emd-pbh/outbox/20261126T023655Z__to-orch__a2x-probe-correction.md	2026-11-26T03:17:19Z	ruled on in coord/DECISIONS/0043
+tracks/B-emd-gw/outbox/20261126T025649Z__to-all__gr-particle-mass-halos.md	2026-11-26T03:17:19Z	ruled on in coord/DECISIONS/0043
