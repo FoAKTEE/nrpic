@@ -2394,3 +2394,22 @@ collapse time grows smoothly with y_c (180.5, 219.5, 244.25, 294.25, 338.25, 405
 the members). Row 4 on M/8 is reported as "collapse within 300 M bracketed between 0.7175
 and 0.726875"; the drift (its dependence on cell size and particle number) is the open
 item [JUDGEMENT]. 0.755 (q0032, q0059) decides whether it reaches the most stable model.
+
+### Prediction F1 (02:36Z): `<fastflow> diagnostics` in a run continued from a restart file
+
+Reading [VERIFIED by reading]: `main.cpp` 279-291 loads the parameters from the restart file,
+then from `-i <file>` if given (`LoadFromFile` adds or replaces lines), then
+`ParameterInput::ModifyFromCmdline` (`parameter_input.cpp` 370-409), which exits with
+"Parameter '<name>' in block '<block>' on command line not found" for any parameter not
+already present; `fastflow.cpp` 299-300 reads `diagnostics` only if it exists, and the
+status file is opened in append mode with its header only when new (454-457).
+Test (`tracks/core/analysis/restart_diag/diag_restart.py`, release processor build
+core-v0.7, `problems/tests/by_horizon_coarse.athinput` with a restart output, one cycle,
+then continued to cycle 2):
+- **F1a** `-r <rst> fastflow/diagnostics=true`: exit status 1 with that message, no
+  status file. (The defect Tracks D and F reported.)
+- **F1b** `-r <rst> -i add.athinput` where `add.athinput` holds only `<fastflow>
+  diagnostics = true`: exit status 0 and a status file `hc.horizon_status_0.txt` with a
+  header and one record per search of the continued run. (A workaround today, if it holds.)
+- **F1c** `-r <rst>` alone: exit 0, no status file.
+Refuted: F1a by a run that starts; F1b by a failure or a missing status file.
