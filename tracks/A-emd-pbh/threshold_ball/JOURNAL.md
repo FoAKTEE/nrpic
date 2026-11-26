@@ -570,7 +570,7 @@ the violation falling with the mesh at a rate that would meet 0.1 on a mesh the 
 with the failure on record. "A violation that does not fall with the mesh is a defect to be explained": the
 mesh leg (S2c-B) is the deciding run.
 
-## Entry 14, 2026-11-25 18:27 PST (lead of batch 23): the mesh leg of the smoothed-edge test, prediction before S2c-B is read
+## Entry 14, 2026-11-25 18:21 PST (lead of batch 23): the mesh leg of the smoothed-edge test, prediction before S2c-B is read
 
 S2c-B (S2, CIC cloud, mesh B = M/32) ended at t = 1 (run A-20261125-161154-62ce3dc, exit 0 at 10:59 PST; its
 outputs after t = 0.08 have not been read). S2c-A (M/16) line ratios from A-20261125-165215-e3fe168: 0.050 (t = 0.25),

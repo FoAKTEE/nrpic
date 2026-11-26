@@ -1008,7 +1008,7 @@ correct ratio (offset 0, read at the start of this session) is 1.03 median, 1.00
   first. N-z128 (same run, still going) checks the 5 per cent of N-z.
 A2 stays FAILED as written (decision 0040 item 7).
 
-## 2026-11-25 18:28 PST (lead of batch 23): a crossing measure that does not depend on the coordinates (A2X), before any reading
+## 2026-11-25 18:21 PST (lead of batch 23): a crossing measure that does not depend on the coordinates (A2X), before any reading
 
 Why: S1L's first crossing (6.35 t_H, snapshot bracket 6.19-7.21) came from coordinate separations of lattice
 neighbours along z and coordinate time read as cosmic time; the Gamma-driver shift moves the coordinates and the
