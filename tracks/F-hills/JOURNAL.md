@@ -1179,3 +1179,21 @@ If R25-1 to R25-3 hold, A2's continuation carries `-i <file>` in its EXTRA_ARGS;
 continuation goes without it and this entry says so. The test is on processors; the card build is
 a byte copy of the same release's card build [JUDGEMENT: parameter reading is host code, the same
 in both builds].
+
+### Prediction B25 before rerunning the readers on A2 to 133.0 M (b21_a2_state.py, b11_passage.py)
+
+Looked at before writing: the chain's event log, the newest restart's name, the last three rows of
+hills.co_0.txt (positions only, no distance computed), the `<fastflow>` block of hills.00105.rst.
+- (B25-1) S1-S3 extended to the end: A + A2 joined cover 0-133.0 M with no tracker gap above two
+  steps; the r = 40 waveform holds every 0.25-M sample to 133 M. Refuted: any gap or missing sample.
+- (B25-2) A2-2 as written in batch 11: the pair's centre of mass passes its closest approach to M
+  at t = 95-115 M, r = 8-11 M. From batch 21 (13.06 M at 96.25 M, closing at 0.237 M per M) I expect
+  the turn late in the window, 103-115 M. Refuted: outside either range, or no turn by 133 M.
+- (B25-3) A2-4 to 133 M: no common horizon of a member with M (heavy hole's accepted masses within
+  1 percent of their median; no member finder above 0.5).
+- (B25-4) A2-5 to 133 M: member horizon drift below 1e-4 per M outside the encounter (fit on
+  accepted searches), heavy hole's mass changes by less than 1e-3, rms H below 1e-4.
+- (B25-5) State for A2-3 (judged only at 170 M): by 133 M the pair's two-body energy (b11_passage,
+  same definition as batch 21) has turned positive, i.e. the binary is disrupted; Newton from the
+  same deck unbinds it by about 95 M and NR ran late by about 10-20 M so far. Refuted: E_bin < 0
+  at 133 M.
