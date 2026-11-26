@@ -466,8 +466,8 @@ reported as the stream-crossing regime this code does not converge in at practic
 
 Run B-20261126-222544-f3a5176 (in progress, one core), its own analysis of N7_n64_ppc4 (rays.json):
 Delta = +0.05375 (quadratic shooting +0.05371), t_A = 4.118, t_B = 3.910; ray k_x, k_z drift 6e-15,
-tracer u_x drift 5e-13; largest relative constraint means up to the arrivals Hr 1.6e-5... [VERIFIED by
-the run's analysis] (cstat_max_to_arrival: Hr_mean 1e-5, Mr_mean 3.6e-4): two to three orders of
+tracer u_x drift 5e-13; largest relative constraint means up to the arrivals Hr_mean 1e-5,
+Mr_mean 3.6e-4 (cstat_max_to_arrival) [VERIFIED by the run's analysis]: two to three orders of
 magnitude below L2's 0.12-0.4 at the same mesh. Wall time 75 s (prediction: below 3 min, holds).
 A quick look with `scripts/crossing.py` on the snapshots to t = 3.75 (unregistered, into
 scratch/B-emd-gw/tmp/nc; the registered check runs on the finished series): the smallest
