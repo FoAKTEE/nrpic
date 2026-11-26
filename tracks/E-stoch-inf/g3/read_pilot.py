@@ -32,6 +32,7 @@ sys.path.insert(0, os.path.join(TRK, "repro", "figs", "figures"))
 import read_seed as RS  # noqa: E402
 import figlib as fl  # noqa: E402
 import figstyle as fs  # noqa: E402
+import zeta_table as ZT  # noqa: E402
 
 NUS = (3.0, 4.0)
 EDGES = np.linspace(-8.0, 8.0, 161)
@@ -110,7 +111,26 @@ def one(job):
                R_ratio=sR / sig_lin, R_skew=skR, R_exkurt=kuR,
                rms_dK_over_K=float(np.std(f["K"]) / abs(np.mean(f["K"]))))
     z = None
-    if cfg["msteps"] > 0:   # zeta: the lead's map (batch 23: about 1.5 h a member at 1000 steps on the loaded machine)
+    if cfg["msteps"] > 0 and cfg.get("map") == "table":   # batch 27 (g3/JOURNAL.md entry 10): table of map_rk4
+        ns = lead_namespace(cfg["src"], cfg["lam"], cfg["vev"], cfg["phi_e"], cfg["msteps"])
+        phi = f["phi"].ravel()
+        vv = v.ravel()
+        tt = time.time()
+        dnr, tinfo = ZT.table_map(ns["map_rk4"], phi, vv)
+        rec["table"] = dict(tinfo, wall_s=time.time() - tt)
+        dn = dnr.reshape(f["phi"].shape)
+        rng = np.random.default_rng(cfg["seed"])
+        idx = rng.choice(phi.size, cfg["check_cells"], replace=False)
+        ns4 = lead_namespace(cfg["src"], cfg["lam"], cfg["vev"], cfg["phi_e"], 4000)
+        full = ns4["map_rk4"](phi[idx], vv[idx])                    # P5-3 as written: 1000 against 4000 steps, full map
+        nsc = lead_namespace(cfg["src"], cfg["lam"], cfg["vev"], cfg["phi_e"], cfg["check_msteps"])
+        dc = nsc["map_rk4"](phi[idx], vv[idx]) - full
+        top = np.argsort(-np.abs(Rx.ravel()))[:2000]                 # spot check of the table (TB-1 bar)
+        spot = np.concatenate([idx[:2000], top])
+        dt_ = dnr[spot] - ns["map_rk4"](phi[spot], vv[spot])
+        rec["table"].update(spot_cells=int(spot.size), spot_max_abs=float(np.max(np.abs(dt_))),
+                            spot_rms=float(np.sqrt(np.mean(dt_ ** 2))), spot_holds=bool(np.max(np.abs(dt_)) <= 1e-10))
+    elif cfg["msteps"] > 0:   # zeta: the lead's map (batch 23: about 1.5 h a member at 1000 steps on the loaded machine)
         ns = lead_namespace(cfg["src"], cfg["lam"], cfg["vev"], cfg["phi_e"], cfg["msteps"])
         phi = f["phi"].ravel()
         vv = v.ravel()
@@ -119,6 +139,7 @@ def one(job):
         idx = rng.choice(phi.size, cfg["check_cells"], replace=False)
         nsc = lead_namespace(cfg["src"], cfg["lam"], cfg["vev"], cfg["phi_e"], cfg["check_msteps"])
         dc = nsc["map_rk4"](phi[idx], vv[idx]) - dn.ravel()[idx]
+    if cfg["msteps"] > 0:
         z = -0.5 * np.log(f["chi"] / f["chi"].mean()) + dn
         z = z - z.mean()
         sZ, skZ, kuZ = moments(z)
@@ -226,6 +247,7 @@ def main():
     ap.add_argument("--msteps", type=int, default=4000)
     ap.add_argument("--check-msteps", type=int, default=1000)
     ap.add_argument("--check-cells", type=int, default=20000)
+    ap.add_argument("--map", choices=("full", "table"), default="full")
     a = ap.parse_args()
     os.makedirs(a.out, exist_ok=True)
     L = json.load(open(a.lead_json))
@@ -237,7 +259,8 @@ def main():
     src = os.path.join(TRK, "zeta", "zeta_reader.py")
     members = a.members.split(",")
     jobs = [(m, os.path.join(a.run, m), dict(src=src, lam=deck["lam"], vev=deck["vev"], phi_e=L["phi_e"],
-                                             msteps=a.msteps, check_msteps=a.check_msteps, check_cells=a.check_cells, seed=1000 + i, out=a.out))
+                                             msteps=a.msteps, check_msteps=a.check_msteps, check_cells=a.check_cells, seed=1000 + i, out=a.out,
+                                             map=a.map))
             for i, m in enumerate(members)]
     with Pool(a.procs) as pool:
         recs = pool.map(one, jobs)

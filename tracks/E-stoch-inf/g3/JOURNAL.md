@@ -256,3 +256,27 @@ evaluations instead of 2.1e6.
 Then the pilot's zeta with the table, ten members, P5-3 (1000 against 4000 steps on 20000 random cells per member,
 max |dN| below 1e-9) and P5-5 (as written in entry 5) judged as written; per member a spot check of the table
 against map_rk4 at 4000 steps on 4000 cells (2000 random, 2000 of the largest |R^NR|) with TB-1's bar.
+
+## entry-11 (2026-11-26 04:00 PST, lead of E, batch 27): TB-1 refuted; a diagnostic, prediction before it runs
+
+Outcome of entry 10 (run E-20261126-115112-43da266, `validate.json`): TB-1 REFUTED as written: table against map_rk4 at
+4000 steps on 124402 cells of b000, max |difference| 5.41e-9, rms 1.23e-9 (bar 1e-10 / 2e-11, refuted above 1e-9).
+TB-2 HOLDS: table against the verifier's long-double map on the 25668 tail cells (means removed), max 3.87e-9, rms
+9.8e-10 (bar 1e-8 / 2e-9). TB-3 HOLDS: 22 s for table and evaluation on the whole box (bar 180 s), against 82 s for
+the full map on 124402 cells. By entry 10's rule the table is not used for G3 readings as it stands. Three
+differences on the same cells (lead full map L, table T, verifier V; rms 0.91e-9 L-V from entry 9, 0.98e-9 T-V,
+1.23e-9 T-L) are consistent with independent noise of about 0.8e-9 in L, 0.9e-9 in T and 0.4e-9 in V; T and L share
+the same 4000-step map at the nodes, so a smooth step error would cancel between them [JUDGEMENT: the 4000-step map
+is not smooth in (phi, v) at 1e-9, or the table does not resolve it].
+Diagnostic (`diag_table.py`, 20000 cells of b000: the 2.5-sigma tail cells first, filled with random cells): (a) map_rk4
+at 4000 steps, (b) at 16000 steps, (c) the table on 4000-step nodes, (d) the table on 16000-step nodes, (e) the
+verifier's map. Prediction: if the 1e-9 part is the fixed-step error of map_rk4 (not smooth across cells), then
+rms(b - e) and rms(d - e) fall below 1e-10 and rms(d - b) below 1e-10 while rms(c - a) stays near 1e-9; refuted if
+rms(d - b) stays above 3e-10 (then the table's interpolation is the cause and the table needs more nodes). Either
+way the outcome is a reason, not a new bar: TB-1 stays refuted as written; a table on 16000-step nodes would be
+judged against a bar written here before its run: max |d - b| <= 1e-9 and max |d - e| <= 4.3e-9 (the cleared
+readers' agreement of entry 9).
+The pilot reading with a table on 16000-step nodes (`read_pilot.py --map table --msteps 16000`; P5-3 stays 1000
+against 4000 steps of the full map on 20000 random cells per member, as written) is started beside the diagnostic to
+save time; its zeta numbers are judged against P5-5 only if the diagnostic meets the table16000 bar above, otherwise
+they are recorded as not judged.
