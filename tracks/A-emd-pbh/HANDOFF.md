@@ -1,73 +1,62 @@
 # HANDOFF of A-emd-pbh
 
-Written for a reader with no memory, by the lead of batch 20 (wave 3), 2026-11-25 ~09:00 PST.
+Written for a reader with no memory, by the lead of batch 23 (wave 3), 2026-11-25 ~19:20 PST.
 
-State in three lines: G0 and G1 are signed (coord/GATES.md). G2 has an interim package (stage/G2: 9 PASS, 10 OPEN,
-1 FAIL = C3) that is NOT ready for review (stage/G2/OPEN.md). This session ran the smoothed-edge test for C3 (the
-floor is the top hat's jumps plus the PCS deposit at refinement boundaries; smooth data with CIC meet the bound at
-t = 0, but the evolution rebuilds a floor of 0.1-0.6 within 1-5 M on M/16: F2 refuted) and the Newtonian control of A2
-(the reference is right; S1L's lag is not in it). Both have runs still going.
+State in three lines: G0 and G1 are signed (coord/GATES.md). G2's runs are all judged except the Szekeres pair
+128 -> 256 (a detached reader is running); G2 is NOT ready for its verifier: four rulings are asked of orch (outbox
+g2-state-after-batch-23) and the note's G2 sections, schematics, rerun list and slice mosaic are unwritten.
 
 Owner: A-emd-pbh, branch `track/A-emd-pbh`, worktree `/data/haiyangw/nrpic/wt/A-emd-pbh`.
 Run first: `cd /data/haiyangw/nrpic/wt/A-emd-pbh && git merge --no-edit main && git status --short &&
 harness/bin/nrpic-queue list --owner A-emd-pbh; harness/bin/nrpic-run status | grep -v completed | grep "A-2026112";
 harness/bin/nrpic-ctx inbox; test -e /data/haiyangw/nrpic/locks/PAUSE && echo PAUSED`
 
-Files to read first: `STATUS.md`; `stage/G2/OPEN.md`; `stage/REVIEW-wave3.md` section 10; `threshold_ball/JOURNAL.md`
-entry 13 (all parts); `periodic_threshold/JOURNAL.md` last three entries (A2 control).
+Files to read first: `STATUS.md`; `stage/G2/OPEN.md`; `stage/REVIEW-wave3.md` section 11; the outbox file
+`outbox/*g2-state-after-batch-23.md` and orch's answer (coord/DECISIONS, 0043 or later); `szekeres/JOURNAL.md`
+entry 11; `periodic_threshold/JOURNAL.md` last three entries; `threshold_ball/JOURNAL.md` entry 14.
 
-## Processor runs still going (detached, started by this session; close each with `harness/bin/nrpic-run finish <id>`)
+## Processor run still going (detached by this session)
 
 | run | what | cores | read with |
 |---|---|---|---|
-| A-20261125-161154-62ce3dc | test F: S2 with the CIC cloud; S2c-A (M/16) to t = 5 (1 thread, ~10:00 PST), S2c-B (M/32) to t = 1 (2 threads, ~11:30 PST) | 3 | `threshold_ball/scripts/edge_compare.py --run <A-20261125-160633-594a474 dir> --extra S2c-A=<F dir>/S2c-A --extra S2c-B=<F dir>/S2c-B`; prediction F2 (entry 13) |
-| A-20261125-160633-594a474 | PCS twin S2-A (M/16) to t = 5 (2 threads, ~09:00 PST); S1-A and S2-B were stopped by hand (on record) | 2 | same script (it reads S2-A) |
-| A-20261125-160633-e38d321 | A2 control: N-z done; N-f (S1L's particle file as it is) then N-z128 (128^3), 1 thread; the script runs a2_crossing on all three at the end | 1 | `periodic_threshold/scripts/a2_compare.py --gr <A-20261125-151629-bb77171>/a2.json --member 'N-z (Newton)=...' --member 'N-f (Newton, GR file)=<run>/N-f/a2/a2.json' --member 'N-z128=<run>/N-z128/a2/a2.json'`; AZ2 and the N-z128 part of AZ1 |
+| A-20261126-023245-1dd80ad | Szekeres reader, members N128 (A-20261125-213939-0ad9f29) and N256 (A-20261125-231808-0784bc9, dumps tau 0, 10, 20), ~1 h per N256 dump, ends ~22:30 PST | 1 | close with `harness/bin/nrpic-run finish A-20261126-023245-1dd80ad`; its `code_runs_n128n256.json` and figures give P19 (128 -> 256), P20 at N = 256, P21; write the outcome as szekeres JOURNAL entry 12 |
 
-## Card runs (shared queue only; no sbatch, no scripts, no sequencer). No card time used this session.
-
-| queue id | label | prio | run | read by |
-|---|---|---|---|---|
-| q0013 | a-p0l6 | 2 | A-20261125-044641-7d5bd16 (t = 138 of 140; Slurm 5296 pending since 07:15 PST; chain NOT ended, so the find at t = 118.1 was not read) | periodic_threshold compare_ltb.py, job2_q.py, line_trapped.py; predictions D1-D5; read the find at t = 118.1 only from `horizon_status_*.txt` (decision 0040 item 3) |
-| q0040 | a-szk-n64-128 | 2 | at dispatch | szekeres/scripts/analyse_code_runs.py; P17-P21 |
-| q0041 | a-szk-n256 | 2 | at dispatch | same |
-| q0015 | a-s1l-cont | 5 | A-20261123-025907-97bab8d | S1-S3, SCOPE section 7 |
-
-If P0L6 is cut again with no segment left: `harness/bin/nrpic-queue add --label a-p0l6-2 --priority 2 --cmd
-'tracks/A-emd-pbh/threshold_ball/scripts/continue_chain.sh A-20261125-044641-7d5bd16 9'`.
+## Card runs: none running or queued for G2. Shared queue: q0015 a-s1l-cont (waiting; continues S1L from t = 198.7
+to 220 for SCOPE section 7, not a checklist item; read by job2_q.py and a2 scripts). No card time used in batch 23.
 
 ## Next, in order
 
-1. C3 mesh leg: when S2c-B (M/32) has reached t = 1, run edge_compare.py (registered) with the extras and compare its
-   line ratio at t = 0.25-1 with S2c-A's (0.050, 0.098, 0.097, 0.129; A-20261125-165215-e3fe168). Write the prediction
-   first (a violation that falls at order >= 1 would be resolution; a flat one is a defect of the evolution to explain).
-   Then C3 per 0039 item 2(c) with orch's answer (outbox c3-smoothed-edge-result, c3-f2-refuted).
-2. A2: N-z128 from the same run (a2_compare.py, registered; AZ2 is judged: N-f 0.43 t_H). Then the next control that can tell a
-   relativistic lag from a coordinate effect (the reader measures coordinate separations; S1L's Gamma-driver shift
-   moves the lattice): a gauge-invariant crossing measure (proper separation from the metric dumps, or the sign of
-   the Jacobian of the particles' proper volume) or a short GR member with zero shift. Prediction first.
-3. Stage: `harness/bin/nrpic-stage verify A-emd-pbh G2 --full` detached once the processor runs above are closed
-   (hundreds of GB; it uses up to four hashing processes, so only with cores free); this session ran verify with
-   --no-checksums because six cores were in use by the runs.
+1. Read orch's rulings on the four questions (C3 with the failure on record; P0L6's finder failure; Szekeres N256 to
+   tau 40 or judged at tau <= 20; a half-amplitude GR member for A2 before G2 or in G3). Do what they say.
+2. Close and read A-20261126-023245-1dd80ad (above).
+3. If the rulings let G2 go on with its failures on record: write the G2 sections of the note (decision 0039 item 9,
+   `/paper-writing`), the schematics on core-v0.7 (C16) and the ladder schematic (C10), the rerun list
+   `stage/G2/VERIFY` (C6), convergence figures in zoom style (C11), a slice mosaic from the Szekeres N256 dumps
+   (`scratch/A-emd-pbh/A-20261125-231808-0784bc9/szk.field.0000[0-2].bin`, uniform 256^3; C13); then
+   `harness/bin/nrpic-stage collect/verify/report A-emd-pbh G2` and ask for the verifier of the whole gate.
+4. C3: the particle-number leg of S2c-A (S2 with the CIC cloud, mesh M/16, x8 particles, to t = 2, processors,
+   prediction first in threshold_ball entry 15); core's answer on the PCS deposit (core's batch-23 test).
+5. P0L6's finder: when core answers (outbox finder-false-accept-and-stall-p0l6), rerun the finder on P0L6's restart
+   files at t = 136 and 140 on processors with the options core names.
 
 ## Packages
 
 | Package | State | What remains |
 |---|---|---|
-| `threshold_ball/` | entry 13: data S1, S2 (prep_bh.py --profile smooth_tophat), tests D and F1 done | F2; if C3 is judged on smooth members, the scan on the smooth profile (exact threshold from expball first) |
-| `periodic_threshold/` | A2 failed as written (0040 item 7); control N-z done (AZ1 narrowly refuted: 4.55 vs band edge 4.5) | AZ2 (N-f), N-z128; P0L6 (q0013) when its chain ends |
-| `conv_ball/` | prep_bh.py gained `--profile` | A-R1.35 ddet unchecked |
-| `szekeres/` | card series queued | analyse when the runs end |
+| `threshold_ball/` | entry 14: C3 mesh leg judged (G refuted) | particle-number leg (entry 15) |
+| `periodic_threshold/` | A2X and AZ1 (N-z128) judged; P0L6 D1-D5 judged | finder rerun after core's answer; half-amplitude member if ruled |
+| `szekeres/` | series ran (q0040, q0041); N64/N128 read (entry 11) | N128/N256 reader (above) |
+| `conv_ball/` | | A-R1.35 ddet unchecked (verifier) |
 
 ## Traps
 
-- `prep_bh.py --edge-w` cannot widen data set 3's outer taper beyond 0.204 M (expball: R2 <= R_b - w); smooth members
-  are another profile (smooth_tophat; R1 = 0.65 R_b is not admissible at delta_c = 1.5, negative density).
-- edge_compare.py's ratio is the x-line version of SCOPE section 3 (weights x^2 dx), as analyse.py; no horizon before
-  t = 5 in these members, so the whole line counts.
-- a2_newton_ic.py's ic.json "median_u_over_disp" is wrong (lattice offset bias); the particle files are right.
-- Found or not found is ONLY in `<base>.horizon_status_<n>.txt` (decision 0040 item 3).
-- Quote exact-mass brackets, never a median below the bracket width (threshold_ball/scripts/c18_answer.py).
-- With a Gamma-driver use `<z4c> dt_gauge = 0.9` (v0.7) or keep cfl_number below the printed bound.
-- At most 6 cores per session: the three runs above use 6 until ~09:00 PST, then 4, then 3.
-- Markdown tables: never write `||H||` inside a table row.
+- `analyse_code_runs.py` takes ~1 min per dump at N = 64, ~8 at 128, ~60 at 256 (one core); run N256 detached.
+- A queue entry for a chain without a segment count runs ONE segment (MAX_SEGMENTS = 1): N256 stopped at tau 21.2.
+- The particle files hold x, u_i, m only: no Lorentz factor without the metric (a2_invariant.py's bound is empty);
+  the probe particle (nearest probe_x at t = 0; column 15 of nrpic.hst) is the dust clock at the origin.
+- Found or not found is ONLY in `<base>.horizon_status_<n>.txt` (decision 0040 item 3), and even a "found" row can
+  be false (P0L6 t = 118.1: check mass, mean and minimum radius, expansion).
+- Newtonian controls at one force cell per particle spacing run 26 per cent late (N-z vs N-z128).
+- GR particle files carry psi^6 in the masses (B's message, AZ2): never read them as Newtonian masses.
+- Quote exact-mass brackets, never a median below the bracket width; with a Gamma-driver use `<z4c> dt_gauge = 0.9`.
+- At most 6 cores per session; markdown tables: never write `||H||` inside a table row.

@@ -337,4 +337,4 @@ reading: threshold_ball entry 14 (G), periodic_threshold 2026-11-25 18:21 PST (A
 | Szekeres N64, N128: A-20261125-213939-0ad9f29 (failed, guard exit 3 at tau 30.25, 37.47); N256: A-20261125-231808-0784bc9 (stopped at tau 21.2, MAX_SEGMENTS = 1 of the queue entry) | P17-P21 (entry 8) | A-20261126-022804-0bc68c2 | see szekeres/JOURNAL entry 11 | SZK_REVIEW_PLACEHOLDER |
 
 The verifier findings of VERIFIER-C18 were answered in batch 19; nothing new from a verifier this batch. Card time
-used by this session: none (q0013, q0040, q0041 were dispatched earlier: 4.87 + 0.40 + 0.83 card-hours).
+used by this session: none (q0013, q0040, q0041 were dispatched earlier: 4.87, 0.09 and 0.98 card-hours by their manifests).
