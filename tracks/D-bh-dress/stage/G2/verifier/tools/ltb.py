@@ -92,7 +92,7 @@ def table_mass(tab_path, M=MBH):
     """Continuum m(R) from a format-2 table of the ES-F slice: K_T^2 = 2 D / R^3."""
     a = np.loadtxt(tab_path, comments="#")
     rbar, KT = a[:, 0], a[:, 3]
-    ok = rbar > 0
+    ok = rbar >= 0.5 * M   # outside the throat: areal radius monotonic in rbar
     rbar, KT = rbar[ok], KT[ok]
     R = areal_radius(rbar, M)
     return R, M + 0.5 * R ** 3 * KT ** 2

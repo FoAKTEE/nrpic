@@ -126,3 +126,11 @@ maker's continuum numbers to 1e-5 at the nine tau; tau_H(R0 = 28 M) = 354.24 +- 
 the lattice with half-weight for its own shell (midpoint sum) within 2e-4 of m_tab
 everywhere in 5 < R0 < 55 M. Refuted (the table and the data maker's continuum are not the
 same slice) above 1e-4 in M_LTB.
+
+V1c first reading (run D-20261126-061754-1089797): m_tab at the outer edge = M + 2.7386556250
+= D_tot exactly; M_LTB from the table equals the data maker's continuum to 1e-6 at tau =
+100-600 M; but at tau = 25, 50 M and for the tracers at R0 = 6, 10 M my table reading was
+wrong (14.8, 33.7 against 15.9, 39.6): a defect of my reader, found by printing m_tab
+against the lattice: the areal radius rbar psi^2 is not monotonic inside the throat
+(rbar < M/2), so the interpolation in R mixed the two branches. Fixed (table restricted to
+rbar >= M/2); rerun with the same prediction.
