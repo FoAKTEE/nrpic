@@ -268,3 +268,42 @@ D2 by dF/dt x ~0.5 M ~ 6e-4 against margins of 2.1e-3 or more. It moves D3 (boun
 D4, which are diagnostics, not G.
 
 V4 prediction stands as in entry 0 (V4a-c).
+
+## Entry 5 (2026-11-25 22:28 PST): outcome of V4 (runs D-20261126-062609-bb28de7 and, with envelopes, D-20261126-062637-6fbe1c9; v4_conv.png looked at)
+
+V4a HELD: |M_4N - M_N| <= |M_N - M_N/4| at 100, 200, 300, 399.5 M (4 of 4): differences N - N/4
+= +1.43e-3, -3.9e-4, +3.9e-4, +5.9e-4; 4N - N = -3.7e-4, +3.6e-4, -9e-6, +4.9e-4. Caveat: single
+samples are noisy (sample standard deviation of N - N/4 1.1e-3, of 4N - N 4.4e-4 over 20-400 M),
+so the four-time ordering is weak evidence by itself; the window rms is the robust form:
+ratio rms(N - N/4)/rms(4N - N) = 2.51, 2.63, 2.32, 2.42 on 20-100, 100-200, 200-300,
+300-399.5 M (2 for N^(-1/2) noise; lead 1.9-3.1 on its own windows). Removed m E_K: N/4
+within 0.86 per cent of N, 4N within 0.64 per cent (entry 3).
+V4b HELD as stated, with a caveat on the sampling: Delta M_16 - Delta M_8 (from 20 M) =
+4.40e-4, 1.16e-4, 8.6e-5 at 100, 200, 299 M (lead's numbers to the digit); with own vacuum
+controls 3.6e-4, 2.9e-5, 1.3e-5. But these are single samples: over 20-299 M the difference
+reaches 1.0e-3 in absolute value and its mean over 250-299 M is +5.8e-4 (a slow upward
+trend is visible). Delta M_8 - Delta M_4 = -1.24e-3, -9.4e-4, -1.22e-3 (larger at all three:
+L3 holds as written), mean -1.07e-3 over 250-299 M, up to 2.1e-3; with own controls -1.9e-3,
+-2.9e-3, -4.0e-3. Two members in the regime, no order: agreed.
+V4c HELD: Hamiltonian norm on shells, FNQ over FN4 (16 times fewer particles; N^(-1/2) noise
+gives 4): [1.2 r_AH, 6 M] 3.19-5.14 (median 4.05), [6, 12] 3.28-4.81 (4.07), [12, 30] median
+2.49 before 150 M and 4.09 after, [30, 60] 0.96-4.2 (median 1.10 before 150 M, deterministic,
+rising to 4 by 350 M as the dust reaches it). The lead's "3.2-5.2 on shells, [30, 60]
+deterministic to 150 M" is reproduced for the two inner shells.
+
+Card-hours against the cost predictions (manifests `runs/<id>/manifest.json`, resources.gpu_hours):
+V-1L 2.24 (V4 2.0-2.6 held), ES-1L 2.49 (E4 held), ES-FL 2.60 (F6 held), V-1L16 3.00 and
+ES-1L16 3.33 (H4 ~3.0, ~3.4 held), FV4 0.59 (P4 held), FE4 0.826 (P6 0.5-0.8 FAILED narrowly),
+FK 2.70 (P11 1.8-2.4 FAILED), FF4 1.34 (P14 held), FN4 3.19 (N4 held), FNQ 1.90 (Q3 held),
+FL16 3.66 (L4 held).
+
+Predictions of the lead that my readings judge as FAILED as written (all on record already
+or listed here): V3 (F_V(500) <= 1e-4; 1.25e-4, not refuted), E2 (<= 1e-4 on 100-300 M and
+<= 2e-4 on 100-500 M; 2.28e-4 at 256.5 M), H1 (M_V1L16 - 1 in [3e-5, 4e-4]; -2.7e-4 at 100 M),
+H2 (F_V16(300) <= 5e-5; 1.34e-4), P2 (M/4 late offset in [+4e-3, 2.5e-2]; -7.9e-3: refuted),
+P5 (M/4 null difference 1e-4 to 4e-4; 4.57e-3: refuted), F2 at 400 M (1.497-1.530; 1.4920, not
+refuted), F3 (overall (iii) median +0.1 to +0.4 per cent; ES-FL +0.52; D1 in [0, 8e-3];
++9.4e-3), F4 ("every removal by reason 3"; 84496 of 147840 by reason 2 after 219 M), P6, P11
+(costs), D3 at N/4 (8352 violations after 221 M) and at M/4 (1704, before 219 M), and N at
+M/4 (pass condition). Held: N at M/8 and M/16, G in all six members, H3, P7-P10, P12, N1-N3,
+Q1-Q2, L1-L3, F4 (removed sum), F5 (no lost horizon).
