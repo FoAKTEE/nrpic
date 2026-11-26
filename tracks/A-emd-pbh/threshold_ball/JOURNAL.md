@@ -569,3 +569,16 @@ C3 under 0039 item 2(c): the smoothed members do NOT meet the bound during the e
 the violation falling with the mesh at a rate that would meet 0.1 on a mesh the track can run, the review decides
 with the failure on record. "A violation that does not fall with the mesh is a defect to be explained": the
 mesh leg (S2c-B) is the deciding run.
+
+## Entry 14, 2026-11-25 18:27 PST (lead of batch 23): the mesh leg of the smoothed-edge test, prediction before S2c-B is read
+
+S2c-B (S2, CIC cloud, mesh B = M/32) ended at t = 1 (run A-20261125-161154-62ce3dc, exit 0 at 10:59 PST; its
+outputs after t = 0.08 have not been read). S2c-A (M/16) line ratios from A-20261125-165215-e3fe168: 0.050 (t = 0.25),
+0.098 (0.5), 0.097 (0.75), 0.129 (1.0). Reading: `edge_compare.py` with the same extras (registered), the x-line
+ratio of SCOPE section 3 and the volume norms.
+Prediction G [JUDGEMENT]: the residual the evolution builds is truncation error of the smooth solution, so it falls
+with the mesh: S2c-B's line ratio at each of t = 0.25, 0.5, 0.75, 1.0 is at most half of S2c-A's (order >= 1),
+and below 0.1 at t = 1. Refuted if B/A > 0.5 at any of the four times (then the growth does not fall with the mesh
+at first order: under 0039 item 2(c) a defect to be explained, not a bound to move). If the order is >= 1, C3 is
+stated as "the smoothed member converges during the evolution, at order p, and meets the bound on M/32 to t = 1";
+the bound on M/16 stays violated and G2 is judged by the review on that record.

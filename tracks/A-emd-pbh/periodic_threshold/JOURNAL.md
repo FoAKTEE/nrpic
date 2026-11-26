@@ -1007,3 +1007,29 @@ correct ratio (offset 0, read at the start of this session) is 1.03 median, 1.00
   at the particles, or the sign of the proper-volume Jacobian), or a short GR member with zero shift; prediction
   first. N-z128 (same run, still going) checks the 5 per cent of N-z.
 A2 stays FAILED as written (decision 0040 item 7).
+
+## 2026-11-25 18:28 PST (lead of batch 23): a crossing measure that does not depend on the coordinates (A2X), before any reading
+
+Why: S1L's first crossing (6.35 t_H, snapshot bracket 6.19-7.21) came from coordinate separations of lattice
+neighbours along z and coordinate time read as cosmic time; the Gamma-driver shift moves the coordinates and the
+1+log lapse slows the central clock, so the lag could be a coordinate effect (decision 0041 item 2).
+Measure (new script `scripts/a2_invariant.py`, processors, existing snapshots of A-20261123-025907-97bab8d):
+(i) the event: the Jacobian J = det(dx/dq) of the Lagrangian map on the particle lattice (centred differences,
+periodic unwrap); a shell crossing is J <= 0 in some lattice cell. The sign of J is unchanged by any smooth spatial
+coordinate change (J' = det(dy/dx) J, det(dy/dx) > 0), so the shift cannot move it; first snapshot with min J <= 0.
+(ii) the clock: the dust's own proper time, bounded below on every worldline by tau_lb(t) = int_0^t alpha_min(t')
+/ W_max dt' (alpha_min: column 16 of nrpic.hst, the lowest lapse anywhere; W_max from the largest |u_i| of the
+snapshots with gamma^ij <= 1.5 delta^ij as a margin) and above by the coordinate time when alpha <= 1; the probe
+particle's integrated proper time (column 15) as a cross-check. Converted as t_c = 2/3 + tau, t/t_H =
+t_c / ((2/3) 6^1.5). The slicing offset of the initial slice against the synchronous one is ~ (2/5) zeta t_i,
+below 0.01 t_H.
+Prediction A2X [JUDGEMENT]: min J stays positive through the snapshot at 6.19 t_H and is negative at 7.21 t_H (the
+same bracket as the z reader: the crossing at the centre is along a principal axis); the dust proper-time lower
+bound at the last snapshot with J > 0 is above 5.0 t_H (the band's upper edge). If so, the lag is not a
+coordinate effect of either the shift or the slicing: the dust worldlines live longer than the Zel'dovich time
+without crossing, and the lag is in the relativistic evolution (physics or numerics; not named by this test).
+Refuted if J first turns negative at a snapshot at or before 5.17 t_H (the z reader missed a crossing), or if
+tau_lb at the last positive snapshot is below 5.0 t_H (the slicing could hide a timely crossing; then a short GR
+member with geodesic slicing and zero shift is queued, prediction first, priority 2).
+N-z128 (A-20261125-160633-e38d321, ended): AZ1's second clause, within 5 per cent of N-z (4.55 t_H), is read
+with a2_compare.py in the same session.
