@@ -6,7 +6,17 @@ decision 0019 item 4). Tags that exist: core-v0.1 = 7daed19 (asymptotically flat
 core-v0.2 = 52c44eb (periodic particles and cosmological gauge; source of main a1c2237),
 core-v0.3 = 609a875 (below).
 
-## For core-v0.8: branch core/restart-finder (2026-11-25; merged into core/nrpic at b755cdcf on 2026-11-26, release waits for the card check q0049)
+## core-v0.8 (release, 2026-11-26): branch core/restart-finder (merged into core/nrpic at b755cdcf)
+
+Record: `tracks/core/RELEASE-v0.8.md` (first line: source commit 01d4aeeb, REGRESSION PASS,
+CARD CHECK PASS with K3 in part refuted). Executables with READY, COMMIT and SHA256SUMS:
+`/data/haiyangw/nrpic/scratch/core/exe/core_nrpic_v08/` (`athena_cpu` serial,
+`athena_gpu` one A100, `athena_cpu_omp` threaded, `athena_cpu_mpi` several ranks). In one
+line: two options (`<fastflow> polish_iterations_<n>`, `<particles> ah_exc_max_growth`),
+three changes without an option (all for runs continued with `-r`: tracker file, header of
+the mesh history, conservation record), one change of `python/nrpic/figstyle.py`, one
+block appended to particle restart files (`NRPCNS01`). Interface documents for
+`coord/INTERFACES/`: `tracks/core/interfaces/restart_outputs.md`, `finder_stop.md`.
 
 Entries of the branch, written by its session for the maintainer's merge. Journal
 `tracks/core/JOURNAL-restart-finder.md`; interface proposals
@@ -103,6 +113,30 @@ style: core-20261125-135435-e82c50d. Open when this was written: the corrected r
 four of Track D's dumps (core-20261125-144142-5858c3d), the two-puncture deck across a
 restart (core-20261125-142953-bf5a228), and the card check (shared-queue entry
 `core-rf-card`); their outcomes are in the journal and the READY.
+
+### Card check (q0049)
+
+Run core-20261126-070946-7971fde (job 5364), judged by core-20261126-114747-a6f2385
+(`analysis/restart_finder/card_check.py`, journal entry 23): K1 (restart deck), K2 (the card
+continues a processor restart file), K4 (cost: 3.3e-3 s per flow iteration, 0.33 s per
+search for 100 polishing iterations on 512 points) and K5 (guard) held; K3 held for the
+polished and the tight rules (card equal to the processors within 3.3e-16) and FAILED for
+`mass_tol` 1e-5 without polishing (masses differ up to 8.8e-6, and the card accepts a
+surface at two of sixteen searches where the processors find none). That rule is the one of
+core-v0.7, unchanged here; compare finder masses across builds only with polishing on.
+
+### Not done (asked or considered, left out of core-v0.8)
+
+- A stop of the finder on the residual of the flow: rejected with reasons
+  (`finder_stop.md` section 2).
+- A guard on excision relative to the last accepted horizon radius: not implemented; the
+  guard is relative to `<fastflow> initial_radius_<n>`.
+- The conservation record across a restart on several ranks: the block is not written
+  there; from the source only the record due two cycles after the restart is recovered;
+  not tested on several ranks (`restart_outputs.md` section 6).
+- Track D's long card test of the guard (a horizon that grows through the guard radius
+  during a run, their ES-FL deck to 240 M with `ah_exc_max_growth`): Track D's card run,
+  not made by core.
 
 ## core-v0.7 (release candidate, 2026-11-24): four source branches (decision 0035 item 4)
 

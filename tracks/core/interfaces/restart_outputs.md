@@ -1,12 +1,13 @@
 # Outputs that survive a restart: tracker file, mesh history, conservation record
 
-Owner core. Branch `core/restart-finder` (batch 18, 2026-11-25), item 1 of
-`tracks/core/NEXT_SOURCE.md`; for release core-v0.8. Proposal: it becomes
-`coord/INTERFACES/restart_outputs.md` when the branch is merged. Evidence and every
+Owner core. Release **core-v0.8** (branch `core/restart-finder`, batch 18, 2026-11-25,
+merged into `core/nrpic` at b755cdcf; item 1 of `tracks/core/NEXT_SOURCE.md`). Ready to be
+copied to `coord/INTERFACES/restart_outputs.md` by the release clerk. Evidence and every
 number: `tracks/core/JOURNAL-restart-finder.md` (predictions before, outcomes after, run
 ids); scripts `tracks/core/analysis/restart_finder/restart_test.py`, `restart_extra.py`;
-deck `problems/tests/restart_outputs.athinput`. Executables:
-`/data/haiyangw/nrpic/scratch/core/exe/core_restart-finder/` (READY there).
+deck `problems/tests/restart_outputs.athinput`. Executables of the release:
+`/data/haiyangw/nrpic/scratch/core/exe/core_nrpic_v08/` (READY there); the branch's own
+`scratch/core/exe/core_restart-finder/` holds builds of the same source.
 
 In one paragraph: a run that is cut (preemption, time limit, `scancel`) and continued
 with `-r <restart file>` wrote three of its files differently from a run that was never
@@ -149,7 +150,15 @@ cycle is missing, because one of the two executables has no densities of the cyc
 before, and no other record is touched. A chain that changes executable at a restart
 loses at most that one record.
 
-Open at the time of writing (see the journal for the outcome): the card check
-(shared-queue entry `core-rf-card`), in which the card runs the restart deck and
-continues a restart file written by the processor build. No run of the card build
-exists yet.
+On a card [VERIFIED, card build of source 01d4aeeb, run core-20261126-070946-7971fde
+(shared-queue entry q0049, job 5364), judged by run core-20261126-114747-a6f2385, journal
+entry 23]: the restart deck with restart files every seven cycles gives the 48 tracker
+cycles with one header, the twelve records of `cons.hst` identical to those of the
+processor build, and the block in the restart files written one cycle before a record;
+the card continues a restart file that the processor build wrote on SIGTERM at cycle 27
+(with the block) and writes the six remaining records identical to those of the
+processors, the first at t = 1.6875. Restart files therefore pass between the card and the
+processor builds of core-v0.8 in both directions as far as tested (processor to card).
+
+Still open: several ranks (not tested; from the source only the record due two cycles after a restart is recovered,
+section 6), and the record of a restart written by a build of core-v0.7 (lost, as above).

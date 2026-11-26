@@ -619,3 +619,48 @@ first pass. The second pass is the run that could refute "the card build is dete
 differs from the processors only in rounding": it would if the polished or tight rule differed
 by more than 1e-12 or if fp_g04 (the rule 1e-5 with another guard) differed from fp_prod in
 masses on the card.
+
+## Entry 23 (2026-11-26, 03:48 PST): outcome of the card check q0049 (run core-20261126-070946-7971fde, judged by run core-20261126-114747-a6f2385)
+
+Figure `fig_card_check.png` of the analysis run, looked at: left, the conservation record of
+the card (uninterrupted and continued from cycle 27) on that of the processors; middle, card
+minus processors per rule and the card's polished minus tight; right, wall times.
+
+- **K1 held.** 48 tracker cycles with two header lines; 12 records of `cons.hst` at the
+  processor times, relative difference card - processors 0.0; the restart files at cycles 7
+  and 35 (`rso.00001`, `rso.00005`) carry the block.
+- **K2 held.** The card continues the processor build's restart file of cycle 27: status 0,
+  first record at t = 1.6875, six records identical to those of the processors (0.0).
+- **K3 held for the polished and the tight rules, FAILED for the rule 1e-5 without
+  polishing.** Polished: same searches found as on processors, masses within 2.2e-16 (and
+  0.0 from the fourth search on); tight: 3.3e-16; card polished against card tight: 6.3e-8
+  at the ten searches where both are found (bound 2e-5). Rule 1e-5: identical to 2.2e-16 up
+  to cycle 20, where both fail at the cap of 400 iterations; from cycle 24 the masses differ
+  (6.5e-8 at cycle 24, 8.8e-6 at cycle 36, falling to 3e-10 at cycle 56) and at cycles 28 and
+  32 the card accepts a surface (253 and 27 iterations, masses 0.98478 and 1.00549, the
+  second above the converged mass 1.00473 of cycle 36) where the processors stop at 400
+  without one. The second pass's prediction (entry 22) held in every part: the card is
+  deterministic (fp_g04, the same rule with another guard, gives the masses of fp_prod
+  exactly, 0.0), and the converged rules agree with the processors to rounding. What the
+  result says [JUDGEMENT, consistent with every number above, mechanism not isolated by a
+  run]: a search that ends at its iteration cap leaves the start surface of the next search
+  after 400 iterations of a flow that does not converge, so a difference in the last bit
+  between the card's and the processors' arithmetic grows there, and a rule that accepts an
+  unconverged surface turns it into a different accept. Polishing removes it. Consequence for
+  users: without polishing, the finder's answer of a card run and of a processor run of the
+  same deck can differ beyond 1e-8 and even in whether a horizon is found; with 100
+  polishing iterations they agree to the last bits on this test. This goes into
+  `finder_stop.md` section 6 and the READY.
+- **K4 held.** 3.28e-3 s per flow iteration on the card, from (14.49 - 7.76) s over
+  (3489 - 1437) iterations of fp_pol and fp_prod: 0.33 s for 100 polishing iterations per
+  search (bound 0.05 s per iteration). The tight rule costs 83.2 s for 16 searches (24 312
+  iterations) against 14.5 s polished.
+- **K5 held.** Without the option 237 particles are removed inside the horizon (reason 3);
+  with `ah_exc_max_growth = 0.4` none.
+
+Judgement of the lead [JUDGEMENT]: the card check PASSES for what core-v0.8 changes (the
+restart outputs on a card and across executables, polishing and its cost, the guard). The
+failed part of K3 is a prediction about the rule of core-v0.7 without polishing, which this
+release does not change; it is on record as failed and is stated in the release record, the
+changelog and the interface text. The first registered pass (core-20261126-114526-2b1f001)
+failed on the reader and stays on record.

@@ -1,13 +1,15 @@
 # Horizon finder: what the stopping rule means, polishing iterations, the excision guard
 
-Owner core. Branch `core/restart-finder` (batch 18, 2026-11-25), item 2 of
-`tracks/core/NEXT_SOURCE.md`; for release core-v0.8. Proposal: it becomes
-`coord/INTERFACES/finder_stop.md` when the branch is merged. Requests served: Track D
+Owner core. Release **core-v0.8** (branch `core/restart-finder`, batch 18, 2026-11-25,
+merged into `core/nrpic` at b755cdcf; item 2 of `tracks/core/NEXT_SOURCE.md`). Ready to be
+copied to `coord/INTERFACES/finder_stop.md` by the release clerk. Requests served: Track D
 `finder-stopping-rule` (items 1 and 2) and `ah-excision-growth-guard` (items 1 to 3).
 Evidence and every number: `tracks/core/JOURNAL-restart-finder.md` (entries 2, 6, 7, 9
 and the outcomes after them); scripts `tracks/core/analysis/restart_finder/finder_test.py`,
-`finder_probe.py`; deck `problems/tests/finder_polish.athinput`. Executables:
-`/data/haiyangw/nrpic/scratch/core/exe/core_restart-finder/` (READY there).
+`finder_probe.py`, `card_check.py`; deck `problems/tests/finder_polish.athinput`.
+Executables of the release: `/data/haiyangw/nrpic/scratch/core/exe/core_nrpic_v08/` (READY
+there); the branch's own `scratch/core/exe/core_restart-finder/` holds builds of the same
+source.
 
 ## 1. Two options, both off when absent
 
@@ -198,17 +200,35 @@ t = 100, 250, 400, 500 M; prediction P18, held):
 
 Found at every dump. Figure: `fig_finder_probe.png` of the run.
 
-Open: the finder on a card and its cost per search there (shared-queue entry
-`core-rf-card`, journal entry 12, predictions K3 and K4; `card_check.py`). No run of the
-card build exists yet.
+**On a card** (card build of source 01d4aeeb, run core-20261126-070946-7971fde, shared-queue
+entry q0049, job 5364; judged by run core-20261126-114747-a6f2385, journal entries 21 to 23;
+the deck `problems/tests/finder_polish.athinput`, 16 searches in 2 M, ntheta 16):
+
+| Rule | Card against processors (same deck, same particles) | Wall time on the card |
+|---|---|---|
+| `mass_tol` 1e-5, 100 polishing iterations | same searches found; masses within 2.2e-16 [VERIFIED] | 14.5 s (3489 flow iterations) |
+| `mass_tol` 1e-9 (tight) | same searches found; masses within 3.3e-16 [VERIFIED] | 83.2 s (24 312) |
+| `mass_tol` 1e-5 without polishing (the rule of `puncture_setup`) | **differs**: from the search after one that failed at its cap the masses differ by up to 8.8e-6, and at two of sixteen searches the card accepts a surface where the processors find none [VERIFIED] | 7.8 s (1437) |
+
+Cost of polishing on a card: 3.3e-3 s per flow iteration on this grid (512 points), so 0.33 s
+per search for 100 polishing iterations [VERIFIED, one run; cost per iteration scales with
+the number of surface points, JUDGEMENT]. The polished search on the card is within 6.3e-8 of
+the card's tight search at the ten searches where both are found.
+
+What it means for users [JUDGEMENT, consistent with every number of the run, mechanism not
+isolated]: without polishing, a card run and a processor run of the same deck can give
+finder masses that differ beyond 1e-8 and even disagree on whether a horizon is found; with
+100 polishing iterations (or a tight `mass_tol`) they agree to the last bits on this test.
+Compare finder results between builds only with polishing on.
 
 ## 7. Not tested, not done
 
 - A horizon that grows through the guard radius during a run (Track D's ES-FL at
-  219.5 M with `ah_exc_max_growth` above 4): the test here sets the guard radius inside
-  the horizon from the start. The comparison is the same line of source evaluated at
+  219.5 M with `ah_exc_max_growth` above 4; Track D's long card test of the guard, not run
+  by core): the test here sets the guard radius inside the horizon from the start. The comparison is the same line of source evaluated at
   every step [JUDGEMENT]. Track D's deck to 240 M is a card run of Track D.
 - Polishing with a moving puncture, a common horizon of a pair
   (`punc_pair_a_<n>`), a horizon in matter, several ranks, a periodic box.
-- A stop on the residual; a guard relative to the last accepted radius.
+- A stop on the residual (rejected, section 2); a guard relative to the last accepted
+  radius (not implemented).
 - The angular offset of section 2 is Track D's measurement, not repeated.
