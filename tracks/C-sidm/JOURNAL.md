@@ -1060,3 +1060,25 @@ Failed predictions of this entry: none.
 - card-hours: none used by this session's runs (processors only: smoke 4 cores x 583 s;
   analyses 1 core); closed this session A324s1c+ 1.7733; queued about 18.6 for the legs.
   nrpic-run budget: G2 31.09 used (allotment shown 60; 80 by ruling 0039 item 3).
+
+## 2026-11-26T11:48Z  session C-sidm lead (batch 27)  state found; how the ended runs are judged
+
+Written before any registered analysis of this session. Ended since batch 20 (queue `done`):
+q0018 N4c C-20261125-132112-edf3fbc, q0046 N6b344 C-20261125-224959-d1d4494, q0047 N6b324
+C-20261126-020831-fabf2d7, q0048 D2eta1 C-20261126-034500-4b34b1c, q0056 N6b344e1
+C-20261126-050124-00e10ae, and the priority-5 continuations q0022 A334s2c+ (C-20261124-053105-2fcc8af),
+q0023 A334s3c+ (C-20261124-082221-7f03a8e), q0024 D2f2s2+ (C-20261124-035054-c06503f). q0055 A16b344
+runs (job 5376); q0057 A16b324 and q0058 N6b324e1 wait.
+Disclosure (not a result): while checking the chain states before closing, I saw the last row of
+each history: np = 0 at 600 M for N4c, N6b344, N6b344e1 (all particles excised, i.e. a collapse
+somewhere before 600 M), np = 1e6 at 600 M for N6b324, and D2eta1's chain FAILED: the guard
+(<z4c_guard>) stopped it at 190.375 M with non-finite Z4c fields (cc.guard.txt), 27 M after the
+M/8 f = 2 collapse time 163.41 M. No collapse time, alpha_c value or collision count was seen.
+The predictions stand as written (NS.3 2026-11-24T13:14Z; B17.4 2026-11-25T11:56Z; B17.5, B17.6
+12:01Z; B20.3 16:02Z, the 0.344 half only: N6b324e1 has not run).
+Reader change before the analyses: nseries.py gains --title, --control (alpha_c(run) -
+alpha_c(control), 20 M block means) and the range of the 20 M block means of alpha_c - alpha_c(0)
+over [0, min(t_end, t_c)] (the band of B17.6); nothing else changes. Every t_c below is the
+alpha_min = 0.3 lapse marker; none of these runs had the horizon finder.
+Rules applied: D2eta1 is judged on its record up to the guard stop (t_c and the 0-100 M collision
+rate lie before it); the run stays FAILED on record (chain status FAILED, exit 3 of the guard).

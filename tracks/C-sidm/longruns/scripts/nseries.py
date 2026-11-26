@@ -84,6 +84,9 @@ def nparticles(lab, h):
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--out", default=os.environ.get("NRPIC_RUN_DIR"))
+    ap.add_argument("--title", default="Collisionless control of y0 = 0.334032 on M/8 against particle number")
+    ap.add_argument("--control", default=None,
+                    help="label of the control: adds alpha_c(run) - alpha_c(control) as 20 M means")
     ap.add_argument("runs", nargs="+")
     a = ap.parse_args()
     os.makedirs(a.out, exist_ok=True)
@@ -107,6 +110,14 @@ def main():
             o["dgamma"][f"{c:.0f}"] = wmean(t, dgam, c - HALF, c + HALF)
         o["dalpha_c"]["580_600"] = wmean(t, dac, 580.0, 600.0)
         o["dgamma"]["580_600"] = wmean(t, dgam, 580.0, 600.0)
+        # range of the 20 M block means of alpha_c - alpha_c(0) over [0, min(t_end, t_c)]
+        # (B17.6, B20.1: the band [-0.03, +0.03]); blocks [0,20], [20,40], ...
+        tb = o["t_c"] if o["t_c"] is not None else float(t[-1])
+        blocks = [wmean(t, dac, b, b + 20.0) for b in np.arange(0.0, tb - 20.0 + 1e-9, 20.0)]
+        blocks = [x for x in blocks if x is not None]
+        o["dalpha_c_block20_min"] = float(min(blocks)) if blocks else None
+        o["dalpha_c_block20_max"] = float(max(blocks)) if blocks else None
+        o["dalpha_c_block20"] = blocks
         zp = os.path.join(d, "cc.z4c.user.hst")
         zt = zh = None
         if os.path.exists(zp):
@@ -130,7 +141,25 @@ def main():
                                               if res[hi]["dalpha_c"][k] is not None and res[lo]["dalpha_c"][k] is not None
                                               else None for k in res[hi]["dalpha_c"]}
             pairs[f"{hi}_vs_{lo}"] = p
-    out = dict(runs=res, pairs=pairs,
+    if a.control:
+        tc_, dc_ = ser[a.control][0], ser[a.control][1]
+        for lab in labs:
+            if lab == a.control:
+                continue
+            t, dac = ser[lab][0], ser[lab][1]
+            tend = min(float(t[-1]), float(tc_[-1]))
+            if res[lab]["t_c"] is not None:
+                tend = min(tend, res[lab]["t_c"])
+            d = {}
+            for b in np.arange(0.0, tend - 20.0 + 1e-9, 20.0):
+                m1 = (t >= b) & (t <= b + 20.0)
+                m2 = (tc_ >= b) & (tc_ <= b + 20.0)
+                if m1.sum() >= 3 and m2.sum() >= 3:
+                    d[f"{b:.0f}_{b + 20:.0f}"] = float(np.mean(dac[m1]) - np.mean(dc_[m2]))
+            res[lab]["delta_vs_control"] = d
+            vals = list(d.values())
+            res[lab]["delta_vs_control_absmax"] = float(max(abs(x) for x in vals)) if vals else None
+    out = dict(runs=res, pairs=pairs, control=a.control, title=a.title,
                predictions="JOURNAL 2026-11-24T13:14Z: NS.1 N1e6 no collapse by 600 M and dalpha_c(400) > -0.005; "
                            "NS.2 t_c(N1e6) in [455, 615] M; NS.3 N1e4 collapse before 300 M (relaxation) or in [455, 615] (scheme)")
     with open(os.path.join(a.out, "nseries.json"), "w") as f:
@@ -138,7 +167,8 @@ def main():
     for lab in labs:
         o = res[lab]
         print(lab, {k: o[k] for k in ("t_end", "np0", "alpha_c0", "t_c", "alpha_min_min", "t_alpha_min_min",
-                                       "H_norm2_mean_100_300") if k in o})
+                                       "H_norm2_mean_100_300", "dalpha_c_block20_min", "dalpha_c_block20_max",
+                                       "delta_vs_control_absmax") if k in o})
         print("   dalpha_c", o["dalpha_c"])
         print("   dgamma  ", o["dgamma"])
     print(json.dumps(pairs, indent=1, default=float))
@@ -176,7 +206,7 @@ def main():
     ax[0].legend(fontsize=7)
     ax[1].set_title("guides: alpha_min 0.3; NS.2 window 455-615 M", fontsize=7)
     ax[0].set_title("guides: NS.1 bar -0.005 at 400 M", fontsize=7)
-    fig.suptitle("Collisionless control of y0 = 0.334032 on M/8 against particle number", fontsize=9)
+    fig.suptitle(a.title, fontsize=9)
     fig.tight_layout()
     fig.savefig(os.path.join(a.out, "fig_nseries.png"), dpi=150)
 
