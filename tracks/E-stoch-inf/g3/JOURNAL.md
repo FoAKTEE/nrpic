@@ -175,3 +175,14 @@ the pilot on `inputs/usr_prod_kd.athinput`, the production deck with the line la
 - C6-4 (level 2, preview on five pairs; G3-L2 of entry 2 is judged on all 16): per pair, level 2 changes F_pm(3) of
   zeta by less than 10 per cent and the skewness by less than 0.02 against the level-0 pair of the same seed.
 - A8 (entry 4) for k000/k001: rms(alpha - 1) at N_f below 1e-5 and rms of H int (alpha - 1) dt below 1e-3 sigma_lin.
+
+## entry-7 (2026-11-25 18:49 PST, lead of E, batch 23): the first reading runs were stopped; what changes, before the rerun
+
+Both runs of entry 5 were stopped by `nrpic-run stop` after 24 minutes with no member finished (E-20261126-022447-40a80b4,
+E-20261126-022448-9510ee9, status stopped, no output): on this machine (load 85-100) the lead's map at 4000 steps on a
+full 128^3 dump takes far more than R41's 11 core-minutes (at least 24, likely about 40: the 32^3 timing did not carry
+over; the arrays no longer fit in cache). R41 is restated. Changes, nothing else: the pilot reading runs the map at 1000
+steps for every cell, with the 4000-step map on 20000 random cells per member as the check of P5-3 (the same comparison
+entry 5 predicted, the other way round); the cell-by-cell comparison of P5-2 runs on 100000 random cells of b000 plus
+every cell with |R^NR| > 2.5 sigma_lin (about 25000), the cells that decide F(3) and F(4). Predictions of entry 5 stand
+as written; P5-2 is judged on those cells.

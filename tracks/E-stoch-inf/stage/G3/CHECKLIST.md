@@ -1,6 +1,6 @@
 # Checklist: E-stoch-inf G3
 
-Collected by `harness/bin/nrpic-stage collect E-stoch-inf G3` on 2026-11-25T15:28:49Z from `coord/CHARTER.md` (last changed in a61186835) and the brief (sections 13.3 and 13.4).
+Collected by `harness/bin/nrpic-stage collect E-stoch-inf G3` on 2026-11-26T02:39:19Z from `coord/CHARTER.md` (last changed in a61186835) and the brief (sections 13.3 and 13.4).
 For each item set `status:` to PASS, FAIL or NA (OPEN until judged) and give the evidence: run ids,
 figure files, KB locators, commits. `nrpic-stage report` reads this file; the automated checks are
 in VERIFY_RESULTS.md (`nrpic-stage verify`), not here.
@@ -37,7 +37,7 @@ in VERIFY_RESULTS.md (`nrpic-stage verify`), not here.
 
 ## Rulings of the orchestrator on the criteria (coord/DECISIONS; check that they apply to G3)
 
-- [ ] **C8** Track E. Decision of the feasibility gate, pending the group: continue to G1 and G2 (about two card-hours); the scope of G3 is decided at G2. The lead's choices of `spec/scope/SCOPE.md` section 4 are accepted. (0013)
+- [x] **C8** Track E. Decision of the feasibility gate, pending the group: continue to G1 and G2 (about two card-hours); the scope of G3 is decided at G2. The lead's choices of `spec/scope/SCOPE.md` section 4 are accepted. (0013)
   - status: NA
   - evidence: decision 0013 concerned G0-G2; the scope of G3 was decided by decisions 0038 item 2 and 0040 item 1 and is written in SCOPE 4d with 4d.9
 
