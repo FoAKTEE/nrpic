@@ -71,7 +71,7 @@
     "bytes": 5363,
     "files": 1
   },
-  "status": "failed",
+  "status": "stopped",
   "exit_code": -15,
   "registered": "2026-11-26T02:32:43Z",
   "started": "2026-11-26T02:32:44Z",
@@ -88,5 +88,5 @@
     "runs": 299,
     "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md + 0026-cards-loaded-allotment-cost.md + 0031-level2-branch-and-ablation.md + 0032-new-account-preemption-allotments.md + 0038-track-e-g2-signed-g3-scope.md + 0039-rulings-after-batch-17.md"
   },
-  "finished": "2026-11-26T02:47:21Z"
+  "finished": "2026-11-26T02:47:23Z"
 }
