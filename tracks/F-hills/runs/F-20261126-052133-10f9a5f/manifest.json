@@ -1,0 +1,131 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "F-20261126-052133-10f9a5f",
+  "track": "F-hills",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "B2: binary alone at m/16 continued from B's restart 34 (t = 107.85 M) to tlim 140 (next apocentre, decay per orbit), restart files every 1 M (lead batch 11, prediction in JOURNAL)",
+  "preregistered_in": null,
+  "launcher": "chain",
+  "command": [
+    "scripts/submit_chain.sh",
+    "/data/haiyangw/nrpic/scratch/F-hills/F-20261126-052133-10f9a5f",
+    "/data/haiyangw/nrpic/wt/F-hills/tracks/F-hills/binary_conv/inputs/bin_m16.athinput",
+    "time/tlim=140",
+    "output4/dt=1.0",
+    "nrpic_resume=/data/haiyangw/nrpic/scratch/F-hills/F-20261121-203156-03efdd3/rst/hills.00034.rst"
+  ],
+  "cwd": "scratch/F-hills/F-20261126-052133-10f9a5f",
+  "git": {
+    "sha": "10f9a5fde2cc358be6b39f2630a617807bf4fb54",
+    "branch": "track/F-hills",
+    "dirty": false,
+    "package": [
+      "tracks/F-hills/binary_conv"
+    ],
+    "outside_package": {
+      "count": 0,
+      "first": []
+    },
+    "merge_base_main": "17cee82aa8aa267ead5d77a82819994d6018c7dc",
+    "worktree": "wt/F-hills"
+  },
+  "code": {
+    "core_tag": "core-v0.7",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": "nrpic_cf",
+    "exe": "/data/haiyangw/nrpic/wt/F-hills/tracks/F-hills/binary_conv/scripts/athena_resume_bc.sh",
+    "exe_sha256": "4e67e306ba040b6d9f7a0e0d1df1343f1b29b081184b47a1cec894a22df2839f",
+    "cmake_flags": null,
+    "toolchain": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "b7f7695d8e9720758c144dd9c0f272ce4fba8b46f921750462326664310fad51",
+    "machine_file_sha256": "ff4e45b0fd5bf6bee4bf1084a282d72b9adf66f4a455f4e937d9884a1fb07535",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": "NVIDIA A100 80GB (Slurm partition preempt)",
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/F-hills/.venv"
+  },
+  "input": {
+    "file": "tracks/F-hills/binary_conv/inputs/bin_m16.athinput",
+    "sha256": "179a4e9aae8c6c4c6884af62bf12b4076759a4f82d6ccab2c5ee262e0ee00557",
+    "overrides": {
+      "time/tlim": "140",
+      "output4/dt": "1.0"
+    }
+  },
+  "inputs": [
+    {
+      "path": "/data/haiyangw/nrpic/scratch/F-hills/tmp/binary_conv/exe/bc-ak05-gpu",
+      "role": "input",
+      "sha256": "2512c8d59af960093e86eb05add6485ca8ad08e8f6ba8b03b099166507b61ea4",
+      "bytes": 107789152,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "tracks/F-hills/binary_conv/scripts/athena_resume_bc.sh",
+      "role": "exe",
+      "sha256": "4e67e306ba040b6d9f7a0e0d1df1343f1b29b081184b47a1cec894a22df2839f",
+      "bytes": 1954,
+      "tracked": true
+    },
+    {
+      "path": "tracks/F-hills/binary_conv/inputs/bin_m16.athinput",
+      "role": "athinput",
+      "sha256": "179a4e9aae8c6c4c6884af62bf12b4076759a4f82d6ccab2c5ee262e0ee00557",
+      "bytes": 3436,
+      "tracked": true
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 1,
+    "cores": 1,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": 5,
+    "gpu_hours_requested": 4.9167,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": {
+    "partition": "preempt",
+    "job_name": "F-20261126-052133-10f9a5f",
+    "job_ids": []
+  },
+  "outputs": {
+    "dir": "scratch/F-hills/F-20261126-052133-10f9a5f",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "submitted",
+  "exit_code": null,
+  "registered": "2026-11-26T05:21:38Z",
+  "started": null,
+  "ended": null,
+  "parents": [
+    "F-20261121-203156-03efdd3",
+    "F-20261121-130351-04074e1"
+  ],
+  "notes": "requeued through nrpic-queue (decision 0033): same arguments as F-20261124-135408-1e6db58, cancelled while pending at 2026-11-24 12:00 PST before it started (closed as stopped, 0 card-hours); prediction B2 of JOURNAL batch 11 stands",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 60.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 13.597,
+    "gpu_hours_reserved": 0.0,
+    "gpu_hours_without_gate": 0.0,
+    "cores_busy": 0,
+    "runs": 264,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md + 0026-cards-loaded-allotment-cost.md + 0031-level2-branch-and-ablation.md + 0032-new-account-preemption-allotments.md + 0038-track-e-g2-signed-g3-scope.md + 0039-rulings-after-batch-17.md"
+  }
+}
