@@ -1205,3 +1205,48 @@ prediction SM-h (processor build v0.7, 4 cycles): starts, reads 262144 particles
 - Figure defects found and fixed in this session: a2_invariant.py and a2_crossing.py drew S1L's band, reference
   and title for every member (the numbers in the JSON used the arguments); both now take --band, --reference,
   --label (commit cfb6a17b2); a2_probe_check.py still titles its figure "S1L" (cosmetic, left).
+
+## 2026-11-26 15:35 PST (lead of batch 31): FP, the core-v0.8 finder with polishing on the restart files of P0L6 and S1L (condition (b) of decision 0047), prediction before any run
+
+Gate G2 of this track is NOT passed (coord/GATES.md, decision 0047, stage/G2/GATE_REVIEW.md). Condition (b): the finder
+finds the trapped surface on the existing restart files of the periodic chain and of the triaxial run without a false
+acceptance. Test FP: each restart file (P0L6 A-20261125-044641-7d5bd16 rst 16 at t = 130.0 and rst 17 at t = 140.0;
+S1L A-20261123-025907-97bab8d rst 18 at t = 210.0 and rst 19 at t = 220.0; all written by build_gpu_v06) is continued
+for ONE cycle on the processors with the threaded core-v0.8 build (scratch/core/exe/core_nrpic_v08/athena_cpu_omp,
+3 threads) and searched at the end of that cycle by several horizons at the box centre (script
+scripts/finder_probe_box.py, method of tracks/core/analysis/restart_finder/finder_probe.py):
+- "v08 rule": mass_tol 1e-5, polish_iterations 100, flow_iterations 400, diagnostics, from the deck's start radius
+  (P0L6 0.15, S1L 0.6): what a continued run with the recommended setting does;
+- the same from the radius of the trapped region (P0L6: 0.103, the line's outermost marginally trapped sphere at
+  t = 140, D2 outcome, and 0.012, the verifier's outermost tracked trapped shell at t = 140; S1L: 0.2 and 0.1);
+- the same with flow_iterations 4000 (does the flow converge slowly, or not at all?);
+- the tight rule, mass_tol 1e-9, 4000 iterations, no polishing, from the trapped radius;
+- a sphere scan: flow_iterations 1 at a list of radii, which writes the surface integral of the expansion of the round
+  coordinate sphere itself (column 10 of the status file, first flow iteration evaluates the start sphere; read in
+  fastflow.cpp FastFlowLoop). Negative = the round sphere is trapped in the finder's own measure.
+
+Predictions (written before the first probe):
+- FP0 The restart files of build_gpu_v06 are read by the v08 processor build (v0.7/v0.8 pass, v0.6->v0.7 passed in F2).
+  Refuted if the setup fails; then the v0.6 processor build without polishing is used.
+- FP1 The v08 rule from the deck radius still ends with reason 6 at all four dumps. Reason: polishing acts only AFTER
+  the mass rule is first met; reason 6 means the rule was never met in 400 iterations, so polishing cannot change it
+  [JUDGEMENT from the interface text, section 2]. Refuted if any of them is found.
+- FP2 No search is accepted with a positive mean expansion or a mean radius above 1 (no false acceptance). Refuted by
+  any found = 1 row with hmean > 0 or meanradius > 1.
+- FP3 P0L6, sphere scan at t = 140: the round sphere's expansion integral is negative between about 0.02 and 0.10 and
+  positive at 0.12 and beyond (the line's trapped sphere, D2: outermost marginal sphere r = 0.103, m = 6.28); at
+  t = 130 negative nowhere or only inside 0.03 (the line holds no trapped sphere before 136; tracked shells trapped
+  from 122 at r ~ 0.01). Refuted if positive at every radius at t = 140 (then the finder's own expansion and the line
+  reader disagree, a defect of one of them), or negative out to 0.12 or beyond.
+- FP4 P0L6, searches started inside the trapped region (0.103, 0.012) with 4000 iterations: the flow moves outward to
+  r ~ 0.10-0.13 and stalls with reason 6 again, the mass changing by more than 1e-5 per iteration to the cap. That
+  would place the defect in the flow itself on this slice (core's item). Refuted if any of them is found with a mass
+  between 3.47 (largest tracked trapped shell) and ~7 and a mean radius 0.08-0.13: then the finder works given a
+  start radius and enough iterations, and condition (b) is met for P0L6 by a rule that the deck can carry.
+- FP5 S1L at t = 210 and 220: whether any round sphere is trapped is open (nothing has read S1L's slice); prediction:
+  the sphere scan is negative for some radius below 0.3 (S1L's searches stall with mean radius 0.53 and m ~ 20, the
+  same pattern as P0L6 outside its trapped sphere), and the searches end with reason 6 as in P0L6. Refuted if the
+  scan is positive at every radius (then S1L has no trapped round sphere and its "stall" is a different situation).
+What happens next either way: if FP4 is refuted, the probe rule goes into the decks of the G3 box runs and S1L's
+S1-S3 are judged with it; if it holds, the smallest reproducer (restart file, deck, expected radius) goes to core
+(outbox), whose source session after 2026-11-27 takes it (decision 0047 item 4).
