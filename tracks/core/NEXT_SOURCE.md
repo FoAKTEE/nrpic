@@ -48,7 +48,9 @@ its own branch from `core/nrpic` with a READY and a new directory under `scratch
    O(1e-3) of the mass per level face there [JUDGEMENT; A's set-up not rerun].
 1. **`<fastflow> diagnostics` (any new parameter) in a run continued from a restart file**
    (decision 0042 item 4; Tracks D and F: chains started without the option never get a
-   status file).
+   status file; Track B's inbox item 21 `restart-new-parameters`, the same cause for
+   `<z4c> dt_gauge`, `dt_lightspeed` on its population restarts; F's item 29
+   `finder-diagnostics-on-restart`).
    - Where: `athenak/src/parameter_input.cpp` 370-409, `ParameterInput::ModifyFromCmdline`,
      exits with "Parameter '<name>' in block '<block>' on command line not found" for any
      parameter that is not in the parameter set already loaded; on a restart that set is
@@ -67,7 +69,11 @@ its own branch from `core/nrpic` with a READY and a new directory under `scratch
    - Fix (proposal): on a restart only (`res_flag`), let `ModifyFromCmdline` add a missing
      parameter (and a missing block) with a line in the log ("added from the command line
      on restart: <block>/<name>"); keep the fatal error on a fresh start, where it catches
-     typos. Alternatively an explicit form `+block/name=value` that adds. Test:
+     typos. Alternatively an explicit form `+block/name=value` that adds. F's smaller
+     proposal, `GetOrAddBoolean("fastflow", "diagnostics", false)` in `fastflow.cpp`, makes
+     restart files written from then on carry the line, but helps neither restart files
+     that exist nor B's step-limit options, and it adds a line to every parameter dump
+     (check the byte regression: the stored input is part of a restart file). Test:
      `tracks/core/analysis/restart_diag/diag_restart.py` with the new build: case a must then
      start and write the status file like case b (change F1a's expectation in the script),
      b and c unchanged; byte regression 75 of 75.
