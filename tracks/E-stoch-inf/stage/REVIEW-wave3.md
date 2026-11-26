@@ -677,3 +677,24 @@ recompute it (A13). Every number below has its run id; predictions were committe
 - Defects found and fixed: NaN in the biased sampler where the noise vanishes (sdn/langevin.py, before any
   registered run); the constant shift of A9 replaced by a variance-share profile (A14 (a)); the variance gate of
   ref_spec.py loops over the lattice variants that ran (it required s0.01_lattice in every run).
+
+## J. Batch 23 (2026-11-25 18:17-19:35 PST, lead of E): the zeta-reader verifier (batch 21), the G3 pilot, the next card entries
+
+Finished since the last lead session (batch 20): the helper package `g3/zeta_verify/` (batch 21; its VERIFY.md was put
+to the orchestrator, who ruled in decision 0042 item 1) and the card pilot q0050 (run E-20261126-002413-65295f3).
+
+### J.1 g3/zeta_verify (independent check of the zeta reader), checked from the artefacts
+- Looked at (Read): `fig/fig_compare_lead.png` (the reader's second coefficient within 3e-5 to 6e-5 of the exact one in
+  every direction, the DOP853 reference 0.124 off along Pi alone and 5e-3 at x10) and `fig/fig_momentum_map.png` (left:
+  N minus its quadratic Taylor polynomial along Pi is cubic over two decades, both signs; right: float64 round-off floor
+  4.4e-10 in N against long double 2.3e-13). Both agree with VERIFY.md sections 3-4.
+- Confirmed independently this session: (a) the verifier's library and the lead's reader read the same 128^3 dump
+  (the comparison run of J.3 asserts equal fields from two parsers); (b) the variational coefficients are used as the
+  expected values of Z1 by a script of the lead's (`zeta/z1_variational.py`, J.2), which reproduces the verifier's
+  numbers or not by its own run.
+- Not confirmed by the lead: the closed-form tests (P1, P2) and the round-off floors were not rerun (the scripts and
+  results are committed; rerun lines in g3/zeta_verify/README.md).
+- Wrong: nothing found. The verifier's estimate of about 10 minutes per 128^3 dump for its own reader (README Request
+  3) is far too low on this machine (J.3).
+- Failed predictions of the package on record: P8 on the background trajectory (1.8e-9 against a 1e-9 bar; predicted as
+  narrow), Z1 along Pi alone (the reference, not the reader).

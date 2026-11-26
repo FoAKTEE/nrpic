@@ -96,47 +96,50 @@ def one(job):
     Rx, h, N = RS.r_nr(path, 1)
     sig_lin, _ = RS.sigma_lin_of(path[:-len(".dump")] + ".modes", N)
     _, f = fl.ll.read_dump(path, ["phi", "Pi", "chi", "K"])
-    ns = lead_namespace(cfg["src"], cfg["lam"], cfg["vev"], cfg["phi_e"], cfg["msteps"])
     H = -f["K"] / 3.0
     v = f["Pi"] / H
     n_back = int(np.sum(v <= 0))
-    phi = f["phi"].ravel()
-    vv = v.ravel()
-    dn = ns["map_rk4"](phi, vv).reshape(f["phi"].shape)
-    rng = np.random.default_rng(cfg["seed"])
-    idx = rng.choice(phi.size, cfg["check_cells"], replace=False)
-    nsc = lead_namespace(cfg["src"], cfg["lam"], cfg["vev"], cfg["phi_e"], cfg["check_msteps"])
-    dc = nsc["map_rk4"](phi[idx], vv[idx]) - dn.ravel()[idx]
-    step_dev = float(np.max(np.abs(dc)))
-    step_dev_nooffset = float(np.max(np.abs(dc - dc.mean())))
-    z = -0.5 * np.log(f["chi"] / f["chi"].mean()) + dn
-    z = z - z.mean()
     dphi = f["phi"] - f["phi"].mean()
     dPi = f["Pi"] - f["Pi"].mean()
     rel_slope = float(np.sum(dphi * dPi) / np.sum(dphi * dphi))
     rel_corr = float(np.corrcoef(dphi.ravel(), dPi.ravel())[0, 1])
     sR, skR, kuR = moments(Rx)
-    sZ, skZ, kuZ = moments(z)
     rec = dict(label=label, run=run, time=float(h["time"]), N=int(N), sigma_lin=sig_lin,
-               msteps=cfg["msteps"], check_msteps=cfg["check_msteps"], step_dev_max=step_dev,
-               step_dev_max_offset_removed=step_dev_nooffset, n_cells_rolling_back=n_back,
+               msteps=cfg["msteps"], n_cells_rolling_back=n_back,
                relation_slope=rel_slope, relation_corr=rel_corr,
                R_ratio=sR / sig_lin, R_skew=skR, R_exkurt=kuR,
-               zeta_ratio=sZ / sig_lin, zeta_skew=skZ, zeta_exkurt=kuZ, skew_sum=skZ + skR,
-               corr_zeta_R=float(np.corrcoef(z.ravel(), Rx.ravel())[0, 1]),
-               zeta_max=float(z.max() / sZ), zeta_min=float(z.min() / sZ))
+               rms_dK_over_K=float(np.std(f["K"]) / abs(np.mean(f["K"]))))
+    z = None
+    if cfg["msteps"] > 0:   # zeta: the lead's map (batch 23: about 1.5 h a member at 1000 steps on the loaded machine)
+        ns = lead_namespace(cfg["src"], cfg["lam"], cfg["vev"], cfg["phi_e"], cfg["msteps"])
+        phi = f["phi"].ravel()
+        vv = v.ravel()
+        dn = ns["map_rk4"](phi, vv).reshape(f["phi"].shape)
+        rng = np.random.default_rng(cfg["seed"])
+        idx = rng.choice(phi.size, cfg["check_cells"], replace=False)
+        nsc = lead_namespace(cfg["src"], cfg["lam"], cfg["vev"], cfg["phi_e"], cfg["check_msteps"])
+        dc = nsc["map_rk4"](phi[idx], vv[idx]) - dn.ravel()[idx]
+        z = -0.5 * np.log(f["chi"] / f["chi"].mean()) + dn
+        z = z - z.mean()
+        sZ, skZ, kuZ = moments(z)
+        rec.update(check_msteps=cfg["check_msteps"], step_dev_max=float(np.max(np.abs(dc))),
+                   step_dev_max_offset_removed=float(np.max(np.abs(dc - dc.mean()))),
+                   zeta_ratio=sZ / sig_lin, zeta_skew=skZ, zeta_exkurt=kuZ, skew_sum=skZ + skR,
+                   corr_zeta_R=float(np.corrcoef(z.ravel(), Rx.ravel())[0, 1]),
+                   zeta_max=float(z.max() / sZ), zeta_min=float(z.min() / sZ))
     rec.update(tails(Rx, sig_lin, "R_"))
-    rec.update(tails(z, sZ, "zeta_"))
-    rec.update(tails(z, sig_lin, "zetalin_"))
+    if z is not None:
+        rec.update(tails(z, sZ, "zeta_"))
+        rec.update(tails(z, sig_lin, "zetalin_"))
     rec["health"] = health(run)
-    hz, _ = np.histogram(z / sZ, bins=EDGES)
+    hz = np.histogram(z / sZ, bins=EDGES)[0] if z is not None else np.zeros(len(EDGES) - 1, int)
     hr, _ = np.histogram(-Rx / sig_lin, bins=EDGES)
     np.savez(os.path.join(cfg["out"], f"{label}_hist.npz"), edges=EDGES, zeta=hz, minusR=hr)
     rec["wall_s"] = time.time() - t0
     with open(os.path.join(cfg["out"], f"{label}.json"), "w") as fp:
         json.dump(rec, fp, indent=1)
-    print(json.dumps({k: rec[k] for k in ("label", "R_ratio", "zeta_ratio", "R_skew", "zeta_skew", "skew_sum",
-                                          "step_dev_max", "relation_corr", "wall_s")}), flush=True)
+    print(json.dumps({k: rec.get(k) for k in ("label", "R_ratio", "zeta_ratio", "R_skew", "zeta_skew", "skew_sum",
+                                              "step_dev_max", "relation_corr", "wall_s")}), flush=True)
     return rec
 
 
@@ -174,6 +177,8 @@ def figure(recs, out):
     hz = sum(np.load(os.path.join(out, f"{r['label']}_hist.npz"))["zeta"] for r in recs)
     hr = sum(np.load(os.path.join(out, f"{r['label']}_hist.npz"))["minusR"] for r in recs)
     for hh, lab, col in ((hz, r"$\zeta/\sigma_\zeta$", fs.SERIES[0]), (hr, r"$-\mathcal{R}^{\rm NR}/\sigma_{\rm lin}$", fs.SERIES[1])):
+        if hh.sum() == 0:
+            continue
         p = hh / (hh.sum() * dx)
         m = p > 0
         ax[0].semilogy(c[m], p[m] / norm.pdf(c[m]), ".", ms=3, color=col, label=lab)
@@ -188,15 +193,20 @@ def figure(recs, out):
                               ("zeta_Fm3_Q", r"$\zeta$: $F_-(3)/Q$", fs.SERIES[0], "v"),
                               ("R_Fp3_Q", r"$\mathcal{R}$: $F_+(3)/Q$", fs.SERIES[1], "o"),
                               ("R_Fm3_Q", r"$\mathcal{R}$: $F_-(3)/Q$", fs.SERIES[1], "v")):
+        if key not in recs[0]:
+            continue
         ax[1].plot(i, [r[key] for r in recs], mk, ms=3.5, color=col, mfc="none" if "Fm" in key else col, label=lab)
     ax[1].axhline(1.0, **fs.GUIDE)
     ax[1].set_xlabel("member (seed 20262000 + i)")
-    ax[1].set_ylabel("exceedance / Gaussian at 3")
+    ax[1].set_ylabel("exceedance / Gaussian at 3 (R: at 3 sigma_lin)")
     ax[1].legend(fontsize=6, frameon=False, ncol=2)
-    ax[2].plot(i, [r["zeta_skew"] for r in recs], "o", ms=3.5, color=fs.SERIES[0], label=r"skew $\zeta$")
+    if "zeta_skew" in recs[0]:
+        ax[2].plot(i, [r["zeta_skew"] for r in recs], "o", ms=3.5, color=fs.SERIES[0], label=r"skew $\zeta$")
+        ax[2].plot(i, [r["skew_sum"] for r in recs], "^", ms=3.5, color=fs.SERIES[2], label="sum")
+        ax[2].axhspan(0.017, 0.023, color=fs.SERIES[2], alpha=0.15, lw=0, label="P5-5 band of the sum")
     ax[2].plot(i, [r["R_skew"] for r in recs], "s", ms=3.5, color=fs.SERIES[1], label=r"skew $\mathcal{R}^{\rm NR}$")
-    ax[2].plot(i, [r["skew_sum"] for r in recs], "^", ms=3.5, color=fs.SERIES[2], label="sum")
-    ax[2].axhspan(0.017, 0.023, color=fs.SERIES[2], alpha=0.15, lw=0, label="P5-5 band of the sum")
+    sd1 = np.sqrt(6.0 / 5.5e5)
+    ax[2].axhspan(-sd1, sd1, color=fs.SERIES[1], alpha=0.12, lw=0, label=r"$\pm\sqrt{6/N_{\rm eff}}$ (entry 1)")
     ax[2].axhline(0.0, **fs.GUIDE)
     ax[2].set_xlabel("member")
     ax[2].set_ylabel("skewness")
@@ -232,7 +242,7 @@ def main():
     with Pool(a.procs) as pool:
         recs = pool.map(one, jobs)
     res = dict(members=recs, deck=deck, phi_e=L["phi_e"], cost=cost(a.run, members))
-    keys = [k for k in recs[0] if isinstance(recs[0][k], float)]
+    keys = [k for k in recs[0] if isinstance(recs[0][k], float) and all(k in r for r in recs)]
     res["mean"] = {k: float(np.mean([r[k] for r in recs])) for k in keys}
     res["sd"] = {k: float(np.std([r[k] for r in recs], ddof=1)) for k in keys}
     res["health_all"] = dict(finite=all(r["health"]["finite"] for r in recs),

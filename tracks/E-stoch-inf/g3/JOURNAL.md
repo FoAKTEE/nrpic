@@ -186,3 +186,13 @@ steps for every cell, with the 4000-step map on 20000 random cells per member as
 entry 5 predicted, the other way round); the cell-by-cell comparison of P5-2 runs on 100000 random cells of b000 plus
 every cell with |R^NR| > 2.5 sigma_lin (about 25000), the cells that decide F(3) and F(4). Predictions of entry 5 stand
 as written; P5-2 is judged on those cells.
+
+## entry-8 (2026-11-25 19:09 PST, lead of E, batch 23): zeta of the pilot is not read this session
+
+The rerun at 1000 steps (E-20261126-024953-ed2d15f) was stopped after 18 minutes with no member finished: the map is
+memory-bound on 2.1e6 cells (about 220 array passes a step), so on this machine a member takes of order 1.5 hours at 1000
+steps and some 6 at 4000. P5-3 and P5-5 (zeta) are not judged this session; P5-1 and P5-4 and the R^NR part (G3P-2,
+G3P-3) are read now with `read_pilot.py --msteps 0` (no map). The zeta of G3 needs a cheaper evaluation of the same map
+before the baseline can be read (R41: a table of the map along the box relation with its second-order correction
+across it, checked against map_rk4 on sampled cells, is the candidate); written into the handoff. The pilot holds or not
+on G3P-1..3 as entry 2 defined it (R^NR is the variable of G3P-3).
