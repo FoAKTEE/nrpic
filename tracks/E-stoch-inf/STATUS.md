@@ -1,31 +1,37 @@
 # STATUS of E-stoch-inf
 
 gate:        G0 PASS (2026-11-20), G1 PASS with reservations (2026-11-21), G2 PASS with
-             reservations (2026-11-24; coord/GATES.md). G3 open: scope SCOPE 4d + 4d.9 A1-A14 (A12 now
-             with the measured pilot cost); stage/G3/OPEN.md.
+             reservations (2026-11-24; coord/GATES.md). G3 open: scope SCOPE 4d + 4d.9 A1-A14;
+             stage/G3/OPEN.md (baseline not yet run: 246 of 256 runs wait in or outside the queue).
 reproduction: complete (decision 0028); working note repro/note/manuscript/main.pdf.
-last-result: Lead batch 23 (2026-11-25 18:17-19:35 PST, processors, at most 6 cores):
-             - Pilot q0050 closed (E-20261126-002413-65295f3, job 5340, 0.35 card-h): ten baseline
-               members 125-128 s each (0.0351 card-h a run); k000/k001/l000/l001 stopped at start-up on
-               overrides the deck lacks (R42; g3/check_lists.py now checks every list).
-             - Pilot read on R^NR (E-20261126-030904-76e7c72): G3P-1 (baseline), G3P-2 hold
-               (max <|H-<H>|/[H]> 7.2e-12, max <|M|/[M]> 0.032); G3P-3 holds except its sd clause
-               (1.403 vs 1.4); sigma_R/sigma_lin 1.0002-1.0029; mean F_+(3)/Q 1.0075.
-             - Readers per cell on b000 (E-20261126-024954-1c0a893): max 4.3e-9, rms 9e-10; none
-               changes side at 3 or 4 sigma.
-             - Z1 with variational expected values at the lockstep state (E-20261126-030949-30c5d47):
-               passes (c2 within 7.5e-5); Z2(iii) -2.87 % fails as written, (iii') -0.23 % passes.
-             - zeta of 128^3 dumps NOT read: map about 1.5 core-h a member at 1000 steps (R41); three
-               reading runs stopped (entries 7-8).
-card plan:   q0051 G3C submitted (job 5348, E-20261126-030044-6933f21); waiting q0052 G3R, q0053/q0054
-             G3B00/01, q0061-q0065 G3B02-06 (pairs 19-73), q0066 G3L00 (level-2 pairs 0-4 + kdriver).
+last-result: Lead batch 27 (2026-11-26 03:44-04:55 PST, processors only, at most 6 cores):
+             - G3C (q0051, E-20261126-030044-6933f21) and G3R (q0052, E-20261126-041110-0a78c93)
+               closed (completed; 15.8 and about 21 card-minutes).
+             - G3-C (4d.4 + A6) PASSES as written (E-20261126-115943-32970f2): model test at all
+               ten dumps of cN [2.0, 6.6]; every judged factor within 8.4e-4 of 4 (H 8/5, M 8/6
+               dumps); the 4c two-amplitude estimator leaves the band late (3.55-5.27): the G2 miss
+               of U-A4'(a) is the floor estimator's.
+             - G3-R (4d.5 + A7) PASSES as written (E-20261126-120438-9d48377): factor of max D^L
+               3.12, median per-mode ratio 2.63, sign 100 % of 8538 modes; T changes 5.6e-4.
+             - Zeta table map (g3/zeta_table.py): about 20 s a 128^3 member instead of 1.5 core-h
+               (R41 closed). TB-1 FAILED as written (5.4e-9 vs bar 1e-10; E-20261126-115112-43da266);
+               diagnostic (E-20261126-115925-a2c6da5) refutes both predicted causes: round-off of the
+               double-precision map, about 1e-9 per cell, worse at 16000 steps. Rule of entry 12 met
+               (verifier 3.9e-9 at b000; spot checks <= 5.9e-9 on all ten members).
+             - Pilot zeta (E-20261126-120434-5dda273): P5-5 holds on every clause (skew 0.0200;
+               skew(zeta) + skew(R) 0.0204-0.0208; A(3) 0.082; F_+(4)/Q 1.195, F_-(4)/Q 0.751);
+               P5-3 FAILED as written (3.2-4.1e-9 vs 1e-9; the same round-off).
+card plan:   waiting at low priority, not moved since batch 23: q0053/q0054 G3B00/01 (28 runs),
+             q0061-q0065 G3B02-06 (110 runs), q0066 G3L00 (level-2 pairs 0-4 + kdriver records).
+             Not yet queued: pairs 74-127 (108 runs), level-2 pairs 5-15.
 runs pending: cards as above. Processors: none.
-next:        1. A cheaper evaluation of the zeta map (table along the box relation + 2nd-order
-               correction across it, checked against map_rk4 on sampled and tail cells): blocks G3.
-             2. Read G3C (q0051) with A6, G3R with A7, when they end.
-             3. Queue pairs 74-127 and level-2 pairs 5-15 after G3L00 measures the level-2 cost.
-blockers:    zeta map cost (R41) for reading G3; none for cards.
-needs:       orch: note of the G3P-3 sd clause failure (no request); nothing else.
-offers:      zeta/: delta-N reader (cleared by 0042); langevin/: G3 reference of the 128 band.
-budget:      G3 allotment 60 card-hours: 0.35 used (pilot); queued about 7 (G3C, G3R, 7 baseline
-             jobs, G3L00). This session: 0 card-hours submitted directly; six queue entries.
+next:        1. When baseline jobs end: close, read R^NR and zeta per member (read_pilot.py
+               --map table --msteps 4000), then the pair statistics (A5) and (V), (T), A4.
+             2. Queue pairs 74-127 (five lists through check_lists.py) when the queue moves; level-2
+               pairs 5-15 after G3L00 measures the level-2 cost.
+             3. sigma = 0.1 coarse-graining bound of A10 (R39); package items C5-C17, fresh verifier.
+blockers:    card queue order only (G3 needs about 10.6 card-hours; requests_to_orch).
+needs:       orch: priority for the G3 baseline entries; note of TB-1/P5-3 failures (no ruling needed).
+offers:      g3/zeta_table.py (fast delta-N reader on a box); langevin/: G3 reference of the 128 band.
+budget:      G3 allotment 60 card-hours: 0.96 used (pilot 0.35, G3C 0.26, G3R 0.35); queued about
+             5.5 (G3B00-06, G3L00). This session: no card submission, no queue entry.

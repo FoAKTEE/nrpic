@@ -726,3 +726,19 @@ Card-hours this session: 0.
 - Failed/stopped: three reading runs stopped (map too slow on 128^3; entries 7-8); P5-3, P5-5 not judged; R41 restated.
 - Queued q0061-q0066 (baseline pairs 19-73, level-2 pairs 0-4 + kdriver record). G3C q0051 started (job 5348).
 - Review stage/REVIEW-wave3.md Part J; stage G3 collected and reported (open); B's info message acknowledged.
+
+## 2026-11-26 03:44-04:55 PST, lead of E, batch 27 (processors only; no card submission, no queue entry)
+
+- Merged main (decisions to 0044, batch 24-27 specs). Inbox: B's GR-particle-mass note and orch's finder note (both
+  acknowledged; neither touches E: no particles, no horizon finder).
+- Closed G3C (q0051) and G3R (q0052) with nrpic-run finish (completed). Predictions first (g3 entries 10-12),
+  outcomes entry 13. G3-C PASSES as written (E-20261126-115943-32970f2); G3-R PASSES as written
+  (E-20261126-120438-9d48377); every prediction of entries 2 and 4 for them holds.
+- Zeta at 128^3: table of the lead's map along the box relation (g3/zeta_table.py). TB-1 FAILED as written
+  (E-20261126-115112-43da266); the diagnostic E-20261126-115925-a2c6da5 refuted both causes predicted in entry 11 and
+  showed round-off of the double-precision map (R43). Rule of entry 12 written before the reading, met. Pilot zeta
+  (E-20261126-120434-5dda273): P5-5 holds; P5-3 FAILED as written. The 16000-node reading E-20261126-115929-84cd060 is
+  on record, its zeta not judged. R41 closed.
+- Failed predictions: TB-1; both alternatives of entry 11 (and the table16000 bar); P5-3. Failed runs: none.
+- Review stage/REVIEW-wave3.md part K; stage G3 OPEN.md, CHECKLIST.md updated, verified and reported (open).
+- Card-hours this session: 0 submitted; 0.61 card-h of G3C/G3R ended since the last session.

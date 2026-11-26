@@ -9,16 +9,16 @@ in VERIFY_RESULTS.md (`nrpic-stage verify`), not here.
 
 - [ ] **C1** The pre-registered scan is complete
   - status: OPEN
-  - evidence: not complete: pilot q0050 ran (E-20261126-002413-65295f3: ten baseline members ok, k000/k001/l000/l001 stopped at start-up on deck lines the deck lacks); G3C q0051 submitted (job 5348, E-20261126-030044-6933f21); G3R q0052, baseline G3B00-G3B06 (q0053, q0054, q0061-q0065: pairs 0-73) and level 2 G3L00 (q0066, pairs 0-4 + kdriver record) waiting; pairs 74-127 and level-2 pairs 5-15 not yet queued; zeta of the 128^3 dumps not readable at present cost (R41, g3/JOURNAL.md entry 8)
+  - evidence: not complete (batch 27): pilot E-20261126-002413-65295f3 read (R^NR entry 9, zeta entry 13); G3C E-20261126-030044-6933f21 and G3R E-20261126-041110-0a78c93 done and read; baseline G3B00-G3B06 (q0053, q0054, q0061-q0065: 138 runs) and G3L00 (q0066) waiting, not moved since batch 23; pairs 74-127 (108 runs) and level-2 pairs 5-15 not yet queued; about 10.6 card-hours remain (stage/REVIEW-wave3.md K.3). The zeta reader is now cheap enough for 256 members (table map, R41 closed, entry 13)
 - [ ] **C2** Robustness checks
   - status: OPEN
-  - evidence: planned: G3-C (4d.4 with A6), G3-R (4d.5 with A7), level 2 (4d.7 with A11); gauge leg withdrawn as a criterion, stated as a limitation (A8, decision 0040 item 1)
+  - evidence: G3-C PASSES as written (E-20261126-115943-32970f2, fig_g3c.png); G3-R PASSES as written (E-20261126-120438-9d48377, fig_g3r.png); level 2 (4d.7 with A11) waits for G3L00 (q0066) and pairs 5-15; gauge leg withdrawn as a criterion, stated as a limitation (A8, decision 0040 item 1)
 - [ ] **C3** Comparison with the literature
   - status: OPEN
   - evidence: reference: corrected one-patch delta N of the 128 band (A1; pilot E-20261125-151340-743c38c passes the variance gate 0.9993 +- 0.0032); 4e6 direct E-20261125-152832-c301e92 (gate 0.99865 +- 0.00058, skewness 0.0199 +- 0.0012); importance-sampled nu = 4 E-20261125-160658-855db8c (g3/amend entry 10); sigma = 0.1 lattice E-20261125-160722-a6d1f26 (gate failed, bound of A10 not reached; entry 9); model and landmarks of the reference = the deck (TO VERIFY of 4d.3 settled, E-20261125-161456-8d3f43c)
 - [ ] **C4** Null results and failed runs are on record
   - status: OPEN
-  - evidence: on record: batch 19-21 items as before (amend entries 4-9, zeta entries 6-7); batch 23: pilot members k/l failed at start-up (entry 5, R42); three reading runs stopped (E-20261126-022447-40a80b4, -022448-9510ee9, -024953-ed2d15f: map too slow, entries 7-8); G3P-3 sd clause failed by 0.3 per cent (entry 9); Z1 as run stays failed as written (zeta entry 9, decision 0042 item 1); Z2(iii) failed as written
+  - evidence: on record: batch 19-21 items as before (amend entries 4-9, zeta entries 6-7); batch 23: pilot members k/l failed at start-up (entry 5, R42); three reading runs stopped (E-20261126-022447-40a80b4, -022448-9510ee9, -024953-ed2d15f: map too slow, entries 7-8); G3P-3 sd clause failed by 0.3 per cent (entry 9); Z1 as run stays failed as written (zeta entry 9, decision 0042 item 1); Z2(iii) failed as written; batch 27: TB-1 of the table failed as written (E-20261126-115112-43da266), both alternatives of the diagnostic refuted (E-20261126-115925-a2c6da5), the 16000-node pilot reading not judged (E-20261126-115929-84cd060), P5-3 failed as written (entry 13)
 
 ## Main products of G3 (charter 9.2)
 
@@ -75,7 +75,7 @@ in VERIFY_RESULTS.md (`nrpic-stage verify`), not here.
   - evidence: 
 - [ ] **C18** Null results and failed runs are on record (manifests and JOURNAL)
   - status: OPEN
-  - evidence: manifests of every run above (status failed or stopped where so) and the journal entries g3 5-9, zeta 8-9
+  - evidence: manifests of every run above (status failed or stopped where so) and the journal entries g3 5-13, zeta 8-9
 - [ ] **C19** STATUS.md, JOURNAL.md and HANDOFF.md are current
   - status: OPEN
-  - evidence: current at the end of batch 23 (STATUS.md, JOURNAL.md, HANDOFF.md)
+  - evidence: current at the end of batch 27 (STATUS.md, JOURNAL.md, HANDOFF.md)

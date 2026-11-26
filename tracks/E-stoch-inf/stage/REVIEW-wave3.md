@@ -727,3 +727,53 @@ to the orchestrator, who ruled in decision 0042 item 1) and the card pilot q0050
   about 0.8 card-h each) and G3L00 = q0066 (level-2 pairs 0-4 with k000/k001 for A8; measures the level-2 cost).
   Already in the queue: G3C q0051 (submitted, job 5348), G3R q0052, G3B00/G3B01 q0053/q0054.
 - G0, G1, G2 are signed (coord/GATES.md). G3 is not complete: see stage/G3/OPEN.md.
+
+## K. Batch 27 (2026-11-26 03:44-04:55 PST, lead of E, no helpers): G3C and G3R read, a fast zeta map, the pilot's zeta
+
+No helper packages ended since batch 23; this part reviews the lead's own work of this batch from the artefacts, with
+every number from a registered run and every figure looked at. Predictions: g3/JOURNAL.md entries 2, 4 and 10-12;
+outcomes entry 13.
+
+### K.1 G3C (q0051, E-20261126-030044-6933f21) and G3R (q0052, E-20261126-041110-0a78c93)
+- Closed with `nrpic-run finish` (status completed; 311 and 57 files checksummed, 52.4 and 13.2 GB; card time 15.8
+  and about 21 minutes).
+- G3-C (SCOPE 4d.4 with A6), own reader `g3/read_g3c.py`, run E-20261126-115943-32970f2, `fig_g3c.png` looked at:
+  PASSES as written. The model test holds at all ten dumps of cN [2.0, 6.6] for H and M (rms D2/rms D1 0.999-1.003,
+  corr(D1, D2) -0.234 to -0.245 against -4/17). Judged at 8/5 dumps (H) and 8/6 (M), all at least the four of A6;
+  every judged factor within 8.4e-4 of 4 (band 0.05). The two-amplitude estimator of 4c, reported beside it, leaves
+  the band at the late dumps (3.55-5.27): the G2 failure of U-A4'(a) is the floor estimator's, now on a run made for it.
+- G3-R (SCOPE 4d.5 with A7), own reader `g3/read_g3r.py`, run E-20261126-120438-9d48377, `fig_g3r.png` looked at:
+  PASSES as written: factor of max D^L 3.12, median per-mode ratio 2.63 (both in [2.0, 4.5] and in the predicted
+  [2.3, 4.0]), sign of Re(L/cref - 1) the same on 100 per cent of 8538 modes. O(1) alone is capped by the
+  spacing-independent third-order part (|T/cref| = 1.28e-5 at both resolutions; T changes by 5.6e-4).
+- What I could not confirm: both readings rest on my own readers only; a second reader (risk R30's point) has not
+  recomputed G3-C or G3-R. This goes to the fresh G3 verifier (item 4d.8/A13).
+
+### K.2 The zeta map at 128^3 (R41)
+- `g3/zeta_table.py`: the lead's map_rk4 tabulated on 4097 x 7 nodes along the box relation (u, w), splines in u and
+  Lagrange in w. Validation E-20261126-115112-43da266 (`fig_validate.png` looked at; the band in (u, w) is a thin
+  parabola, covered): TB-1 FAILED as written (5.4e-9 against map_rk4(4000), bar 1e-10), TB-2 held (3.9e-9 against
+  the verifier's long-double map, bar 1e-8), TB-3 held (22 s a box).
+- Diagnostic E-20261126-115925-a2c6da5 (`fig_diag.png` looked at): both alternatives of entry 11 refuted; 16000 steps
+  lie four times further from the long-double map than 4000, on discrete levels: round-off of the double-precision
+  fixed-step map at about 1e-9 per cell. TB-1's bar lay below the noise of its own reference. This is a defect of my
+  bar, not of the map; it stays failed as written. A table on 16000-step nodes is worse and was not used
+  (E-20261126-115929-84cd060: on record, zeta not judged).
+- Rule written before the reading (entry 12), met: table on 4000-step nodes; b000 against the verifier 3.87e-9 (<=
+  4.3e-9; post hoc for b000) and every member's spot check against map_rk4(4000) 4.5e-9 to 5.9e-9 (< 1e-8).
+  Cost: about 20 s of table per member; a member's whole reading about 1.5 minutes on one core. R41 closes.
+- Pilot zeta (E-20261126-120434-5dda273, `fig_pilot.png` looked at): P5-5 HOLDS on every clause (sd ratio 1.0003-
+  1.0030; mean skewness 0.0200; per-member skew(zeta) + skew(R^NR) 0.0204-0.0208 against 6 a_zeta sigma_lin =
+  0.0200; mean A(3) 0.082; F_+(4)/Q 1.195, F_-(4)/Q 0.751). P5-3 FAILED as written (1000 against 4000 steps: 3.2-4.1e-9
+  against 1e-9; the same round-off).
+- What is wrong or weak: the `spot_holds` field in the member json files is computed with TB-1's 1e-10 bar and reads
+  false; the rule's bar is 1e-8 (entry 13 says so; the field is left as it is). The table's validity rests on the
+  verifier's map at b000 only; the fresh G3 verifier should repeat (i) on another member.
+
+### K.3 Queue and gate G3
+- Ended this session: q0051, q0052 (both closed and read). Waiting at low priority, not moved since batch 23:
+  q0053, q0054 (G3B00/01, 28 runs), q0061-q0065 (G3B02-06, 110 runs), q0066 (G3L00: level-2 pairs 0-4, kd records).
+- Card-hours G3 still needs at the measured 0.0351 card-h a run (A12): queued baseline 138 runs 4.8 card-h; not yet
+  queued pairs 74-127 (108 runs) 3.8; level 2, 16 pairs at 1.7 times about 1.9 (0.7 of it in G3L00) plus the two
+  kdriver records 0.1: about 10.6 card-hours in some 14 jobs of up to 47 minutes. Used on G3 so far 0.96 (budget).
+- G0, G1, G2 are signed (coord/GATES.md). G3 is not ready for review: stage/G3/OPEN.md.
