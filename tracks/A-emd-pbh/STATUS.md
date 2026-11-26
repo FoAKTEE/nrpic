@@ -28,7 +28,7 @@ next:        1. Rulings (four asked): then write the note's G2 sections, schemat
 blockers:    C3 FAILED (defect not explained); C1 (ii) finder fails on P0L6; A2 FAILED (cause in the GR evolution,
              not named); Szekeres members do not reach tau = 40.
 needs:       orch: four rulings (outbox g2-state-after-batch-23). core: finder (finder-false-accept-and-stall-p0l6),
-             PCS deposit at refinement boundaries (pcs-deposit-refinement-boundary; core's test running).
+             core answered the PCS question (a property of the deposit rule; CIC exact at cell centres; acked).
 offers:      periodic_threshold/scripts/a2_invariant.py (shift-invariant Jacobian sign, probe clock on crossing
              worldlines); threshold_ball/scripts/edge_compare.py; szekeres/scripts/analyse_code_runs.py.
 budget:      card-hours this session 0 (q0013 4.87, q0040 0.09, q0041 ~0.98 dispatched earlier); processors about

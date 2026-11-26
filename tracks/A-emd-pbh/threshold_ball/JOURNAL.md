@@ -616,3 +616,15 @@ S2c-A8's line ratio at t = 1, 1.5 and 2 lies within 20 per cent of S2c-A's (0.10
 and its t = 0 ratio changes by less than a factor 2 from 0.0064. Refuted if the ratio at t = 1-2 falls by a factor
 1.5 or more (then a sampling part is named as a candidate, to be tested at x64); a rise by more than 20 per cent is
 also a refutation (then x8 adds a defect of its own). Read with edge_compare.py --extra S2c-A8=<run>/S2c-A8.
+
+### Core's answer on the PCS deposit at refinement boundaries (received 2026-11-25 18:46 PST; core run core-20261126-022953-21b8455)
+
+Core: a property of the deposit rule, not a coding defect [core's VERIFIED: code equals an emulation of the
+documented rule to 1.1e-15]. A uniform lattice does not stay uniform across a level face (TSC +18.75/-12.5 per cent,
+PCS +20.8/-14.6/-12.5 per cent in the first cells); CIC at cell centres is exact on both levels (our factor of
+twenty at t = 0); the compensation enlarges the PCS error 1.8-fold and is not conservative across a level face
+(+0.13 per cent of the mass; core NEXT_SOURCE item 0b); a level cap does not make it exact (one particle per local
+cell has a seam that any cloud wider than its cell sees). Recommendation: CIC without compensation for the initial
+slice. This explains the t = 0 floor of entry 13 (test D); it does not explain the evolution's floor (entries 13, 14),
+which no cloud removed. For entry 15 (x8 particles, CIC): with SUB = 2 the lattice still changes spacing at the faces;
+CIC clouds lie within their cells, so no seam term is expected at t = 0 [JUDGEMENT].
