@@ -87,6 +87,8 @@ def main():
     ap.add_argument("--title", default="Collisionless control of y0 = 0.334032 on M/8 against particle number")
     ap.add_argument("--control", default=None,
                     help="label of the control: adds alpha_c(run) - alpha_c(control) as 20 M means")
+    ap.add_argument("--band", type=float, default=None,
+                    help="draw +-BAND on the alpha_c panel instead of the NS guides (bracket readings)")
     ap.add_argument("runs", nargs="+")
     a = ap.parse_args()
     os.makedirs(a.out, exist_ok=True)
@@ -191,12 +193,21 @@ def main():
         ax[2].plot(t, dg, color=c, lw=0.9, label=lab)
         if zt is not None:
             ax[3].semilogy(zt, zh, color=c, lw=0.9, label=lab)
-    ax[0].axhline(-0.005, **fs.GUIDE)
-    ax[0].axvline(400.0, **fs.GUIDE)
-    ax[0].set_ylim(-0.12, 0.03)
     ax[1].axhline(0.3, **fs.GUIDE)
-    for x in (455.0, 615.0):
-        ax[1].axvline(x, **fs.GUIDE)
+    if a.band is None:
+        ax[0].axhline(-0.005, **fs.GUIDE)
+        ax[0].axvline(400.0, **fs.GUIDE)
+        ax[0].set_ylim(-0.12, 0.03)
+        for x in (455.0, 615.0):
+            ax[1].axvline(x, **fs.GUIDE)
+        ax[1].set_title("guides: alpha_min 0.3; NS.2 window 455-615 M", fontsize=7)
+        ax[0].set_title("guides: NS.1 bar -0.005 at 400 M", fontsize=7)
+    else:
+        for y in (-a.band, a.band):
+            ax[0].axhline(y, **fs.GUIDE)
+        ax[0].set_ylim(-0.12, 0.05)
+        ax[1].set_title("guide: alpha_min 0.3 (the lapse collapse marker)", fontsize=7)
+        ax[0].set_title(f"guides: band +-{a.band:g} of the stable member's prediction", fontsize=7)
     ax[0].set_ylabel(r"$\alpha_c(t)-\alpha_c(0)$")
     ax[1].set_ylabel(r"$\alpha_{\min}$")
     ax[2].set_ylabel(r"$\langle W\rangle(t)-\langle W\rangle(0)$")
@@ -204,8 +215,6 @@ def main():
     for x in ax:
         x.set_xlabel("t / M")
     ax[0].legend(fontsize=7)
-    ax[1].set_title("guides: alpha_min 0.3; NS.2 window 455-615 M", fontsize=7)
-    ax[0].set_title("guides: NS.1 bar -0.005 at 400 M", fontsize=7)
     fig.suptitle(a.title, fontsize=9)
     fig.tight_layout()
     fig.savefig(os.path.join(a.out, "fig_nseries.png"), dpi=150)
