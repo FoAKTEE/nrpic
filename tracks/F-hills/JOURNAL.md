@@ -1197,3 +1197,60 @@ hills.co_0.txt (positions only, no distance computed), the `<fastflow>` block of
   same definition as batch 21) has turned positive, i.e. the binary is disrupted; Newton from the
   same deck unbinds it by about 95 M and NR ran late by about 10-20 M so far. Refuted: E_bin < 0
   at 133 M.
+
+### Outcomes B25 (registered: F-20261126-054946-a21f229 b21_a2_state.py after its axis fix, which
+### supersedes F-20261126-054835-f1e1caa (same numbers, figure cut at 120 M); F-20261126-054957-6cdb7cf
+### b11_passage.py; figures fig_b21_a2_state.png and fig_b11_passage.png read)
+
+- B25-1 MET: trackers of A + A2 joined 0-132.998 M, 68096 times, largest gap one step (1.953e-3 M);
+  overlaps of recomputed stretches agree to 1.25e-9 M at most (tracker 0 at 104 M; bound 1e-5);
+  waveforms at r = 40, 48, 70, 90 hold every 0.25-M sample to 132.75 M (none missing).
+- B25-2 = A2-2 REFUTED: the centre of mass of the pair has NOT turned by 133.0 M; it is 5.42 M from
+  M and still closing at 0.161 M per M (last 5 M). It entered the band 8-11 M without turning there.
+  The batch-21 forecast "the centre of mass turns before the cap, at 100-125 M" is refuted with it.
+  The reason is visible in the members: the pair came apart (s = 6.91 M at 133 M and rising,
+  fig_b21_a2_state panel 3), m2 is near its own closest approach to M (8.74 M, distance flat at the
+  end), and m1 falls almost radially into M (2.49 M from M at 133 M, closing at about 0.6 M per M
+  over the last 30 M, fig_b11_passage panel 1). The centre-of-mass distance is no longer a useful
+  pericentre once the pair is disrupted.
+- B25-3 = A2-4 holds to 133 M: no member finder above 0.13 (finder 0 max 0.12985), heavy hole's
+  accepted masses within 0.11 percent of their median 1.00385; no common horizon yet. At risk in
+  the next few M: m1 at 2.49 M and closing will probably merge with M (prediction C25 below).
+- B25-4 = A2-5 REFUTED IN PART: the heavy hole's horizon mass changes by 1.545e-3 (1.00289 to
+  1.00443) by 133 M, above the 1e-3 written for 200 M (the verifier's F1 foresaw this from 120-125 M);
+  member drifts over 65-95 M 3.09e-5 and -8.05e-6 (fractions of the mass per M) MET; rms H at most
+  6.04e-5 (below 1e-4) MET; MeshBlocks 1968-2584 (below 2864) and card memory peak 78789 MiB MET,
+  but 1.2 GB below the card's 80 GB. Made without the diagnostics; which finder branch is the
+  better surface is undecided (F1).
+- B25-5 MET: the pair's two-body energy is +1.59 units at 133 M (bound throughout to about 125 M,
+  -0.45 at 120 M): the binary is disrupted between 120 and 133 M, about 25-35 M later than in Newton
+  (E_bin > 0 at 100 M there). Coordinate energies (R6) [JUDGEMENT on their meaning].
+- New, not predicted: the fates are the reverse of Newton's so far. Newton from the same deck ejects
+  m1 (E_0M = +1.49 units at 200 M, closest approach 12.07 M at 95.75 M) and binds m2 (5.78 M at
+  122.1 M). NR at 133 M: m1 deeply bound to M (E_0M = -8.34 units at 2.49 M) and plunging; m2 at
+  8.74 M with E_1M = +0.08 units (marginal). [JUDGEMENT: a member that falls in on a nearly radial
+  orbit after the disruption is a relativistic outcome (capture below the parabolic plunge bound
+  of about 4 M in angular momentum) and the most interesting result of the passage if it holds; it
+  is coordinate-gauge data until the horizons confirm it.]
+- Cap prediction (batch 21) MET: the chain stopped at its cap at 133.0 M (band 125-140) with 11.15
+  card-hours (band 10-14).
+
+### Prediction C25 for the continuation (queue entry below; from hills.00105.rst at 133.0 M)
+
+Continuation: tracks/F-hills/binary_conv/scripts/continue_chain.sh F-20261124-210400-902c650 28
+--extra-input tracks/F-hills/binary_conv/inputs/fastflow_diag.athinput (if R25 holds), one
+`--cmd` entry of the shared queue at priority 2; cap 28 counted segments (9 more, 7.5 card-hours
+without preemption: 18.7 of A2's 19.5; tlim stays 200).
+- (C25-1) m1 merges with M before 145 M: the tracker distance m1-M falls below 0.5 M by 140 M and
+  M's finder (finder 2) reports a mass of 1.11-1.14 (1.004 + 0.129 minus radiation) by 145 M,
+  accepted, with the status file (if present) showing found = 1. Refuted: m1 turns at r > 1 M
+  and recedes, or no jump of M's mass by 150 M.
+- (C25-2) m2 is not captured: it passes its closest approach to M at 7.5-9 M before 140 M; by the
+  chain's end its distance to M grows. Whether it is unbound I do not predict (E_1M = +0.08 now).
+- (C25-3) The chain reaches at least 170 M (the separation of criterion (iv)) within the 9
+  segments if at most one attempt is cut by preemption; segment rate 5.5-6.5 M per 50 min, faster
+  after the merger. Refuted: below 170 M at the cap without preemption.
+- (C25-4) Card memory stays below 80 GB through the merger (the overlapping refined regions of m1
+  and M reduce the MeshBlocks) [JUDGEMENT; the margin is 1.2 GB, RISKS R23].
+- (C25-5) With the extra input file: a horizon_status file per finder from 133 M on; the history,
+  tracker and summary outputs continue as before (R25-2 on processors).

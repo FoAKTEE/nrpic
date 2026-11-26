@@ -21,11 +21,15 @@ and decide the open checks listed in BC-5.
 | separation at 7.5 M | 4.8539 | 4.8863 | 4.9477 | 4.9478 | 4.9430 |
 | separation at 20 M | 4.2855 | 4.3753 | (queued) | 4.9302 | 4.9693 |
 | merger | 48.8 M | about 53 M (stretch estimate) | none expected before 100 M (extrapolated) | 2600-3400 M (2.5PN, Peters) | - |
-| member horizon drift per M | 1.4e-3, 1.7e-3 | 1.0e-3, 1.4e-3 | -7e-5, -5e-7 | - | - |
+| member horizon drift, fraction of the mass per M | 1.4e-3, 1.7e-3 | 1.0e-3, 1.4e-3 | -7e-5, -5e-7 | - | - |
 | MeshBlock-cycles/s, advance per 50 min | 1963-2242, 14.3-19.2 M (segments 1-6, `p1/README.md`) | 2241, 20.9 M | 2302, 7.7 M | - | - |
 
-Order of the separation error between m/8 and m/16 at 7.5 M: >= 3.3 (deviation from EIH;
-3.96 from Delta s). Figures (read): `figures/fig_orbit_conv_intermediate.png`,
+No order of convergence is claimed between the mesh members (G1 verifier F2, request (b),
+stage/G1/VERIFIER.md; the earlier two-member ">= 3.3" is withdrawn): with R12 (m/12) the binary's
+separation at m/12 and m/16 agrees within 2.1e-3 M to 21 M and their difference changes sign, while
+m/8 differs by 0.06-0.38 M, so m/8 lies outside any asymptotic regime and three-member "orders" of
+12-14.5 (10-20 M) are not asymptotic. What the data support: m/12 = m/16 within 2.1e-3 M; m/8
+differs by 0.06-0.38 M (verifier run F-20261125-175931-32701e4). Figures (read): `figures/fig_orbit_conv_intermediate.png`,
 `figures/fig_horizons_H_intermediate.png`, `figures/fig_refs.png`.
 
 ## Contents
