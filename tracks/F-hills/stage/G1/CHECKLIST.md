@@ -1,6 +1,6 @@
 # Checklist: F-hills G1
 
-Collected by `harness/bin/nrpic-stage collect F-hills G1` on 2026-11-25T17:07:17Z from `coord/CHARTER.md` (last changed in a61186835) and the brief (sections 13.3 and 13.4).
+Collected by `harness/bin/nrpic-stage collect F-hills G1` on 2026-11-26T05:53:08Z from `coord/CHARTER.md` (last changed in a61186835) and the brief (sections 13.3 and 13.4).
 For each item set `status:` to PASS, FAIL or NA (OPEN until judged) and give the evidence: run ids,
 figure files, KB locators, commits. `nrpic-stage report` reads this file; the automated checks are
 in VERIFY_RESULTS.md (`nrpic-stage verify`), not here.
@@ -76,3 +76,9 @@ in VERIFY_RESULTS.md (`nrpic-stage verify`), not here.
 - [ ] **C18** Verifier subagent (fresh context) wrote VERIFIER.md (decision 0016; VERIFIER_REPORT.md accepted too); every number of the Supplemental Material recomputed from the manifests
   - status: OPEN
   - evidence: PARTIAL. A fresh verifier (batch 22, VERIFIER.md, package verifier/, runs F-20261125-175931-32701e4, -180244-25c98a5) recomputed with its own readers the Newtonian reference, the passage to 96.23 M, the mesh members, P1 to 280 M, H1-H4, criterion (iii) and four KHSR points; requests (a)-(d) applied in batch 25 (stage/REVIEW-wave3.md, batch 25); F1 (heavy hole's two finder branches from 86.6 M) OPEN with a plan (OPEN.md item 1). Not checked by a verifier: F-pre-1 (0911.1136, 1804.02911), F-pre-2, eih, most of the note ledger, the passage beyond 96.23 M (its readers, verifier/scripts/run_all.sh, rerun on the completed passage).
+- [x] **C19** Null results and failed runs are on record (manifests and JOURNAL)
+  - status: PASS
+  - evidence: failed and stopped runs kept with manifests and journal entries: F-20261115-173601-2fae2dc (S3/S2, slot limit), F-20261115-173606-efcbf69 (withdrawn), F-20261115-173719-923135a, F-20261119-143851-47595bd, F-20261115-174959-9e8a361 (stopped), F-20261115-174142-2a79515 (superseded), F-20261115-175542-b49d687; failed predictions on record: nr_first/JOURNAL.md (E1(b), E3 items 1, 2, 5, E4 rerun counts, E7 first-search masses), newton3/JOURNAL.md (Q1, Q3, Q4 bounds), stage/G0/JOURNAL.md (SC0d, SC2, SC6), JOURNAL.md (V4-V7 of wave 1); batch 21: A2-1 (timing), H2 (bands at the second digit), H4 (P1's heavy hole at t <= 0.125 M); batch 25: A2-2 and B25-2 (centre of mass not turned by 133 M), A2-5's heavy-hole clause (1.55e-3 > 1e-3), the batch-21 forecast of the centre of mass's turn before the cap (F-20261126-054946-a21f229, F-20261126-054957-6cdb7cf); the verifier's own failed predictions (VERIFIER.md section 4)
+- [x] **C20** STATUS.md, JOURNAL.md and HANDOFF.md are current
+  - status: PASS
+  - evidence: STATUS.md, HANDOFF.md rewritten and a JOURNAL.md entry appended by the lead at the end of batch 25 (2026-11-25)
