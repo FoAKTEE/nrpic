@@ -533,3 +533,25 @@ Not done (outside this session's aim): judging and closing processor run A-20261
   EVIDENCE rows; REVIEW-wave3 section 11. G2 not listed as complete: four rulings asked, note work follows them.
 - Processors: up to four cores at a time (load 87-97). Detached at the end: A-20261126-024724-425ed7f,
   A-20261126-023245-1dd80ad (one core each).
+
+## 2026-11-25 19:17-19:50 PST, lead of batch 24 (short: queue the two card runs of decision 0043 items 1(c), 1(d))
+
+- Merged main (0043). Pause flag absent throughout. No review, no stage package, no note (as asked).
+- Predictions first, committed before any run (f1060e7ad): szekeres entry 12 (P17 for N256 as written; new P24 on the
+  shell K error at tau 30 and 40) and periodic_threshold 19:25 PST (A2H: the half-amplitude member's first crossing
+  in [12.5, 15.2] t_H under the candidate, 10.2 t_H under the linear relation with Newtonian dynamics, 12.3 for
+  first-order Zel'dovich, 16.3-21.2 if the lag does not depend on the amplitude; refutation bands written there).
+- `threshold_ball/scripts/continue_chain.sh` now appends the `continuations` record nrpic-run reads (decision 0039
+  item 5; tested on a copy of the N256 manifest; dry run of the N256 continuation passes).
+- Queued q0067 `a-szk-n256-cont` (priority 2): N256 chain A-20261125-231808-0784bc9 continued in place from
+  rst/szk.00005.rst (tau 21.2), MAX_SEGMENTS 3; field dumps 3 and 4 at tau 30, 40 (no overwrite of dumps 0-2).
+- Data of the half-amplitude member: A-20261126-032537-f1060e7 (mu = 0.15; D-h holds except the clause on the solve
+  change, c = 0.014 below the predicted 0.03-0.14: refuted as written). Processor smoke test A-20261126-032800-48a3825
+  (v0.7, 4 cycles): starts, finite, finder status file written; first step 2.83e-3 against the predicted 3.36e-3:
+  SM-h's step clause refuted (the light speed at the shallower peak, alpha psi^-2, is 1.21 times larger).
+- Queued q0068 `a-s1l-half` (priority 2): S1L-h, peak_leak.athinput unchanged except tlim 220, snapshots every 5,
+  restarts every 30; card build v0.7; --gpu-hours 2.0 (two segments).
+- Closed the ended N64/N128 Szekeres reader A-20261126-024724-425ed7f (completed) and committed its four figures
+  unread (P18-P21 at N128 are judged by the next session with A-20261126-023245-1dd80ad's).
+- Inbox: acknowledged B gr-particle-mass-halos (the a2 readers use positions only) and orch finder-diagnostics-in-continued-runs.
+- Card-hours used this session: 0 (both entries waiting). Processors: one core for ~20 min (load 79-111).

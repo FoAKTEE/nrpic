@@ -1167,3 +1167,21 @@ Data build prediction D-h: the solve converges as at mu = 0.2 and 0.3 (residual 
 delta_N_max 0.059 (half of 0.1176), jacobian_min ~0.94, change of the solve c between 0.03 and 0.14. Smoke test
 prediction SM-h (processor build v0.7, 4 cycles): starts, reads 262144 particles, first dt 3.36e-3 within 5 per cent
 (S1L's first step), finite fields, no guard stop. Refuted otherwise; then nothing is queued.
+
+### Outcomes D-h and SM-h (runs A-20261126-032537-f1060e7 and A-20261126-032800-48a3825, closed completed), and the queue entry
+
+- D-h: the solve converges (outer 17, Hamiltonian residual 5.0e-12, momentum 1.6e-11); zeta_max 0.1482, delta_N_max
+  0.0588 (0.500 of mu = 0.3's 0.1176), jacobian_min 0.941, mass 0.979-1.488 of the mean, alpha_min 0.908. All as
+  predicted except the change of the solve: c = 0.014, below the predicted [0.03, 0.14] (REFUTED as written; c falls
+  faster than linearly in mu, 0.137 at 0.3, 0.031 at 0.2, 0.014 at 0.15). For A2H's orientation numbers:
+  max_abs_psi_dict_minus_1 = 0.0414, ge delta_cmc_max_at_start = 0.0728 = 0.743 x (5/3) delta_N (e^(-2 x 0.148) = 0.744).
+- SM-h: starts on the v0.7 processor build, reads 262144 particles, four cycles to t = 0.011 with finite fields and no
+  guard stop; the finder ran at cycles 0 and 2 with diagnostics (status file: not found, "mean radius negative", no
+  horizon, as it should be); alpha_min 0.907 -> 0.974 over the four steps (the relaxation of the excess lapse, as S1L).
+  First step 2.83e-3 against the predicted 3.36e-3 within 5 per cent: REFUTED as written (16 per cent smaller). Reading
+  [JUDGEMENT]: the first step is set by the light speed at the peak, alpha psi^-2, which is larger when the peak is
+  shallower (0.908/1.041^2 = 0.84 against 0.805/1.079^2 = 0.69, ratio 1.21; measured step ratio 1.19); it only
+  lengthens the start-up phase before the step reaches 0.5 dx and does not change the deck. Not a reason to hold the run.
+- Queued: q0068 `a-s1l-half` (priority 2, chain, --gpu-hours 2.0 = two segments, card build v0.7, argv in the queue
+  entry). Read with a2_invariant.py, a2_crossing.py and a2_probe_check.py on its run directory (`--reference 12.3
+  --band 12.5 15.2` for a2_invariant's band; the clock as for S1L), then A2H is judged here.
