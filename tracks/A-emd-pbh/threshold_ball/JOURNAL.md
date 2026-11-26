@@ -599,3 +599,20 @@ the cause. Untested candidates [TO VERIFY]: the particle sampling at fixed parti
 was flat in particle number at t <= 4, K2; the smooth CIC member's was not tested), the outer taper, the gauge
 (1+log with Gamma-driver) in the matter region. The next test that could fail is the particle-number leg of S2c-A
 (x8 particles, M/16, to t = 2, processors, about 3 h on one core): prediction first, next session.
+
+## Entry 15, 2026-11-25 18:52 PST (lead of batch 23): the particle-number leg of the smooth CIC member, before any run
+
+Why: the residual the evolution builds on the smooth CIC member falls with the mesh at order ~0.35 only (entry 14).
+0039 item 2(c) asks whether it falls "with the mesh or with the particle number". S2c-A and S2c-B both have one
+particle per cell of their local level (nestA, nestB: SUB = 1), so a sampling (shot-noise) part of the deposited source
+would not fall with the mesh at fixed particles per cell.
+Run (processors, detached; script `scripts/edge_n8.sh`): data S2 on lattice nestA8 (SUB = 2: eight particles per
+cell, conv_ball's A-N8 lattice) with prep_bh.py as edge_data.sh; member S2c-A8 = S2c-A with that lattice (mesh M/16,
+CIC, no compensation, release v0.6 threaded build as S2c-A), t = 0 slice and evolution to t = 2, two threads.
+S2c-A's line ratio for comparison (A-20261126-022624-c663e0f): 0.0064 (t = 0), 0.050, 0.098, 0.097, 0.129 (t = 1),
+0.192 (1.5), 0.245 (2.0).
+Prediction H [JUDGEMENT]: the floor is not sampling noise (the top hat's was flat in particle number at t <= 4, K2):
+S2c-A8's line ratio at t = 1, 1.5 and 2 lies within 20 per cent of S2c-A's (0.103-0.155, 0.154-0.230, 0.196-0.294),
+and its t = 0 ratio changes by less than a factor 2 from 0.0064. Refuted if the ratio at t = 1-2 falls by a factor
+1.5 or more (then a sampling part is named as a candidate, to be tested at x64); a rise by more than 20 per cent is
+also a refutation (then x8 adds a defect of its own). Read with edge_compare.py --extra S2c-A8=<run>/S2c-A8.
