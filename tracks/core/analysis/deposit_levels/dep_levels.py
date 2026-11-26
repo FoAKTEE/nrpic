@@ -174,7 +174,8 @@ def emulate(shape, cap):
     mass = np.zeros(len(cells))
 
     def leaf_index(x):
-        # lattice-cell centres never lie on a leaf face, so the containing leaf is unique
+        # called for points inside a leaf of the lattice level or coarser, or for
+        # centres of finer leaves: never on a face, so the containing leaf is unique
         xw = (x - X1[0]) % L + X1[0]
         j = np.nonzero(np.abs(cen - xw) < 0.5 * wid)[0]
         if len(j) != 1:
@@ -207,10 +208,9 @@ def emulate(shape, cap):
         w, fl = bspline_weights((xp - X1[0]) / h - 0.5, nb)
         for c, wc in enumerate(w):
             xc = X1[0] + (fl + c + 0.5) * h
-            j = leaf_index(xc)
-            levleaf = 1 if wid[j] < 1.0 else 0
+            levleaf = level_of(xc)
             if levleaf <= ldep:
-                mass[j] += wc * mp
+                mass[leaf_index(xc)] += wc * mp
             else:
                 # finer leaves inside the lattice cell: uniform density over them
                 nsub = 2**(levleaf - ldep)
