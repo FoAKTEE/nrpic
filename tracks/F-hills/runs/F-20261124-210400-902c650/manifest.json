@@ -127,5 +127,18 @@
     "cores_busy": 0,
     "runs": 253,
     "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md + 0026-cards-loaded-allotment-cost.md + 0031-level2-branch-and-ablation.md + 0032-new-account-preemption-allotments.md"
-  }
+  },
+  "continuations": [
+    {
+      "at": "2026-11-26T08:08:15-0800",
+      "job_id": "5393",
+      "from_restart": "/data/haiyangw/nrpic/scratch/F-hills/F-20261124-210400-902c650/rst/hills.00105.rst",
+      "segments_used_before": 19,
+      "attempts_before": 21,
+      "max_segments": 28,
+      "extra_input": "/data/haiyangw/nrpic/wt/F-hills/tracks/F-hills/binary_conv/inputs/fastflow_diag.athinput",
+      "via": "harness/bin/nrpic-queue --cmd tracks/F-hills/binary_conv/scripts/continue_chain.sh",
+      "reason": "continued in place after its segment cap (ruling 0042 item 2; batch 25)"
+    }
+  ]
 }
