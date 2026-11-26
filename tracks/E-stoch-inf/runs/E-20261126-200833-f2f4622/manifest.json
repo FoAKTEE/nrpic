@@ -1,0 +1,510 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "E-20261126-200833-f2f4622",
+  "track": "E-stoch-inf",
+  "gate": "G3",
+  "kind": "production",
+  "purpose": "G3 baseline (SCOPE 4d.9 A5), job 0: minus members of mirrored pairs 0-9 (plus members in the pilot) and pairs 10-11, 128^3, dumps at t = 0 and tlim; predictions g3/JOURNAL.md entries 2 and 4",
+  "preregistered_in": "tracks/E-stoch-inf/g3/JOURNAL.md#entry-4",
+  "launcher": "batch",
+  "command": [
+    "scripts/gpu_batch.sh",
+    "/data/haiyangw/nrpic/scratch/E-stoch-inf/E-20261126-200833-f2f4622/batch.list"
+  ],
+  "cwd": "scratch/E-stoch-inf/E-20261126-200833-f2f4622",
+  "git": {
+    "sha": "f2f4622349ea519e8117f370dbe6cdc5d544dc8e",
+    "branch": "track/E-stoch-inf",
+    "dirty": false,
+    "package": [
+      "tracks/E-stoch-inf/g3"
+    ],
+    "outside_package": {
+      "count": 2,
+      "first": [
+        " M tracks/E-stoch-inf/stage/G3/VERIFY_RESULTS.json",
+        " M tracks/E-stoch-inf/stage/G3/VERIFY_RESULTS.md"
+      ]
+    },
+    "merge_base_main": "be42a847d2d93e47578ad819bd6e29f62ae2bf7c",
+    "worktree": "wt/E-stoch-inf"
+  },
+  "code": {
+    "core_tag": "core-v0.7",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": "scalar_field",
+    "exe": "/data/haiyangw/nrpic/.work/build_gpu_v07/src/athena",
+    "exe_sha256": "2992fe8ff3b8ce21696a23078be00a8e60cb3201114f56157a2811342b5e3222",
+    "cmake_flags": [
+      "-DPROBLEM=built_in_pgens",
+      "-DAthena_ENABLE_MPI=OFF",
+      "-DAthena_ENABLE_OPENMP=OFF",
+      "-DKokkos_ARCH_ICX=ON",
+      "-DKokkos_ENABLE_DEBUG=OFF",
+      "-DKokkos_ENABLE_DEBUG_BOUNDS_CHECK=OFF",
+      "-DCMAKE_CXX_COMPILER=/data/haiyangw/nrpic/.work/build_gpu_v07/nvcc_wrapper_pinned",
+      "-DCUDAToolkit_ROOT=/usr/local/cuda-12.6",
+      "-DKokkos_ENABLE_SERIAL=ON",
+      "-DKokkos_ENABLE_CUDA=ON",
+      "-DKokkos_ARCH_AMPERE80=ON",
+      "-DCMAKE_BUILD_TYPE=Release",
+      "-DCMAKE_CXX_FLAGS_RELEASE=-O3 -DNDEBUG"
+    ],
+    "toolchain": "nvcc 12.6 (host g++ 11.4.0)"
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "b7f7695d8e9720758c144dd9c0f272ce4fba8b46f921750462326664310fad51",
+    "machine_file_sha256": "ff4e45b0fd5bf6bee4bf1084a282d72b9adf66f4a455f4e937d9884a1fb07535",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": "NVIDIA A100 80GB (Slurm partition preempt)",
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/E-stoch-inf/.venv"
+  },
+  "input": {
+    "file": "tracks/E-stoch-inf/g2prod/inputs/usr_prod.athinput",
+    "sha256": "ce4a60f2b12a836c4d1be0b6ee4f5b109d73045093ace0303d824583851ebebf",
+    "overrides": {
+      "mesh/nx1": "128",
+      "mesh/nx2": "128",
+      "mesh/nx3": "128",
+      "meshblock/nx1": "128",
+      "meshblock/nx2": "128",
+      "meshblock/nx3": "128",
+      "scalar_field/noise_nmax2": "1024",
+      "scalar_field/noise_mode_file": "/data/haiyangw/nrpic/wt/E-stoch-inf/tracks/E-stoch-inf/usr/inputs/modes_usr_n1024.txt",
+      "scalar_field/noise_mode_scale": "-1.0",
+      "job/rng_seed": "20262000",
+      "scalar_field/dump_dt": "10.437508874065651",
+      "output1/dt": "100.0",
+      "scalar_field/dump_constraints": "false"
+    }
+  },
+  "inputs": [
+    {
+      "path": "/data/haiyangw/nrpic/.work/build_gpu_v07/src/athena",
+      "role": "exe",
+      "sha256": "2992fe8ff3b8ce21696a23078be00a8e60cb3201114f56157a2811342b5e3222",
+      "bytes": 111039328,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "tracks/E-stoch-inf/g3/inputs/base00.list",
+      "role": "list",
+      "sha256": "41288f320013aaf8cbf1b5388103673cbed8c6ea615f2dea8b90f933b2852915",
+      "bytes": 6560,
+      "tracked": true
+    },
+    {
+      "path": "tracks/E-stoch-inf/g2prod/inputs/usr_prod.athinput",
+      "role": "athinput:m000",
+      "sha256": "ce4a60f2b12a836c4d1be0b6ee4f5b109d73045093ace0303d824583851ebebf",
+      "bytes": 2890,
+      "tracked": true
+    },
+    {
+      "path": "tracks/E-stoch-inf/g2prod/inputs/usr_prod.athinput",
+      "role": "athinput:m001",
+      "sha256": "ce4a60f2b12a836c4d1be0b6ee4f5b109d73045093ace0303d824583851ebebf",
+      "bytes": 2890,
+      "tracked": true
+    },
+    {
+      "path": "tracks/E-stoch-inf/g2prod/inputs/usr_prod.athinput",
+      "role": "athinput:m002",
+      "sha256": "ce4a60f2b12a836c4d1be0b6ee4f5b109d73045093ace0303d824583851ebebf",
+      "bytes": 2890,
+      "tracked": true
+    },
+    {
+      "path": "tracks/E-stoch-inf/g2prod/inputs/usr_prod.athinput",
+      "role": "athinput:m003",
+      "sha256": "ce4a60f2b12a836c4d1be0b6ee4f5b109d73045093ace0303d824583851ebebf",
+      "bytes": 2890,
+      "tracked": true
+    },
+    {
+      "path": "tracks/E-stoch-inf/g2prod/inputs/usr_prod.athinput",
+      "role": "athinput:m004",
+      "sha256": "ce4a60f2b12a836c4d1be0b6ee4f5b109d73045093ace0303d824583851ebebf",
+      "bytes": 2890,
+      "tracked": true
+    },
+    {
+      "path": "tracks/E-stoch-inf/g2prod/inputs/usr_prod.athinput",
+      "role": "athinput:m005",
+      "sha256": "ce4a60f2b12a836c4d1be0b6ee4f5b109d73045093ace0303d824583851ebebf",
+      "bytes": 2890,
+      "tracked": true
+    },
+    {
+      "path": "tracks/E-stoch-inf/g2prod/inputs/usr_prod.athinput",
+      "role": "athinput:m006",
+      "sha256": "ce4a60f2b12a836c4d1be0b6ee4f5b109d73045093ace0303d824583851ebebf",
+      "bytes": 2890,
+      "tracked": true
+    },
+    {
+      "path": "tracks/E-stoch-inf/g2prod/inputs/usr_prod.athinput",
+      "role": "athinput:m007",
+      "sha256": "ce4a60f2b12a836c4d1be0b6ee4f5b109d73045093ace0303d824583851ebebf",
+      "bytes": 2890,
+      "tracked": true
+    },
+    {
+      "path": "tracks/E-stoch-inf/g2prod/inputs/usr_prod.athinput",
+      "role": "athinput:m008",
+      "sha256": "ce4a60f2b12a836c4d1be0b6ee4f5b109d73045093ace0303d824583851ebebf",
+      "bytes": 2890,
+      "tracked": true
+    },
+    {
+      "path": "tracks/E-stoch-inf/g2prod/inputs/usr_prod.athinput",
+      "role": "athinput:m009",
+      "sha256": "ce4a60f2b12a836c4d1be0b6ee4f5b109d73045093ace0303d824583851ebebf",
+      "bytes": 2890,
+      "tracked": true
+    },
+    {
+      "path": "tracks/E-stoch-inf/g2prod/inputs/usr_prod.athinput",
+      "role": "athinput:p010",
+      "sha256": "ce4a60f2b12a836c4d1be0b6ee4f5b109d73045093ace0303d824583851ebebf",
+      "bytes": 2890,
+      "tracked": true
+    },
+    {
+      "path": "tracks/E-stoch-inf/g2prod/inputs/usr_prod.athinput",
+      "role": "athinput:m010",
+      "sha256": "ce4a60f2b12a836c4d1be0b6ee4f5b109d73045093ace0303d824583851ebebf",
+      "bytes": 2890,
+      "tracked": true
+    },
+    {
+      "path": "tracks/E-stoch-inf/g2prod/inputs/usr_prod.athinput",
+      "role": "athinput:p011",
+      "sha256": "ce4a60f2b12a836c4d1be0b6ee4f5b109d73045093ace0303d824583851ebebf",
+      "bytes": 2890,
+      "tracked": true
+    },
+    {
+      "path": "tracks/E-stoch-inf/g2prod/inputs/usr_prod.athinput",
+      "role": "athinput:m011",
+      "sha256": "ce4a60f2b12a836c4d1be0b6ee4f5b109d73045093ace0303d824583851ebebf",
+      "bytes": 2890,
+      "tracked": true
+    }
+  ],
+  "batch_entries": [
+    {
+      "name": "m000",
+      "input": "tracks/E-stoch-inf/g2prod/inputs/usr_prod.athinput",
+      "args": [
+        "mesh/nx1=128",
+        "mesh/nx2=128",
+        "mesh/nx3=128",
+        "meshblock/nx1=128",
+        "meshblock/nx2=128",
+        "meshblock/nx3=128",
+        "scalar_field/noise_nmax2=1024",
+        "scalar_field/noise_mode_file=/data/haiyangw/nrpic/wt/E-stoch-inf/tracks/E-stoch-inf/usr/inputs/modes_usr_n1024.txt",
+        "scalar_field/noise_mode_scale=-1.0",
+        "job/rng_seed=20262000",
+        "scalar_field/dump_dt=10.437508874065651",
+        "output1/dt=100.0",
+        "scalar_field/dump_constraints=false"
+      ]
+    },
+    {
+      "name": "m001",
+      "input": "tracks/E-stoch-inf/g2prod/inputs/usr_prod.athinput",
+      "args": [
+        "mesh/nx1=128",
+        "mesh/nx2=128",
+        "mesh/nx3=128",
+        "meshblock/nx1=128",
+        "meshblock/nx2=128",
+        "meshblock/nx3=128",
+        "scalar_field/noise_nmax2=1024",
+        "scalar_field/noise_mode_file=/data/haiyangw/nrpic/wt/E-stoch-inf/tracks/E-stoch-inf/usr/inputs/modes_usr_n1024.txt",
+        "scalar_field/noise_mode_scale=-1.0",
+        "job/rng_seed=20262001",
+        "scalar_field/dump_dt=10.437508874065651",
+        "output1/dt=100.0",
+        "scalar_field/dump_constraints=false"
+      ]
+    },
+    {
+      "name": "m002",
+      "input": "tracks/E-stoch-inf/g2prod/inputs/usr_prod.athinput",
+      "args": [
+        "mesh/nx1=128",
+        "mesh/nx2=128",
+        "mesh/nx3=128",
+        "meshblock/nx1=128",
+        "meshblock/nx2=128",
+        "meshblock/nx3=128",
+        "scalar_field/noise_nmax2=1024",
+        "scalar_field/noise_mode_file=/data/haiyangw/nrpic/wt/E-stoch-inf/tracks/E-stoch-inf/usr/inputs/modes_usr_n1024.txt",
+        "scalar_field/noise_mode_scale=-1.0",
+        "job/rng_seed=20262002",
+        "scalar_field/dump_dt=10.437508874065651",
+        "output1/dt=100.0",
+        "scalar_field/dump_constraints=false"
+      ]
+    },
+    {
+      "name": "m003",
+      "input": "tracks/E-stoch-inf/g2prod/inputs/usr_prod.athinput",
+      "args": [
+        "mesh/nx1=128",
+        "mesh/nx2=128",
+        "mesh/nx3=128",
+        "meshblock/nx1=128",
+        "meshblock/nx2=128",
+        "meshblock/nx3=128",
+        "scalar_field/noise_nmax2=1024",
+        "scalar_field/noise_mode_file=/data/haiyangw/nrpic/wt/E-stoch-inf/tracks/E-stoch-inf/usr/inputs/modes_usr_n1024.txt",
+        "scalar_field/noise_mode_scale=-1.0",
+        "job/rng_seed=20262003",
+        "scalar_field/dump_dt=10.437508874065651",
+        "output1/dt=100.0",
+        "scalar_field/dump_constraints=false"
+      ]
+    },
+    {
+      "name": "m004",
+      "input": "tracks/E-stoch-inf/g2prod/inputs/usr_prod.athinput",
+      "args": [
+        "mesh/nx1=128",
+        "mesh/nx2=128",
+        "mesh/nx3=128",
+        "meshblock/nx1=128",
+        "meshblock/nx2=128",
+        "meshblock/nx3=128",
+        "scalar_field/noise_nmax2=1024",
+        "scalar_field/noise_mode_file=/data/haiyangw/nrpic/wt/E-stoch-inf/tracks/E-stoch-inf/usr/inputs/modes_usr_n1024.txt",
+        "scalar_field/noise_mode_scale=-1.0",
+        "job/rng_seed=20262004",
+        "scalar_field/dump_dt=10.437508874065651",
+        "output1/dt=100.0",
+        "scalar_field/dump_constraints=false"
+      ]
+    },
+    {
+      "name": "m005",
+      "input": "tracks/E-stoch-inf/g2prod/inputs/usr_prod.athinput",
+      "args": [
+        "mesh/nx1=128",
+        "mesh/nx2=128",
+        "mesh/nx3=128",
+        "meshblock/nx1=128",
+        "meshblock/nx2=128",
+        "meshblock/nx3=128",
+        "scalar_field/noise_nmax2=1024",
+        "scalar_field/noise_mode_file=/data/haiyangw/nrpic/wt/E-stoch-inf/tracks/E-stoch-inf/usr/inputs/modes_usr_n1024.txt",
+        "scalar_field/noise_mode_scale=-1.0",
+        "job/rng_seed=20262005",
+        "scalar_field/dump_dt=10.437508874065651",
+        "output1/dt=100.0",
+        "scalar_field/dump_constraints=false"
+      ]
+    },
+    {
+      "name": "m006",
+      "input": "tracks/E-stoch-inf/g2prod/inputs/usr_prod.athinput",
+      "args": [
+        "mesh/nx1=128",
+        "mesh/nx2=128",
+        "mesh/nx3=128",
+        "meshblock/nx1=128",
+        "meshblock/nx2=128",
+        "meshblock/nx3=128",
+        "scalar_field/noise_nmax2=1024",
+        "scalar_field/noise_mode_file=/data/haiyangw/nrpic/wt/E-stoch-inf/tracks/E-stoch-inf/usr/inputs/modes_usr_n1024.txt",
+        "scalar_field/noise_mode_scale=-1.0",
+        "job/rng_seed=20262006",
+        "scalar_field/dump_dt=10.437508874065651",
+        "output1/dt=100.0",
+        "scalar_field/dump_constraints=false"
+      ]
+    },
+    {
+      "name": "m007",
+      "input": "tracks/E-stoch-inf/g2prod/inputs/usr_prod.athinput",
+      "args": [
+        "mesh/nx1=128",
+        "mesh/nx2=128",
+        "mesh/nx3=128",
+        "meshblock/nx1=128",
+        "meshblock/nx2=128",
+        "meshblock/nx3=128",
+        "scalar_field/noise_nmax2=1024",
+        "scalar_field/noise_mode_file=/data/haiyangw/nrpic/wt/E-stoch-inf/tracks/E-stoch-inf/usr/inputs/modes_usr_n1024.txt",
+        "scalar_field/noise_mode_scale=-1.0",
+        "job/rng_seed=20262007",
+        "scalar_field/dump_dt=10.437508874065651",
+        "output1/dt=100.0",
+        "scalar_field/dump_constraints=false"
+      ]
+    },
+    {
+      "name": "m008",
+      "input": "tracks/E-stoch-inf/g2prod/inputs/usr_prod.athinput",
+      "args": [
+        "mesh/nx1=128",
+        "mesh/nx2=128",
+        "mesh/nx3=128",
+        "meshblock/nx1=128",
+        "meshblock/nx2=128",
+        "meshblock/nx3=128",
+        "scalar_field/noise_nmax2=1024",
+        "scalar_field/noise_mode_file=/data/haiyangw/nrpic/wt/E-stoch-inf/tracks/E-stoch-inf/usr/inputs/modes_usr_n1024.txt",
+        "scalar_field/noise_mode_scale=-1.0",
+        "job/rng_seed=20262008",
+        "scalar_field/dump_dt=10.437508874065651",
+        "output1/dt=100.0",
+        "scalar_field/dump_constraints=false"
+      ]
+    },
+    {
+      "name": "m009",
+      "input": "tracks/E-stoch-inf/g2prod/inputs/usr_prod.athinput",
+      "args": [
+        "mesh/nx1=128",
+        "mesh/nx2=128",
+        "mesh/nx3=128",
+        "meshblock/nx1=128",
+        "meshblock/nx2=128",
+        "meshblock/nx3=128",
+        "scalar_field/noise_nmax2=1024",
+        "scalar_field/noise_mode_file=/data/haiyangw/nrpic/wt/E-stoch-inf/tracks/E-stoch-inf/usr/inputs/modes_usr_n1024.txt",
+        "scalar_field/noise_mode_scale=-1.0",
+        "job/rng_seed=20262009",
+        "scalar_field/dump_dt=10.437508874065651",
+        "output1/dt=100.0",
+        "scalar_field/dump_constraints=false"
+      ]
+    },
+    {
+      "name": "p010",
+      "input": "tracks/E-stoch-inf/g2prod/inputs/usr_prod.athinput",
+      "args": [
+        "mesh/nx1=128",
+        "mesh/nx2=128",
+        "mesh/nx3=128",
+        "meshblock/nx1=128",
+        "meshblock/nx2=128",
+        "meshblock/nx3=128",
+        "scalar_field/noise_nmax2=1024",
+        "scalar_field/noise_mode_file=/data/haiyangw/nrpic/wt/E-stoch-inf/tracks/E-stoch-inf/usr/inputs/modes_usr_n1024.txt",
+        "scalar_field/noise_mode_scale=1.0",
+        "job/rng_seed=20262010",
+        "scalar_field/dump_dt=10.437508874065651",
+        "output1/dt=100.0",
+        "scalar_field/dump_constraints=false"
+      ]
+    },
+    {
+      "name": "m010",
+      "input": "tracks/E-stoch-inf/g2prod/inputs/usr_prod.athinput",
+      "args": [
+        "mesh/nx1=128",
+        "mesh/nx2=128",
+        "mesh/nx3=128",
+        "meshblock/nx1=128",
+        "meshblock/nx2=128",
+        "meshblock/nx3=128",
+        "scalar_field/noise_nmax2=1024",
+        "scalar_field/noise_mode_file=/data/haiyangw/nrpic/wt/E-stoch-inf/tracks/E-stoch-inf/usr/inputs/modes_usr_n1024.txt",
+        "scalar_field/noise_mode_scale=-1.0",
+        "job/rng_seed=20262010",
+        "scalar_field/dump_dt=10.437508874065651",
+        "output1/dt=100.0",
+        "scalar_field/dump_constraints=false"
+      ]
+    },
+    {
+      "name": "p011",
+      "input": "tracks/E-stoch-inf/g2prod/inputs/usr_prod.athinput",
+      "args": [
+        "mesh/nx1=128",
+        "mesh/nx2=128",
+        "mesh/nx3=128",
+        "meshblock/nx1=128",
+        "meshblock/nx2=128",
+        "meshblock/nx3=128",
+        "scalar_field/noise_nmax2=1024",
+        "scalar_field/noise_mode_file=/data/haiyangw/nrpic/wt/E-stoch-inf/tracks/E-stoch-inf/usr/inputs/modes_usr_n1024.txt",
+        "scalar_field/noise_mode_scale=1.0",
+        "job/rng_seed=20262011",
+        "scalar_field/dump_dt=10.437508874065651",
+        "output1/dt=100.0",
+        "scalar_field/dump_constraints=false"
+      ]
+    },
+    {
+      "name": "m011",
+      "input": "tracks/E-stoch-inf/g2prod/inputs/usr_prod.athinput",
+      "args": [
+        "mesh/nx1=128",
+        "mesh/nx2=128",
+        "mesh/nx3=128",
+        "meshblock/nx1=128",
+        "meshblock/nx2=128",
+        "meshblock/nx3=128",
+        "scalar_field/noise_nmax2=1024",
+        "scalar_field/noise_mode_file=/data/haiyangw/nrpic/wt/E-stoch-inf/tracks/E-stoch-inf/usr/inputs/modes_usr_n1024.txt",
+        "scalar_field/noise_mode_scale=-1.0",
+        "job/rng_seed=20262011",
+        "scalar_field/dump_dt=10.437508874065651",
+        "output1/dt=100.0",
+        "scalar_field/dump_constraints=false"
+      ]
+    }
+  ],
+  "resources": {
+    "nodes": 1,
+    "gpus": 1,
+    "cores": 1,
+    "walltime_s": null,
+    "wall_limit": "00:55:00",
+    "segments_max": null,
+    "gpu_hours_requested": 0.95,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": {
+    "partition": "preempt",
+    "job_name": "E-20261126-200833-f2f4622",
+    "job_ids": []
+  },
+  "outputs": {
+    "dir": "scratch/E-stoch-inf/E-20261126-200833-f2f4622",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "submitted",
+  "exit_code": null,
+  "registered": "2026-11-26T20:08:59Z",
+  "started": null,
+  "ended": null,
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 60.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 0.9587,
+    "gpu_hours_reserved": 0.0,
+    "gpu_hours_without_gate": 0.0,
+    "cores_busy": 0,
+    "runs": 337,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md + 0026-cards-loaded-allotment-cost.md + 0031-level2-branch-and-ablation.md + 0032-new-account-preemption-allotments.md + 0038-track-e-g2-signed-g3-scope.md + 0039-rulings-after-batch-17.md + 0045-track-d-g2-signed-release-v08.md"
+  }
+}
