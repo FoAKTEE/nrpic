@@ -305,3 +305,42 @@ cells: 2000 random, the 2000 largest |R^NR|) stays below 1e-8, twice the largest
 maps. The noise (1e-9 = 2e-9 sigma_lin) moves a cell across nu = 3 with probability about 4e-12 per cell; no
 statistic of 4d.1 resolves it [JUDGEMENT]. Pilot reading on these terms: `read_pilot.py --map table --msteps 4000`,
 P5-3 and P5-5 judged as written in entry 5; prediction (ii) per member max below 6e-9.
+
+## entry-13 (2026-11-26 04:08 PST, lead of E, batch 27): outcomes of entries 10-12 (G3-C, G3-R, table, pilot zeta)
+
+Runs (all registered, figures looked at): G3C and G3R closed by `nrpic-run finish` (E-20261126-030044-6933f21, 52.4 GB,
+and E-20261126-041110-0a78c93, 13.2 GB, status completed; card time 15.8 and 21 minutes); G3-C reading
+E-20261126-115943-32970f2 (`g3c.json`, `fig_g3c.png`); G3-R reading E-20261126-120438-9d48377 (`g3r.json`,
+`fig_g3r.png`); pilot zeta with the 4000-node table E-20261126-120434-5dda273 (`pilot.json`, `fig_pilot.png`); the
+16000-node reading E-20261126-115929-84cd060 is on record, its zeta not judged (entry 12).
+- G3-C (4d.4 with A6) PASSES as written. Ten dumps in cN [2.0, 6.6]; the model test holds at all ten for H and for M
+  (rms D2/rms D1 0.999-1.003, corr -0.234 to -0.245; model -4/17 = -0.235). Judged factors: H 1 over 1/2 at 8 dumps,
+  max |f - 4| 8.4e-4; H 1/2 over 1/4 at 5 dumps, 1.3e-4; M 1 over 1/2 at 8 dumps, 6.8e-4; M 1/2 over 1/4 at 6
+  dumps, 1.2e-4 (band 0.05). Entry 4's prediction holds, including the even-odds clause: H 1/2 over 1/4 was testable
+  (5 dumps). Entry 10's addition holds in this sense: the 4c two-amplitude estimator (reported, not judged) leaves
+  the band at the late dumps (M: 3.80 at cN 4.54, 3.55 at 5.04; H: 3.85 at 4.05, 5.19 at 5.04, 5.27 at 5.53, all with
+  the 1/2-over-1/4 pair, whose floor estimate is poor), the three-amplitude level brings every judged factor to
+  4 within 1e-3: the G2 failure of U-A4'(a) is a failure of the floor estimator, now shown on a run designed for it.
+  Outside the range (reported): beyond cN 7 the even parts fall below 3 sigma and nothing is judged.
+- G3-R (4d.5 with A7) PASSES as written: 8538 modes |n| <= 16 at N_f; max D^L 1.146e-4 (128) and 3.68e-5 (160),
+  factor 3.12; median of the per-mode ratio 2.63; Re(L/cref - 1) has the same sign at both resolutions for 100 per
+  cent of the modes (imaginary part 99.6). Entry 4's [2.3, 4.0] holds for both. Reported: O(1) alone, factor of max
+  3.41 but median ratio 1.54 and sign agreement 0.74 (T caps it: |T/cref| = 1.28e-5 on every mode at both
+  resolutions, `fig_g3r.png` right); T changes by 5.6e-4 between resolutions (prediction below 0.1 holds). At the
+  lowest modes D^L falls from 1.4e-6 to 0.6e-6, a factor near 1.25^4 = 2.44.
+- Table rule of entry 12: (i) b000 against the verifier 3.87e-9 <= 4.3e-9 [post hoc, measured before the rule];
+  (ii) spot check against map_rk4(4000) on 4000 cells per member: max 4.45e-9 to 5.91e-9, all below 1e-8; the
+  prediction "below 6e-9" holds, narrowly (b002 5.907e-9). The `spot_holds` field of the member json files uses
+  TB-1's 1e-10 bar and reads false; the rule's bar is 1e-8. Table and evaluation 16-23 s a member (TB-3).
+- P5-3 FAILED as written: 1000 against 4000 steps, max |dN| 3.2e-9 to 4.1e-9 per member against 1e-9. Reading: the
+  round-off of entry 12 (about 1e-9 at 4000 steps, quantized levels); 4e-9 is 8e-9 sigma_lin [JUDGEMENT: below
+  every statistic of 4d.1].
+- P5-5 (preview, ten single members; zeta from the 4000-node table) HOLDS on every clause: sd(zeta)/sigma_lin
+  1.0003-1.0030 (mean 1.0016; band [0.98, 1.02]); mean skewness of zeta 0.0200 (sd 0.0040; band [0.015, 0.032]);
+  skew(zeta) + skew(R^NR) per member 0.0204-0.0208 (sd 1.2e-4; band [0.017, 0.023]; 6 a_zeta sigma_lin = 0.0200);
+  mean A(3) of zeta 0.082 (sd 0.028; band [0.05, 0.16]); mean F_+(4)/Q(4) 1.195 (band [1.1, 1.8]) and F_-(4)/Q(4)
+  0.751 (band [0.5, 1.0]); F_+(3)/Q 1.071, F_-(3)/Q 0.909; excess kurtosis -0.003; corr(zeta, R^NR) -0.999988.
+  For orientation only (not the (T) comparison, which needs the 128 pairs): the 4e6 reference skewness is 0.0199
+  +- 0.0012 (E-20261125-152832-c301e92); ten members give 0.0200 +- 0.0013.
+Consequence: the zeta of a 128^3 member costs about 20 s of table plus the reading (about 1.5 min a member in all on
+one core of the loaded machine), against 1.5 core-hours before (R41): 256 members take about 6 core-hours. R41 closes.
