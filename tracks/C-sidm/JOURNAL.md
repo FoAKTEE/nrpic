@@ -1082,3 +1082,31 @@ over [0, min(t_end, t_c)] (the band of B17.6); nothing else changes. Every t_c b
 alpha_min = 0.3 lapse marker; none of these runs had the horizon finder.
 Rules applied: D2eta1 is judged on its record up to the guard stop (t_c and the 0-100 M collision
 rate lie before it); the run stays FAILED on record (chain status FAILED, exit 3 of the guard).
+
+## 2026-11-26T12:10Z  session C-sidm lead (batch 27)  outcomes B17.4 and NS.3
+
+Runs closed with nrpic-run finish before the analyses: D2eta1 C-20261126-034500-4b34b1c (FAILED on
+record: guard stop at 190.375 M, non-finite Z4c fields, 0.4453 card-hours); N4c
+C-20261125-132112-edf3fbc (completed, 1.2892 card-hours over 5 jobs). Every t_c is the
+alpha_min = 0.3 lapse marker of a run made without the horizon finder.
+- B17.4 HOLDS (d2_analysis.py C-20261126-114801-ea62ac3; fig_d2.png read; the first drawing gave
+  m16 and eta1 the same black line, fixed in the script and redrawn in the next D2 analysis):
+  D2 f = 2 seed 1 with shift_eta 1.0 collapses at t_c = 164.01 M against 163.41 M with shift_eta
+  2.0 (+0.37 per cent, bar 5); collisions per particle per M over 0-100 M 8.782e-3 against
+  8.857e-3 (ratio 0.992, bar 5 per cent); collisions per particle before t_c 2.191 (2.213);
+  collision energy budget 3.3e-16 of sum MH to the first excision (171.5 M). The guard stop at
+  190.4 M lies 26 M after t_c and 19 M after the first excision: the post-collapse evolution with
+  shift_eta 1.0 on this static mesh ends in non-finite fields, which the shift_eta 2.0 run
+  (C-20261122-141414-399ad97) did not do to 300 M [VERIFIED from cc.guard.txt; cause not named].
+  So the gauge leg of the collisional collapse time passes at 0.4 per cent; what happens after
+  the collapse depends on the shift damping.
+- NS.3 HOLDS in its relaxation branch (nseries.py C-20261126-120656-f5c62bb; fig_nseries.png
+  read): the N = 1e4 control of y0 = 0.334032 on M/8 collapses at t_c = 295.78 M, before 300 M;
+  the scheme branch ([455, 615] M) is refuted. The N-series of the control on M/8 now reads
+  t_c = 295.78 M (1e4), 534.81 M (1e5), none by 600 M (1e6, alpha_min >= 0.6586). H-norm2 floors
+  (100-300 M) 7.68e-2, 7.86e-3, 7.90e-4: ratios 9.78 and 9.95 for N ratios of 10. As written
+  with NS.3, an early collapse at 1e4 is a weak test alone (the 1e4 sample's radial balance is
+  off by ~1/sqrt(N)); with NS.1 it completes the three-point particle-number leg of the control.
+  [JUDGEMENT] t_c grows with N much more slowly than N (factor 1.81 from 1e4 to 1e5), so the
+  collapse is not set by a relaxation time proportional to N/ln N alone.
+Failed predictions of this entry: none (NS.3's scheme branch was the alternative meant to fail).
