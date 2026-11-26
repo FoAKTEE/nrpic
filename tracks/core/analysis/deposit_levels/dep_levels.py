@@ -389,10 +389,11 @@ def figure(out, res):
     from nrpic import figstyle
     figstyle.use_style()
     cols = figstyle.series_colors(3)
-    fig, axs = plt.subplots(1, 3, figsize=(10.5, 3.3))
-    panels = [("uncapped, centred lattice", ["cic", "tsc", "pcs"]),
-              ("PCS: lattice shift, compensation", ["pcs", "pcs_s", "pcs_comp"]),
-              ("level cap 0 (root-width clouds)", ["cic_capfs", "tsc_capfs", "pcs_capfs"])]
+    fig, axs = plt.subplots(1, 4, figsize=(13.0, 3.4))
+    panels = [("(a) uncapped, centred lattice", ["cic", "tsc", "pcs"]),
+              ("(b) PCS: shift in x2, x3; compensation", ["pcs", "pcs_s", "pcs_comp"]),
+              ("(c) level cap 0 (root-width clouds)", ["cic_cap", "tsc_cap", "pcs_cap"]),
+              ("(d) CIC, deposit_fine_shape", ["cic", "cic_fs", "cic_capfs"])]
     for ax, (title, names) in zip(axs, panels):
         for c, n in zip(cols, names):
             p = os.path.join(out, n, "line.txt")
@@ -400,17 +401,18 @@ def figure(out, res):
                 continue
             a = np.loadtxt(p)
             ax.plot(a[:, 0], a[:, 1] - 1.0, "o-", ms=2.5, lw=0.9, color=c, label=n)
-            if "comp" not in n and np.any(a[:, 2]):
+            fs = n.endswith("fs") and n != "cic"
+            if "comp" not in n and not fs and np.any(a[:, 2]):
                 ax.plot(a[:, 0], a[:, 2] - 1.0, "x", ms=4, color="k", lw=0)
         ax.axvline(8.0, color="0.6", lw=0.6, ls="--")
-        ax.axvline(-8.0, color="0.6", lw=0.6, ls="--")
-        ax.set_xlim(2.0, 14.0)
-        ax.set_xlabel(r"$x^1$")
-        ax.set_title(title, fontsize=9)
+        ax.set_xlim(4.0, 13.0)
+        ax.set_xlabel(r"$x^1$ (fine level left of the dashed line)")
+        ax.set_title(title, fontsize=8)
         ax.legend(fontsize=7, loc="lower right")
-    axs[0].set_ylabel(r"$E/\rho_0 - 1$ on the line")
-    axs[2].set_ylim(-1e-13, 1e-13)
-    fig.tight_layout()
+    axs[0].set_ylabel(r"$E/\rho_0 - 1$ on the line $x^2 = x^3 = 0.1$")
+    fig.text(0.01, 0.01, "crosses: 1D emulation of the deposit rule (cases without "
+             "fine_shape or compensation)", fontsize=7)
+    fig.tight_layout(rect=(0, 0.04, 1, 1))
     figstyle.save(fig, os.path.join(out, "fig_dep_levels"))
 
 
