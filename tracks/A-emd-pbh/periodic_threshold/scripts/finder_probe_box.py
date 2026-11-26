@@ -151,9 +151,7 @@ def figure(out, recs):
     fig, axs = plt.subplots(1, 2, figsize=(fs.FULL_WIDTH, 3.1))
     fig.subplots_adjust(left=0.10, right=0.985, bottom=0.16, top=0.93, wspace=0.30)
     dumps = sorted({(r["set"], r["time_dump"]) for r in recs})
-    cyc = [fs.PAL[c] for c in ("blue", "red", "green", "yellow", "purple", "cyan") if c in fs.PAL]
-    if len(cyc) < len(dumps):
-        cyc = cyc + ["k"] * len(dumps)
+    cyc = list(fs.series_colors(len(dumps)))   # one distinct colour per dump (the fixed list ran out at 4)
     for i, (s, t) in enumerate(dumps):
         sp = sorted([r for r in recs if r["set"] == s and r["time_dump"] == t and r["kind"] == "sphere"
                      and "mean_expansion" in r], key=lambda r: r["r0"])
@@ -186,14 +184,20 @@ def figure(out, recs):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("rst", nargs="+")
+    ap.add_argument("rst", nargs="*")
     ap.add_argument("--exe", required=True)
     ap.add_argument("--out", required=True)
-    ap.add_argument("--set", required=True, action="append",
+    ap.add_argument("--set", action="append", default=[],
                     help="one per rst, in order, or one for all")
     ap.add_argument("--threads", type=int, default=3)
     ap.add_argument("--jobs", type=int, default=2)
+    ap.add_argument("--replot", help="redraw the figure from an existing probes.json (no runs)")
     a = ap.parse_args()
+    if a.replot:
+        os.makedirs(a.out, exist_ok=True)
+        recs = json.load(open(a.replot))
+        print(json.dumps(dict(source=a.replot, figures=figure(os.path.abspath(a.out), recs)), indent=1))
+        return
     out = os.path.abspath(a.out)
     os.makedirs(out, exist_ok=True)
     sets = a.set if len(a.set) == len(a.rst) else a.set * len(a.rst)
