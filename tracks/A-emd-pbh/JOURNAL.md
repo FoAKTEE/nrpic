@@ -575,3 +575,22 @@ Not done (outside this session's aim): judging and closing processor run A-20261
 - Detached at the end: Szekeres N256 readers A-20261126-212138-49b9a2d (tau 30) and A-20261126-212141-7eeb046 (tau 40),
   one core each, P24 for the next session (entry 14).
 - Card-hours used by this session's submissions: 0 (nothing queued). Processors: up to 5 cores (load ~50).
+
+## 2026-11-26 15:30-16:05 PST, lead of batch 31 (processors only, 0 card-hours; after the failed G2 review)
+
+Gate G2 NOT passed (decision 0047). Did, in the order the task set: (1) the finder of core-v0.8 on the restart files of
+P0L6 and S1L (predictions FP0-FP8 first, periodic_threshold JOURNAL): P0L6's horizon found at t = 140 with 4000 flow
+iterations from the deck radius (6.309 at r 0.104; line 6.28 at 0.103), S1L's at t = 220 only from r 0.16 (10.73 at
+0.161); no acceptance without a trapped round sphere; first trapped round spheres P0L6 (130, 140], S1L (180, 190].
+Polishing cannot cure reason 6; the card runs failed on the 400-iteration cap. FP4 and FP6 refuted. Runs
+A-20261126-233542-fd9f9f0, A-20261126-234232-84f3e98, figures A-20261126-234818-3c83420 (A-20261126-234811-9e42dae
+failed on a required argument, kept). (2) C3 tests of the review, predictions first (threshold_ball entries 16, 17): no
+first-step jump; the early H rise is the t = 0 momentum residual and converges (A-20261126-234222-dbf8624,
+A-20261126-234642-8a4784b); with the gauge frozen and particles at rest the floor stays (line ratio 0.21 at t = 1;
+A-20261126-235005-d58354f, A-20261126-235421-58014f6, A-20261126-235445-452a93a): G1 refuted; CF1 refuted as written.
+(3) Records: CHECKLIST C1, C3, C9, C18 (PASS: both verifier reports, six findings answered), C21-C23 (SCOPE section 7,
+open); note corrections of the review section 6 (V.A-V.D, VI, Summary, Fig. 7(a), Table V), run
+A-20261126-234358-f761d8d, compiled clean; READMEs; S1-S3 of S1L judged (A-20261126-234332-ec02d47); A2X (ii)
+corrected (dust clock from the snapshots, verifier's numbers); EVIDENCE, OPEN, REVIEW-wave3 section 13, STATUS,
+HANDOFF, RISKS 45-47; outbox to core finder-slow-convergence-box, to orch g2-after-batch-31. The full checksum pass of
+the stage check left by the gate reviewer (3fcd428, PASS, every byte read) kept beside the cached result.

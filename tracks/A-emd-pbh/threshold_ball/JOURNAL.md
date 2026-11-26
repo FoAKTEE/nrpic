@@ -715,3 +715,20 @@ at its table value), shift_Gamma = 0, shift_eta = 0, shift_advect = 0 (shift sta
 - Refuted if the ratio at t = 1 stays within 30 per cent of 0.129 (then neither the gauge nor the motion across cells
   makes the floor, and the deposit/source coupling of a static particle set or the evolution system itself is left).
 A fall does not separate gauge from motion across cells; a second member (frozen lapse, live shift) would.
+
+### Entry 17, outcome C3-G (run A-20261126-235005-d58354f completed, 64 cycles, 247 s on four threads; readers A-20261126-235421-58014f6 and, with profiles, A-20261126-235445-452a93a; fig_c3_first_step.png looked at) - 15:58 PST
+
+- G1 REFUTED: with the lapse frozen at its table value and the shift zero, the x-line ratio at t = 1 is 0.210 (S2c-A:
+  0.129), i.e. 62 per cent HIGHER, outside the 30 per cent band and in the wrong direction; per 0.25: 0.072, 0.087,
+  0.151, 0.210. The volume H-norm2 grows to 0.65 at t = 1 (S2c-A 0.038). The deposited S_x on the line stays at round-off
+  (M_x/8 pi S_x ~ 5e14): the particles stay at rest on the grid, as in the Szekeres runs.
+- Panel (d) at t = 1: on the x line |H| inside the matter (x < 5) is 1e-3 to 1e-2 in both members, about the same
+  profile; the larger volume norm of the frozen member is not on the line [JUDGEMENT on the figure; where it sits off the
+  line is not read].
+Reading [JUDGEMENT]: neither the gauge dynamics (1+log, Gamma-driver, lapse relaxation) nor the motion of particles
+across cells makes the floor on the line: it is there with the particles at rest and the gauge frozen. What differs from
+the Szekeres runs, which converge with particles at rest: the nested refinement levels inside the matter, the vacuum
+exterior with its outer boundary, and the ball's edge. The next test that could fail is therefore the gate review's
+third: a member without level faces in the matter (frozen gauge keeps it cheap on processors), prediction first.
+Figure defect noted: the four-panel layout crowds the titles and legends (readable; not a data defect).
+C3 stays FAILED as written.

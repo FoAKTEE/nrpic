@@ -382,7 +382,7 @@ finder-slow-convergence-box) with S1L's file as the reproducer; G3 decks get flo
 
 ### 13.2 Condition (a), the constraint floor (C3-F)
 
-Prediction in threshold_ball entry 16 before the run; outcome there.
+Predictions in threshold_ball entries 16 and 17 before the runs; outcomes there. Confirmed from the history and table outputs: C3-F (A-20261126-234222-dbf8624) repeats S2c-A at t = 0.25 to the printed digits; no first-step jump; the early H rise is the t = 0 momentum residual (converging 60-fold in M, 18-fold in H at 0.25 from M/16 to M/32). C3-G (A-20261126-235005-d58354f): with the gauge frozen and particles at rest the line ratio at t = 1 is 0.210 (0.129 with the live gauge): the prediction that the floor would fall is refuted. Not confirmed: a cause; the candidates left are the level faces in the matter, the vacuum exterior and boundary, and the ball edge. Wrong on record: CF1's normalization (S_x = 0 at t = 0).
 
 ### 13.3 Second verifier's findings (VERIFIER.md section 4) and the gate review's corrections (section 6)
 

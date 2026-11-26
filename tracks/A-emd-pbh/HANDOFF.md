@@ -17,7 +17,7 @@ from "FP" (2026-11-26 15:35) to the end; `threshold_ball/JOURNAL.md` entries 16-
 ## Runs still going
 
 None of A (no card job queued or running; the C3-G processor run A-20261126-235005-d58354f ended this session and is
-judged in threshold_ball entry 17, unless that entry has no outcome: then run its reader, below).
+judged in threshold_ball entry 17).
 
 ## What batch 31 established (processors only, 0 card-hours)
 
@@ -30,7 +30,8 @@ judged in threshold_ball entry 17, unless that entry has no outcome: then run it
   (180, 190]. Untested: the card run's false acceptance at t = 118.1 (no restart file between 110 and 120).
 - Condition (a), C3: H every cycle over S2c-A's first 0.25 M (C3-F, A-20261126-234222-dbf8624, reader
   A-20261126-234642-8a4784b): no first-step jump; the early rise is the t = 0 momentum residual (converges); the floor
-  is a source during the evolution. C3-G (gauge frozen) result: threshold_ball entry 17.
+  is a source during the evolution. C3-G (A-20261126-235005-d58354f, gauge frozen, particles at rest): the floor stays
+  (line ratio 0.21 at t = 1 against 0.129): not the gauge dynamics, not motion across cells (entry 17).
 - Condition (e): corrections done (note V.A-V.D, VI, Summary, Fig. 7(a), Table V; READMEs; CHECKLIST C1, C3, C9, C18,
   C21-C23; EVIDENCE; OPEN; S1-S3 of S1L judged A-20261126-234332-ec02d47; A2X (ii) corrected). Note run
   A-20261126-234358-f761d8d, compiled clean.
@@ -44,8 +45,8 @@ judged in threshold_ball entry 17, unless that entry has no outcome: then run it
    recommended setting (`finder_probe_box.py --set S1L ...`, prediction first in periodic_threshold/JOURNAL).
 2. Condition (a) after core's deposit fixes: B-d0.42 and B-d0.40 (or smoothed CIC twins) on two meshes to the horizon
    on cards, priority 2, prediction first (threshold_ball entry 18); the section-3 ratio must fall below 0.1 at detection
-   and with the mesh. Before that, on processors: the review's offline-H test from a 3D dump on two meshes; if C3-G's
-   floor fell, a member with frozen lapse and live shift to separate gauge from motion across cells.
+   and with the mesh. Before that, on processors: a member without level faces in the matter (frozen gauge keeps it
+   cheap; Szekeres, which converges, has none), then the review's offline-H test from a 3D dump on two meshes.
 3. Condition (c), A2: a run that could refute a named first-order effect (gate review section 5 item 3).
 4. G3 box decks: `flow_iterations_0 = 4000`, `polish_iterations_0 = 100`, `mass_tol_0 = 1e-5`, diagnostics on; start
    radius from a round-sphere scan, not a fixed 0.15/0.6.
