@@ -2441,3 +2441,13 @@ not the published branch binary's d7306809..., as build paths are in the debug d
 - **F1c HOLDS**: the control writes no status file.
 So Tracks D and F can switch the status file on in a continued run today with `-i`; the
 source fix (add a parameter on restart) is NEXT_SOURCE.md item 1, with this test.
+
+### Outcome Q8 (02:54Z), run core-20261126-024518-e1e16dc (figure looked at)
+
+**Q8 HOLDS**: `restart_test.py` with the merged build, 19 checks "ok", ALL OK, as in run
+core-20261125-142556-a424739 of the branch build: the uninterrupted run equals the release
+byte for byte; the four cuts K24-K27 (every residue of the record interval) and the chain
+(segments cut with status 143, last segment 0) give every output file byte-identical to
+the uninterrupted run, with restart and `.prt` files identical; the release, cut the same
+way, loses the tracker records before the cut, the `cons.hst` record at t = 1.6875 (cuts 26,
+27) and writes 4 header lines in the mesh history instead of 2 (the figure shows all three).
