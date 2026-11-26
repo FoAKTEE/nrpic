@@ -602,7 +602,7 @@ below 0.05 s per flow iteration on the card [JUDGEMENT]. Refuted by any FAIL lin
 `card_check.py` that is not a defect of the reader itself (a reader defect is fixed and the
 analysis registered again; both runs stay on record).
 
-## Entry 22 (2026-11-26, 03:58 PST): first pass of the judgement failed on the reader; prediction for the second
+## Entry 22 (2026-11-26, 03:47 PST): first pass of the judgement failed on the reader; prediction for the second
 
 Run core-20261126-114526-2b1f001 (exit 1): K1, K2, K4, K5 ok; K3 card against processors
 FAIL with max nan for all three rules. Cause, read in the script before any rerun:

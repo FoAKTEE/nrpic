@@ -145,6 +145,13 @@ def main():
             T[n][T[n][:, 2] != CT[n][:, 2], 0].tolist() if nrow else None)
         ck["K3: card against processors, %s: the same searches found, masses within 1e-8 "
            "(max %.1e)" % (n, d_)] = (same and d_ < 1.0e-8)
+    # the card with itself: fp_g04 is the rule 1e-5 with another guard (same searches expected)
+    if len(S["g04"]) == len(S["prod"]):
+        res["finder"]["card_g04_vs_card_prod_max"] = float(np.max(np.abs(S["g04"][:, 2] - S["prod"][:, 2])))
+    ck["K3 (added after the first pass): the polished and the tight rules agree with processors "
+       "within 1e-12 at every search"] = all(
+        res["finder"]["card_vs_cpu_%s_per_search" % n] is not None
+        and max(res["finder"]["card_vs_cpu_%s_per_search" % n]) < 1.0e-12 for n in ("pol", "tight"))
     cost = {}
     for n in ("prod", "pol", "tight"):
         st = T[n]
