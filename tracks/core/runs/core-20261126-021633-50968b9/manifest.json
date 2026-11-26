@@ -1,0 +1,137 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "core-20261126-021633-50968b9",
+  "track": "core",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "ladder row 4 on M/8, level 3: y_c = 0.755 CONTROL continued from its 300-M restart (run core-20261121-204237-ae00ca2) to 600 M, release core-v0.6 card build through verify/row4/athena_resume.sh; predictions P12-P15 of JOURNAL 2026-11-24T13:05Z",
+  "preregistered_in": null,
+  "launcher": "chain",
+  "command": [
+    "scripts/submit_chain.sh",
+    "/data/haiyangw/nrpic/scratch/core/core-20261126-021633-50968b9",
+    "/data/haiyangw/nrpic/wt/core/tracks/core/verify/row4/st_m8.athinput",
+    "nrpic_resume=/data/haiyangw/nrpic/scratch/core/core-20261121-204237-ae00ca2/rst/st.00015.rst",
+    "time/tlim=600"
+  ],
+  "cwd": "scratch/core/core-20261126-021633-50968b9",
+  "git": {
+    "sha": "50968b9d92b492043f2774470d0b41c1e6e7caab",
+    "branch": "core/nrpic",
+    "dirty": false,
+    "merge_base_main": "3dad12cb5219ed4c26e90ad992c9eaa70712b845",
+    "worktree": "wt/core"
+  },
+  "code": {
+    "core_tag": "core-v0.7",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": "nrpic_cf",
+    "exe": "/data/haiyangw/nrpic/wt/core/tracks/core/verify/row4/athena_resume.sh",
+    "exe_sha256": "c5ed418504a6341f3b05571bd9f4d8f2c0911b223839012530222ef90c6687a4",
+    "cmake_flags": null,
+    "toolchain": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "b7f7695d8e9720758c144dd9c0f272ce4fba8b46f921750462326664310fad51",
+    "machine_file_sha256": "ff4e45b0fd5bf6bee4bf1084a282d72b9adf66f4a455f4e937d9884a1fb07535",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": "NVIDIA A100 80GB (Slurm partition preempt)",
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/core/.venv"
+  },
+  "input": {
+    "file": "tracks/core/verify/row4/st_m8.athinput",
+    "sha256": "29048b6166ef269190f7169423355102e6e6c32bf9117fb77a9287887b995fe0",
+    "overrides": {
+      "time/tlim": "600"
+    }
+  },
+  "inputs": [
+    {
+      "path": "/data/haiyangw/nrpic/.work/build_gpu_v06/src/athena",
+      "role": "input",
+      "sha256": "ea473498500f8efc211f5ee9572cd393aad019d035f819f825fe0b79d5114851",
+      "bytes": 109664600,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/core-20261121-204237-ae00ca2/rst/st.00015.rst",
+      "role": "input",
+      "sha256": "83b4e7710df38ac0cbffc9f5a013ae04e964321a558664892ea9e407d055494c",
+      "bytes": 1109485965,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/core-20261121-204237-ae00ca2/rst/st.00015.rst.prt",
+      "role": "input",
+      "sha256": "df93afaf83e2a91c453af7a76e5acebc6d4beda90a187c5e408ed100a8065e87",
+      "bytes": 760384,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "tracks/core/verify/row4/athena_resume.sh",
+      "role": "exe",
+      "sha256": "c5ed418504a6341f3b05571bd9f4d8f2c0911b223839012530222ef90c6687a4",
+      "bytes": 2207,
+      "tracked": true
+    },
+    {
+      "path": "tracks/core/verify/row4/st_m8.athinput",
+      "role": "athinput",
+      "sha256": "29048b6166ef269190f7169423355102e6e6c32bf9117fb77a9287887b995fe0",
+      "bytes": 2662,
+      "tracked": true
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 1,
+    "cores": 1,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": 2,
+    "gpu_hours_requested": 1.9667,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": {
+    "partition": "preempt",
+    "job_name": "core-20261126-021633-50968b9",
+    "job_ids": []
+  },
+  "outputs": {
+    "dir": "scratch/core/core-20261126-021633-50968b9",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "submitted",
+  "exit_code": null,
+  "registered": "2026-11-26T02:16:40Z",
+  "started": null,
+  "ended": null,
+  "parents": [
+    "core-20261121-204237-ae00ca2"
+  ],
+  "notes": "queued again in batch 12 (shared queue, decision 0033): replaces core-20261124-130356-d9d09bf, cancelled by orch at 2026-11-24 12:00 PST under the queue cap",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 40.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 17.2834,
+    "gpu_hours_reserved": 4.0334,
+    "gpu_hours_without_gate": 5.8713,
+    "cores_busy": 0,
+    "runs": 1610,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md + 0026-cards-loaded-allotment-cost.md + 0031-level2-branch-and-ablation.md + 0032-new-account-preemption-allotments.md + 0038-track-e-g2-signed-g3-scope.md + 0039-rulings-after-batch-17.md"
+  }
+}
