@@ -92,6 +92,10 @@ RUNS = {
     "pop_cmp_zs_eq": "B-20261126-024936-1ee0a16",  # compare_newton.py, zero shift, equal masses
     "pop_cmp_gd_eq": "B-20261126-024941-647553b",  # compare_newton.py, Gamma driver, equal masses
     "pop_hist": "B-20261126-024849-87e72b7",       # fig_leg_histories.py: M1, M4, P8C2, Q1 constraints, S1
+    # batch 28: the Gamma-driver box at 256^3 (q0060) and the analyses of batch 23 judged
+    "pop_hist28": "B-20261126-212502-e9e4f4e",     # fig_leg_histories.py with the 256^3 shifted leg: GM1, GM4
+    "pop_legs28": "B-20261126-212541-b647c59",     # compare_legs.py, equal-mass halos: M2, M3, Q1 high-k
+    "pop_s028gd": "B-20261126-212604-a508e94",     # judge_s028gd.py: S2, S3 at the same stage
 }
 
 # the registered runs of this note package that produced the committed figures/ and tables/

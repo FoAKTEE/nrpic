@@ -245,6 +245,31 @@ def values_g2(v):
     v["g2_vc_raw"] = ([r["ratio"] for r in vc], "pop_velchk")
     v["g2_vc_eq"] = ([r["ratio_GRpos_Nmass"] for r in vc], "pop_velchk")
     v["g2_vc_m"] = ([vc[0]["m_rel_spread_GR"], vc[0]["m_rel_spread_N"]], "pop_velchk")
+    # batch 28 (population/JOURNAL 2026-11-26 13:27)
+    h28 = common.load_json("pop_hist28", "leg_histories.json")
+    g1, g4 = h28["GM1"], h28["GM4"]
+    v["g2_gm1"] = ([g1["a_end_hst"], g1["Kmax_max_after_t9"], g1["gd_Kmax_max_after_t9"]], "pop_hist28")
+    r141 = max(g4, key=lambda r: r["a"])
+    v["g2_gm4"] = ([r141["Hr_ratio_gd_over_m256gd"], min(r["Hr_ratio_gd_over_m256gd"] for r in g4),
+                    max(r["Hr_ratio_gd_over_m256gd"] for r in g4), r141["Mr_ratio_m256gd_over_gd"]], "pop_hist28")
+    l28 = common.load_json("pop_legs28", "compare_legs.json")
+    m = l28["m256"]
+    v["g2_m2"] = ([min(h["n_leg"]/h["n_base"] for h in m["halos"]), max(h["n_leg"]/h["n_base"] for h in m["halos"]),
+                   min(h["M1_ratio"] for h in m["halos"]), max(h["M1_ratio"] for h in m["halos"])], "pop_legs28")
+    early = [r for r in m["strain"] if r["a"] <= 50]
+    late = [r for r in m["strain"] if r["a"] > 50]
+    s100m = max(m["strain"], key=lambda r: r["a"])
+    v["g2_m3"] = ([max(abs(r["rms8_cor_ratio"] - 1) for r in early), s100m["a"], s100m["rms8_cor_ratio"],
+                   min(r["Om_cor_gt16"]/r["Om_cor_gt16_base"] for r in late),
+                   max(r["Om_cor_gt16"]/r["Om_cor_gt16_base"] for r in late)], "pop_legs28")
+    p = [r for r in l28["p8u"]["strain"] if r["a"] > 50]
+    v["g2_q1hk"] = ([min(r["Om_cor_gt16"]/r["Om_cor_gt16_base"] for r in p),
+                     max(r["Om_cor_gt16"]/r["Om_cor_gt16_base"] for r in p),
+                     max(abs(r["rms8_cor_ratio"] - 1) for r in p)], "pop_legs28")
+    js = common.load_json("pop_s028gd", "judge_s028gd.json")
+    v["g2_s2"] = ([sum(1 for r in js["S2"] if r["inside"]), len(js["S2"]),
+                   min(r["M1_ratio"] for r in js["S2"]), max(r["M1_ratio"] for r in js["S2"])], "pop_s028gd")
+    v["g2_s3"] = ([min(r["ratio_raw"] for r in js["S3"]), max(r["ratio_raw"] for r in js["S3"])], "pop_s028gd")
 
 
 def values_v2(d, v):
@@ -616,6 +641,13 @@ LEDGER_G2 = [
         ("g2_m4", "mean Hamiltonian constraint, $128^3$ over $256^3$, $36\\le a\\le100$: smallest, largest; momentum: smallest, largest"),
         ("g2_q1", "eight particles per cell, joined runs: last $a$; momentum and Hamiltonian constraint means, one over eight per cell, there; largest relative difference of the continuation from the cut run"),
         ("g2_s1", "$\\sigma_1=0.028$, Gamma driver from $t=8$: last $a$; mean Hamiltonian constraint there and its largest value"),
+        ("g2_gm1", "$256^3$, Gamma driver: last $a$; largest $K$ in the box after $t=9$; the same at $128^3$"),
+        ("g2_gm4", "mean Hamiltonian constraint, $128^3$ over $256^3$, Gamma driver: at $a=141$, smallest and largest over $25\\le a\\le141$; mean momentum constraint, $256^3$ over $128^3$, at $a=141$"),
+        ("g2_m2", "$256^3$, zero shift, $64\\le a\\le100$, equal masses: halo count over the $128^3$ count, smallest, largest; largest-halo mass ratio, smallest, largest"),
+        ("g2_m3", "$256^3$ over $128^3$, zero shift: largest $|$band-strain ratio$-1|$ for $a\\le50$; $a$ and band-strain ratio of the last dump; TT measure above $16\\,k_f$ for $a>50$, smallest and largest ratio"),
+        ("g2_q1hk", "eight over one particle per cell, zero shift, $a>50$: TT measure above $16\\,k_f$, smallest and largest ratio; largest $|$band-strain ratio$-1|$"),
+        ("g2_s2", "$\\sigma_1=0.028$ at $a$ against $0.014$ at $2a$, Gamma driver, equal masses: catalogues with counts inside $2\\sqrt N+2$, catalogues; largest-halo mass ratio, smallest, largest"),
+        ("g2_s3", "the same pairing: raw strain rms ratio, smallest, largest"),
         ("g2_cor", "metric quasi-static TT measure over the Newtonian particles' estimate, $4\\le a\\le36$, both gauges: smallest, largest"),
         ("g2_cor132", "$a$; the same ratio, zero shift, Gamma driver"),
         ("g2_vc_a", "epochs of the same-particle check"),
