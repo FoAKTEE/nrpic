@@ -30,3 +30,7 @@ tracks/kb/outbox/20261125T125033Z__to-all__claims-superseded-batch17.md	2026-11-
 tracks/orch/outbox/20261125T141500Z__to-all__finish-continued-runs-checksum-cache.md	2026-11-25T17:10:09Z	
 tracks/core/outbox/20261125T150036Z__to-F-hills__tracker-files-on-restart-done.md	2026-11-25T17:10:09Z	
 tracks/orch/outbox/20261125T151500Z__to-all__horizon-summary-repeats-last-surface.md	2026-11-25T17:10:09Z	
+tracks/B-emd-gw/outbox/20261125T172252Z__to-all__gr-particle-mass-weight.md	2026-11-26T05:51:53Z	
+tracks/core/outbox/20261126T024631Z__to-F-hills__fastflow-diagnostics-on-restart.md	2026-11-26T05:51:53Z	
+tracks/B-emd-gw/outbox/20261126T025649Z__to-all__gr-particle-mass-halos.md	2026-11-26T05:51:53Z	
+tracks/orch/outbox/20261126T033000Z__to-all__finder-diagnostics-in-continued-runs.md	2026-11-26T05:51:53Z	
