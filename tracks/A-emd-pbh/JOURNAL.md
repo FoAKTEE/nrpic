@@ -500,7 +500,7 @@ Not done (outside this session's aim): judging and closing processor run A-20261
   reference, clock, reader or initial positions; relativistic evolution or coordinates, not named further.
   Outbox: info c3-f2-refuted to orch.
 
-## 2026-11-25 18:17-19:25 PST, lead of batch 23 (analysis round; no card time)
+## 2026-11-25 18:17-18:55 PST, lead of batch 23 (analysis round; no card time)
 
 - Merged main (0041, 0042). Closed every ended run before reading it (`nrpic-run finish`): S2c (completed), the PCS
   twin (failed, exit 143: two members stopped by hand in batch 20), N-z/N-f/N-z128 (completed), Szekeres N64/N128
@@ -525,3 +525,11 @@ Not done (outside this session's aim): judging and closing processor run A-20261
   for N128, holds for N64; P18 holds for N64 at tau 10 (szekeres entry 11).
 - Inbox: B's gr-particle-mass-weight acknowledged (it is the reading of AZ2's N-f: psi^6 masses read as density).
   Outbox to orch: g2-state-after-batch-23 (four rulings asked).
+- PC (A-20261126-023551-f800cf5): the 'probe particle' was a misreading (source: the probe is a coordinate
+  point); the central particle is at rest, so int alpha_min dt bounds its proper time: crossing after 5.99 t_H on
+  a crossing worldline. Correction posted to orch (a2x-probe-correction).
+- Stage G2: collect, verify --no-checksums (FAIL only on three unfinished runs: S1L chain awaiting q0015 and the
+  two detached Szekeres readers), report with the decision text; CHECKLIST C1, C3, C19, C20; OPEN.md rewritten;
+  EVIDENCE rows; REVIEW-wave3 section 11. G2 not listed as complete: four rulings asked, note work follows them.
+- Processors: up to four cores at a time (load 87-97). Detached at the end: A-20261126-024724-425ed7f,
+  A-20261126-023245-1dd80ad (one core each).
