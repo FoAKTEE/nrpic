@@ -29,3 +29,15 @@ Figures looked at by the lead in batch 20: fig_edge.png (two versions), fig_edge
 Card-hours to G2 (nrpic-run budget at the end of batch 11): see STATUS.md.
 
 Figures looked at by the lead in batch 23: fig_edge.png (S2c-B), fig_a2x.png, fig_a2_compare.png (four curves), fig_line_trapped.png and fig_compare_ltb_P0L6.png (P0L6), the Szekeres figures of A-20261126-023242-f3f0578.
+
+Batch 28 (2026-11-26 afternoon). Runs: S1L-h A-20261126-125306-0653547 (1.18 card-h) with readings
+A-20261126-213147-f274b2e, -213150-1441107, -213153-563fb0a (label reruns -213414-261dd64, -213459-0ce5ee6): A2H holds;
+Szekeres N256 to tau 40 A-20261125-231808-0784bc9 (1.60 card-h over both segments), readers A-20261126-023245-1dd80ad,
+-212138-49b9a2d, -212141-7eeb046 (szekeres entries 13, 14); C3 particle leg A-20261126-024922-97a2f14 with
+A-20261126-212340-4ea9fb2 (H); S1L chain A-20261123-025907-97bab8d closed (1.38 card-h, 7 jobs). Note v2 G2 section:
+A-20261126-213903-08eaf25, A-20261126-214059-b32377a. Figures looked at by the lead in batch 28: fig_edge.png (two
+versions), fig_a2x.png, fig_a2_crossing.png (two versions), fig_a2_probe.png, fig_code_n128n256_errors.png and
+_convergence.png, fig_code_n64n128_convergence.png, fig_code_n256t40_maps.png, fig_code_n256t30_profiles.png, the
+note's fig_g2_convergence.png, fig_slice_mosaic.png (two versions), schem_ladder.png, schem_architecture.png, and the
+note pages 7, 8, 16. stage verify A-emd-pbh G2: PASS at 8a1c50997 (checksums from the cache; one --full pass before the
+gate review); nrpic-stage report: FAIL as expected (C1, C3 failures on record; C18 verifier missing).
