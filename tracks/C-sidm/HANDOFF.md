@@ -16,23 +16,21 @@ Owner: C-sidm. Branch: `track/C-sidm`. Worktree: `/data/haiyangw/nrpic/wt/C-sidm
 Start with:
 `cd /data/haiyangw/nrpic/wt/C-sidm && git merge --no-edit main && git status --short && harness/bin/nrpic-ctx inbox && harness/bin/nrpic-queue list --owner C-sidm && squeue -u $USER -o '%i %j %T %M' && test -e /data/haiyangw/nrpic/locks/PAUSE && echo PAUSED`
 
-## First thing: A16b344
+## Done in this session: A16b344
 
-q0055 A16b344 (C-20261126-043714-8ea1c35, y0 0.344 kin, N = 1e6, M/16) ended at 600 M with all
-particles excised (a collapse). This session started `nrpic-run finish` on it in the background
-(log `scratch/C-sidm/tmp/finish_a16b344.log`, 80 GB to hash). Check
-`python3 -c "import json;print(json.load(open('tracks/C-sidm/runs/C-20261126-043714-8ea1c35/manifest.json'))['status'])"`:
-if it is not `completed`, run `harness/bin/nrpic-run finish C-20261126-043714-8ea1c35` (the cache
-makes a second pass quick for files already hashed). Then read it, registered:
-`harness/bin/nrpic-run submit --kind scouting --gate G2 --cores 1 --purpose "..." -- env OMP_NUM_THREADS=1 python3 tracks/C-sidm/longruns/scripts/nseries.py --out '$NRPIC_RUN_DIR' --band 0.03 --control N1e6_b344kin --title "Mesh leg ..." N1e6_c=C-20261124-221122-928c9eb N1e6_b344kin=C-20261125-224959-d1d4494 N1e6_b344kin_M16=C-20261126-043714-8ea1c35`
-and judge B20.2 (JOURNAL 2026-11-25T16:02Z: same fate as N6b344; t_c within 20 per cent of
-252.31 M). Look at the figure before writing the outcome.
+q0055 A16b344 (C-20261126-043714-8ea1c35) was closed (3.9744 card-hours) and read: on M/16 the
+kicked y0 = 0.344 model collapses at 217.97 M against 252.31 M on M/8 (B20.2 held,
+C-20261126-124143-b485eac). Read q0057 and q0058 the same way when they end:
+`harness/bin/nrpic-run submit --kind scouting --gate G2 --cores 1 --purpose "..." -- env OMP_NUM_THREADS=1 python3 tracks/C-sidm/longruns/scripts/nseries.py --out '$NRPIC_RUN_DIR' --band 0.03 --control N1e6_b324kin --title "..." N1e6_c=C-20261124-221122-928c9eb N1e6_b324kin=C-20261126-020831-fabf2d7 N1e6_b324kin_M16=<A16b324 run id>`
+(and `N1e6_b324kin_eta1=<N6b324e1 run id>` for the gauge member). B20.1: no collapse by 600 M and
+20 M block means of alpha_c - alpha_c(0) inside +-0.03; B20.3 second half: no collapse and
+|alpha_c(eta1) - alpha_c(N6b324)| < 0.01 (the `delta_vs_control_absmax` field of nseries.json).
 
 ## Card runs: the shared queue (harness/RULES.md "Shared card queue")
 
 | Queue id | Label | Item / run id | Read with | Prediction |
 |---|---|---|---|---|
-| q0055 | A16b344 | ENDED, closing (above) | nseries.py beside N6b344 | B20.2 |
+| q0055 | A16b344 | done, read (B20.2 held) | - | - |
 | q0057 | A16b324 | C-20261126-121449-1d37e77, job 5382 pending | nseries.py beside N6b324 (`--control N1e6_b324kin`) | B20.1 |
 | q0058 | N6b324e1 | waiting (priority 1(2)) | nseries.py beside N6b324 | B20.3 second half |
 
@@ -44,7 +42,7 @@ and judge B20.2 (JOURNAL 2026-11-25T16:02Z: same fate as N6b344; t_c within 20 p
 
 ## Next, in order
 
-1. A16b344 (above), then q0057 and q0058 when they end: judge B20.1-B20.3; update CHECKLIST C1, C2,
+1. q0057 and q0058 when they end: judge B20.1 and B20.3 (second half); update CHECKLIST C1, C2,
    C7, C9 (pass only if the fates repeat on M/16 and with shift_eta 1.0) and the note's Sec. V.
 2. G2 figures (C10, C11, C13, C15, C16): one script per figure in `note/scripts/` (convergence in
    N from nseries.json, mesh and gauge from d2.json and the bracket legs; verification-ladder

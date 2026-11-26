@@ -1175,3 +1175,17 @@ Failed predictions of this entry: none.
 - card-hours: none submitted by this session; closed this session 12.33 card-hours (0.4453 +
   1.2892 + 1.7747 + 2.6283 + 1.7831 + 0.7228 + 1.6789 + 2.0081); nrpic-run budget at 12:35Z: G2
   41.78 used, 11.80 reserved, 26.42 left of 80.
+
+## 2026-11-26T12:43Z  session C-sidm lead (batch 27)  outcome B20.2 (mesh member of y0 = 0.344)
+
+A16b344 C-20261126-043714-8ea1c35 closed before the analysis (completed, 3.9744 card-hours over 5
+jobs; the estimate was 6.5).
+- B20.2 HOLDS (nseries.py C-20261126-124143-b485eac, control N6b344; fig read): on M/16 the
+  kicked y0 = 0.344 model also collapses, at t_c = 217.97 M against 252.31 M on M/8, a shift of
+  -13.6 per cent, inside the 20 per cent bar. As in the collisional series, the finer mesh
+  collapses earlier. The H-norm2 floor on M/16 (4.5e-3 over 100-300 M) is about six times the M/8
+  floor at the same N, as expected from fewer particles per cell [JUDGEMENT].
+- With this, the unstable side of the bracket is repeated on two meshes, two gauges and two N.
+  The stable side has M/8 at N = 1e5 and 1e6 only; q0057 (A16b324, B20.1) and q0058 (N6b324e1,
+  B20.3 second half) decide it. Card-hours closed this session: 12.33 + 3.97 = 16.30.
+Failed predictions of this entry: none.

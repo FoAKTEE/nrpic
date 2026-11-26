@@ -1,8 +1,8 @@
 # C-sidm G2: what the gate still lacks
 
 State at the end of the lead session of batch 27 (2026-11-26). G2 is NOT met and the package is
-not ready for an independent review: three card runs that serve C1, C2, C7 and C9 have not been
-read (one, A16b344, ended during this session and is being closed). Seven items pass (C3, C4, C8,
+not ready for an independent review: two card runs that serve C1, C2, C7 and C9 have not run (the stable member
+of the bracket on M/16 and with shift_eta 1.0); A16b344 ended and was read in this session (B20.2 held). Seven items pass (C3, C4, C8,
 C12, C14, C19, C20); none fails as written any more; thirteen are open. Every collapse time of the
 package is the alpha_min = 0.3 lapse marker of a run made without the horizon finder
 (C-20261125-160207-05b6db1).
@@ -25,7 +25,7 @@ package is the alpha_min = 0.3 lapse marker of a run made without the horizon fi
 
 | Item | What is missing | Queue entry | Prediction |
 |---|---|---|---|
-| C1, C7, C9 threshold with three-way convergence | the bracket on M/16 at N = 1e6 | q0055 A16b344 (ENDED: C-20261126-043714-8ea1c35, 600 M, all particles excised; close and read with nseries.py beside N6b344), q0057 A16b324 (job 5382 pending) | B20.2, B20.1 (JOURNAL 2026-11-25T16:02Z) |
+| C1, C7, C9 threshold with three-way convergence | the bracket on M/16 at N = 1e6 | q0057 A16b324 (job 5382 pending); q0055 A16b344 read: collapses at 217.97 M on M/16 against 252.31 M on M/8 (B20.2 held, C-20261126-124143-b485eac) | B20.1 (JOURNAL 2026-11-25T16:02Z) |
 | C1, C2, C7, C9 gauge leg of the stable member | y0 0.324 kin with shift_eta 1.0 | q0058 N6b324e1 (waiting) | B20.3 second half |
 | C2 seed scatter at N = 1e5 (not required for the bracket) | A334s2c+, A334s3c+ to read | none (closed or closing) | seed scatter of the control |
 | C10, C11, C13, C15, C16 figures | G2 note figures by one script each (run_all), ladder schematic, slice mosaic | none (processor work) | - |

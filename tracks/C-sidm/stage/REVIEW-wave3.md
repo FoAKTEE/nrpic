@@ -458,3 +458,9 @@ shift_eta 1.0). C1, C2, C7, C9 move from FAIL to OPEN: what was failed (the N = 
 stays on record and no longer decides the items; they wait for q0055 (ended during the session),
 q0057 and q0058. The G2 package is therefore not handed to a verifier yet (ruling 0041 item 3:
 the verifier follows the legs). The G2 section of the note is written for what is settled.
+
+Added at 12:43Z: q0055 A16b344 (C-20261126-043714-8ea1c35, 3.9744 card-hours) ended during the
+session, was closed and read with nseries.py (C-20261126-124143-b485eac, figure read): on M/16 the
+kicked 0.344 model collapses at 217.97 M against 252.31 M on M/8 (B20.2 held, shift -13.6 per
+cent, bar 20). [VERIFIED] The unstable side of the bracket now repeats on two meshes, two gauges
+and two N; the stable side waits for q0057 and q0058.
