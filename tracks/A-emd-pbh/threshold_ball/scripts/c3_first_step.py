@@ -74,6 +74,8 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("members", nargs="+")
     ap.add_argument("--out", required=True)
+    ap.add_argument("--profile-t", type=float, default=None,
+                    help="also draw |H| and 16 pi E on the x line at this time (panel d)")
     a = ap.parse_args()
     os.makedirs(a.out, exist_ok=True)
     res = {}
@@ -95,8 +97,9 @@ def main():
     import figstyle as fs
     import matplotlib.pyplot as plt
     fs.use_style()
-    fig, ax = plt.subplots(1, 3, figsize=(fs.FULL_WIDTH, 2.8))
-    fig.subplots_adjust(left=0.08, right=0.99, bottom=0.17, top=0.90, wspace=0.38)
+    nax = 4 if a.profile_t is not None else 3
+    fig, ax = plt.subplots(1, nax, figsize=(fs.FULL_WIDTH, 2.8))
+    fig.subplots_adjust(left=0.07, right=0.99, bottom=0.17, top=0.88, wspace=0.45)
     cols = [fs.PAL["blue"], fs.PAL["red"], fs.PAL["green"], fs.PAL["yellow"]]
     for i, (name, r) in enumerate(res.items()):
         c = cols[i % len(cols)]
@@ -113,6 +116,18 @@ def main():
             q = ln[0]
             ax[2].plot(q["_x"], q["_Mx"], color=c, label=name + r": $M_x$, t = %.2f" % q["t"])
             ax[2].plot(q["_x"], 8 * math.pi * q["_Sx"], color=c, ls="--", label=name + r": $8\pi S_x$")
+    if a.profile_t is not None:
+        prof = {}
+        for i, (name, r) in enumerate(res.items()):
+            c = cols[i % len(cols)]
+            q = min(r["_ln"], key=lambda q: abs(q["t"] - a.profile_t))
+            ax[3].semilogy(q["_x"], np.abs(q["_H"]) + 1e-12, color=c, label=name + r": $|H|$, t = %.2f" % q["t"])
+            ax[3].semilogy(q["_x"], 16 * math.pi * np.abs(q["_E"]) + 1e-12, color=c, ls="--", label=name + r": $16\pi E$")
+            prof[name] = dict(t=q["t"], x=q["_x"].tolist(), H=q["_H"].tolist(), E=q["_E"].tolist())
+        ax[3].set_xlabel("x / M"); ax[3].set_title("(d) profiles", fontsize=8)
+        ax[3].legend(loc="best", fontsize=5)
+        with open(os.path.join(a.out, "profiles.json"), "w") as f:
+            json.dump(prof, f)
     ax[0].axhline(0.1, **fs.MASK_LINE)
     ax[0].set_yscale("log"); ax[0].set_xlabel("t / M"); ax[0].set_ylabel("x-line ratio")
     ax[0].set_title("(a) constraint / source on the x line", fontsize=8)
