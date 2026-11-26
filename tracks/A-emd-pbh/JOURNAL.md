@@ -499,3 +499,27 @@ Not done (outside this session's aim): judging and closing processor run A-20261
   (A-20261125-165125-1640161): direction holds, band refuted. Consequence as fixed: the lag of S1L is not in the
   reference, clock, reader or initial positions; relativistic evolution or coordinates, not named further.
   Outbox: info c3-f2-refuted to orch.
+
+## 2026-11-25 18:17-19:25 PST, lead of batch 23 (analysis round; no card time)
+
+- Merged main (0041, 0042). Closed every ended run before reading it (`nrpic-run finish`): S2c (completed), the PCS
+  twin (failed, exit 143: two members stopped by hand in batch 20), N-z/N-f/N-z128 (completed), Szekeres N64/N128
+  batch (failed: guard stops, exit 3), P0L6 chain (completed, 4.87 card-hours), Szekeres N256 chain (stopped: the
+  queue entry ran one segment, tau 21.2 of 40).
+- Predictions written and committed before any reading: threshold_ball entry 14 (G, the C3 mesh leg) and
+  periodic_threshold 18:21 PST (A2X, a crossing measure free of the coordinates).
+- C3: G REFUTED (A-20261126-022624-c663e0f): orders 1.5, 1.07, 0.34, 0.36 at t = 0.25-1; C3 stays FAILED; a defect
+  to explain under 0039 2(c).
+- A2: A2X (i) holds; (ii) as written not decidable (the dust-clock bound from snapshots is empty; three runs kept);
+  decided by the probe particle, which lies on a first-crossing worldline: (5.99, 6.80] t_H. The lag is not a
+  coordinate effect. N-z128 crosses at 3.62 t_H (AZ1 second clause refuted): the 64^3 Newtonian control was late
+  by 26 per cent. No card member queued. Runs A-20261126-022220-99b7be8, -022338-0edc27c, -022438-a08cc5f,
+  -022545-5af99fb, -022631-dafbb4f; fig_a2x.png, fig_a2_compare.png looked at.
+- P0L6: D1, D5 hold; D2, D3, D4 refuted; the one "found" at t = 118.1 is a false acceptance (status file read
+  critically); finder stalls on a resolved horizon from t = 136 (A-20261126-022753-f9e9c40; three figures looked at).
+  Outbox to core: finder-false-accept-and-stall-p0l6.
+- Szekeres: the three-member analysis was too slow (~1 h per N256 dump) and was stopped by hand and closed
+  (A-20261126-022804-0bc68c2, stopped); N64/N128 read in session (A-20261126-023242-f3f0578), N128/N256 detached
+  (A-20261126-023245-1dd80ad).
+- Inbox: B's gr-particle-mass-weight acknowledged (it is the reading of AZ2's N-f: psi^6 masses read as density).
+  Outbox to orch: g2-state-after-batch-23 (four rulings asked).

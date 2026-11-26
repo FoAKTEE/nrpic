@@ -319,3 +319,22 @@ What the track does: the lag of S1L (6.35 t_H, factor 1.46) is not in the refere
 positions; it lies in the relativistic evolution or in the coordinates of the GR run, not named further. A2 stays
 FAILED as written. Next: a gauge-invariant crossing measure in S1L or a GR member with zero shift, prediction first.
 P0L6 (q0013): its chain has not ended (Slurm 5296 pending), so the find at t = 118.1 was not read this session.
+
+## 11. Batch 23 (2026-11-25 evening, lead; analysis round of the entries and processor runs that ended)
+
+No helper package. Ended since batch 20: q0013 (P0L6), q0040 and q0041 (Szekeres series), and the session's own
+detached processor runs. Each was closed (`nrpic-run finish`) before its analysis, judged by a registered analysis
+against the prediction written before it ran, and its figure looked at. Predictions written this session before any
+reading: threshold_ball entry 14 (G), periodic_threshold 2026-11-25 18:21 PST (A2X).
+
+| Run (closed as) | Prediction | Analysis | Outcome | What the track does |
+|---|---|---|---|---|
+| S2c-A, S2c-B: A-20261125-161154-62ce3dc (completed) | G (entry 14) | A-20261126-022624-c663e0f, fig_edge.png | REFUTED: orders 1.5, 1.07 at t = 0.25, 0.5 but 0.34, 0.36 at 0.75, 1.0; S2c-B 0.101 at t = 1 | C3 FAILED as written; defect to explain (0039 2(c)); next: particle-number leg of S2c-A on processors, prediction first |
+| PCS twin A-20261125-160633-594a474 (failed, exit 143: S1-A, S2-B stopped by hand in batch 20) | F2 (twin) | same | S2-A reaches 0.64 by t = 5 | on record |
+| N-z128: A-20261125-160633-e38d321 (completed) | AZ1 second clause | A-20261126-022631-dafbb4f, fig_a2_compare.png | REFUTED: 3.62 t_H against N-z 4.55 (26 per cent) | the converged Newtonian time is ahead of Zel'dovich; GR lag factor 1.65-1.9 |
+| S1L snapshots (A-20261123-025907-97bab8d) | A2X | A-20261126-022220-99b7be8, -022338-0edc27c, -022438-a08cc5f (bound empty), -022545-5af99fb; fig_a2x.png | (i) holds: J changes sign between 6.19 and 7.21 t_H; (ii) not decidable as written; decided by the probe particle on a crossing worldline: (5.99, 6.80] t_H | lag is not a coordinate effect; no card member for it; candidate (nonlinear zeta-delta at zeta 0.3) to test at half amplitude, prediction first |
+| P0L6: A-20261125-044641-7d5bd16 (completed, 4.87 card-hours) | D1-D5 | A-20261126-022753-f9e9c40, three figures | D1, D5 hold; D2, D3, D4 refuted; the 't = 118.1 found' is a false acceptance | request to core (finder); C1 (ii) stated as a failure on record |
+| Szekeres N64, N128: A-20261125-213939-0ad9f29 (failed, guard exit 3 at tau 30.25, 37.47); N256: A-20261125-231808-0784bc9 (stopped at tau 21.2, MAX_SEGMENTS = 1 of the queue entry) | P17-P21 (entry 8) | A-20261126-022804-0bc68c2 | see szekeres/JOURNAL entry 11 | SZK_REVIEW_PLACEHOLDER |
+
+The verifier findings of VERIFIER-C18 were answered in batch 19; nothing new from a verifier this batch. Card time
+used by this session: none (q0013, q0040, q0041 were dispatched earlier: 4.87 + 0.40 + 0.83 card-hours).
