@@ -141,7 +141,7 @@
     "A-emd-pbh-20261115-155802-9a6596f",
     "A-20261121-131600-02b5d41"
   ],
-  "notes": "",
+  "notes": "2026-11-26T05:29:40Z continued in place by queue entry q0015: job 5359, from peak.00016.rst, segments used 5, MAX_SEGMENTS 9, same exe/deck/args (threshold_ball/scripts/continue_chain.sh)",
   "budget_at_submit": {
     "gpu_hours_allotted": 60.0,
     "cores_allotted": 16,
@@ -151,5 +151,15 @@
     "cores_busy": 0,
     "runs": 239,
     "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md + 0026-cards-loaded-allotment-cost.md"
-  }
+  },
+  "continuations": [
+    {
+      "at": "2026-11-25T21:29:40-0800",
+      "from_restart": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261123-025907-97bab8d/rst/peak.00016.rst",
+      "segments_used_before": 5,
+      "max_segments": 9,
+      "via": "harness/bin/nrpic-queue --cmd tracks/A-emd-pbh/threshold_ball/scripts/continue_chain.sh (entry q0015)",
+      "job_id": "5359"
+    }
+  ]
 }
