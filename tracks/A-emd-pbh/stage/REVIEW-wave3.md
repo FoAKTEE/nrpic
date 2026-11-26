@@ -338,3 +338,23 @@ reading: threshold_ball entry 14 (G), periodic_threshold 2026-11-25 18:21 PST (A
 
 The verifier findings of VERIFIER-C18 were answered in batch 19; nothing new from a verifier this batch. Card time
 used by this session: none (q0013, q0040, q0041 were dispatched earlier: 4.87, 0.09 and 0.98 card-hours by their manifests).
+
+## 12. Batch 28 (2026-11-26 afternoon, lead; the runs ruled for in 0043 item 1 and the G2 package)
+
+No helper package. Ended since batch 24: q0067 (Szekeres N256 continued, A-20261125-231808-0784bc9, 0.76 card-hour
+in segment 2), q0068 (S1L-h, A-20261126-125306-0653547, 1.18 card-hours over two jobs), the detached processor runs
+A-20261126-023245-1dd80ad (Szekeres reader N128/N256) and A-20261126-024922-97a2f14 (C3 particle-number leg). Each was
+closed with `nrpic-run finish` before its analysis, judged by a registered analysis against the prediction written
+before it ran, and its figures looked at.
+
+| Run (closed as) | Prediction | Analysis | Outcome | What the track does |
+|---|---|---|---|---|
+| Szekeres N256 to tau 40 (completed) | P17 (entry 8), P24 (entry 12) | history files; readers A-20261126-212138-49b9a2d, -212141-7eeb046 (running) | P17 completion holds (finite to 40); lapse clause refuted on N128 and N256 (max 1.7e-12, 3.6e-12; 1.4e-15 per cycle); P24 not yet read | entry 13; P24 in entry 14 next session |
+| Szekeres readers N64/N128, N128/N256 (completed) | P18-P21 | their JSON and figures (convergence, errors) | P18 holds N64, N128 at tau 10; refuted N256 at tau 10 (2.8e-4 vs 1e-3, better); P19 holds to tau 20 (orders 2.3-5.2); P20 holds (ratios 5.9-1376); P21 refuted at tau 20 (H order 4.65 vs K 3.62) | entry 13; C1 (iii) passes with clauses refuted on record |
+| C3 particle-number leg S2c-A8 (completed) | H (entry 15) | A-20261126-212216-967f547 (figure lacked S2c-A8: script defect), A-20261126-212340-4ea9fb2 (fixed) | evolution clause holds (t = 1, 1.5, 2 within 8, 2, 4 per cent); t = 0 clause refuted (x9.6, CIC smoothing inside the ball) | sampling excluded; floor UNEXPLAINED; retest after core's deposit fixes (OPEN.md) |
+| S1L-h (completed) | A2H (2026-11-25 19:25 PST) | A-20261126-213147-f274b2e, -213150-1441107, -213153-563fb0a; label reruns -213414-261dd64, -213459-0ce5ee6 | HOLDS: crossing (13.85, 14.36] t_H in [12.5, 15.2]; z first at the centre; no horizon; alpha_min 0.921 | A2 stays FAILED; the lag is first order in the amplitude, the effect not named |
+
+Defects found and fixed in scripts this session: edge_compare.py did not draw extra members (fixed, rerun); a2_invariant.py
+and a2_crossing.py drew S1L's band and reference for every member (now arguments; reruns). Not fixed: a2_probe_check.py
+titles its figure "S1L" (cosmetic). Card time used by this session: none submitted; the two queue entries that ended
+used 0.76 + 1.18 card-hours by their manifests (q0067's chain total 1.60 over both segments).

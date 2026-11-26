@@ -555,3 +555,23 @@ Not done (outside this session's aim): judging and closing processor run A-20261
   unread (P18-P21 at N128 are judged by the next session with A-20261126-023245-1dd80ad's).
 - Inbox: acknowledged B gr-particle-mass-halos (the a2 readers use positions only) and orch finder-diagnostics-in-continued-runs.
 - Card-hours used this session: 0 (both entries waiting). Processors: one core for ~20 min (load 79-111).
+
+## 2026-11-26 13:19-14:30 PST, lead of batch 28 (judge q0067, q0068, H and the Szekeres readers; assemble the G2 package)
+
+- Merged main (core-v0.8, rulings 0044-0045). Pause flag absent throughout. Closed with `nrpic-run finish` before
+  reading: A-20261126-023245-1dd80ad (reader), A-20261126-024922-97a2f14 (C3 particle leg), A-20261125-231808-0784bc9
+  (N256 chain incl. continuation, 1.60 card-hours total), A-20261126-125306-0653547 (S1L-h, 1.18 card-hours).
+- Judged by the rules written before the runs (figures looked at): A2H HOLDS (periodic_threshold 13:36 PST; crossing
+  (13.85, 14.36] t_H); H holds for the evolution, its t = 0 clause REFUTED (threshold_ball entry 15 outcome); P17
+  completion holds for N256, its lapse clause REFUTED on N128/N256 (round-off 1.4e-15 per cycle); P18 holds N64/N128,
+  REFUTED N256 at tau 10 (better than predicted); P19, P20 hold to tau 20; P21 REFUTED at tau 20 (szekeres entry 13).
+- C3 (0043 1(a)): sampling excluded by the x8 leg; cause UNEXPLAINED; retest after core's deposit fixes (OPEN.md).
+- Script defects found and fixed with reruns: edge_compare.py figure without the x8 members; a2 scripts drawing S1L's
+  band and labels for S1L-h. Old runs kept on record.
+- G2 package: note v2 Sec. "Verification of the code paths" (Figs. ladder, ball convergence, Szekeres mosaic; Table V
+  from ledger_g2.py), architecture schematic on core-v0.8; registered runs A-20261126-213903-08eaf25 and
+  A-20261126-214059-b32377a; compiled, checker clean but for dictionary preferences; RERUN.md, VERIFY, OPEN.md,
+  CHECKLIST judged (C1, C3 FAIL on record; C18 OPEN); stage verify and report run (see STATUS).
+- Detached at the end: Szekeres N256 readers A-20261126-212138-49b9a2d (tau 30) and A-20261126-212141-7eeb046 (tau 40),
+  one core each, P24 for the next session (entry 14).
+- Card-hours used by this session's submissions: 0 (nothing queued). Processors: up to 5 cores (load ~50).
