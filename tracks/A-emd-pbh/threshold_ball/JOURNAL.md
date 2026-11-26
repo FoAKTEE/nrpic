@@ -652,3 +652,25 @@ faces (the compensation pass not conservative across a level face, 0.13 per cent
 with CIC not inert there; decision 0043 item 1(a)), the outer taper, the gauge in the matter region. Core fixes the
 two defects in a source session after 2026-11-27 (decision 0043 item 4); C3 is retested on the fixed build then
 (S2c-A and S2c-B on M/16 and M/32 to t = 1, the same reading). C3 stays FAILED as written.
+
+## Entry 16, 2026-11-26 15:37 PST (lead of batch 31): C3-F, the constraint floor in the first 0.25 M, before any run
+
+Gate G2 is NOT passed (decision 0047); condition (a) asks for the cause of the floor. The gate review (section 5, item
+1) lists, first, H written every cycle over the first 0.25 M of S2c-A. Read before writing this: S2c-A's volume history
+(A-20261125-161154-62ce3dc, ball.z4c.user.hst) has H-norm2 1.79e-3, 5.52e-2, 4.15e-2, 3.00e-2 at t = 0, 0.25, 0.5,
+0.75 (a thirty-fold rise in 16 cycles, then a decay) and M-norm2 3.64e-2 at t = 0 (twenty times H), 1.72e-2 at 0.25.
+Run C3-F: S2c-A exactly as edge_cic.sh ran it (v0.6 threaded build, one thread, deck nest16_L16, CIC, S2 data of
+A-20261125-160436-462452d, lattice nestA) to t = 0.25 with the history and the con/tmunu x-line tables every cycle
+(dt = 0.015625 = the step). Reader: scripts/c3_first_step.py (section-3 line ratio as edge_compare.py; the same line
+ratio for the momentum constraint, ||M_x|| / ||8 pi S_x||; volume norms from the history).
+- CF0 The rerun repeats S2c-A at t = 0.25 to the printed digits (processor runs are byte-reproducible with the same
+  build and thread count). Refuted otherwise (then nothing below is read against S2c-A).
+- CF1 At t = 0 the momentum constraint on the x line is small against its source, ||M_x|| / ||8 pi S_x|| < 0.1 (the
+  format-2 table carries the exact extrinsic curvature of the expanding ball; H at t = 0 is 0.0064 of its source).
+  Refuted if >= 0.1: then the data violate the momentum constraint at t = 0 and the floor has a candidate cause that
+  does not depend on the mesh (data, not evolution).
+- CF2 The volume H-norm2 rises smoothly over the 16 cycles (cycle 1 below 0.01, about linear in t), not as a jump in
+  the first step (at least half of the rise, H-norm2 >= 0.028, at cycle 1 or 2). A jump would place the cause in a
+  mismatch at t = 0 of data, source or gauge that the first update exposes; a linear rise places it in a source term
+  of the evolution equations acting from t = 0 (for example a momentum-constraint violation, CF1).
+Neither outcome names the cause alone; the reading goes to core with the deposit-fix retest (decision 0047 item 2(a)).

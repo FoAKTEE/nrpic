@@ -34,8 +34,12 @@ def main():
     for name, h, dd, dt in zip(conv["members"], conv["x"], conv["ddet"]["values"], conv["dtrap"]["values"]):
         rows.append((f"ball, mesh {name} ($h = {f(h)}\\,M$): $\\Delta t_{{\\rm det}}$, $\\Delta t_{{\\rm trap}}$ ($M$)",
                      f"{f(dd)}, {f(dt)}", common.RUNS["conv"]))
-    rows.append(("ball, mesh orders of $\\Delta t_{\\rm det}$", ", ".join(f(o, 2) for o in conv["ddet"]["orders"]),
-                 common.RUNS["conv"]))
+    rows.append(("ball, mesh orders of $\\Delta t_{\\rm det}$ (fiducial interpolation)",
+                 ", ".join(f(o, 2) for o in conv["ddet"]["orders"]), common.RUNS["conv"]))
+    # gate review section 6 item 4: orders as ranges under the three interpolations at the core edge
+    # (VERIFIER-C18 5e; lead's answer run A-20261125-151126-7f79a83, CHECKLIST C2)
+    rows.append(("ball, mesh orders of $\\Delta t_{\\rm det}$, range over three interpolations",
+                 "1.2--1.5, 1.75--2.1", "A-20261125-151126-7f79a83"))
     rows.append(("ball, mesh orders of $\\Delta t_{\\rm trap}$", ", ".join(f(o, 2) for o in conv["dtrap"]["orders"]),
                  common.RUNS["conv"]))
     for key, fn in (("szk64", "code_runs_n64n128.json"), ("szk256", "code_runs_n128n256.json")):
@@ -45,7 +49,7 @@ def main():
                 continue
             for r in m["dumps"]:
                 if r["tau"] in (10.0, 20.0, 30.0):
-                    rows.append((f"Szekeres {nm}, $\\tau = {r['tau']:.0f}$: shell rms $|K-K_{{\\rm ex}}|/H$, signal max",
+                    rows.append((f"Szekeres {nm}, $\\tau = {r['tau']:.0f}$: shell rms $|K-K_{{\\rm ex}}|/H$, same-cell signal max",
                                  f"{f(r['shell']['K_err_over_H_rms'])}, {f(r['shell']['signal_K_over_H_max'])}",
                                  common.RUNS[key]))
         for o in d["orders"]:

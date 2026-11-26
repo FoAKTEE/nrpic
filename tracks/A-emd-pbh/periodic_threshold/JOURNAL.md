@@ -1250,3 +1250,49 @@ Predictions (written before the first probe):
 What happens next either way: if FP4 is refuted, the probe rule goes into the decks of the G3 box runs and S1L's
 S1-S3 are judged with it; if it holds, the smallest reproducer (restart file, deck, expected radius) goes to core
 (outbox), whose source session after 2026-11-27 takes it (decision 0047 item 4).
+
+### Outcome FP (run A-20261126-233542-fd9f9f0, completed, 4 dumps, 82 searches; fig_finder_probe_box.png looked at) - 15:42 PST
+
+- FP0 HOLDS: the v08 processor build reads the restart files of build_gpu_v06 (P0L6 and S1L), one cycle each, exit 0.
+- FP1 HOLDS: the recommended v08 rule (mass_tol 1e-5, 100 polishing, 400 iterations) from the deck radius ends with
+  reason 6 at all four dumps (P0L6 130: m 5.96, r 0.107; 140: m 6.86, r 0.130; S1L 210: m 19.5, r 0.53; 220: m 20.1,
+  r 0.53). Polishing does not touch reason 6, as read from the interface text.
+- FP2 HOLDS (no false acceptance): 2 of 82 searches are found, both at P0L6 t = 140 on the trapped surface (below). The
+  script's automatic flag "hmean > 0" marks the one from 0.15 (surface integral of the expansion +0.18): too strict a
+  flag, since a converged surface has an integral near zero of either sign (the other has -0.18; round spheres next to
+  it have -2.8 at r = 0.10 and +4.3 at 0.11). At P0L6 t = 130, where no round sphere is trapped, the six searches end
+  reason 6 or reason 4 (flow shrinks through the centre): nothing accepted.
+- FP3 HOLDS: P0L6 t = 140, the round sphere's expansion integral is negative from r = 0.03 to 0.10 (-22, -26, -21,
+  -9.6, -2.8) and positive at 0.02 (+10) and from 0.11 (+4.3) outward; at t = 130 positive at every radius (minimum
+  +20 at r = 0.07). The finder's own expansion agrees with the line reader (trapped from 136, marginal sphere 0.103).
+  [JUDGEMENT] The verifier's "tracked shells trapped in the code from t = 122.2" (R < 2 M with M of the exact shell)
+  is not a trapped surface of the slice: at t = 130 no round sphere at r 0.005-0.5 is trapped.
+- FP4 REFUTED for P0L6: with 4000 flow iterations the v08 rule FINDS the horizon at t = 140, from 0.15 after 3444
+  iterations (area mass 6.309, mean radius 0.1042) and from 0.103 after 915 (6.298, 0.1037); the tight rule 1e-9 ends at
+  its cap on the same surface (6.303, 0.104, integral -0.0017). Against the line's marginal sphere (6.28 at 0.103,
+  outcome D2): +0.3 to +0.5 per cent in mass. Area mass 6.3 is above the largest tracked trapped shell's 3.47. So
+  condition (b) is MET for P0L6 at t = 140 by a setting the deck can carry (flow_iterations_0 = 4000 with polishing):
+  the card run's failure was the iteration cap of 400, not a stall of the flow. From 0.012 the flow runs through the
+  centre (reason 4): a start inside the trapped band's inner edge (0.02-0.03) does not work.
+- FP5 HOLDS: S1L has trapped round spheres: integral negative for r 0.05-0.12 at t = 210 (-17, -54, -14) and 0.03-0.16
+  at t = 220 (-19, -30, -84, -43, -2.2), positive at 0.2 and beyond. But every S1L search fails (reason 6) also with
+  4000 iterations: from 0.1 the flow ends at r 0.134 (t = 210, m 9.77, integral -3.1) and 0.159 (t = 220, m 10.66,
+  -3.9), from 0.2 at 0.145 / 0.163 (+4.8 / +1.7), from 0.6 at 0.18 / 0.19; the tight rule 1e-9 ends at 0.153 / 0.167.
+  The flows close in on a surface near mean radius 0.15-0.17 (m ~ 10-11) from both sides without meeting the mass
+  rule in 4000 iterations. Condition (b) is NOT met for S1L.
+- For S1L's prediction S2 of card job 2 ("an apparent horizon is found between 10 and 22 t_H"): t = 210 is 21.5 t_H
+  (t_H = 9.78 on this deck's clock, 220 = 22.5 t_H): a trapped round sphere exists at 21.5 t_H, so a horizon has formed
+  by then, but none is FOUND; S2 as written stays refuted (gate review G1).
+
+### FPb, predictions before the second probe (15:45 PST)
+
+Run FPb (same script, sets S1Lscan, S1Llong, P0L6scan; 2 jobs x 2 threads, beside C3-F on one core):
+- FP6 S1L's first trapped round sphere appears in (190, 210]: no negative expansion integral at r 0.02-0.3 on the
+  restart files at t = 150, 170, 180, 190; negative somewhere at 200 or only at 210. Basis: the trapped band widens
+  from 0.38 dex at 210 to 0.73 dex at 220, so it opened some 5-10 time units before 210 [JUDGEMENT, linear
+  extrapolation]. Refuted if negative at 190 or earlier.
+- FP7 A search of 12000 iterations from 0.16 at t = 220 converges (found) at mean radius 0.15-0.19 with area mass
+  10.5-11.5. Refuted if reason 6 again: then the flow on S1L's slice does not converge (core's item, with this file as
+  reproducer).
+- FP8 P0L6 at t = 120.0 (just before the tracked 'trapped in the code' time 122.2): no round sphere trapped at r
+  0.01-0.13. Refuted if negative anywhere.

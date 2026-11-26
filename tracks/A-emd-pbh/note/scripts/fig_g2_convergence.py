@@ -38,7 +38,7 @@ def main():
     ax[0].loglog(h, ref * (h / h[-1]), color="k", lw=1.0, ls=":", label=r"$\propto h$")
     fs.no_minor_labels(ax[0], "x")
     ax[0].set_xticks(h)
-    ax[0].set_xticklabels([r"$1/64$", r"$1/32$", r"$1/16$"])
+    ax[0].set_xticklabels([r"$1/%d$" % round(1.0 / hh) for hh in h])   # labels from h (gate review G4: were reversed)
     ax[0].set_xlabel(r"cell size $h/M$")
     ax[0].set_ylabel(r"time error $/M$")
     ax[0].legend(frameon=False, fontsize=7, loc="lower right")

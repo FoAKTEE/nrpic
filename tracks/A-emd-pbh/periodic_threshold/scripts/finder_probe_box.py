@@ -50,6 +50,16 @@ SETS = {
         ("v08 rule, 4000 it, from 0.1", dict(mass_tol="1.0e-5", flow_iterations="4000", polish_iterations="100"), 0.1),
         ("tight 1e-9, 4000 it, from 0.3", dict(mass_tol="1.0e-9", flow_iterations="4000"), 0.3),
     ], spheres=[0.03, 0.05, 0.08, 0.12, 0.16, 0.2, 0.25, 0.3, 0.4, 0.5, 0.6, 0.8, 1.0, 1.5]),
+    # FPb (JOURNAL outcome FP, 15:45): dating S1L's first trapped round sphere on earlier restart files
+    "S1Lscan": dict(rst_output=7, searches=[],
+                    spheres=[0.02, 0.03, 0.05, 0.08, 0.12, 0.16, 0.2, 0.3]),
+    # FPb: a long search on S1L at t = 220 from inside the trapped band
+    "S1Llong": dict(rst_output=7, searches=[
+        ("v08 rule, 12000 it, from 0.16", dict(mass_tol="1.0e-5", flow_iterations="12000", polish_iterations="100"), 0.16),
+    ], spheres=[]),
+    # FPb: P0L6 just before the first tracked shell is 'trapped in the code' (t = 122.2, verifier)
+    "P0L6scan": dict(rst_output=7, searches=[],
+                     spheres=[0.01, 0.02, 0.03, 0.05, 0.07, 0.09, 0.11, 0.13]),
 }
 SCOLS = ["cycle", "time", "found", "reason", "flow_iterations", "area", "area_mass", "meanradius",
          "minradius", "mean_expansion", "min_abs_mean_expansion", "points_outside_mesh"]
