@@ -179,3 +179,13 @@ Figures read: fig_v1_king_sequence.png, fig_v2_fates.png (both passes).
 - V5.a HELD: 13.61 per cent; the claim G2 can make is in VERIFIER.md section 5.
 - X.7 HELD: sum dP_i at most 3.9e-19 of sum M H, sum |dP| 1.08e-16 to 1.26e-16, rest mass span
   0 before the first excision, in all six members.
+
+## 2026-11-27T09:18Z  close of the session
+
+- Note on V4.b: after section 10 was written I read the lead's record: its 1.0008 is the ratio
+  of the collision rates on M/16 and M/8 (M16.2), reproduced as 1.00084; the "measured over
+  expected" reading was the task text's. My V4.b stays FAILED as I wrote it (my bar was on
+  0-100 M), and the count test stands as an answer to C8's open item.
+- Done: VERIFIER.md sections 1-10, README, four registered runs and three superseded ones.
+  Not done: section 8 of VERIFIER.md. The lead's full checksum pass was still running at
+  01:17 PST (empty log); left alone.

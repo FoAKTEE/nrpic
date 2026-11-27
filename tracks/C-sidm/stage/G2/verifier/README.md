@@ -43,10 +43,11 @@ Each run takes seconds. The run ids read are written in the scripts (`fates.THRE
 Every number claimed for G2 that I recomputed is reproduced to its printed digits: the
 turning point y_max = 0.3340322 of the King b = 1 family, the marker crossings of all eleven
 threshold runs and of the collisional series on three meshes, the bands of the stable members,
-the 1/N fall of the integrated H^2, the collision rate (1.0008 for D2f2s1 over (0, t_c]) and the
-collision energy budget (3e-16). Findings: BA.3 held as written (it is listed as failed); the
-collision count test before t_c fails at about 3.5 sigma in two of six members (f = 4 and
-shift_eta 1), so 1.0008 is the best member, not all; "controls collapse by particle noise" is
+the 1/N fall of the integrated H^2, the collision rates (M/16 over M/8: 1.00084, the lead's
+1.0008), my own expected rate from particles and metric (equal to the code's to 1e-4 at the
+first step of D2f2s1) and the collision energy budget (3e-16). Findings: BA.3 held as written
+(it is listed as failed in OPEN.md and C1); the collision count test before t_c fails at about
+3.5 sigma in two of six members (f = 4 and shift_eta 1); "controls collapse by particle noise" is
 shown as a finite-N effect, not as a mechanism; the G2 result is a +-3 per cent bracket of one
 family with a gauge leg that does not change the slicing, not the located and converged
 threshold of two families that SCOPE.md asks for. Details: VERIFIER.md.
@@ -64,3 +65,9 @@ threshold of two families that SCOPE.md asks for. Details: VERIFIER.md.
 - To the orchestrator: whether a +-0.010 bracket in y0 of the King b = 1 family meets G2 as
   written in SCOPE.md:323-330 (two families, a located threshold) is a ruling, not a
   recomputation (VERIFIER.md section 5).
+
+## State of the lead's full checksum pass at the end of this session
+
+`nrpic-stage verify C-sidm G2 --full` (pid 3893805, started 00:53 PST) was still running at
+01:17 PST with an empty log (`scratch/C-sidm/tmp/verify_full_g2.log`); it was left alone and
+has no result yet. The 50 history files this package read matched their runs' sha256 lists.
