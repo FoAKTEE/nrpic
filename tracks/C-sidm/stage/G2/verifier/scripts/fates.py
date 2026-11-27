@@ -224,7 +224,9 @@ def analyse_coll(name, rid):
     exc = h[:, 16] > 0
     t_exc = float(t[np.argmax(exc)]) if exc.any() else None
     r = dict(run=rid, restarts=nr, t_end=float(t[-1]), t_cross=tc, claimed=CLAIMED.get(name),
-             np0=int(h[0, 2]), t_first_excision=t_exc, horizon_files=horizon_files(rid))
+             np0=int(h[0, 2]), t_first_excision=t_exc, horizon_files=horizon_files(rid),
+             alpha_min_min=float(amin.min()), t_alpha_min_min=float(t[np.argmin(amin)]),
+             nonfinite_rows=int((~np.isfinite(h)).any(axis=1).sum()))
     deck = find_deck(rid)
     if deck:
         r["deck"] = os.path.relpath(deck, SCR)
@@ -358,6 +360,7 @@ def main():
         if C[k]["t_cross"]:
             ax.plot([C[k]["t_cross"]], [0.3], "x", color=c, ms=5)
     ax.axhline(0.3, **fs.GUIDE)
+    ax.set_ylim(0.0, 0.85)  # M4s2 leaves the range after its first excision (alpha_min < -1e8)
     ax.set_title(r"(d) CC2, Kn$_c$=10: three meshes, seeds, cells, gauge", fontsize=8)
     for ax in axs.flat:
         ax.set_xlabel("$t/M$")
