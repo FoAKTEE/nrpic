@@ -16,7 +16,7 @@ stage/REVIEW-wave3.md, the verdict column of stage/G2/CHECKLIST.md, STAGE_REPORT
 VERIFY_RESULTS.*, EVIDENCE.md, the lead's analysis scripts (nseries.py, d2_analysis.py,
 blockA_delta.py) beyond the run-id lists in their manifests' commands.
 
-## 2026-11-27T09:05Z  predictions before any recomputation
+## 2026-11-27T09:00Z  predictions before any recomputation (commit 17eaa46bc)
 
 V1 Equilibrium sequence (own solver of the King ansatz f = (exp(1 - E/E0) - 1)_+ of
 arXiv:2009.08163 eq. Ansatz_King, isotropic, Schwarzschild coordinates; binding energy
@@ -85,7 +85,7 @@ V5 Threshold location against collapse time.
   not a located threshold with an error bar from three-way convergence of a growth rate
   [JUDGEMENT].
 
-## 2026-11-27T09:16Z  predictions for the further checks (before extras.py runs)
+## 2026-11-27T09:10Z  predictions for the further checks, before extras.py ran (commit ff0afd1af)
 
 Written after the registered runs C-20261127-090849-dcfc1ae (V1), C-20261127-090942-697c4b3
 (V2-V5) and C-20261127-090913-97ee992 (V4.c), whose outcomes follow in the next entry, and
@@ -106,7 +106,7 @@ before the checks below.
 - X.5 D2eta1: its chain ended with athena exit status 3 (guard) at t = 190.375 M after its
   crossing at 164.01 M, before the planned 220 M; the collapse time is unaffected.
 
-## 2026-11-27T09:13Z  outcomes of X.1-X.5 (run C-20261127-091102-fd0c31b); prediction X.6
+## 2026-11-27T09:11Z  outcomes of X.1-X.5 (run C-20261127-091102-fd0c31b); prediction X.6
 
 - X.1 HELD: A344s1c crosses at 549.26 M, A324s1c at 599.99 M (599.988).
 - X.2 HELD as predicted, against the task text: A.4 is FAILED (three crossings before 600 M);
@@ -125,3 +125,19 @@ is a property of the sample. If noise seeds an unstable mode of the marginal mod
 crossing differs from 534.81 M by tens of M (or it does not cross by 600 M); a crossing within
 5 M of 534.81 M would point to a deterministic (mesh or model) cause. A334s3c
 (C-20261124-082221-7f03a8e) is expected to be unusable (history ends near 0.25 M).
+
+## 2026-11-27T09:16Z  outcome X.6 (run C-20261127-091139-4b789b6); prediction X.7
+
+- X.6 HELD (noise-like reading): the three seed controls of the threshold model at N = 1e5
+  cross at 534.81 (s1), 585.79 (s2) and 563.29 M (s3; its history now reaches 600 M, so the
+  note that it ended at 0.25 M is out of date); mean 561.30 M, sample sd 25.5 M. The spread
+  is tens of M, as a noise-seeded instability of a marginal model would give; all three
+  collapse before 600 M.
+
+X.7 (before the run): the collision steps conserve rest mass and covariant momentum as well as
+the canonical energy. Predictions: the summed momentum change of the collision steps (columns
+21-23 of cc.coll.hst) to the first excision is below 1e-15 of sum M H (column 32 at the first
+record) and the summed |dP| (column 25) below 1e-14 of it, for D2f1s1, D2f2s1, D2f4s1,
+D2f2s2, M16, D2eta1; the rest mass sum_m (column 4 of cc.nrpic.hst) is constant to the last
+bit before the first excision. Refuted by any momentum sum above 1e-13 of sum M H or a change
+of sum_m before excision.

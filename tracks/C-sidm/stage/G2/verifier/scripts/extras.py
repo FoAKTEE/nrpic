@@ -37,6 +37,24 @@ def main():
                 r[f"mean_dalpha_c_{lo}_{hi}"] = float(d[m].mean())
         res[k] = r
         print(k, json.dumps(r))
+    # X.7: momentum and rest mass of the collision steps, to the first excision
+    res["budgets"] = {}
+    for k in ("D2f1s1", "D2f2s1", "D2f4s1", "D2f2s2", "M16", "D2eta1"):
+        d = fates.run_dir(fates.COLL[k])
+        h, _ = fates.read_hist(os.path.join(d, "cc.nrpic.hst"))
+        c, _ = fates.read_hist(os.path.join(d, "cc.coll.hst"))
+        exc = h[:, 16] > 0
+        t_exc = float(h[np.argmax(exc), 0]) if exc.any() else float(h[-1, 0])
+        w = c[:, 0] <= t_exc
+        MH0 = c[0, 31]
+        pre = h[:, 0] < t_exc
+        res["budgets"][k] = dict(
+            t_first_excision=t_exc, n_records=int(w.sum()),
+            sum_dP_over_MH=[float(c[w, j].sum() / MH0) for j in (20, 21, 22)],
+            sum_absdP_over_MH=float(c[w, 24].sum() / MH0),
+            max_step_absdP_over_MH=float(c[w, 24].max() / MH0),
+            rest_mass_first=float(h[0, 3]), rest_mass_span_before_exc=float(np.ptp(h[pre, 3])))
+        print(k, res["budgets"][k])
     # guard stop of D2eta1
     chain = os.path.join(fates.run_dir("C-20261126-034500-4b34b1c"), "chain")
     ev = open(os.path.join(chain, "events.log")).read()
