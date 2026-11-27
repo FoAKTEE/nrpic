@@ -1110,7 +1110,7 @@ the particles): the wall-time expectation is REFUTED; the cost of the solve does
 particle number [arithmetic on the log times, the cause not named]. The card member is queued by
 the next session once the data are checked (HANDOFF has the line).
 
-## 2026-11-27 15:25 PST (lead of batch 34): C3 step 1 checked; the card member queued
+## 2026-11-27 15:22 PST (lead of batch 34): C3 step 1 checked; the card member queued
 
 The 64^3 initial data B-20261126-222552-2e44186 ended (run.log `# exit=0 end=2026-11-26T23:26:56Z`,
 "L=8 done in 3664 s") and is closed (`nrpic-run finish`). Against the expectation of the 14:25
