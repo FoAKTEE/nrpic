@@ -1,9 +1,9 @@
 {
   "track": "F-hills",
   "gate": "G1",
-  "commit": "2cee18dc5d8e0e8393d7984fa47bb3e8a83cac08",
-  "verified_utc": "2026-11-26T05:55:31Z",
-  "export": "/data/haiyangw/nrpic/scratch/F-hills/tmp/stage-verify/F-hills-G1-2cee18d-20261126T055328Z",
+  "commit": "da850964ac7f66d3a1848a35b528a4b85b2f3f6e",
+  "verified_utc": "2026-11-27T23:38:53Z",
+  "export": "/data/haiyangw/nrpic/scratch/F-hills/tmp/stage-verify/F-hills-G1-da85096-20261127T233445Z",
   "result": "FAIL",
   "checks": [
     {
@@ -21,7 +21,7 @@
     {
       "check": "export",
       "status": "PASS",
-      "message": "clean export of 2cee18dc5d8e (HEAD) in /data/haiyangw/nrpic/scratch/F-hills/tmp/stage-verify/F-hills-G1-2cee18d-20261126T055328Z/tree",
+      "message": "clean export of da850964ac7f (HEAD) in /data/haiyangw/nrpic/scratch/F-hills/tmp/stage-verify/F-hills-G1-da85096-20261127T233445Z/tree",
       "detail": null
     },
     {
@@ -69,7 +69,7 @@
     {
       "check": "runs",
       "status": "FAIL",
-      "message": "3 of 269 runs have problems",
+      "message": "3 of 274 runs have problems",
       "detail": {
         "F-20261124-210400-902c650": [
           "status is submitted: not finished (nrpic-run finish)"
@@ -77,8 +77,8 @@
         "F-20261126-052133-10f9a5f": [
           "status is submitted: not finished (nrpic-run finish)"
         ],
-        "F-20261126-054626-7301561": [
-          "status is running: not finished (nrpic-run finish)"
+        "F-20261126-131751-89eaff8": [
+          "status is submitted: not finished (nrpic-run finish)"
         ]
       }
     },
@@ -90,17 +90,20 @@
         "F-hills-20261115-045124-ae6bca8": [
           "output directory read from a field other than outputs.dir",
           "no gate",
-          "input tracks/F-hills/novelty/scripts/scale_estimate.py changed since the run (sha256 differs)"
+          "input tracks/F-hills/novelty/scripts/scale_estimate.py changed since the run (sha256 differs)",
+          "input python/nrpic/figstyle.py changed since the run (sha256 differs)"
         ],
         "F-hills-20261115-045332-ae6bca8": [
           "output directory read from a field other than outputs.dir",
           "no gate",
-          "input tracks/F-hills/novelty/scripts/scale_estimate.py changed since the run (sha256 differs)"
+          "input tracks/F-hills/novelty/scripts/scale_estimate.py changed since the run (sha256 differs)",
+          "input python/nrpic/figstyle.py changed since the run (sha256 differs)"
         ],
         "F-hills-20261115-045407-bf52f4e": [
           "output directory read from a field other than outputs.dir",
           "no gate",
-          "input tracks/F-hills/novelty/scripts/scale_estimate.py changed since the run (sha256 differs)"
+          "input tracks/F-hills/novelty/scripts/scale_estimate.py changed since the run (sha256 differs)",
+          "input python/nrpic/figstyle.py changed since the run (sha256 differs)"
         ],
         "F-hills-20261115-045410-bf52f4e": [
           "output directory read from a field other than outputs.dir",
@@ -109,7 +112,8 @@
         ],
         "F-hills-20261115-045435-f62d553": [
           "output directory read from a field other than outputs.dir",
-          "no gate"
+          "no gate",
+          "input python/nrpic/figstyle.py changed since the run (sha256 differs)"
         ],
         "F-hills-20261115-045438-f62d553": [
           "output directory read from a field other than outputs.dir",
@@ -177,7 +181,8 @@
         "F-hills-20261115-130342-0471114": [
           "no gate",
           "input tracks/F-hills/three_punctures/scripts/newton_start.py changed since the run (sha256 differs)",
-          "input tracks/F-hills/newton3/hills3/threebody.py changed since the run (sha256 differs)"
+          "input tracks/F-hills/newton3/hills3/threebody.py changed since the run (sha256 differs)",
+          "input python/nrpic/figstyle.py changed since the run (sha256 differs)"
         ],
         "F-hills-20261115-130405-ce17dcf": [
           "no gate",
@@ -200,7 +205,8 @@
         "F-hills-20261115-130755-982aba0": [
           "no gate",
           "input tracks/F-hills/three_punctures/scripts/newton_start.py changed since the run (sha256 differs)",
-          "input tracks/F-hills/newton3/hills3/threebody.py changed since the run (sha256 differs)"
+          "input tracks/F-hills/newton3/hills3/threebody.py changed since the run (sha256 differs)",
+          "input python/nrpic/figstyle.py changed since the run (sha256 differs)"
         ],
         "F-hills-20261115-130922-634fb86": [
           "no gate",
@@ -208,14 +214,17 @@
           "input tracks/F-hills/geodesic_binary/scan.py changed since the run (sha256 differs)"
         ],
         "F-hills-20261115-131109-634fb86": [
-          "no gate"
+          "no gate",
+          "input python/nrpic/figstyle.py changed since the run (sha256 differs)"
         ],
         "F-hills-20261115-131348-634fb86": [
           "no gate",
-          "input tracks/F-hills/three_punctures/scripts/mesh_count_b.py changed since the run (sha256 differs)"
+          "input tracks/F-hills/three_punctures/scripts/mesh_count_b.py changed since the run (sha256 differs)",
+          "input python/nrpic/figstyle.py changed since the run (sha256 differs)"
         ],
         "F-hills-20261115-131605-634fb86": [
-          "no gate"
+          "no gate",
+          "input python/nrpic/figstyle.py changed since the run (sha256 differs)"
         ],
         "F-hills-20261115-131754-907e5fe": [
           "input tracks/F-hills/newton3/hills3/threebody.py changed since the run (sha256 differs)",
@@ -237,7 +246,8 @@
         ],
         "F-hills-20261115-131832-907e5fe": [
           "no gate",
-          "input tracks/F-hills/newton3/hills3/threebody.py changed since the run (sha256 differs)"
+          "input tracks/F-hills/newton3/hills3/threebody.py changed since the run (sha256 differs)",
+          "input python/nrpic/figstyle.py changed since the run (sha256 differs)"
         ],
         "F-hills-20261115-131851-907e5fe": [
           "input tracks/F-hills/newton3/hills3/threebody.py changed since the run (sha256 differs)",
@@ -258,7 +268,8 @@
           "input tracks/F-hills/newton3/scripts/scan_general.py changed since the run (sha256 differs)"
         ],
         "F-hills-20261115-131933-907e5fe": [
-          "no gate"
+          "no gate",
+          "input python/nrpic/figstyle.py changed since the run (sha256 differs)"
         ],
         "F-hills-20261115-131944-360a12e": [
           "no gate",
@@ -316,7 +327,7 @@
     {
       "check": "status",
       "status": "PASS",
-      "message": "STATUS.md has 46 lines",
+      "message": "STATUS.md has 44 lines",
       "detail": null
     },
     {

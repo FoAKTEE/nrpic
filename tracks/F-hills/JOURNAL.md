@@ -1405,3 +1405,17 @@ Judgements:
 - F-B2 (F-20261126-052133-10f9a5f) DONE at tlim 140 (trackers, history to 140.0 M, no non-finite
   value); F-C2 (F-20261126-131751-89eaff8) stopped by the same Slurm I/O failure at 106.69 M (27
   attempts, 18 cut by preemption), no non-finite value. Both closed; not analysed (G2).
+
+### Close of batch 34 (15:40 PST)
+
+Stage G1: collect (20 items kept), CHECKLIST C8 PASS, C18 OPEN (verifier's rerun follows), C19,
+C20 updated; OPEN.md, STATUS.md (stage), EVIDENCE.md, REVIEW.md rewritten; verify --no-checksums
+FAIL only on `runs` (A2, B2, C2 still being closed by `nrpic-run finish`, whose checksum passes over
+about 1.2 TB were started at 15:22 PST; rerun 15/15, compare 42/42, regenerate 30/30), report
+written. The lead judges G1 complete for an independent review; not passed by the lead. Outbox:
+request to orch (g1-package-complete-passage-186m: review, verifier rerun, retention of A2's 724 GB
+of restart files, the Slurm I/O failure), request to core (finder-found-flag-and-branches). Inbox:
+2 messages acknowledged (core's v0.8 finder polishing, orch's release core-v0.8). Card-hours used
+in this session: 0 (processors only: four reader runs, one core each, one of them failed). Card
+time of the runs that ended since batch 25 (sacct): A2's continuation 8.55 (A2 in all 19.70), C2
+9.37, B2 3.52.
