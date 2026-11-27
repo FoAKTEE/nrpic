@@ -53,8 +53,11 @@ matter and the profile of the dress it leaves. Three claims, in order of weight:
   D-20261124-130935-fdca920, D-20261124-140606-286a302], cancels between members and is carried as a bias
   against the exact solution; measured once more in G3 by a processor re-search of four restart files of
   G-8 at ntheta 32).
-- Horizon excision on to the end: `ah_exc_factor = 0.8` with `ah_exc_max_growth = 8` at
-  `initial_radius_0 = 0.8` (guard radius 6.4 M) if EG8's prediction E1 holds; otherwise FK's remedy
+- Horizon excision on to the end: `ah_exc_factor = 0.8` with `ah_exc_max_growth = 10` at
+  `initial_radius_0 = 0.8` (guard radius 8 M: core's advice is a guard radius about half above the
+  largest coordinate radius expected, core outbox 2026-11-26 "v08-guard-and-polishing"; FK's smallest
+  radius reached 4.53 M at 399.5 M, and G3 runs end at 400 M) if EG8's prediction E1 holds (EG8 tests
+  the mechanism at factor 8); otherwise FK's remedy
   (`initial_radius_0 = 1.6`, guard 6.4 M with the default factor 4), which G2 verified (g2long entry 19:
   all 119848 removals by reason 3 to 399.5 M). A run in which a dust removal after the first 2 M of a
   segment is by reason 2 is flagged and its growth after that time is not counted.
