@@ -1127,3 +1127,37 @@ entry, from `gr_L8_n64/meta.json` beside the 128^3 data's B-20261124-135029-3fe1
 
 The pair is one realization; the card member is queued now (priority 2, core-v0.8 card build).
 Predictions C3a, C3b of the 14:25 entry stand as written; nothing is changed after seeing data.
+
+## 2026-11-27 15:24 PST (lead of batch 34): outcomes GM2, GM3
+
+The analysis B-20261126-221911-a0531db (`analyze_gr.py --equal-mass` on q0060's 256^3 Gamma-driver
+box B-20261126-105021-6343c13; last time t = 21.875, a = 142.5, no guard) ended with exit 0 and is
+closed. Comparison B-20261127-232236-7ab7aa2 (`compare_legs.py --base` the 128^3 gauge leg
+B-20261125-115558-2ab4161 `analysis_gr_gd.json`, `--halo-base` its equal-mass catalogue
+B-20261126-022407-87e8803 `analysis_gr_gd.json`); `pop_legs.png` looked at (halo panel: the 256^3
+curve below the base at every catalogue and below the grey band at a = 121; band-strain panel flat
+within 3 per cent of one; Omega above 16 k_f on top of the base; both constraint means just below
+the base). Against the 18:50 entry of 2026-11-25: [VERIFIED by these runs]
+- GM2 band part HOLDS: corrected TT strain |k| <= 8 k_f, 256^3 over 128^3: 0.999, 0.999, 1.004,
+  1.011 at a = 9, 25, 49, 64 (within 5 per cent), 1.011, 1.012, 1.028, 1.003 at a = 81, 100, 121,
+  132 (within 20 per cent; never outside 0.8-1.2). The Omega part FAILS as predicted but is not
+  refuted: Omega_cor (all shells) at a = 121 is 4.579e-7 against 5.381e-7, a ratio of 0.851
+  (predicted 1.0-2.0, refutation outside 0.8-3); 0.80 above 16 k_f. The finer mesh does not add
+  k^2-weighted power in the shifted gauge; it removes 15 per cent at a = 100-132 (0.89, 0.85, 0.83).
+  The expectation "finer halo cores add power" is wrong as a direction [JUDGEMENT; cause not named].
+- GM3 FAILS in part: halo counts 8/11, 13/13, 15/24, 15/31, 22/30 at a = 64, 81, 100, 121, 132,
+  inside 2 sqrt(N) + 2 except at a = 121 (difference 16 against 13.1); the largest mass 1.32,
+  1.06, 1.02, 1.13, 0.99 times the base: within 10 per cent at a = 81, 100, 132, not at 64 and 121.
+  The same pattern as M2 with zero shift (counts at 256^3 below 128^3 at every catalogue, the
+  largest mass 1.35-1.37 at a = 64-72): with either shift the 256^3 box at one particle per cell
+  finds fewer halos above the common mass limit than the 128^3 box. Two gauges show it, so it is
+  not the gauge [JUDGEMENT]; whether it is the particle sampling (one per cell at both meshes:
+  eight times lighter particles at 256^3) or FoF at a fixed linking length in mesh units is not
+  tested by any run.
+- GM4 (13:27 entry of 2026-11-26) is unchanged: Hr ratio 1.11 at a = 141 (refuted); the table of
+  this comparison gives Hr 5.406e-3 against 5.976e-3 and Mr 0.1796 against 0.2031 at a = 141, the
+  same numbers.
+Net for C2/C11 [JUDGEMENT]: the observable the track uses (the band strain in the shifted gauge)
+is mesh-converged to 1-3 per cent between 128^3 and 256^3 to a = 132; the halo counts and the
+high-k Omega are not converged at one particle per cell, and the constraints do not fall with the
+mesh at one per cell (GM4, M4). These go into the G2 package as they are.
