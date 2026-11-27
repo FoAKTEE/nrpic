@@ -11,6 +11,9 @@ Usage: run_all.py OUT
 3a. the G2 figures into OUT/g2: fig_g2_halving.py (judge E-20261123-024359-5dc3213, quarter pair
    E-20261125-033450-4c4a31c, the verifier's E-20261125-023427-6fb6400), fig_g2_resolution.py (the
    same judge), fig_g2_mosaic.py (last dump of the release run E-20261121-211214-0377aab);
+3b. the G3 figures into OUT/g3: fig_g3_mosaic.py (zeta fields of the pilot's first box, saved by the
+   reading E-20261127-232843-3bf1357), the three figures of the pair reading G3PAIRS copied from its run
+   directory (made there by g3/pairs_g3.py), and schem_ladder_g3.py;
 4. ledger.py OUT: the ledger tables;
 5. copies of the figures under the manuscript's names into OUT/figures;
 6. checks: the lattice jsons against the committed jsons of the figure package and the
@@ -29,6 +32,8 @@ PY = sys.executable
 TRACK = os.path.abspath(os.path.join(HERE, *[".."] * 4))
 S = "/data/haiyangw/nrpic/scratch/E-stoch-inf/"
 SIM = S + "E-20261123-021043-d00a314"
+G3READ = S + "E-20261127-232843-3bf1357"   # reading of the pilot boxes with their zeta fields
+G3PAIRS = S + "PENDING"                    # pair reading of the G3 baseline (g3/pairs_g3.py)
 LATTICE_ARGS = [
     "--usr256", S + "E-20261124-130628-6790851",
     "--usr256kt", S + "E-20261124-141807-8352509",
@@ -61,6 +66,11 @@ FIGS = {  # manuscript name: source (without extension)
     "fig_g2_mosaic": "g2/fig_g2_mosaic",
     "fig_g2_resolution": "g2/fig_g2_resolution",
     "fig_g2_halving": "g2/fig_g2_halving",
+    "fig_g3_ladder": "figures_raw/schem_ladder_g3",
+    "fig_g3_mosaic": "g3/fig_g3_mosaic",
+    "fig_g3_onepoint": "g3/fig_g3_onepoint",
+    "fig_g3_tails": "g3/fig_g3_tails",
+    "fig_g3_pairs": "g3/fig_g3_pairs",
     "fig_lv_background": "langevin/fig/fig_background",
     "fig_lv_step": "langevin/fig/fig_step_seed",
     "fig_lv_paths": "langevin/fig/fig1_paths_ito_naive",
@@ -89,10 +99,15 @@ def main():
     run([os.path.join(HERE, "make_figs.py"), os.path.join(out, "lattice")] + LATTICE_ARGS)
     run([os.path.join(HERE, "analyse.py"), SIM, os.path.join(out, "langevin")])
     run([os.path.join(HERE, "schem_pipeline.py"), "--out", os.path.join(out, "figures_raw")])
-    for script in ("schem_ladder.py", "schem_architecture.py", "schem_timeline.py"):
+    for script in ("schem_ladder.py", "schem_ladder_g3.py", "schem_architecture.py", "schem_timeline.py"):
         run([os.path.join(HERE, script), "--out", os.path.join(out, "figures_raw")])
     for script in ("fig_g2_halving.py", "fig_g2_resolution.py", "fig_g2_mosaic.py"):
         run([os.path.join(HERE, script), os.path.join(out, "g2")])
+    g3 = os.path.join(out, "g3")
+    run([os.path.join(HERE, "fig_g3_mosaic.py"), g3, "--read", G3READ, "--member", "b000"])
+    for stem in ("fig_g3_onepoint", "fig_g3_tails", "fig_g3_pairs"):
+        for ext in (".pdf", ".png"):
+            shutil.copy(os.path.join(G3PAIRS, stem + ext), os.path.join(g3, stem + ext))
     run([os.path.join(HERE, "ledger.py"), out])
     fdir = os.path.join(out, "figures")
     os.makedirs(fdir, exist_ok=True)

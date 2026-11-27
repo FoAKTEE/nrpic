@@ -115,6 +115,13 @@ SECNOTE = {
                                  "data: from three amplitudes). Common mode: mean of the real part of the relative odd-part error over "
                                  "$k \\le 16\\,\\Delta k$. The Check column of this table cites the fresh verifier of the G2 package "
                                  "(stage/G2/VERIFIER.md); ``verifier's run'' marks a value that only the verifier's own run gives."),
+    "Tail statistics": ("Gate G3 of the track: $128^3$ ultra-slow-roll boxes on the release build, mirrored pairs of seeds at "
+                        "$\\lambda = \\pm1$ read at $N_f$; $\\zeta$ is $\\delta N$ to the uniform-field surface of the reference "
+                        "(tabulated map along the box relation, checked on every box). The pair is the unit: mean over its two "
+                        "boxes, then mean and standard error over the pairs. Tails at the box's own standard deviation; reference: "
+                        "one-patch $\\delta N$ of the same band, two direct runs pooled (batch means), the importance-sampled tail "
+                        "at four standard deviations. Constraint and resolution rows: the three-amplitude and $160^3$ runs of the "
+                        "same gate. No independent check yet (Check column: none)."),
     "Backreaction": ("Relative change of the final power per shell with more than ten independent modes, same random amplitudes, "
                      "noise on the mesh unless stated; SR at $N = 7.19$, after the last crossing, and at $N_f$."),
     "One-patch drift and noise amplitude": ("The drift of the lapse measured by Monte Carlo against the two forms of the "
@@ -138,6 +145,9 @@ G2JUDGE = "E-20261123-024359-5dc3213"   # judge of the release ladder (judge_g2.
 G2Q = "E-20261125-033450-4c4a31c"       # quarter-amplitude pair (judge_q.json)
 G2FL3 = "E-20261125-023427-6fb6400"     # the verifier's three-amplitude reading (floor3.json)
 SCR = "/data/haiyangw/nrpic/scratch/E-stoch-inf"
+G3PAIRS = "PENDING"                      # pair reading of the G3 baseline (pairs.json)
+G3C = "E-20261126-115943-32970f2"        # G3-C reading (g3c.json)
+G3R = "E-20261126-120438-9d48377"        # G3-R reading (g3r.json)
 
 
 G2ORIGIN = {"fig_g2_resolution.json": f"judge {G2JUDGE}",
@@ -323,6 +333,24 @@ ROWS = [
     ("Ultra-slow-roll criteria", "Common mode of the odd-part error at N_f: lambda = 1 (256^3, 320^3)", "x", (G2JUDGE, "judge_g2.json", lambda d: "{:.3e}, {:.3e}".format(d["U_R"]["common_mode_256"]["mean_re"], d["U_R"]["common_mode_320"]["mean_re"])), None, G("yes", 114, "-4.107e-5, -9.87e-6, -2.07e-6", "-4.107e-5 (256^3)")),
     ("Ultra-slow-roll criteria", "Common mode at N_f: lambda = 1/2 and 1/4 (256^3)", "x", (G2Q, "judge_q.json", lambda d: "{:.3e}, {:.3e}".format(d["Q_b"]["common_mode_end_half"], d["Q_b"]["common_mode_end_quarter"])), None, G("yes", 114, "-4.107e-5, -9.87e-6, -2.07e-6", "-9.87e-6, -2.07e-6")),
     ("Ultra-slow-roll criteria", "Slice of Fig. mosaic: rms and largest R^NR over the lattice at N_f (first seed, lambda = 1)", "g", ("fig_g2_mosaic.json", lambda d: "{:.5f}, {:.3f}".format(d["rms_R"], d["max_R"])), None, NONE),
+    # G3 package: tail statistics (scope 4d with its amendments); pair reading G3PAIRS, constraint G3C, resolution G3R
+    ("Tail statistics", "Pairs read (mirrored, both boxes healthy) and boxes", "x", (G3PAIRS, "pairs.json", lambda d: "{} pairs, {} boxes".format(d["n_pairs"], 2 * d["n_pairs"])), None, NONE),
+    ("Tail statistics", "Variance of zeta over the reference variance, minus one, with its standard error", "x", (G3PAIRS, "pairs.json", lambda d: "{:.2e} +- {:.1e} ({:.1f} s.e.)".format(d["V"]["ratio_minus_1"], d["V"]["se"], d["V"]["n_se"])), None, NONE),
+    ("Tail statistics", "Variance of zeta over the lattice sum; reference variance over the lattice sum", "x", (G3PAIRS, "pairs.json", lambda d: "{:.5f} +- {:.5f}; {:.5f} +- {:.5f}".format(d["V"]["nr_var_over_lattice"], d["V"]["nr_var_over_lattice_se"], *d["V"]["ref_var_over_lattice"])), None, NONE),
+    ("Tail statistics", "Skewness of zeta: lattice, one patch, difference in combined s.e.", "x", (G3PAIRS, "pairs.json", lambda d: "{:.5f} +- {:.5f}; {:.5f} +- {:.5f}; {:.1f}".format(d["T"]["skew"]["nr"], d["T"]["skew"]["nr_se"], d["T"]["skew"]["ref"], d["T"]["skew"]["ref_se"], d["T"]["skew"]["n_se"])), None, NONE),
+    ("Tail statistics", "Excess kurtosis of zeta: lattice, one patch, difference in combined s.e.", "x", (G3PAIRS, "pairs.json", lambda d: "{:.4f} +- {:.4f}; {:.4f} +- {:.4f}; {:.1f}".format(d["T"]["exkurt"]["nr"], d["T"]["exkurt"]["nr_se"], d["T"]["exkurt"]["ref"], d["T"]["exkurt"]["ref_se"], d["T"]["exkurt"]["n_se"])), None, NONE),
+    ("Tail statistics", "F_+(3) and F_-(3) over the Gaussian Q(3), own width: lattice; one patch", "x", (G3PAIRS, "pairs.json", lambda d: "{:.3f}, {:.3f}; {:.3f}, {:.3f}".format(d["T"]["Fp3"]["nr_Q"], d["T"]["Fm3"]["nr_Q"], d["T"]["Fp3"]["ref_Q"], d["T"]["Fm3"]["ref_Q"])), None, NONE),
+    ("Tail statistics", "F_+(3), F_-(3): lattice over one patch minus one, in combined s.e.", "x", (G3PAIRS, "pairs.json", lambda d: "{:.1f}, {:.1f}".format(d["T"]["Fp3"]["n_se"], d["T"]["Fm3"]["n_se"])), None, NONE),
+    ("Tail statistics", "F_+(4) and F_-(4) over Q(4), own width: lattice; one patch (importance sampled)", "x", (G3PAIRS, "pairs.json", lambda d: "{:.3f}, {:.3f}; {:.3f}, {:.3f}".format(d["T"]["Fp4"]["nr_Q"], d["T"]["Fm4"]["nr_Q"], d["T"]["Fp4"]["ref_Q"], d["T"]["Fm4"]["ref_Q"])), None, NONE),
+    ("Tail statistics", "F_+(4), F_-(4): difference in combined s.e.", "x", (G3PAIRS, "pairs.json", lambda d: "{:.1f}, {:.1f}".format(d["T"]["Fp4"]["n_se"], d["T"]["Fm4"]["n_se"])), None, NONE),
+    ("Tail statistics", "Asymmetry A(3): lattice, one patch, difference in combined s.e.", "x", (G3PAIRS, "pairs.json", lambda d: "{:.4f} +- {:.4f}; {:.4f} +- {:.4f}; {:.1f}".format(d["T"]["A3"]["nr"], d["T"]["A3"]["nr_se"], d["T"]["A3"]["ref"], d["T"]["A3"]["ref_se"], d["T"]["A3"]["n_se"])), None, NONE),
+    ("Tail statistics", "Asymmetry A(4): lattice, one patch, difference in combined s.e.", "x", (G3PAIRS, "pairs.json", lambda d: "{:.3f} +- {:.3f}; {:.4f} +- {:.4f}; {:.1f}".format(d["T"]["A4"]["nr"], d["T"]["A4"]["nr_se"], d["T"]["A4"]["ref"], d["T"]["A4"]["ref_se"], d["T"]["A4"]["n_se"])), None, NONE),
+    ("Tail statistics", "Skewness of R^NR (pair mean) and its s.e.", "x", (G3PAIRS, "pairs.json", lambda d: "{:.5f} +- {:.5f}".format(d["nr"]["R_skew"][0], d["nr"]["R_skew"][1])), None, NONE),
+    ("Tail statistics", "Standard error of the skewness of zeta: single boxes over pairs (mirroring gain)", "x", (G3PAIRS, "pairs.json", lambda d: "{:.1f}".format(d["mirror"]["gain"])), None, NONE),
+    ("Tail statistics", "Even part per pair: quadratic coefficient a of zeta and of R^NR (mean, pair-to-pair sd)", "x", (G3PAIRS, "pairs.json", lambda d: "{:.3e} (sd {:.1e}); {:.2e} (sd {:.1e})".format(d["A5"]["a_zeta"][0], d["A5"]["a_zeta"][2], d["A5"]["a_R"][0], d["A5"]["a_R"][2])), None, NONE),
+    ("Tail statistics", "Even part per pair: F_+(3) of the + box minus F_-(3) of the - box, over Q(3)", "x", (G3PAIRS, "pairs.json", lambda d: "{:.3f} +- {:.3f}".format(*d["A5"]["Fp_plus_minus_Fm_minus_3_Q"][:2])), None, NONE),
+    ("Tail statistics", "Constraints, three amplitudes: largest |factor - 4| over the judged records, H and M", "x", (G3C, "g3c.json", lambda d: "{:.1e}, {:.1e}".format(max(d["verdict"]["H"]["f_a"]["max_dev"], d["verdict"]["H"]["f_b"]["max_dev"]), max(d["verdict"]["M"]["f_a"]["max_dev"], d["verdict"]["M"]["f_b"]["max_dev"]))), None, NONE),
+    ("Tail statistics", "Resolution 128 to 160: factor of the largest departure of the first-order part; median per-mode ratio", "x", (G3R, "g3r.json", lambda d: "{:.2f}; {:.2f}".format(d["L"]["factor_max"], d["L"]["median_of_ratio"])), None, NONE),
 ]
 
 
