@@ -1042,6 +1042,15 @@ void Particles::NrpicDepositSources() {
               floor((yf - 0.5*h[1] - sz(mb).x2min)/sz(mb).dx2 + 0.5));
           const int k0 = ks + static_cast<int>(
               floor((zf - 0.5*h[2] - sz(mb).x3min)/sz(mb).dx3 + 0.5));
+          // A lattice cell beside a linear cloud gets a share that sums to zero, one
+          // half of a scheme whose other half is the share of the clouds that own the
+          // cell on the SAME lattice.  That is so only when this lattice is the one
+          // of the level cap, on which the clouds of every finer block are held.  A
+          // cloud on a coarser lattice than the cap meets a finer block whose own
+          // clouds lie on the finer lattice: nothing would cancel the share there
+          // (a dipole of +-1/8 in the two fine cells next to a level face that is not
+          // capped), so the cell beside the cloud is left alone.
+          if (!own && ldep != lcap) continue;
           if (fine_shape && nsub <= 32) {
             // <particles> deposit_fine_shape: inside a lattice cell of the cloud the
             // weight follows the assignment function instead of being the same in every
@@ -1142,9 +1151,13 @@ void Particles::NrpicDepositSources() {
   // into, and not on the sources: the division by sqrt(gamma) that follows is local, so
   // a pass after it would leave the part of the density that follows sqrt(gamma)
   // smoothed.
+  // On a mesh with refinement the pass is always taken in flux form, also the plain
+  // one (no fourth-order term, no limiter), which the product form serves on a uniform
+  // mesh: only the flux form can be made conservative across the faces between levels
+  // (NrpicCompensateLevelFaces).
   if (nropt.deposit_comp_c > 0.0) {
-    if ((nropt.deposit_comp_limit > 0.0 || nropt.deposit_comp_c2 != 0.0) &&
-        pmy_pack->pmesh->three_d) {
+    if ((nropt.deposit_comp_limit > 0.0 || nropt.deposit_comp_c2 != 0.0 ||
+         pmy_pack->pmesh->multilevel) && pmy_pack->pmesh->three_d) {
       NrpicCompensateLimited(nropt.deposit_comp_c, nropt.deposit_comp_c2,
                              nropt.deposit_comp_limit);
     } else {
@@ -1369,6 +1382,8 @@ void Particles::NrpicCompensateLimited(const Real c, const Real c2, const Real l
       }
       wk(m,n,k,j,i) = u0 - thp*fp + thm*fm;
     });
+    // faces between refinement levels: one flux for both sides (nrpic_levelface.cpp)
+    if (pm->multilevel) { NrpicCompensateLevelFaces(dir, c, q, lim); }
     par_for("nrpic_complim_copy", DevExeSpace(), 0, nmb1, 0, nv1, kl, ku, jl, ju, is, ie,
     KOKKOS_LAMBDA(const int m, const int n, const int k, const int j, const int i) {
       tm(m,n,k,j,i) = wk(m,n,k,j,i);
