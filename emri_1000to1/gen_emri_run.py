@@ -361,8 +361,8 @@ id_lin_tol     = {args.id_lin_tol:.3e}
 id_lin_maxit   = {args.id_lin_maxit}
 id_mg_tol      = {args.id_mg_tol:.3e}
 id_dump        = false
-alpha_exc      = 0.08
-ah_exc_factor  = 0.85
+alpha_exc      = 0.05
+ah_exc_factor  = 0.30
 hist_dcycle    = 20
 traj_ntrack    = 1
 traj_dcycle    = 4
@@ -450,9 +450,9 @@ shift_Gamma     = 0.75
 shift_advect    = 1.0
 diss            = {args.diss:.3f}
 chi_div_floor   = 1.0e-5
-damp_kappa1     = {args.damp_kappa1:.4f}
+{"use_z4c         = false" if args.bssn else "use_z4c         = true"}
+damp_kappa1     = {0.0 if args.bssn else args.damp_kappa1:.4f}
 damp_kappa2     = 0.0
-{"bssn            = true" if args.bssn else "bssn            = false"}
 {sbc_block}
 co_0_type       = BH
 co_0_x          = 0.0

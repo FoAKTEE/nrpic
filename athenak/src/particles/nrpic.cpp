@@ -1012,12 +1012,17 @@ void VarAccumPJac(const DvceArray5D<Real> &mA, const DvceArray5D<Real> &mB,
   const Real gyz = VarGetMet(mA,mB,blend,frac,wA,wB,mb,NRM_GYZ,kk,jj,ii);
   const Real gzz = VarGetMet(mA,mB,blend,frac,wA,wB,mb,NRM_GZZ,kk,jj,ii);
   const Real ialp = 1.0/alp;
-  const Real Vx = (vx + bx)*ialp, Vy = (vy + by)*ialp, Vz = (vz + bz)*ialp;
-  const Real Vdx = gxx*Vx + gxy*Vy + gxz*Vz;
-  const Real Vdy = gxy*Vx + gyy*Vy + gyz*Vz;
-  const Real Vdz = gxz*Vx + gyz*Vy + gzz*Vz;
+  Real Vx = (vx + bx)*ialp, Vy = (vy + by)*ialp, Vz = (vz + bz)*ialp;
+  Real Vdx = gxx*Vx + gxy*Vy + gxz*Vz;
+  Real Vdy = gxy*Vx + gyy*Vy + gyz*Vz;
+  Real Vdz = gxz*Vx + gyz*Vy + gzz*Vz;
   Real V2 = Vx*Vdx + Vy*Vdy + Vz*Vdz;
-  if (V2 > 0.9999) V2 = 0.9999;
+  if (V2 > 0.96) {
+    const Real sv = sqrt(0.96/V2);
+    Vx *= sv; Vy *= sv; Vz *= sv;
+    Vdx *= sv; Vdy *= sv; Vdz *= sv;
+    V2 = 0.96;
+  }
   if (V2 < 0.0) V2 = 0.0;
   const Real W = 1.0/sqrt(1.0 - V2);
   const Real wW = wcell*W;
@@ -1052,12 +1057,17 @@ void VarAccumForce(const DvceArray5D<Real> &mA, const DvceArray5D<Real> &mB,
   const Real gyz = VarGetMet(mA,mB,blend,frac,wA,wB,mb,NRM_GYZ,kk,jj,ii);
   const Real gzz = VarGetMet(mA,mB,blend,frac,wA,wB,mb,NRM_GZZ,kk,jj,ii);
   const Real ialp = 1.0/alp;
-  const Real Vx = (vx + bx)*ialp, Vy = (vy + by)*ialp, Vz = (vz + bz)*ialp;
-  const Real Vdx = gxx*Vx + gxy*Vy + gxz*Vz;
-  const Real Vdy = gxy*Vx + gyy*Vy + gyz*Vz;
-  const Real Vdz = gxz*Vx + gyz*Vy + gzz*Vz;
+  Real Vx = (vx + bx)*ialp, Vy = (vy + by)*ialp, Vz = (vz + bz)*ialp;
+  Real Vdx = gxx*Vx + gxy*Vy + gxz*Vz;
+  Real Vdy = gxy*Vx + gyy*Vy + gyz*Vz;
+  Real Vdz = gxz*Vx + gyz*Vy + gzz*Vz;
   Real V2 = Vx*Vdx + Vy*Vdy + Vz*Vdz;
-  if (V2 > 0.9999) V2 = 0.9999;
+  if (V2 > 0.96) {
+    const Real sv = sqrt(0.96/V2);
+    Vx *= sv; Vy *= sv; Vz *= sv;
+    Vdx *= sv; Vdy *= sv; Vdz *= sv;
+    V2 = 0.96;
+  }
   if (V2 < 0.0) V2 = 0.0;
   const Real W = 1.0/sqrt(1.0 - V2);
   const Real Et = wcell*W;
@@ -1089,9 +1099,78 @@ void VarAccumForce(const DvceArray5D<Real> &mA, const DvceArray5D<Real> &mB,
 }
 
 KOKKOS_INLINE_FUNCTION
+void VarAccumCovVelForce(const DvceArray5D<Real> &mA, const DvceArray5D<Real> &mB,
+                         bool blend, Real frac, Real wA, Real wB,
+                         int mb, int kk, int jj, int ii, Real wcell,
+                         Real px, Real py, Real pz,
+                         bool need_force, int ng,
+                         Real invh1, Real invh2, Real invh3,
+                         Real &lvx, Real &lvy, Real &lvz,
+                         Real &lfx, Real &lfy, Real &lfz, Real &lw) {
+  const Real alp = VarGetMet(mA,mB,blend,frac,wA,wB,mb,NRM_ALP,kk,jj,ii);
+  if (!(alp > 0.02 && alp < 1.0e300)) return;
+  const Real bx  = VarGetMet(mA,mB,blend,frac,wA,wB,mb,NRM_BX, kk,jj,ii);
+  const Real by  = VarGetMet(mA,mB,blend,frac,wA,wB,mb,NRM_BY, kk,jj,ii);
+  const Real bz  = VarGetMet(mA,mB,blend,frac,wA,wB,mb,NRM_BZ, kk,jj,ii);
+  const Real gxx = VarGetMet(mA,mB,blend,frac,wA,wB,mb,NRM_GXX,kk,jj,ii);
+  const Real gxy = VarGetMet(mA,mB,blend,frac,wA,wB,mb,NRM_GXY,kk,jj,ii);
+  const Real gxz = VarGetMet(mA,mB,blend,frac,wA,wB,mb,NRM_GXZ,kk,jj,ii);
+  const Real gyy = VarGetMet(mA,mB,blend,frac,wA,wB,mb,NRM_GYY,kk,jj,ii);
+  const Real gyz = VarGetMet(mA,mB,blend,frac,wA,wB,mb,NRM_GYZ,kk,jj,ii);
+  const Real gzz = VarGetMet(mA,mB,blend,frac,wA,wB,mb,NRM_GZZ,kk,jj,ii);
+  const Real det = adm::SpatialDet(gxx, gxy, gxz, gyy, gyz, gzz);
+  if (!(det > 0.0 && det < 1.0e300)) return;
+  const Real idet = 1.0/det;
+  const Real igxx = (gyy*gzz - gyz*gyz)*idet;
+  const Real igxy = (gxz*gyz - gxy*gzz)*idet;
+  const Real igxz = (gxy*gyz - gxz*gyy)*idet;
+  const Real igyy = (gxx*gzz - gxz*gxz)*idet;
+  const Real igyz = (gxy*gxz - gxx*gyz)*idet;
+  const Real igzz = (gxx*gyy - gxy*gxy)*idet;
+  const Real pux = igxx*px + igxy*py + igxz*pz;
+  const Real puy = igxy*px + igyy*py + igyz*pz;
+  const Real puz = igxz*px + igyz*py + igzz*pz;
+  Real p2 = pux*px + puy*py + puz*pz;
+  if (p2 < 0.0) p2 = 0.0;
+  const Real W = sqrt(1.0 + p2);
+  const Real iW = 1.0/W;
+  const Real Vx = pux*iW, Vy = puy*iW, Vz = puz*iW;
+  lvx += wcell*(alp*Vx - bx);
+  lvy += wcell*(alp*Vy - by);
+  lvz += wcell*(alp*Vz - bz);
+  lw += wcell*(W/alp);
+  if (!need_force) return;
+
+  const Real Et = wcell*W;
+  const Real Sd0 = wcell*px, Sd1 = wcell*py, Sd2 = wcell*pz;
+  const Real h_alp = 0.5*alp*Et;
+  const Real Sxx = Vx*Vx, Sxy = 2.0*Vx*Vy, Sxz = 2.0*Vx*Vz;
+  const Real Syy = Vy*Vy, Syz = 2.0*Vy*Vz, Szz = Vz*Vz;
+  const Real invh[3] = {invh1, invh2, invh3};
+  Real df[3];
+  for (int dir = 0; dir < 3; ++dir) {
+    const Real da   = VarDerivMet(mA,mB,blend,frac,wA,wB,mb,NRM_ALP,kk,jj,ii,dir,ng,invh[dir]);
+    const Real dbx  = VarDerivMet(mA,mB,blend,frac,wA,wB,mb,NRM_BX, kk,jj,ii,dir,ng,invh[dir]);
+    const Real dby  = VarDerivMet(mA,mB,blend,frac,wA,wB,mb,NRM_BY, kk,jj,ii,dir,ng,invh[dir]);
+    const Real dbz  = VarDerivMet(mA,mB,blend,frac,wA,wB,mb,NRM_BZ, kk,jj,ii,dir,ng,invh[dir]);
+    const Real dgxx = VarDerivMet(mA,mB,blend,frac,wA,wB,mb,NRM_GXX,kk,jj,ii,dir,ng,invh[dir]);
+    const Real dgxy = VarDerivMet(mA,mB,blend,frac,wA,wB,mb,NRM_GXY,kk,jj,ii,dir,ng,invh[dir]);
+    const Real dgxz = VarDerivMet(mA,mB,blend,frac,wA,wB,mb,NRM_GXZ,kk,jj,ii,dir,ng,invh[dir]);
+    const Real dgyy = VarDerivMet(mA,mB,blend,frac,wA,wB,mb,NRM_GYY,kk,jj,ii,dir,ng,invh[dir]);
+    const Real dgyz = VarDerivMet(mA,mB,blend,frac,wA,wB,mb,NRM_GYZ,kk,jj,ii,dir,ng,invh[dir]);
+    const Real dgzz = VarDerivMet(mA,mB,blend,frac,wA,wB,mb,NRM_GZZ,kk,jj,ii,dir,ng,invh[dir]);
+    df[dir] = -Et*da + (Sd0*dbx + Sd1*dby + Sd2*dbz)
+              + h_alp*(Sxx*dgxx + Sxy*dgxy + Sxz*dgxz
+                     + Syy*dgyy + Syz*dgyz + Szz*dgzz);
+  }
+  lfx += df[0]; lfy += df[1]; lfz += df[2];
+}
+
+KOKKOS_INLINE_FUNCTION
 void VarDepositCell(const DvceArray5D<Real> &tm, const DvceArray5D<Real> &m1,
                     int mb, int kk, int jj, int ii, Real vol, Real wcell,
-                    Real mp, Real vx, Real vy, Real vz,
+                    Real mp, Real lam, Real vx, Real vy, Real vz,
+                    Real px, Real py, Real pz,
                     Real &le, Real &lsx, Real &lsy, Real &lsz) {
   const Real alp = m1(mb,NRM_ALP,kk,jj,ii);
   const Real gxx = m1(mb,NRM_GXX,kk,jj,ii), gxy = m1(mb,NRM_GXY,kk,jj,ii),
@@ -1100,30 +1179,96 @@ void VarDepositCell(const DvceArray5D<Real> &tm, const DvceArray5D<Real> &m1,
   const Real det = adm::SpatialDet(gxx, gxy, gxz, gyy, gyz, gzz);
   if (!(det > 0.0 && det < 1.0e300 && alp > 1.0e-12 && alp < 1.0e300)) return;
   const Real isg = 1.0/sqrt(det);
-  const Real ialp = 1.0/alp;
-  const Real Vx = (vx + m1(mb,NRM_BX,kk,jj,ii))*ialp;
-  const Real Vy = (vy + m1(mb,NRM_BY,kk,jj,ii))*ialp;
-  const Real Vz = (vz + m1(mb,NRM_BZ,kk,jj,ii))*ialp;
-  const Real Vdx = gxx*Vx + gxy*Vy + gxz*Vz;
-  const Real Vdy = gxy*Vx + gyy*Vy + gyz*Vz;
-  const Real Vdz = gxz*Vx + gyz*Vy + gzz*Vz;
-  Real V2 = Vx*Vdx + Vy*Vdy + Vz*Vdz;
-  if (V2 > 0.9999) V2 = 0.9999;
-  if (V2 < 0.0) V2 = 0.0;
-  const Real W = 1.0/sqrt(1.0 - V2);
-  const Real mW = mp*W*wcell;
-  const Real E_phys = (mW/vol)*isg;
-  Kokkos::atomic_add(&tm(mb,Tmunu::I_Tmunu_E,  kk,jj,ii), E_phys);
-  Kokkos::atomic_add(&tm(mb,Tmunu::I_Tmunu_Sx, kk,jj,ii), E_phys*Vdx);
-  Kokkos::atomic_add(&tm(mb,Tmunu::I_Tmunu_Sy, kk,jj,ii), E_phys*Vdy);
-  Kokkos::atomic_add(&tm(mb,Tmunu::I_Tmunu_Sz, kk,jj,ii), E_phys*Vdz);
-  Kokkos::atomic_add(&tm(mb,Tmunu::I_Tmunu_Sxx,kk,jj,ii), E_phys*Vdx*Vdx);
-  Kokkos::atomic_add(&tm(mb,Tmunu::I_Tmunu_Sxy,kk,jj,ii), E_phys*Vdx*Vdy);
-  Kokkos::atomic_add(&tm(mb,Tmunu::I_Tmunu_Sxz,kk,jj,ii), E_phys*Vdx*Vdz);
-  Kokkos::atomic_add(&tm(mb,Tmunu::I_Tmunu_Syy,kk,jj,ii), E_phys*Vdy*Vdy);
-  Kokkos::atomic_add(&tm(mb,Tmunu::I_Tmunu_Syz,kk,jj,ii), E_phys*Vdy*Vdz);
-  Kokkos::atomic_add(&tm(mb,Tmunu::I_Tmunu_Szz,kk,jj,ii), E_phys*Vdz*Vdz);
-  le += mW; lsx += mW*Vdx; lsy += mW*Vdy; lsz += mW*Vdz;
+  const Real ivol_isg = isg/vol;
+
+  Real mE = 0.0, mSx = 0.0, mSy = 0.0, mSz = 0.0;
+  Real mSxx = 0.0, mSxy = 0.0, mSxz = 0.0, mSyy = 0.0, mSyz = 0.0, mSzz = 0.0;
+
+  if (lam > 0.0) {
+    const Real ialp = 1.0/alp;
+    Real Vx = (vx + m1(mb,NRM_BX,kk,jj,ii))*ialp;
+    Real Vy = (vy + m1(mb,NRM_BY,kk,jj,ii))*ialp;
+    Real Vz = (vz + m1(mb,NRM_BZ,kk,jj,ii))*ialp;
+    Real Vdx = gxx*Vx + gxy*Vy + gxz*Vz;
+    Real Vdy = gxy*Vx + gyy*Vy + gyz*Vz;
+    Real Vdz = gxz*Vx + gyz*Vy + gzz*Vz;
+    Real V2 = Vx*Vdx + Vy*Vdy + Vz*Vdz;
+    if (V2 > 0.96) {
+      const Real sv = sqrt(0.96/V2);
+      Vx *= sv; Vy *= sv; Vz *= sv;
+      Vdx *= sv; Vdy *= sv; Vdz *= sv;
+      V2 = 0.96;
+    }
+    if (V2 < 0.0) V2 = 0.0;
+    const Real W = 1.0/sqrt(1.0 - V2);
+    const Real mW = lam*mp*W*wcell;
+    mE += mW;
+    mSx += mW*Vdx; mSy += mW*Vdy; mSz += mW*Vdz;
+    mSxx += mW*Vdx*Vdx; mSxy += mW*Vdx*Vdy; mSxz += mW*Vdx*Vdz;
+    mSyy += mW*Vdy*Vdy; mSyz += mW*Vdy*Vdz; mSzz += mW*Vdz*Vdz;
+  }
+  if (lam < 1.0) {
+    const Real idet = 1.0/det;
+    const Real igxx = (gyy*gzz - gyz*gyz)*idet;
+    const Real igxy = (gxz*gyz - gxy*gzz)*idet;
+    const Real igxz = (gxy*gyz - gxz*gyy)*idet;
+    const Real igyy = (gxx*gzz - gxz*gxz)*idet;
+    const Real igyz = (gxy*gxz - gxx*gyz)*idet;
+    const Real igzz = (gxx*gyy - gxy*gxy)*idet;
+    const Real pux = igxx*px + igxy*py + igxz*pz;
+    const Real puy = igxy*px + igyy*py + igyz*pz;
+    const Real puz = igxz*px + igyz*py + igzz*pz;
+    Real p2 = pux*px + puy*py + puz*pz;
+    if (p2 < 0.0) p2 = 0.0;
+    const Real Wc = sqrt(1.0 + p2);
+    const Real iWc = 1.0/Wc;
+    const Real mWc = (1.0 - lam)*mp*wcell;
+    mE += mWc*Wc;
+    mSx += mWc*px; mSy += mWc*py; mSz += mWc*pz;
+    mSxx += mWc*px*px*iWc; mSxy += mWc*px*py*iWc; mSxz += mWc*px*pz*iWc;
+    mSyy += mWc*py*py*iWc; mSyz += mWc*py*pz*iWc; mSzz += mWc*pz*pz*iWc;
+  }
+
+  Kokkos::atomic_add(&tm(mb,Tmunu::I_Tmunu_E,  kk,jj,ii), mE*ivol_isg);
+  Kokkos::atomic_add(&tm(mb,Tmunu::I_Tmunu_Sx, kk,jj,ii), mSx*ivol_isg);
+  Kokkos::atomic_add(&tm(mb,Tmunu::I_Tmunu_Sy, kk,jj,ii), mSy*ivol_isg);
+  Kokkos::atomic_add(&tm(mb,Tmunu::I_Tmunu_Sz, kk,jj,ii), mSz*ivol_isg);
+  Kokkos::atomic_add(&tm(mb,Tmunu::I_Tmunu_Sxx,kk,jj,ii), mSxx*ivol_isg);
+  Kokkos::atomic_add(&tm(mb,Tmunu::I_Tmunu_Sxy,kk,jj,ii), mSxy*ivol_isg);
+  Kokkos::atomic_add(&tm(mb,Tmunu::I_Tmunu_Sxz,kk,jj,ii), mSxz*ivol_isg);
+  Kokkos::atomic_add(&tm(mb,Tmunu::I_Tmunu_Syy,kk,jj,ii), mSyy*ivol_isg);
+  Kokkos::atomic_add(&tm(mb,Tmunu::I_Tmunu_Syz,kk,jj,ii), mSyz*ivol_isg);
+  Kokkos::atomic_add(&tm(mb,Tmunu::I_Tmunu_Szz,kk,jj,ii), mSzz*ivol_isg);
+  le += mE; lsx += mSx; lsy += mSy; lsz += mSz;
+}
+
+inline Real VarHorizonBlend(MeshBlockPack *pmy_pack, const VarStencil &st,
+                            const Real xp[3], const DvceArray5D<Real> &mA,
+                            const DvceArray5D<Real> &mB, Real frac) {
+  auto &indcs = pmy_pack->pmesh->mb_indcs;
+  auto sz_h = pmy_pack->pmb->mb_size.h_view;
+  const int mo = st.mo;
+  int ic = indcs.is + static_cast<int>(std::floor((xp[0] - sz_h(mo).x1min)/sz_h(mo).dx1));
+  int jc = indcs.js + static_cast<int>(std::floor((xp[1] - sz_h(mo).x2min)/sz_h(mo).dx2));
+  int kc = indcs.ks + static_cast<int>(std::floor((xp[2] - sz_h(mo).x3min)/sz_h(mo).dx3));
+  ic = std::max(indcs.is, std::min(indcs.ie, ic));
+  jc = std::max(indcs.js, std::min(indcs.je, jc));
+  kc = std::max(indcs.ks, std::min(indcs.ke, kc));
+  const bool blend = (frac > 0.0 && frac < 1.0);
+  const Real wA = 1.0 - frac, wB = frac;
+  Real alpc = 1.0;
+  Kokkos::parallel_reduce("nrpic_var_alpc", Kokkos::RangePolicy<DevExeSpace>(0, 1),
+  KOKKOS_LAMBDA(const int, Real &la) {
+    la = VarGetMet(mA, mB, blend, frac, wA, wB, mo, NRM_ALP, kc, jc, ic);
+  }, Kokkos::Min<Real>(alpc));
+  // Smooth C^2 transition from exact rigid-velocity variational action (alp >= 0.72,
+  // R >= 4.2 M) to strictly-timelike covariant Hamiltonian (alp <= 0.64, R <= 3.3 M),
+  // preventing superluminal inner cloud tails during light-ring & horizon crossing (Bug 11).
+  constexpr Real kAlpLo = 0.64, kAlpHi = 0.72;
+  if (alpc >= kAlpHi) return 1.0;
+  if (alpc <= kAlpLo) return 0.0;
+  const Real s = (alpc - kAlpLo)/(kAlpHi - kAlpLo);
+  return s*s*(3.0 - 2.0*s);
 }
 }  // namespace
 
@@ -1152,20 +1297,177 @@ bool Particles::NrpicVariationalEval(const Real xp[3], const Real p_in[3],
   const bool blend = (frac > 0.0 && frac < 1.0);
   const Real wA = 1.0 - frac, wB = frac;
 
-  Real v[3] = {0.0, 0.0, 0.0};
-  if (std::isfinite(v_out[0]) && std::isfinite(v_out[1]) && std::isfinite(v_out[2]) &&
-      (v_out[0]*v_out[0] + v_out[1]*v_out[1] + v_out[2]*v_out[2]) < 0.85) {
-    v[0] = v_out[0]; v[1] = v_out[1]; v[2] = v_out[2];
+  const Real lam = VarHorizonBlend(pmy_pack, st, xp, mA, mB, frac);
+
+  Real v_var[3] = {0.0, 0.0, 0.0};
+  Real f_var[3] = {0.0, 0.0, 0.0};
+  Real w_var = 0.0;
+  if (lam > 0.0) {
+    Real v[3] = {0.0, 0.0, 0.0};
+    if (std::isfinite(v_out[0]) && std::isfinite(v_out[1]) && std::isfinite(v_out[2]) &&
+        (v_out[0]*v_out[0] + v_out[1]*v_out[1] + v_out[2]*v_out[2]) < 0.85) {
+      v[0] = v_out[0]; v[1] = v_out[1]; v[2] = v_out[2];
+    }
+
+    for (int it = 0; it < 25; ++it) {
+      const Real vx = v[0], vy = v[1], vz = v[2];
+      Real px = 0.0, py = 0.0, pz = 0.0;
+      Real j00 = 0.0, j01 = 0.0, j02 = 0.0, j11 = 0.0, j12 = 0.0, j22 = 0.0;
+      Kokkos::parallel_reduce("nrpic_var_pjac", Kokkos::RangePolicy<DevExeSpace>(0, ntot),
+      KOKKOS_LAMBDA(const int idx, Real &lpx, Real &lpy, Real &lpz,
+                    Real &lj00, Real &lj01, Real &lj02,
+                    Real &lj11, Real &lj12, Real &lj22) {
+        const int ix = idx % ns;
+        const int iy = (idx / ns) % ns;
+        const int iz = idx / (ns * ns);
+        const Real wt = st.wx[ix]*st.wy[iy]*st.wz[iz]*dx3;
+        if (wt <= 0.0) return;
+        const Real xf = nrpic::WrapCoord(st.x0[0] + ix*st.dx, dmin[0], dlen[0], per[0]);
+        const Real yf = nrpic::WrapCoord(st.x0[1] + iy*st.dx, dmin[1], dlen[1], per[1]);
+        const Real zf = nrpic::WrapCoord(st.x0[2] + iz*st.dx, dmin[2], dlen[2], per[2]);
+        int mb = -1;
+        for (int q = 0; q < st.nnbr; ++q) {
+          const int c = st.nbr[q];
+          if (xf >= sz(c).x1min && xf < sz(c).x1max &&
+              yf >= sz(c).x2min && yf < sz(c).x2max &&
+              zf >= sz(c).x3min && zf < sz(c).x3max) {
+            mb = c;
+            break;
+          }
+        }
+        if (mb < 0) mb = nrpic::FindBlock(sz, nmb, st.mo, xf, yf, zf);
+        if (mb < 0) return;
+
+        const int kd = lev(mb) - st.lev0;
+        if (kd <= 0) {
+          int i = is + static_cast<int>(floor((xf - sz(mb).x1min)/sz(mb).dx1));
+          int j = js + static_cast<int>(floor((yf - sz(mb).x2min)/sz(mb).dx2));
+          int k = ks + static_cast<int>(floor((zf - sz(mb).x3min)/sz(mb).dx3));
+          i = (i < is) ? is : ((i > ie) ? ie : i);
+          j = (j < js) ? js : ((j > je) ? je : j);
+          k = (k < ks) ? ks : ((k > ke) ? ke : k);
+          VarAccumPJac(mA,mB,blend,frac,wA,wB,mb,k,j,i,wt,vx,vy,vz,
+                       lpx,lpy,lpz,lj00,lj01,lj02,lj11,lj12,lj22);
+        } else {
+          const int nsub = 1 << kd;
+          const Real wsub = wt/static_cast<Real>(nsub*nsub*nsub);
+          const int i0 = is + static_cast<int>(
+              floor((xf - 0.5*st.dx - sz(mb).x1min)/sz(mb).dx1 + 0.5));
+          const int j0 = js + static_cast<int>(
+              floor((yf - 0.5*st.dx - sz(mb).x2min)/sz(mb).dx2 + 0.5));
+          const int k0 = ks + static_cast<int>(
+              floor((zf - 0.5*st.dx - sz(mb).x3min)/sz(mb).dx3 + 0.5));
+          for (int kk = 0; kk < nsub; ++kk) {
+            const int k = k0 + kk;
+            if (k < ks || k > ke) continue;
+            for (int jj = 0; jj < nsub; ++jj) {
+              const int j = j0 + jj;
+              if (j < js || j > je) continue;
+              for (int ii = 0; ii < nsub; ++ii) {
+                const int i = i0 + ii;
+                if (i < is || i > ie) continue;
+                VarAccumPJac(mA,mB,blend,frac,wA,wB,mb,k,j,i,wsub,vx,vy,vz,
+                             lpx,lpy,lpz,lj00,lj01,lj02,lj11,lj12,lj22);
+              }
+            }
+          }
+        }
+      }, Kokkos::Sum<Real>(px), Kokkos::Sum<Real>(py), Kokkos::Sum<Real>(pz),
+         Kokkos::Sum<Real>(j00), Kokkos::Sum<Real>(j01), Kokkos::Sum<Real>(j02),
+         Kokkos::Sum<Real>(j11), Kokkos::Sum<Real>(j12), Kokkos::Sum<Real>(j22));
+
+      const Real J[3][3] = {{j00, j01, j02}, {j01, j11, j12}, {j02, j12, j22}};
+      Real Ji[3][3];
+      nrpic::Inv3Sym(J, Ji);
+      const Real r[3] = {p_in[0] - px, p_in[1] - py, p_in[2] - pz};
+      Real dv[3];
+      Real maxdv = 0.0;
+      for (int a = 0; a < 3; ++a) {
+        dv[a] = Ji[a][0]*r[0] + Ji[a][1]*r[1] + Ji[a][2]*r[2];
+        maxdv = std::max(maxdv, std::fabs(dv[a]));
+      }
+      const Real scale = (maxdv > 0.25) ? (0.25/maxdv) : 1.0;
+      for (int a = 0; a < 3; ++a) { v[a] += scale*dv[a]; }
+      if (maxdv < 1.0e-14) break;
+    }
+    v_var[0] = v[0]; v_var[1] = v[1]; v_var[2] = v[2];
+
+    if (need_force || w_out != nullptr) {
+      const Real vx = v_var[0], vy = v_var[1], vz = v_var[2];
+      Real fx = 0.0, fy = 0.0, fz = 0.0, wavg = 0.0;
+      Kokkos::parallel_reduce("nrpic_var_force", Kokkos::RangePolicy<DevExeSpace>(0, ntot),
+      KOKKOS_LAMBDA(const int idx, Real &lfx, Real &lfy, Real &lfz, Real &lw) {
+        const int ix = idx % ns;
+        const int iy = (idx / ns) % ns;
+        const int iz = idx / (ns * ns);
+        const Real wt = st.wx[ix]*st.wy[iy]*st.wz[iz]*dx3;
+        if (wt <= 0.0) return;
+        const Real xf = nrpic::WrapCoord(st.x0[0] + ix*st.dx, dmin[0], dlen[0], per[0]);
+        const Real yf = nrpic::WrapCoord(st.x0[1] + iy*st.dx, dmin[1], dlen[1], per[1]);
+        const Real zf = nrpic::WrapCoord(st.x0[2] + iz*st.dx, dmin[2], dlen[2], per[2]);
+        int mb = -1;
+        for (int q = 0; q < st.nnbr; ++q) {
+          const int c = st.nbr[q];
+          if (xf >= sz(c).x1min && xf < sz(c).x1max &&
+              yf >= sz(c).x2min && yf < sz(c).x2max &&
+              zf >= sz(c).x3min && zf < sz(c).x3max) {
+            mb = c;
+            break;
+          }
+        }
+        if (mb < 0) mb = nrpic::FindBlock(sz, nmb, st.mo, xf, yf, zf);
+        if (mb < 0) return;
+
+        const Real invh1 = 1.0/sz(mb).dx1, invh2 = 1.0/sz(mb).dx2, invh3 = 1.0/sz(mb).dx3;
+        const int kd = lev(mb) - st.lev0;
+        if (kd <= 0) {
+          int i = is + static_cast<int>(floor((xf - sz(mb).x1min)/sz(mb).dx1));
+          int j = js + static_cast<int>(floor((yf - sz(mb).x2min)/sz(mb).dx2));
+          int k = ks + static_cast<int>(floor((zf - sz(mb).x3min)/sz(mb).dx3));
+          i = (i < is) ? is : ((i > ie) ? ie : i);
+          j = (j < js) ? js : ((j > je) ? je : j);
+          k = (k < ks) ? ks : ((k > ke) ? ke : k);
+          VarAccumForce(mA,mB,blend,frac,wA,wB,mb,k,j,i,wt,vx,vy,vz,
+                        need_force,ng,invh1,invh2,invh3,lfx,lfy,lfz,lw);
+        } else {
+          const int nsub = 1 << kd;
+          const Real wsub = wt/static_cast<Real>(nsub*nsub*nsub);
+          const int i0 = is + static_cast<int>(
+              floor((xf - 0.5*st.dx - sz(mb).x1min)/sz(mb).dx1 + 0.5));
+          const int j0 = js + static_cast<int>(
+              floor((yf - 0.5*st.dx - sz(mb).x2min)/sz(mb).dx2 + 0.5));
+          const int k0 = ks + static_cast<int>(
+              floor((zf - 0.5*st.dx - sz(mb).x3min)/sz(mb).dx3 + 0.5));
+          for (int kk = 0; kk < nsub; ++kk) {
+            const int k = k0 + kk;
+            if (k < ks || k > ke) continue;
+            for (int jj = 0; jj < nsub; ++jj) {
+              const int j = j0 + jj;
+              if (j < js || j > je) continue;
+              for (int ii = 0; ii < nsub; ++ii) {
+                const int i = i0 + ii;
+                if (i < is || i > ie) continue;
+                VarAccumForce(mA,mB,blend,frac,wA,wB,mb,k,j,i,wsub,vx,vy,vz,
+                              need_force,ng,invh1,invh2,invh3,lfx,lfy,lfz,lw);
+              }
+            }
+          }
+        }
+      }, Kokkos::Sum<Real>(fx), Kokkos::Sum<Real>(fy), Kokkos::Sum<Real>(fz),
+         Kokkos::Sum<Real>(wavg));
+      f_var[0] = fx; f_var[1] = fy; f_var[2] = fz; w_var = wavg;
+    }
   }
 
-  for (int it = 0; it < 25; ++it) {
-    const Real vx = v[0], vy = v[1], vz = v[2];
-    Real px = 0.0, py = 0.0, pz = 0.0;
-    Real j00 = 0.0, j01 = 0.0, j02 = 0.0, j11 = 0.0, j12 = 0.0, j22 = 0.0;
-    Kokkos::parallel_reduce("nrpic_var_pjac", Kokkos::RangePolicy<DevExeSpace>(0, ntot),
-    KOKKOS_LAMBDA(const int idx, Real &lpx, Real &lpy, Real &lpz,
-                  Real &lj00, Real &lj01, Real &lj02,
-                  Real &lj11, Real &lj12, Real &lj22) {
+  Real v_cov[3] = {0.0, 0.0, 0.0};
+  Real f_cov[3] = {0.0, 0.0, 0.0};
+  Real w_cov = 0.0;
+  if (lam < 1.0) {
+    const Real px = p_in[0], py = p_in[1], pz = p_in[2];
+    Real cvx = 0.0, cvy = 0.0, cvz = 0.0, cfx = 0.0, cfy = 0.0, cfz = 0.0, cw = 0.0;
+    Kokkos::parallel_reduce("nrpic_var_cov_vf", Kokkos::RangePolicy<DevExeSpace>(0, ntot),
+    KOKKOS_LAMBDA(const int idx, Real &lvx, Real &lvy, Real &lvz,
+                  Real &lfx, Real &lfy, Real &lfz, Real &lw) {
       const int ix = idx % ns;
       const int iy = (idx / ns) % ns;
       const int iz = idx / (ns * ns);
@@ -1187,6 +1489,7 @@ bool Particles::NrpicVariationalEval(const Real xp[3], const Real p_in[3],
       if (mb < 0) mb = nrpic::FindBlock(sz, nmb, st.mo, xf, yf, zf);
       if (mb < 0) return;
 
+      const Real invh1 = 1.0/sz(mb).dx1, invh2 = 1.0/sz(mb).dx2, invh3 = 1.0/sz(mb).dx3;
       const int kd = lev(mb) - st.lev0;
       if (kd <= 0) {
         int i = is + static_cast<int>(floor((xf - sz(mb).x1min)/sz(mb).dx1));
@@ -1195,8 +1498,8 @@ bool Particles::NrpicVariationalEval(const Real xp[3], const Real p_in[3],
         i = (i < is) ? is : ((i > ie) ? ie : i);
         j = (j < js) ? js : ((j > je) ? je : j);
         k = (k < ks) ? ks : ((k > ke) ? ke : k);
-        VarAccumPJac(mA,mB,blend,frac,wA,wB,mb,k,j,i,wt,vx,vy,vz,
-                     lpx,lpy,lpz,lj00,lj01,lj02,lj11,lj12,lj22);
+        VarAccumCovVelForce(mA,mB,blend,frac,wA,wB,mb,k,j,i,wt,px,py,pz,
+                            need_force,ng,invh1,invh2,invh3,lvx,lvy,lvz,lfx,lfy,lfz,lw);
       } else {
         const int nsub = 1 << kd;
         const Real wsub = wt/static_cast<Real>(nsub*nsub*nsub);
@@ -1215,99 +1518,25 @@ bool Particles::NrpicVariationalEval(const Real xp[3], const Real p_in[3],
             for (int ii = 0; ii < nsub; ++ii) {
               const int i = i0 + ii;
               if (i < is || i > ie) continue;
-              VarAccumPJac(mA,mB,blend,frac,wA,wB,mb,k,j,i,wsub,vx,vy,vz,
-                           lpx,lpy,lpz,lj00,lj01,lj02,lj11,lj12,lj22);
+              VarAccumCovVelForce(mA,mB,blend,frac,wA,wB,mb,k,j,i,wsub,px,py,pz,
+                                  need_force,ng,invh1,invh2,invh3,lvx,lvy,lvz,lfx,lfy,lfz,lw);
             }
           }
         }
       }
-    }, Kokkos::Sum<Real>(px), Kokkos::Sum<Real>(py), Kokkos::Sum<Real>(pz),
-       Kokkos::Sum<Real>(j00), Kokkos::Sum<Real>(j01), Kokkos::Sum<Real>(j02),
-       Kokkos::Sum<Real>(j11), Kokkos::Sum<Real>(j12), Kokkos::Sum<Real>(j22));
-
-    const Real J[3][3] = {{j00, j01, j02}, {j01, j11, j12}, {j02, j12, j22}};
-    Real Ji[3][3];
-    nrpic::Inv3Sym(J, Ji);
-    const Real r[3] = {p_in[0] - px, p_in[1] - py, p_in[2] - pz};
-    Real dv[3];
-    Real maxdv = 0.0;
-    for (int a = 0; a < 3; ++a) {
-      dv[a] = Ji[a][0]*r[0] + Ji[a][1]*r[1] + Ji[a][2]*r[2];
-      maxdv = std::max(maxdv, std::fabs(dv[a]));
-    }
-    const Real scale = (maxdv > 0.25) ? (0.25/maxdv) : 1.0;
-    for (int a = 0; a < 3; ++a) { v[a] += scale*dv[a]; }
-    if (maxdv < 1.0e-14) break;
+    }, Kokkos::Sum<Real>(cvx), Kokkos::Sum<Real>(cvy), Kokkos::Sum<Real>(cvz),
+       Kokkos::Sum<Real>(cfx), Kokkos::Sum<Real>(cfy), Kokkos::Sum<Real>(cfz),
+       Kokkos::Sum<Real>(cw));
+    v_cov[0] = cvx; v_cov[1] = cvy; v_cov[2] = cvz;
+    f_cov[0] = cfx; f_cov[1] = cfy; f_cov[2] = cfz;
+    w_cov = cw;
   }
 
-  v_out[0] = v[0]; v_out[1] = v[1]; v_out[2] = v[2];
-  if (!need_force && w_out == nullptr) return true;
-
-  const Real vx = v[0], vy = v[1], vz = v[2];
-  Real fx = 0.0, fy = 0.0, fz = 0.0, wavg = 0.0;
-  Kokkos::parallel_reduce("nrpic_var_force", Kokkos::RangePolicy<DevExeSpace>(0, ntot),
-  KOKKOS_LAMBDA(const int idx, Real &lfx, Real &lfy, Real &lfz, Real &lw) {
-    const int ix = idx % ns;
-    const int iy = (idx / ns) % ns;
-    const int iz = idx / (ns * ns);
-    const Real wt = st.wx[ix]*st.wy[iy]*st.wz[iz]*dx3;
-    if (wt <= 0.0) return;
-    const Real xf = nrpic::WrapCoord(st.x0[0] + ix*st.dx, dmin[0], dlen[0], per[0]);
-    const Real yf = nrpic::WrapCoord(st.x0[1] + iy*st.dx, dmin[1], dlen[1], per[1]);
-    const Real zf = nrpic::WrapCoord(st.x0[2] + iz*st.dx, dmin[2], dlen[2], per[2]);
-    int mb = -1;
-    for (int q = 0; q < st.nnbr; ++q) {
-      const int c = st.nbr[q];
-      if (xf >= sz(c).x1min && xf < sz(c).x1max &&
-          yf >= sz(c).x2min && yf < sz(c).x2max &&
-          zf >= sz(c).x3min && zf < sz(c).x3max) {
-        mb = c;
-        break;
-      }
-    }
-    if (mb < 0) mb = nrpic::FindBlock(sz, nmb, st.mo, xf, yf, zf);
-    if (mb < 0) return;
-
-    const Real invh1 = 1.0/sz(mb).dx1, invh2 = 1.0/sz(mb).dx2, invh3 = 1.0/sz(mb).dx3;
-    const int kd = lev(mb) - st.lev0;
-    if (kd <= 0) {
-      int i = is + static_cast<int>(floor((xf - sz(mb).x1min)/sz(mb).dx1));
-      int j = js + static_cast<int>(floor((yf - sz(mb).x2min)/sz(mb).dx2));
-      int k = ks + static_cast<int>(floor((zf - sz(mb).x3min)/sz(mb).dx3));
-      i = (i < is) ? is : ((i > ie) ? ie : i);
-      j = (j < js) ? js : ((j > je) ? je : j);
-      k = (k < ks) ? ks : ((k > ke) ? ke : k);
-      VarAccumForce(mA,mB,blend,frac,wA,wB,mb,k,j,i,wt,vx,vy,vz,
-                    need_force,ng,invh1,invh2,invh3,lfx,lfy,lfz,lw);
-    } else {
-      const int nsub = 1 << kd;
-      const Real wsub = wt/static_cast<Real>(nsub*nsub*nsub);
-      const int i0 = is + static_cast<int>(
-          floor((xf - 0.5*st.dx - sz(mb).x1min)/sz(mb).dx1 + 0.5));
-      const int j0 = js + static_cast<int>(
-          floor((yf - 0.5*st.dx - sz(mb).x2min)/sz(mb).dx2 + 0.5));
-      const int k0 = ks + static_cast<int>(
-          floor((zf - 0.5*st.dx - sz(mb).x3min)/sz(mb).dx3 + 0.5));
-      for (int kk = 0; kk < nsub; ++kk) {
-        const int k = k0 + kk;
-        if (k < ks || k > ke) continue;
-        for (int jj = 0; jj < nsub; ++jj) {
-          const int j = j0 + jj;
-          if (j < js || j > je) continue;
-          for (int ii = 0; ii < nsub; ++ii) {
-            const int i = i0 + ii;
-            if (i < is || i > ie) continue;
-            VarAccumForce(mA,mB,blend,frac,wA,wB,mb,k,j,i,wsub,vx,vy,vz,
-                          need_force,ng,invh1,invh2,invh3,lfx,lfy,lfz,lw);
-          }
-        }
-      }
-    }
-  }, Kokkos::Sum<Real>(fx), Kokkos::Sum<Real>(fy), Kokkos::Sum<Real>(fz),
-     Kokkos::Sum<Real>(wavg));
-
-  f_out[0] = fx; f_out[1] = fy; f_out[2] = fz;
-  if (w_out != nullptr) { *w_out = wavg; }
+  for (int a = 0; a < 3; ++a) {
+    v_out[a] = lam*v_var[a] + (1.0 - lam)*v_cov[a];
+    f_out[a] = lam*f_var[a] + (1.0 - lam)*f_cov[a];
+  }
+  if (w_out != nullptr) { *w_out = lam*w_var + (1.0 - lam)*w_cov; }
   return true;
 }
 
@@ -1340,14 +1569,18 @@ void Particles::NrpicVariationalDepositSources() {
     if (mp <= 0.0) continue;
     const Real xp[3] = {rh(IPX, p), rh(IPY, p), rh(IPZ, p)};
     const Real up[3] = {rh(IPVX, p), rh(IPVY, p), rh(IPVZ, p)};
-    Real vp[3] = {0.0, 0.0, 0.0}, f_dum[3] = {0.0, 0.0, 0.0};
-    if (!NrpicVariationalEval(xp, up, met1, met1, 1.0, vp, f_dum, false)) continue;
     VarStencil st;
     if (!BuildVarStencil(pmy_pack, nropt, xp, st)) continue;
+    const Real lam = VarHorizonBlend(pmy_pack, st, xp, met1, met1, 1.0);
+    Real vp[3] = {0.0, 0.0, 0.0}, f_dum[3] = {0.0, 0.0, 0.0};
+    if (lam > 0.0) {
+      if (!NrpicVariationalEval(xp, up, met1, met1, 1.0, vp, f_dum, false)) continue;
+    }
     const int ns = st.ns;
     const int ntot = ns*ns*ns;
     const Real dx3 = st.dx*st.dx*st.dx;
     const Real vx = vp[0], vy = vp[1], vz = vp[2];
+    const Real px = up[0], py = up[1], pz = up[2];
 
     Real pe = 0.0, psx = 0.0, psy = 0.0, psz = 0.0;
     Kokkos::parallel_reduce("nrpic_var_dep", Kokkos::RangePolicy<DevExeSpace>(0, ntot),
@@ -1382,7 +1615,7 @@ void Particles::NrpicVariationalDepositSources() {
         i = (i < is) ? is : ((i > ie) ? ie : i);
         j = (j < js) ? js : ((j > je) ? je : j);
         k = (k < ks) ? ks : ((k > ke) ? ke : k);
-        VarDepositCell(tm,m1,mb,k,j,i,vol,wt,mp,vx,vy,vz,le,lsx,lsy,lsz);
+        VarDepositCell(tm,m1,mb,k,j,i,vol,wt,mp,lam,vx,vy,vz,px,py,pz,le,lsx,lsy,lsz);
       } else {
         const int nsub = 1 << kd;
         const Real wsub = wt/static_cast<Real>(nsub*nsub*nsub);
@@ -1401,7 +1634,7 @@ void Particles::NrpicVariationalDepositSources() {
             for (int ii = 0; ii < nsub; ++ii) {
               const int i = i0 + ii;
               if (i < is || i > ie) continue;
-              VarDepositCell(tm,m1,mb,k,j,i,vol,wsub,mp,vx,vy,vz,le,lsx,lsy,lsz);
+              VarDepositCell(tm,m1,mb,k,j,i,vol,wsub,mp,lam,vx,vy,vz,px,py,pz,le,lsx,lsy,lsz);
             }
           }
         }
