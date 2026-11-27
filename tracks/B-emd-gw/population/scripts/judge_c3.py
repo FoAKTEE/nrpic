@@ -111,7 +111,7 @@ def main():
         a = scale(h[:, 0])
         ax.loglog(a, h[:, COL["Hr_mean"]], color=c, ls=ls, lw=1.0, label=lab)
     ax.set_xlabel(r"scale factor $a$")
-    ax.set_ylabel(r"mean relative Hamiltonian constraint")
+    ax.set_ylabel(r"$\langle |H| \rangle$ relative")
     ax.set_title("(a) zero shift, $\\sigma_1 = 0.014$", fontsize=7)
     ax.legend(fontsize=5.5, loc="lower right", frameon=False)
     ax = axs[1]
@@ -127,7 +127,11 @@ def main():
     ax.semilogx(ab, interp(hb, "Mr_mean", ab)/interp(hm, "Mr_mean", ab), color="0.3", lw=0.9, ls="--",
                 label=r"$M$: $128^3$ over $256^3$, 1 per cell")
     ax.set_xlabel(r"scale factor $a$")
-    ax.set_ylabel("ratio of mean constraints, coarse over fine")
+    ax.set_ylabel("coarse over fine")
+    from matplotlib.ticker import NullFormatter
+    ax.set_xticks([25, 50, 100])
+    ax.set_xticklabels(["25", "50", "100"])
+    ax.xaxis.set_minor_formatter(NullFormatter())
     ax.set_title("(b) grey band: C3a predicted; dotted: refutation", fontsize=7)
     ax.legend(fontsize=5.5, loc="upper right", frameon=False)
     fs.save(fig, os.path.join(od, "c3_mesh_pair"))
