@@ -45,8 +45,21 @@ COLS = ["cycle", "t", "found", "reason", "iters", "area", "mass", "rmean", "rmin
 
 
 def status(n):
-    a = nr.read_table(os.path.join(RUN_A2, f"hills.horizon_status_{n}.txt"))
-    a = nr.keep_last_per_time(a, col=1)
+    """Status rows end with '# <reason in words>' (FastFlow::Write); the words are cut off here
+    (nrread.read_table would skip every such row)."""
+    rows = []
+    with open(os.path.join(RUN_A2, f"hills.horizon_status_{n}.txt")) as f:
+        for line in f:
+            s = line.split("#", 1)[0].strip()
+            if not s:
+                continue
+            try:
+                r = [float(v) for v in s.split()]
+            except ValueError:
+                continue
+            if len(r) == len(COLS):
+                rows.append(r)
+    a = nr.keep_last_per_time(np.array(rows), col=1)
     return {c: a[:, i] for i, c in enumerate(COLS[:a.shape[1]])}
 
 
