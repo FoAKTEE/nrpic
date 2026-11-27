@@ -52,6 +52,9 @@ Committed copy: the file of the helper package that the run output should equal 
 | B-20261126-212502-e9e4f4e | leg_histories.json | sha256 ok | - | - |
 | B-20261126-212541-b647c59 | compare_legs.json | sha256 ok | - | - |
 | B-20261126-212604-a508e94 | judge_s028gd.json | sha256 ok | - | - |
+| B-20261126-230056-294b265 | series7.json | sha256 ok | - | - |
+| B-20261127-232236-7ab7aa2 | compare_legs.json | sha256 ok | - | - |
+| B-20261127-232628-1361e3b | c3.json | sha256 ok | - | - |
 | B-emd-gw-20261115-113102-bc5e082 | check_item3.json | sha256 ok | scope/results/check_item3.json | yes |
 | B-emd-gw-20261115-113148-4e5c33b | crossed_waves_tt.json | sha256 ok | scope/results/crossed_waves_tt.json | yes |
 | B-emd-gw-20261115-113632-2960145 | regime_estimates.json | sha256 ok | scope/results/regime_estimates.json | yes |

@@ -503,3 +503,15 @@ byte for byte except where a script reads no new run (none changes: no figure sc
 `tables/ledger.tex` gains Table VIII and its old tables are unchanged; the ledger values equal the
 numbers written in population/JOURNAL 2026-11-27 15:24 and 15:28 and shear/JOURNAL 2026-11-26 15:02.
 Refuted by a nonzero exit, a changed old PNG or table row, or a value that differs from the journals.
+
+## 2026-11-27 15:37 PST (lead of batch 34): note v4 outcome
+
+Registered run B-20261127-232833-5891f77 (`run_all.py`): every script exit 0; all fourteen PNGs equal
+the committed ones byte for byte; `tables/ledger.tex` equal except the new Table VIII (printed as
+Table IX: the parameter table is Table I), whose values match the journals (GM2 0.0109, 0.0277,
+0.851, 0.805; GM3 4 of 5 catalogues, 0.484-1 counts, 0.987-1.32 masses; C3 1.32, 2.34, 1.64 and
+1.71-2.16; series 7 0.401 and -1.38e-5); `tables/checked.md` gained its new rows. Prediction HOLDS.
+Outputs copied into tables/. check_manuscript.py --compile: 0 undefined references, 0 undefined
+citations, 0 overfull boxes; candidates are earlier sections' (scenario amplitudes as decimals,
+three contrastive negations of batches 17-21, run ids in the ledger, the dictionary's 'run' false
+positive) plus one 7.6 false positive ('fixed sampling'). Pages 1, 15 and 26 read (26 pages).
