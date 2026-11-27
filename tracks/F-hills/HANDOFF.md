@@ -18,7 +18,9 @@ session with `cd /data/haiyangw/nrpic/wt/F-hills && git merge --no-edit main`, t
    `finish_B2C2.log`) hash about 724 + 150 + 322 GB and commit each manifest at the end. If a
    manifest still says `submitted` (`python3 -c "import json;print(json.load(open('tracks/F-hills/runs/<id>/manifest.json'))['status'])"`)
    and no `nrpic-run finish` process is alive (`ps -u $USER -o pid,args | grep "nrpic-run finish"`),
-   rerun: `harness/bin/nrpic-run finish F-20261124-210400-902c650 --status stopped`,
+   rerun (B2 closed at 15:56 PST: completed, 105 files, 3.525 card-hours, commit 2d093aaf9; A2 and
+   C2 were still hashing at 16:00 PST, expected to end near 16:45 and 16:35):
+   `harness/bin/nrpic-run finish F-20261124-210400-902c650 --status stopped`,
    `harness/bin/nrpic-run finish F-20261126-052133-10f9a5f`,
    `harness/bin/nrpic-run finish F-20261126-131751-89eaff8 --status stopped` (the cache makes a
    rerun cheap for files already hashed). Commit what they leave uncommitted.
