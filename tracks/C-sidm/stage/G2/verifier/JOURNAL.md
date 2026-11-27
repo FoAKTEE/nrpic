@@ -141,3 +141,41 @@ record) and the summed |dP| (column 25) below 1e-14 of it, for D2f1s1, D2f2s1, D
 D2f2s2, M16, D2eta1; the rest mass sum_m (column 4 of cc.nrpic.hst) is constant to the last
 bit before the first excision. Refuted by any momentum sum above 1e-13 of sum M H or a change
 of sum_m before excision.
+
+## 2026-11-27T09:25Z  outcomes of V1-V5 and X.7
+
+Runs: V1 C-20261127-090849-dcfc1ae; V2-V5 C-20261127-090942-697c4b3 (the earlier pass
+C-20261127-090908-0053e80 had panel (d) of the figure spoiled by M4s2's alpha_min of -2.7e8;
+same numbers); V4.c C-20261127-090913-97ee992; X.7 C-20261127-091307-f068e91. Unregistered
+development passes of the three readers ran between 09:00 and 09:08Z into scratch/C-sidm/tmp/
+verifier/ (after the predictions were committed); every number below is from the registered runs.
+Figures read: fig_v1_king_sequence.png, fig_v2_fates.png (both passes).
+
+- V1.a HELD: y_max = 0.3340322 (0.33403220 with 60 nodes and rtol 1e-9); tests T1 3.5e-12,
+  T2 2.7e-8.
+- V1.b HELD: E_b 0.035589, R/M 13.630, Z(0) 0.51191; y_zero 0.78452 (printed 0.784).
+- V1.c HELD: -3.00 and +2.98 per cent; E_b 2.49e-5 and 2.42e-5 below the maximum.
+- V2.a HELD: 252.311, 217.972, 252.413, 229.791 M (differences below 0.005 M).
+- V2.b HELD: no crossing to 600.0 M in N6b324, A16b324, N6b324e1, A324s1i, N6c (2401 rows each).
+- V2.c HELD: no horizon file in 20 output directories, no finder block in any deck.
+- V2.d HELD: bands [-0.0119, +0.0150], [-0.0171, +0.0107], N6b324e1 equal to N6b324 to 1.40e-5.
+- V2.e HELD: deck diffs only refined region 3 (plus output cadences in cycles) or shift_eta;
+  same sampler and seed (make_ic_seeds.py --seeds 1, differing only by --tag).
+- V2.f: written in VERIFIER.md section 2; added from the data: all particles are excised in
+  every collapsing threshold run, and the N = 1e5 fates near 600 M depend on the cut.
+- V3.a HELD: 295.785, 534.814 M, N6c none.
+- V3.b HELD: the reproducing column is H-norm2 = integral of H^2 dV (history.cpp:61), a squared
+  quantity: 7.68e-2, 7.86e-3, 7.90e-4 (factors 9.78, 9.95); mean |H| falls by 3.02 and 3.14.
+- V3.c HELD as a judgement, sharpened by X.6: finite-N origin shown, mechanism not.
+- V4.a HELD: 163.407, 158.424, 164.012, 165.645, 164.013 (f1), 165.967 (f4); M/4 seeds 206.556
+  and 206.728 (mean 206.642).
+- V4.b FAILED as written: D2f2s1 over 0-100 M gives 1.00016, not 1.0008 +- 0.0005; 1.0008 is
+  D2f2s1 over (0, t_c] (1.00080). |z| < 3 for every member: FAILED for D2f4s1 (-3.34) and
+  D2eta1 (-3.83) over (0, t_c]; held over 0-100 M (largest |z| 1.68).
+- V4.c HELD: my rate at t = 0 equals the code's first-step sum_P to 1.1e-4 (D2f2s1), within
+  0.8 per cent for all five (2 per cent bar).
+- V4.d HELD: 2.84e-16 to 3.17e-16 (M/8, M/16, eta1).
+- V4.e HELD: seed pair 2.238 M > 2 M.
+- V5.a HELD: 13.61 per cent; the claim G2 can make is in VERIFIER.md section 5.
+- X.7 HELD: sum dP_i at most 3.9e-19 of sum M H, sum |dP| 1.08e-16 to 1.26e-16, rest mass span
+  0 before the first excision, in all six members.
