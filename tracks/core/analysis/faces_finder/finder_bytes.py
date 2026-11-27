@@ -58,19 +58,21 @@ def main():
             jobs.append((name, tag, exe, deck(name), args))
     jobs.append(("by_horizon_coarse_opts", "new", a.new,
                  deck("by_horizon_coarse", "\nstart_scan_0 = 12\ntrapped_tol_0 = 0.2"), []))
-    procs = []
-    for name, tag, exe, txt, args in jobs:
-        d = os.path.join(out, name, tag)
-        os.makedirs(d, exist_ok=True)
-        with open(os.path.join(d, "in.athinput"), "w") as f:
-            f.write(txt)
-        log = open(os.path.join(d, "athena.log"), "w")
-        procs.append((name, tag, subprocess.Popen([exe, "-i", "in.athinput"] + args, cwd=d,
-                                                  stdout=log, stderr=subprocess.STDOUT), log))
     res = {}
-    for name, tag, p, log in procs:
-        res.setdefault(name, {})[tag] = {"status": p.wait()}
-        log.close()
+    for i in range(0, len(jobs), 2):          # two processes at a time
+        procs = []
+        for name, tag, exe, txt, args in jobs[i:i+2]:
+            d = os.path.join(out, name, tag)
+            os.makedirs(d, exist_ok=True)
+            with open(os.path.join(d, "in.athinput"), "w") as f:
+                f.write(txt)
+            log = open(os.path.join(d, "athena.log"), "w")
+            procs.append((name, tag, subprocess.Popen([exe, "-i", "in.athinput"] + args,
+                                                      cwd=d, stdout=log,
+                                                      stderr=subprocess.STDOUT), log))
+        for name, tag, p, log in procs:
+            res.setdefault(name, {})[tag] = {"status": p.wait()}
+            log.close()
     ok = True
     for name in ("by_horizon_coarse", "finder_polish"):
         fb, fn = files(os.path.join(out, name, "base")), files(os.path.join(out, name, "new"))
