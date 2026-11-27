@@ -1,0 +1,12 @@
+{
+ "name": "32 (2026-11-27 night)",
+ "what": "Track C: its last two G2 runs judged and the package assembled",
+ "note": "Release core-v0.8 is on main. Rulings: coord/DECISIONS/0039 to 0047. After git merge main: nrpic-run finish closes runs continued in place; finish and verify keep a checksum cache. The week's usage is nearly spent: keep to the time given, read what the task needs. Close a finished run before you analyse it; every number with its run id; prediction before every new run; figures made by registered scripts and looked at; at most 6 cores.",
+ "items": [
+  {
+   "type": "lead",
+   "owner": "C-sidm",
+   "extra": "Extra for this session (about an hour). The last two runs of your G2 have ended: queue entries q0057 A16b324 (the stable member of the bracket on the mesh M/16) and q0058 N6b324e1 (the stable member with shift_eta 1.0). (1) Close both and judge them against their predictions (B20.x) with registered analyses (nseries.py) and figures you look at; every collapse time is the lapse marker, stated as such. Items C7 and C9: does the bracket at a million particles keep its fates on both meshes and in both gauges? (2) Assemble the G2 package: the G2 sections of the note, the schematics on the release, the rerun list; every item of the checklist either passes, or is a failure on record with its ruling, or names what it waits for. nrpic-stage collect, verify and report. List G2 in gates_complete if what remains open is only failures on record and the fresh verifier; in that case start `harness/bin/nrpic-stage verify C-sidm G2 --full` detached in the background for the gate review (log under scratch/C-sidm/tmp/; do not wait for it) and say what the verifier should recompute first (stage/G2/OPEN.md)."
+  }
+ ]
+}
