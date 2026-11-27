@@ -1109,3 +1109,21 @@ against 2.58e-4 for the 128^3 data's outer 0). At that rate the 36 outer iterati
 the particles): the wall-time expectation is REFUTED; the cost of the solve does not follow the
 particle number [arithmetic on the log times, the cause not named]. The card member is queued by
 the next session once the data are checked (HANDOFF has the line).
+
+## 2026-11-27 15:25 PST (lead of batch 34): C3 step 1 checked; the card member queued
+
+The 64^3 initial data B-20261126-222552-2e44186 ended (run.log `# exit=0 end=2026-11-26T23:26:56Z`,
+"L=8 done in 3664 s") and is closed (`nrpic-run finish`). Against the expectation of the 14:25
+entry, from `gr_L8_n64/meta.json` beside the 128^3 data's B-20261124-135029-3fe13f6
+`gr_L8_n128/meta.json`: [VERIFIED by these files]
+- mesh_modes_kept 146 and 146; sigma1_realized 0.012343020531983814 and 0.012343020531983813
+  (equal to 1e-16): one realization. HOLDS.
+- max_hamiltonian_residual 1.17e-12 (128^3: 2.13e-11), below 1e-10. HOLDS. Momentum residual
+  6.693e-7 for both (the same modes).
+- N_particles 2097152 = 2^21, eight per cell. HOLDS.
+- Wall time 3664 s = 61 min: the 30-60 min expectation fails narrowly as written; the 14:36
+  extrapolation to 3 h from the first outer iteration is wrong too (the later outer iterations
+  were cheaper). Both stay on record.
+
+The pair is one realization; the card member is queued now (priority 2, core-v0.8 card build).
+Predictions C3a, C3b of the 14:25 entry stand as written; nothing is changed after seeing data.
