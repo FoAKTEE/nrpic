@@ -496,3 +496,25 @@ Wrong or defective, and what the track does:
 
 Not confirmed (running at the end of the session): GM2, GM3 (analysis B-20261126-212212-c54d979,
 registered, 5 workers).
+
+## Batch 34 (2026-11-27 15:21-15:45 PST, lead)
+
+No helper ran in batch 34; the lead closed the two processor runs batch 29 left running, ran the
+C3 card member, and rechecked batch 29's series-7 judgement from its outputs.
+
+- Series 7 (C1; runs B-20261126-222544-f3a5176 and judge B-20261126-230056-294b265, batch 29):
+  CONFIRMED from `series7.json` with a separate computation: differences 5.145e-5 and 2.062e-5,
+  ratio 0.4007, order 1.319, Richardson 0.0538344, finest minus extrapolated -1.38e-5; constraint
+  means Hr 3.62e-6, 2.73e-6, 2.55e-6 and Mr 2.33e-4, 1.66e-4, 1.64e-4 (journal values hold).
+  `series7.png` looked at: crossing at t = 8.8-9.0 in panel (c), after t_A = 4.12; the constraint
+  means climb three decades from t = 6-7 toward the crossing. Cosmetic: the Richardson marker of
+  panel (a) sits on the axis. Not confirmed by this lead: the crossing measure itself (smallest
+  neighbour spacing along y per column) was not recomputed from the snapshots; left to the verifier.
+- C3 step 1 (B-20261126-222552-2e44186): CONFIRMED against the 128^3 data's meta.json (146 modes,
+  sigma1 equal to 1e-16, H residual 1.2e-12); the step-1 wall time (61 min) is outside 30-60 min.
+- GM2/GM3 (B-20261127-232236-7ab7aa2) and C3 (B-20261127-232628-1361e3b): this session's own runs;
+  predictions were written before (population/JOURNAL 2026-11-25 18:50 and 2026-11-26 14:25);
+  outcomes in population/JOURNAL 2026-11-27 15:24 and 15:28; figures looked at. An independent
+  check needs the fresh verifier (C18); OPEN.md says what it should recompute first.
+- Note v4 (B-20261127-232833-5891f77): prediction for the rebuild held (PNGs byte-equal, one new
+  table); checker and compile clean apart from earlier sections' candidates.

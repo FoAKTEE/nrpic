@@ -71,7 +71,20 @@ under `scratch/B-emd-gw/<run id>/`). Judgements in the package journals named pe
 | B-20261126-212502-e9e4f4e | histories of seven legs: GM1 holds, GM4 refuted | analysis |
 | B-20261126-212541-b647c59 | M2 (counts hold, early masses fail), M3 (mixed), Q1 high-k part refuted | analysis |
 | B-20261126-212604-a508e94 | S2, S3 hold at the same stage | analysis |
-| B-20261126-212212-c54d979 | equal-mass analysis of the 256^3 Gamma-driver box (GM2, GM3); running at the end of batch 28 | analysis |
+| B-20261126-212212-c54d979 | equal-mass analysis of the 256^3 Gamma-driver box (GM2, GM3); killed with its session, closed failed; rerun as B-20261126-221911-a0531db | analysis |
+| B-20261126-221911-a0531db | equal-mass analysis of the 256^3 Gamma-driver box (rerun, background) | analysis |
+| B-20261126-222544-f3a5176 | shear series 7 (C1, 0046 2a): beta = 0.125, N_y = 64, 128, 256, release v0.8 processor build | simulation |
+| B-20261126-230056-294b265 | series 7 judged: N7a holds, N7b Delta part holds, constraint part fails, N7c holds | analysis |
+| B-20261126-222552-2e44186 | 64^3 relativistic initial data at eight per cell (C3 step 1): same 146 modes and sigma1 as the 128^3 data | initial data |
+| B-20261127-232236-7ab7aa2 | GM2 (band strain holds, Omega part fails as written), GM3 (fails in part) | analysis |
+| B-20261127-232258-37c6773 | q0070: 64^3 member at eight per cell to a = 143, 0.038 card-h | simulation (card) |
+| B-20261127-232604-21d85fb | C3 judged (first drawing: cut labels) | analysis |
+| B-20261127-232628-1361e3b | C3 judged, figure redrawn: C3b holds, C3a fails before a = 31, not refuted | analysis |
+| B-20261127-232833-5891f77 | note v4: figures, schematics, ledger with Table VIII | analysis |
+
+Figures looked at in batch 34: `pop_legs.png` (B-20261127-232236-7ab7aa2), `c3_mesh_pair.png`
+(B-20261127-232604-21d85fb and -232628-1361e3b), `series7.png` (B-20261126-230056-294b265), note pages
+1, 15, 26.
 
 Figures looked at in batch 28: `pop_leg_histories.png` (B-20261126-212502-e9e4f4e), `pop_legs.png`
 (B-20261126-212541-b647c59), `pop_s028gd.png` (B-20261126-212604-a508e94; overlapping tick labels).

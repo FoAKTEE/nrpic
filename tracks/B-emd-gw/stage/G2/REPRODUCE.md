@@ -49,6 +49,14 @@ repeat byte for byte; card runs with deposition do not, CLAUDE.md).
 | legs against the base, equal-mass halos (M2, M3, Q1 high-k) | `B-20261126-212541-b647c59` | b647c59 | local | `python3 tracks/B-emd-gw/population/scripts/compare_legs.py --base $S/B-20261124-131918-e71996f/analy... --halo-base ...` | - |
 | shifted 0.028 box at the same stage (S2, S3) | `B-20261126-212604-a508e94` | a508e94 | local | `python3 tracks/B-emd-gw/population/scripts/judge_s028gd.py $S/B-20261126-022403-82f6e69/analysis_gr_...` | - |
 | equal-mass analysis of the 256^3 Gamma-driver box (GM2, GM3; running at the end of batch 28) | `B-20261126-212212-c54d979` | c54d979 | local | `python3 tracks/B-emd-gw/population/scripts/analyze_gr.py --equal-mass --no-stop --no-figures --workers 5 ...` | - |
+| equal-mass analysis of the 256^3 Gamma-driver box (GM2, GM3), rerun | `B-20261126-221911-a0531db` | a0531db | local | `python3 tracks/B-emd-gw/population/scripts/analyze_gr.py --equal-mass --workers 4 --times 4,8,12,14,16,18,20,21 --halo-times 14,16,18,20,21 ...` | - |
+| shear series 7 (C1) | `B-20261126-222544-f3a5176` | f3a5176 | local | `inputs/series7.txt` with the release v0.8 processor build (manifest) | `.work/build_cpu_v08/src/athena` |
+| series 7 judged | `B-20261126-230056-294b265` | 294b265 | local | `python3 tracks/B-emd-gw/shear/scripts/series7_judge.py ...` | - |
+| 64^3 initial data at eight per cell (C3) | `B-20261126-222552-2e44186` | 2e44186 | local | `bash tracks/B-emd-gw/population/scripts/run_gr_ic.sh 64 8 --nc 3.2 --sigma1 0.014 --seed 1 --ppc 2 --outer 36` | - |
+| GM2, GM3 against the 128^3 gauge leg | `B-20261127-232236-7ab7aa2` | 7ab7aa2 | local | `python3 tracks/B-emd-gw/population/scripts/compare_legs.py --base $S/B-20261125-115558-2ab4161/analysis_gr_gd.json --halo-base $S/B-20261126-022407-87e8803/analysis_gr_gd.json --leg m256gd:$S/B-20261126-221911-a0531db/analysis_gr_m256gd.json` | - |
+| 64^3 member at eight per cell (q0070) | `B-20261127-232258-37c6773` | 37c6773 | chain | `pop_gr_run.athinput` with mesh 64^3, meshblock 32^3, the files of B-20261126-222552-2e44186 | `.work/build_gpu_v08/src/athena` |
+| C3 judged | `B-20261127-232628-1361e3b` | 1361e3b | local | `python3 tracks/B-emd-gw/population/scripts/judge_c3.py $S B-20261127-232258-37c6773 $NRPIC_RUN_DIR` | - |
+| note v4 | `B-20261127-232833-5891f77` | 5891f77 | local | `.venv/bin/python tracks/B-emd-gw/note/scripts/run_all.py` | - |
 
 `$S` = `/data/haiyangw/nrpic/scratch/B-emd-gw/`. Decks: `tracks/B-emd-gw/population/inputs/`,
 `tracks/B-emd-gw/flrw_conv/inputs/`, `tracks/B-emd-gw/shear/inputs/`; scripts: the `scripts/` directory of each
