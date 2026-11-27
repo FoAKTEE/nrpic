@@ -84,3 +84,24 @@ V5 Threshold location against collapse time.
   (M/8) at N = 1e5, G2 can claim a bracket (0.324, 0.344) around y_max, i.e. +-3 per cent,
   not a located threshold with an error bar from three-way convergence of a growth rate
   [JUDGEMENT].
+
+## 2026-11-27T09:16Z  predictions for the further checks (before extras.py runs)
+
+Written after the registered runs C-20261127-090849-dcfc1ae (V1), C-20261127-090942-697c4b3
+(V2-V5) and C-20261127-090913-97ee992 (V4.c), whose outcomes follow in the next entry, and
+before the checks below.
+- X.1 Block A controls at N = 1e5 (Table VI row 3): A344s1c (C-20261122-213602-729aeed)
+  crosses at 549.26 M and A324s1c (C-20261123-032324-938ecbd) at 599.99 M, to 0.01 M.
+- X.2 A.4 as written ("none of the controls collapses") is FAILED by three crossings before
+  600 M (0.334032 at 534.81 M, 0.344 at 549.26 M, 0.324 at 599.99 M). BA.3 as written ("each
+  crosses 0.3 before 600 M or contracts below -0.040 over 500-600 M; refuted if A324s1c's
+  500-600 M mean change lies in [-0.040, -0.005] without a crossing"): if A324s1c crosses at
+  599.99 M, BA.3 HOLDS by its own wording; I predict it holds, against the task text that
+  lists it as failed. Refuted (BA.3 failed) if A324s1c does not cross before 600 M and its
+  500-600 M mean lies in [-0.040, -0.005].
+- X.3 D2 control (D2ctl): alpha_c - alpha_c(0) over 280-300 M in [-0.010, +0.002] (the D2
+  prediction of 2026-11-21) and no crossing in 300 M.
+- X.4 NS.1: N6c's 20 M mean of alpha_c - alpha_c(0) around 400 M above -0.005 (it holds if
+  every block mean is above -0.0026, as the V2 run gave).
+- X.5 D2eta1: its chain ended with athena exit status 3 (guard) at t = 190.375 M after its
+  crossing at 164.01 M, before the planned 220 M; the collapse time is unaffected.
