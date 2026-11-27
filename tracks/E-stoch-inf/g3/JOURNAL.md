@@ -345,7 +345,7 @@ E-20261126-115943-32970f2 (`g3c.json`, `fig_g3c.png`); G3-R reading E-20261126-1
 Consequence: the zeta of a 128^3 member costs about 20 s of table plus the reading (about 1.5 min a member in all on
 one core of the loaded machine), against 1.5 core-hours before (R41): 256 members take about 6 core-hours. R41 closes.
 
-## entry-14 (2026-11-27 15:27 PST, lead of E, batch 34): two jobs were preempted; what is re-queued, predictions before it is queued
+## entry-14 (2026-11-27 15:24 PST, lead of E, batch 34): two jobs were preempted; what is re-queued, predictions before it is queued
 
 State found at the start of batch 34 (from the batch status files and Slurm logs, before any read of the dumps): G3B00-G3B05
 (q0053, q0054, q0061-q0064) ended with every member rc = 0 (14, 14, 22, 22, 22, 22 runs). G3B06 (q0065, job 5419) was CANCELLED
@@ -366,7 +366,7 @@ job reaches its 55-minute limit; C6-2 a level-2 run 1.1-1.7 times a baseline run
 the band is not moved); C6-3 G3P-2 for every member; C6-4 and A8 as written in entries 2, 4, 6. A job preempted again keeps its
 finished members; the rest are listed anew with the same seeds (SCOPE 4d: never skipped) and the preemption stays on record.
 
-## entry-15 (2026-11-27 15:45 PST, lead of E, batch 34): reading of the 71 complete pairs, predictions before any read
+## entry-15 (2026-11-27 15:27 PST, lead of E, batch 34): reading of the 71 complete pairs, predictions before any read
 
 What is read (nothing of these dumps has been read before this entry): every member of G3B00-G3B06 with `read_pilot.py --map
 table --msteps 4000 --save-fields` (the cleared table map of entry 12; the new flag only writes the zeta and R^NR fields as
