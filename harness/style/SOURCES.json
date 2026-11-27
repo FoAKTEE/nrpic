@@ -21,8 +21,8 @@
     "figstyle.py": {
       "from": "python/nrpic/figstyle.py",
       "how": "copied",
-      "source_sha256": "5d3b78ad8c2c02e428b675e3d7e35a32cbc8f053d1aeedd4fde66f27da55676e",
-      "sha256": "5d3b78ad8c2c02e428b675e3d7e35a32cbc8f053d1aeedd4fde66f27da55676e"
+      "source_sha256": "81d545d24238d3281b436cb151a5453c7965f0aa5bdf595bdcac400861b5a5e2",
+      "sha256": "81d545d24238d3281b436cb151a5453c7965f0aa5bdf595bdcac400861b5a5e2"
     }
   },
   "not_found": []

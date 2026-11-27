@@ -1,0 +1,12 @@
+{
+ "name": "30 (2026-11-26 afternoon: gate review)",
+ "what": "independent review of gate G2 of Track A",
+ "note": "Release core-v0.8 is on main. Rulings: coord/DECISIONS/0039 to 0046. Track A's G2 package carries failures on record by ruling: item C3 (the Hamiltonian constraint outside the horizon exceeds the bound of 0.1 written at G0 and does not fall with the mesh after t = 0.75; particle sampling excluded; cause unexplained; core has two deposit defects at level faces on its source list, and a retest follows their fix), test A2 (the relativistic first shell crossing of the triaxial run lags the Zel'dovich and Newtonian values by a factor of 1.65 to 1.9; the half-amplitude member met the band predicted for the one candidate named), and the horizon part of item C1 (ii) (in the periodic chain the finder accepts one surface that is not trapped and then fails to converge for 172 searches while tracked shells are trapped). Two fresh verifiers reported: stage/G2/VERIFIER-C18.md and stage/G2/VERIFIER.md. Judge whether the gate (a verified capability for this track's science: the formation threshold of black holes in a matter era, in the expanding ball and in periodic boxes) can be passed with those failures stated, and if so under which conditions for G3; do not reword a criterion. Say plainly if the answer is no, and what would change it. A full checksum pass of the stage check was started at 14:18 PST (log scratch/A-emd-pbh/tmp/stage-verify-full-verifier-20261126-141818.log, written at its end): read it if it has ended, else say that it is running and run the stage check with the cache.",
+ "items": [
+  {
+   "type": "gate",
+   "owner": "A-emd-pbh",
+   "gate": "G2"
+  }
+ ]
+}

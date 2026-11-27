@@ -423,6 +423,13 @@ void HistoryOutput::WriteOutputFile(Mesh *pm, ParameterInput *pin) {
         exit(EXIT_FAILURE);
       }
 
+      // A run continued from a restart file (main.cpp sets <job> restart_file) appends
+      // to the history of the earlier segments: no second header
+      if (!(data.header_written) && pin->DoesParameterExist("job", "restart_file")) {
+        std::fseek(pfile, 0, SEEK_END);
+        if (std::ftell(pfile) > 0) data.header_written = true;
+      }
+
       // Write header, if it has not been written already
       if (!(data.header_written)) {
         int iout = 1;

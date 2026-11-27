@@ -160,3 +160,12 @@ tracks/A-emd-pbh/outbox/20261126T023655Z__to-orch__a2x-probe-correction.md	2026-
 tracks/B-emd-gw/outbox/20261126T025649Z__to-all__gr-particle-mass-halos.md	2026-11-26T03:17:19Z	ruled on in coord/DECISIONS/0043
 tracks/D-bh-dress/outbox/20261126T060235Z__to-orch__g2-package-ready-for-verifier.md	2026-11-26T06:08:59Z	ruled on in coord/DECISIONS/0044
 tracks/F-hills/outbox/20261126T060707Z__to-orch__a2-cap-and-continuation.md	2026-11-26T06:08:59Z	ruled on in coord/DECISIONS/0044
+tracks/core/outbox/20261126T115635Z__to-orch__release-core-v08-ready.md	2026-11-26T13:17:54Z	ruled on in coord/DECISIONS/0045, coord/GATES.md
+tracks/E-stoch-inf/outbox/20261126T120853Z__to-orch__g3-baseline-queue-priority.md	2026-11-26T13:17:54Z	ruled on in coord/DECISIONS/0045, coord/GATES.md
+tracks/core/outbox/20261126T121628Z__to-orch__core-v07-card-checks-claude-row.md	2026-11-26T13:17:54Z	ruled on in coord/DECISIONS/0045, coord/GATES.md
+tracks/C-sidm/outbox/20261126T123350Z__to-orch__bracket-1e6-holds-legs-pending.md	2026-11-26T13:17:54Z	ruled on in coord/DECISIONS/0045, coord/GATES.md
+tracks/B-emd-gw/outbox/20261126T213945Z__to-orch__g2-fresh-verifier-c18.md	2026-11-26T22:18:02Z	ruled on in coord/DECISIONS/0046
+tracks/B-emd-gw/outbox/20261126T213945Z__to-orch__g2-rulings-l2-and-constraints.md	2026-11-26T22:18:02Z	ruled on in coord/DECISIONS/0046
+tracks/A-emd-pbh/outbox/20261126T215535Z__to-orch__g2-package-batch-28.md	2026-11-26T22:18:02Z	ruled on in coord/DECISIONS/0046
+tracks/A-emd-pbh/outbox/20261126T234921Z__to-orch__g2-after-batch-31.md	2026-11-26T23:57:22Z	read; decision 0047; the second review of G2 is limited to conditions (a) to (d)
+tracks/C-sidm/outbox/20261127T085351Z__to-orch__g2-package-ready-for-verifier.md	2026-11-27T08:55:16Z	read; the fresh verifier of C's G2 is sent

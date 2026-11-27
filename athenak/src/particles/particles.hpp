@@ -84,6 +84,8 @@ struct NrpicOptions {
                             // particle's own MeshBlock (31: no limit)
   Real alpha_exc;       // particles with interpolated lapse below this are removed
   Real ah_exc_factor;   // particles inside this fraction of a horizon radius are removed
+  Real ah_exc_max_growth = 4.0;  // ... while that radius is below this multiple of the
+                                 // starting radius of the search (<fastflow> initial_radius)
   int hist_dcycle;      // cycles between history records (0 = off)
   int traj_dcycle;      // cycles between trajectory records (0 = off)
   int cstat_dcycle;     // cycles between constraint-statistics records (0 = off)
@@ -299,6 +301,9 @@ class Particles {
   DvceArray5D<Real> met0s, met1s, met_work;        // sharpened metric (interp = bspline)
   int cons_valid = 0;
   Real cons_dt_prev = 0.0;
+  std::vector<double> cons_restart;             // densities read from a restart file
+  std::int64_t cons_restart_dims[4] = {0, 0, 0, 0};
+  double cons_restart_dt = 0.0;
   Real dt_probe_old = -1.0;    // previous step (third-order proper time of the probes)
 
   ParticlesPusher pusher;
@@ -379,6 +384,9 @@ class Particles {
   void NrpicDepositSources();
   void NrpicFilterPass(const Real w0, const Real w1);
   void NrpicWriteConservation(Real time, Real dt, bool header, bool write);
+  void NrpicConsWriteRestart(std::FILE *fp);    // conservation record across a restart
+  void NrpicConsReadRestart(std::FILE *fp);
+  void NrpicConsStartRestart();
   void NrpicCompensateLimited(const Real c, const Real c2, const Real lim);
   void NrpicUpdateTimeStep();
   void NrpicFilterSources();

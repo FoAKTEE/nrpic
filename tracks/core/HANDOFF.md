@@ -2,155 +2,100 @@
 
 Written for a reader with no memory of the last session. Rewritten at the end of every session.
 
-State (2026-11-25T12:30Z = 04:30 PST, batch 17, session core-lead-17): a round without
-AthenaK source change. **Nothing is half-done.** Release core-v0.7 is on main (tag on
-5f75e5b9, merge b399f946; executables `.work/build_{gpu,cpu}_v07`). Gate G2 of core is NOT
-met (`stage/G2/OPEN.md`, first section; CHECKLIST 13 PASS, 5 FAIL).
+State (2026-11-26 ~13:00Z = 05:00 PST, batch 27, session core-lead-27): a round without
+AthenaK source change. **Release core-v0.8 is final on `core/nrpic` and waits for the
+release clerk** (merge into main, tag on the source commit 01d4aeeb, release builds
+`.work/build_{cpu,gpu}_v08`, CLAUDE.md rows; request in outbox 20261126T115635Z).
+Gate G2 of core is NOT met (`stage/G2/OPEN.md`, first section; CHECKLIST 13 PASS, 5 FAIL).
 Owner: core, branch `core/nrpic`, worktree `/data/haiyangw/nrpic/wt/core`.
 
-## Done in this session (journal entry 2026-11-25T11:52Z, predictions and outcomes)
+## Done in this session (journals: `JOURNAL-restart-finder.md` entries 21-23, `JOURNAL.md`
+entries 2026-11-26T11:55Z to 12:15Z and the last one, `JOURNAL-step-limit.md` entry 17)
 
-1. **Queue marker out of every job** (decision 0037 item 4): `scripts/{gpu_run.sh,
-   gpu_batch.sh,submit_chain.sh,_athena_job.sh}` unset every `NRPIC_QUEUE_*` variable at
-   their top (submit_chain.sh also in its sbatch call); `verify/row4/continue_chain.sh`
-   tests its dispatch with `harness/bin/nrpic-queue check-dispatch`. Tests (no real job):
-   `scripts/tests/test_queue_marker.py --old <scripts before> --out DIR` (fake Slurm of
-   `harness/tests/rc_fixture.py`; control with the old scripts shows the leak) run
-   core-20261125-120211-08f4fb9, and `scripts/tests/test_submit_chain.py` run
-   core-20261125-120145-665b6a0, both TEST PASS, both **registered by hand** with
-   `tracks/core/tools/hand_run.py` (nrpic-run's local launcher refuses any command whose
-   script names sbatch or submit_chain.sh, fakes included). Told orch (outbox
-   20261125T121047Z).
-2. **Provenance of E's level-2 ablation executable** (decision 0038 item 3): the seven runs
-   used athena_gpu 468109496c82... (source 6ca93cbabfe6, built 2026-11-22), verified on the
-   copies in their own run directories. Record `tracks/core/EXE_PROVENANCE.md`; in the
-   published directory `scratch/core/exe/core_noise-level2/` a `PROVENANCE` file and hard
-   links `superseded/6ca93cba/`. E answered (outbox 20261125T120549Z), its request acked.
-3. **Release builds**: `.work/build_cpu_v07` against the candidate `athena_cpu`: 75 of 75
-   identical (core-20261125-115428-3670218, figure core-20261125-120456-07a671a);
-   `RELEASE-v0.7.md` section "Release builds against the candidate". The release card
-   build has no check (CUDA; `card_v07.list` can run it later).
-4. **Row 4 level 3, two of six runs read** (q0028 run 597d9ca closed as stopped at
-   405.25 M, its chain cut at its segment cap; q0029 run dcc9ea1 completed to 600 M):
-   fates run core-20261125-120724-246d2a5; `verify/LADDER.md` row 4 has a "Level 3,
-   partial" table. 0.726875 member: no collapse by 300 M, collapse 338.25 M. 0.73625
-   control (STABLE by the rule): collapse 421.25 M. Bracket (0.7175, 0.73625) stands,
-   0.726875 pending inside it. `row4_fate.py` now accepts `y=<member>,` (control not run).
-5. `tracks/core/NEXT_SOURCE.md`: the list for the Fable source session (items 1-3:
-   outputs that survive a restart, W2 + restart defects a, b; finder stopping rule and
-   excision growth guard for D; figstyle without a creation date for E).
-6. Answers: C-sidm and F-hills (restart on SIGTERM is in core-v0.7; C's drift data),
-   outbox 20261125T121048Z; their requests acked.
+1. **q0049 judged; core-v0.8 final.** Card run core-20261126-070946-7971fde (job 5364;
+   manifest merged from `core/restart-finder` and closed here), judged by
+   core-20261126-114747-a6f2385 (the first pass -114526-2b1f001 failed on the reader:
+   tables of 5 and 7 columns compared by shape; fixed in `card_check.py`). K1, K2, K4, K5
+   held; K3 held for the polished and tight finder rules (card = processors within
+   3.3e-16) and FAILED for `mass_tol` 1e-5 without polishing (8.8e-6, two accepts of
+   sixteen differ). Verdict [JUDGEMENT]: PASS for what the release changes; the failure
+   concerns the unchanged rule of core-v0.7 and is a warning in the interface text.
+   Cost per finder search on a card: 0.33 s for 100 polishing iterations.
+   `RELEASE-v0.8.md`, `CHANGELOG.md` (section core-v0.8 with card check and "not done"),
+   `interfaces/restart_outputs.md` and `finder_stop.md` (headers say "ready to be copied"),
+   `stage/G2/OPEN.md` (new top section; restart defects a, b closed on one rank).
+2. **Executables published** in the new directory `scratch/core/exe/core_nrpic_v08/`
+   (COMMIT, SHA256SUMS, READY with recommended values): athena_cpu (b23 serial build),
+   athena_cpu_mpi (built this session, `.work/build_cpu_mpi_v08rc`), athena_cpu_omp and
+   athena_gpu (copies of `core_restart-finder`, same tree). MPI smoke test
+   core-20261126-115451-893a30e: M1, M2 held (one rank = serial byte for byte; two
+   ranks = one rank, 0.0).
+3. **core-v0.7 card checks**: K7 CARD PASS (q0039 run core-20261126-045719-019b478; analyses
+   -115658-8af7dd7, -115708-140bafa, -115725-9a8d381); step-limit q0036 (run
+   -080805-3a9a349, analysis -121103-1070457): P4a, P4c held, P4b held in its test and
+   failed in its time; level-2 R5 q0035 (run -040704-5c98bee, analysis -115933-9fb0e47):
+   outcome in the last entry of `JOURNAL.md` and `JOURNAL-noise-level2.md` entry 18.
+   `RELEASE-v0.7.md` has a section "Card checks (judged 2026-11-26)".
+4. **Row 4**: q0032 closed (core-20261126-021633-50968b9, 0.6403 card-hours); fates run
+   core-20261126-121143-aaae1b7: bracket (0.7175, 0.726875) unchanged; 0.755 control no
+   collapse by 600 M, drift 0.9640 -> 0.9345 -> 0.8022 (50-M means at 250-300, 400-450,
+   550-600 M); P13 holds for the control. `verify/LADDER.md` row 4 "third reading".
+5. **Messages**: orch (release v0.8 ready, CLAUDE.md row words and Machine sentence; and
+   the v0.7 row words, outbox of this session), D (executable and values for the guard
+   test and polishing), F (executable and values for polishing; moving-puncture polishing
+   untested).
 
-## RULE (new): a published executable is never replaced in place
-
-Every publication under `scratch/core/exe/` gets a directory name of its own (for example
-`core_<branch>_<source commit 8>/`). A later build goes to a new directory; the old name
-may get a `PROVENANCE` file pointing to the new one, never new binaries. Reason: run
-manifests name the path and its sha256 (E's G2 run check failed on seven runs because
-`core_noise-level2/athena_gpu` was rebuilt in place on 2026-11-24). Details
-`tracks/core/EXE_PROVENANCE.md`.
-
-## Pending in the shared queue (none waited for; all "waiting" at 12:10Z)
+## Pending in the shared queue (none waited for)
 
 | Queue id | Label | What | How to judge |
 |---|---|---|---|
-| q0039 | core-v07-card | card check K7 of the merged card executable (22 cases) | below |
-| q0035 | nl2-review-R5 | card run of the reviewed level-2 build | its package, `verify/noise_level2_close/README.md` |
-| q0036 | step-limit-card | card smoke run of the step-limit build | its package, `analysis/step_limit/HANDOFF.md` |
-| q0030 | row4-l3-0p726875-control | 0.726875 control, 0-600 M | row 4 below |
-| q0031 | row4-l3-0p73625-member | 0.73625 member, 300-600 M (parent core-20261123-020458-dfc38d7) | row 4 below |
-| q0032 | row4-l3-0p755-control | 0.755 control, 300-600 M (parent -204237-ae00ca2) | row 4 below |
-| q0033 | row4-l3-0p755-member | 0.755 member, 300-600 M (parent -204232-f74c942) | row 4 below |
+| q0059 | row4-l3-0p755-member | job 5378, 0.755 member continued 300-600 M | below |
 
-q0039, when `harness/bin/nrpic-queue show q0039` names a run and its `batch.list.status`
-has 22 lines:
-
-    cd /data/haiyangw/nrpic/wt/core && git merge --no-edit main
-    S=/data/haiyangw/nrpic/scratch/core; K7=<run id of q0039>
-    harness/bin/nrpic-run finish $K7
-    harness/bin/nrpic-run submit --kind scouting --gate G2 --launcher local --cores 1 --purpose "card check K7 judged, new cases" -- python3 tracks/core/analysis/release/card_v07.py --card $S/$K7 --quick $S/core-20261125-023641-7a1c47d --out '$NRPIC_RUN_DIR'
-    harness/bin/nrpic-run submit --kind scouting --gate G2 --launcher local --cores 1 --purpose "card check K7 judged, six cases of core-v0.6" -- python3 tracks/core/analysis/release/card_v06.py --card $S/$K7 --quick $S/core-20261121-130813-710b3cc --r2 $S/core-20261121-131250-f8df905 --out '$NRPIC_RUN_DIR'
-    harness/bin/nrpic-run submit --kind scouting --gate G2 --launcher local --cores 1 --purpose "card check K7 judged, nine cases of core-v0.5" -- python3 tracks/core/analysis/release/card_v05.py --card $S/$K7 --cpu $S/core-20261121-065009-29b855c --out '$NRPIC_RUN_DIR'
-
-Each prints CARD PASS or CARD FAIL (prediction K7: journal entry 2026-11-25T02:12Z with its
-amendment of 03:01Z). Then look at the figures, write the outcome into the journal, replace
-"PENDING" in `RELEASE-v0.7.md` (third line and "Card checks pending"), in
-`scratch/core/exe/core_nrpic_v07/READY` and in `stage/G2/OPEN.md` (core-v0.7 item i), and
-send orch the sentence for the core-v0.7 row of CLAUDE.md (it now says "card check of the
-merged card build pending at tagging: shared-queue entry q0039"). Known: the normalized
-constraint columns of `*.cstat.hst` and `sr.sf.con.hst` differ between card and processors.
-
-Row 4 level 3, when q0030-q0033 have run (`nrpic-queue show q00NN` gives the run ids;
-`scripts/submit_chain.sh --status $S/<run>`; a chain cut at its cap after preemptions is
-only cut: continue it with `nrpic-queue add --label <l> --priority 2 --cmd
-'tracks/core/verify/row4/continue_chain.sh <run_id> <max_segments>'` after `DRY=1` of the
-same line; `nrpic-run finish` hashes 17-35 GB per run: run it in the background):
+When q0059 has run (`nrpic-run finish` hashes about 17 GB: start it in the background):
 
     S=/data/haiyangw/nrpic/scratch/core
-    harness/bin/nrpic-run submit --kind scouting --gate G2 --launcher local --cores 1 \
-      --purpose "row 4 M/8 level 3: fates by the rule (JOURNAL 2026-11-21T20:26Z); P10-P15 (JOURNAL 2026-11-24T13:05Z)" -- \
-      python3 tracks/core/verify/row4/row4_fate.py --out '$NRPIC_RUN_DIR' \
-      0.605=$S/core-20261121-204230-3bcb118,$S/core-20261121-204235-0b25077 \
-      0.680=$S/core-20261121-204234-d010783,$S/core-20261121-204239-2be5ac2 \
-      0.69875=$S/core-20261123-020454-8fec6b2,$S/core-20261123-020456-884f550 \
-      0.7175=$S/core-20261123-020450-7e42037,$S/core-20261123-020452-e635a8e \
-      0.726875=$S/core-20261124-130310-597d9ca,$S/<run of q0030> \
-      0.73625=$S/core-20261123-020458-dfc38d7+$S/<run of q0031>,$S/core-20261123-020500-9b192cd+$S/core-20261125-080049-dcc9ea1 \
-      0.755=$S/core-20261121-204232-f74c942+$S/<run of q0033>,$S/core-20261121-204237-ae00ca2+$S/<run of q0032>
+    harness/bin/nrpic-run submit --kind scouting --gate G2 --launcher local --cores 1 --purpose "row 4 M/8 level 3 complete: fates, P13" -- python3 tracks/core/verify/row4/row4_fate.py --out '$NRPIC_RUN_DIR' 0.605=$S/core-20261121-204230-3bcb118,$S/core-20261121-204235-0b25077 0.680=$S/core-20261121-204234-d010783,$S/core-20261121-204239-2be5ac2 0.69875=$S/core-20261123-020454-8fec6b2,$S/core-20261123-020456-884f550 0.7175=$S/core-20261123-020450-7e42037,$S/core-20261123-020452-e635a8e 0.726875=$S/core-20261124-130310-597d9ca,$S/core-20261125-180320-3dad12c 0.73625=$S/core-20261123-020458-dfc38d7+$S/core-20261125-225600-d2db1ed,$S/core-20261123-020500-9b192cd+$S/core-20261125-080049-dcc9ea1 0.755=$S/core-20261121-204232-f74c942+$S/<run of q0059>,$S/core-20261121-204237-ae00ca2+$S/core-20261126-021633-50968b9
 
-Then P10-P13 in full (journal), the "Level 3" table of `verify/LADDER.md`, the note
-(`note/scripts/fig_row4_m8.py` PAIRS with continuations as "first+continuation", initial
-data of 0.726875 from core-20261124-130236-68d4ee5; `note/scripts/ledger.py`; rerun the note
-as `note/README.md` says; section III D of `note/main.tex`; compile, checker, read pages).
-The note was NOT updated in batch 17 (it waits for the complete level 3).
+Then the member half of P13 (journal 2026-11-24, `JOURNAL.md` line ~1700), the LADDER table,
+the note (section III D of `note/main.tex`, `note/scripts/fig_row4_m8.py`, ledger, compile,
+checker, read pages).
 
 ## What G2 still lacks (plain statement)
 
-1. Ladder row 3: the oblate collapse has no released component (core/oblate, unmerged;
-   NEXT_SOURCE.md item 4); the prolate horizon-mass deficit (3 per cent) needs a third
-   resolution.
-2. Ladder row 4: a threshold that does not depend on the length of the runs. Level 3 so far:
-   a STABLE model of the 300-M rule collapses by 421 M; the drift is the open item (its N-
-   or cell-dependence; Track C sees the same in its King controls).
+1. Ladder row 3: the oblate collapse has no released component (core/oblate, unmerged).
+2. Ladder row 4: a threshold that does not depend on the window: every model to 0.73625
+   collapses by 421 M and 0.755 drifts to 0.80 of its equilibrium lapse by 600 M.
 3. Three-way convergence (C2) on one coupled set-up.
 4. Package items: reproducibility package (C6), REVIEW.md and SCOPE.md (C12).
 
 ## Files to read first
 
-`tracks/core/STATUS.md`; the last entry of `tracks/core/JOURNAL.md`;
-`tracks/core/NEXT_SOURCE.md`; `tracks/core/RELEASE-v0.7.md`; `verify/LADDER.md` row 4;
-`stage/G2/OPEN.md` (first section and core-v0.7).
+`STATUS.md`; the last entries of `JOURNAL.md`; `RELEASE-v0.8.md`; `NEXT_SOURCE.md` (items 0,
+0b, 1 for the next Fable source session); `verify/LADDER.md` row 4; `stage/G2/OPEN.md`.
 
 ## Open with other owners
 
-- orch: the RULES sentence on the marker after the merge of core/nrpic, and whether
-  fake-Slurm self-tests may be registered by the tool (outbox 20261125T121047Z); older:
-  20261125T030800Z (release clerk, done by orch), 20261121T233031Z, 20261121T204332Z.
-- Inbox of core still unanswered: items 1-10 (B round 1; F chain-stray-resubmission,
-  hnorm-transient-r8, hrna-pair-force-slicing, wave-extraction-lmax; D lapse-leak-growth-data,
-  newtonian-mode-edges, ah-excision-growth-guard; E a4res-claims-c1-c4; A
-  bh1r-inte-deficit-two-levels), 14 (D finder-stopping-rule), 15 (B newton-fft-threaded: a
-  processor test, NEXT_SOURCE "already served" list), 18 (E figstyle-reproducible-pdf).
-  NEXT_SOURCE.md places each one that a gate waits for.
-- Track C: core's row-4 drift data sent; C's N = 1e4 and 1e6 controls decide whether the
-  drift is the scheme.
+- orch: merge and tag core-v0.8 (outbox 20261126T115635Z); CLAUDE.md rows of v0.7 and v0.8;
+  older outbox 20261125T121047Z (marker RULES text), 20261125T030800Z.
+- D: their long card test of the guard (ES-FL to 240 M) with `ah_exc_max_growth`; outcome to
+  core's inbox.
+- A: inbox request `finder-false-accept-and-stall-p0l6` (2026-11-26 02:30Z) not read yet;
+  the card-check result (unpolished rule differs between builds) is likely relevant to it.
+- Inbox of core still unanswered (`harness/bin/nrpic-ctx inbox`): older items in the
+  batch-17 handoff; `NEXT_SOURCE.md` places those a gate waits for.
 
 ## Traps
 
-- nrpic-run's local launcher refuses a test whose script names sbatch, srun,
-  gpu_batch.sh or submit_chain.sh even when they are fakes: register such a test with
-  `python3 tracks/core/tools/hand_run.py --purpose "..." -- <command>` (clean worktree;
-  commit the manifest it writes) and say so in the journal.
-- `nrpic-run finish` hashes every output file (17-35 GB per row-4 run): background; it
-  commits by itself (path-limited).
-- Card runs: only `harness/bin/nrpic-queue add`; an entry waits while the worktree is not
-  clean: keep it committed.
+- Runs registered in a helper worktree (core-s2, s3, s4) have their manifests on that
+  branch: merge the registration commit into `core/nrpic` before `nrpic-run finish` here
+  (this session: 895e18ac, 4c17f531, 11a33507).
+- `nrpic-run submit` refuses a dirty worktree; `finish` commits by itself: do not commit
+  by hand while a background finish is about to end.
+- `card_review.py` reads Track E's dumps with small reads: about 20 minutes on this
+  filesystem.
+- nrpic-run's local launcher refuses a test whose script names sbatch, srun, gpu_batch.sh
+  or submit_chain.sh (fakes included): `tracks/core/tools/hand_run.py`.
 - A row-4 continuation needs the release card build of core-v0.6 (`athena_resume.sh`
-  checks its sha256); its chain script is the worktree's (now of core-v0.7, which does not
-  count preempted attempts).
-- `make_row4.py` names directories with y_c rounded to three digits (yc0p727 for 0.726875).
-- `nrpic-ctx post --type` accepts info, request, proposal, interface-change, blocker,
-  kb-request; use `--no-commit` and commit the outbox file yourself.
+  checks its sha256).
 - The clock: `date -u` (the shell's local time is PST). Temporary files of the lead:
-  `scratch/core/tmp/` (this session: `b17_*`).
+  `scratch/core/tmp/` (this session: `b27_*`).
