@@ -1189,3 +1189,41 @@ jobs; the estimate was 6.5).
   The stable side has M/8 at N = 1e5 and 1e6 only; q0057 (A16b324, B20.1) and q0058 (N6b324e1,
   B20.3 second half) decide it. Card-hours closed this session: 12.33 + 3.97 = 16.30.
 Failed predictions of this entry: none.
+
+## 2026-11-27T08:46Z  session C-sidm lead (batch 32)  outcomes B20.1 and B20.3 (stable member on M/16 and with shift_eta 1.0)
+
+Closed before the analysis (nrpic-run finish): A16b324 C-20261126-121449-1d37e77 (completed,
+6.3844 card-hours over 16 jobs; nine attempts cut by SIGTERM, not counted), N6b324e1
+C-20261126-130519-1a79a66 (completed, 2.6175 card-hours over 4 jobs). Both reached 600 M.
+- B20.1 HOLDS (nseries.py C-20261127-084538-8e98060, control N6b324; fig read): on M/16 the kicked
+  y0 = 0.324 model does not collapse by 600 M (smallest lapse 0.651 at its lowest; the lapse
+  marker 0.3 is never approached) and the 20 M block means of alpha_c - alpha_c(0) stay in
+  [-0.0171, +0.0107], inside +-0.03. Its pulsation is slower than on M/8 (the minimum of <W> at
+  about 470 M against 370 M on M/8; fig panel 3) [observation, cause not tested]. H-norm2 floor
+  over 100-300 M 5.03e-3 on M/16 against 7.88e-4 on M/8 at the same N (ratio 6.4, as for the
+  unstable member).
+- B20.3 second half HOLDS (nseries.py C-20261127-084417-79c0e4d, control N6b324; fig read): with
+  shift_eta 1.0 the model does not collapse by 600 M (smallest lapse 0.6562) and its central
+  lapse differs from the shift_eta 2.0 run by at most 1.4e-5 (20 M block means, 0-600 M), far
+  inside the 0.01 bar; the two curves lie on top of each other in every panel.
+- C7/C9: with B17.5, B17.6, B20.2, B20.3 (first half) and the N = 1e5 members, the bracket keeps
+  its fates at N = 1e6 on both meshes (M/8, M/16) and in both gauges (shift_eta 2.0, 1.0), and at
+  N = 1e5 on M/8: y0 = 0.344 collapses (lapse marker t_c 252.31 M on M/8, 217.97 M on M/16,
+  252.41 M with shift_eta 1.0, 229.79 M at N = 1e5), y0 = 0.324 holds 600 M in all four. The
+  threshold lies in (0.324, 0.344), which contains the turning point y_max = 0.334032: located to
+  +-3 per cent with three-way convergence of the fates. The collapse time of the unstable member
+  is not converged in the mesh (-13.6 per cent from M/8 to M/16); the gate criterion reads the
+  location, not the time [JUDGEMENT]. Every t_c is the alpha_min = 0.3 lapse marker; none of
+  these runs carried the horizon finder.
+Failed predictions of this entry: none.
+
+### Prediction before note run N5 (registered run_all.py with the G2 figures; note/JOURNAL.md)
+
+- N5.1 fig_g2_threshold prints the marker crossings of the analyses above to their digits:
+  295.78, 534.81 M, none (controls); 252.31, 217.97, 252.41 M (y0 = 0.344 members); none for the
+  y0 = 0.324 members. Refuted by any other value (then the figure reader differs from nseries.py).
+- N5.2 fig_g2_mosaic: the t = 220 M slab of the y0 = 0.344 member on M/16 has a central density
+  in the smallest window at least ten times that of the y0 = 0.324 member at the same time;
+  refuted if not (then the lapse marker would not be matched by matter concentration).
+- N5.3 every other figure and the ledger are byte-equal in their PNG/tex outputs to run
+  C-20261121-130335-d0cfe2e except schem_architecture and schem_timeline (changed by design).
