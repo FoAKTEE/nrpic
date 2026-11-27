@@ -1,4 +1,5 @@
-"""Schematic: architecture of the S3 calculation, state of gate G1 (note v1, 2026-11-21).
+"""Schematic: architecture of the S3 calculation, state of gate G2 (note v2, 2026-11-27; the
+runs of G2 used the core-v0.6 card build, the current release is core-v0.8).
 
 Three states per element. Exists: tested, in the released code or in the track's own
 reference and analysis code, each with a registered run. To be ported: exists and is tested
@@ -44,30 +45,30 @@ def main():
         ("thermal-core particle models, b = 0.1", EXISTS),
         ("code reads the tables and particle files", EXISTS),
         ("Knudsen number to cross-section, all models", EXISTS),
-        ("radial perturbation of a steady state", PORT),
-        ("models with a million particles", NEW),
+        ("radial perturbation of a steady state (kick)", EXISTS),
+        ("King models with a million particles", EXISTS),
         ("rotating cores", NEW),
     ])
-    column(ax, 10.3, "Evolution", "AthenaK: spacetime, particles, collisions", [
+    column(ax, 10.3, "Evolution", "AthenaK release core-v0.6 (runs of G2)", [
         ("Z4c with particles: deposit, push", EXISTS),
         ("excision, apparent-horizon finder", EXISTS),
-        ("Monte Carlo collisions, released operator", EXISTS),
-        ("box tests T0b-T11 of the released operator", EXISTS),
+        ("Monte Carlo collisions; box tests T0b-T11", EXISTS),
         ("pair energy at each particle's metric", EXISTS),
         ("static curved-metric test bed (T12)", EXISTS),
         ("heat conduction T6-T8, processors and card", EXISTS),
-        ("collisions on refined meshes", NEW),
+        ("collisions on a static refined mesh", EXISTS),
+        ("horizon finder in the cluster runs", NEW),
         ("ADM energy diagnostic", NEW),
     ])
     column(ax, 20.4, "Analysis", "references outside the code", [
-        ("rate, relaxation, conduction, entropy", EXISTS),
-        ("box analysis; isobaric conduction reference", EXISTS),
+        ("box references: rate, relaxation, conduction", EXISTS),
         ("exact radial-pulsation onset", EXISTS),
         ("J\u00fcttner fluid onsets, thermal core and King", EXISTS),
         ("cluster histories: lapse, collisions, budgets", EXISTS),
         ("collapse and crossing times", EXISTS),
         ("growth rate over a stated fitting interval", EXISTS),
-        ("threshold scan, three-way convergence", NEW),
+        ("King threshold bracket: N, mesh, gauge", EXISTS),
+        ("thresholds of the other two families", NEW),
         ("collapsed mass fraction at the horizon", NEW),
     ])
     for x0, x1 in ((9.6, 10.3), (19.7, 20.4)):

@@ -84,6 +84,19 @@ RUNS = {
     "cc_c": "C-20261115-171059-35441e3",             # cc2_kn10, cc2_kn1
     "ccon": "C-20261119-151944-08f3220",             # lead's review run: onset of contraction
     "ccrev": "C-20261119-151502-cb831a8",            # lead's review run: defect before collapse
+    # ---- gate G2 (note v2): collisionless threshold of the King b = 1 family (card runs,
+    # release core-v0.6 card build; JOURNAL 2026-11-24T13:14Z, 2026-11-25T16:02Z) ----
+    "g2_n4c": "C-20261125-132112-edf3fbc",           # control y0 0.334032, N 1e4, M/8
+    "g2_n5c": "C-20261121-214601-40dc927",           # control y0 0.334032, N 1e5, M/8 (A334s1c)
+    "g2_n6c": "C-20261124-221122-928c9eb",           # control y0 0.334032, N 1e6, M/8 (N6c)
+    "g2_b344": "C-20261125-224959-d1d4494",          # y0 0.344 kicked in, N 1e6, M/8
+    "g2_b324": "C-20261126-020831-fabf2d7",          # y0 0.324 kicked in, N 1e6, M/8
+    "g2_b344m16": "C-20261126-043714-8ea1c35",       # y0 0.344 kicked in, N 1e6, M/16
+    "g2_b324m16": "C-20261126-121449-1d37e77",       # y0 0.324 kicked in, N 1e6, M/16
+    "g2_b344e1": "C-20261126-050124-00e10ae",        # y0 0.344 kicked in, N 1e6, M/8, shift_eta 1
+    "g2_b324e1": "C-20261126-130519-1a79a66",        # y0 0.324 kicked in, N 1e6, M/8, shift_eta 1
+    "g2_b344n5": "C-20261122-220118-ab099ac",        # y0 0.344 kicked in, N 1e5, M/8 (A344s1i)
+    "g2_b324n5": "C-20261123-221955-a773578",        # y0 0.324 kicked in, N 1e5, M/8 (A324s1i)
 }
 
 # cluster runs: case name -> run key
