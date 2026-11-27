@@ -492,3 +492,14 @@ ledger Tables VI-VII and parameter rows, Sec. IV A, V A, V D, plan, summary, abs
 introduction; registered run B-20261120-223319-cc5320d; checker clean in the main text; pages
 read. Not done: reviewer subagents (existing draft edited in place); `nrpic-stage verify` (the
 lead's); any number of the pending legs.
+
+## 2026-11-27 15:31 PST (lead of batch 34): note v4, the G2 convergence paragraphs; prediction
+
+Section VI gets GM2/GM3 (B-20261127-232236-7ab7aa2), C3 at eight per cell (B-20261127-232628-1361e3b)
+and the shearing dust without stream crossing (B-20261126-230056-294b265); abstract, results (xii)-(xiii)
+and summary follow. Ledger: new Table VIII (`LEDGER_G2B`, run keys pop_legs34, pop_c3, shear_s7).
+Prediction for the registered run_all.py: every script exits 0; the PNGs equal the committed ones
+byte for byte except where a script reads no new run (none changes: no figure script was edited);
+`tables/ledger.tex` gains Table VIII and its old tables are unchanged; the ledger values equal the
+numbers written in population/JOURNAL 2026-11-27 15:24 and 15:28 and shear/JOURNAL 2026-11-26 15:02.
+Refuted by a nonzero exit, a changed old PNG or table row, or a value that differs from the journals.

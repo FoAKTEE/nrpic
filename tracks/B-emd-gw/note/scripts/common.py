@@ -96,6 +96,10 @@ RUNS = {
     "pop_hist28": "B-20261126-212502-e9e4f4e",     # fig_leg_histories.py with the 256^3 shifted leg: GM1, GM4
     "pop_legs28": "B-20261126-212541-b647c59",     # compare_legs.py, equal-mass halos: M2, M3, Q1 high-k
     "pop_s028gd": "B-20261126-212604-a508e94",     # judge_s028gd.py: S2, S3 at the same stage
+    # batch 34: the convergence statements of G2 (decision 0046 item 2)
+    "pop_legs34": "B-20261127-232236-7ab7aa2",     # compare_legs.py, 256^3 Gamma driver against 128^3: GM2, GM3
+    "pop_c3": "B-20261127-232628-1361e3b",         # judge_c3.py: 64^3 over 128^3 at eight per cell (C3a, C3b)
+    "shear_s7": "B-20261126-230056-294b265",       # series7_judge.py: shearing dust without stream crossing (N7a-c)
 }
 
 # the registered runs of this note package that produced the committed figures/ and tables/
