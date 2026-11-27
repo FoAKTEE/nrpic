@@ -1,65 +1,53 @@
 # HANDOFF of B-emd-gw
 
-Written for a reader with no memory of the last session (lead of batch 29, wave 3, 2026-11-26
-14:18-15:05 PST: decision 0046 item 2, the two cheap runs required before G2, and the GM
-analysis restarted). Rewritten at the end of every session.
+Written for a reader with no memory of the last session (lead of batch 34, wave 3, 2026-11-27
+15:21-15:50 PST: the two runs decision 0046 item 2 required, GM2/GM3, the G2 package).
+Rewritten at the end of every session.
 
-State in three lines: G0 and G1 are signed (coord/GATES.md); G2 is not met (stage/G2/OPEN.md,
-not changed this session: no stage package in batch 29). Two processor runs of B go on in the
-background; nothing of B is in the card queue (the C3 card member waits for its initial data).
-C1's run (shear series 7) ended and is judged: shear/JOURNAL 2026-11-26 15:02.
+State in three lines: G0 and G1 are signed (coord/GATES.md). The G2 package is complete for an
+independent review in the lead's judgement: every item but C18 (fresh verifier) is PASS or NA,
+with failures on record (stage/G2/OPEN.md). Nothing of B runs on cards; nothing is queued.
 Owner: B-emd-gw, branch `track/B-emd-gw`, worktree `/data/haiyangw/nrpic/wt/B-emd-gw`.
 Run next: `cd /data/haiyangw/nrpic/wt/B-emd-gw && git merge --no-edit main && harness/bin/nrpic-ctx inbox && git status --short && harness/bin/nrpic-run status | grep -E "submitted|running"`
 
-Files to read first: `STATUS.md`; `coord/DECISIONS/0046-rulings-after-batch-28.md` item 2;
-`shear/JOURNAL.md` entries 2026-11-26 14:25 (predictions N7a-c) and 14:29 (first member);
-`population/JOURNAL.md` entry 2026-11-26 14:25 (C3 predictions); `stage/G2/OPEN.md`.
+Files to read first: `STATUS.md`; `stage/G2/OPEN.md` (state per item, failures on record, what the
+verifier should recompute first); `stage/G2/CHECKLIST.md` C1-C3; `population/JOURNAL.md` entries
+2026-11-27 15:22, 15:24, 15:28; `shear/JOURNAL.md` 2026-11-26 15:02; `coord/DECISIONS/0046` item 2.
 
-`$S` = `/data/haiyangw/nrpic/scratch/B-emd-gw`. Close every run below with
-`harness/bin/nrpic-run finish <run id>` once its run.log ends with `# exit=`.
+`$S` = `/data/haiyangw/nrpic/scratch/B-emd-gw`.
 
-## Running at the end of the session (processors, background, outlive the session)
+## Running at the end of the session
 
-| Run id | What | How it is read |
-|---|---|---|
-| (closed) B-20261126-222544-f3a5176 | shear series 7 (C1), judged by B-20261126-230056-294b265: N7a holds, N7b Delta part holds (ratio 0.40, Richardson error 1.4e-5), constraint part fails (floor), N7c holds | nothing; write the C1 paragraph into note section VI and OPEN.md C1 at the next stage session |
-| B-20261126-222552-2e44186 | 64^3 relativistic initial data at 8 per cell (C3 step 1): `run_gr_ic.sh 64 8 "--nc 3.2 --sigma1 0.014 --seed 1 --ppc 2 --outer 36"`; started 14:25; outer iteration 0 took 6 min, so the 36 iterations take about 3 h (the predicted 30-60 min is refuted: the solve does not scale with the particle number), end near 17:30 PST; `make_ic.log` shows the outer iterations | finish; check `$S/B-20261126-222552-2e44186/gr_L8_n64/meta.json`: mesh_modes_kept 146 and sigma1_realized 0.012343 (the 128^3 data's, within 1e-3 relative), max_hamiltonian_residual below 1e-10; then queue the card member (line below) |
-| B-20261126-221911-a0531db | GM2/GM3 analysis: `analyze_gr.py --equal-mass --workers 4 --times 4,8,12,14,16,18,20,21 --halo-times 14,16,18,20,21` on the 256^3 Gamma-driver box (q0060's run B-20261126-105021-6343c13); started 14:19; the first try (B-20261126-212212-c54d979, 5 workers, foreground) was killed by SIGTERM with its session after 42 min and closed failed | finish; register `compare_legs.py --base $S/B-20261125-115558-2ab4161/analysis_gr_gd.json --halo-base $S/B-20261126-022407-87e8803/analysis_gr_gd.json --leg m256gd:$S/B-20261126-221911-a0531db/analysis_gr_m256gd.json`; look at pop_legs.png; judge GM2 (band ratio within 5 per cent to a = 64, 0.8-1.2 before a = 100, within 20 per cent to a = 132; Omega_cor all shells at a = 121 1.0-2.0x, refuted outside 0.8-3) and GM3 (counts inside 2 sqrt(N) + 2 at a = 64-132, largest mass within 10 per cent) as predicted in population/JOURNAL 2026-11-26 13:22 |
+| What | How it is read |
+|---|---|
+| `harness/bin/nrpic-stage verify B-emd-gw G2 --full`, detached (nohup, log `$S/tmp/verify_full_b34.log`), started about 15:50 PST; hashes every G2 output (hundreds of GB, hours) | when the log ends: `git status` shows stage/G2/VERIFY_RESULTS.md/.json changed; read the checks (runs, checksums, rerun, compare); commit them, then `harness/bin/nrpic-stage report B-emd-gw G2` and commit STAGE_REPORT.md. A FAIL on `checksums` names the run: compare with its sha256sums.txt and say whether it bears on the gate |
 
-The C3 card member, to queue once the data above are checked (commit first; priority 2):
+No card job, no processor run of B is left running; q0070 (job 5524) is done and its run closed.
 
-```
-harness/bin/nrpic-queue add --label pop_s014_gr_p8_n64 --priority 2 -- --kind scouting --gate G2 \
-  --package tracks/B-emd-gw/population --purpose "population C3 (decision 0046 item 2b): 64^3 at 8 per cell, zero shift, sigma1 = 0.014, to a = 143; mesh pair with the 128^3 member B-20261124-223926-33194d9 + B-20261125-221742-5100a22; predictions C3a-b, population/JOURNAL 2026-11-26 14:25; initial data B-20261126-222552-2e44186" \
-  --launcher chain --exe /data/haiyangw/nrpic/.work/build_gpu_v08/src/athena --gpu-hours 1 -- \
-  tracks/B-emd-gw/population/inputs/pop_gr_run.athinput mesh/nx1=64 mesh/nx2=64 mesh/nx3=64 \
-  meshblock/nx1=32 meshblock/nx2=32 meshblock/nx3=32 mesh/x1max=8.0 mesh/x2max=8.0 mesh/x3max=8.0 \
-  particles/particle_file=$S/B-20261126-222552-2e44186/gr_L8_n64/particles.nrp \
-  problem/id_file=$S/B-20261126-222552-2e44186/gr_L8_n64/fields.bin
-```
-(`$S` written out in full.) Read it by adding the leg `"p8n64": (["<its run id>"], r"$64^3$, 8 per cell")` to RUNS in `population/scripts/fig_leg_histories.py` (registered rerun; it already holds the 128^3 eight-per-cell leg `p8`), or with the registered `analyze_gr.py` constraint part or the
-cstat history (`*.cstat.hst`: Hr_mean, Mr_mean against t) beside the 128^3 member's history at
-the same times; judge C3a (Hr ratio 64/128 1.5-4 at a = 25-141; refuted below 1.2 at a >= 49) and
-C3b (Mr ratio at least 1.2 at a = 49-141), with a figure.
+## What G2 still waits for
 
-## What G2 still needs (stage/G2/OPEN.md)
+- C18: the fresh-context verifier (requested: outbox 20261127T234330Z__to-orch__g2-package-ready-verifier.md).
+  When its VERIFIER.md lands (stage/G2/ or a subdirectory), answer every WRONG or NOT CONFIRMED
+  item with a registered run, correct the note and ledger, rerun `note/scripts/run_all.py`
+  (registered, `.venv/bin/python`), compile, checker
+  (`python3 ~/.claude/skills/paper-writing/scripts/check_manuscript.py --main main.tex --compile`),
+  then stage collect/verify/report.
+- Ruling on GM3 (outbox 20261127T234330Z__to-orch__g2-ruling-halo-catalogue-mesh.md): if the
+  orchestrator asks for a 256^3 member at eight per cell, it needs 256^3 initial data at
+  `--ppc 2` (about 6 h on one core by the 128^3 data's 5.5 h; run detached with
+  `nrpic-run submit --background`) and about 1.5-3 card-h (chain, priority 2); write the
+  prediction into population/JOURNAL first.
 
-- C1: series 7 judged (shear/JOURNAL 15:02): the observable converges without stream crossing; L2 as
-  run stays failed on record; the constraint floor of series 7 (Mr 1.6e-4, not falling with the
-  mesh) is open, cause not named. Update OPEN.md/CHECKLIST C1 with the run ids at the stage session.
-- C3: the 64^3 member judged (above); the predictions that failed at one per cell stay on record.
-- C2, C11: GM2/GM3 (above); the mesh figure in the shifted gauge is that comparison's pop_legs.png.
-- C17: one paragraph on GM2/GM3 (and on C1, C3 outcomes) in note section VI, a ledger row (run key
-  in note/scripts/common.py RUNS, row in ledger.py values_g2/LEDGER_G2), registered run_all.py,
-  compile, checker (`python3 ~/.claude/skills/paper-writing/scripts/check_manuscript.py --main main.tex --compile`).
-- C18: the fresh verifier is sent by the orchestrator when C1 and C3 have been read (0046).
-- Then stage collect/verify/report once (`nrpic-stage verify B-emd-gw G2 --full` hashes hundreds of GB).
+## Results of this session (all registered, closed, figures looked at)
+
+- C3: q0070 B-20261127-232258-37c6773 (64^3, eight per cell, to a = 143), judged by
+  B-20261127-232628-1361e3b (`population/scripts/judge_c3.py`, c3_mesh_pair.png).
+- GM2/GM3: B-20261127-232236-7ab7aa2 (`compare_legs.py` on analysis B-20261126-221911-a0531db).
+- Note v4: B-20261127-232833-5891f77 (Table VIII rows g2_gm2, g2_gm3, g2_c3a, g2_c3b, g2_n7*).
 
 Traps:
-- Analyses longer than a session: `nrpic-run submit --background` (a foreground run dies with the
-  session's shell: that is what killed B-20261126-212212-c54d979).
+- Analyses longer than a session: `nrpic-run submit --background`.
 - GR particle files carry the rest-mass weight (R25): use `--equal-mass`.
-- The shear design estimate (Zel'dovich) underestimates the compression 2-3 times: at beta = 0.125
-  the streams cross at t = 9.0-9.25 (after t_A = 4.12); judge crossing before t_A only.
-- Card runs only via `harness/bin/nrpic-queue add`; commit before adding; at most 6 cores
-  (this session used 6: 4 GM workers, 1 shear, 1 initial data).
+- The note's `main.pdf` is 1.4 MB (above the 1 MB guideline, below the 5 MB hook limit); it was
+  1.43 MB before this session too.
+- Card runs only via `harness/bin/nrpic-queue add`; commit before adding; at most 6 cores.

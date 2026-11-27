@@ -502,3 +502,26 @@ attributed to stream crossing in a run that could have refuted it; L2 as run sta
 Running at the end: GM analysis B-20261126-221911-a0531db, 64^3 data B-20261126-222552-2e44186
 (about 3 h). Nothing queued on cards. Card-hours: none.
 failed (added): N7b constraint part; the design's "no crossing before tlim = 10".
+
+## 2026-11-27 15:21-15:50 PST: lead of batch 34 (first round of the new usage week)
+
+Merged main (decisions to 0047, release core-v0.8). Inbox empty. Pause flag absent throughout.
+(1) C3 (decision 0046 item 2b): the 64^3 initial data B-20261126-222552-2e44186 had ended
+(exit 0, 3664 s) and were closed; checked against the 128^3 data (146 modes, sigma1 equal to 1e-16,
+H residual 1.2e-12; population/JOURNAL 15:22); the card member queued as q0070 (priority 2, core-v0.8
+card build), ran at once (job 5524, run B-20261127-232258-37c6773, a = 143, no guard stop, 0.038
+card-h) and was judged by the registered judge_c3.py (B-20261127-232628-1361e3b; first drawing
+-232604-21d85fb had cut labels): C3b holds, C3a fails as written before a = 31 but is not refuted
+(population/JOURNAL 15:28). (2) GM analysis B-20261126-221911-a0531db closed; compare_legs.py
+B-20261127-232236-7ab7aa2: GM2 band part holds, Omega part fails as written (0.85), GM3 fails in
+part (population/JOURNAL 15:24). (3) G2 package: note v4 (section VI, abstract, results xii-xiii,
+summary; Table VIII; run_all B-20261127-232833-5891f77, prediction held; checker and compile clean;
+pages 1, 15, 26 read); CHECKLIST C1, C2, C3, C5, C11, C17, C20 judged, C18 open; OPEN, EVIDENCE,
+REPRODUCE, REVIEW-wave3 (batch 34) updated; series 7 numbers recomputed from series7.json
+(confirmed). nrpic-stage collect, verify (standard), report; the --full pass started detached.
+Outbox: two requests to orch (fresh verifier with what to recompute first; ruling on the halo
+catalogue at one particle per cell). RISKS R27, R28 (retired), R29 (new).
+failed: C3a before a = 31 (1.32 at a = 25 against 1.5); GM2 Omega part (0.851 against 1.0-2.0);
+GM3 counts at a = 121 and largest masses at a = 64 (1.32) and 121 (1.13); the C3 step-1 wall time
+(61 min against 30-60). No failed run.
+Card-hours: 0.038 (q0070).

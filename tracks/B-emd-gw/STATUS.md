@@ -1,40 +1,40 @@
 # STATUS of B-emd-gw
 
 gate:        G0 PASS (2026-11-19), G1 PASS with reservations (2026-11-21, tag
-             stage/B-emd-gw/G1-pass-20261121). G2 not met (stage/G2/OPEN.md, unchanged this
-             session): C1 (shearing-dust L2) and C3 (constraints in the mesh) FAIL as written;
-             decision 0046 item 2 requires two cheap runs before G2: C1's ran and is judged
-             (series 7), C3's member waits for its initial data (about 17:30 PST);
-             C2, C11 wait for the GM analysis; C5, C17 for its paragraph; C18 for a verifier,
-             sent when C1 and C3 have been read.
-headline:    Without stream crossing the shearing-dust observable converges in the mesh: beta =
-             0.125 at H L = 4, N_y = 64-256 at 4 per cell, Delta 0.053749, 0.053800, 0.053821
-             (ratio 0.40, Richardson 0.05383, error 1.4e-5; streams cross only at t = 9, after
-             t_A = 4.1), where L2 moved away with each refinement: L2's failure is attributed to
-             stream crossing (B-20261126-222544-f3a5176, B-20261126-230056-294b265).
-last-result: batch 29 (2026-11-26 14:18-15:05): series 7 N7a holds, N7b Delta part holds,
-             constraint part fails (means 2.6e-6 Hr, 1.6e-4 Mr, falling only 1.0-1.4x per
-             doubling), N7c holds (shear/JOURNAL 15:02). Design estimate of the crossing time too
-             optimistic (B-20261126-222532-5ab01ea). The first GM analysis
-             (B-20261126-212212-c54d979) was killed with its session (no output); rerun running.
-running:     processor, background (close each with `harness/bin/nrpic-run finish <id>`):
-             B-20261126-221911-a0531db GM2/GM3 analysis (4 workers, ~30 GB each);
-             B-20261126-222552-2e44186 64^3 initial data at 8 per cell (C3 step 1, about 3 h,
-             end near 17:30 PST)
-cards:       nothing queued for B; the C3 card member is queued after its initial data exist
-             (HANDOFF has the line; priority 2, release v0.8 card build, about 0.1 card-h)
-next:        1. close the 64^3 data, check modes and sigma1, queue the C3 member (HANDOFF
-                line, priority 2), judge C3a-b
-             2. close the GM analysis, compare_legs.py, judge GM2 and GM3; C2, C11
-             3. note section VI: paragraphs on GM2/GM3, series 7 (C1) and C3, ledger rows
-                (C17); then the G2 stage package for the fresh verifier (0046)
-needs:       orch: the fresh verifier for C18 after C1 and C3 are read (decision 0046).
-             core: parameters added at a restart (NEXT_SOURCE item 1); Fourier Newtonian
-             solver with the threaded build.
+             stage/B-emd-gw/G1-pass-20261121). G2: package complete for an independent review
+             in the lead's judgement (batch 34; stage/G2/OPEN.md): 19 of 20 items PASS or NA,
+             C18 (fresh verifier) OPEN and requested; C1 and C3 judged PASS under decision 0046
+             item 2 with the failures on record; C2 PASS for the strain with the halo
+             catalogue's mesh failure (GM3) on record, ruling requested. Not signed.
+headline:    In the Gamma-driver gauge the band strain |k| <= 8 k_f of the population box is the
+             same on 128^3 and 256^3 to 1.1 per cent up to a = 64 and 2.8 per cent up to a = 132
+             (B-20261127-232236-7ab7aa2), and at a fixed eight particles per cell the late
+             constraint means fall 1.6-2.3 times (H) and 1.7-2.2 times (M) when the spacing
+             halves (64^3 against 128^3; B-20261127-232628-1361e3b), against 1.05-1.4 at one per
+             cell.
+last-result: batch 34 (2026-11-27 15:21-15:45 PST): C3 step 1 data checked (146 modes, same
+             sigma1, H residual 1.2e-12; B-20261126-222552-2e44186); q0070 ran (0.038 card-h);
+             C3b holds, C3a fails before a = 31 but is not refuted; GM2 band part holds, Omega
+             part 0.85 (predicted 1.0-2.0) fails as written; GM3 fails in part (counts at
+             a = 121, largest masses at a = 64 and 121); note v4 with Table VIII
+             (B-20261127-232833-5891f77), checker and compile clean.
+running:     nothing of B on cards or processors, apart from the detached checksum pass
+             `nrpic-stage verify B-emd-gw G2 --full` (writes stage/G2/VERIFY_RESULTS.md and
+             .json; started at the end of batch 34, see HANDOFF)
+cards:       nothing queued (q0070 done, job 5524)
+next:        1. the fresh verifier for C18 (orchestrator); answer its findings with
+                registered runs
+             2. read the --full verify result; commit VERIFY_RESULTS if it changed; regenerate
+                STAGE_REPORT (nrpic-stage report)
+             3. G3 scope: population runs at eight particles per cell in the Gamma-driver
+                gauge; a 256^3 member at eight per cell if the GM3 ruling asks for it
+needs:       orch: fresh verifier (C18); ruling on the halo catalogue at one particle per cell
+             (outbox 2026-11-27T234330Z, two posts).
+             core: parameters added at a restart (NEXT_SOURCE item 1).
 offers:      gw_diag (TT, rho_K, spectra, E/B/Psi_4; gauge G_tot); analyze_gr.py --equal-mass;
-             compare_legs.py --halo-base; shear/scripts/crossing.py (stream crossing from
-             snapshots of a lattice); findings: GR particle files carry the rest-mass weight
-             (R25); zero shift fails in resolved periodic cores (R26); the constraint level
-             after collapse follows particles per cell (R27)
-budget:      card-hours toward G2: 11.61 used; G1 1.69; allotment 40 (0014); nothing
-             submitted this session (the C3 member will cost about 0.1)
+             compare_legs.py --halo-base; judge_c3.py (constraint histories of a mesh pair);
+             shear/scripts/crossing.py; findings: GR particle files carry the rest-mass weight
+             (R25); zero shift fails in resolved periodic cores (R26); constraints converge
+             with the mesh only at fixed particles per cell (R27); halo counts at one particle
+             per cell are not mesh-converged (R29)
+budget:      card-hours toward G2: 11.65 used (0.038 this session); G1 1.69; allotment 40 (0014)
