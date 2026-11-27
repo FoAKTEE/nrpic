@@ -6,6 +6,18 @@ resolution does the binary survive the 100 M that the next passage (P1b) needs? 
 predictions and outcomes: `JOURNAL.md` (BC-0 design and cost, BC-1 prediction, BC-2
 references, later entries the card runs).
 
+## State (2026-11-27, lead batch 34; the sections below are of 2026-11-21 and kept as written)
+
+The chains this package prepared have ended (the lead's JOURNAL.md, batches 11-34; stage/G1/STATUS.md
+T4): P1b at m/16, A (F-20261121-203144-b2cf16b) + A2 (F-20261124-210400-902c650), reached 186.0 M:
+the binary is disrupted between 120 and 133 M, m1 is captured by M (common horizon from 137.5 M),
+m2 recedes after an 8.73-M pericentre (readers F-20261127-232657-163727d, -232849-14345be,
+-232940-3f652bf). B2, the pair alone at m/16 (F-20261126-052133-10f9a5f), is DONE at 140 M; C2,
+P1b at m/12 (F-20261126-131751-89eaff8), stopped at 106.69 M by a Slurm submission I/O error. B2
+and C2 are G2 material, not yet analysed. The "Results" table below is of 2026-11-21; its 20-M
+m/16 cell "(queued)" is out of date: m/12 and m/16 agree within 2.1e-3 M to 21 M
+(stage/G1/VERIFIER.md, finding F2; lead batch 11, F-20261121-202021-3c4321e).
+
 ## State (2026-11-21 07:45 PST)
 
 Verdict (JOURNAL BC-4, intermediate): P1's merger is a resolution effect of the m/8 members;
