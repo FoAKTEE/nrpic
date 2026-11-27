@@ -8,6 +8,20 @@ release core-v0.5, the release core-v0.4, and the list written after the wave-1
 integration (2026-11-15, below, with its numbering kept; items that a release changes
 are named in the section of that release).
 
+## Release core-v0.8 (2026-11-26, batch 27): what it closes and what it adds
+
+- Closes restart defects a (conservation record) and b (repeated history headers) of
+  core-v0.7 on one rank (items a and b of the core-v0.7 section below). Also closes Track
+  F's W2 (tracker file of a continued run).
+- New limit found by its card check (run core-20261126-070946-7971fde, judged by
+  core-20261126-114747-a6f2385): the finder rule `mass_tol` 1e-5 without polishing gives
+  other masses on a card than on processors (up to 8.8e-6, and a different accept at two of
+  sixteen searches); with 100 polishing iterations they agree within 2.2e-16
+  (`finder_stop.md` section 6). Not a defect of the release; a reason to switch polishing on.
+- Not done: stop on the residual, guard relative to the last radius, the conservation record
+  on several ranks, Track D's long card test of the guard (`CHANGELOG.md`, core-v0.8).
+- Gate G2 as a whole: unchanged by this release (first section below).
+
 ## State after release core-v0.6 (2026-11-21, batch 4a, session core-lead-6; items u, v and the products of item 4 brought up to date in batch 8, session core-lead-8; item 2 and item 4 in batch 10a, 2026-11-23, session core-lead-10a, and in batch 11, 2026-11-24, session core-lead-11)
 
 **Is G2 met? No.** Criteria of the core sheet (brief 9.3, "G2: all of C3 passed,
@@ -144,12 +158,22 @@ Defects and limits of core-v0.7 itself (found by the packages or at the merge):
   file. Reproduced with the candidate: case S2 of the quick test (run
   core-20261125-023641-7a1c47d) lacks the record at t = 1.6875 in the continued run;
   every other output of that case is byte-identical. The state of the run is not
-  affected (last restart file and `.prt` companion identical bit for bit). Not fixed.
+  affected (last restart file and `.prt` companion identical bit for bit). Not fixed in
+  core-v0.7; **CLOSED on one rank by release core-v0.8** (2026-11-26): fixed on branch
+  core/restart-finder (processors: run core-20261125-142556-a424739, Q8 run
+  core-20261126-024518-e1e16dc; card, and a card continuing a processor restart file: run
+  core-20261126-070946-7971fde, judged by core-20261126-114747-a6f2385). Still open on
+  several ranks: the block is not written there and only the record due two cycles after
+  the restart is recovered (from the source; not tested on several ranks). A restart file
+  written by core-v0.7 still loses that one record when continued by core-v0.8.
 - b. **Restart defect 2** (same package, also in core-v0.6): the mesh history file
   (`<basename>.z4c.user.hst` and the other histories written by the mesh) gets its
   header lines again at every continuation (two header lines against four in cases S1
   and S2); the data lines are identical. Readers must skip comment lines anywhere in
-  the file. Not fixed.
+  the file. Not fixed in core-v0.7; **CLOSED by release core-v0.8** (2026-11-26; same
+  branch and runs as item a; a run continued with `-r` writes no header when the history
+  file exists and is not empty). Files written by earlier releases keep their repeated
+  headers, so readers still skip comment lines anywhere.
 - c. **`lapse_leak_hole` is a mitigation, not a cure** (decision 0025 item 3). The defect
   it addresses stands: on a slice whose vacuum has diverging normal observers around a
   hole (Einstein-Straus bubble) `lapse_leak` stretches the coordinates of that vacuum

@@ -2233,3 +2233,302 @@ E the provenance). Card time of this session: none. Processor time: R7 about 6 m
 Closed at 12:27Z: core-20261125-080049-dcc9ea1 completed (0.6294 card-hours, job 5274);
 core-20261124-130310-597d9ca stopped (0.8953 card-hours over jobs 5154, 5182, 5221, 5227),
 manifests committed by `nrpic-run finish`. Branch pushed.
+
+## 2026-11-26T02:25Z (2026-11-25 18:25 PST), batch 23, session core-lead-23 (no change of athenak/src or python/nrpic)
+
+Task: (1) queue order of core's entries; (2) close q0030, q0031 of row 4 level 3; (3) Track
+A's question on the PCS cloud at boundaries of static refinement; (4) NEXT_SOURCE item
+for `<fastflow> diagnostics` on a continued run (0042 item 4); (5) merge of
+`origin/core/restart-finder` on processors, build, byte regression, quick tests; release
+waits for q0049.
+
+(1) Done 02:20Z: q0033 (`row4-l3-0p755-member`, waiting, priority 2, arguments saved in
+`scratch/core/tmp/b23_q0033.json`) removed and added again as **q0059** with the same 26
+arguments, priority 2, `--after step-limit-card` (q0036, the check the dispatcher takes
+last: effective priority 2 against 1 for q0035, q0039, q0049). q0032 (0.755 control) was
+already in Slurm (job 5346, pending): not touched. No other row-4 entry of core waits.
+
+### Predictions D1-D5 (deposit across a static refinement boundary), before any run
+
+Reading of `NrpicDepositSources` (`athenak/src/particles/nrpic.cpp` 739-1116) [VERIFIED
+by reading]: a particle's cloud is laid on the lattice of level `ldep` = the finest level
+among the MeshBlocks that own the nb^3 nearest cell centres of the lattice of the
+particle's own MeshBlock (lines 911-937); the part of a fine cloud that falls into a
+coarser MeshBlock goes into the coarse leaf cell that contains the virtual fine cell
+(1009-1021). The weights of each particle sum to one over the leaf cells (conservation),
+but nothing makes the clouds of a regular lattice add up to a uniform density across a
+level change: the first coarse particles next to a finer block get a cloud of the fine
+width while their neighbours keep the coarse width, and the partition of unity of the
+B-splines holds only for clouds of one width on a lattice of that spacing.
+`deposit_fine_shape` acts only where a leaf is finer than `ldep` (1022-1032), that is
+only with a level cap.
+
+Test (`tracks/core/analysis/deposit_levels/dep_levels.py`, release processor build
+core-v0.7): flat metric (`nrpic_geodesic`, no hole, `<adm> dynamic = false`), periodic box
+32 x 8 x 8 (cells of 1), one static level in the slab |x1| < 8 (cells of 1/2; planar
+boundaries at x1 = +-8), particles at rest, one per local cell at the cell centres
+(mass rho0 times the cell volume), one step; E on the x1 line, and the same with the
+lattice shifted by a quarter cell in x2 and x3. My own 1D emulation of the rule above
+(the problem is planar) is the reference.
+
+- **D1** CIC, cell-centred lattice: E uniform to round-off (|E/rho0 - 1| < 1e-13) on
+  both levels: every CIC cloud of a particle at a cell centre lies inside its own cell.
+- **D2** TSC: first coarse cell next to the fine level +18.75 per cent (1 + 1/8 + 1/16),
+  second coarse cell -12.5 per cent, last fine cell -12.5 per cent; all other cells
+  uniform to round-off. PCS: +20.83, -14.58, -12.5 per cent (46/48 + 1/6 + 1/12; 1/48 +
+  2/3 + 1/6; 1/12 + 1/3 + 1/48). Mass sum exact to round-off in every case.
+- **D3** AthenaK equals the emulation to 1e-12 relative in every leaf cell of the line,
+  for every shape and both lattices. A difference above that is a defect of the code (a
+  wrong cell or weight), not a property of the rule.
+- **D4** `deposit_fine_shape = true` without a level cap changes no byte of the output
+  (the branch is never entered). With `deposit_max_level = 0` (every cloud of root
+  width, spread over the fine leaves) E is uniform to round-off for all three shapes,
+  with and without `deposit_fine_shape`.
+- **D5** Track A's compensation (`deposit_comp_c = 1/6`, `deposit_comp_c2 = 0.4667`) on
+  the PCS case enlarges the boundary errors, by at most about a factor two (gain of the
+  pass at the grid scale in x1 only, 1 + 4c + c2 = 2.13), and leaves the interior
+  uniform.
+
+Refuted: D1 by any CIC cell off by more than 1e-13; D3 by a cell where code and emulation
+differ (a defect); D4 by a byte difference without a cap or a non-uniform capped deposit.
+If D3 holds, the answer to A is "property of the deposit rule", with the cap or CIC as
+the options for nested static meshes.
+
+Amendment to D3 (02:33Z, before any run): for the lattice shifted in x2 and x3, the one
+fine leaf on the line next to the boundary that receives the PCS tail of a coarse particle
+(cloud of fine width in x2, x3 on a lattice of coarse spacing) need not equal the planar
+emulation on a line at fixed x2, x3; D3 for the shifted cases is judged on the code's
+mass sum and on all other cells, and that one cell is reported.
+
+### Outcomes D1-D5 (02:30Z), runs core-20261126-022953-21b8455 (judged; figure looked at)
+
+Earlier attempts on record: core-20261126-022652-fa293a1 (failed: the reader looked for
+the tables beside the deck, AthenaK writes them into `tab/`), core-20261126-022724-382f943
+(failed: my emulation asked for the leaf of a root lattice cell whose centre lies on a
+fine face), core-20261126-022813-2d6c617 (same data as the judged run; its figure put the
+capped cases on a scale of 1e-13 and was unreadable). The script's verdict line says FAIL
+for every run: what failed is listed here.
+
+- **D1 HOLDS.** CIC, cell-centred lattice: E/rho0 - 1 = 0 exactly in all 48 leaf cells of
+  the line (also with the shift in x2, x3).
+- **D2 HOLDS, to the digit.** TSC: +0.1875 (first coarse cell, x1 = 8.5), -0.125 (9.5),
+  -0.125 (last fine cell, 7.75); PCS: +0.208333, -0.145833, -0.125, as computed by hand;
+  every cell more than three cells from the boundaries uniform to 2.2e-16. At the left
+  boundary (x1 = -8) PCS differs (+0.0625 at -8.5, +0.1458 at -9.5, -0.1458 at -10.5,
+  -0.125 at -7.75): the stencil that picks the level has four cells, offsets -1..+2 for a
+  particle at a cell centre, so two coarse particles on the left take the fine width and
+  one on the right (the fourth cell carries weight 0 but counts for the level). The
+  emulation reproduces it. The scripted "D2_mass" check failed only for the shifted PCS
+  lattice (line sum 31.977 instead of 32): the amended cell, below.
+- **D3 HOLDS where the emulation models the code** (every case without
+  `deposit_fine_shape` and without compensation, ten cases): code minus emulation at most
+  1.1e-15 in every leaf cell. Shifted PCS: the reported fine cell next to the boundary
+  differs by 0.0231 on the line x2 = x3 = 0.1, as the amendment foresaw; all other cells
+  8.9e-16. The scripted D3 failed on cases the emulation does not model: `pcs_capfs`
+  (3.9e-3: the slopes of deposit_fine_shape are not in the emulation) and `cic_fs` (below).
+  **So the boundary error of the PCS (and TSC) cloud is the rule of the deposit, coded as
+  documented: a property, not a coding defect.**
+- **D4 FAILED, in both parts.**
+  (a) Without a cap, `deposit_fine_shape = true` is inert for TSC and PCS (tables
+  byte-identical) but NOT for CIC: `cic_fs` puts -0.125 and +0.125 into the two fine cells
+  next to each boundary (x1 = 7.25, 7.75), mass conserved. Cause, by reading
+  (`nrpic.cpp` 993-1010, 1032-1072) [VERIFIED by this run against `cic`]: with the linear
+  cloud and fine shape the lattice cells BESIDE the cloud are visited too (`ns = nb + 2`);
+  for a coarse particle next to a finer block such a side cell lies in the fine block
+  (kd = 1 > 0) and enters the fine-shape branch, which gives it the tent integral minus a
+  constant (a zero-sum dipole), while the cloud's own cells are coarse leaves (kd = 0)
+  that keep the plain weight: the dipole that should cancel against the slope of the own
+  cells has nothing to cancel against. A defect of the option (it was meant for capped
+  clouds); it does not touch Track A, which deposits PCS without the option.
+  NEXT_SOURCE.md item 0.
+  (b) A level cap does NOT make the deposit uniform: with `deposit_max_level = 0`
+  (root-width clouds everywhere) CIC +0.125 (8.5) and -0.125 (7.25, 7.75), TSC 0.031, PCS
+  0.027, with and without fine shape; the code equals the emulation (0 to 5.6e-16). My
+  prediction was wrong because I took the fine particles as a union of 2^3 coarse
+  lattices, each uniform; each of those lattices ends at the boundary at a different
+  offset from the first coarse particle (0.75 and 1.25 coarse cells), so the particle
+  lattice itself has a seam there that any cloud wider than its own cell sees. The cap
+  makes TSC and PCS 6 to 8 times better, not exact.
+- **D5 HOLDS in substance, the scripted check FAILED.** With Track A's compensation the
+  largest boundary error of PCS grows by a factor 1.79 (0.373 against 0.208, inside the
+  predicted <= 2.13); the interior (|x1| < 6.25, |x1| > 12.5) stays uniform to 2e-16. The
+  check used a margin of three cells and the filter carries the error at -10.5 two cells
+  further (+0.046 at -11.5): my margin, not the code. Not predicted: the compensated
+  deposit is NOT conservative across the level boundary: the line sum is 32.0413 instead
+  of 32 (+0.13 per cent of the mass; by the symmetry in x2, x3 the same for the volume
+  integral). The non-flux pass (-c, 1+2c, -c) with ghost values from the other level is
+  not conservative at a level face. NEXT_SOURCE.md item 0b (`deposit_comp_limit > 0`, the
+  flux form, not tried).
+
+What this answers for Track A: the O(0.1) error of the PCS cloud in the first coarse cells
+of a lattice of one particle per local cell is the documented rule (level of a cloud =
+finest level among its stencil's owners; partition of unity holds only within one cloud
+width on one lattice spacing), made larger by the compensation (x1.8) and, for a
+spacing jump of the particle lattice, present even with a cap. CIC with particles at cell
+centres is exact on both sides (D1), which is A's factor of twenty. Answer posted to A.
+
+### Outcomes P10-P15 so far (02:31Z), run core-20261126-023040-b755cdc (figure looked at)
+
+Closed first: core-20261125-180320-3dad12c (q0030, 0.726875 control, 0-600 M, completed,
+1.2981 card-hours over 4 jobs of its chain) and core-20261125-225600-d2db1ed (q0031, 0.73625
+member continued from core-20261123-020458-dfc38d7 at 300 M, completed, 0.6325 card-hours,
+one job), by `nrpic-run finish` (manifests committed 846c3b6b, cdb695ab).
+
+- **P10 HOLDS.** 0.726875: neither run collapses by 300 M (member and control), D =
+  +0.0061 (|D| <= 0.01), member STAYS, model STABLE: **bracket by the 300-M rule
+  (0.7175, 0.726875)**, valid, nothing pending inside; next midpoint 0.7221875.
+- **P11 HOLDS.** 0.726875 beyond 300 M: member 338.25 M, control 333.75 M (lapse < 0.3),
+  both in 300-420 M, 4.5 M apart (<= 30).
+- **P12 HOLDS.** 0.73625: member 405.0 M, control 421.25 M, both in 320-500 M.
+- **P13 PENDING** (q0032 in Slurm as job 5346; the member is q0059 after the checks).
+- **P14** for the member's join: not computed in this session (`row4_fate.py` does not
+  print joins); the control's join held in batch 17.
+- **P15 HOLDS** on the bound (no run above 9 s per M): 3dad12c 1.2981 card-hours for 600 M
+  = 7.79 s per M over 4 jobs (two attempts preempted, their lost minutes included);
+  d2db1ed 7.59 s per M in one job.
+
+What it means (the reading written on 2026-11-24 before the runs): P11 and P12 hold, so
+the 300-M bisection measures how long a model resists a common inward drift, not a
+stability threshold: every model from 0.605 to 0.73625 collapses by 421 M on M/8, and the
+collapse time grows smoothly with y_c (180.5, 219.5, 244.25, 294.25, 338.25, 405.0 M for
+the members). Row 4 on M/8 is reported as "collapse within 300 M bracketed between 0.7175
+and 0.726875"; the drift (its dependence on cell size and particle number) is the open
+item [JUDGEMENT]. 0.755 (q0032, q0059) decides whether it reaches the most stable model.
+
+### Prediction F1 (02:36Z): `<fastflow> diagnostics` in a run continued from a restart file
+
+Reading [VERIFIED by reading]: `main.cpp` 279-291 loads the parameters from the restart file,
+then from `-i <file>` if given (`LoadFromFile` adds or replaces lines), then
+`ParameterInput::ModifyFromCmdline` (`parameter_input.cpp` 370-409), which exits with
+"Parameter '<name>' in block '<block>' on command line not found" for any parameter not
+already present; `fastflow.cpp` 299-300 reads `diagnostics` only if it exists, and the
+status file is opened in append mode with its header only when new (454-457).
+Test (`tracks/core/analysis/restart_diag/diag_restart.py`, release processor build
+core-v0.7, `problems/tests/by_horizon_coarse.athinput` with a restart output, one cycle,
+then continued to cycle 2):
+- **F1a** `-r <rst> fastflow/diagnostics=true`: exit status 1 with that message, no
+  status file. (The defect Tracks D and F reported.)
+- **F1b** `-r <rst> -i add.athinput` where `add.athinput` holds only `<fastflow>
+  diagnostics = true`: exit status 0 and a status file `hc.horizon_status_0.txt` with a
+  header and one record per search of the continued run. (A workaround today, if it holds.)
+- **F1c** `-r <rst>` alone: exit 0, no status file.
+Refuted: F1a by a run that starts; F1b by a failure or a missing status file.
+
+### Predictions R8, Q8 (02:45Z): merge of core/restart-finder into core/nrpic
+
+Merge b755cdcf (no conflict; the changelog section of the branch sits at the top). The
+source of the merged tree (`athenak/src`, `python`, `problems`, `docs`, `scripts`) is the
+branch's (git diff empty against `origin/core/restart-finder`), i.e. source commit 01d4aeeb.
+Serial build `scratch/core/b23_build_cpu/src/athena` (628 s, 4 jobs; sha256 7599042f...,
+not the published branch binary's d7306809..., as build paths are in the debug data).
+- **R8** byte regression (`regress_v04.py`, twelve set-ups) against release core-v0.7
+  `.work/build_cpu_v07/src/athena`: 75 of 75 identical, as the branch's final build gave
+  (run core-20261125-142602-33f4005). Refuted by any item not identical.
+- **Q8** quick test of the release's new behaviour: `restart_test.py` (T1: restart outputs,
+  tracker and history files across a continuation) with the merged build against the
+  release: every check holds as in run core-20261125-142556-a424739 (branch final build).
+  Refuted by any failed check.
+
+### Outcome F1 (02:50Z), run core-20261126-023323-c8fad52 (figure looked at)
+
+- **F1a HOLDS**: `-r <rst> fastflow/diagnostics=true` exits with status 1 and "on command
+  line not found"; no status file.
+- **F1b HOLDS**: `-r <rst> -i add.athinput` (only `<fastflow> diagnostics = true`) exits 0
+  and writes `hc.horizon_status_0.txt` with its header and two records (cycles 0 and 1,
+  both found, 3 and 2 flow iterations). The continuation started from `hc.00000.rst` (the
+  first of the three restart files of the first run, written at t = 0), still a run read
+  from a restart file.
+- **F1c HOLDS**: the control writes no status file.
+So Tracks D and F can switch the status file on in a continued run today with `-i`; the
+source fix (add a parameter on restart) is NEXT_SOURCE.md item 1, with this test.
+
+### Outcome Q8 (02:54Z), run core-20261126-024518-e1e16dc (figure looked at)
+
+**Q8 HOLDS**: `restart_test.py` with the merged build, 19 checks "ok", ALL OK, as in run
+core-20261125-142556-a424739 of the branch build: the uninterrupted run equals the release
+byte for byte; the four cuts K24-K27 (every residue of the record interval) and the chain
+(segments cut with status 143, last segment 0) give every output file byte-identical to
+the uninterrupted run, with restart and `.prt` files identical; the release, cut the same
+way, loses the tracker records before the cut, the `cons.hst` record at t = 1.6875 (cuts 26,
+27) and writes 4 header lines in the mesh history instead of 2 (the figure shows all three).
+
+### Outcome R8 (03:15Z), run core-20261126-024438-1fa17dd (figure core-20261126-031446-af637b5 looked at)
+
+**R8 HOLDS**: 75 of 75 items identical with release core-v0.7 (geo 2, boris 2, dep 1, east
+12, os 16, jeans 5, binary 1, c1 5, c2 3, c3 14, c4 4, c5 10; classes a, b, a+b, other
+empty), REGRESSION PASS, as the branch's build gave (core-20261125-142602-33f4005). The
+release candidate core-v0.8 (source 01d4aeeb, tree of core/nrpic b755cdcf) is prepared on
+processors; `RELEASE-v0.8.md` written with its card check PENDING (q0049). Not released.
+
+### Close of the session (03:17Z)
+
+Not done: q0049 has not run (nothing to judge with `card_check.py`); no executable of v0.8
+was published (the branch's executables of the same source stay at
+`scratch/core/exe/core_restart-finder/`); P14 for the 0.73625 member's join; the note
+(waits for 0.755); A's new request `finder-false-accept-and-stall-p0l6` not read. Card time
+of this session: none. Processor time: build 628 s on 4 jobs; tests and analyses on one
+core each, about 50 core-minutes in all (R8 30 min, F1 11 min, Q8 8 min).
+
+## 2026-11-26T11:55Z (03:55 PST), session core-lead-27 (batch 27): release core-v0.8; prediction for the MPI build
+
+Card check q0049 judged (outcome in `JOURNAL-restart-finder.md` entries 21 to 23): PASS for
+what the release changes; K3 failed for the rule without polishing. Release record final.
+MPI build of the merged tree: `.work/build_cpu_mpi_v08rc` (4 jobs, 11:51Z to 11:53Z; rc 0),
+copied to `scratch/core/exe/core_nrpic_v08/athena_cpu_mpi`. Prediction before its smoke test
+(`analysis/release/mpi_smoke_v08.py`, deck `problems/tests/restart_outputs.athinput`): M1 the
+MPI build started without mpirun writes every output file of the serial build of v0.8 byte
+for byte (logs and restart files excluded); M2 on two ranks status 0 and the records of
+`cons.hst`, the tracker file and the mesh history as on one rank, every column within 1e-6
+relative (the deposit in shared cells adds in another order; `mpi.md` section 7). Refuted by
+any differing file in M1 or any column above 1e-6 in M2.
+
+Outcome (run core-20261126-115451-893a30e, figure `fig_mpi_smoke.png` looked at; its left
+panel clips the tick labels, the three curves lie on one another): **M1 held** (17 files of
+the MPI build on one rank identical to the serial build), **M2 held** (two ranks, 4
+MeshBlocks each, particles handed over every record: `cons.hst`, tracker file and mesh
+history identical to one rank, relative difference 0.0, tighter than predicted). Published
+`scratch/core/exe/core_nrpic_v08/` (COMMIT, SHA256SUMS, READY; four executables).
+
+## 2026-11-26T11:57Z (03:57 PST): q0039, q0035, q0036 closed; predictions before judging
+
+All three ran (q0039 job 5355, 22 cases rc 0; q0035 job 5352, 4 rc 0; q0036 job 5368, 3 rc 0)
+and are closed (`nrpic-run finish`; the registration commits of q0035 and q0036 were merged
+from `core/noise-level2` and `core/step-limit`). Predictions as written before the runs:
+q0039 K7 of `RELEASE-v0.7.md` ("Card checks pending": all three of `card_v07.py`,
+`card_v06.py`, `card_v05.py` print CARD PASS); q0035 R5 of `JOURNAL-noise-level2.md` entry
+17; q0036 the predictions of `analysis/step_limit/HANDOFF.md`. Nothing added to them.
+
+## 2026-11-26T12:12Z (04:12 PST): q0036 and row 4 (q0032) judged next; predictions named
+
+- q0036 (step-limit card run core-20261126-080805-3a9a349): P4a, P4b, P4c of
+  `JOURNAL-step-limit.md` entry 3 with the bounds of entry 9 (bound 0.656 cells), as written
+  before the run. Added now, from entry 13's processor outcome (written before this run
+  existed): P4b on the card also to t = 6 with the level-4 step never above 0.59 cells.
+- Row 4: q0032 (0.755 control, 300-600 M) is closed; q0059 (0.755 member) is still pending in
+  Slurm (job 5378). P13 (journal 2026-11-24, before the runs) is judged for the control only:
+  no collapse before 450 M and the 400-450 M mean of alpha_c / alpha_c^eq at least 0.01 below
+  its 250-300 M mean 0.9640. The fates of the other models are not changed by this run.
+
+## 2026-11-26T12:15Z (04:15 PST): outcomes of q0036 and of row 4 with q0032
+
+- q0036: `JOURNAL-step-limit.md` entry 17 (run core-20261126-121103-1070457): P4a, P4c held;
+  P4b held in its test and failed in its time (t = 1.18, not 1.5-1.8), as on processors; the
+  statement added this morning held (step never above 0.577 cells, t = 6 reached).
+- Row 4, run core-20261126-121143-aaae1b7 (figure `fig_row4_m8.png` looked at): fates and
+  bracket unchanged, (0.7175, 0.726875). **P13 holds for the control**: 0.755 control does not
+  collapse by 600 M; 50-M means of alpha_c / alpha_c^eq 0.9640 (250-300 M), 0.9345 (400-450 M,
+  0.0295 below), 0.8022 (550-600 M, minimum 0.736). The drift goes on and speeds up; whether it
+  ends in a collapse beyond 600 M is open. Member half of P13 waits for q0059 (job 5378,
+  pending). P14 for joins still not computed by the script. Card cost of q0032: 0.6403
+  card-hours for 300 M = 7.68 s per M (P15 bound 9 s per M: held).
+- `verify/LADDER.md` row 4: third reading added.
+
+## 2026-11-26T12:17Z (04:17 PST): outcome of R5 (q0035); session close
+
+R5 (run core-20261126-115933-9fb0e47, figure looked at): (i) 66 of 66 files identical to Track
+E's smoke runs, (ii) throughput ratio level 0 / level 2 at 256^3 = 1.0014 (at most 1.18
+predicted). Both held (`JOURNAL-noise-level2.md` entry 18). All four card checks of this batch
+are judged: q0049 PASS with K3 in part refuted (release v0.8 final), q0039 K7 CARD PASS, q0036
+P4a/P4c held and P4b held in its test, q0035 R5 held. Card time of this session: none
+submitted. Processor time: MPI build 2.5 min on 4 jobs; analyses on 1 to 2 cores, about 25
+core-minutes. Where I stopped: nothing half-done; q0059 (row 4, 0.755 member) pending in Slurm.

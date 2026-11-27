@@ -1,0 +1,17 @@
+{
+ "name": "28 (2026-11-26 afternoon)",
+ "what": "Track A: the half-amplitude triaxial run, the Szekeres member, the particle-number leg, and its G2 package; Track B: the mesh leg in the shifted gauge and its G2 package",
+ "note": "Release core-v0.8 is on main since 2026-11-26 (CLAUDE.md row; executables .work/build_gpu_v08 and .work/build_cpu_v08; the orchestrator's note to all of that day): new runs use it; horizon masses are compared across builds only with the finder's polishing (<fastflow> polish_iterations_<n> = 100 with mass_tol_<n> = 1e-5). Rulings: coord/DECISIONS/0039 to 0045. After git merge main: nrpic-run finish closes runs continued in place; finish and verify keep a checksum cache (the first pass reads everything once: start it in the background and do not wait; one pass with --full before a gate review). The week's usage is tight: keep to the time given, read what the task needs. Close a finished run before you analyse it; every number with its run id; prediction before every new run; figures made by registered scripts and looked at; at most 6 cores.",
+ "items": [
+  {
+   "type": "lead",
+   "owner": "A-emd-pbh",
+   "extra": "Extra for this session (about seventy-five minutes). Ended since your last session: queue entries q0067 (the Szekeres member of 256 cells continued toward tau 40) and q0068 (S1L-h, the triaxial run at half amplitude); and on processors the particle-number leg of item C3 (A-20261126-024922-97a2f14, prediction H) and the Szekeres readers. (1) Close each and judge it by the rule written before it ran, with registered analyses and figures you look at: A2H (the candidate holds if the first crossing, read with the shift-invariant measure, falls in [12.5, 15.2] Hubble times, and is refuted above 15.6 or below 11.8); P17 and P24, P18 to P21; H. (2) Item C3 (ruling 0043 item 1(a)): with H judged, state the cause of the floor if a run that could have refuted it shows it, or state it as unexplained; core's two deposit defects at level faces are fixed in a source session after 2026-11-27 and C3 is retested then: say so in OPEN.md. (3) Assemble the G2 package as rulings 0039 to 0043 say (C3, A2 and the horizon part of C1 (ii) are failures on record with their rulings and stay so): the G2 sections of the note, the schematics on the release, the rerun list, the slice mosaic; nrpic-stage collect, verify and report; list G2 in gates_complete if what remains open is only those failures and the fresh verifier of the whole gate, otherwise say which item waits for what."
+  },
+  {
+   "type": "lead",
+   "owner": "B-emd-gw",
+   "extra": "Extra for this session (about an hour). Ended since your last session: queue entry q0060 pop_s014_gr256_gd (the mesh leg of the population box in the shifted gauge) and your three detached analyses. (1) Close them and judge the predictions that were waiting (GM1 to GM4; M2, M3; the high-k part of Q1; S2, S3) with registered analyses on equal particle masses and figures you look at. (2) The G2 package item by item: C1, C2, C3 and C11 waited for q0060; the writing items C15 (one script per figure) and C17 (checker, abstract and summary of the note). nrpic-stage collect, verify and report. List G2 in gates_complete if what remains open is only failures on record with their rulings and the fresh verifier (C18); otherwise say which item waits for what, and queue what is needed (priority 2, prediction first, the release build)."
+  }
+ ]
+}

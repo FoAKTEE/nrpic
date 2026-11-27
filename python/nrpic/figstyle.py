@@ -25,6 +25,8 @@ conventions the project owner asked for (the look of Guo, Stone, Quataert & Spri
   ratio quantities in ``RdBu_r`` centred on the physical threshold.
 - x-labels pulled in with ``labelpad=-2`` in stacked strips and grids.
 """
+import os
+
 import numpy as np
 import matplotlib as mpl
 import matplotlib.pyplot as plt
@@ -179,9 +181,14 @@ def no_minor_labels(ax, axis="y"):
 
 def save(fig, path_without_ext, png=True):
     """Write the vector PDF at the exact figure size and, by default, a PNG copy for
-    inspection. Returns the list of files written."""
+    inspection. Returns the list of files written.
+
+    The PDF carries no creation date, so that a script run twice writes the same bytes;
+    with ``SOURCE_DATE_EPOCH`` set in the environment it carries that date (matplotlib
+    reads the variable itself)."""
     out = [f"{path_without_ext}.pdf"]
-    fig.savefig(out[0])
+    meta = None if os.environ.get("SOURCE_DATE_EPOCH") else {"CreationDate": None}
+    fig.savefig(out[0], metadata=meta)
     if png:
         out.append(f"{path_without_ext}.png")
         fig.savefig(out[1], dpi=200)

@@ -23,6 +23,7 @@
 
 #include <algorithm>
 #include <cmath>
+#include <cstdlib>
 #include <cstring>
 #include <iostream>
 #include <limits>
@@ -114,6 +115,17 @@ void Particles::NrpicInit(ParameterInput *pin) {
   }
   nropt.alpha_exc  = pin->GetOrAddReal("particles", "alpha_exc", -1.0);
   nropt.ah_exc_factor = pin->GetOrAddReal("particles", "ah_exc_factor", -1.0);
+  // <particles> ah_exc_max_growth = g: a horizon is used for excision while its smallest
+  // radius is below g times the starting radius of its search (4 when absent)
+  if (pin->DoesParameterExist("particles", "ah_exc_max_growth")) {
+    nropt.ah_exc_max_growth = pin->GetReal("particles", "ah_exc_max_growth");
+    if (!(nropt.ah_exc_max_growth > 0.0)) {
+      std::cout << "### FATAL ERROR in " << __FILE__ << " at line " << __LINE__
+                << std::endl << "<particles> ah_exc_max_growth must be positive"
+                << std::endl;
+      std::exit(EXIT_FAILURE);
+    }
+  }
   nropt.hist_dcycle = pin->GetOrAddInteger("particles", "hist_dcycle", 1);
   nropt.traj_dcycle = pin->GetOrAddInteger("particles", "traj_dcycle", 0);
   nropt.cstat_dcycle = pin->GetOrAddInteger("particles", "cstat_dcycle", 0);
@@ -448,11 +460,12 @@ TaskStatus Particles::NrpicPush(Driver *pdriver, int stage) {
       // rr_min is -1 until a search of this run has succeeded: after a restart the
       // flag ah_found is restored from the dump but the radius and centre are not, so
       // the rule waits for the first successful search
-      // A surface more than four times its starting radius is not accepted as a
-      // region to empty (a search that ends on a spurious surface must not remove
-      // the matter of the cluster).
+      // A surface more than four times its starting radius (ah_exc_max_growth) is
+      // not accepted as a region to empty (a search that ends on a spurious surface
+      // must not remove the matter of the cluster).
       if (pah->ah_found && nah < 4 && Kokkos::isfinite(pah->rr_min)
-          && pah->rr_min > 0.0 && pah->rr_min < 4.0*pah->initial_radius) {
+          && pah->rr_min > 0.0
+          && pah->rr_min < nropt.ah_exc_max_growth*pah->initial_radius) {
         ahc[nah][0] = pah->center[0];
         ahc[nah][1] = pah->center[1];
         ahc[nah][2] = pah->center[2];
