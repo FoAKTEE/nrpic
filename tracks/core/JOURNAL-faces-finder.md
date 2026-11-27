@@ -70,3 +70,59 @@ stability of the higher modes). If (a) holds, the cause is the weight u = 1/sqrt
 the radial metric component is much larger than the tangential one on these slices
 (zero shift, collapsed lapse: the slice is stretched radially), to be checked from a
 metric dump or from the step itself.
+
+## Entry 2, 2026-11-27 15:40: outcome F0, and what limits the convergence
+
+Run core-20261127-233027-4fdb05d (release core-v0.8, `athena_cpu_omp`, 3 threads, 70 s).
+F0 (a) HOLDS: from 0.6, 0.2 and 0.1 the mean radius moves monotonically by 1.72e-4,
+3.4e-5 and 4.3e-5 per iteration (relative 2.9e-4, 1.7e-4, 4.3e-4), no jump, no
+oscillation; the mass changes by 4.2e-3, 8.5e-4, 1.2e-3 per iteration, so the mass rule
+(1e-5) is never met and the searches end at the cap (reason 6). (b) HOLDS in part: the
+step over the expansion integral is 2.9e-7 at 0.6, 6.6e-7 at 0.2 and at 0.1.
+
+My reading of the flow function in entry 1 was WRONG (failed premise, kept on record): I
+took rho = H u sigma (the weight with r^2 of Gundlach's flow, `flow = shear`). The input
+key `<fastflow> flow` is `standard` when absent (fastflow.cpp 67-72), and then rho = H u,
+u = |grad F| (fastflow.cpp 1430-1431), without the weight. For a round sphere in a
+conformally flat metric u = 1/psi^2 = r/R (R the areal radius), so one iteration moves
+the mean radius by
+
+    delta r = - A H / psi^2,   A = alpha/(lmax (lmax+1)) + alpha/2 = 0.5139 (alpha 1, lmax 8).
+
+Check against the run [VERIFIED]: at r = 0.6 the area is 2.39446e4 and the expansion
+integral 583.839, so H = 0.024383, psi^2 = R/r = 72.75, delta r = 1.722e-4; the verbose
+file gives 0.6 -> 0.59982809, 1.719e-4 (0.2 per cent). At r = 0.2: 3.31e-5 predicted,
+3.39e-5 found. So the metric is isotropic there (the guess of a radially stretched slice
+in entry 1 is refuted) and the step is simply small.
+
+What limits the convergence [VERIFIED for the size of the step; the rate at the horizon
+is JUDGEMENT from the Schwarzschild case]: the step H u has the dimension 1/length, so
+the flow is not invariant under a change of the unit of length. Near a Schwarzschild
+horizon of mass m in isotropic coordinates (r = m/2, psi = 2, dH/dr = 1/m^2) an
+iteration reduces the distance to the horizon by the factor 1 - A/(4 m^2): 0.87 for m = 1
+(a puncture in units of its mass: 129 iterations to 1e-9, finder_stop.md), 0.9987 for
+m = 10. Track A's box has holes of area mass 6.3 (P0L6) and 10.7 (S1L) in code units, and
+the comoving coordinates add psi^2 = 73 to 180 between coordinate and areal radius: an
+e-folding of the distance takes several hundred iterations, which is what the track
+measured (915 to 3444 iterations; not converged in 4000 from 0.2). The weighted flow
+(`flow = shear`, rho = H u sigma with sigma = 2 r^2/(...) = r^2 psi^4 for a round sphere)
+has the step A H r R, which is invariant, and contracts by 1 - A = 0.49 per iteration at
+a Schwarzschild horizon of any mass.
+
+### Prediction F1 (the cause, in runs where it can fail; release core-v0.8, no new source)
+
+`fastflow/flow=shear` on the command line of the continued run (the key is in the stored
+input of every run). Searches with mass_tol 1e-5, polishing 100, cap 400:
+- S1L t = 220 (peak.00019.rst): from the deck's 0.6, from 0.2, 0.1 and 0.03: FOUND within
+  400 iterations, area mass 10.73 +- 0.05, mean radius 0.161 +- 0.003 (Track A's surface
+  from 0.16 after 1927 iterations of the standard flow: 10.73, 0.161), the four masses
+  within 1e-3 of each other.
+- P0L6 t = 140 (peak.00017.rst): from the deck's 0.15: FOUND, area mass 6.30 +- 0.02, mean
+  radius 0.104 +- 0.002 (Track A: 6.298 to 6.309, 0.1037 to 0.1042).
+- P0L6 t = 130 (peak.00016.rst, no trapped round sphere by Track A's scan): NOT found
+  from 0.15 and 0.6, whatever the reason; a found surface there is a false acceptance.
+Refuted if a search from the deck's radius ends at the cap still moving (then the step is
+not the limit), or dies by overshooting (mean radius negative, reason 4, in the first
+iterations: in flat space the weighted step with alpha = 1 is r -> r (1 - 2A) = -0.03 r);
+members with `flow_alpha_beta_const = 0.5` (A = 0.257, flat-space step r -> 0.49 r) run
+beside them to tell these two apart.
