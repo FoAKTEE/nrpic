@@ -583,7 +583,10 @@ def main():
         cj = C.load_json(key, "esf_criteria.json")
         dd = cj["iii"]["dust"]
         E.append((g2, rf"growth against the flux, {lab}: counted bins of $10M$; largest $|$bin median$|$ of $M_{{\rm AH}}/M_{{\rm LTB}}-1$ (per cent); D2 samples (all hold)",
-                  f"{dd['n_bins_counted']}; {100 * dd['max_abs_median']:.3f}; {cj['D2']['n']}" + ("" if cj["D2"]["holds"] else " (D2 fails)"), [key]))
+                  f"{dd['n_bins_counted']}; {100 * dd['max_abs_median']:.3f}; {cj['D2']['n']}" + ("" if cj["D2"]["holds"] else " (D2 fails)")
+                  # gate review G2 item c (verifier section 4.2): FF4's own control V-1L4 ends at 299 M
+                  + (r" (control held at its last value after $299M$; 280 samples within the control)"
+                     if key == "crit_ff4" else ""), [key]))
     npf = C.load_json("np_full", "np_partial.json")["runs"]
     E.append((g2, r"removed $\sum mE_K$ of $N/4$ over $N$ at $100,200,300,399.5M$, minus one (per cent)",
               ", ".join(f"{100 * (npf['FNQ']['at'][t]['removed_ratio_to_ref'] - 1):+.2f}" for t in ("100.0", "200.0", "300.0", "399.5")),

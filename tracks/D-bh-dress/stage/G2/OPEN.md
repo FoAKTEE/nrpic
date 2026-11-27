@@ -18,7 +18,7 @@ Every item of CHECKLIST.md is PASS except C17. What remains is of two kinds only
 | failure on record | C8 | D3 fails at M/4 (FF4) and at N/4 after ~220 M (FNQ, 8352 of 29984 removals; entry 26); no ruling needed (D3 is not part of criterion G), stated in the note |
 | failure on record | C3 | XC2's expected fall (factor 1.05), R1 'every column finite' (NaN at t = 0) |
 | failure on record | C2 | conv3's first reading dropped 300 M (D-20261126-055207-0137c53); reader changed after it, labelled post hoc (entry 27) |
-| [TO VERIFY], no criterion | C8 | why excision removes some dust up to 0.67 M of proper time before the exact crossing late on (FK, FN4, FNQ) |
+| decided by the verifier (2026-11-26), no criterion | C8 | why excision removes some dust up to 0.67 M of proper time before the exact crossing late on (FK, FN4, FNQ): early ARRIVAL, not early excision - the shells run ahead of the exact LTB solution by about 0.2 per cent of proper time at R0 = 28 M (0.78 M at M/8 and N, 0.55 M at 4N, 0.40 M at M/16), converging (VERIFIER.md section 4.1, run D-20261126-062436-72c04d3; VERIFIED for the tracers, JUDGEMENT for the dust). Carried to G3 as a bias of profiles read from removal times (scope/SCOPE_G3.md section 6) |
 | gap stated, not a failure | C2 gauge axis | plain 1+log only; the relaxed lapse cannot serve (section 2); the third axis is the boundary (three face distances) |
 
 No queue entry of this owner is open: q0008-q0011 are done. Nothing is queued for G2.
