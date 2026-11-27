@@ -394,3 +394,11 @@ would read "NR differs from one-patch delta N in the variance by about 0.4 per c
 - P15-3 (mirroring works): the pair mean of skew(zeta) has a standard error at least five times smaller than the member mean.
 - P15-4: the tail fractions at three and four sigma_own and A(3), A(4) agree with the reference within three combined
   errors (entry 4's (T) clause), F_+(4)/Q(4) of zeta in [1.1, 1.8], F_-(4)/Q(4) in [0.5, 1.0].
+
+## entry-16 (2026-11-27 15:36 PST, lead of E, batch 34): the re-queued jobs were preempted at once; queued again
+
+q0071-q0076 (jobs 5525-5529, 5532) started at 15:27-15:30 PST and were CANCELLED DUE TO PREEMPTION after 6-23 s each
+(sacct state PREEMPTED; a job of another user in the partition "priority" holds the cards). No member finished; the
+runs E-20261127-232703-090c8ee, -232704-ea5f466, -232706-adde60b, -232707-e5d2e68, -232708-8451c1e, -232910-4cf6b15 are
+closed as stopped and stay on record. By entry 14's rule the same lists are queued again unchanged (labels G3B07b-G3B11b,
+G3L00b); q0077, q0078 (G3L01, G3L02) still wait in Slurm. Predictions of entry 14 stand.
