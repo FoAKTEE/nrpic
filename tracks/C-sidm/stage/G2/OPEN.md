@@ -1,39 +1,46 @@
 # C-sidm G2: what the gate still lacks
 
-State at the end of the lead session of batch 27 (2026-11-26). G2 is NOT met and the package is
-not ready for an independent review: two card runs that serve C1, C2, C7 and C9 have not run (the stable member
-of the bracket on M/16 and with shift_eta 1.0); A16b344 ended and was read in this session (B20.2 held). Seven items pass (C3, C4, C8,
-C12, C14, C19, C20); none fails as written any more; thirteen are open. Every collapse time of the
-package is the alpha_min = 0.3 lapse marker of a run made without the horizon finder
-(C-20261125-160207-05b6db1).
+State at the end of the lead session of batch 32 (2026-11-27). Nineteen of twenty checklist items
+pass; the one open item is C18, the fresh verifier (decision 0016 item 4; ruling 0045 item 5: it is
+sent once q0057 and q0058 are read, which this session did). Failures on record that stay with the
+passing items: A.4 and BA.3 (N = 1e5 controls collapse by particle noise; ruling 0045 item 5),
+NS.2, D2.3 seed-pair part (2.24 M against 2 M), the failed run D2eta1 (guard stop after its
+collapse), the withdrawn predictions B17.1-B17.3 (JOURNAL). Every collapse time of the package is
+the alpha_min = 0.3 lapse marker of a run made without the horizon finder
+(C-20261125-160207-05b6db1; ruling 0041 item 3).
 
-## What changed in batch 27
+## What changed in batch 32
 
-- Closed (nrpic-run finish) and judged with registered analyses, figures read: N4c (NS.3 held:
-  t_c 295.78 M at N = 1e4), N6b344 (B17.5 held: t_c 252.31 M), N6b324 (B17.6 held: holds 600 M
-  within +-0.015), D2eta1 (B17.4 held: t_c 164.01 vs 163.41 M; the run itself FAILED on record,
-  guard stop at 190.4 M after collapse), N6b344e1 (B20.3 first half held: t_c 252.41 M), D2f2s2+
-  (D2.3 seed-pair part FAILED: 2.24 M against 2 M). Analyses C-20261126-114801-ea62ac3,
-  -120656-f5c62bb, -121702-b6b1eda, -121836-c7a76c1, -123219-f734997.
-- The threshold is bracketed at one mesh (M/8) and one N (1e6): (0.324, 0.344) contains
-  y_max = 0.334032; the same fates at N = 1e5. The gauge member of the unstable side agrees.
-- Closed without analysis (priority-5 continuations): A334s3c+ C-20261124-082221-7f03a8e
-  (completed 600 M); A334s2c+ C-20261124-053105-2fcc8af (finish running at the end of the session).
-- The working note has its G2 section (Sec. V, table VI).
+- Closed (nrpic-run finish) and judged with registered analyses, figures read: A16b324
+  C-20261126-121449-1d37e77 (6.3844 card-hours; B20.1 held: no collapse on M/16, block means
+  -0.0171..+0.0107, C-20261127-084538-8e98060) and N6b324e1 C-20261126-130519-1a79a66 (2.6175
+  card-hours; B20.3 second half held: no collapse, central lapse within 1.4e-5 of shift_eta 2.0,
+  C-20261127-084417-79c0e4d). C1, C2, C7, C9 pass: the bracket keeps its fates on both meshes and
+  in both gauges at N = 1e6.
+- Note figures of G2 (C10, C11, C13, C15, C16) from run C-20261127-084828-b6ca5ce; note compiled
+  and checked (C17); rerun list RERUN.md (C6).
 
-## Item by item, and the queue entry each waits for
+## Item by item
 
-| Item | What is missing | Queue entry | Prediction |
-|---|---|---|---|
-| C1, C7, C9 threshold with three-way convergence | the bracket on M/16 at N = 1e6 | q0057 A16b324 (job 5382 pending); q0055 A16b344 read: collapses at 217.97 M on M/16 against 252.31 M on M/8 (B20.2 held, C-20261126-124143-b485eac) | B20.1 (JOURNAL 2026-11-25T16:02Z) |
-| C1, C2, C7, C9 gauge leg of the stable member | y0 0.324 kin with shift_eta 1.0 | q0058 N6b324e1 (waiting) | B20.3 second half |
-| C2 seed scatter at N = 1e5 (not required for the bracket) | A334s2c+, A334s3c+ to read | none (closed or closing) | seed scatter of the control |
-| C10, C11, C13, C15, C16 figures | G2 note figures by one script each (run_all), ladder schematic, slice mosaic | none (processor work) | - |
-| C17 note | G2 figures in the note; final text once the legs are read | none | - |
-| C18 verifier | fresh verifier (ruling 0041 item 3) after q0055, q0057, q0058 are read | none | - |
-| C5, C6 report and reproducibility package | complete with the items above | none | - |
+| Item | State | What it waits for |
+|---|---|---|
+| C18 verifier | OPEN | a fresh verifier with the artefacts (this package, RERUN.md), not the conclusions |
+| all others | PASS | - |
 
-## What a G2 verifier must cover
+## What the verifier should recompute first
+
+1. The fates of the eleven threshold runs (RERUN.md section 1) from the raw `cc.nrpic.hst` with a
+   reader of its own that applies the restart rule (a later row replaces earlier rows from its
+   time on): the marker crossings 295.78, 534.81, 252.31, 217.97, 252.41, 229.79 M and "no
+   crossing by 600 M" for N6c, N6b324, A16b324, N6b324e1, A324s1i.
+2. The band readings of the stable members (block means of alpha_c - alpha_c(0) within +-0.03;
+   eta1 minus eta2 below 0.01) and that the 20 M windows were fixed before the runs (JOURNAL
+   2026-11-25T16:02Z, B20.1-B20.3).
+3. That the decks of the legs differ from N6b344/N6b324 only in the mesh (M/16) or in shift_eta
+   (make_decks_b20.py) and that all N = 1e6 members share the sampler and seed of N6c.
+4. That no run had the horizon finder (no horizon file in any output directory).
+
+## Further items for the verifier (from batch 27)
 
 - Recompute from the raw histories, with readers of its own: collapse times and alpha_c changes of
   the N-series (N4c, the N = 1e5 control, N6c), the bracket (N6b344, N6b324, their N = 1e5

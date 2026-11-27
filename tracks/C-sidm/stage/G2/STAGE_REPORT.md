@@ -1,14 +1,13 @@
 # Stage report: C-sidm G2
 
-Date: 2026-11-26 · branch `track/C-sidm` at `fa27a2ab83e7` · checklist
+Date: 2026-11-27 · branch `track/C-sidm` at `ead04d28b161` · checklist
 `tracks/C-sidm/stage/G2/CHECKLIST.md` (from `nrpic-stage collect`)
 
 ## Verdict
 
-**FAIL**. Tag: `stage/C-sidm/G2-fail-20261126` (created and pushed by the orchestrator after review, decision 0003).
+**FAIL**. Tag: `stage/C-sidm/G2-fail-20261127` (created and pushed by the orchestrator after review, decision 0003).
 
-- 13 checklist items not PASS or NA: C1 OPEN, C2 OPEN, C5 OPEN, C6 OPEN, C7 OPEN, C9 OPEN, C10 OPEN, C11 OPEN, C13 OPEN, C15 OPEN, C16 OPEN, C17 OPEN
-- verify reported FAIL: runs
+- 1 checklist items not PASS or NA: C18 OPEN
 - no VERIFIER.md (step 7: verifier subagent; decision 0016 item 1, VERIFIER_REPORT.md accepted too)
 
 ## Package documents (decision 0012)
@@ -27,50 +26,50 @@ Date: 2026-11-26 · branch `track/C-sidm` at `fa27a2ab83e7` · checklist
 
 | # | Criterion | Evidence (run id, figure, KB locator) | Result |
 |---|---|---|---|
-| C1 | The code paths used by the track pass their tests of §10 | Collision-operator rows of brief section 10 pass (G1 signed; conductivity 1.020 +- 0.004, C-20261124-131012-f920f45). Row 'Einstein-Vlasov steady states and their stability threshold', batch 27: the steady state holds at N = 1e6 on M/8 (N6c, no collapse in 600 M) and fails at N = 1e5 and 1e4 by particle-noise relaxation (controls collapse at 534.81 and 295.78 M; NS.1 and NS.3 held, nseries C-20261126-120656-f5c62bb, fig read); the threshold is bracketed at N = 1e6 on M/8: y0 0.344 kicked in collapses at 252.31 M, 0.324 kicked in holds 600 M inside +-0.015 (B17.5, B17.6 held; C-20261126-121836-c7a76c1, fig read). Waits for the mesh leg (q0055 A16b344 running, q0057 A16b324) and the gauge leg of the stable member (q0058 N6b324e1). The N = 1e5 control failures stay on record (A.4, BA.3). Lapse markers throughout (alpha_min = 0.3; no run had the horizon finder, C-20261125-160207-05b6db1). | OPEN |
-| C2 | Three-way convergence in particle number, mesh spacing, and gauge or boundary | Particle number: control of y0 0.334032 on M/8 at N = 1e4, 1e5, 1e6: t_c 295.78, 534.81 M, none by 600 M; H-norm2 floor ratios 9.78 and 9.95 for N ratios 10 (C-20261126-120656-f5c62bb); the bracket members have the same fates at N = 1e5 and 1e6 (C-20261126-121836-c7a76c1). Mesh: collisional t_c 206.64 (M/4), 163.41 (M/8), 158.42 M (M/16); M/8 scatter over collision seed, cell and gauge 1.13 M (five runs, mean 164.61 M), so the M/8 -> M/16 shift of 6.2 M is resolved [JUDGEMENT]; the f = 2 seed pair differs by 2.24 M against the 2 M bar of D2.3 (FAILED on record) (C-20261126-121702-b6b1eda, fig read). Gauge: shift_eta 1.0 moves the collisional t_c from 163.41 to 164.01 M and the collision rate by 0.8 per cent (B17.4 held); the run stops non-finite at 190.4 M after collapse (C-20261126-034500-4b34b1c, failed on record). Threshold legs: gauge member of y0 0.344 (N6b344e1, C-20261126-050124-00e10ae) being closed in this session, B20.3; open: q0055 A16b344 (running), q0057 A16b324, q0058 N6b324e1 (B20.1-B20.3). Lapse markers throughout (alpha_min = 0.3; no run had the horizon finder, C-20261125-160207-05b6db1). | OPEN |
+| C1 | The code paths used by the track pass their tests of §10 | Collision-operator rows of brief section 10 pass (G1 signed; conductivity 1.020 +- 0.004, C-20261124-131012-f920f45). Row "Einstein-Vlasov steady states and their stability threshold": the steady state holds at N = 1e6 on M/8 (N6c, 600 M) and decays by particle noise at N = 1e5, 1e4 (t_c 534.81, 295.78 M; floors scale as 1/N; C-20261126-120656-f5c62bb, failures on record A.4, BA.3, ruling 0045 item 5); the threshold is bracketed in (0.324, 0.344) and the bracket keeps its fates on M/8 and M/16 and with shift_eta 2.0 and 1.0 at N = 1e6 and at N = 1e5 on M/8 (B17.5, B17.6, B20.1, B20.2, B20.3 held: C-20261126-121836-c7a76c1, -124143-b485eac, -123219-f734997, C-20261127-084538-8e98060, -084417-79c0e4d; figures read). Every t_c is the alpha_min = 0.3 lapse marker; no run had the horizon finder (C-20261125-160207-05b6db1). | PASS |
+| C2 | Three-way convergence in particle number, mesh spacing, and gauge or boundary | Particle number: control at N = 1e4, 1e5, 1e6 (t_c 295.78, 534.81 M, none; H floors 7.68e-2, 7.86e-3, 7.90e-4, C-20261126-120656-f5c62bb); bracket fates equal at N = 1e5 and 1e6 (C-20261126-121836-c7a76c1). Mesh: bracket on M/8 and M/16 (0.344: 252.31 vs 217.97 M; 0.324 holds 600 M on both, block means -0.0171..+0.0107; C-20261126-124143-b485eac, C-20261127-084538-8e98060); collisional t_c on M/4, M/8, M/16 206.64, 163.41, 158.42 M (C-20261126-121702-b6b1eda). Gauge: shift_eta 1.0 vs 2.0: 0.344 t_c 252.41 vs 252.31 M, 0.324 central lapse within 1.4e-5 (C-20261126-123219-f734997, C-20261127-084417-79c0e4d); collisional t_c 164.01 vs 163.41 M. Failures on record: D2.3 seed-pair part (2.24 M against 2 M, JOURNAL 2026-11-26T12:20Z), D2eta1 guard stop after collapse (C-20261126-034500-4b34b1c). The unstable member's t_c moves -13.6 per cent from M/8 to M/16: the location converges, the time does not [JUDGEMENT]. Every t_c is the alpha_min = 0.3 lapse marker; no run had the horizon finder (C-20261125-160207-05b6db1). | PASS |
 | C3 | Constraints behave | H-norm2 of the controls flat after 50 M at a floor set by the deposit noise: 8.6e-4 (N = 1e5) and 8.5e-3 (N = 1e4) on M/4, ratio 9.97 = the N ratio (C-20261124-130021-5c9c207, fig_cc2_N.png, panel 3); on M/8 the floor is 9.3 times that of M/4 at equal N (drift entry 12), close to the factor 8 of the particles per cell. No growth before collapse in any run read; after collapse the guard or the excision ends the record. [JUDGEMENT: "behave" read as bounded and scaling with the particle noise; convergence of the floor with the mesh is not expected at fixed N.] | PASS |
 | C4 | A first minimal full-GR kinetic run | Full-GR kinetic runs with and without collisions to 300-600 M on M/8 (release core-v0.6): D2 (C-20261122-103854-4670b59, -144455-6e0992e, -141414-399ad97, -181011-60baef9) and block A (15 chains, e.g. C-20261121-214601-40dc927). | PASS |
-| C5 | Verification report (decision 0012: STAGE_REPORT.md with EVIDENCE.md and OPEN.md; no REPORT.md) | STAGE_REPORT.md written by nrpic-stage report in this session with EVIDENCE.md and OPEN.md; the verification it reports is incomplete (C1, C2, C7). | OPEN |
-| C6 | Reproducibility package | Every run registered (tracks/C-sidm/runs/); decks and readers in tracks/C-sidm/longruns/ (README "How to rerun the analyses"); not yet a package that verifies the capability (C7 open). | OPEN |
-| C7 | The collisionless threshold reproduces the literature value with three-way convergence | At one mesh (M/8) and one N (1e6), in one gauge: the threshold of the King b = 1 family lies in (0.324, 0.344), which contains the turning point y_max = 0.334032 (B17.5, B17.6 held, C-20261126-121836-c7a76c1); the same fates at N = 1e5 (229.79 M; holds 600 M). Three-way convergence waits for the mesh leg q0055 A16b344 (running) and q0057 A16b324 (B20.1, B20.2) and the gauge member q0058 N6b324e1 (B20.3). The literature value is the turning point printed in arXiv:2009.08163 (y_max = 0.334, paper.tex line 953; recomputed 0.334032 in G1). Lapse markers throughout (alpha_min = 0.3; no run had the horizon finder, C-20261125-160207-05b6db1). | OPEN |
+| C5 | Verification report (decision 0012: STAGE_REPORT.md with EVIDENCE.md and OPEN.md; no REPORT.md) | STAGE_REPORT.md written by nrpic-stage report in batch 32 with EVIDENCE.md, OPEN.md, RERUN.md and this checklist; the verification it reports is complete apart from the fresh verifier (C18). | PASS |
+| C6 | Reproducibility package | RERUN.md: every card run (label, run id, deck generator, queue command, fate), every registered analysis with its command, the note run (C-20261127-084828-b6ca5ce) and the checker; all runs registered with sha256 of inputs and outputs (tracks/C-sidm/runs/). | PASS |
+| C7 | The collisionless threshold reproduces the literature value with three-way convergence | The collisionless threshold of the King b = 1 family lies in (0.324, 0.344) at N = 1e6 on two meshes (M/8, M/16) and in two gauges (shift_eta 2.0, 1.0), and at N = 1e5 on M/8: 0.344 collapses in every leg (252.31, 217.97, 252.41, 229.79 M), 0.324 holds 600 M in every leg (B17.5, B17.6, B20.1, B20.2, B20.3 held; C-20261126-121836-c7a76c1, -124143-b485eac, -123219-f734997, C-20261127-084538-8e98060, -084417-79c0e4d; fig_g2_threshold of C-20261127-084828-b6ca5ce). The literature value, the turning point y_max = 0.334 printed in arXiv:2009.08163 (paper.tex line 953; recomputed 0.334032 at G1), lies inside: located to +-3 per cent. One seed per member at N = 1e6. Every t_c is the alpha_min = 0.3 lapse marker; no run had the horizon finder (C-20261125-160207-05b6db1). | PASS |
 | C8 | Once the collision module is in core, the budgets of conserved quantities close in curved spacetime | Collision budget in curved spacetime, coll_energy = particle, D2 on M/8: summed dH_particles / sum MH below 3.2e-16 up to the first excision for f = 1, 2, 4; rest-mass budget 2.7e-14; deposit identity 1e-15 (C-20261124-130442-0819c88, d2.json). Open item for the verifier: the collision-count test before t_c gives z = -3.39 at f = 4 (REVIEW-wave3 section 14). | PASS |
-| C9 | Track C. The references and the wording that the lead corrected are taken into `coord/BRIEF_ERRATA.md`; the G2 criterion reads "the collisionless threshold is located with three-way convergence and compared with the turning-point criterion". (0013) | As C7: located as a bracket of +-3 per cent around the turning point at one mesh and one N; compared with the turning-point criterion (y_max = 0.334032 inside the bracket). Mesh and gauge legs: q0055, q0057, q0058. | OPEN |
-| C10 | Schematic: Verification ladder | No verification-ladder schematic for G2 yet (G1 schematics in tracks/C-sidm/note/). | OPEN |
-| C11 | Data figure: Convergence figures (one each for particle number, mesh, gauge) | Registered analysis figures exist and were read for all three legs: particle number fig_nseries.png (C-20261126-120656-f5c62bb), the bracket at two N (C-20261126-121836-c7a76c1); mesh fig_d2.png with M/4, M/8, M/16 (C-20261126-121702-b6b1eda); gauge fig_d2.png (eta1 dotted) and the threshold gauge leg (this session). Note figures of G2 not drawn (one script per figure via run_all). | OPEN |
+| C9 | Track C. The references and the wording that the lead corrected are taken into `coord/BRIEF_ERRATA.md`; the G2 criterion reads "the collisionless threshold is located with three-way convergence and compared with the turning-point criterion". (0013) | As C7: the threshold is located with three-way convergence of the fates (N, mesh, gauge) and compared with the turning-point criterion (y_max = 0.334032 inside the bracket (0.324, 0.344)). Wording of decision 0013 used in the note (Sec. V B). | PASS |
+| C10 | Schematic: Verification ladder | schem_ladder.png (note Fig. 10; scripts/schem_ladder.py, paperfig.py; run C-20261127-084828-b6ca5ce), looked at. | PASS |
+| C11 | Data figure: Convergence figures (one each for particle number, mesh, gauge) | fig_g2_threshold (note Fig. 11): one panel per leg, (a) particle number, (b) mesh, (c) gauge, from the registered card runs (run C-20261127-084828-b6ca5ce; its printed crossings equal nseries.py to all digits, N5.1); the analysis figures of each leg were read as well (fig_nseries.png of the analyses in C1). [JUDGEMENT: one figure with one panel per leg serves "one each".] | PASS |
 | C12 | Data figure: Constraint norms against time | Constraint norms against time: fig_cc2_N.png panel 3 (C-20261124-130021-5c9c207), looked at. | PASS |
-| C13 | Data figure: At least one multi-scale slice mosaic with zoom boxes | No slice mosaic yet. | OPEN |
+| C13 | Data figure: At least one multi-scale slice mosaic with zoom boxes | fig_g2_mosaic (note Fig. 12): three rows (0.344 at t = 0, 0.324 and 0.344 at 220 M on M/16, N = 1e6) by three zoom levels (half-widths 12, 3, 0.75 M) with zoom boxes; rest mass per coordinate volume in a thin slab from the particle snapshots (the runs have no mesh dumps); run C-20261127-084828-b6ca5ce, looked at. | PASS |
 | C14 | Package documents of decision 0012: STAGE_REPORT.md (nrpic-stage report), EVIDENCE.md, OPEN.md and this CHECKLIST.md in the stage directory; REVIEW.md where the lead rechecked helpers; the scoping text in SCOPE.md or SCOPING.md beside them or in the scope directory, named in the report (no REPORT.md needed) | STAGE_REPORT.md, EVIDENCE.md, OPEN.md, CHECKLIST.md in stage/G2/; REVIEW is stage/REVIEW-wave3.md section 14; scoping text tracks/C-sidm/scope/. | PASS |
-| C15 | Data figures drawn with /zoom-figure-style from registered run outputs, one script per figure, every PNG looked at | Analysis figures exist in the run directories (each looked at); the note figures of G2 are not drawn. | OPEN |
-| C16 | Schematics drawn with /sleep-paper-figure-style: track architecture (exists / to be ported / new) and the gate timeline | G2 schematics not drawn. | OPEN |
-| C17 | Working note written with /paper-writing; its manuscript checker passed with --compile | G2 section written into the note (Sec. V 'Toward the capability gate', table VI with run ids; checker with --compile: 0 undefined references, 1 overfull box of 1.1 pt as at G1; pages 11 and 18 read). Open: the G2 figures and the mesh and gauge legs of the bracket. | OPEN |
-| C18 | Verifier subagent (fresh context) wrote VERIFIER.md (decision 0016; VERIFIER_REPORT.md accepted too); every number of the Supplemental Material recomputed from the manifests | No G2 verifier yet; what it must cover: OPEN.md section "What a G2 verifier must cover". | OPEN |
+| C15 | Data figures drawn with /zoom-figure-style from registered run outputs, one script per figure, every PNG looked at | All note figures drawn by one script each from registered run outputs with sha256 checks (run_all.py, run C-20261127-084828-b6ca5ce); every PNG looked at (G2 figures this session; the others byte-equal to run C-20261121-130335-d0cfe2e). | PASS |
+| C16 | Schematics drawn with /sleep-paper-figure-style: track architecture (exists / to be ported / new) and the gate timeline | schem_architecture (state of G2: release core-v0.6 for the runs; exists / to be ported / new) and schem_timeline (G0, G1 signed; G2 package under review), paperfig.py, run C-20261127-084828-b6ca5ce, looked at. | PASS |
+| C17 | Working note written with /paper-writing; its manuscript checker passed with --compile | Note with G2 section (Sec. V, Figs. 10-12, Table VI) compiled; checker with --compile: 0 undefined references or citations, 1 overfull box of 1.1 pt and the "apparent horizon" wording of Sec. II D, both accepted at G1; pages 11 and 12 read (19 pages). | PASS |
+| C18 | Verifier subagent (fresh context) wrote VERIFIER.md (decision 0016; VERIFIER_REPORT.md accepted too); every number of the Supplemental Material recomputed from the manifests | Waits for the fresh G2 verifier (decision 0016 item 4, ruling 0045 item 5): what it must recompute first is in OPEN.md, sections "What the verifier should recompute first" and "Further items for the verifier". | OPEN |
 | C19 | Null results and failed runs are on record (manifests and JOURNAL) | Failed predictions and runs on record: JOURNAL 2026-11-24T13:12Z (N.3, D2.2, A.1 kout part, A.3, A.4), 2026-11-25T12:21Z (NS.2), 2026-11-26T12:20Z (D2.3 seed-pair part, 2.24 M against 2 M); failed run D2eta1 (guard stop after collapse, C-20261126-034500-4b34b1c); withdrawn predictions B17.1-B17.3; failed analysis runs of batch 11; preempted chains keep their manifests; six N = 1e5 continuations removed from the queue with the reason (OPEN.md). | PASS |
-| C20 | STATUS.md, JOURNAL.md and HANDOFF.md are current | Rewritten at the end of the batch-27 lead session (2026-11-26). | PASS |
+| C20 | STATUS.md, JOURNAL.md and HANDOFF.md are current | Rewritten at the end of the batch-32 lead session (2026-11-27). | PASS |
 
 ## Re-verification on a clean checkout (`nrpic-stage verify`)
 
-`nrpic-stage verify` on 2026-11-26T12:37:16Z, clean export of `fa27a2ab83e7`: **FAIL**. Details: `VERIFY_RESULTS.md`.
+`nrpic-stage verify` on 2026-11-27T08:52:52Z, clean export of `ead04d28b161`: **PASS**. Details: `VERIFY_RESULTS.md`.
 
 | Check | Result | Message |
 |---|---|---|
 | clean | PASS | worktree clean (outside the stage directory being assembled) |
 | sync | PASS | main is merged into the branch |
-| export | PASS | clean export of fa27a2ab83e7 (HEAD) in /data/haiyangw/nrpic/scratch/C-sidm/tmp/stage-verify/C-sidm-G2-fa27a2a-20261126T123403Z/tree |
+| export | PASS | clean export of ead04d28b161 (HEAD) in /data/haiyangw/nrpic/scratch/C-sidm/tmp/stage-verify/C-sidm-G2-ead04d2-20261127T085127Z/tree |
 | size | PASS | no committed file of the track above 5 MB |
 | note | PASS | tracks/<ID>/note/main.tex present |
 | package | PASS | EVIDENCE.md, OPEN.md, CHECKLIST.md present (decision 0012); scoping text: scope/SCOPE.md; no verifier's report yet (VERIFIER.md, decision 0016) |
 | note-pdf | PASS | note/main.pdf committed after the last .tex change |
 | style | PASS | 2 style copies equal harness/style/SHA256SUMS (czstyle.py, paperfig.py) |
-| fig-script | PASS | 11 figures, each with its script |
-| min-figs | PASS | 3 schematics and 8 data figures (brief 13.4 asks at least 1 and 5 at G2) |
-| runs | FAIL | 2 of 257 runs have problems |
+| fig-script | PASS | 14 figures, each with its script |
+| min-figs | PASS | 4 schematics and 10 data figures (brief 13.4 asks at least 1 and 5 at G2) |
+| runs | PASS | 263 run manifests finished (25 hand-written, read as decision 0012 allows) |
 | run-notes | WARN | 25 runs read with defaults or not fully re-verifiable (nrpic-run lint) |
 | checksums | WARN | output checksums not re-verified (--no-checksums) |
-| status | PASS | STATUS.md has 34 lines |
-| rerun | PASS | 11 of 11 scripts and commands ran cleanly in the export |
-| compare | PASS | 22 regenerated files compared with the committed ones; 0 differ beyond tolerance (rtol 1e-06, atol 1e-12, PNG rms 0.005) |
-| regenerate | PASS | all 22 committed figure files regenerated |
+| status | PASS | STATUS.md has 35 lines |
+| rerun | PASS | 14 of 14 scripts and commands ran cleanly in the export |
+| compare | PASS | 28 regenerated files compared with the committed ones; 0 differ beyond tolerance (rtol 1e-06, atol 1e-12, PNG rms 0.005) |
+| regenerate | PASS | all 28 committed figure files regenerated |
 
 ## Figures
 
@@ -80,12 +79,15 @@ Date: 2026-11-26 · branch `track/C-sidm` at `fa27a2ab83e7` · checklist
 | note/figures/fig_box_summary.* | note/scripts/fig_box_summary.py | data | to be confirmed by the session |
 | note/figures/fig_cluster.* | note/scripts/fig_cluster.py | data | to be confirmed by the session |
 | note/figures/fig_collisions.* | note/scripts/fig_collisions.py | data | to be confirmed by the session |
+| note/figures/fig_g2_mosaic.* | note/scripts/fig_g2_mosaic.py | data | to be confirmed by the session |
+| note/figures/fig_g2_threshold.* | note/scripts/fig_g2_threshold.py | data | to be confirmed by the session |
 | note/figures/fig_heat.* | note/scripts/fig_heat.py | data | to be confirmed by the session |
 | note/figures/fig_knudsen.* | note/scripts/fig_knudsen.py | data | to be confirmed by the session |
 | note/figures/fig_onsets.* | note/scripts/fig_onsets.py | data | to be confirmed by the session |
 | note/figures/fig_sequences.* | note/scripts/fig_sequences.py | data | to be confirmed by the session |
 | note/figures/schem_architecture.* | note/scripts/schem_architecture.py | schematic | to be confirmed by the session |
 | note/figures/schem_dataflow.* | note/scripts/schem_dataflow.py | schematic | to be confirmed by the session |
+| note/figures/schem_ladder.* | note/scripts/schem_ladder.py | schematic | to be confirmed by the session |
 | note/figures/schem_timeline.* | note/scripts/schem_timeline.py | schematic | to be confirmed by the session |
 
 ## Verifier report
@@ -158,4 +160,4 @@ L = likelihood, E = effect (high, medium, low).
 
 ## Decision requested from the group
 
-G2 NOT met and not ready for a verifier: the bracket (0.324, 0.344) around y_max = 0.334032 holds at N = 1e6 on M/8 (B17.5, B17.6, C-20261126-121836-c7a76c1) and its unstable side holds with shift_eta 1.0 (B20.3 first half); C1, C2, C7, C9 wait for the mesh leg (q0055 A16b344 ended, being closed; q0057 A16b324) and the stable gauge member (q0058 N6b324e1); figures C10, C11, C13, C15, C16 and the fresh verifier C18 follow. The two runs the verify check flags are those two mesh members (not finished).
+G2 package complete for the independent review (decision 0016 item 4; ruling 0045 item 5): nineteen of twenty items pass, the one open item is the fresh verifier (C18). The collisionless threshold of the King b = 1 family lies in (0.324, 0.344), around the turning point y_max = 0.334032, with the same fates at N = 1e6 on M/8 and M/16 and with shift_eta 2.0 and 1.0, and at N = 1e5 on M/8 (B17.5, B17.6, B20.1-B20.3 held; analyses C-20261126-121836-c7a76c1, -124143-b485eac, -123219-f734997, C-20261127-084538-8e98060, -084417-79c0e4d). Every collapse time is the alpha_min = 0.3 lapse marker; no run had the horizon finder. Failures on record: A.4, BA.3, NS.2 (N = 1e5 controls decay by particle noise), D2.3 seed-pair part, failed run D2eta1. Requested: a fresh verifier with this package and RERUN.md; what it recomputes first is in OPEN.md.

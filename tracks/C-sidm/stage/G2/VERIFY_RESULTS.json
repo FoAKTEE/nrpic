@@ -1,10 +1,10 @@
 {
   "track": "C-sidm",
   "gate": "G2",
-  "commit": "fa27a2ab83e7c1b5bed95de81e40907bacc4d867",
-  "verified_utc": "2026-11-26T12:37:16Z",
-  "export": "/data/haiyangw/nrpic/scratch/C-sidm/tmp/stage-verify/C-sidm-G2-fa27a2a-20261126T123403Z",
-  "result": "FAIL",
+  "commit": "ead04d28b1611402492c8894b8a27a0be04ef23a",
+  "verified_utc": "2026-11-27T08:52:52Z",
+  "export": "/data/haiyangw/nrpic/scratch/C-sidm/tmp/stage-verify/C-sidm-G2-ead04d2-20261127T085127Z",
+  "result": "PASS",
   "checks": [
     {
       "check": "clean",
@@ -21,7 +21,7 @@
     {
       "check": "export",
       "status": "PASS",
-      "message": "clean export of fa27a2ab83e7 (HEAD) in /data/haiyangw/nrpic/scratch/C-sidm/tmp/stage-verify/C-sidm-G2-fa27a2a-20261126T123403Z/tree",
+      "message": "clean export of ead04d28b161 (HEAD) in /data/haiyangw/nrpic/scratch/C-sidm/tmp/stage-verify/C-sidm-G2-ead04d2-20261127T085127Z/tree",
       "detail": null
     },
     {
@@ -57,27 +57,20 @@
     {
       "check": "fig-script",
       "status": "PASS",
-      "message": "11 figures, each with its script",
+      "message": "14 figures, each with its script",
       "detail": null
     },
     {
       "check": "min-figs",
       "status": "PASS",
-      "message": "3 schematics and 8 data figures (brief 13.4 asks at least 1 and 5 at G2)",
+      "message": "4 schematics and 10 data figures (brief 13.4 asks at least 1 and 5 at G2)",
       "detail": null
     },
     {
       "check": "runs",
-      "status": "FAIL",
-      "message": "2 of 257 runs have problems",
-      "detail": {
-        "C-20261126-043714-8ea1c35": [
-          "status is submitted: not finished (nrpic-run finish)"
-        ],
-        "C-20261126-121449-1d37e77": [
-          "status is submitted: not finished (nrpic-run finish)"
-        ]
-      }
+      "status": "PASS",
+      "message": "263 run manifests finished (25 hand-written, read as decision 0012 allows)",
+      "detail": null
     },
     {
       "check": "run-notes",
@@ -86,15 +79,18 @@
       "detail": {
         "C-sidm-20261115-115344-eb8b752": [
           "output directory read from a field other than outputs.dir",
-          "no gate"
+          "no gate",
+          "input python/nrpic/figstyle.py changed since the run (sha256 differs)"
         ],
         "C-sidm-20261115-115348-eb8b752": [
           "output directory read from a field other than outputs.dir",
-          "no gate"
+          "no gate",
+          "input python/nrpic/figstyle.py changed since the run (sha256 differs)"
         ],
         "C-sidm-20261115-115400-eb8b752": [
           "output directory read from a field other than outputs.dir",
-          "no gate"
+          "no gate",
+          "input python/nrpic/figstyle.py changed since the run (sha256 differs)"
         ],
         "C-sidm-20261115-120610-b4592be": [
           "status 'done' read as completed",
@@ -102,7 +98,8 @@
           "no gate",
           "status 'done' read as completed",
           "input tracks/C-sidm/equilibria/check_equilibria.py changed since the run (sha256 differs)",
-          "input python/nrpic/io.py changed since the run (sha256 differs)"
+          "input python/nrpic/io.py changed since the run (sha256 differs)",
+          "input python/nrpic/figstyle.py changed since the run (sha256 differs)"
         ],
         "C-sidm-20261115-120703-9b3e868": [
           "output directory read from a field other than outputs.dir",
@@ -126,7 +123,8 @@
           "output directory read from a field other than outputs.dir",
           "no gate",
           "input tracks/C-sidm/equilibria/check_equilibria.py changed since the run (sha256 differs)",
-          "input python/nrpic/io.py changed since the run (sha256 differs)"
+          "input python/nrpic/io.py changed since the run (sha256 differs)",
+          "input python/nrpic/figstyle.py changed since the run (sha256 differs)"
         ],
         "C-sidm-20261115-121302-313d399": [
           "output directory read from a field other than outputs.dir",
@@ -155,7 +153,8 @@
           "output directory read from a field other than outputs.dir",
           "no gate",
           "status 'done' read as completed",
-          "input python/nrpic/io.py changed since the run (sha256 differs)"
+          "input python/nrpic/io.py changed since the run (sha256 differs)",
+          "input python/nrpic/figstyle.py changed since the run (sha256 differs)"
         ],
         "C-sidm-20261115-121748-4e8d6b5": [
           "hand-written (launcher 'local (tracks/C-sidm/gravothermal/register.py)')",
@@ -178,21 +177,24 @@
           "no gate",
           "status 'done' read as completed",
           "input tracks/C-sidm/equilibria/knudsen.py changed since the run (sha256 differs)",
-          "input python/nrpic/io.py changed since the run (sha256 differs)"
+          "input python/nrpic/io.py changed since the run (sha256 differs)",
+          "input python/nrpic/figstyle.py changed since the run (sha256 differs)"
         ],
         "C-sidm-20261115-125308-54870b9": [
           "status 'done' read as completed",
           "output directory read from a field other than outputs.dir",
           "no gate",
           "status 'done' read as completed",
-          "input python/nrpic/io.py changed since the run (sha256 differs)"
+          "input python/nrpic/io.py changed since the run (sha256 differs)",
+          "input python/nrpic/figstyle.py changed since the run (sha256 differs)"
         ],
         "C-sidm-20261115-130010-69e27db": [
           "status 'done' read as completed",
           "output directory read from a field other than outputs.dir",
           "no gate",
           "status 'done' read as completed",
-          "input python/nrpic/io.py changed since the run (sha256 differs)"
+          "input python/nrpic/io.py changed since the run (sha256 differs)",
+          "input python/nrpic/figstyle.py changed since the run (sha256 differs)"
         ],
         "C-sidm-20261115-131130-3077a99": [
           "no gate"
@@ -217,19 +219,19 @@
     {
       "check": "status",
       "status": "PASS",
-      "message": "STATUS.md has 34 lines",
+      "message": "STATUS.md has 35 lines",
       "detail": null
     },
     {
       "check": "rerun",
       "status": "PASS",
-      "message": "11 of 11 scripts and commands ran cleanly in the export",
+      "message": "14 of 14 scripts and commands ran cleanly in the export",
       "detail": null
     },
     {
       "check": "compare",
       "status": "PASS",
-      "message": "22 regenerated files compared with the committed ones; 0 differ beyond tolerance (rtol 1e-06, atol 1e-12, PNG rms 0.005)",
+      "message": "28 regenerated files compared with the committed ones; 0 differ beyond tolerance (rtol 1e-06, atol 1e-12, PNG rms 0.005)",
       "detail": [
         [
           "note/figures/schem_timeline.png",
@@ -240,6 +242,11 @@
           "note/figures/fig_collisions.pdf",
           "PASS",
           "regenerated (vector files carry dates; the PNG preview is compared)"
+        ],
+        [
+          "note/figures/fig_g2_threshold.png",
+          "PASS",
+          "identical"
         ],
         [
           "note/figures/fig_box_summary.png",
@@ -272,7 +279,17 @@
           "regenerated (vector files carry dates; the PNG preview is compared)"
         ],
         [
+          "note/figures/fig_g2_threshold.pdf",
+          "PASS",
+          "regenerated (vector files carry dates; the PNG preview is compared)"
+        ],
+        [
           "note/figures/fig_cluster.png",
+          "PASS",
+          "identical"
+        ],
+        [
+          "note/figures/schem_ladder.png",
           "PASS",
           "identical"
         ],
@@ -297,6 +314,11 @@
           "regenerated (vector files carry dates; the PNG preview is compared)"
         ],
         [
+          "note/figures/fig_g2_mosaic.png",
+          "PASS",
+          "identical"
+        ],
+        [
           "note/figures/schem_architecture.png",
           "PASS",
           "identical"
@@ -318,6 +340,16 @@
         ],
         [
           "note/figures/fig_box_step.pdf",
+          "PASS",
+          "regenerated (vector files carry dates; the PNG preview is compared)"
+        ],
+        [
+          "note/figures/schem_ladder.svg",
+          "PASS",
+          "regenerated (vector files carry dates; the PNG preview is compared)"
+        ],
+        [
+          "note/figures/fig_g2_mosaic.pdf",
           "PASS",
           "regenerated (vector files carry dates; the PNG preview is compared)"
         ],
@@ -346,7 +378,7 @@
     {
       "check": "regenerate",
       "status": "PASS",
-      "message": "all 22 committed figure files regenerated",
+      "message": "all 28 committed figure files regenerated",
       "detail": null
     }
   ]
