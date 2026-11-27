@@ -1,0 +1,81 @@
+{
+ "name": "34 (2026-11-27 afternoon: first round of the week)",
+ "what": "gate review of C's G2; F's completed passage, its verifier's second part, then the gate review of F's G1; E's G3 package; D's corrections, G3 scope and its independent review; B's last run and package; A's tests of its open conditions; the knowledge base's second pass over unread claims",
+ "note": "A new usage week began on 2026-11-27 15:00 PST. Release core-v0.8 is on main (new runs use it: .work/build_gpu_v08, .work/build_cpu_v08; coord/INTERFACES/restart_outputs.md and finder_stop.md). Rulings: coord/DECISIONS/0039 to 0047. The shared card queue is EMPTY and both cards are free at the moment: a run queued now starts at once, so queue what your gate needs early in the session (prediction first, priority 2 for a run a gate package waits for, <fastflow> diagnostics = true and polishing in every run that uses the horizon finder). After git merge main: nrpic-run finish closes runs continued in place; finish and verify keep a checksum cache (one pass with --full, detached, before a gate review). Close a finished run before you analyse it; every number with its run id; prediction before every new run or test; figures made by registered scripts and looked at; at most 6 cores. For the gate reviews: Track C's fresh verifier wrote its report to stage/G2/verifier/VERIFIER.md (a subdirectory), and the full checksum pass of the stage check ended with one failed check (stage/G2/VERIFY_RESULTS.md): say which and whether it bears on the gate; the lead has not yet applied the verifier's four corrections. Track F's G1 has predictions that failed as written (A2-1, A2-2, the heavy-hole clause of A2-5, H2 in part, H4): judge whether the gate (a baseline without new core work: one complete vacuum passage with its checks) can be passed with them stated.",
+ "stages": [
+  [
+   0,
+   1,
+   2,
+   3,
+   4
+  ],
+  [
+   5,
+   6,
+   7,
+   8
+  ],
+  [
+   9
+  ]
+ ],
+ "items": [
+  {
+   "type": "gate",
+   "owner": "C-sidm",
+   "gate": "G2"
+  },
+  {
+   "type": "lead",
+   "owner": "F-hills",
+   "extra": "Extra for this session (about seventy-five minutes). The continuation of the passage (queue entry q0069) has ended: the tracker record reaches 186 M, beyond the 170 M that item C8 asks for; F-B2 and F-C2 (q0002, q0003) have ended too. (1) Close the passage run (nrpic-run finish; start the checksum pass in the background) and read it with your registered readers (b21_a2_state.py, b11_passage.py), figures looked at: judge A2-3 to A2-5 and C25-1 to C25-5 and item C8. From 133 M the finder's diagnostics are on: read found or not found from the status files; decide the verifier's finding F1 (the heavy black hole's mass on two branches) and whether the horizons confirm the fates read from the tracker positions (which member merges with the large black hole, a common horizon, the other member's fate), against the Newtonian orbit from the same deck. State what is a coordinate reading and what the horizons show. (2) Close F-B2 and F-C2 (they belong to G2): no analysis now beyond a health check. (3) Stage G1: collect, verify, report; list G1 in gates_complete if what remains open is only failures on record (A2-1, A2-2, the heavy-hole clause of A2-5, H2, H4) and the rerun of the fresh verifier's readers on the completed passage, which follows this session; say in OPEN.md what the verifier must rerun and what it left unchecked (stage/G1/VERIFIER.md section 'not checked')."
+  },
+  {
+   "type": "lead",
+   "owner": "E-stoch-inf",
+   "extra": "Extra for this session (about ninety minutes). Every baseline and level-2 entry of G3 has run (q0053, q0054, q0061 to q0066). (1) Close each run and read zeta of every member with the fast map (g3/zeta_table.py; its per-member spot check against the full map as fixed in g3/JOURNAL.md entry 12). (2) Judge the criteria of scope 4d with its amendments 4d.9 as written: the variance gate and the tail shape separately (skewness and kurtosis directly, the tail fractions at the own-variance threshold at three and four sigma, the antisymmetric part) against the reference of the 128 band (direct paths and the importance sampler), with the number of pairs that entered; the mirrored pairs; the level-2 pairs as a sensitivity. Failed clauses are stated as failed. (3) Figures from registered scripts, each looked at (the one-point distribution of zeta against the reference with its tail, the tail fractions against the threshold, a slice mosaic with zoom boxes, the schematic of the verification ladder at G3), the ledger with run ids, the G3 sections of the note written with the paper-writing skill (/home/haiyangw/.claude/skills/paper-writing/SKILL.md; load it with the Skill tool if your session lists it), checker, compile, read the pages. (4) Stage G3: collect, verify, report; list G3 in gates_complete if what remains open is only failures on record and the fresh verifier; in that case start `harness/bin/nrpic-stage verify E-stoch-inf G3 --full` detached and say what the verifier should recompute first."
+  },
+  {
+   "type": "lead",
+   "owner": "D-bh-dress",
+   "extra": "Extra for this session (about seventy-five minutes). Gate G2 is signed (coord/GATES.md; decision 0045): record it. (1) FIRST, so that it runs while you write: core's excision-guard test on your long deck with release core-v0.8 (<particles> ah_exc_max_growth = 8 with the initial radius you used, the converged finder: <fastflow> polish_iterations_<n> = 100 with mass_tol_<n> = 1e-5, diagnostics = true), prediction first (do removals by the horizon rule continue past 219.5 M? the mass against the exact solution), one entry at priority 2. (2) The eight corrections of wording the gate review lists (stage/G2/GATE_REVIEW.md); regenerate STAGE_REPORT. (3) The scope of G3 (decision 0045 item 2): write its section of the scope text BEFORE any production run: the growth law of a black hole fed by dark matter and the profile of the dress it leaves; the statistic and estimator of each claim; the criteria with numbers fixed in advance and what would refute each; a third mesh member inside the convergent regime; the converged finder with its diagnostics in every run; horizon excision on; the lead of the shells over the exact solution (about 0.2 per cent of proper time) measured and carried as a bias in profiles read from removal times, with a test that could show it does not converge; envelopes, not single samples; a gauge leg or the statement that none is possible and why; the card budget within 60 card-hours and the order of runs. An independent reviewer reads it right after this session: commit and push it, and queue no production run before that review."
+  },
+  {
+   "type": "lead",
+   "owner": "B-emd-gw",
+   "extra": "Extra for this session (about seventy-five minutes). (1) FIRST: the initial data of the 64-cell member at eight particles per cell (run B-20261126-222552-2e44186; its manifest still says running: find out whether the process ended, check the result as your HANDOFF says, close the run), then queue the card member with the line in your HANDOFF (priority 2, the release card build): the queue is empty, it should start at once; judge predictions C3a and C3b when it has ended (it is short), registered analysis, figure looked at. (2) Close the analysis B-20261126-221911-a0531db and judge GM2 and GM3 (registered compare_legs.py, figure). (3) The G2 package: C1 with the run free of stream crossing (series 7) beside the case as run, which stays failed on record; C3 with the mesh pair at fixed sampling beside the predictions that failed at one particle per cell; C2, C11; the paragraphs and ledger rows in note section VI (C17), checker, compile, pages read; nrpic-stage collect, verify and report. List G2 in gates_complete if what remains open is only failures on record with their rulings (decision 0046 item 2) and the fresh verifier (C18); in that case start `harness/bin/nrpic-stage verify B-emd-gw G2 --full` detached and say what the verifier should recompute first."
+  },
+  {
+   "type": "task",
+   "owner": "F-hills",
+   "key": "stage/G1/verifier-tail",
+   "title": "the fresh verifier's readers rerun on the completed passage",
+   "task": "Second part of the fresh verification of gate G1 of this track (the first part: stage/G1/VERIFIER.md of 2026-11-25, which reached 96 M of the passage; its section 7 says how its readers rerun). About seventy-five minutes, processors only. The passage is complete (the tracker record reaches 186 M; from 133 M the finder's diagnostics are on). Do not read the lead's new verdicts first (the newest entries of JOURNAL.md, stage/REVIEW-wave3.md, CHECKLIST). (1) Rerun the first verifier's scripts unchanged on the completed passage (stage/G1/verifier/ or where VERIFIER.md section 7 says), then check with your own eyes what they do: the join of the tracker files with its overlaps, the pair's closest approach, the centre of mass against the large black hole, each member's fate from positions AND from the horizons (status files where they exist; the failure signature and the words 'made without the diagnostics' where not), the Newtonian three-body orbit from the same deck, the masses (finding F1: the heavy black hole's mass on two branches from 86.6 M: which branch do the status files support?), constraint norms, the waveform samples to the end. A prediction before each new reading, the outcome after it. (2) Judge as written: item C8 (one complete vacuum passage), predictions A2-3 to A2-5; those that failed stay failed (A2-1 on timing, A2-2, the heavy-hole clause of A2-5). (3) From what the first part left unchecked (its section 'not checked'), take what bears most on G1 as far as the time allows and say what remains. Append a dated second part to stage/G1/VERIFIER.md with figures you looked at; only after it is written, a section that compares with the lead's verdicts."
+  },
+  {
+   "type": "lead",
+   "owner": "A-emd-pbh",
+   "extra": "Extra for this session (about ninety minutes). Gate G2 was not passed (decision 0047); conditions (a) to (d) are open. Core's source session on the deposits at level faces and the finder runs in parallel with you today; its executables come later (core's outbox will say). (1) Condition (a), on processors, predictions first: a smoothed ball member with no level face inside the matter (does the floor go away?), and the gate review's offline check of the Hamiltonian constraint from a three-dimensional dump on two meshes (is the floor in the fields, or in how the history norm is taken?). Think before running: with the gauge frozen and the particles held at rest the geometry still evolves under a source that does not, so that test could not separate causes; say in the journal which tests can. (2) Condition (b): new decks carry 4000 flow iterations, polishing, diagnostics, and a start radius from a scan of round spheres; test them on the restart files you used in batch 31. (3) Conditions (c) and (d): design and queue, prediction first, on the release card build at priority 2 (the queue is empty, they start at once): the run that could refute a named first-order cause of the lag of the triaxial crossing (the gate review's section 5 item 3 says what it must be able to show), and one triaxial run of phase 1 with the new finder settings taken to a found horizon with the bound of scope section 3 read at detection. Six card-hours at most for the two. (4) Records: OPEN.md with the state of each condition; no stage package."
+  },
+  {
+   "type": "task",
+   "owner": "D-bh-dress",
+   "key": "g3/scope_review",
+   "title": "independent review of the scope of gate G3 before its runs",
+   "task": "Independent review of the scope of gate G3 of this track BEFORE its production runs (the G3 section of the track's scope text, written by the lead today; coord/DECISIONS/0045 item 2 lists the conditions it must meet; the reservations of the G2 gate review: stage/G2/GATE_REVIEW.md). You did not write it. About an hour; small registered calculations on processors with predictions first; no card run. Judge whether the scope, as written, can be failed by the runs it plans and whether passing it would mean what it says: (1) each claim (the growth law; the profile of the dress): the statistic and its estimator, the reference it is compared with (is it the right reference for what the run measures?), the size of error the test can detect, and whether a plausible defect (the shells running ahead of the exact solution by 0.2 per cent of proper time; particle noise near the black hole; the finder's stopping rule; excision ending) would be seen or would pass as physics; (2) each criterion: a number fixed in advance and a model test; name the ones that cannot fail; (3) convergence: a third mesh member inside the regime, envelopes instead of single samples, particle number; a gauge leg or an honest statement; (4) the budget and the order of runs: what should run first because it could end the plan. Deliver g3/scope_review/SCOPE_REVIEW.md: findings ranked (blocking / should change / note), each with its evidence and run id and a proposed wording where a criterion should change; a verdict line: queue the production set as written, or change these items first. The scope text is changed by the lead, not by you."
+  },
+  {
+   "type": "task",
+   "owner": "kb",
+   "key": "claims4",
+   "title": "second pass over the claims located by machine and never read",
+   "task": "Claims package of the knowledge base, fourth (tracks/kb/HANDOFF.md 'next'; stage/KB-G3/OPEN.md item O7; coord/GATES.md row KB-G3: a claim located by machine and never read by a person is right as worded in about 80 per cent of a sample, so about 86 of the 529 unread claims are expected to be wrong as worded). About ninety minutes, processors only. (1) Prediction first: how many of the claims you will read are wrong as worded, from the measured rate. (2) Read against their sources, at their locators, as many of the unread machine-located claims as the time allows, in this order: claims whose text begins or ends in a cut; claims that a track's note or checklist cites (grep the branches for claim ids and locators); the rest by a seeded random order committed before the draw. For each: right as worded, superseded by a whole-sentence claim with the correct label (the supersede action of claims3), or withdrawn; the leftovers the second verifier named (741's locator, 428's author order, 804 and 805, the debris in 313 and 430, 864, 877). Apply by a plan file with the package's apply script, dry run first. (3) The rate with its interval for what you read, beside the earlier samples; a figure. (4) A new snapshot and the QA run; an information note to the owners whose cited claims changed. LEDGER, README, JOURNAL with outcomes."
+  },
+  {
+   "type": "gate",
+   "owner": "F-hills",
+   "gate": "G1"
+  }
+ ]
+}
