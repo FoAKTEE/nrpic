@@ -92,30 +92,66 @@
     "nodes": 1,
     "gpus": 1,
     "cores": 1,
-    "walltime_s": null,
+    "walltime_s": 22978.0,
     "wall_limit": null,
     "segments_max": 6,
     "gpu_hours_requested": 5.9,
-    "gpu_hours": null,
-    "particles": 1000000.0
+    "gpu_hours": 6.3844,
+    "particles": 1000000.0,
+    "gpu_hours_basis": "sum over 16 jobs of the chain: sacct ElapsedRaw for 16",
+    "gpu_seconds_by_job": {
+      "5382": 3005.0,
+      "5387": 3003.0,
+      "5392": 3004.0,
+      "5397": 3004.0,
+      "5402": 3006.0,
+      "5407": 3020.0,
+      "5412": 1045.0,
+      "5417": 1046.0,
+      "5422": 136.0,
+      "5427": 111.0,
+      "5433": 98.0,
+      "5438": 20.0,
+      "5441": 2037.0,
+      "5445": 31.0,
+      "5450": 55.0,
+      "5456": 363.0
+    }
   },
   "slurm": {
     "partition": "preempt",
     "job_name": "C-20261126-121449-1d37e77",
-    "job_ids": []
+    "job_ids": [
+      "5382",
+      "5387",
+      "5392",
+      "5397",
+      "5402",
+      "5407",
+      "5412",
+      "5417",
+      "5422",
+      "5427",
+      "5433",
+      "5438",
+      "5441",
+      "5445",
+      "5450",
+      "5456"
+    ]
   },
   "outputs": {
     "dir": "scratch/C-sidm/C-20261126-121449-1d37e77",
     "sha256sums": "sha256sums.txt",
-    "sha256sums_sha256": null,
-    "bytes": null,
-    "files": null
+    "sha256sums_sha256": "8708d10d6b8b2dd2e355fb65e4a40207368f6db8a9c93cf8eae9728d9fe920be",
+    "bytes": 93800860970,
+    "files": 262
   },
-  "status": "submitted",
-  "exit_code": null,
+  "status": "completed",
+  "exit_code": 0,
   "registered": "2026-11-26T12:14:50Z",
-  "started": null,
-  "ended": null,
+  "started": "2026-11-26T05:03:32-08:00",
+  "ended": "2026-11-26T21:22:24-08:00",
   "parents": [],
   "notes": "",
   "budget_at_submit": {
@@ -127,5 +163,6 @@
     "cores_busy": 0,
     "runs": 253,
     "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md + 0026-cards-loaded-allotment-cost.md + 0031-level2-branch-and-ablation.md + 0032-new-account-preemption-allotments.md + 0038-track-e-g2-signed-g3-scope.md + 0039-rulings-after-batch-17.md"
-  }
+  },
+  "finished": "2026-11-27T08:45:33Z"
 }
