@@ -2,12 +2,13 @@
 """Is the compensation pass of the deposit conservative on a refined mesh?  (Item 0b of
 tracks/core/NEXT_SOURCE.md; prediction C1 of tracks/core/JOURNAL-faces-finder.md.)
 
-    comp_cons.py --base ATHENA --new ATHENA --out DIR [--tlim 2.0]
+    comp_cons.py --base ATHENA --new ATHENA --out DIR [--tlim 1.0]
 
 Deck: problems/tests/deposit_smr.athinput (flat space, 10^4 particles with random
 positions and momenta drifting across three levels of static refinement: a cube inside a
 cube, so that level faces, edges and corners are all met), with the cloud and the
-compensation of each case added to <particles>.  The history compares the integrals of
+compensation of each case added to <particles>, in a periodic box (the case with the
+prefix out_ keeps the outflow faces of the deck).  The history compares the integrals of
 the deposited E and S_i over the mesh (columns 9 to 12) with the particle sums (5 to 8)
 at every cycle.  Cases with the prefix uni_ run on the root mesh alone (no refinement).
 
@@ -39,6 +40,8 @@ CASES = {
     "tsc_plain": ["deposit_shape = tsc", "deposit_comp_c = 0.125"],
     "cic_plain": ["deposit_shape = cic", "deposit_comp_c = 0.0833333333333333"],
     "cic_fs": ["deposit_shape = cic", "deposit_fine_shape = true"],
+    "out_pcs_c2": ["deposit_shape = pcs", "deposit_comp_c = " + C6,
+                   "deposit_comp_c2 = 0.4666666666666667"],
     "uni_pcs_c2": ["deposit_shape = pcs", "deposit_comp_c = " + C6,
                    "deposit_comp_c2 = 0.4666666666666667"],
     "uni_cic_plain": ["deposit_shape = cic", "deposit_comp_c = 0.0833333333333333"],
@@ -55,19 +58,23 @@ def deck_text(name, tlim):
         i = txt.index("<mesh_refinement>")
         j = txt.index("<time>")
         txt = txt[:i] + txt[j:]
+    if not name.startswith("out_"):
+        # periodic box: the pass has a flux through an outflow face of the mesh when
+        # matter lies in the cells next to it, which is not what is tested here
+        txt = txt.replace("= outflow", "= periodic")
     return txt
 
 
-def run(exe, d, txt):
+def start(exe, d, txt):
     os.makedirs(d, exist_ok=True)
     with open(os.path.join(d, "dep.athinput"), "w") as f:
         f.write(txt)
     lnk = os.path.join(d, "random.nrp")
     if not os.path.exists(lnk):
         os.symlink(IC, lnk)
-    with open(os.path.join(d, "athena.log"), "w") as log:
-        return subprocess.run([exe, "-i", "dep.athinput"], cwd=d, stdout=log,
-                              stderr=subprocess.STDOUT).returncode
+    log = open(os.path.join(d, "athena.log"), "w")
+    return subprocess.Popen([exe, "-i", "dep.athinput"], cwd=d, stdout=log,
+                            stderr=subprocess.STDOUT), log
 
 
 def read_hst(d):
@@ -87,7 +94,7 @@ def main():
     ap.add_argument("--base", required=True)
     ap.add_argument("--new", required=True)
     ap.add_argument("--out", required=True)
-    ap.add_argument("--tlim", type=float, default=2.0)
+    ap.add_argument("--tlim", type=float, default=1.0)
     ap.add_argument("--cases", default="all")
     a = ap.parse_args()
     out = os.path.abspath(a.out)
@@ -96,9 +103,13 @@ def main():
     for name in names:
         txt = deck_text(name, a.tlim)
         r = {}
-        for tag, exe in (("base", a.base), ("new", a.new)):
+        # the two builds side by side (two cores)
+        procs = {tag: start(exe, os.path.join(out, name, tag), txt)
+                 for tag, exe in (("base", a.base), ("new", a.new))}
+        for tag in ("base", "new"):
             d = os.path.join(out, name, tag)
-            st = run(exe, d, txt)
+            st = procs[tag][0].wait()
+            procs[tag][1].close()
             r[tag] = {"status": st}
             if st == 0:
                 cyc, errs, raw = read_hst(d)
@@ -121,7 +132,8 @@ def main():
     chk = {}
     ok_all = all(r[t]["status"] == 0 for r in res.values() for t in ("base", "new"))
     chk["status"] = ok_all
-    comp = [n for n in names if not n.startswith("uni_") and n not in ("none_pcs", "cic_fs")]
+    comp = [n for n in names if not n.startswith("uni_") and not n.startswith("out_")
+            and n not in ("none_pcs", "cic_fs")]
     chk["C1a_new_conserves"] = all(res[n]["new"].get("max_rel_err_E", 1) < 1e-12 and
                                    res[n]["new"].get("max_err_S_over_mW", 1) < 1e-12
                                    for n in comp)

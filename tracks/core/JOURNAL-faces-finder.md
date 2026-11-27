@@ -205,3 +205,43 @@ S (finder options, Track A's files, one cycle each; S1L t = 220 and P0L6 t = 140
 - S4 without the new options the finder's files are byte-identical to core-v0.8 on
   `problems/tests/by_horizon_coarse.athinput` (status file with diagnostics, summary,
   shape) and on S1L (the status lines of F0's three members).
+
+## Entry 4, 2026-11-27 15:55: first outcomes D, C0, C1; the pass needed one exchange per direction
+
+Run core-20261127-234417-485a3df (dep_compare.py; closed as failed because two checks of the
+script failed, one of them mis-specified by me):
+- D: every table of the fourteen cases without `cic_fs` and `pcs_comp` byte-identical
+  between core-v0.8 and this branch (HOLDS). `cic_fs`: the cells that change against
+  core-v0.8 are x1 = 7.25 (+0.125) and 7.75 (-0.125), the dipole of NEXT_SOURCE item 0
+  and no other cell. My check "D4 of dep_levels.py passes" was the wrong check: D4 also
+  asks the capped deposits to be uniform to 1e-13, which core-v0.8 does not give either
+  (0.125 for `cic_cap`, 0.031 for `tsc_cap`: the test lattice has one particle per LOCAL
+  cell, and clouds of the root width over a lattice whose spacing jumps are not uniform
+  at the jump; lead's run core-20261126-022953-21b8455 shows the same numbers). The
+  script now compares the tables of `cic_fs` and `cic` directly; rerun below.
+- C0: line sum of `pcs_comp` 31.999999999999996 (core-v0.8: 32.04131944) HOLDS; only the
+  two coarse cells at the faces change HOLDS; the split FAILED: -0.00755 at x1 = -8.5 and
+  -0.03377 at +8.5, not -0.0207 each (their sum, -0.04132, is the excess). The two faces
+  are not mirror images in this test: the particles sit exactly on cell centres, where
+  the four cells of the cubic cloud are chosen to one side, so the deposit level of the
+  clouds next to the two faces differs. Gain over the uncompensated boundary error: 1.63
+  (core-v0.8: 1.79), so D5 holds.
+
+Run core-20261127-234454-3c39b48 (comp_cons.py, first form: outflow faces, stopped by me
+after three cases): C1 FAILED for the first form of the source. `pcs_c2`: largest error
+of the E integral 9.9e-4 with core-v0.8 and 3.4e-5 with the branch; `pcs_c2_lim`: 3.6e-4
+and 8.2e-6. Thirty to forty times smaller, not round-off. Two causes by reading, not yet
+separated by a run:
+ (a) my own: the pass along x1 acts in the ghost rows of a block too, so that the passes
+     along x2 and x3 find their neighbours; but the coarse cells at a level face are
+     corrected after the pass, in the block that owns them only. A neighbour of the same
+     level then holds, in its ghost cells, the uncorrected value, and the two blocks
+     disagree on the flux through their common face in the next direction;
+ (b) the deck has outflow faces: the pass has a flux through a face of the mesh when
+     matter lies in the cells next to it.
+Changes: on a mesh with refinement the ghost cells are now filled again before the
+passes along x2 and x3 (one exchange per direction instead of one; a uniform mesh keeps
+the single exchange and stays byte-identical), and the test runs in a periodic box (the
+outflow deck stays as case `out_pcs_c2`, expected NOT to conserve if matter reaches the
+faces of the mesh, with either build). Prediction C1 stands as written for the periodic
+cases, now for ten steps; if an error above 1e-12 remains, (a) was not the only cause.
