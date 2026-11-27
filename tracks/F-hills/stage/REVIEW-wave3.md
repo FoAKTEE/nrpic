@@ -372,3 +372,39 @@ plunging, m2 marginal) are coordinate energies (R6) until the horizons show a me
   times below the uncorrected 1.6e-5" in note v3 (OPEN.md item 3).
 - Junk-energy criterion (iii): the four radii agree within 19.8 percent: MET AT ITS EDGE
   (CHECKLIST C7).
+
+## Batch 34 (lead, 2026-11-27 afternoon): A2 to 186.0 M; horizons from the status files; G1 package
+
+No helper package finished since batch 25; this section reviews the card runs themselves from their
+outputs (JOURNAL.md batch 34: predictions D34 written before any reader ran; outcomes there).
+- A2 (F-20261124-210400-902c650): continuation q0069 from 133.0 M to 186.0 M, 25 attempts (17
+  cut by preemption), 8 counted segments of the 9 allowed; ended because Slurm refused the next
+  submission ("I/O error writing script/environment to file", chain/slurm-5492.out), the same
+  failure at the same minute for C2. Closed `--status stopped` (checksums over about 724 GB in the
+  background). The readers b21_a2_state.py and b11_passage.py ran unchanged to 186.0 M
+  (F-20261127-232849-14345be, -232940-3f652bf); a new reader b34_horizons.py reads the finders'
+  status files (F-20261127-232657-163727d; its first run F-20261127-232531-8d16e2c failed: the status
+  rows end with `# <reason in words>` and nrread.read_table skipped every row). All four figures
+  looked at.
+- Confirmed from the outputs: the join has no gap to 186.0 M; the common horizon of m1 and M at
+  137.5 M (finder 2 found at every search, mass 1.0053 -> 1.1137, its centre on M's tracker within
+  3e-6 M); m2's horizon found at every search with its mass within 6.4e-4 of 0.12954; Newton's
+  reverse fates. What is a coordinate reading (distances, energies with gauge velocities) and what
+  the horizons show is separated in JOURNAL.md batch 34 and stage/G1/STATUS.md T4.
+- Not confirmed: m2's fate (two-body energy within +-0.2 units of zero, depends on which mass of M
+  is used and on the gauge velocities); the remnant's spin and the radiated energy (not computed);
+  which heavy-hole branch of 86.6-133 M is converged (F1: the status file does not separate the
+  branches, both "found" with equal mean expansion; the finder stops after a median of 6 flow
+  iterations).
+- Wrong and corrected: b11_cards.RUNS mapped B2 and C2 to the batch-11 runs that were stopped
+  before they ran (F-20261124-135408-1e6db58, -141842-d5263e9); now the queued runs
+  (F-20261126-052133-10f9a5f, -131751-89eaff8), so b11_passage draws C + C2 to 106.69 M (not judged).
+- Wrong, listed: finder 0 reports "found" for 117 surfaces after 141 M with |mean expansion| up to
+  23.7 (status file reason 0): a found flag that accepts such surfaces is a question to core
+  (outbox, batch 34). b11_passage's member energies of m1 after the merger are meaningless (its
+  distance to M is 1e-9 M) and it keeps M's pre-merger mass.
+- The verifier's findings: F1 decided in part (above; stage/G1/OPEN.md item 5); F2-F4 and requests
+  (a)-(f) as in batch 25. The verifier's rerun on the completed passage is the next session's.
+- F-B2 (F-20261126-052133-10f9a5f) DONE at tlim 140, F-C2 (F-20261126-131751-89eaff8) stopped at
+  106.69 M: health check only (trackers and history to their last time, no non-finite value);
+  closed. Both are G2 material.

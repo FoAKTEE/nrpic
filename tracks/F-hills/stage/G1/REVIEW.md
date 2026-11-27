@@ -12,4 +12,5 @@ The lead's rechecks of the helpers, from their artefacts:
 - wave 3, batch 5 (binary_conv's chains, rule P1b-D): `../REVIEW-wave3.md` (batch 5 section);
 - wave 3, batch 11 (khsr_note; the card chains A, B, C; N1/N1m; L-K): `../REVIEW-wave3.md`
   (batch 11 section) and `../../JOURNAL.md`, lead session of 2026-11-24T12:55Z (Q1-Q4, N1, L-K).
-The second agent's check of the plan is `SECOND_CHECK.md` (wave 2); no verifier of the G1 material yet.
+- wave 3, batches 21-34 (A2 to 133 M and to 186.0 M, the horizons from the status files, F-B2 and F-C2 closed): `../REVIEW-wave3.md` (batch 25 and batch 34 sections) and `../../JOURNAL.md`.
+The second agent's check of the plan is `SECOND_CHECK.md` (wave 2); the fresh verifier of the G1 material wrote `VERIFIER.md` (batch 22, to 96.23 M).

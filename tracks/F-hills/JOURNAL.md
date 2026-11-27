@@ -1316,3 +1316,92 @@ core-v0.5):
   single minimum of 7.5-9 M before 140 M and then grows (C25-2).
 - (D34-4) Newton from the same deck (b11_passage) keeps the reverse fates to 200 M (m1 ejected,
   m2 bound), so NR and Newton disagree on both members' fates.
+
+### Outcomes D34, C25, A2-3 to A2-5 (registered: F-20261127-232657-163727d b34_horizons.py, after
+### F-20261127-232531-8d16e2c failed (the status rows end with '# <reason in words>', which
+### nrread.read_table skips: no row read; parser fixed in b34_horizons.py); F-20261127-232849-14345be
+### b21_a2_state.py; F-20261127-232940-3f652bf b11_passage.py; figures fig_b34_horizons.png,
+### fig_b34_f1.png, fig_b21_a2_state.png, fig_b11_passage.png read)
+
+What the horizons show (status files, 1697 distinct search times per finder, 133.0-186.0 M) and
+what is a coordinate reading (trackers):
+- [VERIFIED, horizons] m1 and M have a common horizon from 137.5 M: finder 2 (M) is found at every
+  search 133-186 M; its area mass is 1.0044-1.0161 before (median 1.00529 over 133-137.35 M) and
+  1.1129-1.1145 after (median 1.11367 over 143.35-186 M), a rise of 0.1084; the first found mass
+  above 1.10 is at 137.5 M; mean radius 1.278 -> 1.646; its centre sits on M's tracker (median
+  3e-6 M before, 2e-7 M after). 1.0044 + 0.1295 = 1.1339 against 1.1137: the area mass is the
+  irreducible mass, and the summary's mass with spin reaches 1.1236 (b21 S6 finder2 max)
+  [TO VERIFY: remnant spin and radiated energy not computed].
+- [VERIFIED, horizons] m1's own horizon (area mass 0.13, |mean expansion| below 2e-3) is found
+  at all 115 searches while the trackers put m1 more than 1.5 M from M, and to about 141 M, i.e.
+  some 3.5 M inside the common horizon (fig_b34_horizons panels 2-3). From about 141 M to 147.66 M
+  finder 0 reports "found" at 117 searches with area masses 0.8-1.04 and |mean expansion| 1-24:
+  these are not horizons; the found flag at puncture_setup's tolerance accepted them (status0
+  abs_hmean_found max 23.7). After 147.66 M finder 0 ends at the iteration limit (reason 6, 1227
+  searches).
+- [VERIFIED, horizons] m2's horizon is found at every search 133-186 M with area mass 0.12954,
+  within 6.4e-4 of that median: no merger of m2 and no common horizon of m2 with M to 186 M.
+- [coordinate reading] m1-M tracker distance below 1.5 M at 136.6 M, below 1.0 M at 138.35 M,
+  below 0.5 M at 140.55 M, 1.3e-9 M at 186 M (the trackers coincide). m2-M: one minimum 8.733 M
+  at 134.3 M, then 8.93 (140), 10.18 (150), 11.85 (160), 13.84 (170), 16.09 (180), 17.53 M (186);
+  slope 0.236 M per M over the last 10 M. m2's coordinate two-body energy with M: +0.12 units at
+  186 M with M's pre-merger horizon mass (b11_passage), and about -0.04 units if M is replaced by
+  the remnant's 1.1137 [JUDGEMENT, arithmetic: -0.11 m2 / 17.5 M = -8e-4 M = -0.16 units];
+  gauge velocities (RISKS R6). m2's fate: receding on a marginal orbit, bound or unbound UNDECIDED.
+- Newton from the same deck (b11_passage, b34): m1 passes M at 12.07 M (95.75 M) and leaves
+  (39.4 M at 186 M, E_0M +1.49 units at 200 M); m2 passes at 5.78 M (122.1 M) and stays bound
+  (9.43 M at 200 M, E_1M -1.63). NR: m1 captured by M (common horizon), m2 passes at 8.73 M and
+  recedes. The fates of m1 differ (captured against ejected); m2's orbit differs (pericentre 8.73
+  against 5.78 M, 17.5 against 9.7 M at 186 M), its fate is undecided in NR.
+
+Judgements:
+- D34-1 (F1) REFUTED. From 133.0 to 135.2 M there is ONE branch of found heavy-hole masses
+  (1.00443 at 133.0 M rising to 1.0055); from 135.2 M, as m1 comes within about 2 M, two branches
+  again, both found, with median |mean expansion| 4.64e-3 (upper) and 4.61e-3 (lower): the status
+  file does not separate them. Finder 2 stops after a median of 6 flow iterations (4-97); a found
+  search means the mass rule held, not a vanishing expansion. F1 decided in part: the restarted
+  finder at 133.0 M lands on the upper branch (A's early value 1.0040, so the upper branch moved
+  by +4e-4 over 133 M), the lower branch of 86.6-133 M does not reappear before the approach of m1;
+  which branch is the converged surface is not established [JUDGEMENT: the lower branch is a
+  plateau of a flow stopped early, as in finder_stop.md's two plateaus of Track D]. Test that
+  decides it: polished searches (core-v0.8, polish_iterations 100, mass_tol 1e-5, and mass_tol
+  1e-9) on two or three of A2's restart files between 87 and 133 M (not run; G2 list).
+- D34-2 MET IN PART. Finder 0 found at every search with the tracker distance above 1.5 M (115 of
+  115) MET; "not found at every search with the tracker distance below 0.5 M" REFUTED as written
+  (117 of 1455 found, all of them spurious surfaces, above); finder 2 found through the merger
+  (492 of 492 searches within 10 M of 138.35 M) MET; rise 0.1084 (band 0.10-0.14) MET, at 137.5 M,
+  within 10 M of the tracker distance falling below 1 M MET.
+- D34-3 MET: finder 1 found at 1697 of 1697 searches, mass within 6.4e-4 of its median; one
+  minimum of the m2-M distance, 8.733 M at 134.3 M (band 7.5-9 M, before 140 M), then growing.
+- D34-4 MET: Newton keeps m1 ejected and m2 bound to 200 M; NR and Newton disagree on m1's fate
+  (captured against ejected) and on m2's orbit; on m2's fate only if NR's m2 is unbound (undecided).
+- C25-1 MET except one clause: m1 merges with M before 145 M (common horizon at 137.5 M) MET; M's
+  finder found with mass 1.1137 by 145 M MET (band 1.11-1.14); "the tracker distance falls below
+  0.5 M by 140 M" REFUTED as written (140.55 M).
+- C25-2 MET: m2 not captured, closest approach 8.733 M at 134.3 M, distance growing to 186 M.
+- C25-3 MET on the target, REFUTED on the rate: the chain reached 186.0 M (>= 170) with 8 counted
+  segments of the 9, although 17 attempts were cut by preemption (not "at most one"); progress per
+  50-min segment (chain/events.log wall-clock stops 139.25, 145.05, 150.24, 155.46, 170.25, 175.49,
+  180.81, 186.00 M) 6.25 and 5.80 M up to the merger, then 5.19-5.33 M: below the band 5.5-6.5 and
+  slower, not faster, after the merger. The chain ended by a Slurm submission failure ("I/O error
+  writing script/environment to file", chain/slurm-5492.out), not by its cap.
+- C25-4 MET: card memory peak 78789 MiB in every segment through the merger (below 80 GB; the same
+  peak in every segment suggests the allocator's pool [JUDGEMENT]); MeshBlocks 1968-2584.
+- C25-5 MET: a status file per finder from 133.0 M; trackers, history, summaries and waveforms
+  continue to 186.0 M (b21 S1 max gap one step, S2 overlaps <= 1.25e-9 M, S3 waveforms at r = 40
+  every 0.25 M to 186.0 M, none missing).
+- A2-3 REFUTED: by 170 M the binary is separated (E_bin > 0 from about 125 M) but no member is at
+  more than 30 M from M (m2 at 13.84 M at 170 M, energy marginal) and the other member is not bound
+  with a pericentre of 4-8 M: m1 is captured by M.
+- A2-4 REFUTED: a common horizon of m1 with M from 137.5 M (finder 2's mass 1.0053 -> 1.1137).
+- A2-5: member drift below 1e-4 per M (fractions of the mass; 65-95 M fits 3.1e-5 and -8.1e-6;
+  m2 within 6.4e-4 of 0.1295 over 133-186 M) MET; rms H at most 6.19e-5 (< 1e-4) MET; MeshBlocks
+  below 2864 and card memory MET; the heavy hole's change below 1e-3 to 200 M REFUTED (1.55e-3 by
+  133 M before the merger; the merger itself adds 0.108).
+- Item C8 (one complete vacuum passage) is MET in my judgement: A + A2 joined 0-186.0 M without a
+  gap, beyond the 170 M asked; the outcome is read from horizons (m1 captured by M, m2 receding)
+  with the constraint norm below 1e-4 throughout. At one resolution (m/16); C2 (m/12) stopped at
+  106.69 M (G2).
+- F-B2 (F-20261126-052133-10f9a5f) DONE at tlim 140 (trackers, history to 140.0 M, no non-finite
+  value); F-C2 (F-20261126-131751-89eaff8) stopped by the same Slurm I/O failure at 106.69 M (27
+  attempts, 18 cut by preemption), no non-finite value. Both closed; not analysed (G2).
