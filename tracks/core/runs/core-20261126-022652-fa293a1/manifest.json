@@ -1,0 +1,100 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "core-20261126-022652-fa293a1",
+  "track": "core",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "Track A's question (outbox pcs-deposit-refinement-boundary, 0041 item 2): deposit of a uniform lattice across a static refinement boundary for CIC, TSC, PCS, with and without deposit_fine_shape and a level cap, against a 1D emulation of the rule; predictions D1-D5 of JOURNAL 2026-11-26T02:25Z",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "python3",
+    "tracks/core/analysis/deposit_levels/dep_levels.py",
+    "--exe",
+    "/data/haiyangw/nrpic/.work/build_cpu_v07/src/athena",
+    "--out",
+    "$NRPIC_RUN_DIR"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "fa293a1d2de59fe77759bc318f6cbb9b10da0e4d",
+    "branch": "core/nrpic",
+    "dirty": false,
+    "merge_base_main": "f66c544327084e2d5e0f533565aaf4ad10ee256a",
+    "worktree": "wt/core"
+  },
+  "code": {
+    "core_tag": "core-v0.7",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "b7f7695d8e9720758c144dd9c0f272ce4fba8b46f921750462326664310fad51",
+    "machine_file_sha256": "ff4e45b0fd5bf6bee4bf1084a282d72b9adf66f4a455f4e937d9884a1fb07535",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/core/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "/data/haiyangw/nrpic/.work/build_cpu_v07/src/athena",
+      "role": "input",
+      "sha256": "8515223016c6adaa63f19adee1cb35a3b9a8dfb632ea503ea08676895205257d",
+      "bytes": 269934568,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "tracks/core/analysis/deposit_levels/dep_levels.py",
+      "role": "argv",
+      "sha256": "9769a82443b551b759b12d3e17055eaf3d2cfedd4e54ab7f25809ef244c75f6d",
+      "bytes": 16032,
+      "tracked": true
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 1,
+    "walltime_s": 8.264,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/core/core-20261126-022652-fa293a1",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": "dda321c7324a8d7e40d05ade2e7643648241676cba679cacec503d975452cef4",
+    "bytes": 566591,
+    "files": 8
+  },
+  "status": "failed",
+  "exit_code": 1,
+  "registered": "2026-11-26T02:27:03Z",
+  "started": "2026-11-26T02:27:03Z",
+  "ended": "2026-11-26T02:27:11Z",
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 40.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 19.214,
+    "gpu_hours_reserved": 2.0667,
+    "gpu_hours_without_gate": 5.8713,
+    "cores_busy": 0,
+    "runs": 1611,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md + 0026-cards-loaded-allotment-cost.md + 0031-level2-branch-and-ablation.md + 0032-new-account-preemption-allotments.md + 0038-track-e-g2-signed-g3-scope.md + 0039-rulings-after-batch-17.md"
+  },
+  "finished": "2026-11-26T02:27:11Z"
+}

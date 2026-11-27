@@ -1,0 +1,215 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "core-20261126-070946-7971fde",
+  "track": "core",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "restart-finder card check: restart deck on a card, a card continuing a restart file of the processor build (block NRPCNS01), finder with polishing against the tight rule and its cost per search, excision guard; predictions K1 to K5 of JOURNAL-restart-finder.md entry 12",
+  "preregistered_in": null,
+  "launcher": "batch",
+  "command": [
+    "scripts/gpu_batch.sh",
+    "/data/haiyangw/nrpic/scratch/core/core-20261126-070946-7971fde/batch.list"
+  ],
+  "cwd": "scratch/core/core-20261126-070946-7971fde",
+  "git": {
+    "sha": "7971fde8b9708dcca8becb1aed3258bc729cdef7",
+    "branch": "core/restart-finder",
+    "dirty": false,
+    "package": [
+      "tracks/core/analysis/restart_finder"
+    ],
+    "outside_package": {
+      "count": 0,
+      "first": []
+    },
+    "merge_base_main": "5b506d26536ee37ed76458fb9a10c040b54e0b2c",
+    "worktree": "wt/core-s4"
+  },
+  "code": {
+    "core_tag": "core-v0.7",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": [
+      "nrpic_cf",
+      "nrpic_cosmo"
+    ],
+    "exe": "/data/haiyangw/nrpic/scratch/core/exe/core_restart-finder/athena_gpu",
+    "exe_sha256": "e566fcf775c8a9f42e11cd9ffdd63f84ee137f64e4fe18a4abd9d73ad0293b74",
+    "cmake_flags": null,
+    "toolchain": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "b7f7695d8e9720758c144dd9c0f272ce4fba8b46f921750462326664310fad51",
+    "machine_file_sha256": "ff4e45b0fd5bf6bee4bf1084a282d72b9adf66f4a455f4e937d9884a1fb07535",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": "NVIDIA A100 80GB (Slurm partition preempt)",
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/core-s4/.venv"
+  },
+  "input": {
+    "file": "problems/tests/restart_outputs.athinput",
+    "sha256": "6a76b489a2faf5e8aaee0e51a75eace9eb68b259cedf0179641f4b8f4d035707",
+    "overrides": {
+      "particles/particle_file": "/data/haiyangw/nrpic/scratch/core/tmp/rf_card/particles.nrp",
+      "output3/dt": "0.4375"
+    }
+  },
+  "inputs": [
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/exe/core_restart-finder/athena_gpu",
+      "role": "exe",
+      "sha256": "e566fcf775c8a9f42e11cd9ffdd63f84ee137f64e4fe18a4abd9d73ad0293b74",
+      "bytes": 111068176,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "tracks/core/analysis/restart_finder/card/card_rf.list",
+      "role": "list",
+      "sha256": "fc674b4183a6782001d8717b8ed0e7460f04bedeafa842dfe017f288ae9bd91c",
+      "bytes": 1673,
+      "tracked": true
+    },
+    {
+      "path": "problems/tests/restart_outputs.athinput",
+      "role": "athinput:rso_a",
+      "sha256": "6a76b489a2faf5e8aaee0e51a75eace9eb68b259cedf0179641f4b8f4d035707",
+      "bytes": 2935,
+      "tracked": true
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/tmp/rf_card/rso.00003.rst",
+      "role": "athinput:rso_r27",
+      "sha256": "cc4bc77b681426852781b4bc166383a463cf832a568b943a72047a6aa4686850",
+      "bytes": 5781205,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "problems/tests/finder_polish.athinput",
+      "role": "athinput:fp_prod",
+      "sha256": "7e61f691e47e1257aadd0bf80c7a825d5ded5e023e6837f45c51b0075059cefb",
+      "bytes": 2864,
+      "tracked": true
+    },
+    {
+      "path": "problems/tests/finder_polish.athinput",
+      "role": "athinput:fp_pol",
+      "sha256": "7e61f691e47e1257aadd0bf80c7a825d5ded5e023e6837f45c51b0075059cefb",
+      "bytes": 2864,
+      "tracked": true
+    },
+    {
+      "path": "problems/tests/finder_polish.athinput",
+      "role": "athinput:fp_tight",
+      "sha256": "7e61f691e47e1257aadd0bf80c7a825d5ded5e023e6837f45c51b0075059cefb",
+      "bytes": 2864,
+      "tracked": true
+    },
+    {
+      "path": "tracks/core/analysis/restart_finder/card/fp_card_g04.athinput",
+      "role": "athinput:fp_g04",
+      "sha256": "c43ea9e829c8706aacc29258d82b8404702aef2278b0d13cedb6819fe53d8607",
+      "bytes": 2124,
+      "tracked": true
+    }
+  ],
+  "batch_entries": [
+    {
+      "name": "rso_a",
+      "input": "problems/tests/restart_outputs.athinput",
+      "args": [
+        "particles/particle_file=/data/haiyangw/nrpic/scratch/core/tmp/rf_card/particles.nrp",
+        "output3/dt=0.4375"
+      ]
+    },
+    {
+      "name": "rso_r27",
+      "input": "/data/haiyangw/nrpic/scratch/core/tmp/rf_card/rso.00003.rst",
+      "args": []
+    },
+    {
+      "name": "fp_prod",
+      "input": "problems/tests/finder_polish.athinput",
+      "args": [
+        "particles/particle_file=/data/haiyangw/nrpic/scratch/core/tmp/rf_card/infall.nrp",
+        "time/tlim=2.0"
+      ]
+    },
+    {
+      "name": "fp_pol",
+      "input": "problems/tests/finder_polish.athinput",
+      "args": [
+        "particles/particle_file=/data/haiyangw/nrpic/scratch/core/tmp/rf_card/infall.nrp",
+        "time/tlim=2.0",
+        "fastflow/polish_iterations_0=100"
+      ]
+    },
+    {
+      "name": "fp_tight",
+      "input": "problems/tests/finder_polish.athinput",
+      "args": [
+        "particles/particle_file=/data/haiyangw/nrpic/scratch/core/tmp/rf_card/infall.nrp",
+        "time/tlim=2.0",
+        "fastflow/mass_tol_0=1.0e-9",
+        "fastflow/flow_iterations_0=4000"
+      ]
+    },
+    {
+      "name": "fp_g04",
+      "input": "tracks/core/analysis/restart_finder/card/fp_card_g04.athinput",
+      "args": [
+        "particles/particle_file=/data/haiyangw/nrpic/scratch/core/tmp/rf_card/infall.nrp",
+        "time/tlim=2.0"
+      ]
+    }
+  ],
+  "resources": {
+    "nodes": 1,
+    "gpus": 1,
+    "cores": 1,
+    "walltime_s": 124.0,
+    "wall_limit": "00:45:00",
+    "segments_max": null,
+    "gpu_hours_requested": 0.3,
+    "gpu_hours": 0.0344,
+    "particles": null
+  },
+  "slurm": {
+    "partition": "preempt",
+    "job_name": "core-20261126-070946-7971fde",
+    "job_ids": [
+      "5364"
+    ]
+  },
+  "outputs": {
+    "dir": "scratch/core/core-20261126-070946-7971fde",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": "7b42456685e8c05c484b96019ba5e74c4af550a8bcb557f5b459807afe233a42",
+    "bytes": 208785329,
+    "files": 105
+  },
+  "status": "completed",
+  "exit_code": 0,
+  "registered": "2026-11-26T07:09:51Z",
+  "started": "2026-11-26T00:05:52-08:00",
+  "ended": "2026-11-26T00:07:54-08:00",
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 40.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 19.214,
+    "gpu_hours_reserved": 2.6967,
+    "gpu_hours_without_gate": 5.8713,
+    "cores_busy": 0,
+    "runs": 1622,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md + 0026-cards-loaded-allotment-cost.md + 0031-level2-branch-and-ablation.md + 0032-new-account-preemption-allotments.md + 0038-track-e-g2-signed-g3-scope.md + 0039-rulings-after-batch-17.md"
+  },
+  "finished": "2026-11-26T11:45:02Z"
+}

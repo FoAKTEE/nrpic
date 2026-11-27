@@ -656,8 +656,10 @@ void Particles::NrpicWriteEnergyField(Real time, int index) {
 //! the sum of squares of the terms of its equation (C_r), as for the constraints.
 //! Record of <basename>.cons.hst: time of the middle step; mean and maximum of C^E_r;
 //! mean and maximum of C^P_r; mean of |C^E|/D and of |C^P|/D.
-//! The fields of the two previous steps are kept in memory; they are not in the restart
-//! file, so the record resumes two steps after a restart.  Uniform meshes only.
+//! The fields of the two previous steps are kept in memory.  A continued run evaluates
+//! those of the state it starts from (NrpicConsStartRestart) and reads the densities of
+//! the step before from the particle restart file when the record is due at its first
+//! cycle (NrpicConsWriteRestart), so that no record is lost.  Uniform meshes only.
 
 void Particles::NrpicWriteConservation(Real time, Real dt, bool header, bool write) {
   if (pmy_pack->pz4c == nullptr || !nropt.deposit) return;
@@ -841,6 +843,114 @@ void Particles::NrpicWriteConservation(Real time, Real dt, bool header, bool wri
   std::swap(cons_old, cons_new);
   cons_dt_prev = dt;
   if (cons_valid < 2) { ++cons_valid; }
+}
+
+//----------------------------------------------------------------------------------------
+//! \fn  void Particles::NrpicConsWriteRestart
+//! \brief the part of the conservation diagnostic that a continued run cannot rebuild,
+//! appended to the particle restart file only when the record is due at the next cycle
+//! (files of other runs and of other cycles keep their format; one rank):
+//!   8 bytes "NRPCNS01", 4 int64 (MeshBlocks, nx3, nx2, nx1), 1 double (the step before
+//!   the dump), 4 x MeshBlocks x nx3 x nx2 x nx1 doubles (the densities D, D_a of the
+//!   cycle before the dump on the active cells, MeshBlock by MeshBlock)
+
+void Particles::NrpicConsWriteRestart(std::FILE *fp) {
+  Mesh *pm = pmy_pack->pmesh;
+  if (nropt.cons_dcycle <= 0 || nr_multirank || cons_valid < 2) return;
+  if ((pm->ncycle + 1) % nropt.cons_dcycle != 0) return;
+  if (cons_d2.extent(0) == 0) return;
+  auto &indcs = pm->mb_indcs;
+  const int is = indcs.is, js = indcs.js, ks = indcs.ks;
+  const int n1 = indcs.nx1, n2 = indcs.nx2, n3 = indcs.nx3;
+  const int nmb = pmy_pack->nmb_thispack;
+  auto c2 = Kokkos::create_mirror_view_and_copy(Kokkos::HostSpace(), cons_d2);
+  std::vector<double> buf(4*static_cast<size_t>(nmb)*n3*n2*n1);
+  size_t q = 0;
+  for (int m=0; m<nmb; ++m) {
+    for (int n=0; n<4; ++n) {
+      for (int k=0; k<n3; ++k) {
+        for (int j=0; j<n2; ++j) {
+          for (int i=0; i<n1; ++i) { buf[q++] = c2(m,n,ks+k,js+j,is+i); }
+        }
+      }
+    }
+  }
+  const char magic[9] = "NRPCNS01";
+  const std::int64_t dims[4] = {nmb, n3, n2, n1};
+  const double dtp = cons_dt_prev;
+  std::fwrite(magic, 1, 8, fp);
+  std::fwrite(dims, sizeof(std::int64_t), 4, fp);
+  std::fwrite(&dtp, sizeof(double), 1, fp);
+  std::fwrite(buf.data(), sizeof(double), buf.size(), fp);
+}
+
+//----------------------------------------------------------------------------------------
+//! \fn  void Particles::NrpicConsReadRestart
+//! \brief reads the block written by NrpicConsWriteRestart if the file has one (fp
+//! stands behind the accretion block); the data are applied by NrpicConsStartRestart
+
+void Particles::NrpicConsReadRestart(std::FILE *fp) {
+  cons_restart.clear();
+  char magic[9] = {0};
+  if (std::fread(magic, 1, 8, fp) != 8 || std::strncmp(magic, "NRPCNS01", 8) != 0) {
+    return;      // a dump without the block: the record resumes as the state allows
+  }
+  double dtp = 0.0;
+  if (std::fread(cons_restart_dims, sizeof(std::int64_t), 4, fp) != 4 ||
+      std::fread(&dtp, sizeof(double), 1, fp) != 1) {
+    NrpicFatal("the conservation block of the particle restart file is truncated");
+  }
+  size_t nt = 4;
+  for (int d=0; d<4; ++d) { nt *= static_cast<size_t>(cons_restart_dims[d]); }
+  cons_restart.resize(nt);
+  if (std::fread(cons_restart.data(), sizeof(double), nt, fp) != nt) {
+    NrpicFatal("the conservation block of the particle restart file is truncated");
+  }
+  cons_restart_dt = dtp;
+}
+
+//----------------------------------------------------------------------------------------
+//! \fn  void Particles::NrpicConsStartRestart
+//! \brief conservation diagnostic at the start of a continued run.  The ten fields of
+//! the state of the restart are evaluated as a new run evaluates those of its first
+//! time (this serves the record due two cycles later); the densities of the cycle
+//! before, which the record of the next cycle needs, come from the restart file.
+
+void Particles::NrpicConsStartRestart() {
+  if (nropt.cons_dcycle <= 0) return;
+  Mesh *pm = pmy_pack->pmesh;
+  NrpicWriteConservation(pm->time, 0.0, false, false);
+  if (cons_restart.empty() || cons_d2.extent(0) == 0 || cons_valid < 1) return;
+  auto &indcs = pm->mb_indcs;
+  const int is = indcs.is, js = indcs.js, ks = indcs.ks;
+  const int n1 = indcs.nx1, n2 = indcs.nx2, n3 = indcs.nx3;
+  const int nmb = pmy_pack->nmb_thispack;
+  if (nr_multirank || cons_restart_dims[0] != nmb || cons_restart_dims[1] != n3 ||
+      cons_restart_dims[2] != n2 || cons_restart_dims[3] != n1) {
+    if (global_variable::my_rank == 0) {
+      std::cout << "NRPIC: the conservation block of the restart file does not fit this "
+                << "mesh; the record resumes two cycles after the restart" << std::endl;
+    }
+    cons_restart.clear();
+    return;
+  }
+  auto c2 = Kokkos::create_mirror_view(Kokkos::HostSpace(), cons_d2);
+  Kokkos::deep_copy(c2, cons_d2);
+  size_t q = 0;
+  for (int m=0; m<nmb; ++m) {
+    for (int n=0; n<4; ++n) {
+      for (int k=0; k<n3; ++k) {
+        for (int j=0; j<n2; ++j) {
+          for (int i=0; i<n1; ++i) { c2(m,n,ks+k,js+j,is+i) = cons_restart[q++]; }
+        }
+      }
+    }
+  }
+  Kokkos::deep_copy(cons_d2, c2);
+  cons_dt_prev = cons_restart_dt;
+  cons_valid = 2;
+  cons_restart.clear();
+  cons_restart.shrink_to_fit();
 }
 
 //----------------------------------------------------------------------------------------
@@ -1204,6 +1314,8 @@ void Particles::NrpicWriteRestart(const std::string &fname) {
   }
   // accretion diagnostics: a block of their own, only when one of them is on
   NrpicAccWriteRestart(fp);
+  // conservation diagnostic: a block of its own, only when a record is due next cycle
+  NrpicConsWriteRestart(fp);
   std::fclose(fp);
   NrpicMpiGatherEnd();
   if (nropt.newton) { NrpicNewtonWriteRestart(fname + ".nwt"); }
@@ -1300,7 +1412,12 @@ void Particles::NrpicReadRestart(const std::string &fname) {
     ih(PPERI,p) = 0;
   }
   // accretion diagnostics: their block follows if the dump was written with them
+  const long pos_acc = std::ftell(fp);
   NrpicAccReadRestart(fp, np, ih);
+  // conservation diagnostic: its block follows (the reader above has taken eight bytes
+  // of it if the dump has no accretion block)
+  if (!acc_restart_read) { std::fseek(fp, pos_acc, SEEK_SET); }
+  NrpicConsReadRestart(fp);
   std::fclose(fp);
   Kokkos::deep_copy(prtcl_rdata, rh);
   Kokkos::deep_copy(prtcl_idata, ih);
@@ -1359,6 +1476,7 @@ void Particles::NrpicStartup(bool res_flag) {
     while (field_next < nfield_times && field_times[field_next] < pm->time + 0.5*pm->dt) {
       ++field_next;
     }
+    NrpicConsStartRestart();   // conservation record: no record lost at a restart
     return;
   }
   NrpicProbe(0.0);
