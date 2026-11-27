@@ -156,6 +156,9 @@ def one(job):
     hz = np.histogram(z / sZ, bins=EDGES)[0] if z is not None else np.zeros(len(EDGES) - 1, int)
     hr, _ = np.histogram(-Rx / sig_lin, bins=EDGES)
     np.savez(os.path.join(cfg["out"], f"{label}_hist.npz"), edges=EDGES, zeta=hz, minusR=hr)
+    if cfg.get("save_fields") and z is not None:   # batch 34: the pair statistics of A5 need both members per cell
+        np.save(os.path.join(cfg["out"], f"{label}_zeta.npy"), z.astype(np.float32))
+        np.save(os.path.join(cfg["out"], f"{label}_R.npy"), Rx.astype(np.float32))
     rec["wall_s"] = time.time() - t0
     with open(os.path.join(cfg["out"], f"{label}.json"), "w") as fp:
         json.dump(rec, fp, indent=1)
@@ -248,6 +251,7 @@ def main():
     ap.add_argument("--check-msteps", type=int, default=1000)
     ap.add_argument("--check-cells", type=int, default=20000)
     ap.add_argument("--map", choices=("full", "table"), default="full")
+    ap.add_argument("--save-fields", action="store_true", help="write <member>_zeta.npy and <member>_R.npy (float32)")
     a = ap.parse_args()
     os.makedirs(a.out, exist_ok=True)
     L = json.load(open(a.lead_json))
@@ -260,7 +264,7 @@ def main():
     members = a.members.split(",")
     jobs = [(m, os.path.join(a.run, m), dict(src=src, lam=deck["lam"], vev=deck["vev"], phi_e=L["phi_e"],
                                              msteps=a.msteps, check_msteps=a.check_msteps, check_cells=a.check_cells, seed=1000 + i, out=a.out,
-                                             map=a.map))
+                                             map=a.map, save_fields=a.save_fields))
             for i, m in enumerate(members)]
     with Pool(a.procs) as pool:
         recs = pool.map(one, jobs)

@@ -365,3 +365,32 @@ Predictions (entry 6 restated, unchanged): C6-1 a baseline run 0.033-0.038 card-
 job reaches its 55-minute limit; C6-2 a level-2 run 1.1-1.7 times a baseline run (the partial lp000 above points below the band;
 the band is not moved); C6-3 G3P-2 for every member; C6-4 and A8 as written in entries 2, 4, 6. A job preempted again keeps its
 finished members; the rest are listed anew with the same seeds (SCOPE 4d: never skipped) and the preemption stays on record.
+
+## entry-15 (2026-11-27 15:45 PST, lead of E, batch 34): reading of the 71 complete pairs, predictions before any read
+
+What is read (nothing of these dumps has been read before this entry): every member of G3B00-G3B06 with `read_pilot.py --map
+table --msteps 4000 --save-fields` (the cleared table map of entry 12; the new flag only writes the zeta and R^NR fields as
+float32 for the pair statistics, nothing else changes), one registered run per card run, at most 6 cores in all; the pilot's
+b000-b009 (the + members of pairs 0-9) are taken from E-20261126-120434-5dda273 (same reader and table rule; reader files
+unchanged since) and read again with --save-fields for the pair fields. Then `pairs_g3.py` (written this session): pairs 0-70
+(p071 alone is read but enters no pair statistic), the pair as the unit (A5), against the reference of the 128 band: the two
+direct 4e6 runs pooled (E-20261125-152832-c301e92, E-20261125-163825-ca2ebaa; samples at N_e) for variance, skewness, excess
+kurtosis, F_pm(3) at the own standard deviation and A(3); the importance sampler (E-20261125-160658-855db8c, own-sigma values)
+for F_pm(4) and A(4). Standard errors: NR, standard deviation over pairs / sqrt(71); reference, batch means over 40 blocks of
+the samples (the sampler's own errors at nu = 4). This is the reading of 71 of the 128 pairs of A13; the statement on 128
+pairs follows when q0071-q0075 have run (entry 14), with the same script.
+Rules (written now): the spot check of entry 12 (ii) per member below 1e-8, else the member is not used; a member with
+n_cells_rolling_back > 0 or a non-finite record is not used (and its pair with it).
+Predictions: entry 4's (V) and (T) as written (bands and the three-combined-error clauses), and for R^NR. Beside them, my
+expectation from numbers already on record [JUDGEMENT, not a new bar]: the pilot gave sd(zeta)/sigma_lin = 1.0016 on ten
+members (entry 13) and the reference variance is 0.9986 of the lattice sum (A1 gate), so sigma^2_NR/var_ref - 1 is expected
+near +0.004, inside entry 4's 0.01 but, with a combined standard error of about 6e-4 (the reference's 0.00058 dominates),
+outside three combined errors: (V) would then fail by its first clause, which is entry 4's own refutation, and the result
+would read "NR differs from one-patch delta N in the variance by about 0.4 per cent". Further, before the read:
+- P15-1 (health, C6-3): every member reaches tlim, finite, max <|H-<H>|/[H]> < 1e-9 and max <|M|/[M]> < 0.1; no cell with v <= 0.
+- P15-2 (pairs, A5, reported): the even part of zeta regressed on O^2 - <O^2> gives a_zeta in [6.5e-3, 7.4e-3] (the pilot's
+  skew_sum 0.0206 / (6 sigma_lin) = 6.95e-3) with a pair-to-pair sd below 5 per cent of it; |a_R| below 5e-4 (review S1:
+  2.8e-4); the pair mean of F_+(+) - F_-(-) at nu = 3 (own sigma) positive, in [0.08, 0.25] Q(3).
+- P15-3 (mirroring works): the pair mean of skew(zeta) has a standard error at least five times smaller than the member mean.
+- P15-4: the tail fractions at three and four sigma_own and A(3), A(4) agree with the reference within three combined
+  errors (entry 4's (T) clause), F_+(4)/Q(4) of zeta in [1.1, 1.8], F_-(4)/Q(4) in [0.5, 1.0].
