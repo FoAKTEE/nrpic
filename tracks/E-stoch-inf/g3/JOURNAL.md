@@ -344,3 +344,24 @@ E-20261126-115943-32970f2 (`g3c.json`, `fig_g3c.png`); G3-R reading E-20261126-1
   +- 0.0012 (E-20261125-152832-c301e92); ten members give 0.0200 +- 0.0013.
 Consequence: the zeta of a 128^3 member costs about 20 s of table plus the reading (about 1.5 min a member in all on
 one core of the loaded machine), against 1.5 core-hours before (R41): 256 members take about 6 core-hours. R41 closes.
+
+## entry-14 (2026-11-27 15:27 PST, lead of E, batch 34): two jobs were preempted; what is re-queued, predictions before it is queued
+
+State found at the start of batch 34 (from the batch status files and Slurm logs, before any read of the dumps): G3B00-G3B05
+(q0053, q0054, q0061-q0064) ended with every member rc = 0 (14, 14, 22, 22, 22, 22 runs). G3B06 (q0065, job 5419) was CANCELLED
+DUE TO PREEMPTION at 2026-11-26 18:04:09 PST after 17 of its 22 members (p063-p071, m063-m070 rc = 0; m071 cut at cycle 220;
+pairs 72-73 not started). G3L00 (q0066, job 5420) was CANCELLED DUE TO PREEMPTION at 18:07:39 PST while its first member lp000
+was at cycle 820 of about 850 (no member finished; k000/k001 and the other level-2 members not started). The queue lists both
+entries as "done"; the dispatcher does not resubmit a preempted batch job. Complete now: pairs 0-70 (142 runs) and p071.
+Seen before this entry was written (so not a prediction): lp000's log gives 131.5 s at cycle 820 against 0.149 s a cycle of the
+baseline member p070 (32.7 s at cycle 220): a level-2 step costs about 1.08 times a baseline step at 128^3, below C6-2's band.
+Re-queued at priority 2 (the G3 package waits for them), lists written by `inputs/gen_lists.py` from the lines of base06 and
+l2_00 with seed and sign changed only, every override checked with `check_lists.py`, release card build core-v0.7 as the common
+set-up of SCOPE 4d fixes (core-v0.8 changes restart outputs, the finder and figure files only, none of which these runs use;
+keeping one build for the whole set is the scope's rule [JUDGEMENT]): G3B07 (m071 and pairs 72-81, 21 runs), G3B08-G3B11 (pairs
+82-92, 93-103, 104-114, 115-125, 22 runs each), G3L00 again (l2_00.list unchanged: level-2 pairs 0-4 with k000, k001), G3L01
+(level-2 pairs 5-10), G3L02 (level-2 pairs 11-15 with the baseline pairs 126-127). The incomplete m071 of job 5419 is not read.
+Predictions (entry 6 restated, unchanged): C6-1 a baseline run 0.033-0.038 card-hours, a job of 22 in 45-50 minutes, refuted if a
+job reaches its 55-minute limit; C6-2 a level-2 run 1.1-1.7 times a baseline run (the partial lp000 above points below the band;
+the band is not moved); C6-3 G3P-2 for every member; C6-4 and A8 as written in entries 2, 4, 6. A job preempted again keeps its
+finished members; the rest are listed anew with the same seeds (SCOPE 4d: never skipped) and the preemption stays on record.
