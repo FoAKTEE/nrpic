@@ -45,7 +45,7 @@ known answer (below). The figures were read before any number was relied on.
 | 3b | Constraint floors fall as 1/N | REPRODUCED for the quantity used: `H-norm2` = integral of H^2 dV, 100-300 M means 7.68e-2, 7.86e-3, 7.90e-4 (9.8 and 9.9 per decade); H itself falls as N^-1/2 |
 | 3c | "The controls' collapses are particle noise" | CONSISTENT, NOT SHOWN as a mechanism; a finite-N origin IS shown (section 3) |
 | 4a | CC2 collapse 206.64 (M/4), 163.41 (M/8), 158.42 (M/16), 164.01 M (shift_eta 1) | REPRODUCED (206.642 = mean of 206.556 and 206.728; 163.407; 158.424; 164.012) |
-| 4b | Measured / expected collision rate 1.0008 | REPRODUCED for D2f2s1 over (0, t_c] (1.00080); not a property of every member: 0.9885 to 1.0008 over the six M/8 and M/16 members, two at z = -3.3 and -3.8 (section 4) |
+| 4b | Measured / expected collision rate 1.0008 (as the task text states it) | As measured/expected: 1.00080 is D2f2s1 over (0, t_c] only; the six M/8 and M/16 members give 0.9885 to 1.0008, two at z = -3.3 and -3.8 (section 4). Section 10: in the lead's record 1.0008 is the ratio of the collision rates on M/16 and M/8 (M16.2), which I reproduce as 1.00084 |
 | 4c | Expected rate (computed by me) | The code's sum_P equals my rate from particles and metric at t = 0 to 1.1e-4 (D2f2s1), within 0.8 per cent at the first step and 0.33 per cent over the first M for all five members |
 | 4d | Collision energy budget closes to 3e-16 (below 3.5e-16) | REPRODUCED: sum of dH over sum M H to first excision 2.84e-16 to 3.17e-16 (M/8, M/16, eta1); momentum below 4e-19 and rest mass exact (X.7) |
 | 4e | Seed pair 2.24 M against the bar of 2 M: D2.3 seed part FAILED as written | REPRODUCED: 165.645 - 163.407 = 2.238 M |
@@ -354,5 +354,65 @@ the H.* predictions were not judged here.
 ## 9. The lead's full checksum pass
 
 `harness/bin/nrpic-stage verify C-sidm G2 --full` (pid 3893805, started 00:53 PST): still
-running at 01:13 PST (20 min) with an empty log `scratch/C-sidm/tmp/verify_full_g2.log`; left
-alone. Its state at the end of this session is in the README.
+running at 01:17 PST (23.5 min) with an empty log `scratch/C-sidm/tmp/verify_full_g2.log`; left
+alone. I have no result of it; its state at the end of this session is in the README.
+
+## 10. Comparison with the lead's verdicts (written after sections 1-9, commit 639fcdbc1)
+
+Read for this section only: stage/G2/CHECKLIST.md (all items), the lead's JOURNAL.md lines
+908-922 and 1008-1022, and a search of the package for "1.0008" and "BA.3".
+
+Where the lead and I agree:
+- Every number of Table VI and of RERUN.md section 1 that I recomputed equals the lead's to its
+  printed digits (sections 2-4). I found no wrong number.
+- C8: the lead's "summed dH_particles / sum MH below 3.2e-16 up to the first excision for
+  f = 1, 2, 4" is my 2.84, 3.05, 3.17e-16. Its open item "count test before t_c, z = -3.39 at
+  f = 4" is my -3.34 over (0, t_c] (window differs by a record or two).
+- BA.3: the lead's own outcome entry (JOURNAL 2026-11-25T16:14Z) says "BA.3 HOLDS", as I find.
+  The listing of BA.3 among the failures in OPEN.md (line 6) and in the evidence of C1 is a slip
+  of the package text (C19's list of failures does not name it); the task text copied the slip.
+- 1.0008: in the lead's record (JOURNAL line 917-918, M16.2) it is the ratio of collisions per
+  particle per M on M/16 and on M/8, 8.8646e-3 / 8.8572e-3; my numbers give 1.00084. The task
+  text's reading "measured over expected rate" is not the lead's claim. My count test (section 4)
+  is therefore an answer to C8's open item, not a check of a stated number.
+- The reading of the N = 1e5 controls as noise (JOURNAL 16:14Z: three controls not ordered by
+  compactness, a kicked 0.324 run outliving its control) agrees with my section 3, which adds
+  the seed controls s2 and s3 of the threshold model (585.79, 563.29 M) that the package does
+  not use.
+
+Where I qualify or differ:
+1. C1 and ruling 0045 item 5, "the controls' collapses at lower particle number are particle
+   noise (floors fall as 1/N)": the 1/N fall reproduces, but it shows that noise is present, not
+   that it causes the collapse. What the runs show is a finite-N origin (section 3). I would
+   write "finite-N effect, consistent with noise-seeded growth" and keep the mechanism as
+   [JUDGEMENT] until a second seed at N = 1e4 or a longer N6c exists.
+2. C2 (three-way convergence, PASS): the gauge leg changes only the shift damping, which by the
+   note's own argument hardly acts at the centre; it does not change the slicing that defines
+   the marker, and no run changed the outer boundary (SCOPE.md:130). I agree with the lead's
+   [JUDGEMENT] that the location converges and the time does not, with the qualification that
+   "converges" means "the two fates are the same in every leg", which bounds the threshold to
+   the bracket and says nothing about its motion inside it.
+3. C1, C7: "the bracket keeps its fates ... at N = 1e5 on M/8": true at 600 M, but at N = 1e5
+   the stable member's own control collapses at 599.99 M (X.1), so the stable fate at 1e5 is a
+   property of the 600 M cut.
+4. C8 open item: answered in section 4: the count test before t_c is passed by four of six
+   members; f = 4 (-3.34) and shift_eta 1 (-3.83; -3.00 with rejected pairs added) fall short at
+   about one per cent. The lead's list names only f = 4.
+5. C8 "rest-mass budget 2.7e-14": not the quantity I read; the history's sum_m is constant to
+   the last bit before the first excision in all six members (X.7). Not a disagreement, a
+   different measure.
+6. The lead's "collisions per particle before t_c 2.109 (M/16), 2.213 (M/8)" (JOURNAL line 918,
+   not in Table VI): I get 2.105 and 2.208 from n_coll alone and 2.110 and 2.214 when the
+   detailed-balance rejections (n_balance) are added; the lead's count seems to include the
+   rejected pairs [TO VERIFY by the lead].
+7. Not in the package: the M/4 seed-2 collisional run is broken after its first excision
+   (alpha_min -2.7e8, 335 non-finite rows); A334s3c now reaches 600 M (the batch-20 statement
+   that it ends at 0.25 M is stale).
+8. C7/C9 against SCOPE.md:323-325 (two families: monoenergetic and King b = 0.1) - the checklist
+   judges against ruling 0013's wording, which names no family; whether one family (King b = 1)
+   suffices is for the orchestrator (section 5).
+
+My reading of C18: the recomputation is complete for the claims given (sections 1-5); every
+number stands; five text corrections are requested (README, Requests); items C2 and C7/C9 pass
+as a bracket of one family at one particle number with a weak gauge leg, which is a narrower
+claim than the checklist's wording, and the gate review decides whether that suffices.
