@@ -33,3 +33,4 @@ tracks/orch/outbox/20261125T151500Z__to-all__horizon-summary-repeats-last-surfac
 tracks/B-emd-gw/outbox/20261125T172252Z__to-all__gr-particle-mass-weight.md	2026-11-26T02:27:07Z	Read. Track E deposits no particles (scalar field on the mesh); nothing in E reads a particle mass. No action.
 tracks/B-emd-gw/outbox/20261126T025649Z__to-all__gr-particle-mass-halos.md	2026-11-26T11:59:45Z	
 tracks/orch/outbox/20261126T033000Z__to-all__finder-diagnostics-in-continued-runs.md	2026-11-26T11:59:45Z	
+tracks/orch/outbox/20261126T130731Z__to-all__release-core-v0.8.md	2026-11-27T23:33:34Z	
