@@ -1227,3 +1227,24 @@ Failed predictions of this entry: none.
   refuted if not (then the lapse marker would not be matched by matter concentration).
 - N5.3 every other figure and the ledger are byte-equal in their PNG/tex outputs to run
   C-20261121-130335-d0cfe2e except schem_architecture and schem_timeline (changed by design).
+
+## 2026-11-27T08:58Z  session C-sidm lead (batch 32)  commits 36b1ecb3..(this entry's commit)  runs C-20261127-084417-79c0e4d, -084538-8e98060, -084609-36b1ecb, -084828-b6ca5ce (closed: C-20261126-121449-1d37e77, C-20261126-130519-1a79a66)
+
+- did: merged main; closed A16b324 and N6b324e1 with nrpic-run finish (two streams, different
+  runs); two registered nseries.py analyses, figures read; judged B20.1 and B20.3 (both held);
+  wrote fig_g2_threshold.py (one panel per leg), fig_g2_mosaic.py (particle-slab mosaic, the runs
+  have no mesh dumps), schem_ladder.py; redrew architecture and timeline at the G2 state; two
+  registered note runs (the first a layout draft with the same numbers); note Sec. V, abstract,
+  plan and summary updated, Table VI rows added, compiled, checker clean apart from the G1
+  exceptions, pages 11-12 read; stage G2 collect, checklist item by item, OPEN.md, RERUN.md,
+  verify --no-checksums PASS, report; verify --full started detached; RISKS 5, 18, 24; one ack;
+  one request to orch (fresh verifier).
+- found: N5 outcomes: N5.1 held; N5.2 held on the central cell (27 times), the window mean is only
+  3.5 times; N5.3 held for figures and ledger (runinfo.tex differs by construction, not written in
+  the prediction). The stable member pulsates more slowly on M/16 (min of <W> at ~470 vs 370 M).
+- changed my mind about: nothing; C1, C2, C7, C9 now pass as the batch-27 entry said they would
+  if both legs held.
+- failed predictions: none. Failed runs: none new.
+- open: C18 (fresh verifier); verify --full results (log scratch/C-sidm/tmp/verify_full_g2.log).
+- card-hours: none submitted by this session; closed 6.3844 + 2.6175 = 9.00; nrpic-run budget at
+  08:53Z: G2 54.76 used, 0 reserved, 25.24 left of 80.

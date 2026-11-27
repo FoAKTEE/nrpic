@@ -464,3 +464,21 @@ session, was closed and read with nseries.py (C-20261126-124143-b485eac, figure 
 kicked 0.344 model collapses at 217.97 M against 252.31 M on M/8 (B20.2 held, shift -13.6 per
 cent, bar 20). [VERIFIED] The unstable side of the bracket now repeats on two meshes, two gauges
 and two N; the stable side waits for q0057 and q0058.
+
+## 18. Batch 32 (2026-11-27, the last two G2 runs ended): what the lead checked
+
+No helper package ran for C-sidm since batch 27; `git status` was clean after the merge of main.
+The two card runs left for G2 had ended (600 M each). Each was closed with `nrpic-run finish`
+before any analysis, read with a registered analysis whose figure was looked at, and judged
+against the prediction of JOURNAL 2026-11-25T16:02Z.
+
+| Item | Runs (closed) | Analysis, figure read | Verdict of the lead |
+|---|---|---|---|
+| A16b324, B20.1 | C-20261126-121449-1d37e77 (6.3844 card-h, 16 jobs, nine attempts cut by SIGTERM) | nseries.py C-20261127-084538-8e98060 | [VERIFIED] holds: no lapse-marker crossing by 600 M (alpha_min >= 0.651); 20 M block means of alpha_c - alpha_c(0) in [-0.0171, +0.0107], inside +-0.03 |
+| N6b324e1, B20.3 second half | C-20261126-130519-1a79a66 (2.6175 card-h) | nseries.py C-20261127-084417-79c0e4d | [VERIFIED] holds: no crossing (alpha_min >= 0.656); largest 20 M difference from shift_eta 2.0 1.4e-5, bar 0.01 |
+| C7, C9 | eleven threshold runs (RERUN.md) | the five bracket analyses; fig_g2_threshold (note run C-20261127-084828-b6ca5ce) | [VERIFIED] the fates of y0 0.344 (collapse) and 0.324 (holds) repeat on M/8, M/16, shift_eta 2.0, 1.0 at N = 1e6 and on M/8 at N = 1e5; [JUDGEMENT] the location converges, the collapse time of the unstable member does not (-13.6 per cent M/8 to M/16) |
+| Note figures N5 | run C-20261127-084828-b6ca5ce (after a layout draft C-20261127-084609-36b1ecb, same numbers) | every new PNG read; others byte-equal to C-20261121-130335-d0cfe2e | N5.1 held (crossings equal nseries.py to all digits), N5.2 held (central cell of 0.344 at 220 M 27 times that of 0.324; the window-mean ratio is 3.5), N5.3 held for figures and ledger (runinfo.tex differs by construction, the run id) |
+
+What could not be confirmed in this session: nothing beyond the fresh verifier's items (OPEN.md).
+Small defects fixed: tick labels of adjacent panels collided and the smallest mosaic window was
+shot-noise dominated at 96 cells (now 32); both fixed before the registered run that the note uses.

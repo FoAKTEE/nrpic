@@ -1,71 +1,55 @@
 # HANDOFF of C-sidm
 
-For a reader with no memory of the last session. That session was the batch-27 lead session of
-2026-11-26 (11:44-12:45 UTC, processors only): it closed eight ended card runs, judged them with
-registered analyses, wrote the G2 section of the note and updated the G2 package.
+For a reader with no memory of the last session. That session was the batch-32 lead session of
+2026-11-27 (08:29-09:00 UTC, processors only): it closed and judged the last two G2 card runs,
+drew the G2 figures, updated the note, and assembled the G2 package for its independent review.
 
 State in three lines:
-1. G0 and G1 are signed. G2 is open and NOT ready for a verifier: 7 of 20 items pass, none fails
-   as written, 13 open; `stage/G2/OPEN.md` maps each open item to its queue entry.
-2. The threshold is bracketed on M/8 at N = 1e6: 0.344 kin collapses at 252.31 M, 0.324 kin holds
-   600 M (C-20261126-121836-c7a76c1); y_max = 0.334032 lies inside; same fates at N = 1e5; the
-   0.344 member with shift_eta 1.0 collapses at 252.41 M (C-20261126-123219-f734997).
+1. G0 and G1 are signed. G2: 19 of 20 checklist items pass; C18 (fresh verifier) is open and was
+   requested from orch (outbox 20261127T085351Z). Report verdict FAIL only on C18/VERIFIER.md.
+2. The King b = 1 threshold lies in (0.324, 0.344) around y_max = 0.334032 with the same fates at
+   N = 1e6 on M/8 and M/16 and with shift_eta 2.0 and 1.0, and at N = 1e5 on M/8 (B20.1, B20.3 held:
+   C-20261127-084538-8e98060, C-20261127-084417-79c0e4d).
 3. Every t_c is the alpha_min = 0.3 lapse marker; no run of C-sidm ever had the horizon finder.
 
 Owner: C-sidm. Branch: `track/C-sidm`. Worktree: `/data/haiyangw/nrpic/wt/C-sidm`.
 Start with:
-`cd /data/haiyangw/nrpic/wt/C-sidm && git merge --no-edit main && git status --short && harness/bin/nrpic-ctx inbox && harness/bin/nrpic-queue list --owner C-sidm && squeue -u $USER -o '%i %j %T %M' && test -e /data/haiyangw/nrpic/locks/PAUSE && echo PAUSED`
+`cd /data/haiyangw/nrpic/wt/C-sidm && git merge --no-edit main && git status --short && harness/bin/nrpic-ctx inbox && harness/bin/nrpic-queue list --owner C-sidm && test -e /data/haiyangw/nrpic/locks/PAUSE && echo PAUSED`
 
-## Done in this session: A16b344
+## Running when the session ended
 
-q0055 A16b344 (C-20261126-043714-8ea1c35) was closed (3.9744 card-hours) and read: on M/16 the
-kicked y0 = 0.344 model collapses at 217.97 M against 252.31 M on M/8 (B20.2 held,
-C-20261126-124143-b485eac). Read q0057 and q0058 the same way when they end:
-`harness/bin/nrpic-run submit --kind scouting --gate G2 --cores 1 --purpose "..." -- env OMP_NUM_THREADS=1 python3 tracks/C-sidm/longruns/scripts/nseries.py --out '$NRPIC_RUN_DIR' --band 0.03 --control N1e6_b324kin --title "..." N1e6_c=C-20261124-221122-928c9eb N1e6_b324kin=C-20261126-020831-fabf2d7 N1e6_b324kin_M16=<A16b324 run id>`
-(and `N1e6_b324kin_eta1=<N6b324e1 run id>` for the gauge member). B20.1: no collapse by 600 M and
-20 M block means of alpha_c - alpha_c(0) inside +-0.03; B20.3 second half: no collapse and
-|alpha_c(eta1) - alpha_c(N6b324)| < 0.01 (the `delta_vs_control_absmax` field of nseries.json).
-
-## Card runs: the shared queue (harness/RULES.md "Shared card queue")
-
-| Queue id | Label | Item / run id | Read with | Prediction |
-|---|---|---|---|---|
-| q0055 | A16b344 | done, read (B20.2 held) | - | - |
-| q0057 | A16b324 | C-20261126-121449-1d37e77, job 5382 pending | nseries.py beside N6b324 (`--control N1e6_b324kin`) | B20.1 |
-| q0058 | N6b324e1 | waiting (priority 1(2)) | nseries.py beside N6b324 | B20.3 second half |
-
-- Card runs reach Slurm only through `harness/bin/nrpic-queue add`; every C entry runs
-  `tracks/C-sidm/longruns/seq/qitem.sh <item>`; the tree must be clean when an entry dispatches.
-- Close a run before reading it: `harness/bin/nrpic-run finish <run_id>` (about 10 min per 70 GB;
-  do not run two finishes on the same run at once).
-- Decks stay on the core-v0.6 card build, cfl_number 0.25, no `dt_gauge` (ruling 0039 item 3).
+- `harness/bin/nrpic-stage verify C-sidm G2 --full`, started 08:53Z detached (setsid), log
+  `/data/haiyangw/nrpic/scratch/C-sidm/tmp/verify_full_g2.log`; it rewrites
+  `stage/G2/VERIFY_RESULTS.{md,json}` in the worktree (uncommitted until the next session). Read the
+  log tail; if PASS, commit the two files; if a checksum fails, name the run in OPEN.md.
+- No card run of C-sidm is queued or running (q0055-q0058 done and read). Budget: G2 54.76 of 80
+  card-hours used.
 
 ## Next, in order
 
-1. q0057 and q0058 when they end: judge B20.1 and B20.3 (second half); update CHECKLIST C1, C2,
-   C7, C9 (pass only if the fates repeat on M/16 and with shift_eta 1.0) and the note's Sec. V.
-2. G2 figures (C10, C11, C13, C15, C16): one script per figure in `note/scripts/` (convergence in
-   N from nseries.json, mesh and gauge from d2.json and the bracket legs; verification-ladder
-   schematic with paperfig.py; a slice mosaic needs mesh dumps of one run), a registered
-   `run_all.py`, compile with the checker, read the pages.
-3. Ask for the fresh G2 verifier (OPEN.md "What a G2 verifier must cover"); then
-   `nrpic-stage collect/verify/report`, with one `verify --full` pass before the gate review.
+1. The fresh G2 verifier (orch sends it): it starts from `stage/G2/OPEN.md` "What the verifier
+   should recompute first" and `stage/G2/RERUN.md`. Answer its findings with registered analyses.
+2. Commit the verify --full results (above) and rerun `nrpic-stage report C-sidm G2` once
+   VERIFIER.md exists.
+3. G3 scope: collapsed mass fraction against Kn on thermal cores (b = 0.1) on both sides of the
+   fluid onset, with the horizon finder (`<fastflow> diagnostics`, polishing of core-v0.8), three
+   seeds near the threshold, N = 1e6 (controls at fewer particles decay by noise).
 
-## Packages still in progress (none has uncommitted files)
+## Packages
 
-- longruns: the three legs above. models: paused since 2026-11-20. threshold_scan: block A done
-  at N = 1e5 (unfit); seeds 2 and 3 controls (A334s2c+, A334s3c+) closed in this session, not
-  read (not needed for the bracket). decisive: D2 complete (ctrl, f1, f2 two seeds, f4, M/16,
-  shift_eta 1.0).
+- longruns: complete for G2 (all legs read). models: paused since 2026-11-20. threshold_scan:
+  block A at N = 1e5 done (unfit for a scan; controls decay). decisive: D2 complete.
+- note: G2 section (Sec. V) with Figs. 10-12 and Table VI; figures of run C-20261127-084828-b6ca5ce;
+  main.pdf 19 pages (1.5 MB, committed as the earlier versions were).
 
 ## Traps
 
 - Commit with explicit paths (`git commit -- <paths>`), never `git add -A`; nrpic-run commits
   manifests itself (wait while `/data/haiyangw/nrpic/.git/worktrees/C-sidm/index.lock` exists).
+- nrpic-run refuses a dirty tree: commit scripts before a registered analysis.
 - History of a run continued in place: later rows replace earlier ones from their first time on
-  (all readers in longruns/scripts do this).
-- nseries.py parses the particle number from the label prefix `N<m>e<k>`; keep it in every label.
-- The note forbids numbers in main-text prose (paper-writing 4.1): numbers go to table VI.
-- `nrpic-stage verify` without `--no-checksums` hashes several TB; run the full pass only in a
-  session that waits for it, before the gate review.
+  (nseries.py and fig_g2_threshold.py do this; common.read_hist does not).
+- The note forbids numbers in main-text prose (paper-writing 4.1) and the words of the checker's
+  --forbid list (README of the note), e.g. release names: numbers go to Table VI.
+- `nrpic-stage report` keeps the "Decision requested" text unless `--decision` is given.
 - Never kill by pattern; at most 6 cores; temporary files in scratch/C-sidm/tmp/.
