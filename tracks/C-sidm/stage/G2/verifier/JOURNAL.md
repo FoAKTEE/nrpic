@@ -105,3 +105,23 @@ before the checks below.
   every block mean is above -0.0026, as the V2 run gave).
 - X.5 D2eta1: its chain ended with athena exit status 3 (guard) at t = 190.375 M after its
   crossing at 164.01 M, before the planned 220 M; the collapse time is unaffected.
+
+## 2026-11-27T09:13Z  outcomes of X.1-X.5 (run C-20261127-091102-fd0c31b); prediction X.6
+
+- X.1 HELD: A344s1c crosses at 549.26 M, A324s1c at 599.99 M (599.988).
+- X.2 HELD as predicted, against the task text: A.4 is FAILED (three crossings before 600 M);
+  BA.3 as written HOLDS (A324s1c crosses at 599.988 M, its 500-600 M mean change is -0.102,
+  below -0.040): BA.3 predicted that A.4 stays failed, and it did.
+- X.3 HELD: D2ctl mean change over 280-300 M is -0.00489, inside [-0.010, +0.002]; no crossing.
+- X.4 HELD: N6c 20 M means at 380-400, 390-410, 400-420 M are +0.0066, +0.0055, +0.0045
+  (NS.1's bar -0.005).
+- X.5 HELD: D2eta1 chain STATUS FAILED (athena exit status 3); guard stop at 190.375 M,
+  reason "non-finite values in the evolved fields of the spacetime solver"; crossing at
+  164.01 M precedes it.
+
+X.6 (before the run that tests it) [JUDGEMENT]: the seed-2 control of the threshold model at
+N = 1e5 (A334s2c, C-20261124-053105-2fcc8af) tells whether the N = 1e5 control collapse time
+is a property of the sample. If noise seeds an unstable mode of the marginal model, its
+crossing differs from 534.81 M by tens of M (or it does not cross by 600 M); a crossing within
+5 M of 534.81 M would point to a deterministic (mesh or model) cause. A334s3c
+(C-20261124-082221-7f03a8e) is expected to be unusable (history ends near 0.25 M).

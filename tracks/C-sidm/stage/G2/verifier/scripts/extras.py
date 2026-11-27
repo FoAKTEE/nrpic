@@ -23,7 +23,8 @@ def main():
         sys.exit(1)
     runs = {"A344s1c": "C-20261122-213602-729aeed", "A324s1c": "C-20261123-032324-938ecbd",
             "A334s1c": "C-20261121-214601-40dc927", "N6c": "C-20261124-221122-928c9eb",
-            "D2ctl": "C-20261122-103854-4670b59"}
+            "D2ctl": "C-20261122-103854-4670b59", "A334s2c": "C-20261124-053105-2fcc8af",
+            "A334s3c": "C-20261124-082221-7f03a8e"}
     for k, rid in runs.items():
         h, nr = fates.read_hist(os.path.join(fates.run_dir(rid), "cc.nrpic.hst"))
         t, amin, ac = h[:, 0], h[:, 15], h[:, 12]
