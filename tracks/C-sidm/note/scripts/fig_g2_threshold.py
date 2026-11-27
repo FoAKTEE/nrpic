@@ -76,7 +76,7 @@ def main():
     cz.use_style()
     res = {}
     fig, axs = plt.subplots(1, 3, figsize=(7.0, 2.55), sharey=True)
-    fig.subplots_adjust(left=0.075, right=0.995, bottom=0.17, top=0.9, wspace=0.07)
+    fig.subplots_adjust(left=0.075, right=0.985, bottom=0.17, top=0.9, wspace=0.07)
     red, blue = cz.PAL["red"], cz.PAL["blue"]
     ax = axs[0]
     for key, col, lab in (("g2_n4c", cz.PAL["orange"], r"$N=10^4$"),
@@ -99,6 +99,7 @@ def main():
     for ax in axs:
         ax.axhline(MARK, **cz.GUIDE)
         ax.set_xlim(0, 610)
+        ax.set_xticks([0, 200, 400] if ax is not axs[-1] else [0, 200, 400, 600])
         ax.set_ylim(0.0, 0.85)
         ax.set_xlabel(r"time $t/M$")
         ax.legend(frameon=False, loc="lower left", fontsize=6.5, handlelength=2.0)

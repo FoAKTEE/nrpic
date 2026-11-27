@@ -6,8 +6,9 @@ t = 220 M (middle), the unstable member y0 = 0.344 at t = 220 M (bottom), the fi
 after its lapse marker (alpha_min = 0.3 at about 218 M; no horizon finder). Columns: square
 windows of half-width 12, 3 and 0.75 M about the origin; each box marks the window of the panel
 to its right. Colour: rest mass per coordinate volume in the slab |z| < half-width / 8, from the
-particle snapshots (sum of particle masses in a cell of the 96 x 96 grid over the cell's
-coordinate volume), in units of M^-2; white cells hold no particle.
+particle snapshots (sum of particle masses in a cell over the cell's coordinate volume; 96, 64 and 32 cells per side from the largest window to the smallest), in
+units of M^-2; white cells hold no particle. Tick labels in the largest window, scale bars in the
+two smaller ones.
 Reads cc.part.00000.bin and cc.part.00022.bin of the registered runs g2_b344m16 and g2_b324m16
 (common.RUNS), checked against the checksums the runs recorded.
 """
@@ -27,7 +28,8 @@ from matplotlib.colors import LogNorm  # noqa: E402
 
 STEM = "fig_g2_mosaic"
 HALVES = (12.0, 3.0, 0.75)
-NBIN = 96
+NBINS = (96, 64, 32)                 # cells per side: about ten particles per cell or more in the core
+BARS = (None, (1.0, "1 M"), (0.25, "0.25 M"))
 ROWS = (("g2_b344m16", "cc.part.00000.bin", r"$y_0=0.344$, $t=0$"),
         ("g2_b324m16", "cc.part.00022.bin", r"$y_0=0.324$, $t=220\,M$"),
         ("g2_b344m16", "cc.part.00022.bin", r"$y_0=0.344$, $t=220\,M$"))
@@ -44,25 +46,25 @@ def snapshot(key, rel):
     return t, r[:, 0:3], r[:, 6]
 
 
-def slab_density(x, m, half):
+def slab_density(x, m, half, nbin):
     dz = half / 8.0
     s = np.abs(x[:, 2]) < dz
-    edges = np.linspace(-half, half, NBIN + 1)
+    edges = np.linspace(-half, half, nbin + 1)
     H, _, _ = np.histogram2d(x[s, 0], x[s, 1], bins=(edges, edges), weights=m[s])
-    vol = (2 * half / NBIN) ** 2 * (2 * dz)
+    vol = (2 * half / nbin) ** 2 * (2 * dz)
     return H.T / vol, int(s.sum())
 
 
 def main():
     out = cm.out_dir("figures")
     cz.use_style()
-    fig, axes, cax = cz.slice_mosaic(len(ROWS), len(HALVES), fig_w=6.4, cbar="left")
+    fig, axes, cax = cz.slice_mosaic(len(ROWS), len(HALVES), fig_w=6.4, cbar="left", bottom=0.45)
     data, info = [], {}
     for i, (key, rel, lab) in enumerate(ROWS):
         t, x, m = snapshot(key, rel)
         row = []
         for j, half in enumerate(HALVES):
-            rho, ns = slab_density(x, m, half)
+            rho, ns = slab_density(x, m, half, NBINS[j])
             row.append(rho)
             info[f"{key}:{rel}:half{half:g}"] = dict(t=t, n_part=len(m), n_slab=ns,
                                                     rho_max=float(rho.max()))
@@ -77,13 +79,16 @@ def main():
                            norm=norm, extent=(-half, half, -half, half), interpolation="nearest")
             if j + 1 < len(HALVES):
                 cz.zoom_marker(ax, HALVES[j + 1], half, connect="right")
-            cz.slice_ticks(ax, half, show_x=(i == len(ROWS) - 1), show_y=True)
             if j == 0:
+                cz.slice_ticks(ax, half, show_x=(i == len(ROWS) - 1), show_y=True)
                 cz.run_label(ax, ROWS[i][2], on_dark=False)
-            if i == len(ROWS) - 1:
-                ax.set_xlabel(r"$x/M$")
-            if j == 0:
                 ax.set_ylabel(r"$y/M$")
+                if i == len(ROWS) - 1:
+                    ax.set_xlabel(r"$x/M$")
+            else:
+                ax.set_xticks([])
+                ax.set_yticks([])
+                cz.scale_bar(ax, BARS[j][0], BARS[j][1], color="k")
     cz.tall_colorbar(fig, im, cax, r"rest mass per volume in the slab $[M^{-2}]$")
     cz.save(fig, os.path.join(out, STEM))
     cm.report_checks(STEM)
