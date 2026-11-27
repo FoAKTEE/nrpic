@@ -583,3 +583,49 @@ three runs and the numbers are those of the ended runs).
    card check q0049; new inputs set `<fastflow> diagnostics = true` (ruling 0041 item 5).
 4. stage verify ran with --no-checksums (PASS); the full checksum pass (--full) is left for the session
    before the gate review, as harness/RULES.md asks.
+
+## 25. Lead session of batch 34 (2026-11-27 15:21 PST on, Opus): G2 signed, corrections, G3 scope, guard test
+
+Gate G2 is SIGNED, pass with reservations (coord/GATES.md row of 2026-11-26, tag
+`stage/D-bh-dress/G2-pass-20261126`, decision 0045 item 1). No helper package finished since batch 25; this
+section records the lead's own work.
+
+The eight corrections of `stage/G2/GATE_REVIEW.md` section 6, each checked against the artefact it names:
+- a. CHECKLIST C17 set to PASS with VERIFIER.md and GATE_REVIEW.md (commit 5720e3cc1); collect, verify and
+  report rerun on the final package (below).
+- b. LADDER.md rows that read PENDING in batch 11b now carry the outcomes from g2long entries 19-22, 26, 27
+  (FE4's P5 failed, FF4's P12-P14, FK's P7-P11, FN4/FNQ/FL16); the ladder schematic redrawn from
+  `g2long/tools/schem_ladder.py` (run D-20261127-234652-5b9af43, looked at: every rung green except the
+  bounded constraints).
+- c. Ledger row of FF4 (note/scripts/ledger.py): "480 (control held at its last value after 299M; 280
+  samples within the control)". Checked first that run D-20261125-121123-143a007 reads the control
+  v1l4.horizon_summary_0.txt of V-1L4 (ends 299 M) and reports n = 480 [VERIFIED]; the 280 is the
+  verifier's number (section 4.2), not recomputed here.
+- d. CHECKLIST C2 and note section V C quote the envelope of the M/16 - M/8 difference (at most 1.0e-3,
+  mean +5.8e-4 over 250-299 M, not removed by the own controls) beside the three samples; "a few parts in a
+  hundred thousand" is gone.
+- e. Note section V A: "at most 7.3e-5 at M/8 (100-500 M) and 5.5e-5 at M/16 (100-300 M)" (CHECKLIST C7,
+  FP5 of run D-20261124-172508-c847ee4).
+- f. Note section VI rewritten to the state after G2 (the long runs are done; what G3 must answer) and the
+  summary's last sentence (the boundary question was answered at G2); "Long runs are on the cards" and
+  "ends where the boundary signal arrives" removed.
+- g. The verifier's decided cause of the early removals (shells ahead of exact LTB, VERIFIED for tracers,
+  JUDGEMENT for dust) entered in OPEN.md, CHECKLIST C8, RISKS R28 and note section V D.
+- h. FK's D3 wording in CHECKLIST C8 and LADDER: "no violation; smallest value -1.4e-4 inside the allowance
+  -3e-4". The original wording stays in g2long entry 19 (journals are not rewritten).
+Note v3.1: build D-20261127-234333-5720e3c (15 of 15 scripts), compiled, 24 pages, checker with --compile:
+0 undefined references, 0 undefined citations, 0 overfull boxes; pages 12-13 read after the change.
+
+Not done by me and not claimed: the 280-sample figure of correction c and the shell-lead numbers of g are
+the verifier's, carried with its locator. One reading of my own that bears on G3, labelled [JUDGEMENT, TO
+VERIFY]: FL16's level 8 covers only +-3 M (64 blocks of 1.5 M, g2long entry 4 block counts), and ES-FL's
+smallest horizon radius passes 3.2 M at 219.5 M, so FL16's horizon probably left its M/16 level near 200 M;
+the late M/16 - M/8 offset may come from it. Not a G2 correction (no G2 claim rests on M/16 after 200 M
+beyond the band of G), but SCOPE_G3 builds its members so that it cannot recur.
+
+G3 scope: `scope/SCOPE_G3.md` written before any production run (commits e92904aed, acb5f7202), for the
+independent review of decision 0045 item 2. No production run is queued.
+
+Guard test EG8 (scouting): predictions committed first (excguard entry 1, 6111945a6); processor smoke test
+S1 held (D-20261127-232517-6111945); queued at priority 2 (q0085, run D-20261127-233719-db5be88, job 5536,
+pending at 15:48 PST). Card-hours used by this session so far: 0 (the job had not started).

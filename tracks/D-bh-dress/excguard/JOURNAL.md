@@ -68,3 +68,22 @@ What a pass means: with core-v0.8 the guard factor replaces the larger start rad
 runs can keep `initial_radius_0 = 0.8` (the flow starts inside the horizon of the seed) and excise to
 the end. A failure of E1 means the guard factor does not do what finder_stop.md section 3 says on this
 deck, and the G3 runs then use FK's remedy (a larger start radius) until core has answered.
+
+## Entry 2 (2026-11-27 15:50 PST, lead of batch 34): outcome of S1; EG8 queued
+
+S1 HOLDS (run D-20261127-232517-6111945, `.work/build_cpu_v08/src/athena`, two cycles, one core, exit 0,
+1044 s of processor time at 1.21e4 zone-cycles per second, as ES-FL's smoke tests of g2long entry 4):
+- the parameter dump (header of `rst/esflg8.00000.rst`) holds `polish_iterations_0 = 100`,
+  `mass_tol_0 = 1.0e-5`, `initial_radius_0 = 0.8`, `diagnostics = true`, `ah_exc_max_growth = 8.0`;
+- `esflg8.horizon_status_0.txt` is written; the search at t = 0 is found (reason 0) after 126 flow
+  iterations (the mass rule plus the 100 polishing iterations), mass 0.9915146861;
+- ES-F's unpolished search at t = 0 gave 0.9915211031 (g2long entry 4, S2b): the polished mass is 6.4e-6
+  below it, within the bound 3e-4. [Not predicted: the sign. Core's offset of the unpolished rule, 6e-5
+  BELOW the converged mass, was measured on late dumps of the vacuum puncture; at t = 0 of these data
+  the unpolished search from 0.8 M ended 6.4e-6 ABOVE the polished one. E3 concerns 20-219 M and stands
+  as written.]
+No figure: a two-cycle start-up check with three numbers, not a test of the physics.
+
+EG8 entered the shared queue at priority 2 at 15:37 PST: q0085, run D-20261127-233719-db5be88, job 5536
+(pending, Priority, at 15:48 PST). E1-E8 are judged when it ends, by the readers named in entry 1, with
+figures; the outcome goes to core (core asked for it, outbox 2026-11-26 "v08-guard-and-polishing").

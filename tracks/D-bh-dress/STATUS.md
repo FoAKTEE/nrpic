@@ -1,43 +1,39 @@
 # STATUS of D-bh-dress
 
-gate:        G0 PASS (signed 2026-11-20). G1 PASS with reservations (signed 2026-11-21,
-             coord/GATES.md). G2 package ASSEMBLED for its fresh-context verifier and the gate
-             review (batch 25): every CHECKLIST item PASS except C17 (verifier); OPEN.md lists only
-             failures on record with their rulings. Not passed: the gate is the orchestrator's.
-headline:    The last two G2 runs held every prediction: FNQ (N/4) and FL16 (M/16). The growth
-             against the flux holds at N/4, N, 4N and M/8, M/16 (bins within 0.29-0.62 per cent);
-             the horizon mass converges in particle number with N^-1/2 noise; M/8 and M/16 agree
-             in the growth to <= 4.4e-4 (M/4 outside the regime, no order claimed). Every horizon
-             number made without the finder diagnostics, rechecked by the failure signature.
-last-result: FNQ D-20261124-172725-2f426b6 and FL16 D-20261124-172745-72472ed closed; readings
-             D-20261126-054616-a13a888 (Q1), -054636-93618ee (Q2), -054718-afa783e (XQ),
-             -054736-10c837a (R3), -055158-30ae09c (L2), -055159-6c40115 (L5), -055208-4e0fd0e
-             (signature), -055249-505b079 (conv3, C2); note v3 build D-20261126-055502-fbb1bec.
-             g2long/JOURNAL.md entries 25-27; stage/REVIEW-wave3.md sections 23-24.
-failed:      batch 25: D3 at N/4 after ~220 M (8352 of 29984 removals; not predicted, no bound
-             in G); conv3's first reading D-20261126-055207-0137c53 dropped 300 M (reader fixed,
-             labelled post hoc). Earlier: P5 (M/4 null test; ruling 0039 item 4), P6, P11, P13, P12
-             with the M/8 control, FF4 D3 early, FP4, FP-ext (ii), FE1, FE2, P2, XC2, R1 as
-             written, T1 for FN4. Unexplained: excision removes dust up to 0.67 M of proper time
-             before the exact crossing late on (FK, FN4, FNQ) [TO VERIFY].
-next:        1. Orchestrator: fresh-context G2 verifier, then the gate review (outbox
-                g2-package-ready-for-verifier); answer the verifier's findings
-             2. Full-checksum stage verify (--full) before the review
-             3. G3 design: core's excision guard test (ah_exc_max_growth = 8, diagnostics =
-                true) after core judges q0049; growth law and spike scan with predictions first
-blockers:    none for D; the verifier is the orchestrator's to send
-needs:       orch: g2-package-ready-for-verifier (2026-11-26), b20-horizon-recheck-null-mesh-
-             two-members (answered by ruling 0041 item 4). core: card check q0049 of
-             core/restart-finder before using polish_iterations / the excision guard; older:
-             lapse-leak-growth-data, newtonian-mode-edges, lapse-excision-criterion,
-             particle-energy-and-crossing-record item 2, accretion-diagnostics item 3,
-             spike-mass-refinement (outbox/)
-offers:      g2long/tools: conv3.py (three-way convergence of the growth), hz_check.py, region_
-             norms.py, d4_timing.py, close_by_hand.py, fk_compare.py, np_partial.py, probe_long.py,
-             fp_analyse.py, xc_plane.py, slice_mosaic.py, judge_conv.py; stage/G2/rerun_g2.py and
-             rerun_plan.json (51 analyses, 14 card runs, 6 processor simulations)
-budget:      card-hours this session: 0 submitted; closed this session FNQ 1.90, FL16 3.66 (ran
-             2026-11-25). Closed earlier: FK 2.70, FF4 1.34, FE4 0.83, FN4 3.19.
-             Processors: ten readings on one core each (seconds to a minute), one note build (2).
-card jobs:   none queued or running (q0008-q0011 done).
-relaxed lapse: no G2 run uses it (decision 0025 item 3); G3 matter (stage/G2/OPEN.md section 2).
+gate:        G0 PASS (2026-11-20), G1 PASS with reservations (2026-11-21), G2 PASS with reservations
+             (signed 2026-11-26, coord/GATES.md, decision 0045; tag stage/D-bh-dress/G2-pass-20261126).
+             G3 (growth law, dress profile, null-test limit): scope written, NOT yet reviewed; no
+             production run queued (decision 0045 item 2). 60 card-hours allotted toward G3.
+headline:    The eight corrections of the G2 gate review are applied (C17 PASS, ladder at its final
+             state, FF4's D2 row, the M/16 - M/8 envelope 1.0e-3 / +5.8e-4, converged floor 7.3e-5,
+             stale plan text, the early-removal cause = shells ahead of exact LTB, FK's D3 wording);
+             note v3.1 recompiled. The G3 scope (scope/SCOPE_G3.md) fixes claims, estimators,
+             criteria, a third mesh member (M/12), the shell-lead bias with a test that can fail, a
+             gauge leg by the shift, and a 60 card-hour budget. Core's excision-guard test EG8 is
+             queued with predictions committed first.
+last-result: excguard S1 smoke test D-20261127-232517-6111945 HELD (options read, status file written,
+             t = 0 search found after 126 iterations, mass 6.4e-6 from ES-F's); note build
+             D-20261127-234333-5720e3c; ladder schematic D-20261127-234652-5b9af43.
+             stage/REVIEW-wave3.md section 25; excguard/JOURNAL.md entries 1-2.
+failed:      none new this session (S1 held; the sign of the t = 0 polishing offset was not
+             predicted, recorded in excguard entry 2). On record from G2: P5 (M/4 null test), P6,
+             P11, P13, P12 with the M/8 control, D3 at N/4 and M/4, FP4, FP-ext (ii), FE1, FE2, P2,
+             XC2, R1 as written, T1 for FN4, conv3's first reading.
+next:        1. Independent review of scope/SCOPE_G3.md (orchestrator; outbox g3-scope-ready-for-
+                review); answer its findings as dated amendments before any production run
+             2. Read EG8 (q0085) when it ends: nrpic-run finish, then E1-E8 with esf_criteria.py,
+                d4_timing.py, fk_compare.py and figures; post the outcome to core
+             3. Processor smoke tests and block counts of the G3 decks (G-12, G-16, G-8-16N data);
+                check FL16's block list against its horizon radius (scope section 2)
+blockers:    G3 production waits for the scope review (by rule)
+needs:       orch: g3-scope-ready-for-review (2026-11-27). core: EG8 outcome is owed TO core (posted
+             excguard-eg8-queued); older requests: lapse-leak-growth-data, newtonian-mode-edges,
+             lapse-excision-criterion, particle-energy-and-crossing-record item 2, accretion-
+             diagnostics item 3, spike-mass-refinement (outbox/)
+offers:      g2long/tools (conv3, hz_check, region_norms, d4_timing, fk_compare, np_partial, ...);
+             excguard/tools/make_input.py; stage/G2/rerun_g2.py and rerun_plan.json
+budget:      G3 allotment 60 card-hours; used 0 so far (EG8 pending, cap 2.5). Processors this
+             session: S1 (one core, 1044 s), note build (2 cores, ~1 min), schematic (one core).
+card jobs:   EG8 q0085, run D-20261127-233719-db5be88, job 5536 (pending at 15:48 PST); output in
+             scratch/D-bh-dress/D-20261127-233719-db5be88/; read by excguard (E1-E8).
+relaxed lapse: no run uses it; G3 states why no other slicing is possible (SCOPE_G3 section 8).

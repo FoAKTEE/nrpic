@@ -621,3 +621,23 @@ changed my mind about: nothing that a criterion rests on; the scatter ratio make
   measured statement for the horizon mass, not only for the constraints.
 open: C17 (fresh verifier) and the gate review; full-checksum verify; G3 design (excision guard test after
   core's q0049). Card-hours submitted this session: 0. Failed: D3 at N/4; conv3 first reading.
+
+## 2026-11-27 15:21-16:05 PST, lead of batch 34 (Opus; G2 signed, corrections, G3 scope, guard test)  commits 81d5e6b68..(this)  runs D-20261127-232517-6111945, D-20261127-233719-db5be88, D-20261127-234333-5720e3c, D-20261127-234652-5b9af43
+- Recorded: gate G2 signed 2026-11-26, pass with reservations (coord/GATES.md, decision 0045).
+- FIRST, the excision-guard test: input excguard/inputs/esflg8.athinput (ES-FL + ah_exc_max_growth 8 at
+  initial_radius 0.8, polish 100, mass_tol 1e-5, diagnostics, 260 M, restart 25 M), predictions E1-E8
+  committed before any run (excguard entry 1, 6111945a6). Processor smoke test S1 D-20261127-232517-6111945
+  HELD (entry 2). Queued at priority 2: q0085, run D-20261127-233719-db5be88, job 5536, pending.
+- The eight corrections of GATE_REVIEW section 6 applied (REVIEW-wave3 section 25); note v3.1 built
+  (D-20261127-234333-5720e3c), compiled, checker clean, pages 12-13 read; ladder schematic redrawn
+  (D-20261127-234652-5b9af43, looked at). Stage G2 collect, verify, report rerun.
+- G3 scope written before any production run: scope/SCOPE_G3.md (claims G, D, N; criteria with numbers;
+  members G-8, G-12, G-16, G-8-4N, G-8-16N, G-8-e1, V-8; shell lead carried as a bias with test G3-L1;
+  budget 36.8 estimated, 60 with caps and reserve). Guard factor 10 for the 400 M members per core's advice.
+  Found while writing it [JUDGEMENT, TO VERIFY]: G2's M/16 member refined only +-3 M, so its horizon likely
+  left the finest level near 200 M (risk R29).
+- Outbox: orch g3-scope-ready-for-review; core excguard-eg8-queued. Inbox: core v08-guard-and-polishing and
+  orch release-core-v0.8 acknowledged.
+- Predictions this session: S1 held; the sign of the polishing offset at t = 0 was not predicted (entry 2).
+open: EG8 (q0085) pending; the independent review of SCOPE_G3; no production run before it. Card-hours
+  used this session: 0 (EG8 had not started at 15:48 PST).
