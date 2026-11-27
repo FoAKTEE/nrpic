@@ -794,3 +794,19 @@ Not done in this session (no source change was allowed): the inflection case wit
 `noise_background_eq = evolved` (entry 15 item 6); level 2 with a shift or a lapse that
 varies in space. Verdict for release v0.7 (interface text section 12): fit once R5 has
 passed; the merge adds the options to the changelog and `coord/INTERFACES/`.
+
+## Entry 18 (2026-11-26 04:17 PST, lead of core, batch 27): outcome of R5 (q0035)
+
+Card run core-20261126-040704-5c98bee (shared-queue entry q0035, job 5352; four runs,
+status 0; closed 2026-11-26 after merging its registration commit into `core/nrpic`),
+judged by run core-20261126-115933-9fb0e47 (`card_review.py`), figure `fig_card.png` looked
+at (four bars: level 0 mesh and level 2, old and new executable, at 256^3 on one A100).
+- **(i) held, as strongly as predicted**: sr64_l2 20 of 20 files and usr64_l2 46 of 46 files
+  identical to Track E's smoke runs of the executable of 6ca93cba (E-20261123-035724-b661081);
+  history means and rms 0.0 apart. Track E's level-2 runs made with the earlier executable
+  need no new judgement on this account.
+- **(ii) held, better than predicted**: at 256^3, 60 cycles, level 0 on the mesh 1.1505e7 and
+  level 2 1.1488e7 zone-cycles per second: ratio 1.0014 (predicted at most 1.18; the old
+  executable 1.632). Level 2 now costs what level 0 on the mesh costs on a card.
+So the reviewed level-2 build (source 64f150ec, merged into core-v0.7) is equivalent on a card
+to the build Track E used, and level 2 is no longer slower than level 0 there.

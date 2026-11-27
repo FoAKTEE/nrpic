@@ -3,36 +3,35 @@
 gate:        G2 NOT MET (tracks/core/stage/G2/: CHECKLIST 18 items, 13 PASS, 5 FAIL:
              C1 ladder rows 3, 4 partial; C2 three-way convergence; C6 reproducibility
              package (open level-3 chains); C7 = C1; C12 no REVIEW.md/SCOPE.md).
-             Batch 17 (2026-11-25T11:47-12:30Z): round without AthenaK source change.
-headline:    Release core-v0.7 is on main (tag 5f75e5b9); its release processor build is
-             byte-identical to the candidate (75 of 75, core-20261125-115428-3670218). The
-             queue marker no longer reaches any job of scripts/ (decision 0037 item 4;
-             fake-Slurm tests PASS, control with the old scripts shows the leak). Row 4
-             level 3, two of six runs: the 0.726875 member collapses at 338.25 M, and the
-             0.73625 control, STABLE by the 300-M rule, collapses at 421.25 M (fates
-             core-20261125-120724-246d2a5): the 300-M bracket (0.7175, 0.73625) stands as
-             written but does not mark a stability threshold [JUDGEMENT, rest pending].
-last-result: M1 (marker) held: core-20261125-120211-08f4fb9, -120145-665b6a0 (both
-             registered by hand: the local launcher refuses fake-Slurm tests). R7 held.
-             Provenance: E's seven ablation runs used athena_gpu 468109496c82... (source
-             6ca93cba), verified on the copies in their run directories
-             (tracks/core/EXE_PROVENANCE.md); answered E.
-pending:     card runs in the shared queue (none waited for; all "waiting" at 12:10Z):
-             q0039 core-v07-card   card check K7 of the merged card executable
-             q0035 nl2-review-R5   card run of the reviewed level-2 build (its package)
-             q0036 step-limit-card card smoke run of the step-limit build (its package)
-             q0030-q0033           row 4 level 3: 0.726875 control, 0.73625 member
-                                   continued, 0.755 pair continued (HANDOFF.md)
-next:        1. when q0039 has run: judge it (RELEASE-v0.7.md, "Card checks pending");
-                then the CLAUDE.md sentence to orch
-             2. row 4 level 3 when q0030-q0033 have run: finish, row4_fate.py (HANDOFF)
-             3. the Fable source session: tracks/core/NEXT_SOURCE.md items 1-3
+             Batch 27 (2026-11-26T11:44-13:00Z): round without AthenaK source change.
+headline:    release core-v0.8 made final: card check q0049 PASS (K1, K2, K4, K5 held; K3
+             held for the polished and tight finder rules, card = processors within
+             3.3e-16, and FAILED for the rule 1e-5 without polishing, which differs between
+             card and processors up to 8.8e-6 and in two accepts of sixteen). Executables
+             published in scratch/core/exe/core_nrpic_v08/ (serial, MPI, threaded, card;
+             MPI smoke test M1, M2 held). Waits for the clerk (merge, tag on 01d4aeeb,
+             release builds, CLAUDE.md row: outbox 20261126T115635Z).
+             core-v0.7 card checks: K7 CARD PASS (three analyses); step-limit card run P4a,
+             P4c held, P4b held in its test; level-2 review R5 held (66 of 66 files identical,
+             level 2 as fast as level 0 on the mesh, ratio 1.0014).
+             Row 4: bracket (0.7175, 0.726875) unchanged; 0.755 control does not collapse
+             by 600 M but drifts (P13 holds for the control).
+last-result: card check core-20261126-114747-a6f2385 (of card run -070946-7971fde; first
+             pass -114526-2b1f001 failed on the reader); MPI smoke -115451-893a30e;
+             K7: -115658-8af7dd7, -115708-140bafa, -115725-9a8d381; step limit
+             -121103-1070457; row 4 -121143-aaae1b7; R5 -115933-9fb0e47.
+pending:     q0059 (job 5378, pending in Slurm): row 4, 0.755 member continued 300-600 M
+             (member half of P13). No other entry of core in the queue.
+next:        1. clerk: merge core/nrpic, tag core-v0.8 on 01d4aeeb, builds, CLAUDE.md rows
+                of v0.7 (card checks judged) and v0.8 (words in the outbox)
+             2. q0059 when it has run: finish, row4_fate.py (HANDOFF), member half of P13
+             3. Fable source session: NEXT_SOURCE.md items 0, 0b, 1
+             4. G2 package items: C2, C6, C12 (HANDOFF "What G2 still lacks")
 blockers:    none
-needs:       orch: RULES text on the marker once core/nrpic is merged, and whether
-             fake-Slurm self-tests may be registered by the tool (outbox
-             20261125T121047Z); older: 20261125T030800Z, 20261121T233031Z, 20261121T204332Z
-offers:      scripts/tests/test_queue_marker.py; tracks/core/tools/hand_run.py;
-             tracks/core/NEXT_SOURCE.md; EXE_PROVENANCE.md (rule: no executable is
-             replaced in place)
-budget:      G2 card-hours: used 15.76, reserved 4.03, left 20.21 of 40 (nrpic-run
-             budget, 2026-11-25T12:15Z); this session used no card
+needs:       orch: merge and tag core-v0.8; CLAUDE.md rows (outbox 20261126T115635Z and the
+             v0.7 row words of this session); older outbox 20261125T121047Z, 20261125T030800Z
+offers:      core_nrpic_v08 (finder polishing: 0.33 s per search on a card; excision guard
+             factor; restart outputs equal on one rank); card_check.py, mpi_smoke_v08.py
+budget:      G2 card-hours: used 20.06, reserved 2.07, left 17.87 of 40 (nrpic-run budget,
+             2026-11-26T12:13Z); this session submitted no card run; processors: one MPI
+             build (4 jobs, 2.5 min), analyses on 1-2 cores
