@@ -126,3 +126,82 @@ not the limit), or dies by overshooting (mean radius negative, reason 4, in the 
 iterations: in flat space the weighted step with alpha = 1 is r -> r (1 - 2A) = -0.03 r);
 members with `flow_alpha_beta_const = 0.5` (A = 0.257, flat-space step r -> 0.49 r) run
 beside them to tell these two apart.
+
+## Entry 3, 2026-11-27 15:50: outcome F1 (the weighted flow), predictions for the source
+
+### Outcome F1 [VERIFIED; release core-v0.8, `fastflow/flow=shear` on the command line]
+
+- S1L t = 220, run core-20261127-233526-05eba1f: FOUND from 0.6 (the deck's start), 0.2,
+  0.1, 0.03 and 1.5 after 125 to 139 iterations, of which 100 are the polishing; area
+  mass 10.73958041, mean radius 0.16195874, smallest radius 0.15647, the five masses
+  equal to 1e-13; expansion integral -1.9e-5 (Track A's surface from 0.16 after 1927
+  iterations of the standard flow: -0.63), area mean of H^2 2.12e-8, so rms expansion
+  times mass 1.6e-3. From 0.6 the radius goes 0.600, 0.272, 0.206, 0.185, 0.175, ...: a
+  contraction of about 0.6 per iteration near the surface. With alpha = 0.5: found after
+  156 and 157 iterations, same surface to 1e-12. Tight rule 1e-9 without polishing: 47
+  iterations. Prediction HELD (10.73 +- 0.05, 0.161 +- 0.003, within 400).
+- P0L6 t = 140, run core-20261127-233531-d12e417: FOUND from 0.15 (the deck's start), 0.6
+  and 0.05 after 138 to 144 iterations, area mass 6.30324213, mean radius 0.10398630;
+  alpha 0.5: 174 and 182; tight rule: 72. Prediction HELD (6.30 +- 0.02, 0.104 +- 0.002).
+- No overshoot to a negative radius in any member. P0L6 t = 130 (no trapped sphere) is
+  run with the new build below (prediction S3).
+So the cap of iterations was hit because of the flow function, and the cure needs no new
+source: `<fastflow> flow = shear` in the deck, or `fastflow/flow=shear` on the command
+line of a continued run (the key is global, for all horizons of the run).
+
+### Predictions for the tests of the new source (processor build of this branch)
+
+D (item 0, `dep_levels.py`, all sixteen cases): `cic_fs` byte-identical to `cic` (check
+D4 holds, which fails on core-v0.8: dipole of -+0.125 at x1 = 7.25, 7.75); every table of
+the other fourteen cases without compensation byte-identical to the same case run with
+core-v0.8. Refuted by any differing byte there.
+
+C0 (item 0b on the planar test, case `pcs_comp` of `dep_levels.py`): line sum 32 to 1e-12
+(core-v0.8: 32.0413); the excess of 0.0413 leaves through the two coarse cells at the
+faces only: E at x1 = +-8.5 lower than core-v0.8 by 0.0207 each (to 1e-3), every other
+cell on the line byte-identical to core-v0.8 (the fine cells keep their pass; the
+problem is planar, so only the pass along x1 meets a face). D5 (gain over the
+uncompensated boundary error between 1 and 2.2) probably still holds; not sure.
+
+C1 (item 0b in three dimensions, `comp_cons.py`: random particles moving across a cube in
+a cube, faces, edges and corners, 20 steps): with the new build the integral of E and of
+S_i over the mesh equals the particle sums to 1e-12 (relative to sum m W) at every cycle
+for `pcs_c2` (Track A's settings), `pcs_c2_lim` (with the limiter), `tsc_plain` and
+`cic_plain` (no fourth-order term: product form in core-v0.8, flux form now); with
+core-v0.8 the error is above 1e-7 in all four. Histories byte-identical between the two
+builds for `none_pcs` (no compensation) and for the two uniform-mesh cases `uni_pcs_c2`,
+`uni_cic_plain`. Refuted for the design if an error above 1e-12 remains in the new build
+(then faces between blocks of the same level next to a level edge do not see the same
+ghost data, which I could not exclude by reading).
+
+R (item 1, `diag_restart.py`, changed expectation): a `-r rst fastflow/diagnostics=true`
+starts, writes the status file with the same lines as b (`-i add.athinput`), and the log
+holds "Parameter added on restart from the command line: <fastflow> diagnostics = true";
+b: log line "... from the input file ..."; c (control) no status file and no such line;
+d: a fresh start with `fastflow/no_such_option=1` still ends with the fatal error; e:
+`-r rst fast-flow/x=1` is refused.
+
+S (finder options, Track A's files, one cycle each; S1L t = 220 and P0L6 t = 140, 130):
+- S1 `trapped_tol`: the finder's default tolerance `mass_tol = 1e-2` with the standard
+  flow from 0.6 on S1L accepts the second surface it evaluates (the mass changes by
+  4.2e-3 per iteration, run core-20261127-233027-4fdb05d): found = 1 at mean radius
+  0.5998, mass 21.8, a FALSE acceptance (control member). The same search with
+  `trapped_tol = 0.05`: not found, reason 7, 400 iterations, column 16 near 0.5
+  (H m = 0.0244 x 21.8). With `flow = shear` and `trapped_tol = 0.05`: found, the surface
+  of F1 (10.73958, column 16 = 1.6e-3).
+- S2 `start_scan = 24` on S1L t = 220 (radii 0.01875 to 0.6): the outermost sphere with a
+  negative integral lies at 0.15 to 0.165, the start radius within 3 per cent of 0.162;
+  with the standard flow and 4000 iterations: found, mass 10.74 +- 0.01; with 400: not
+  found (reason 6 or 7), because near the surface the standard flow still needs of order
+  a thousand iterations. With `flow = shear`: found within 130 iterations, the surface
+  of F1. P0L6 t = 140 (scan 0.0047 to 0.15): start within 3 per cent of 0.104; shear:
+  found, 6.30324.
+- S3 P0L6 t = 130 (no trapped round sphere, Track A's scan): with `start_scan`: reason 8,
+  no flow iteration, with either flow. Without the scan, `flow = shear` from 0.15 and
+  0.6: not found (the flow shrinks to a point or stops by a failure check); if it is
+  "found" with `trapped_tol = 0.05`, the surface is marginally trapped to that
+  tolerance and Track A's scan missed it: to be looked at, not a false acceptance by
+  the rule.
+- S4 without the new options the finder's files are byte-identical to core-v0.8 on
+  `problems/tests/by_horizon_coarse.athinput` (status file with diagnostics, summary,
+  shape) and on S1L (the status lines of F0's three members).
