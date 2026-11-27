@@ -208,6 +208,9 @@ G3 (sheet line 779): three-resolution convergence of the growth law M_AH(a) and 
 spike profile with an observed order; growth law compared with the Newtonian cold-infall
 expectation (section 4) and a Zel'dovich-Novikov-type fit (2608.13206 `:457-471`); the
 null-test upper limit k_95 with the wording of section 3.6.
+Amended 2026-11-27 (decision 0045 item 2): the G3 scope, with its criteria, predictions, members and
+card budget, is `scope/SCOPE_G3.md`, written before any G3 production run and reviewed independently
+before any is queued; where it is more specific than the lines above, it governs.
 
 ## 6. Test plan against brief section 10
 
