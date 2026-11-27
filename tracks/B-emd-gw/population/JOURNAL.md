@@ -1161,3 +1161,34 @@ Net for C2/C11 [JUDGEMENT]: the observable the track uses (the band strain in th
 is mesh-converged to 1-3 per cent between 128^3 and 256^3 to a = 132; the halo counts and the
 high-k Omega are not converged at one particle per cell, and the constraints do not fall with the
 mesh at one per cell (GM4, M4). These go into the G2 package as they are.
+
+## 2026-11-27 15:28 PST (lead of batch 34): outcomes C3a, C3b (the mesh pair at eight particles per cell)
+
+q0070 (`pop_s014_gr_p8_n64`, run B-20261127-232258-37c6773, Slurm 5524, release core-v0.8 card
+build) ended: chain STATUS DONE, "Terminating on time limit", time = 21.916 (a = 143) at cycle 794,
+no `pop.guard.txt`; closed (153 files hashed); 0.038 card-h (sacct). Judged by the registered
+B-20261127-232628-1361e3b (`judge_c3.py`, c3.json; c3_mesh_pair.png looked at: (a) Hr_mean against
+a for both eight-per-cell members and the one-per-cell 128/256 pair; (b) ratios coarse over fine
+with the predicted band; the first drawing B-20261127-232604-21d85fb had cut y labels and
+overlapping ticks, numbers equal). The 128^3 history is interpolated in log a onto the 64^3 rows
+(cstat every 16 cycles; last 64^3 row a = 139.4). Against the 14:25 entry of 2026-11-26:
+[VERIFIED by these runs]
+- Run reaches a = 143 without a guard stop; K_max of the box after t = 9 at most -1.6e-3 (128^3:
+  -7.3e-4). HOLDS.
+- C3a FAILS as written in its early part, is NOT refuted: Hr_mean 64/128 is 1.32 at a = 25.6 and
+  1.46 near a = 29 (below the predicted 1.5), 2.23 at a = 36.7, peaks at 2.34 near a = 40, then
+  2.12, 1.84, 1.73, 1.67, 1.64, 1.64 at a = 49.8, 64.9, 82, 101, 122, 139. Inside 1.5-4 from
+  about a = 31 to the end; the smallest value at a >= 49 is 1.64, above the refutation bound 1.2.
+- C3b HOLDS: Mr_mean 64/128 is 1.71-2.16 at a = 49-139 (at least 1.2 predicted); 1.14 and 1.45 at
+  a = 25.6 and 36.7.
+- Beside it, one particle per cell 128/256 (zero shift, to the 256^3 stop at a = 102): Hr 1.05-1.37,
+  Mr 1.09-1.16 (the numbers of M4).
+Reading for C3 [JUDGEMENT]: at a fixed eight particles per cell the late constraint means fall with
+the spacing, 1.6-2.3 times (Hr) and 1.7-2.2 times (Mr) per halving after a = 36, while at one
+particle per cell they fall 1.05-1.4 times. With the refutation of the 14:25 entry not met, the
+statement "the constraints converge with the mesh at fixed sampling" holds for the pair 64/128 at
+eight per cell. Caveat: the two pairs are at different spacings (64/128 against 128/256), so part
+of the larger ratio can be the coarser pair's larger truncation error; no one-per-cell 64^3 member
+exists to separate the two (not run). The early failure (a < 31) is where both members' Hr_mean is
+below 2e-4 and still dominated by the initial data and the first collapse. M4 and GM4 stay failed on
+record.
