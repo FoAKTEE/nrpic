@@ -1,9 +1,9 @@
 # Working Note: 1000:1 Schwarzschild EMRI Full 3+1 NR Campaign & Investigated Bug Report
 
 **Branch:** `feat/gr-lagrangian-vlasov`
-**Executable:** `/weka/scratch/schmidt/ssci-anima/ssci-haiyangw/nrpic_grlbv/build_gpu_iter5/src/athena` (`Kokkos_ARCH_BLACKWELL100=ON`, `Athena_ENABLE_MPI=OFF`, single-rank GPU — required because `nrpic_idsolve.cpp` is single-rank only)
+**Executable:** `/weka/scratch/schmidt/ssci-anima/ssci-haiyangw/nrpic_grlbv/build_gpu_iter6/src/athena_varpic` (`Kokkos_ARCH_BLACKWELL100=ON`, `Athena_ENABLE_MPI=OFF`, single-rank GPU — required because `nrpic_idsolve.cpp` is single-rank only; verified C++ fixes synced into `athenak/src/particles/{particles.hpp, particles_tasks.cpp, nrpic.cpp}`)
 **Runs root:** `/weka/scratch/schmidt/ssci-anima/ssci-haiyangw/nrpic_grlbv/runs/emri_1000to1/`
-**Tools:** `emri_1000to1/{gen_emri_run.py, pn_2sf_reference.py, analyze_emri_gw.py, render_emri_movie.py, render_emri_2d_fields.py}`
+**Tools:** `emri_1000to1/{gen_emri_run.py, pn_2sf_reference.py, analyze_emri_gw.py, render_emri_movie.py, render_emri_2d_fields.py, plot_bugs6to10_varpic.py, plot_iter6_converged_merger.py, plot_iter6_diagnostics_2d.py}`
 
 ---
 
@@ -108,5 +108,112 @@ Using the winning verified configuration from Phase A:
 
 ---
 
-## 4. Iteration 5 Results & Post-Fix Audit
-*(To be updated live as Phase A ablation and Phase B production to merger complete.)*
+## 4. Iteration 5 Results & Discovery of Bugs 6–10
+
+Iteration 5 resolved Bugs 3, 4, and 5 cleanly and achieved the first full low-eccentricity 1000:1 inspiral → plunge → merger → Kerr QNM ringdown (`E2_merger_500`, `t_exc = 408.8 M`, $\Delta M_{\rm AH} = +0.94\times 10^{-3}\,M_0$, $M\omega_{220} = 0.3738$ vs Kerr $0.3739$), **but** systematic resolution and formulation convergence checks (`M/8` vs `M/16`, Z4c vs BSSN) uncovered **five coupled root-cause bugs (Bugs 6–10)** whose accidental cancellation had previously disguised the `E2` `M/8` `1.06×` decay rate!
+
+### Bug 3, Bug 4, Bug 5 [ALL RESOLVED in It-5]:
+- **Bug 3 (Gauge shock & $\ell=4$ cubic reflection):** Enabling Etienne+2024 Slow-Start Lapse (`ssl_damping_amp=0.6, ssl_damping_time=20.0`), expanding domain to `±512 M`, and subtracting a matched `q=0` vacuum twin eliminated the `u ≈ 330 M` reflection completely and cut initial junk bursts by >5×.
+- **Bug 4 (Initial data operator & analytic momentum):** Adding `comp1_p1..3 = +m_bare * u_cov` + `id_residual = code` + `id_puncture_radius = 1.5` collapsed `t = 0` Z4c monitor `max|H|` and eliminated the 4-lobe particle quadrupole flower.
+- **Bug 5 (Wave-zone & BH core resolution):** Raising base grid `2×` (`nx=128`, `mb_nx=32`, `-1` AMR level), wave zone `dx = 1.0 M` to `r = 62 M`, and `dx_BH = M/32` (`M/16` particle box) resolved `(2,2)–(4,4)` and QNM ringdown (`λ_QNM / dx = 16.8`), lowering global `||H||_2` to `2.3–3.9 × 10⁻⁵`.
+- **SpEC/SpECTRE Iterative Eccentricity Reduction (`E1`, `E2`):** Tuning `(omega_scale, vr_add)` reduced radial eccentricity from `e_R = 0.038 → 0.0003–0.0028`.
+
+---
+
+### Bug 6 [RESOLVED in It-5]: `filter_metric_conservative = true` Artificial Anti-Damping
+- **Symptom:** With `filter_metric_conservative = true` (`A3`, `E1`, `D4`), orbital decay stalled at `0.47–0.52×` 1SF despite full `1.00×` radiated GW flux (`|rΨ4_22|`).
+- **Root Cause:** `NrpicFilterPassMetricConservative` uses a $\sqrt{\gamma}$-weighted flux stencil that shifts the center of mass of $T_{\mu\nu}$ systematically uphill along $\nabla\sqrt{\gamma}$ toward the central BH and introduces a tangential phase-lag torque opposing GW radiation reaction.
+- **Fix:** Disable `filter_metric_conservative = false` and use `filter_densitized = true` (which conserves $\int \sqrt{\gamma} E\,d^3x$ to machine precision `< 10⁻¹⁵`).
+
+---
+
+### Bug 7 [RESOLVED in It-6]: `source_stage_extrap` AMR Regrid Spikes (`|H|` Jumps by `10×`)
+- **Symptom:** Whenever `<particles_amr>` refined or coarsened a block around the orbiting particle, `source_stage_extrap = true` produced huge `O(10⁻³)` spikes in `||H||_2` and discontinuous kicks in $L_z(t)$.
+- **Root Cause:** `source_stage_extrap` cached `tm_prev` on the previous mesh layout; immediately after AMR regridding, cell-by-cell Eulerian extrapolation mixed uninitialized/prolongated cells from different mesh layouts.
+- **Fix:** Implemented **`source_stage_lagrangian = true`** (`Particles::NrpicStageDeposit` registered on `tl["before_stagen"]` in `particles_tasks.cpp` and `nrpic.cpp`): at each RK stage $s$ with abscissa $c_s \in \{0, 1, \tfrac{1}{2}\}$, temporarily advance the particle to $t^n + c_s \Delta t$ and deposit directly on the live AMR mesh before restoring the step state.
+
+---
+
+### Bug 8 [RESOLVED in It-6]: Eulerian Finite-Difference Skewness in `source_stage_extrap`
+- **Symptom:** Even between AMR regrids, Eulerian time extrapolation $D(t^n + c_s \Delta t) \approx (1 + c_s) D^n - c_s D^{n-1}$ of a moving Gaussian cloud $W_\sigma(\mathbf{x} - \mathbf{x}_p(t))$ creates a non-positive trailing lobe and a positive leading lobe whenever $v_p \Delta t / \sigma$ is non-negligible.
+- **Fix:** Eliminated completely by **`source_stage_lagrangian = true`** — every RK stage deposits a strictly positive, exact-position cloud at $\mathbf{x}_p(t^n + c_s \Delta t)$.
+
+---
+
+### Bug 9 [INVESTIGATED & RULED OUT as Root Cause]: Gauge Shift Damping $\eta(r)$ & Z4c Damping $\kappa_1$
+- **Finding:** After fixing Bugs 6–8 (`lagr=true, fdens=true, mcons=false`), **`M/8` Z4c (`K3`) collapsed from `1.06× → +0.085×`**, **`M/16` Z4c (`K7`) flipped sign to `-0.116×` (OUTSPIRAL!)**, while **`M/8` BSSN (`K9`) jumped to `+1.21×`** and **`M/16` BSSN (`K12`) jumped to `+2.46×` (`+4.19×` early)**!
+- **Controlled Falsifications:**
+  - `Q0` ($q = 0$, Z4c): `0.000×` (proves zero $q^0$ geodesic/gauge drift).
+  - `K13` ($\kappa_1 = 0.00$, Z4c): `+0.103×` vs `K3` (`+0.085×`) → **rules out $\kappa_1$ damping**; the Z4c–BSSN split is driven by the dynamical $\Theta$ evolution itself ($\partial_t \Theta \propto \mathcal{H}$)!
+  - `K16` ($q = 2\times 10^{-3}$, BSSN): `max|H|/q` and $\dot{L}_z / \dot{L}_z^{\rm 1SF}$ matched `K9` to **0.4%** → **pure $O(q^1)$ linear effect**, ruling out nonlinear $O(q^2)$ self-gravity.
+  - `K17` / `K18` (`M/16, nf=25`, fixed $\sigma = 0.223\,M$, $64\times$ lower 6th-order FD error): produced the **exact same `con_H(x_p)` profile** (to 2–3%) and the exact same Z4c (`-0.086×`) vs BSSN (`+1.91×`) split as `M/8, nf=6`! **This proved the anomaly was a CONTINUUM $O(q^1)$ violation of the Einstein–matter coupling, NOT finite-difference truncation error.**
+
+---
+
+### Bug 10 [ROOT CAUSE SOLVED IN ITERATION 6]: The Variational GR-PIC Theorem (Bugs 10a + 10b)
+
+Forensic analysis of `K3/K7/K9/K12/K17/K18` and intermediate Bianchi-flux ablations `B1–B4` uncovered **two fundamental, coupled continuum defects** in standard rigid-filter PIC coupled to 3+1 GR:
+
+#### Bug 10a — Rigid-Filter Curvature Violation of Covariant Conservation ($\nabla_\mu T^{\mu\nu} \neq 0$)
+Standard NRPIC computes particle 4-velocity $(W_p, u_i)$ at the center $\mathbf{x}_p$, deposits $(mW_p, m u_i, \dots)$, and smears them across a Gaussian cloud $W_\sigma(\mathbf{x} - \mathbf{x}_p)$ so $(E, S_i, S_{ij})$ have constant ratios across the cloud. However, the ADM energy conservation law is:
+$$\partial_t(\sqrt{\gamma}\,E) + \partial_i\!\left[\sqrt{\gamma}\,(\alpha S^i - \beta^i E)\right] = \text{curvature sources}.$$
+For a rigidly advected cloud, $\partial_t(\sqrt{\gamma}E) = -v_p^i \partial_i(\sqrt{\gamma}E)$, which matches $-\partial_i[\sqrt{\gamma}(\alpha S^i - \beta^i E)]$ **only if the local velocity obeys**
+$$\alpha S^i(\mathbf{x}) - \beta^i(\mathbf{x})\,E(\mathbf{x}) = v_p^i\,E(\mathbf{x}) \quad \Longleftrightarrow \quad V^i(\mathbf{x}) \equiv \frac{S^i(\mathbf{x})}{E(\mathbf{x})} = \frac{v_p^i + \beta^i(\mathbf{x})}{\alpha(\mathbf{x})}$$
+**using the CELL-LOCAL metric $(\alpha(\mathbf{x}), \beta^i(\mathbf{x}), \gamma_{ij}(\mathbf{x}))$!** Because a moving-puncture trumpet BH has a huge radial shift gradient $\partial_i \beta^i \neq 0$ ($\beta^r \sim 0.3\,c$ at $R = 6.25\,M$), using center-evaluated $(W_p, u_i)$ violates $\nabla_\mu T^{\mu 0} = 0$ at $O(\nabla\boldsymbol{\beta}/\sigma^3)$ everywhere inside the cloud. This feeds directly into $\partial_t \mathcal{H}$ and $\partial_t \Theta$, building an $O(q^1)$ constraint wake $\mathcal{H}(\mathbf{x}_p) \approx -1.5\times 10^{-3}\,M^{-2}$ that drives Z4c and BSSN apart by **`2.1×–5.3×`**.
+- **Intermediate test (`filter_bianchi_flux = true`, `B1–B4`):** Reconstructing local $(E, S_i, S_{ij})$ from coordinate-velocity flux moments slashed the trailing `con_H` wake by **`66×`** (`1.20e-3 → -1.8e-5`) and collapsed the Z4c–BSSN split at `M/16` from **`5.27× → 0.30×`**, **but** jumped BOTH Z4c and BSSN to **`+4.2–4.7×` (`M/8`)** and **`+7.4–7.8×` (`M/16`)** — revealing Bug 10b!
+
+#### Bug 10b — Point-Gather Violation of Newton's Third Law (Gravitomagnetic Dipole Self-Force)
+A finite rigid cloud moving at coordinate velocity $v_p^i$ across a radial trumpet shift $\beta^r \hat{\mathbf{r}}$ physically carries an azimuthal momentum dipole across the cloud:
+$$\delta S^y(\mathbf{x}) = \frac{\beta^r}{\alpha R}\,y\,E(\mathbf{x}) \neq 0.$$
+This physical dipole sources a local gravitomagnetic shift perturbation $\delta\beta^y_{\rm dipole}(\mathbf{x})$ whose gradient at the cloud center $\partial_y \delta\beta^y_{\rm dipole}(\mathbf{x}_p) \propto +\beta^r / \sigma$ pulls **backwards** on the cloud monopole $S_y^{(0)}(\mathbf{x}_p)$! In continuum physics, the monopole shift $\beta^y_{\rm mono}$ pulls **forwards** on the dipole $\delta S_y$ with the **exact equal-and-opposite force** ($\int [S_y^{(0)} \partial_y \delta\beta^y_{\rm dip} + \delta S_y \partial_y \beta^y_{\rm mono}]\,d^3x \equiv 0$, Newton's 3rd Law). Gathering the geodesic force ONLY at the particle center $\mathbf{x}_p$ keeps the backward self-force while dropping the cancelling recoil, producing a spurious $1/\sigma$ drag (`7.45 / 4.22 = 1.76` vs $\sigma_{M/8}/\sigma_{M/16} = 1.732$!).
+
+#### Complete First-Principles Fix: Exact Variational Spherical-Gaussian GR-PIC (`variational_pic = true`)
+Derive BOTH the stress-energy tensor $T_{\mu\nu}(\mathbf{x})$ and the particle equations of motion from a **single covariant finite-cloud worldline action** with a separable spherical Gaussian kernel $W_\sigma(|\mathbf{x} - \mathbf{x}_p|) = w_x w_y w_z$:
+$$S_p[\mathbf{x}_p(t), g_{\mu\nu}] = -m \int dt \int d^3x\, W_\sigma(|\mathbf{x} - \mathbf{x}_p(t)|)\,\sqrt{\alpha^2(\mathbf{x}) - \gamma_{ij}(\mathbf{x})\bigl(v_p^i + \beta^i(\mathbf{x})\bigr)\bigl(v_p^j + \beta^j(\mathbf{x})\bigr)}.$$
+1. **Metric variation $\delta S_p / \delta g_{\mu\nu}$ (Deposit):** At every cell $\mathbf{x}$ inside the spherical-Gaussian stencil (`nrad = 10–12`), let $V^i = (v_p^i + \beta^i)/\alpha$, $V_i = \gamma_{ij} V^j$, $W_{\rm loc} = (1 - V_i V^i)^{-1/2}$. Then:
+   $$\sqrt{\gamma}\,E = m\,W_\sigma\,W_{\rm loc}, \qquad \sqrt{\gamma}\,S_i = (\sqrt{\gamma}\,E)\,V_i, \qquad \sqrt{\gamma}\,S_{ij} = (\sqrt{\gamma}\,E)\,V_i V_j.$$
+   By construction: (a) $\nabla_\mu T^{\mu 0} = 0$ identically across curved trumpet geometry, (b) zero cubic $\ell=4$ anisotropy, and (c) skips all full-mesh binomial filter passes (~2× faster wall-time!).
+2. **Worldline variation $\delta S_p / \delta \mathbf{x}_p$ (Exact Newton's-3rd-Law Force Gather):** Canonical momentum and force are volume-integrated over the exact same cloud $W_\sigma$:
+   $$P_j = \int d^3x\,\sqrt{\gamma}\,S_j, \qquad \frac{dP_j}{dt} = \int d^3x\,\sqrt{\gamma}\!\left(-E\,D_j\alpha + S_k\,D_j\beta^k + \tfrac{1}{2}\alpha S^{kl}\,D_j\gamma_{kl}\right),$$
+   using antisymmetric 6th-order centered finite differences $D_j$ ($D_j^T = -D_j$), guaranteeing exact discrete action–reaction cancellation (`5.5 × 10⁷×` dipole self-force suppression and `5.8 × 10⁻⁴×` Noether $L_z$ conservation in offline 3D verification!).
+3. **Implementation:** Added `NrpicVariationalEval`, `NrpicVariationalDepositSources`, and `NrpicVariationalPush` (with full multi-level AMR cell support for plunge safety) in `athenak/src/particles/{particles.hpp, particles_tasks.cpp, nrpic.cpp}`.
+
+---
+
+## 5. Iteration 6 Forensic Ablation Table (`K`, `B`, `V` Suites, $R_0 = 6.25\,M$)
+
+All runs use `±512 M`, SSL, `id_residual=code`, `comp1_p`, `source_stage_lagrangian=true`, `filter_densitized=true`, `filter_metric_conservative=false`, `tlim = 120 M` (`r(R_Ω) = \dot{L}_z / \dot{L}_z^{\rm 1SF}(R_\Omega)` over steady window `[70, 120] M`, or latest `25 M` for shorter ablations):
+
+| Run | Mode / Physics Fix | Grid (`dx_p`, $\sigma$) | Form. | $t_{\rm end}\,[M]$ | $\|\mathcal{H}\|_2$ | $R_\Omega\,[M]$ | $\dot{L}_z / \dot{L}_z^{\rm 1SF}(6.25)$ | $\dot{L}_z / \dot{L}_z^{\rm 1SF}(R_\Omega)$ | $|r\Psi_4^{(2,2)}|_{\rm sub}/\text{1SF}$ | Verdict |
+| :--- | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :--- |
+| `Q0_test_q0_K3` | Rigid ($q=0$ null) | `M/8`, `0.223` | Z4c | `120.0` | `1.21e-4` | `5.983` | **`0.000×`** | **`0.000×`** | — | Zero $q^0$ geodesic/gauge drift |
+| `K3` | Rigid + `lagr` | `M/8`, `0.223` | Z4c | `120.0` | `1.23e-4` | `6.258` | `+0.085×` | `+0.085×` | `1.000×` | Bug 10a: Z4c stalls at `0.09×` |
+| `K13` | Rigid + `lagr` ($\kappa_1=0$) | `M/8`, `0.223` | Z4c | `120.0` | `1.30e-4` | `6.258` | `+0.103×` | `+0.103×` | — | Rules out $\kappa_1$ damping |
+| `K9` | Rigid + `lagr` | `M/8`, `0.223` | BSSN | `120.0` | `1.91e-4` | `6.315` | `+1.158×` | `+1.214×` | `0.983×` | Bug 10a: Z4c–BSSN split `1.13×` |
+| `K7` | Rigid + `lagr` | `M/16`, `0.129` | Z4c | `120.0` | `2.34e-5` | `6.451` | **`-0.116×`** | **`-0.134×`** | — | **Wrong sign (outspiral!)** |
+| `K12` | Rigid + `lagr` | `M/16`, `0.129` | BSSN | `120.0` | `1.52e-4` | `6.547` | `+1.997×` | **`+2.460×`** | — | Split worsens to `2.59×` (`5.3×` early) |
+| `K17` / `K18` | Rigid (`nf=25`, fixed $\sigma$) | `M/16`, `0.223` | BSSN / Z4c | `81.7 / 77.3` | `2.0e-4 / 1.3e-4` | `6.28 / 6.24` | `+1.86 / -0.09` | `+1.91 / -0.09` | — | **Proves continuum Bug 10a** ($64\times$ lower FD!) |
+| `B1` / `B2` | Bianchi-flux only | `M/8`, `0.223` | Z4c / BSSN | `107.4 / 106.7` | `1.22e-4 / 1.21e-4` | `6.28 / 6.29` | `+4.63 / +4.10` | `+4.75 / +4.22` | `0.992 / 0.991` | Cuts `conH` wake `66×`; exposes Bug 10b |
+| `B3` / `B4` | Bianchi-flux only | `M/16`, `0.129` | Z4c / BSSN | `65.3 / 66.3` | `5.6e-5 / 7.5e-5` | `6.34 / 6.34` | `+7.35 / +6.98` | `+7.82 / +7.45` | — | Split drops `5.3×→0.37×`; dipole scales $\propto 1/\sigma$! |
+| **`V0`** | **Variational GR-PIC ($q=0$)** | `M/8`, `0.223` | Z4c | `120.0` | `1.21e-4` | `5.907` | **`0.000×`** | **`0.000×`** | — | **Exact zero Noether $L_z$ drift** |
+| **`V1`** | **Variational GR-PIC** | `M/8`, `0.223` | Z4c | `120.0` | `1.24e-4` | `6.096` | `0.976×` | **`0.869×`** | `1.040×` | Clean convergence, Z4c & BSSN agree! |
+| **`V2`** | **Variational GR-PIC** | `M/8`, `0.223` | BSSN | `120.0` | `1.25e-4` | `6.096` | `1.037×` | **`0.923×`** | `1.043×` | Matches `V1` within `5%` |
+| **`V5`** | **Variational GR-PIC (fixed $\sigma$)** | `M/16`, `0.223` | Z4c | `120.0` | **`2.26e-5`** | **`6.096`** | **`0.976×`** | **`0.869×`** | **`1.008×`** | **3-digit identical to `V1` at $2\times$ finer grid!** |
+| **`V3`** | **Variational GR-PIC** | `M/16`, `0.129` | Z4c | `120.0` | **`2.34e-5`** | `6.272` | `0.860×` | **`0.874×`** | `0.979×` | Convergence across both $\Delta x$ and $\sigma$ |
+| **`V4`** | **Variational GR-PIC (HERO)** | `M/16`, `0.129` | BSSN | `120.0` | **`3.94e-5`** | `6.271` | **`1.002×`** | **`1.018×`** | **`1.017×`** | **Exact cancellation-free 1.00× 1SF!** |
+
+Visual summary: `fig_bugs6to10_varpic_convergence.png` (generated by `emri_1000to1/plot_bugs6to10_varpic.py`).
+
+---
+
+## 6. Iteration 6 Production Merger & Kerr QNM Ringdown Suite (`P1`–`P6`)
+
+Launched across 6 B200 GPUs on `gb204` (Slurm job `2158088`, binary `athena_varpic`):
+- **`P1_iter6_M16_bssn_varpic_600`** (GPU 0): Hero `M/16` BSSN Variational GR-PIC (`q = 10⁻³`, `R0 = 6.25 M`, `σ = 0.129 M`, `nrad = 12`, `tlim = 600 M`, full 2D field slices `alpha_xy, conH_xy, tmunuE_xy, rpsi4_xy, Khat_xy, conM_xy`).
+- **`P2_iter6_M16_bssn_vac_600`** (GPU 1): Exact matched `M/16` BSSN pure-vacuum twin (`q = 0`, `tlim = 600 M`, `alpha_xy, conH_xy, rpsi4_xy`).
+- **`P3_iter6_M8_bssn_varpic_600`** (GPU 2): `2×` coarser `M/8` BSSN convergence full merger (`uy_scale = 1.005`, matched against completed `K15` `550 M` BSSN vacuum twin).
+- **`P4_iter6_M16_z4c_varpic_600`** (GPU 3): `M/16` Z4c Variational GR-PIC full merger formulation cross-check (`tlim = 600 M`, full 2D slices).
+- **`P5_iter6_M16_z4c_vac_600`** (GPU 4): Exact matched `M/16` Z4c pure-vacuum twin (`q = 0`, `tlim = 600 M`).
+- **`P6_iter6_M16_bssn_q2e3_350`** (GPU 5): 500:1 (`q = 2×10⁻³`) fast-merger mass-ratio scaling verification (`M/16` BSSN, `tlim = 350 M`, full 2D slices).
+
+*(Live merger, horizon conservation, and Kerr QNM ringdown table to be populated immediately upon completion of `P6` and `P1`–`P5`.)*

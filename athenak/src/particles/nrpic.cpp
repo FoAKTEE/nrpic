@@ -99,8 +99,26 @@ void Particles::NrpicInit(ParameterInput *pin) {
   nropt.filter_compensate = pin->GetOrAddBoolean("particles", "filter_compensate", false);
   nropt.filter_comp_c     = pin->GetOrAddReal("particles", "filter_comp_c", -1.0);
   nropt.filter_densitized = pin->GetOrAddBoolean("particles", "filter_densitized", false);
+  nropt.filter_bianchi_flux =
+      pin->GetOrAddBoolean("particles", "filter_bianchi_flux", false);
+  nropt.variational_pic =
+      pin->GetOrAddBoolean("particles", "variational_pic", false);
+  nropt.variational_sigma =
+      pin->GetOrAddReal("particles", "variational_sigma", 0.0);
+  nropt.variational_nrad =
+      pin->GetOrAddInteger("particles", "variational_nrad", 10);
+  if (nropt.variational_nrad < 2) { nropt.variational_nrad = 2; }
+  if (nropt.variational_nrad > 16) { nropt.variational_nrad = 16; }
   nropt.filter_metric_conservative =
       pin->GetOrAddBoolean("particles", "filter_metric_conservative", false);
+  if (nropt.variational_pic && (pusher != ParticlesPusher::nrpic_newton)) {
+    nropt.filter_densitized = true;
+    nropt.filter_bianchi_flux = false;
+    nropt.filter_metric_conservative = false;
+  } else if (nropt.filter_bianchi_flux && (pusher != ParticlesPusher::nrpic_newton)) {
+    nropt.filter_densitized = true;
+    nropt.filter_metric_conservative = false;
+  }
   nropt.filter_mcons_unsplit =
       pin->GetOrAddBoolean("particles", "filter_mcons_unsplit", false);
   nropt.filter_mcons_kappa =
@@ -178,6 +196,13 @@ void Particles::NrpicInit(ParameterInput *pin) {
   nropt.source_density = pin->GetOrAddBoolean("particles", "source_density", false);
   nropt.source_extrap  = pin->GetOrAddBoolean("particles", "source_extrap", false);
   nropt.source_stage_extrap = pin->GetOrAddBoolean("particles", "source_stage_extrap", false);
+  nropt.source_stage_lagrangian =
+      pin->GetOrAddBoolean("particles", "source_stage_lagrangian", false);
+  if (nropt.source_stage_lagrangian && !nropt.newton) {
+    nropt.source_density = true;
+    nropt.source_extrap = false;
+    nropt.source_stage_extrap = false;
+  }
   nropt.matter_stride = pin->GetOrAddInteger("particles", "matter_stride", 1);
   if (nropt.matter_stride < 1) { nropt.matter_stride = 1; }
   {
@@ -529,6 +554,14 @@ TaskStatus Particles::NrpicPush(Driver *pdriver, int stage) {
   // perturbing force (nrpic_perturb.cpp): impulse of the first half of the step
   if (pert.on) { NrpicPerturbKick(tnow, tnow + 0.5*dt); }
 
+  if (nropt.variational_pic && mesh_metric && !nropt.newton) {
+    NrpicVariationalPush(dt, true);
+    if (pert.on) { NrpicPerturbKick(tnow + 0.5*dt, tnow + dt); }
+    if (kick.on) { NrpicTestKick(); }
+    NrpicAccAfterPush();
+    return TaskStatus::complete;
+  }
+
   auto &indcs = pm->mb_indcs;
   auto &pr = prtcl_rdata;
   auto &pi = prtcl_idata;
@@ -847,6 +880,664 @@ Real NrpicTentCdf(const Real t) {
 }
 
 //----------------------------------------------------------------------------------------
+//! \brief Exact Variational Spherical-Gaussian GR-PIC (Bug 10a + 10b complete fix):
+//!   S_p[x_p, g] = -m int dt int d^3x W_sigma(|x - x_p|) sqrt(alpha^2 - g_ij (v^i+b^i)(v^j+b^j))
+//! Varying g_{mu nu} gives exact Bianchi-consistent T_{mu nu}:
+//!   sqrt(g) E = m W_sigma W_loc,  sqrt(g) S_i = sqrt(g) E V_i,  sqrt(g) S_ij = sqrt(g) E V_i V_j,
+//!   V^i = (v^i + beta^i)/alpha,  W_loc = 1/sqrt(1 - gamma_ij V^i V^j).
+//! Varying x_p gives exact canonical momentum P_j = int sqrt(g) S_j d^3x and exact
+//! Newton's-3rd-law force gather:
+//!   dP_j/dt = int sqrt(g) (-E D_j alpha + S_k D_j beta^k + 0.5 alpha S^{kl} D_j gamma_kl) d^3x
+//! using 6th-order centered finite differences D_j (exact discrete antisymmetry D_j^T = -D_j).
+
+namespace {
+struct VarStencil {
+  Real wx[33], wy[33], wz[33];
+  Real x0[3];
+  Real dx;
+  int ns;
+  int mo;
+  int lev0;
+  int nnbr;
+  int nbr[64];
+};
+
+bool BuildVarStencil(MeshBlockPack *pmy_pack, const NrpicOptions &nropt,
+                     const Real xp[3], VarStencil &st) {
+  Mesh *pm = pmy_pack->pmesh;
+  auto sz_h = pmy_pack->pmb->mb_size.h_view;
+  auto lev_h = pmy_pack->pmb->mb_lev.h_view;
+  const int nmb = pmy_pack->nmb_thispack;
+  int mo = -1;
+  for (int m = 0; m < nmb; ++m) {
+    if (xp[0] >= sz_h(m).x1min && xp[0] <= sz_h(m).x1max &&
+        xp[1] >= sz_h(m).x2min && xp[1] <= sz_h(m).x2max &&
+        xp[2] >= sz_h(m).x3min && xp[2] <= sz_h(m).x3max) {
+      mo = m;
+      break;
+    }
+  }
+  if (mo < 0) return false;
+  const Real dx = sz_h(mo).dx1;
+  const int nrad = nropt.variational_nrad;
+  const int ns = 2*nrad + 1;
+  const Real sigma = (nropt.variational_sigma > 0.0)
+      ? nropt.variational_sigma
+      : std::sqrt(0.5*static_cast<Real>(nropt.nfilter) + (1.0/3.0))*dx;
+  const Real inv2s2 = 0.5/(sigma*sigma);
+  const Real gmin[3] = {pm->mesh_size.x1min, pm->mesh_size.x2min, pm->mesh_size.x3min};
+
+  st.dx = dx;
+  st.ns = ns;
+  st.mo = mo;
+  st.lev0 = lev_h(mo);
+  for (int d = 0; d < 3; ++d) {
+    const int ic = static_cast<int>(std::floor((xp[d] - gmin[d])/dx));
+    st.x0[d] = gmin[d] + (static_cast<Real>(ic - nrad) + 0.5)*dx;
+    Real sum = 0.0;
+    Real *wd = (d == 0) ? st.wx : ((d == 1) ? st.wy : st.wz);
+    for (int s = 0; s < ns; ++s) {
+      const Real xc = st.x0[d] + static_cast<Real>(s)*dx;
+      const Real r = xc - xp[d];
+      wd[s] = std::exp(-r*r*inv2s2);
+      sum += wd[s]*dx;
+    }
+    const Real invs = (sum > 0.0) ? (1.0/sum) : 0.0;
+    for (int s = 0; s < ns; ++s) { wd[s] *= invs; }
+  }
+
+  // Collect all MeshBlocks overlapping [xp - Rbox, xp + Rbox]
+  const Real rbox = (static_cast<Real>(nrad) + 2.0)*dx;
+  st.nnbr = 0;
+  st.nbr[st.nnbr++] = mo;
+  for (int m = 0; m < nmb && st.nnbr < 64; ++m) {
+    if (m == mo) continue;
+    if (sz_h(m).x1max >= xp[0] - rbox && sz_h(m).x1min <= xp[0] + rbox &&
+        sz_h(m).x2max >= xp[1] - rbox && sz_h(m).x2min <= xp[1] + rbox &&
+        sz_h(m).x3max >= xp[2] - rbox && sz_h(m).x3min <= xp[2] + rbox) {
+      st.nbr[st.nnbr++] = m;
+    }
+  }
+  return true;
+}
+KOKKOS_INLINE_FUNCTION
+Real VarGetMet(const DvceArray5D<Real> &mA, const DvceArray5D<Real> &mB,
+               bool blend, Real frac, Real wA, Real wB,
+               int mb, int nv, int k, int j, int i) {
+  return blend ? (wA*mA(mb,nv,k,j,i) + wB*mB(mb,nv,k,j,i))
+               : ((frac == 0.0) ? mA(mb,nv,k,j,i) : mB(mb,nv,k,j,i));
+}
+
+KOKKOS_INLINE_FUNCTION
+Real VarDerivMet(const DvceArray5D<Real> &mA, const DvceArray5D<Real> &mB,
+                 bool blend, Real frac, Real wA, Real wB,
+                 int mb, int nv, int k, int j, int i,
+                 int dir, int ng, Real invh) {
+  const int di = (dir == 0) ? 1 : 0;
+  const int dj = (dir == 1) ? 1 : 0;
+  const int dk = (dir == 2) ? 1 : 0;
+  if (ng >= 3) {
+    return invh*(
+        (-1.0/60.0)*VarGetMet(mA,mB,blend,frac,wA,wB,mb,nv,k-3*dk,j-3*dj,i-3*di)
+      + ( 3.0/20.0)*VarGetMet(mA,mB,blend,frac,wA,wB,mb,nv,k-2*dk,j-2*dj,i-2*di)
+      + (-3.0/ 4.0)*VarGetMet(mA,mB,blend,frac,wA,wB,mb,nv,k-  dk,j-  dj,i-  di)
+      + ( 3.0/ 4.0)*VarGetMet(mA,mB,blend,frac,wA,wB,mb,nv,k+  dk,j+  dj,i+  di)
+      + (-3.0/20.0)*VarGetMet(mA,mB,blend,frac,wA,wB,mb,nv,k+2*dk,j+2*dj,i+2*di)
+      + ( 1.0/60.0)*VarGetMet(mA,mB,blend,frac,wA,wB,mb,nv,k+3*dk,j+3*dj,i+3*di));
+  }
+  return invh*(
+      ( 1.0/12.0)*VarGetMet(mA,mB,blend,frac,wA,wB,mb,nv,k-2*dk,j-2*dj,i-2*di)
+    + (-2.0/ 3.0)*VarGetMet(mA,mB,blend,frac,wA,wB,mb,nv,k-  dk,j-  dj,i-  di)
+    + ( 2.0/ 3.0)*VarGetMet(mA,mB,blend,frac,wA,wB,mb,nv,k+  dk,j+  dj,i+  di)
+    + (-1.0/12.0)*VarGetMet(mA,mB,blend,frac,wA,wB,mb,nv,k+2*dk,j+2*dj,i+2*di));
+}
+
+KOKKOS_INLINE_FUNCTION
+void VarAccumPJac(const DvceArray5D<Real> &mA, const DvceArray5D<Real> &mB,
+                  bool blend, Real frac, Real wA, Real wB,
+                  int mb, int kk, int jj, int ii, Real wcell,
+                  Real vx, Real vy, Real vz,
+                  Real &lpx, Real &lpy, Real &lpz,
+                  Real &lj00, Real &lj01, Real &lj02,
+                  Real &lj11, Real &lj12, Real &lj22) {
+  const Real alp = VarGetMet(mA,mB,blend,frac,wA,wB,mb,NRM_ALP,kk,jj,ii);
+  if (!(alp > 1.0e-12 && alp < 1.0e300)) return;
+  const Real bx  = VarGetMet(mA,mB,blend,frac,wA,wB,mb,NRM_BX, kk,jj,ii);
+  const Real by  = VarGetMet(mA,mB,blend,frac,wA,wB,mb,NRM_BY, kk,jj,ii);
+  const Real bz  = VarGetMet(mA,mB,blend,frac,wA,wB,mb,NRM_BZ, kk,jj,ii);
+  const Real gxx = VarGetMet(mA,mB,blend,frac,wA,wB,mb,NRM_GXX,kk,jj,ii);
+  const Real gxy = VarGetMet(mA,mB,blend,frac,wA,wB,mb,NRM_GXY,kk,jj,ii);
+  const Real gxz = VarGetMet(mA,mB,blend,frac,wA,wB,mb,NRM_GXZ,kk,jj,ii);
+  const Real gyy = VarGetMet(mA,mB,blend,frac,wA,wB,mb,NRM_GYY,kk,jj,ii);
+  const Real gyz = VarGetMet(mA,mB,blend,frac,wA,wB,mb,NRM_GYZ,kk,jj,ii);
+  const Real gzz = VarGetMet(mA,mB,blend,frac,wA,wB,mb,NRM_GZZ,kk,jj,ii);
+  const Real ialp = 1.0/alp;
+  const Real Vx = (vx + bx)*ialp, Vy = (vy + by)*ialp, Vz = (vz + bz)*ialp;
+  const Real Vdx = gxx*Vx + gxy*Vy + gxz*Vz;
+  const Real Vdy = gxy*Vx + gyy*Vy + gyz*Vz;
+  const Real Vdz = gxz*Vx + gyz*Vy + gzz*Vz;
+  Real V2 = Vx*Vdx + Vy*Vdy + Vz*Vdz;
+  if (V2 > 0.9999) V2 = 0.9999;
+  if (V2 < 0.0) V2 = 0.0;
+  const Real W = 1.0/sqrt(1.0 - V2);
+  const Real wW = wcell*W;
+  lpx += wW*Vdx; lpy += wW*Vdy; lpz += wW*Vdz;
+  const Real fac = wW*ialp;
+  const Real W2 = W*W;
+  lj00 += fac*(gxx + W2*Vdx*Vdx);
+  lj01 += fac*(gxy + W2*Vdx*Vdy);
+  lj02 += fac*(gxz + W2*Vdx*Vdz);
+  lj11 += fac*(gyy + W2*Vdy*Vdy);
+  lj12 += fac*(gyz + W2*Vdy*Vdz);
+  lj22 += fac*(gzz + W2*Vdz*Vdz);
+}
+
+KOKKOS_INLINE_FUNCTION
+void VarAccumForce(const DvceArray5D<Real> &mA, const DvceArray5D<Real> &mB,
+                   bool blend, Real frac, Real wA, Real wB,
+                   int mb, int kk, int jj, int ii, Real wcell,
+                   Real vx, Real vy, Real vz,
+                   bool need_force, int ng,
+                   Real invh1, Real invh2, Real invh3,
+                   Real &lfx, Real &lfy, Real &lfz, Real &lw) {
+  const Real alp = VarGetMet(mA,mB,blend,frac,wA,wB,mb,NRM_ALP,kk,jj,ii);
+  if (!(alp > 1.0e-12 && alp < 1.0e300)) return;
+  const Real bx  = VarGetMet(mA,mB,blend,frac,wA,wB,mb,NRM_BX, kk,jj,ii);
+  const Real by  = VarGetMet(mA,mB,blend,frac,wA,wB,mb,NRM_BY, kk,jj,ii);
+  const Real bz  = VarGetMet(mA,mB,blend,frac,wA,wB,mb,NRM_BZ, kk,jj,ii);
+  const Real gxx = VarGetMet(mA,mB,blend,frac,wA,wB,mb,NRM_GXX,kk,jj,ii);
+  const Real gxy = VarGetMet(mA,mB,blend,frac,wA,wB,mb,NRM_GXY,kk,jj,ii);
+  const Real gxz = VarGetMet(mA,mB,blend,frac,wA,wB,mb,NRM_GXZ,kk,jj,ii);
+  const Real gyy = VarGetMet(mA,mB,blend,frac,wA,wB,mb,NRM_GYY,kk,jj,ii);
+  const Real gyz = VarGetMet(mA,mB,blend,frac,wA,wB,mb,NRM_GYZ,kk,jj,ii);
+  const Real gzz = VarGetMet(mA,mB,blend,frac,wA,wB,mb,NRM_GZZ,kk,jj,ii);
+  const Real ialp = 1.0/alp;
+  const Real Vx = (vx + bx)*ialp, Vy = (vy + by)*ialp, Vz = (vz + bz)*ialp;
+  const Real Vdx = gxx*Vx + gxy*Vy + gxz*Vz;
+  const Real Vdy = gxy*Vx + gyy*Vy + gyz*Vz;
+  const Real Vdz = gxz*Vx + gyz*Vy + gzz*Vz;
+  Real V2 = Vx*Vdx + Vy*Vdy + Vz*Vdz;
+  if (V2 > 0.9999) V2 = 0.9999;
+  if (V2 < 0.0) V2 = 0.0;
+  const Real W = 1.0/sqrt(1.0 - V2);
+  const Real Et = wcell*W;
+  lw += wcell*(W*ialp);
+  if (!need_force) return;
+
+  const Real Sd0 = Et*Vdx, Sd1 = Et*Vdy, Sd2 = Et*Vdz;
+  const Real h_alp = 0.5*alp*Et;
+  const Real Sxx = Vx*Vx, Sxy = 2.0*Vx*Vy, Sxz = 2.0*Vx*Vz;
+  const Real Syy = Vy*Vy, Syz = 2.0*Vy*Vz, Szz = Vz*Vz;
+  const Real invh[3] = {invh1, invh2, invh3};
+  Real df[3];
+  for (int dir = 0; dir < 3; ++dir) {
+    const Real da   = VarDerivMet(mA,mB,blend,frac,wA,wB,mb,NRM_ALP,kk,jj,ii,dir,ng,invh[dir]);
+    const Real dbx  = VarDerivMet(mA,mB,blend,frac,wA,wB,mb,NRM_BX, kk,jj,ii,dir,ng,invh[dir]);
+    const Real dby  = VarDerivMet(mA,mB,blend,frac,wA,wB,mb,NRM_BY, kk,jj,ii,dir,ng,invh[dir]);
+    const Real dbz  = VarDerivMet(mA,mB,blend,frac,wA,wB,mb,NRM_BZ, kk,jj,ii,dir,ng,invh[dir]);
+    const Real dgxx = VarDerivMet(mA,mB,blend,frac,wA,wB,mb,NRM_GXX,kk,jj,ii,dir,ng,invh[dir]);
+    const Real dgxy = VarDerivMet(mA,mB,blend,frac,wA,wB,mb,NRM_GXY,kk,jj,ii,dir,ng,invh[dir]);
+    const Real dgxz = VarDerivMet(mA,mB,blend,frac,wA,wB,mb,NRM_GXZ,kk,jj,ii,dir,ng,invh[dir]);
+    const Real dgyy = VarDerivMet(mA,mB,blend,frac,wA,wB,mb,NRM_GYY,kk,jj,ii,dir,ng,invh[dir]);
+    const Real dgyz = VarDerivMet(mA,mB,blend,frac,wA,wB,mb,NRM_GYZ,kk,jj,ii,dir,ng,invh[dir]);
+    const Real dgzz = VarDerivMet(mA,mB,blend,frac,wA,wB,mb,NRM_GZZ,kk,jj,ii,dir,ng,invh[dir]);
+    df[dir] = -Et*da + (Sd0*dbx + Sd1*dby + Sd2*dbz)
+              + h_alp*(Sxx*dgxx + Sxy*dgxy + Sxz*dgxz
+                     + Syy*dgyy + Syz*dgyz + Szz*dgzz);
+  }
+  lfx += df[0]; lfy += df[1]; lfz += df[2];
+}
+
+KOKKOS_INLINE_FUNCTION
+void VarDepositCell(const DvceArray5D<Real> &tm, const DvceArray5D<Real> &m1,
+                    int mb, int kk, int jj, int ii, Real vol, Real wcell,
+                    Real mp, Real vx, Real vy, Real vz,
+                    Real &le, Real &lsx, Real &lsy, Real &lsz) {
+  const Real alp = m1(mb,NRM_ALP,kk,jj,ii);
+  const Real gxx = m1(mb,NRM_GXX,kk,jj,ii), gxy = m1(mb,NRM_GXY,kk,jj,ii),
+             gxz = m1(mb,NRM_GXZ,kk,jj,ii), gyy = m1(mb,NRM_GYY,kk,jj,ii),
+             gyz = m1(mb,NRM_GYZ,kk,jj,ii), gzz = m1(mb,NRM_GZZ,kk,jj,ii);
+  const Real det = adm::SpatialDet(gxx, gxy, gxz, gyy, gyz, gzz);
+  if (!(det > 0.0 && det < 1.0e300 && alp > 1.0e-12 && alp < 1.0e300)) return;
+  const Real isg = 1.0/sqrt(det);
+  const Real ialp = 1.0/alp;
+  const Real Vx = (vx + m1(mb,NRM_BX,kk,jj,ii))*ialp;
+  const Real Vy = (vy + m1(mb,NRM_BY,kk,jj,ii))*ialp;
+  const Real Vz = (vz + m1(mb,NRM_BZ,kk,jj,ii))*ialp;
+  const Real Vdx = gxx*Vx + gxy*Vy + gxz*Vz;
+  const Real Vdy = gxy*Vx + gyy*Vy + gyz*Vz;
+  const Real Vdz = gxz*Vx + gyz*Vy + gzz*Vz;
+  Real V2 = Vx*Vdx + Vy*Vdy + Vz*Vdz;
+  if (V2 > 0.9999) V2 = 0.9999;
+  if (V2 < 0.0) V2 = 0.0;
+  const Real W = 1.0/sqrt(1.0 - V2);
+  const Real mW = mp*W*wcell;
+  const Real E_phys = (mW/vol)*isg;
+  Kokkos::atomic_add(&tm(mb,Tmunu::I_Tmunu_E,  kk,jj,ii), E_phys);
+  Kokkos::atomic_add(&tm(mb,Tmunu::I_Tmunu_Sx, kk,jj,ii), E_phys*Vdx);
+  Kokkos::atomic_add(&tm(mb,Tmunu::I_Tmunu_Sy, kk,jj,ii), E_phys*Vdy);
+  Kokkos::atomic_add(&tm(mb,Tmunu::I_Tmunu_Sz, kk,jj,ii), E_phys*Vdz);
+  Kokkos::atomic_add(&tm(mb,Tmunu::I_Tmunu_Sxx,kk,jj,ii), E_phys*Vdx*Vdx);
+  Kokkos::atomic_add(&tm(mb,Tmunu::I_Tmunu_Sxy,kk,jj,ii), E_phys*Vdx*Vdy);
+  Kokkos::atomic_add(&tm(mb,Tmunu::I_Tmunu_Sxz,kk,jj,ii), E_phys*Vdx*Vdz);
+  Kokkos::atomic_add(&tm(mb,Tmunu::I_Tmunu_Syy,kk,jj,ii), E_phys*Vdy*Vdy);
+  Kokkos::atomic_add(&tm(mb,Tmunu::I_Tmunu_Syz,kk,jj,ii), E_phys*Vdy*Vdz);
+  Kokkos::atomic_add(&tm(mb,Tmunu::I_Tmunu_Szz,kk,jj,ii), E_phys*Vdz*Vdz);
+  le += mW; lsx += mW*Vdx; lsy += mW*Vdy; lsz += mW*Vdz;
+}
+}  // namespace
+
+bool Particles::NrpicVariationalEval(const Real xp[3], const Real p_in[3],
+                                     const DvceArray5D<Real> &mA,
+                                     const DvceArray5D<Real> &mB,
+                                     Real frac, Real v_out[3], Real f_out[3],
+                                     bool need_force, Real *w_out) {
+  VarStencil st;
+  if (!BuildVarStencil(pmy_pack, nropt, xp, st)) return false;
+
+  Mesh *pm = pmy_pack->pmesh;
+  auto &indcs = pm->mb_indcs;
+  const int is = indcs.is, js = indcs.js, ks = indcs.ks;
+  const int ie = indcs.ie, je = indcs.je, ke = indcs.ke;
+  const int ng = indcs.ng;
+  const int nmb = pmy_pack->nmb_thispack;
+  auto sz = pmy_pack->pmb->mb_size.d_view;
+  auto lev = pmy_pack->pmb->mb_lev.d_view;
+  const Real dmin[3] = {nropt.dom_min[0], nropt.dom_min[1], nropt.dom_min[2]};
+  const Real dlen[3] = {nropt.dom_len[0], nropt.dom_len[1], nropt.dom_len[2]};
+  const bool per[3] = {nropt.periodic[0], nropt.periodic[1], nropt.periodic[2]};
+  const int ns = st.ns;
+  const int ntot = ns*ns*ns;
+  const Real dx3 = st.dx*st.dx*st.dx;
+  const bool blend = (frac > 0.0 && frac < 1.0);
+  const Real wA = 1.0 - frac, wB = frac;
+
+  Real v[3] = {0.0, 0.0, 0.0};
+  if (std::isfinite(v_out[0]) && std::isfinite(v_out[1]) && std::isfinite(v_out[2]) &&
+      (v_out[0]*v_out[0] + v_out[1]*v_out[1] + v_out[2]*v_out[2]) < 0.85) {
+    v[0] = v_out[0]; v[1] = v_out[1]; v[2] = v_out[2];
+  }
+
+  for (int it = 0; it < 25; ++it) {
+    const Real vx = v[0], vy = v[1], vz = v[2];
+    Real px = 0.0, py = 0.0, pz = 0.0;
+    Real j00 = 0.0, j01 = 0.0, j02 = 0.0, j11 = 0.0, j12 = 0.0, j22 = 0.0;
+    Kokkos::parallel_reduce("nrpic_var_pjac", Kokkos::RangePolicy<DevExeSpace>(0, ntot),
+    KOKKOS_LAMBDA(const int idx, Real &lpx, Real &lpy, Real &lpz,
+                  Real &lj00, Real &lj01, Real &lj02,
+                  Real &lj11, Real &lj12, Real &lj22) {
+      const int ix = idx % ns;
+      const int iy = (idx / ns) % ns;
+      const int iz = idx / (ns * ns);
+      const Real wt = st.wx[ix]*st.wy[iy]*st.wz[iz]*dx3;
+      if (wt <= 0.0) return;
+      const Real xf = nrpic::WrapCoord(st.x0[0] + ix*st.dx, dmin[0], dlen[0], per[0]);
+      const Real yf = nrpic::WrapCoord(st.x0[1] + iy*st.dx, dmin[1], dlen[1], per[1]);
+      const Real zf = nrpic::WrapCoord(st.x0[2] + iz*st.dx, dmin[2], dlen[2], per[2]);
+      int mb = -1;
+      for (int q = 0; q < st.nnbr; ++q) {
+        const int c = st.nbr[q];
+        if (xf >= sz(c).x1min && xf < sz(c).x1max &&
+            yf >= sz(c).x2min && yf < sz(c).x2max &&
+            zf >= sz(c).x3min && zf < sz(c).x3max) {
+          mb = c;
+          break;
+        }
+      }
+      if (mb < 0) mb = nrpic::FindBlock(sz, nmb, st.mo, xf, yf, zf);
+      if (mb < 0) return;
+
+      const int kd = lev(mb) - st.lev0;
+      if (kd <= 0) {
+        int i = is + static_cast<int>(floor((xf - sz(mb).x1min)/sz(mb).dx1));
+        int j = js + static_cast<int>(floor((yf - sz(mb).x2min)/sz(mb).dx2));
+        int k = ks + static_cast<int>(floor((zf - sz(mb).x3min)/sz(mb).dx3));
+        i = (i < is) ? is : ((i > ie) ? ie : i);
+        j = (j < js) ? js : ((j > je) ? je : j);
+        k = (k < ks) ? ks : ((k > ke) ? ke : k);
+        VarAccumPJac(mA,mB,blend,frac,wA,wB,mb,k,j,i,wt,vx,vy,vz,
+                     lpx,lpy,lpz,lj00,lj01,lj02,lj11,lj12,lj22);
+      } else {
+        const int nsub = 1 << kd;
+        const Real wsub = wt/static_cast<Real>(nsub*nsub*nsub);
+        const int i0 = is + static_cast<int>(
+            floor((xf - 0.5*st.dx - sz(mb).x1min)/sz(mb).dx1 + 0.5));
+        const int j0 = js + static_cast<int>(
+            floor((yf - 0.5*st.dx - sz(mb).x2min)/sz(mb).dx2 + 0.5));
+        const int k0 = ks + static_cast<int>(
+            floor((zf - 0.5*st.dx - sz(mb).x3min)/sz(mb).dx3 + 0.5));
+        for (int kk = 0; kk < nsub; ++kk) {
+          const int k = k0 + kk;
+          if (k < ks || k > ke) continue;
+          for (int jj = 0; jj < nsub; ++jj) {
+            const int j = j0 + jj;
+            if (j < js || j > je) continue;
+            for (int ii = 0; ii < nsub; ++ii) {
+              const int i = i0 + ii;
+              if (i < is || i > ie) continue;
+              VarAccumPJac(mA,mB,blend,frac,wA,wB,mb,k,j,i,wsub,vx,vy,vz,
+                           lpx,lpy,lpz,lj00,lj01,lj02,lj11,lj12,lj22);
+            }
+          }
+        }
+      }
+    }, Kokkos::Sum<Real>(px), Kokkos::Sum<Real>(py), Kokkos::Sum<Real>(pz),
+       Kokkos::Sum<Real>(j00), Kokkos::Sum<Real>(j01), Kokkos::Sum<Real>(j02),
+       Kokkos::Sum<Real>(j11), Kokkos::Sum<Real>(j12), Kokkos::Sum<Real>(j22));
+
+    const Real J[3][3] = {{j00, j01, j02}, {j01, j11, j12}, {j02, j12, j22}};
+    Real Ji[3][3];
+    nrpic::Inv3Sym(J, Ji);
+    const Real r[3] = {p_in[0] - px, p_in[1] - py, p_in[2] - pz};
+    Real dv[3];
+    Real maxdv = 0.0;
+    for (int a = 0; a < 3; ++a) {
+      dv[a] = Ji[a][0]*r[0] + Ji[a][1]*r[1] + Ji[a][2]*r[2];
+      maxdv = std::max(maxdv, std::fabs(dv[a]));
+    }
+    const Real scale = (maxdv > 0.25) ? (0.25/maxdv) : 1.0;
+    for (int a = 0; a < 3; ++a) { v[a] += scale*dv[a]; }
+    if (maxdv < 1.0e-14) break;
+  }
+
+  v_out[0] = v[0]; v_out[1] = v[1]; v_out[2] = v[2];
+  if (!need_force && w_out == nullptr) return true;
+
+  const Real vx = v[0], vy = v[1], vz = v[2];
+  Real fx = 0.0, fy = 0.0, fz = 0.0, wavg = 0.0;
+  Kokkos::parallel_reduce("nrpic_var_force", Kokkos::RangePolicy<DevExeSpace>(0, ntot),
+  KOKKOS_LAMBDA(const int idx, Real &lfx, Real &lfy, Real &lfz, Real &lw) {
+    const int ix = idx % ns;
+    const int iy = (idx / ns) % ns;
+    const int iz = idx / (ns * ns);
+    const Real wt = st.wx[ix]*st.wy[iy]*st.wz[iz]*dx3;
+    if (wt <= 0.0) return;
+    const Real xf = nrpic::WrapCoord(st.x0[0] + ix*st.dx, dmin[0], dlen[0], per[0]);
+    const Real yf = nrpic::WrapCoord(st.x0[1] + iy*st.dx, dmin[1], dlen[1], per[1]);
+    const Real zf = nrpic::WrapCoord(st.x0[2] + iz*st.dx, dmin[2], dlen[2], per[2]);
+    int mb = -1;
+    for (int q = 0; q < st.nnbr; ++q) {
+      const int c = st.nbr[q];
+      if (xf >= sz(c).x1min && xf < sz(c).x1max &&
+          yf >= sz(c).x2min && yf < sz(c).x2max &&
+          zf >= sz(c).x3min && zf < sz(c).x3max) {
+        mb = c;
+        break;
+      }
+    }
+    if (mb < 0) mb = nrpic::FindBlock(sz, nmb, st.mo, xf, yf, zf);
+    if (mb < 0) return;
+
+    const Real invh1 = 1.0/sz(mb).dx1, invh2 = 1.0/sz(mb).dx2, invh3 = 1.0/sz(mb).dx3;
+    const int kd = lev(mb) - st.lev0;
+    if (kd <= 0) {
+      int i = is + static_cast<int>(floor((xf - sz(mb).x1min)/sz(mb).dx1));
+      int j = js + static_cast<int>(floor((yf - sz(mb).x2min)/sz(mb).dx2));
+      int k = ks + static_cast<int>(floor((zf - sz(mb).x3min)/sz(mb).dx3));
+      i = (i < is) ? is : ((i > ie) ? ie : i);
+      j = (j < js) ? js : ((j > je) ? je : j);
+      k = (k < ks) ? ks : ((k > ke) ? ke : k);
+      VarAccumForce(mA,mB,blend,frac,wA,wB,mb,k,j,i,wt,vx,vy,vz,
+                    need_force,ng,invh1,invh2,invh3,lfx,lfy,lfz,lw);
+    } else {
+      const int nsub = 1 << kd;
+      const Real wsub = wt/static_cast<Real>(nsub*nsub*nsub);
+      const int i0 = is + static_cast<int>(
+          floor((xf - 0.5*st.dx - sz(mb).x1min)/sz(mb).dx1 + 0.5));
+      const int j0 = js + static_cast<int>(
+          floor((yf - 0.5*st.dx - sz(mb).x2min)/sz(mb).dx2 + 0.5));
+      const int k0 = ks + static_cast<int>(
+          floor((zf - 0.5*st.dx - sz(mb).x3min)/sz(mb).dx3 + 0.5));
+      for (int kk = 0; kk < nsub; ++kk) {
+        const int k = k0 + kk;
+        if (k < ks || k > ke) continue;
+        for (int jj = 0; jj < nsub; ++jj) {
+          const int j = j0 + jj;
+          if (j < js || j > je) continue;
+          for (int ii = 0; ii < nsub; ++ii) {
+            const int i = i0 + ii;
+            if (i < is || i > ie) continue;
+            VarAccumForce(mA,mB,blend,frac,wA,wB,mb,k,j,i,wsub,vx,vy,vz,
+                          need_force,ng,invh1,invh2,invh3,lfx,lfy,lfz,lw);
+          }
+        }
+      }
+    }
+  }, Kokkos::Sum<Real>(fx), Kokkos::Sum<Real>(fy), Kokkos::Sum<Real>(fz),
+     Kokkos::Sum<Real>(wavg));
+
+  f_out[0] = fx; f_out[1] = fy; f_out[2] = fz;
+  if (w_out != nullptr) { *w_out = wavg; }
+  return true;
+}
+
+void Particles::NrpicVariationalDepositSources() {
+  Mesh *pm = pmy_pack->pmesh;
+  auto &indcs = pm->mb_indcs;
+  auto tm = pmy_pack->ptmunu->u_tmunu;
+  auto m1 = met1;
+  auto sz = pmy_pack->pmb->mb_size.d_view;
+  auto lev = pmy_pack->pmb->mb_lev.d_view;
+  const int is = indcs.is, js = indcs.js, ks = indcs.ks;
+  const int ie = indcs.ie, je = indcs.je, ke = indcs.ke;
+  const int nmb = pmy_pack->nmb_thispack;
+  const Real dmin[3] = {nropt.dom_min[0], nropt.dom_min[1], nropt.dom_min[2]};
+  const Real dlen[3] = {nropt.dom_len[0], nropt.dom_len[1], nropt.dom_len[2]};
+  const bool per[3] = {nropt.periodic[0], nropt.periodic[1], nropt.periodic[2]};
+
+  const int np = nprtcl_thispack;
+  sum_mw = 0.0;
+  for (int n = 0; n < 4; ++n) { dep_sum[n] = 0.0; dep_sum_filt[n] = 0.0; }
+  if (np <= 0) return;
+
+  auto rh = Kokkos::create_mirror_view_and_copy(HostMemSpace(), prtcl_rdata);
+  auto ih = Kokkos::create_mirror_view_and_copy(HostMemSpace(), prtcl_idata);
+
+  Real tot_e = 0.0, tot_sx = 0.0, tot_sy = 0.0, tot_sz = 0.0;
+  for (int p = 0; p < np; ++p) {
+    if (ih(PGID, p) < 0) continue;
+    const Real mp = rh(IPM, p);
+    if (mp <= 0.0) continue;
+    const Real xp[3] = {rh(IPX, p), rh(IPY, p), rh(IPZ, p)};
+    const Real up[3] = {rh(IPVX, p), rh(IPVY, p), rh(IPVZ, p)};
+    Real vp[3] = {0.0, 0.0, 0.0}, f_dum[3] = {0.0, 0.0, 0.0};
+    if (!NrpicVariationalEval(xp, up, met1, met1, 1.0, vp, f_dum, false)) continue;
+    VarStencil st;
+    if (!BuildVarStencil(pmy_pack, nropt, xp, st)) continue;
+    const int ns = st.ns;
+    const int ntot = ns*ns*ns;
+    const Real dx3 = st.dx*st.dx*st.dx;
+    const Real vx = vp[0], vy = vp[1], vz = vp[2];
+
+    Real pe = 0.0, psx = 0.0, psy = 0.0, psz = 0.0;
+    Kokkos::parallel_reduce("nrpic_var_dep", Kokkos::RangePolicy<DevExeSpace>(0, ntot),
+    KOKKOS_LAMBDA(const int idx, Real &le, Real &lsx, Real &lsy, Real &lsz) {
+      const int ix = idx % ns;
+      const int iy = (idx / ns) % ns;
+      const int iz = idx / (ns * ns);
+      const Real wt = st.wx[ix]*st.wy[iy]*st.wz[iz]*dx3;
+      if (wt <= 0.0) return;
+      const Real xf = nrpic::WrapCoord(st.x0[0] + ix*st.dx, dmin[0], dlen[0], per[0]);
+      const Real yf = nrpic::WrapCoord(st.x0[1] + iy*st.dx, dmin[1], dlen[1], per[1]);
+      const Real zf = nrpic::WrapCoord(st.x0[2] + iz*st.dx, dmin[2], dlen[2], per[2]);
+      int mb = -1;
+      for (int q = 0; q < st.nnbr; ++q) {
+        const int c = st.nbr[q];
+        if (xf >= sz(c).x1min && xf < sz(c).x1max &&
+            yf >= sz(c).x2min && yf < sz(c).x2max &&
+            zf >= sz(c).x3min && zf < sz(c).x3max) {
+          mb = c;
+          break;
+        }
+      }
+      if (mb < 0) mb = nrpic::FindBlock(sz, nmb, st.mo, xf, yf, zf);
+      if (mb < 0) return;
+
+      const Real vol = sz(mb).dx1*sz(mb).dx2*sz(mb).dx3;
+      const int kd = lev(mb) - st.lev0;
+      if (kd <= 0) {
+        int i = is + static_cast<int>(floor((xf - sz(mb).x1min)/sz(mb).dx1));
+        int j = js + static_cast<int>(floor((yf - sz(mb).x2min)/sz(mb).dx2));
+        int k = ks + static_cast<int>(floor((zf - sz(mb).x3min)/sz(mb).dx3));
+        i = (i < is) ? is : ((i > ie) ? ie : i);
+        j = (j < js) ? js : ((j > je) ? je : j);
+        k = (k < ks) ? ks : ((k > ke) ? ke : k);
+        VarDepositCell(tm,m1,mb,k,j,i,vol,wt,mp,vx,vy,vz,le,lsx,lsy,lsz);
+      } else {
+        const int nsub = 1 << kd;
+        const Real wsub = wt/static_cast<Real>(nsub*nsub*nsub);
+        const int i0 = is + static_cast<int>(
+            floor((xf - 0.5*st.dx - sz(mb).x1min)/sz(mb).dx1 + 0.5));
+        const int j0 = js + static_cast<int>(
+            floor((yf - 0.5*st.dx - sz(mb).x2min)/sz(mb).dx2 + 0.5));
+        const int k0 = ks + static_cast<int>(
+            floor((zf - 0.5*st.dx - sz(mb).x3min)/sz(mb).dx3 + 0.5));
+        for (int kk = 0; kk < nsub; ++kk) {
+          const int k = k0 + kk;
+          if (k < ks || k > ke) continue;
+          for (int jj = 0; jj < nsub; ++jj) {
+            const int j = j0 + jj;
+            if (j < js || j > je) continue;
+            for (int ii = 0; ii < nsub; ++ii) {
+              const int i = i0 + ii;
+              if (i < is || i > ie) continue;
+              VarDepositCell(tm,m1,mb,k,j,i,vol,wsub,mp,vx,vy,vz,le,lsx,lsy,lsz);
+            }
+          }
+        }
+      }
+    }, Kokkos::Sum<Real>(pe), Kokkos::Sum<Real>(psx), Kokkos::Sum<Real>(psy),
+       Kokkos::Sum<Real>(psz));
+
+    tot_e += pe; tot_sx += psx; tot_sy += psy; tot_sz += psz;
+  }
+
+  sum_mw = tot_e;
+  dep_sum[0] = tot_e; dep_sum[1] = tot_sx; dep_sum[2] = tot_sy; dep_sum[3] = tot_sz;
+  nrpic::MpiSum({&dep_sum[0], &dep_sum[1], &dep_sum[2], &dep_sum[3]});
+  for (int n = 0; n < 4; ++n) { dep_sum_filt[n] = dep_sum[n]; }
+}
+
+void Particles::NrpicVariationalPush(Real dt, bool update_tau) {
+  const int np = nprtcl_thispack;
+  if (np <= 0) return;
+
+  // Apparent-horizon excision list
+  int nah = 0;
+  Real ahc[4][3], ahr2[4];
+  for (int n = 0; n < 4; ++n) {
+    ahc[n][0] = ahc[n][1] = ahc[n][2] = 0.0;
+    ahr2[n] = 0.0;
+  }
+  if (nropt.ah_exc_factor > 0.0 && pmy_pack->pz4c != nullptr) {
+    for (auto &pah : pmy_pack->pz4c->pfastflow) {
+      if (pah->ah_found && nah < 4 && std::isfinite(pah->rr_min) &&
+          pah->rr_min > 0.0 && pah->rr_min < 4.0*pah->initial_radius) {
+        ahc[nah][0] = pah->center[0];
+        ahc[nah][1] = pah->center[1];
+        ahc[nah][2] = pah->center[2];
+        ahr2[nah] = SQR(nropt.ah_exc_factor*pah->rr_min);
+        ++nah;
+      }
+    }
+  }
+
+  auto rh = Kokkos::create_mirror_view_and_copy(HostMemSpace(), prtcl_rdata);
+  auto ih = Kokkos::create_mirror_view_and_copy(HostMemSpace(), prtcl_idata);
+  const Real tol = nropt.tol;
+  const int maxit = nropt.maxit;
+  const Real alpha_exc = nropt.alpha_exc;
+  auto sz_h = pmy_pack->pmb->mb_size.h_view;
+  const int gids = pmy_pack->gids;
+  auto &indcs = pmy_pack->pmesh->mb_indcs;
+
+  int nun = 0, mxit = 0;
+  for (int p = 0; p < np; ++p) {
+    if (ih(PGID, p) < 0) continue;
+    if (rh(IPM, p) < 0.0) continue;  // skip delayed null rays
+    const Real x0[3] = {rh(IPX, p), rh(IPY, p), rh(IPZ, p)};
+    const Real p0[3] = {rh(IPVX, p), rh(IPVY, p), rh(IPVZ, p)};
+
+    bool excise = false;
+    int code = -2;
+    if (update_tau) {
+      for (int n = 0; n < nah; ++n) {
+        const Real d2 = SQR(x0[0] - ahc[n][0]) + SQR(x0[1] - ahc[n][1]) +
+                        SQR(x0[2] - ahc[n][2]);
+        if (d2 < ahr2[n]) { code = -3; excise = true; }
+      }
+      if (!excise && alpha_exc > 0.0) {
+        const int mo = ih(PGID, p) - gids;
+        if (mo >= 0 && mo < pmy_pack->nmb_thispack) {
+          int i = indcs.is + static_cast<int>(std::floor((x0[0] - sz_h(mo).x1min)/sz_h(mo).dx1));
+          int j = indcs.js + static_cast<int>(std::floor((x0[1] - sz_h(mo).x2min)/sz_h(mo).dx2));
+          int k = indcs.ks + static_cast<int>(std::floor((x0[2] - sz_h(mo).x3min)/sz_h(mo).dx3));
+          i = std::max(indcs.is, std::min(indcs.ie, i));
+          j = std::max(indcs.js, std::min(indcs.je, j));
+          k = std::max(indcs.ks, std::min(indcs.ke, k));
+          auto m0 = met0;
+          Real alpc = 1.0;
+          Kokkos::parallel_reduce("nrpic_var_alp", Kokkos::RangePolicy<DevExeSpace>(0, 1),
+          KOKKOS_LAMBDA(const int, Real &la) { la = m0(mo, NRM_ALP, k, j, i); },
+          Kokkos::Min<Real>(alpc));
+          if (alpc < alpha_exc) { code = -2; excise = true; }
+        }
+      }
+    }
+    if (excise) {
+      ih(PGID, p) = code;
+      continue;
+    }
+
+    // Symplectic implicit midpoint step using exact Variational GR-PIC RHS
+    Real v0[3] = {0.0, 0.0, 0.0}, f0[3] = {0.0, 0.0, 0.0};
+    if (!NrpicVariationalEval(x0, p0, met0, met1, 0.0, v0, f0, true)) {
+      if (update_tau) { ih(PGID, p) = -4; }
+      continue;
+    }
+    Real x1[3] = {x0[0] + dt*v0[0], x0[1] + dt*v0[1], x0[2] + dt*v0[2]};
+    Real p1[3] = {p0[0] + dt*f0[0], p0[1] + dt*f0[1], p0[2] + dt*f0[2]};
+    Real vm[3] = {v0[0], v0[1], v0[2]}, fm[3] = {f0[0], f0[1], f0[2]};
+    Real wm = 1.0;
+    int it = 0;
+    bool conv = false;
+    while (it < maxit) {
+      ++it;
+      const Real xb[3] = {0.5*(x0[0] + x1[0]), 0.5*(x0[1] + x1[1]), 0.5*(x0[2] + x1[2])};
+      const Real pb[3] = {0.5*(p0[0] + p1[0]), 0.5*(p0[1] + p1[1]), 0.5*(p0[2] + p1[2])};
+      if (!NrpicVariationalEval(xb, pb, met0, met1, 0.5, vm, fm, true, &wm)) {
+        break;
+      }
+      Real err = 0.0;
+      for (int a = 0; a < 3; ++a) {
+        const Real xn = x0[a] + dt*vm[a];
+        const Real pn = p0[a] + dt*fm[a];
+        err = std::max(err, std::max(std::fabs(xn - x1[a]), std::fabs(pn - p1[a])));
+        x1[a] = xn;
+        p1[a] = pn;
+      }
+      if (err < tol) { conv = true; break; }
+    }
+    if (!conv) { ++nun; }
+    mxit = std::max(mxit, it);
+    const Real chk = x1[0] + x1[1] + x1[2] + p1[0] + p1[1] + p1[2];
+    if (!std::isfinite(chk)) {
+      if (update_tau) { ih(PGID, p) = -4; }
+    } else {
+      rh(IPX, p) = x1[0]; rh(IPY, p) = x1[1]; rh(IPZ, p) = x1[2];
+      rh(IPVX, p) = p1[0]; rh(IPVY, p) = p1[1]; rh(IPVZ, p) = p1[2];
+      if (update_tau && wm > 0.0) { rh(IPTAU, p) += dt/wm; }
+    }
+  }
+  if (update_tau) {
+    push_unconverged = nun;
+    push_maxit = mxit;
+  }
+  Kokkos::deep_copy(prtcl_rdata, rh);
+  Kokkos::deep_copy(prtcl_idata, ih);
+}
+
+//----------------------------------------------------------------------------------------
 //! \fn  void Particles::NrpicDepositSources
 //! \brief deposits the ADM matter sources of all particles onto the mesh with the
 //! first-order (cloud-in-cell) shape,
@@ -898,6 +1589,11 @@ void Particles::NrpicDepositSources() {
   Kokkos::deep_copy(DevExeSpace(), tm, 0.0);
   sum_mw = 0.0;
   for (int n=0; n<4; ++n) { dep_sum[n] = 0.0; }
+  if (nropt.variational_pic && !nropt.newton) {
+    NrpicVariationalDepositSources();
+    e_prev_valid = true;
+    return;
+  }
   // where the clouds are added: atomically into tm, or (threaded build, deposit_threads
   // = private) into one copy of tm per thread, summed after the loop
   const nrpic::DepositTarget dep = thread_dep.Begin(tm);
@@ -924,6 +1620,7 @@ void Particles::NrpicDepositSources() {
   const bool per[3] = {nropt.periodic[0], nropt.periodic[1], nropt.periodic[2]};
   const int nb = nropt.deposit_shape + 1;              // cells per direction of a cloud
   const bool newton = nropt.newton;      // Newtonian mode: rest mass instead of energy
+  const bool bianchi_flux = nropt.filter_bianchi_flux && !newton;
   const bool fine_shape = nropt.deposit_fine;   // coarse clouds sampled on leaf cells
   // ... for the linear cloud by the integrals of its assignment function over the leaf
   // cells, which needs the lattice cells next to those of the cloud as well
@@ -976,16 +1673,41 @@ void Particles::NrpicDepositSources() {
       lsmw += mp*W;
 
       Real q[Tmunu::N_Tmunu];
-      q[Tmunu::I_Tmunu_Sxx] = mp*up[0]*up[0]/W;
-      q[Tmunu::I_Tmunu_Sxy] = mp*up[0]*up[1]/W;
-      q[Tmunu::I_Tmunu_Sxz] = mp*up[0]*up[2]/W;
-      q[Tmunu::I_Tmunu_Syy] = mp*up[1]*up[1]/W;
-      q[Tmunu::I_Tmunu_Syz] = mp*up[1]*up[2]/W;
-      q[Tmunu::I_Tmunu_Szz] = mp*up[2]*up[2]/W;
-      q[Tmunu::I_Tmunu_E]   = mp*W;
-      q[Tmunu::I_Tmunu_Sx]  = mp*up[0];
-      q[Tmunu::I_Tmunu_Sy]  = mp*up[1];
-      q[Tmunu::I_Tmunu_Sz]  = mp*up[2];
+      if (bianchi_flux) {
+        // Deposit coordinate-frame flux moments (mW, mW v^i, mW v^i v^j) where
+        // v^i = dx^i/dt = (alpha/W) u^i - beta^i at the particle position.
+        // Filtering these linearly and reconstructing S_i, S_ij via the cell-local
+        // ADM metric (alpha, beta^i, gamma_ij) in NrpicNormalizeDensitizedSources
+        // makes the ADM energy and momentum flux divergences cancel identically:
+        //   d_t(sqrt(g) E) + d_i[sqrt(g)(alpha S^i - beta^i E)] = m dW/dt W_sigma.
+        const Real mW = mp * W;
+        const Real vp[3] = {
+          (ap.alp/W)*uup[0] - ap.beta[0],
+          (ap.alp/W)*uup[1] - ap.beta[1],
+          (ap.alp/W)*uup[2] - ap.beta[2]
+        };
+        q[Tmunu::I_Tmunu_E]   = mW;
+        q[Tmunu::I_Tmunu_Sx]  = mW * vp[0];
+        q[Tmunu::I_Tmunu_Sy]  = mW * vp[1];
+        q[Tmunu::I_Tmunu_Sz]  = mW * vp[2];
+        q[Tmunu::I_Tmunu_Sxx] = mW * vp[0] * vp[0];
+        q[Tmunu::I_Tmunu_Sxy] = mW * vp[0] * vp[1];
+        q[Tmunu::I_Tmunu_Sxz] = mW * vp[0] * vp[2];
+        q[Tmunu::I_Tmunu_Syy] = mW * vp[1] * vp[1];
+        q[Tmunu::I_Tmunu_Syz] = mW * vp[1] * vp[2];
+        q[Tmunu::I_Tmunu_Szz] = mW * vp[2] * vp[2];
+      } else {
+        q[Tmunu::I_Tmunu_Sxx] = mp*up[0]*up[0]/W;
+        q[Tmunu::I_Tmunu_Sxy] = mp*up[0]*up[1]/W;
+        q[Tmunu::I_Tmunu_Sxz] = mp*up[0]*up[2]/W;
+        q[Tmunu::I_Tmunu_Syy] = mp*up[1]*up[1]/W;
+        q[Tmunu::I_Tmunu_Syz] = mp*up[1]*up[2]/W;
+        q[Tmunu::I_Tmunu_Szz] = mp*up[2]*up[2]/W;
+        q[Tmunu::I_Tmunu_E]   = mp*W;
+        q[Tmunu::I_Tmunu_Sx]  = mp*up[0];
+        q[Tmunu::I_Tmunu_Sy]  = mp*up[1];
+        q[Tmunu::I_Tmunu_Sz]  = mp*up[2];
+      }
 
       // (1) deposition level: the finest level among the owners of the eight nearest
       //     cell centres of the lattice at the level of the particle's own MeshBlock,
@@ -1304,6 +2026,7 @@ void Particles::NrpicNormalizeDensitizedSources(bool update_filt_sum) {
   const int is = indcs.is, js = indcs.js, ks = indcs.ks;
   const int n1 = indcs.nx1, n2 = indcs.nx2, n3 = indcs.nx3;
   const int ncell = nmb*n3*n2*n1;
+  const bool bianchi_flux = nropt.filter_bianchi_flux && !nropt.newton;
   Real se = 0.0, sx = 0.0, sy = 0.0, szz = 0.0;
   int nbad = 0;
   Kokkos::parallel_reduce("nrpic_normalize", Kokkos::RangePolicy<DevExeSpace>(0, ncell),
@@ -1315,27 +2038,103 @@ void Particles::NrpicNormalizeDensitizedSources(bool update_filt_sum) {
     int j = rem/n1;
     int i = rem - j*n1;
     k += ks; j += js; i += is;
-    const Real det = adm::SpatialDet(m1(m,NRM_GXX,k,j,i), m1(m,NRM_GXY,k,j,i),
-                                     m1(m,NRM_GXZ,k,j,i), m1(m,NRM_GYY,k,j,i),
-                                     m1(m,NRM_GYZ,k,j,i), m1(m,NRM_GZZ,k,j,i));
+    const Real gxx = m1(m,NRM_GXX,k,j,i), gxy = m1(m,NRM_GXY,k,j,i),
+               gxz = m1(m,NRM_GXZ,k,j,i), gyy = m1(m,NRM_GYY,k,j,i),
+               gyz = m1(m,NRM_GYZ,k,j,i), gzz = m1(m,NRM_GZZ,k,j,i);
+    const Real det = adm::SpatialDet(gxx, gxy, gxz, gyy, gyz, gzz);
     // The ADM metric is the conformal metric divided by the evolved conformal factor
     // chi without a floor.  At a cell centre next to a moving puncture chi can
     // undershoot to zero or below; the determinant is then not positive (or not
     // finite) and 1/sqrt(det) would put a NaN into the sources of that cell, which the
     // filter passes spread over the mesh.  Such a cell lies inside the black hole:
     // its sources are set to zero and the cell is counted.
-    const bool ok = (det > 0.0) && (det < 1.0e300);
+    const Real alp = m1(m,NRM_ALP,k,j,i);
+    const bool ok = (det > 0.0) && (det < 1.0e300) &&
+                    (!bianchi_flux || ((alp > 1.0e-12) && (alp < 1.0e300)));
     const Real isg = ok ? 1.0/sqrt(det) : 0.0;
-    if (!ok) { lnbad += 1; }
-    if (ok && update_filt_sum) {
-      const Real vol = sz(m).dx1*sz(m).dx2*sz(m).dx3;
-      lse += tm(m,Tmunu::I_Tmunu_E,k,j,i)*vol;
-      lsx += tm(m,Tmunu::I_Tmunu_Sx,k,j,i)*vol;
-      lsy += tm(m,Tmunu::I_Tmunu_Sy,k,j,i)*vol;
-      lsz += tm(m,Tmunu::I_Tmunu_Sz,k,j,i)*vol;
+    if (!ok) {
+      lnbad += 1;
+      for (int n=0; n<Tmunu::N_Tmunu; ++n) {
+        tm(m,n,k,j,i) = 0.0;
+      }
+      return;
     }
-    for (int n=0; n<Tmunu::N_Tmunu; ++n) {
-      tm(m,n,k,j,i) *= isg;
+    if (bianchi_flux) {
+      const Real E_d = tm(m,Tmunu::I_Tmunu_E,k,j,i);
+      const Real F[3] = {
+        tm(m,Tmunu::I_Tmunu_Sx,k,j,i),
+        tm(m,Tmunu::I_Tmunu_Sy,k,j,i),
+        tm(m,Tmunu::I_Tmunu_Sz,k,j,i)
+      };
+      const Real P[3][3] = {
+        {tm(m,Tmunu::I_Tmunu_Sxx,k,j,i), tm(m,Tmunu::I_Tmunu_Sxy,k,j,i),
+         tm(m,Tmunu::I_Tmunu_Sxz,k,j,i)},
+        {tm(m,Tmunu::I_Tmunu_Sxy,k,j,i), tm(m,Tmunu::I_Tmunu_Syy,k,j,i),
+         tm(m,Tmunu::I_Tmunu_Syz,k,j,i)},
+        {tm(m,Tmunu::I_Tmunu_Sxz,k,j,i), tm(m,Tmunu::I_Tmunu_Syz,k,j,i),
+         tm(m,Tmunu::I_Tmunu_Szz,k,j,i)}
+      };
+      const Real b[3] = {
+        m1(m,NRM_BX,k,j,i), m1(m,NRM_BY,k,j,i), m1(m,NRM_BZ,k,j,i)
+      };
+      const Real g[3][3] = {
+        {gxx, gxy, gxz},
+        {gxy, gyy, gyz},
+        {gxz, gyz, gzz}
+      };
+      const Real ialp = 1.0/alp;
+      const Real ialp2 = ialp*ialp;
+      Real Su[3], Sd[3];
+      for (int a=0; a<3; ++a) {
+        Su[a] = (F[a] + b[a]*E_d)*ialp;
+      }
+      for (int a=0; a<3; ++a) {
+        Sd[a] = g[a][0]*Su[0] + g[a][1]*Su[1] + g[a][2]*Su[2];
+      }
+      Real Suu[3][3], tmp[3][3], Sdd[3][3];
+      for (int a=0; a<3; ++a) {
+        for (int c=0; c<3; ++c) {
+          Suu[a][c] = (P[a][c] + b[a]*F[c] + b[c]*F[a] + b[a]*b[c]*E_d)*ialp2;
+        }
+      }
+      for (int a=0; a<3; ++a) {
+        for (int d=0; d<3; ++d) {
+          tmp[a][d] = g[a][0]*Suu[0][d] + g[a][1]*Suu[1][d] + g[a][2]*Suu[2][d];
+        }
+      }
+      for (int a=0; a<3; ++a) {
+        for (int c=a; c<3; ++c) {
+          Sdd[a][c] = tmp[a][0]*g[c][0] + tmp[a][1]*g[c][1] + tmp[a][2]*g[c][2];
+        }
+      }
+      if (update_filt_sum) {
+        const Real vol = sz(m).dx1*sz(m).dx2*sz(m).dx3;
+        lse += E_d*vol;
+        lsx += Sd[0]*vol;
+        lsy += Sd[1]*vol;
+        lsz += Sd[2]*vol;
+      }
+      tm(m,Tmunu::I_Tmunu_E,k,j,i)   = E_d*isg;
+      tm(m,Tmunu::I_Tmunu_Sx,k,j,i)  = Sd[0]*isg;
+      tm(m,Tmunu::I_Tmunu_Sy,k,j,i)  = Sd[1]*isg;
+      tm(m,Tmunu::I_Tmunu_Sz,k,j,i)  = Sd[2]*isg;
+      tm(m,Tmunu::I_Tmunu_Sxx,k,j,i) = Sdd[0][0]*isg;
+      tm(m,Tmunu::I_Tmunu_Sxy,k,j,i) = Sdd[0][1]*isg;
+      tm(m,Tmunu::I_Tmunu_Sxz,k,j,i) = Sdd[0][2]*isg;
+      tm(m,Tmunu::I_Tmunu_Syy,k,j,i) = Sdd[1][1]*isg;
+      tm(m,Tmunu::I_Tmunu_Syz,k,j,i) = Sdd[1][2]*isg;
+      tm(m,Tmunu::I_Tmunu_Szz,k,j,i) = Sdd[2][2]*isg;
+    } else {
+      if (update_filt_sum) {
+        const Real vol = sz(m).dx1*sz(m).dx2*sz(m).dx3;
+        lse += tm(m,Tmunu::I_Tmunu_E,k,j,i)*vol;
+        lsx += tm(m,Tmunu::I_Tmunu_Sx,k,j,i)*vol;
+        lsy += tm(m,Tmunu::I_Tmunu_Sy,k,j,i)*vol;
+        lsz += tm(m,Tmunu::I_Tmunu_Sz,k,j,i)*vol;
+      }
+      for (int n=0; n<Tmunu::N_Tmunu; ++n) {
+        tm(m,n,k,j,i) *= isg;
+      }
     }
   }, Kokkos::Sum<Real>(se), Kokkos::Sum<Real>(sx), Kokkos::Sum<Real>(sy),
      Kokkos::Sum<Real>(szz), Kokkos::Sum<int>(nbad));
@@ -1915,6 +2714,10 @@ void Particles::NrpicFilterPassMetricConservativeUnsplit(const Real kappa) {
 //! (see NrpicFilterPass), then the proper-volume integrals of the filtered sources
 
 void Particles::NrpicFilterSources() {
+  if (nropt.variational_pic && !nropt.newton) {
+    for (int n=0; n<4; ++n) { dep_sum_filt[n] = dep_sum[n]; }
+    return;
+  }
   if (nropt.nfilter <= 0 && !(nropt.filter_compensate && nropt.filter_comp_c > 0.0)) {
     if (tm_is_densitized) {
       NrpicNormalizeDensitizedSources(true);
@@ -2149,6 +2952,144 @@ void Particles::NrpicStepSources() {
     ts_restart.clear();
     ts_restart.shrink_to_fit();
   }
+}
+
+//----------------------------------------------------------------------------------------
+//! \fn  TaskStatus Particles::NrpicStageDeposit
+//! \brief exact Lagrangian per-stage particle deposit at t^n + c_s dt for RK stages >= 2.
+//! Eliminates both Bug 7 (AMR regrid tm_prev_valid=false reset spikes) and Bug 8
+//! (Eulerian linear stage-extrapolation O(dt^3/sigma^5) skewness self-force).
+
+TaskStatus Particles::NrpicStageDeposit(Driver *pdriver, int stage) {
+  if (!nropt.source_stage_lagrangian || !nropt.deposit || nropt.newton ||
+      nropt.metric != NrpicMetric::mesh || metric_is_static) {
+    return TaskStatus::complete;
+  }
+  const Real cs = (pdriver != nullptr && stage >= 1 && stage <= 4)
+                      ? pdriver->c_stage[stage - 1] : 0.0;
+  if (cs <= 0.0) {
+    return TaskStatus::complete;
+  }
+  const int np = nprtcl_thispack;
+  if (np <= 0) {
+    return TaskStatus::complete;
+  }
+  Mesh *pm = pmy_pack->pmesh;
+  const Real dt_s = cs * pm->dt;
+  if (dt_s <= 0.0) {
+    return TaskStatus::complete;
+  }
+
+  // Update met1 from the current RK stage ADM metric (met0 holds t^n from PrepareStep)
+  NrpicFillMetric(met1);
+  if (nropt.interp_bspline) { NrpicSharpenMetric(met1, met1s); }
+
+  // Save particle state & deposit diagnostics so this stage deposit is side-effect free
+  if (static_cast<int>(stage_rdata_save.extent(0)) != nrdata ||
+      static_cast<int>(stage_rdata_save.extent(1)) < np) {
+    Kokkos::realloc(stage_rdata_save, nrdata, np);
+  }
+  if (static_cast<int>(stage_idata_save.extent(0)) != nidata ||
+      static_cast<int>(stage_idata_save.extent(1)) < np) {
+    Kokkos::realloc(stage_idata_save, nidata, np);
+  }
+  auto pr = prtcl_rdata;
+  auto pi = prtcl_idata;
+  auto rs = stage_rdata_save;
+  auto isav = stage_idata_save;
+  const int nr = nrdata, ni = nidata;
+  par_for("nrpic_stage_save", DevExeSpace(), 0, np - 1,
+  KOKKOS_LAMBDA(const int p) {
+    for (int v=0; v<nr; ++v) { rs(v,p) = pr(v,p); }
+    for (int v=0; v<ni; ++v) { isav(v,p) = pi(v,p); }
+  });
+  const Real save_sum_mw = sum_mw;
+  const Real save_dep[4] = {dep_sum[0], dep_sum[1], dep_sum[2], dep_sum[3]};
+  const Real save_filt[4] = {dep_sum_filt[0], dep_sum_filt[1], dep_sum_filt[2], dep_sum_filt[3]};
+  const bool save_epv = e_prev_valid;
+  const long save_nbad = n_bad_det_total;
+  const int  save_nrep = n_bad_det_reports;
+
+  // Symplectic midpoint prediction from (x^n, u^n) to (x(t^n + c_s dt), u(t^n + c_s dt))
+  auto &indcs = pm->mb_indcs;
+  if (nropt.variational_pic) {
+    NrpicVariationalPush(dt_s, false);
+  } else {
+    auto sz = pmy_pack->pmb->mb_size.d_view;
+    const int gids = pmy_pack->gids;
+    const Real tol = nropt.tol;
+    const int maxit = nropt.maxit;
+    nrpic::MeshMetric proto;
+    proto.interp = nropt.interp_mode;
+    if (nropt.interp_bspline) {
+      proto.m0 = met0s;
+      proto.m1 = met1s;
+    } else {
+      proto.m0 = met0;
+      proto.m1 = met1;
+    }
+    proto.is_static = false;
+    proto.ist[0] = indcs.is; proto.ist[1] = indcs.js; proto.ist[2] = indcs.ks;
+    proto.ncell[0] = indcs.nx1 + 2*indcs.ng;
+    proto.ncell[1] = indcs.nx2 + 2*indcs.ng;
+    proto.ncell[2] = indcs.nx3 + 2*indcs.ng;
+
+    par_for("nrpic_stage_pred", DevExeSpace(), 0, np - 1,
+    KOKKOS_LAMBDA(const int p) {
+      if (pr(IPM,p) <= 0.0) return;
+      const int m = pi(PGID,p) - gids;
+      if (m < 0) return;
+      Real x[3] = {pr(IPX,p), pr(IPY,p), pr(IPZ,p)};
+      Real u[3] = {pr(IPVX,p), pr(IPVY,p), pr(IPVZ,p)};
+      nrpic::MeshMetric met = proto;
+      met.m = m;
+      met.xmin[0] = sz(m).x1min; met.xmin[1] = sz(m).x2min; met.xmin[2] = sz(m).x3min;
+      met.idx[0] = 1.0/sz(m).dx1; met.idx[1] = 1.0/sz(m).dx2; met.idx[2] = 1.0/sz(m).dx3;
+      Real dtau = 0.0;
+      (void) nrpic::PushMidpoint(met, dt_s, tol, maxit, x, u, 1.0, dtau);
+      pr(IPX,p) = x[0]; pr(IPY,p) = x[1]; pr(IPZ,p) = x[2];
+      pr(IPVX,p) = u[0]; pr(IPVY,p) = u[1]; pr(IPVZ,p) = u[2];
+    });
+  }
+  NrpicAssignBlocks();
+
+  // Deposit + filter at predicted stage position, then copy densitized sources into u_tmunu_step
+  NrpicDepositSources();
+  NrpicFilterSources();
+  if (!pmy_pack->ptmunu->step_density) {
+    pmy_pack->ptmunu->AllocateStepSources();
+    pmy_pack->ptmunu->lambda8pi = nropt.lambda/(8.0*M_PI);
+  }
+  auto tm = pmy_pack->ptmunu->u_tmunu;
+  auto ts = pmy_pack->ptmunu->u_tmunu_step;
+  auto m1 = met1;
+  const int is = indcs.is, js = indcs.js, ks = indcs.ks;
+  const int ie = indcs.ie, je = indcs.je, ke = indcs.ke;
+  const int nmb1 = pmy_pack->nmb_thispack - 1;
+  const int nv1 = Tmunu::N_Tmunu - 1;
+  par_for("nrpic_stage_copy", DevExeSpace(), 0, nmb1, 0, nv1, ks, ke, js, je, is, ie,
+  KOKKOS_LAMBDA(const int m, const int n, const int k, const int j, const int i) {
+    const Real det = adm::SpatialDet(m1(m,NRM_GXX,k,j,i), m1(m,NRM_GXY,k,j,i),
+                                     m1(m,NRM_GXZ,k,j,i), m1(m,NRM_GYY,k,j,i),
+                                     m1(m,NRM_GYZ,k,j,i), m1(m,NRM_GZZ,k,j,i));
+    ts(m,n,k,j,i) = (det > 0.0 && det < 1.0e300) ? tm(m,n,k,j,i)*sqrt(det) : 0.0;
+  });
+
+  // Restore exact t^n particle state & diagnostics
+  par_for("nrpic_stage_restore", DevExeSpace(), 0, np - 1,
+  KOKKOS_LAMBDA(const int p) {
+    for (int v=0; v<nr; ++v) { pr(v,p) = rs(v,p); }
+    for (int v=0; v<ni; ++v) { pi(v,p) = isav(v,p); }
+  });
+  sum_mw = save_sum_mw;
+  for (int n=0; n<4; ++n) {
+    dep_sum[n] = save_dep[n];
+    dep_sum_filt[n] = save_filt[n];
+  }
+  e_prev_valid = save_epv;
+  n_bad_det_total = save_nbad;
+  n_bad_det_reports = save_nrep;
+  return TaskStatus::complete;
 }
 
 //----------------------------------------------------------------------------------------

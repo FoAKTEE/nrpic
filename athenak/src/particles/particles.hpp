@@ -67,6 +67,14 @@ struct NrpicOptions {
                            // the second moment of the binomial passes (c = nfilter/4)
   Real filter_comp_c;      // c of that pass if >= 0 (default -1: nfilter/4)
   bool filter_densitized = false;  // apply binomial/comp filters on densitized sqrt(gamma)*Tmunu
+  bool filter_bianchi_flux = false; // filter coordinate-velocity flux moments (E, v^i E, v^i v^j E)
+                                    // and reconstruct local S_i, S_ij via cell ADM metric so
+                                    // d_t(sqrt(g) E) + d_i[sqrt(g)(alpha S^i - beta^i E)] = 0
+  bool variational_pic = false;     // Exact variational spherical-Gaussian GR-PIC:
+                                    // deposits W_sigma(r)*m*W_loc*(1, V_i, V_i V_j) directly and
+                                    // gathers dP_j/dt via exact 6th-order FD over the same cloud
+  Real variational_sigma = 0.0;     // Gaussian cloud width sigma (M); <= 0 auto from dx & nfilter
+  int  variational_nrad  = 10;      // half-width of cubic cloud stencil in cells (max 16)
   bool filter_metric_conservative = false;  // self-adjoint metric-weighted flux-conservative filter
   bool filter_mcons_unsplit = false;       // 7-pt unsplit self-adjoint mcons + active-block skip
   Real filter_mcons_kappa = -1.0;          // unsplit mcons coeff (<0 -> 1/12 unconditional positive)
@@ -111,6 +119,8 @@ struct NrpicOptions {
                         // deposits, D = 3/2 D^n - 1/2 D^(n-1)
   bool source_stage_extrap = false;  // Scheme A: stage-accurate positivity-limited
                                      // interior reconstruction D^{(s)} in Z4c::CalcRHS
+  bool source_stage_lagrangian = false;  // Exact Lagrangian per-stage particle deposit
+                                         // at t^n + c_s dt (eliminates Bugs 7 & 8)
   int matter_stride = 1;             // multi-rate matter cadence: push/deposit every K_m Z4c steps
   int deposit_shape;    // degree of the B-spline cloud of the deposit: 1 (cloud in
                         // cell), 2 (triangular shaped cloud), 3 (piecewise cubic)
@@ -285,6 +295,7 @@ struct ParticlesTaskIDs {
   TaskID vlv_step;
   TaskID vlv_excise;
   TaskID vlv_coll;
+  TaskID stage_dep;
 };
 
 namespace particles {
@@ -358,6 +369,8 @@ class Particles {
   nrpic::ThreadDeposit thread_dep; // deposit target of a threaded build (nrpic_threads.hpp)
   DvceArray5D<Real> tm_prev;       // source densities of the previous deposit
   bool tm_prev_valid = false;      // tm_prev belongs to the current mesh
+  DvceArray2D<Real> stage_rdata_save;  // saved particle state during NrpicStageDeposit
+  DvceArray2D<int>  stage_idata_save;
   DvceArray4D<Real> e_prev;        // sqrt(gamma) E of the previous deposit
   bool e_prev_valid = false;       // e_prev belongs to the current mesh
   DvceArray5D<Real> coarse_tm;     // coarse sources (ghost exchange with SMR/AMR)
@@ -402,6 +415,12 @@ class Particles {
   void NrpicAssignBlocks();
   void NrpicRemoveFlagged();
   void NrpicDepositSources();
+  bool NrpicVariationalEval(const Real xp[3], const Real p_in[3],
+                            const DvceArray5D<Real> &mA, const DvceArray5D<Real> &mB,
+                            Real frac, Real v_out[3], Real f_out[3], bool need_force,
+                            Real *w_out = nullptr);
+  void NrpicVariationalDepositSources();
+  void NrpicVariationalPush(Real dt, bool update_tau);
   void NrpicNormalizeDensitizedSources(bool update_filt_sum);
   void NrpicFilterPass(const Real w0, const Real w1);
   void NrpicFilterPassMetricConservative(const Real kappa, const bool reverse_dirs);
@@ -435,6 +454,7 @@ class Particles {
   void NrpicWriteRestart(const std::string &fname);
   void NrpicReadRestart(const std::string &fname);
   TaskStatus NrpicSaveMetric(Driver *pdriver, int stage);
+  TaskStatus NrpicStageDeposit(Driver *pdriver, int stage);
   TaskStatus NrpicPush(Driver *pdriver, int stage);
   TaskStatus NrpicExcise(Driver *pdriver, int stage);
   TaskStatus NrpicDeposit(Driver *pdriver, int stage);

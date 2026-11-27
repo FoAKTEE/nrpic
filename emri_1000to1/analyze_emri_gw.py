@@ -172,54 +172,133 @@ def ffi_strain_and_dh(u, psi4_c, omega_cut):
     return h, dh
 
 
-def fit_eccentricity(t, R_arr, R0, dr_dt_ref):
-    """Fit R(t) = R_base + slp * t + A cos(w_r t) + B sin(w_r t) post-trumpet (t >= 35 M)."""
-    m = t >= min(35.0, 0.25 * float(t[-1]))
-    if np.sum(m) < 20:
-        return {"R_base": R0, "dR_dt_fit": dr_dt_ref, "e_nr": math.nan, "d_om_frac": 0.0, "vr_corr_factor": 1.0}
+def spec_eccentricity_control(t, R_arr, om_arr, R0, dr_dt_ref, t_junk=45.0):
+    """
+    SpEC / SpECTRE iterative eccentricity reduction (Buonanno et al. 2011, PRD 83, 104034;
+    Mroue & Pfeiffer 2012) generalized to strong-field Schwarzschild epicyclic motion:
+      omega_r = Omega_0 * sqrt(1 - 6 M / R_0),
+      kappa_Omega = -d(ln Omega)/d(ln R)|_{E,Lz} = 2 (R_0 - 3 M) / (R_0 - 2 M),
+      d(ln L_c)/d(ln R) = (R_0 - 6 M) / [2 (R_0 - 3 M)].
+    Fits BOTH dOmega/dt(t) = a0 + a1*t + B_om*cos(w_r*t + phi_om) and
+    R(t) = R_eq + slp*t + A_c*cos(w_r*t) + A_s*sin(w_r*t) on [t_junk, t_end].
+    """
+    t_end = float(t[-1])
+    t_lo = min(t_junk, 0.30 * t_end)
+    m = t >= t_lo
+    om0 = R0 ** (-1.5)
+    w_r_schw = om0 * math.sqrt(max(1.0 - 6.0 / R0, 0.005))
+    kappa_om = 2.0 * (R0 - 3.0) / max(R0 - 2.0, 0.1)
+    dlnL_dlnR = (R0 - 6.0) / max(2.0 * (R0 - 3.0), 0.1)
+    if np.sum(m) < 25 or (t_end - t_lo) < 35.0:
+        return {
+            "R_base": R0, "dR_dt_fit": dr_dt_ref, "e_nr": math.nan, "e_spec_dOm": math.nan,
+            "d_om_frac": 0.0, "vr_add_spec": 0.0, "vr_corr_factor": 1.0,
+            "omega_r_fit": w_r_schw, "omega_r_schw": w_r_schw, "A_cos": 0.0, "B_sin": 0.0,
+        }
+
     tf = t[m]
     Rf = R_arr[m]
-    w_r0 = (R0 ** (-1.5)) * math.sqrt(max(1.0 - 6.0 / R0, 0.02))
-
-    def residuals(p):
-        Rbase, slp, A, B, wr = p
-        return (Rbase + slp * tf + A * np.cos(wr * tf) + B * np.sin(wr * tf)) - Rf
-
-    p0 = [float(np.mean(Rf)), dr_dt_ref, 0.0, 0.0, w_r0]
-    bounds = (
-        [R0 - 0.5, -0.01, -0.5, -0.5, 0.4 * w_r0],
-        [R0 + 0.5, +0.01, +0.5, +0.5, 1.8 * w_r0],
-    )
-    res = least_squares(residuals, p0, bounds=bounds)
-    Rbase, slp, A, B, wr = [float(v) for v in res.x]
-    amp = math.hypot(A, B)
-    e_nr = amp / Rbase
-    # Nonlinear Schwarzschild circular L_c correction: if Rbase > R0, initial u_y was too high
-    # so omega must be scaled DOWN (d_om_frac < 0).
-    if Rbase > 6.02 and R0 > 6.02:
-        lc_r0 = math.sqrt((R0 * R0) / (R0 - 3.0))
-        lc_rb = math.sqrt((Rbase * Rbase) / (Rbase - 3.0))
-        d_om_frac = (lc_r0 / lc_rb) - 1.0
+    # Use smooth orbital frequency derivative dOmega/dt (SpEC/SpECTRE Buonanno+2011 observable)
+    omf = om_arr[m]
+    dt_m = float(np.median(np.diff(tf)))
+    k_diff = max(2, int(round(3.0 / max(dt_m, 1e-4))))
+    if len(tf) > 2 * k_diff + 4:
+        dom_dt = (omf[2 * k_diff:] - omf[:-2 * k_diff]) / (tf[2 * k_diff:] - tf[:-2 * k_diff])
+        t_dom = tf[k_diff:-k_diff]
     else:
-        d_om_frac = +0.5 * max(1.0 - 6.0 / R0, 0.05) * (A / R0)
-    vr_corr = 1.0 - (wr * B) / dr_dt_ref if abs(dr_dt_ref) > 1e-12 else 1.0
-    vr_corr = float(np.clip(vr_corr, 0.5, 2.0))
-    if float(t[-1]) < 400.0 or abs(A) > 2.0 * abs(B):
-        vr_corr = 1.0
+        dom_dt = np.gradient(omf, tf)
+        t_dom = tf
+
+    # Fix w_r near Schwarzschild epicyclic value when fit span < 0.7 radial periods (T_r = 2*pi/w_r)
+    T_r = 2.0 * math.pi / w_r_schw
+    short_span = (t_end - t_lo) < 0.7 * T_r
+    wr_lo = 0.90 * w_r_schw if short_span else 0.55 * w_r_schw
+    wr_hi = 1.10 * w_r_schw if short_span else 1.50 * w_r_schw
+
+    # 1) Fit R(t) with known secular trend bounded around 1SF
+    def res_R(p):
+        R_eq, slp, Ac, As, wr = p
+        return (R_eq + slp * tf + Ac * np.cos(wr * tf) + As * np.sin(wr * tf)) - Rf
+
+    p0_R = [float(np.mean(Rf)), dr_dt_ref, float(Rf[0] - np.mean(Rf)), 0.0, w_r_schw]
+    slp_lo = min(-5.0e-3, 4.0 * dr_dt_ref) if not short_span else 2.5 * dr_dt_ref
+    slp_hi = max(+5.0e-3, -4.0 * dr_dt_ref) if not short_span else 0.0
+    if slp_lo >= slp_hi:
+        slp_lo, slp_hi = -3.0e-3, 1.0e-4
+    r_res = least_squares(
+        res_R, p0_R,
+        bounds=([R0 - 1.0, slp_lo, -1.0, -1.0, wr_lo], [R0 + 1.0, slp_hi, +1.0, +1.0, wr_hi]),
+    )
+    R_eq, slp_R, Ac, As, wr_R = [float(v) for v in r_res.x]
+    e_R = math.hypot(Ac, As) / R_eq
+
+    # 2) SpEC/SpECTRE dOmega/dt fit: dOmega/dt = c0 + c1*t + C_om*cos(w_r*t) + S_om*sin(w_r*t)
+    #    Recall cos(w_r*t + phi) = cos(phi)*cos(w_r*t) - sin(phi)*sin(w_r*t) => C_om = B*cos(phi), S_om = -B*sin(phi)
+    def res_dom(p):
+        c0, c1, Com, Som, wr = p
+        return (c0 + c1 * t_dom + Com * np.cos(wr * t_dom) + Som * np.sin(wr * t_dom)) - dom_dt
+
+    c0_guess = -1.5 * om0 * dr_dt_ref / R0
+    p0_om = [c0_guess, 0.0, 0.0, 0.0, w_r_schw]
+    c1_b = 1.0e-9 if short_span else 1.0e-6
+    om_res = least_squares(
+        res_dom, p0_om,
+        bounds=([-5e-4, -c1_b, -5e-3, -5e-3, wr_lo], [+5e-4, +c1_b, +5e-3, +5e-3, wr_hi]),
+    )
+    c0_om, c1_om, Com, Som, wr_om = [float(v) for v in om_res.x]
+    B_om = math.hypot(Com, Som)
+    phi_om = math.atan2(-Som, Com)
+    e_dOm = B_om / (kappa_om * om0 * wr_om)
+
+    # Strong-field Schwarzschild SpEC/SpECTRE linear response:
+    # From dOmega/dt fit:
+    #   Delta(dR/dt)_0 = +(R0 / (kappa_om * om0)) * (B_om * cos(phi_om)) = +(R0 / (kappa_om * om0)) * Com
+    #   Delta(u_y)/u_y = -(dlnL_dlnR / (kappa_om * om0 * wr_om)) * (B_om * sin(phi_om))
+    #                  = +(dlnL_dlnR / (kappa_om * om0 * wr_om)) * Som
+    # From R(t) fit:
+    #   Delta(dR/dt)_0 = -wr_R * As
+    #   Delta(u_y)/u_y = +dlnL_dlnR * (Ac / R0)
+    d_om_frac_dOm = +(dlnL_dlnR / (kappa_om * om0 * wr_om)) * Som
+    vr_add_dOm = +(R0 / (kappa_om * om0)) * Com
+    d_om_frac_R = +dlnL_dlnR * (Ac / R0)
+    vr_add_R = -wr_R * As
+
+    # Prefer dOmega/dt update when we have >= 0.45 radial periods; blend/use R(t) on shorter spans
+    use_dOm = (t_end - t_lo) >= 0.45 * T_r
+    d_om_frac = float(np.clip(d_om_frac_dOm if use_dOm else d_om_frac_R, -0.02, 0.02))
+    vr_add = float(np.clip(vr_add_dOm if use_dOm else vr_add_R, -0.01, 0.01))
+    vr_corr = 1.0 + (vr_add / dr_dt_ref) if abs(dr_dt_ref) > 1e-12 else 1.0
+
     return {
-        "R_base": Rbase,
-        "dR_dt_fit": slp,
-        "A_cos": A,
-        "B_sin": B,
-        "omega_r_fit": wr,
-        "omega_r_schw": w_r0,
-        "e_nr": e_nr,
+        "R_base": R_eq,
+        "dR_dt_fit": slp_R,
+        "A_cos": Ac,
+        "B_sin": As,
+        "B_dOm": B_om,
+        "phi_dOm": phi_om,
+        "omega_r_fit": wr_om if use_dOm else wr_R,
+        "omega_r_schw": w_r_schw,
+        "kappa_om": kappa_om,
+        "dlnL_dlnR": dlnL_dlnR,
+        "e_nr": e_R,
+        "e_spec_dOm": e_dOm,
         "d_om_frac": d_om_frac,
-        "vr_corr_factor": vr_corr,
+        "d_om_frac_dOm": d_om_frac_dOm,
+        "d_om_frac_R": d_om_frac_R,
+        "vr_add_spec": vr_add,
+        "vr_add_dOm": vr_add_dOm,
+        "vr_add_R": vr_add_R,
+        "vr_corr_factor": float(np.clip(vr_corr, -2.0, 4.0)),
     }
 
 
-def analyze_run(run_dir, fig_dir, fig_prefix):
+def fit_eccentricity(t, R_arr, R0, dr_dt_ref):
+    """Backward-compatible wrapper."""
+    om_approx = np.maximum(R_arr, 2.5) ** (-1.5)
+    return spec_eccentricity_control(t, R_arr, om_approx, R0, dr_dt_ref, t_junk=45.0)
+
+
+def analyze_run(run_dir, fig_dir, fig_prefix, vac_dir=None):
     os.makedirs(fig_dir, exist_ok=True)
     with open(os.path.join(run_dir, "run_meta.json"), "r") as f:
         meta = json.load(f)
@@ -295,6 +374,39 @@ def analyze_run(run_dir, fig_dir, fig_prefix):
     if not spheres:
         raise RuntimeError(f"No waveform files found in {run_dir}/waveforms")
     t_wf_end = max(float(sp["t"][-1]) for sp in spheres.values())
+
+    # Optional matched pure-vacuum background subtraction (Psi4_clean = Psi4_EMRI - Psi4_vac)
+    vac_subtracted = False
+    raw_spheres = None
+    if vac_dir is not None and os.path.isdir(vac_dir):
+        vac_spheres = load_waveform_spheres(vac_dir, radii)
+        if vac_spheres:
+            raw_spheres = {
+                r: {"u": sp["u"].copy(), "re": sp["re"].copy(), "im": sp["im"].copy()}
+                for r, sp in spheres.items()
+            }
+            for rad, sp in list(spheres.items()):
+                if rad not in vac_spheres:
+                    continue
+                vsp = vac_spheres[rad]
+                t_e = sp["t"]
+                t_v = vsp["t"]
+                m_ov = t_e <= float(t_v[-1]) + 1.0e-6
+                if np.sum(m_ov) < 4:
+                    continue
+                sp["t"] = t_e[m_ov]
+                sp["u"] = sp["u"][m_ov]
+                re_e = sp["re"][m_ov].copy()
+                im_e = sp["im"][m_ov].copy()
+                ncol = min(re_e.shape[1], vsp["re"].shape[1])
+                for c in range(1, ncol):
+                    re_e[:, c] -= np.interp(sp["t"], t_v, vsp["re"][:, c])
+                    im_e[:, c] -= np.interp(sp["t"], t_v, vsp["im"][:, c])
+                sp["re"] = re_e
+                sp["im"] = im_e
+                vac_subtracted = True
+            t_wf_end = max(float(sp["t"][-1]) for sp in spheres.values())
+
     t_ev_max = max(t_max, t_wf_end, 30.0) + 20.0
 
     ref = EMRIReferenceModel()
@@ -302,9 +414,10 @@ def analyze_run(run_dir, fig_dir, fig_prefix):
     ev_1sf = ref.evolve_inspiral("1SF", R0=R0, q=q, t_max=t_ev_max, dt=0.25)
     ev_2sf = ref.evolve_inspiral("2SF", R0=R0, q=q, t_max=t_ev_max, dt=0.25)
 
-    # Eccentricity fit & next-iteration recommendation
-    ecc_info = fit_eccentricity(t_ins, R_ins, R0, ref.initial_dr_dt(R0, q, model="1SF"))
+    # SpEC/SpECTRE strong-field eccentricity control & next-iteration recommendation
+    ecc_info = spec_eccentricity_control(t_ins, R_ins, om_sm_ins, R0, ref.initial_dr_dt(R0, q, model="1SF"))
     omega_scale_next = float(meta.get("omega_scale", 1.0)) * (1.0 + ecc_info["d_om_frac"])
+    vr_add_next = float(meta.get("vr_add", 0.0)) + ecc_info["vr_add_spec"]
     vr_scale_next = float(meta.get("vr_scale", 1.0)) * ecc_info["vr_corr_factor"]
 
     r_sorted = sorted(spheres.keys())
@@ -347,28 +460,35 @@ def analyze_run(run_dir, fig_dir, fig_prefix):
             else:
                 extrap_modes[(l, m)] = vals[-1]
 
-    # Fluxes F_E and F_J from FFI on extrapolated modes (l=2..4)
+    # Fluxes F_E and F_J from SpEC-style post-junk FFI on extrapolated modes (l=2..4)
+    # Trim u < u_junk before FFT so the conformally-flat switch-on burst does not leak into h_lm or F_E!
     om0 = float(meta["ic"]["omega_orb0"])
     F_E_nr = np.zeros_like(u_grid)
     F_J_nr = np.zeros_like(u_grid)
-    # Check handedness sign of (2,2) waveform phase (+e^{-i w t} vs +e^{+i w t})
     phi22_raw = np.unwrap(np.angle(extrap_modes[(2, 2)]))
     dphi22_du = np.gradient(phi22_raw, u_grid)
+    u_junk_ffi = min(35.0, 0.35 * float(u_grid[-1])) if float(u_grid[-1]) > 50.0 else 0.0
+    m_ffi = u_grid >= u_junk_ffi
+    if np.sum(m_ffi) < 16:
+        m_ffi = np.ones_like(u_grid, dtype=bool)
     clean_mask = (u_grid >= min(90.0, 0.4 * u_grid[-1])) & (u_grid <= max(u_grid[-1] - 15.0, 0.9 * u_grid[-1]))
     w22_nr = np.abs(dphi22_du)
 
     h_modes, dh_modes = {}, {}
+    sgn_om = -1.0 if np.median(dphi22_du[clean_mask]) < 0 else +1.0
     for l in range(2, 5):
         for m in range(-l, l + 1):
             w_cut = 0.5 * max(abs(m), 1) * om0
-            h_m, dh_m = ffi_strain_and_dh(u_grid, extrap_modes[(l, m)], w_cut)
-            h_modes[(l, m)] = h_m
-            dh_modes[(l, m)] = dh_m
-            F_E_nr += (1.0 / (16.0 * math.pi)) * (np.abs(dh_m) ** 2)
-            # Ensure positive J_flux for positive orbital angular momentum (check sign from phase)
+            h_full = np.zeros_like(extrap_modes[(l, m)])
+            dh_full = np.zeros_like(extrap_modes[(l, m)])
+            h_sub, dh_sub = ffi_strain_and_dh(u_grid[m_ffi], extrap_modes[(l, m)][m_ffi], w_cut)
+            h_full[m_ffi] = h_sub
+            dh_full[m_ffi] = dh_sub
+            h_modes[(l, m)] = h_full
+            dh_modes[(l, m)] = dh_full
+            F_E_nr += (1.0 / (16.0 * math.pi)) * (np.abs(dh_full) ** 2)
             if m != 0:
-                sgn_om = -1.0 if np.median(dphi22_du[clean_mask]) < 0 else +1.0
-                F_J_nr += (1.0 / (16.0 * math.pi)) * m * sgn_om * np.imag(np.conj(h_m) * dh_m)
+                F_J_nr += (1.0 / (16.0 * math.pi)) * m * sgn_om * np.imag(np.conj(h_full) * dh_full)
 
     # Quantitative NR vs PN/1SF/2SF summary on clean post-junk inspiral window [u_align .. u_hi]
     u_align = min(90.0, 0.45 * float(u_grid[-1]))
@@ -406,8 +526,25 @@ def analyze_run(run_dir, fig_dir, fig_prefix):
     fe_2sf_med = float(np.median(np.interp(u_grid[cm], ev_2sf["t"], ev_2sf["F_E"])))
     fe_pn_med = float(np.median(np.interp(u_grid[cm], ev_pn["t"], ev_pn["F_E"])))
 
+    # Raw (pre-vacuum-subtraction) outer-sphere (2,2) and (4,4) for transparent comparison
+    raw_outer_22 = None
+    raw_outer_44 = None
+    if raw_spheres is not None and r_sorted[-1] in raw_spheres:
+        rsp = raw_spheres[r_sorted[-1]]
+        c22, c44 = lm_col(2, 2), lm_col(4, 4)
+        raw_outer_22 = np.interp(u_grid, rsp["u"], rsp["re"][:, c22]) + 1j * np.interp(u_grid, rsp["u"], rsp["im"][:, c22])
+        raw_outer_44 = np.interp(u_grid, rsp["u"], rsp["re"][:, c44]) + 1j * np.interp(u_grid, rsp["u"], rsp["im"][:, c44])
+
+    # Junk peaks for u < 90 M (measures central-BH gauge shock + initial-data pollution)
+    jm = u_grid < 90.0
+    junk22_peak = float(np.max(np.abs(extrap_modes[(2, 2)][jm]))) if np.any(jm) else math.nan
+    junk44_peak = float(np.max(np.abs(extrap_modes[(4, 4)][jm]))) if np.any(jm) else math.nan
+    raw_junk22_peak = float(np.max(np.abs(raw_outer_22[jm]))) if (raw_outer_22 is not None and np.any(jm)) else junk22_peak
+    raw_junk44_peak = float(np.max(np.abs(raw_outer_44[jm]))) if (raw_outer_44 is not None and np.any(jm)) else junk44_peak
+
     # Drag / angular-momentum balance check on pre-plunge inspiral
-    t_bal = (t_ins >= min(60.0, 0.35 * t_ins_max)) & (t_ins <= max(t_ins_max - 5.0, 0.9 * t_ins_max))
+    t_bal_lo = min(60.0, 0.35 * t_ins_max)
+    t_bal = (t_ins >= t_bal_lo) & (t_ins <= max(t_ins_max - 5.0, 0.9 * t_ins_max))
     if np.sum(t_bal) >= 10:
         dJ_dt_orb = float(np.polyfit(t_ins[t_bal], J_ins[t_bal], 1)[0])
         gamma_orb = dJ_dt_orb / float(np.mean(J_ins[t_bal]))
@@ -427,9 +564,13 @@ def analyze_run(run_dir, fig_dir, fig_prefix):
     else:
         u_peak_22, amp22_peak = math.nan, math.nan
 
-    # Horizon drift
+    # Horizon drift, mass jump, and final spin
     dm_max = float(np.max(np.abs(hs[:, 2] - hs[0, 2]) / hs[0, 2])) if hs is not None and len(hs) > 0 else math.nan
+    m_ah_0 = float(hs[0, 2]) if hs is not None and len(hs) > 0 else math.nan
+    m_ah_end = float(hs[-1, 2]) if hs is not None and len(hs) > 0 else math.nan
+    sz_end = float(hs[-1, 5]) if hs is not None and len(hs) > 0 else math.nan
     dah_end = float(2.0 * hs[-1, 11] / meta["dx_bh"]) if hs is not None and len(hs) > 0 else math.nan
+    xbh_max = float(np.max(np.linalg.norm(co0[:, 2:5], axis=1))) if co0 is not None and len(co0) > 0 else math.nan
 
     # Outer-pair extraction sphere convergence spread
     if len(r_sorted) >= 2:
@@ -444,6 +585,8 @@ def analyze_run(run_dir, fig_dir, fig_prefix):
 
     summary = {
         "name": name,
+        "vac_subtracted": vac_subtracted,
+        "vac_dir": vac_dir,
         "t_max": t_max,
         "t_wf_end": float(t_wf_end),
         "t_merger_exc": t_merger_exc,
@@ -452,14 +595,20 @@ def analyze_run(run_dir, fig_dir, fig_prefix):
         "R0": R0,
         "q": q,
         "e_NR": ecc_info["e_nr"],
+        "e_spec_dOm": ecc_info["e_spec_dOm"],
         "e_Omega": e_omega,
         "R_Om_min": R_om_min,
         "R_Om_max": R_om_max,
         "R_Om_avg": R_om_avg,
         "omega_scale_rec": omega_scale_next,
+        "vr_add_rec": vr_add_next,
         "vr_scale_rec": vr_scale_next,
         "dR_dt_fit": ecc_info["dR_dt_fit"],
         "dR_dt_1SF": ref.initial_dr_dt(R0, q, "1SF"),
+        "junk22_peak_u90": junk22_peak,
+        "junk44_peak_u90": junk44_peak,
+        "raw_junk22_peak_u90": raw_junk22_peak,
+        "raw_junk44_peak_u90": raw_junk44_peak,
         "abs_rPsi4_22_NR": amp22_med,
         "abs_rPsi4_22_outer": amp22_outer_med,
         "abs_rPsi4_22_1SF": float(amp_1sf_init[(2, 2)]),
@@ -482,8 +631,13 @@ def analyze_run(run_dir, fig_dir, fig_prefix):
         "dphi22_end_1SF": float(dphi_1sf[cm][-1]),
         "dphi22_end_2SF": float(dphi_2sf[cm][-1]),
         "dphi22_end_PN": float(dphi_pn[cm][-1]),
+        "M_AH_0": m_ah_0,
+        "M_AH_end": m_ah_end,
+        "dM_AH_end": m_ah_end - m_ah_0,
+        "Sz_end": sz_end,
         "max_dM_AH": dm_max,
         "D_AH_cells": dah_end,
+        "max_x_BH": xbh_max,
         "sphere_spread_outer": spread_outer,
     }
     sum_path = os.path.join(run_dir, "analysis_summary.json")
@@ -491,11 +645,12 @@ def analyze_run(run_dir, fig_dir, fig_prefix):
         json.dump(summary, f, indent=2)
 
     print("=== EMRI 1000:1 NR vs 3.5PN / 1SF / 2SF QUANTITATIVE COMPARISON ===")
-    print(f"Run {name}: t_max={t_max:.1f} M, t_wf_end={t_wf_end:.1f} M, t_merger_exc={t_merger_exc}, u_clean=[{u_align:.1f}, {u_hi:.1f}] M, R0={R0:.2f} M, q={q:.1e}")
-    print(f"Orbital e_Omega = {e_omega:.4f} (R_Om=[{R_om_min:.3f}, {R_om_max:.3f}], avg={R_om_avg:.3f}) | e_fit = {ecc_info['e_nr']:.4f} | dR/dt_fit={ecc_info['dR_dt_fit']:.3e} vs 1SF={summary['dR_dt_1SF']:.3e}")
-    print(f"Next-iter recommendation: --omega-scale {omega_scale_next:.6f} --vr-scale {vr_scale_next:.6f}")
-    print(f"Angular-momentum balance: dln J_orb/dt = {gamma_orb:+.3e} M^-1 vs GW (-F_J/J) = {gamma_gw_1sf:+.3e} M^-1")
-    print(f"Horizon: max|dM_AH/M0| = {dm_max:.3e} | D_AH/dx = {dah_end:.1f} cells")
+    print(f"Run {name}: vac_sub={vac_subtracted}, t_max={t_max:.1f} M, t_wf_end={t_wf_end:.1f} M, t_merger_exc={t_merger_exc}, u_clean=[{u_align:.1f}, {u_hi:.1f}] M, R0={R0:.2f} M, q={q:.1e}")
+    print(f"Junk (u<90M): |rPsi4_22|_pk={junk22_peak:.3e} (raw={raw_junk22_peak:.3e}), |rPsi4_44|_pk={junk44_peak:.3e} (raw={raw_junk44_peak:.3e})")
+    print(f"Orbital e_Omega = {e_omega:.4f} (R_Om=[{R_om_min:.3f}, {R_om_max:.3f}], avg={R_om_avg:.3f}) | e_R = {ecc_info['e_nr']:.4f} | e_dOm(SpEC) = {ecc_info['e_spec_dOm']:.4f}")
+    print(f"SpEC/SpECTRE next-iter Ecc control: --omega-scale {omega_scale_next:.6f} --vr-add={vr_add_next:+.6e} (dOm_R={ecc_info['d_om_frac_R']:+.5f}, dOm_dOm={ecc_info['d_om_frac_dOm']:+.5f})")
+    print(f"Angular-momentum balance: dln J_orb/dt = {gamma_orb:+.3e} M^-1 vs GW (-F_J/J) = {gamma_gw_1sf:+.3e} M^-1 (ratio={gamma_orb/gamma_gw_1sf if abs(gamma_gw_1sf)>1e-30 else math.nan:.3f}x)")
+    print(f"Horizon: M_AH={m_ah_0:.6f}->{m_ah_end:.6f} (dM={m_ah_end-m_ah_0:+.3e}), Sz_end={sz_end:+.3e}, max|dM/M0|={dm_max:.3e} | D_AH/dx={dah_end:.1f} | max|x_BH|={xbh_max:.4f} M")
     print(f"|rPsi4_22|: extrap={amp22_med:.4e}, outer={amp22_outer_med:.4e} vs 1SF={summary['abs_rPsi4_22_1SF']:.4e} (ratio={amp22_med/summary['abs_rPsi4_22_1SF']:.4f}) | peak={amp22_peak:.4e} at u={u_peak_22:.1f} M")
     print(f"|rPsi4_33|: NR={amp33_med:.4e} vs 1SF={summary['abs_rPsi4_33_1SF']:.4e} (ratio={amp33_med/summary['abs_rPsi4_33_1SF']:.4f})")
     print(f"|rPsi4_44|: NR={amp44_med:.4e} vs 1SF={summary['abs_rPsi4_44_1SF']:.4e} (ratio={amp44_med/summary['abs_rPsi4_44_1SF']:.4f})")
@@ -526,7 +681,10 @@ def analyze_run(run_dir, fig_dir, fig_prefix):
         rot = np.exp(1j * (ang_nr_al - float(np.angle(m_u[k_al]))))
         return np.real(m_u * rot)
 
-    ax.plot(u_grid, scale5 * np.real(nr22), color=cz.PAL["blue"], lw=1.4, label=r"Full NR ($1/r$ extrap.)")
+    if raw_outer_22 is not None:
+        ax.plot(u_grid, scale5 * np.real(raw_outer_22), color="0.65", lw=0.8, alpha=0.65, label="NR raw (pre-vac)")
+    nr_lbl = r"Full NR ($1/r$, vac-sub)" if vac_subtracted else r"Full NR ($1/r$ extrap.)"
+    ax.plot(u_grid, scale5 * np.real(nr22), color=cz.PAL["blue"], lw=1.4, label=nr_lbl)
     psi22_1sf_u = align_model_22(ev_1sf)
     psi22_2sf_u = align_model_22(ev_2sf)
     psi22_pn_u = align_model_22(ev_pn)
@@ -681,10 +839,12 @@ def analyze_run(run_dir, fig_dir, fig_prefix):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--run-dir", required=True)
-    ap.add_argument("--fig-dir", default="/home/schmidt/ssci-haiyangw/.gemini/antigravity/brain/a654a4f4-a628-4c0f-9575-9ad989af8188")
-    ap.add_argument("--fig-prefix", default="emri_it1")
+    ap.add_argument("--vac-dir", default=None, help="Optional matched pure-vacuum twin run directory for exact Psi4 subtraction")
+    ap.add_argument("--fig-dir", default="/home/schmidt/ssci-haiyangw/.gemini/antigravity/brain/3d042f0d-783f-49ae-b143-9b8687f98c94")
+    ap.add_argument("--fig-prefix", default="emri_it5")
     args = ap.parse_args()
-    analyze_run(os.path.abspath(args.run_dir), os.path.abspath(args.fig_dir), args.fig_prefix)
+    vac_d = os.path.abspath(args.vac_dir) if args.vac_dir else None
+    analyze_run(os.path.abspath(args.run_dir), os.path.abspath(args.fig_dir), args.fig_prefix, vac_dir=vac_d)
 
 
 if __name__ == "__main__":

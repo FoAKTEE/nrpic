@@ -32,6 +32,9 @@ void Particles::AssembleTasks(std::map<std::string, std::shared_ptr<TaskList>> t
   // and the particles are advanced, excised, reassigned to MeshBlocks and deposited
   // once the spacetime has reached t^{n+1}.
   if (is_nrpic) {
+    if (nropt.source_stage_lagrangian && nropt.deposit && !nropt.newton) {
+      id.stage_dep = tl["before_stagen"]->AddTask(&Particles::NrpicStageDeposit, this, none);
+    }
     if (pusher == ParticlesPusher::nrpic_vlasov) {
       id.vlv_prep   = tl["before_timeintegrator"]->AddTask(&Particles::NrpicVlasovPrepareStep, this, none);
       id.vlv_metric = tl["after_timeintegrator"]->AddTask(&Particles::NrpicVlasovSyncMetric, this, none);
