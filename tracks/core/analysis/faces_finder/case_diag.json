@@ -1,0 +1,6 @@
+{"rst_output": 7, "verbose": true,
+ "horizons": [
+  {"name": "v08 rule from 0.6", "initial_radius": 0.6, "flow_iterations": 400, "polish_iterations": 100},
+  {"name": "v08 rule from 0.2", "initial_radius": 0.2, "flow_iterations": 400, "polish_iterations": 100},
+  {"name": "v08 rule from 0.1", "initial_radius": 0.1, "flow_iterations": 400, "polish_iterations": 100}
+ ]}
