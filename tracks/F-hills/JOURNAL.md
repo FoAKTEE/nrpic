@@ -1278,3 +1278,41 @@ earlier edit had dropped C19 and C20, which collect re-added empty; restored wit
 verify --no-checksums FAIL only on `runs` (A2 continuing, B2 queued, R25 then still running; rerun
 15/15, compare 42/42, regenerate 30/30), report written. G1 NOT met (C8, C18). Card-hours used in
 this session: 0 (processors: R25 one core 20 min; four reader runs one core each).
+
+## 2026-11-27T23:25Z lead, batch 34 (A2 ended at 186.0 M; F-B2, F-C2 ended; G1 package)
+
+State found (15:21 PST): q0069 (A2's continuation) done. Chain STATUS FAILED "sbatch failed after:
+resubmitted after wall-clock stop": the segment of job 5492 stopped at its wall clock at t =
+186.002 M (cycle 95233), wrote hills.00166.rst, and the resubmission was refused by Slurm
+("Batch job submission failed: I/O error writing script/environment to file", chain/slurm-5492.out),
+a failure of the machine, not of the run; 46 attempts, 19 cut by a signal, 27 counted of the cap 28.
+C2 (q0003, F-20261126-131751-89eaff8) stopped the same way at 04:17 PST at t = 106.69 M (27
+attempts, 18 uncounted, cap 24). B2 (q0002, F-20261126-052133-10f9a5f) DONE at tlim 140. Looked at
+before writing the predictions below: the chain logs, the last three rows of hills.co_0.txt
+(positions only, no distance computed), the header and first five rows of
+hills.horizon_status_2.txt (133.00-133.13 M: found 1, reason 0, 30 flow iterations, mass 1.00443,
+mean expansion -4.6e-3). Nothing else of 133-186 M has been read. All three runs closed with
+`nrpic-run finish` (A2 and C2 `--status stopped`, B2 from its STATUS), started in the background.
+
+### Prediction D34 before the horizon reader b34_horizons.py and the rerun of b21/b11 to 186 M
+
+C25-1 to C25-5 (batch 25) stand as written and are judged from these runs. In addition, for the
+status files (finder 0 = m1, 1 = m2, 2 = M; puncture_setup's finder, no polishing, card build
+core-v0.5):
+- (D34-1, F1) From 133 M to m1's merger the heavy hole's searches do not split into two found
+  branches: the searches on a lower branch are either not found (reason 3 or 6; the summary then
+  repeats an older surface) or found with a |mean expansion| at least twice that of the upper
+  branch, so the upper branch is the converged surface. Refuted: two branches both found with
+  |mean expansion| within a factor 2 of each other (then F1 is a limit of the finder at this
+  tolerance, undecided by the status file).
+- (D34-2) m1's merger: finder 0 is found while the tracker distance m1-M is above 1.5 M and is
+  not found (any reason) at every search after the tracker distance falls below 0.5 M; finder 2
+  stays found through the merger except for at most a few searches, and its found mass rises by
+  0.10-0.14 within 10 M of the tracker distance falling below 1 M (C25-1's 1.11-1.14 is the
+  absolute value). Refuted: finder 0 found after the tracker distance is below 0.5 M, or no rise
+  of finder 2's found mass.
+- (D34-3) m2: finder 1 found at every search to 186 M with its mass within 1e-3 of its median
+  over 133-186 M (no merger, no common horizon of m2 with M); m2's tracker distance to M has a
+  single minimum of 7.5-9 M before 140 M and then grows (C25-2).
+- (D34-4) Newton from the same deck (b11_passage) keeps the reverse fates to 200 M (m1 ejected,
+  m2 bound), so NR and Newton disagree on both members' fates.

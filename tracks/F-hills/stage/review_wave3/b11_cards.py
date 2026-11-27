@@ -51,8 +51,10 @@ RUNS = {
     # before it; joined when their directories exist)
     # A2 requeued in batch 12 (q0001); F-20261124-141118-fbc6419 was stopped before it ran
     "A2": f"{S}/F-20261124-210400-902c650",
-    "B2": f"{S}/F-20261124-135408-1e6db58",
-    "C2": f"{S}/F-20261124-141842-d5263e9",
+    # batch 34: B2 and C2 are the requeued runs of the shared queue (q0002, q0003); the runs of
+    # batch 11 (F-20261124-135408-1e6db58, F-20261124-141842-d5263e9) were stopped before they ran
+    "B2": f"{S}/F-20261126-052133-10f9a5f",
+    "C2": f"{S}/F-20261126-131751-89eaff8",
 }
 # a name stands for the join of these run directories, earliest first
 CHAIN = {"B": ["R16n", "B", "B2"], "A": ["A", "A2"], "C": ["C", "C2"]}
