@@ -72,3 +72,17 @@ arXiv:2401.08530 (the one-patch paper), which share them, except where stated.
 
 Overlap: s stays the window steepness; the noise amplitude is lambda (the program's records call it s).
 
+
+## Section on the tail statistics (G3, batch 34)
+
+| Symbol | LaTeX | Meaning | First use |
+|---|---|---|---|
+| zeta | `\zeta` | delta-N curvature perturbation at N_f: e-folds of each cell, as a homogeneous universe from its field and field velocity, to the uniform-field surface of the reference, plus the local scale factor, box mean removed ("the delta-N curvature perturbation"); zeta = -R^NR at first order | Sec. V A |
+| Delta N_bg | `\Delta N_\mathrm{bg}` | e-folds of the homogeneous universe from the cell's state to the end surface | Sec. V A |
+| sigma_zeta | `\sigma_\zeta` | the box's own standard deviation of zeta ("the own width") | Sec. V A |
+| F_pm(nu) | `F_\pm(\nu)` | fraction of cells above nu sigma_zeta (plus) or below -nu sigma_zeta (minus) ("the tail fractions") | Sec. V A |
+| Q(nu) | `Q(\nu)` | the Gaussian tail fraction above nu standard deviations | Sec. V A |
+| A(nu) | `\mathcal{A}(\nu)` | tail asymmetry (F_+ - F_-)/(F_+ + F_-) ("the asymmetry") | Sec. V A |
+| a | `a` | quadratic coefficient of the even part of a mirrored pair on the square of its odd part | Sec. V C |
+
+Overlap: A(nu) is calligraphic; A without argument stays the second-order constraint field of Sec. IV C.

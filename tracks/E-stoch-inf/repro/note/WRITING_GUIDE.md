@@ -82,6 +82,11 @@ from its plateau.
   two (first order) per halving, (5/4)^4 and (5/4)^6, |n| about 25, three times the noise level,
   -4/17 and 1/16 (exact factors of the difference statistics), "a few parts in a thousand", "one to
   three decades", "about five decades" (control), "four cells" (shortest mode), sixteen cells (zoom).
+- Section on the tail statistics (G3, batch 34): 128^3 and 160^3 lattices; mirrored pairs; thresholds of three and four
+  standard deviations (the figure parameters nu = 3, 4); "three combined standard errors" (the threshold of a
+  difference); "the factor four" (constraints); "71 of the 128 pairs" (the pairs read so far) and "two hundred and fifty-six
+  boxes" (the full set); "one part in a few hundred" (the width excess, if it stands); "about five times" (mirroring gain,
+  if it stands).
 - Everything else (residuals, ratios, moments, widths) is in the ledger appendix.
 
 ## Expert dictionary (Sec. 6)
@@ -142,5 +147,10 @@ hits inside `scripts/` are accepted under exception 1):
 | mosaic | the USR curvature perturbation at N_f resolved to its shortest mode (box, quarter, sixteen cells) | 256^3, first seed, lambda = 1 |
 | resolution | departure per mode falls between fourth and sixth order above |n| ~ 25; a flat third-order part below | 256^3 and 320^3 |
 | halving | the even part of the constraints falls by four per halving; one momentum-constraint miss with the fixed level; three-amplitude level | 256^3, lambda = 1, 1/2, 1/4 |
+| ladder G3 (schematic) | what was fixed before the production runs, the release runs, the two readers, the outcome as read so far | none |
+| G3 mosaic | the delta-N curvature perturbation of one box at N_f and its nonlinear part, at three magnifications | 128^3, first seed, lambda = 1 |
+| one-point (G3) | lattice and one-patch densities of zeta at the own width, and their ratio to the Gaussian | 128^3, pairs read so far |
+| tails (G3) | tail fractions against the threshold; the judged points at three and four standard deviations with their errors | same |
+| pairs (G3) | skewness of single boxes scatters, the pair mean does not; the even-part coefficient per pair | same |
 | Langevin background | Euler at step 0.01 reaches the slope, the converged background stops on the plateau | Table II |
 | Langevin moments and PDFs | Ito reading at step 0.01 matches the paper's shapes | Table II |
