@@ -36,8 +36,8 @@ import pn_zkl_scout as scout
 import render_zkl_movie as rzm
 
 
-def safe_load_table(path, min_cols=2):
-    """Load whitespace-delimited float rows tolerating partial trailing lines during live runs."""
+def safe_load_table(path, min_cols=2, tcol=None):
+    """Load whitespace-delimited float rows tolerating partial lines and restart overlaps."""
     if not os.path.isfile(path):
         return None
     rows = []
@@ -57,7 +57,12 @@ def safe_load_table(path, min_cols=2):
         return None
     ncol = len(rows[0])
     rows = [r for r in rows if len(r) == ncol]
-    return np.asarray(rows, dtype=np.float64) if rows else None
+    if not rows:
+        return None
+    arr = np.asarray(rows, dtype=np.float64)
+    if tcol is not None and len(arr) > 1:
+        arr = arr[rzm.keep_latest_monotonic(arr[:, tcol])]
+    return arr
 
 
 def read_latest_bin(pattern):
@@ -168,7 +173,7 @@ def plot_figures(run_dir, out_dir, tag):
         raise RuntimeError(f"Insufficient trajectory records in {run_dir}")
     t_tr, x0_tr, _, x1_tr, _ = traj
     if len(t_tr) > 1:
-        keep = np.concatenate([[True], np.diff(t_tr) > 1e-12])
+        keep = rzm.keep_latest_monotonic(t_tr)
         t_tr, x0_tr, x1_tr = t_tr[keep], x0_tr[keep], x1_tr[keep]
     a_nr, e_nr, i_nr, r_nr, rc_nr = compute_fermi_elements(
         t_tr, x0_tr, x1_tr, 1.0, cfg["m1"], cfg["m2"]
@@ -181,15 +186,15 @@ def plot_figures(run_dir, out_dir, tag):
     )
     r_pn = pn_ref["r_in"]
 
-    hs = safe_load_table(os.path.join(run_dir, f"{base}.horizon_summary_0.txt"), min_cols=12)
-    z4c_hst = safe_load_table(os.path.join(run_dir, f"{base}.z4c.user.hst"), min_cols=10)
-    nrp_hst = safe_load_table(os.path.join(run_dir, f"{base}.nrpic.hst"), min_cols=27)
-    co0 = safe_load_table(os.path.join(run_dir, f"{base}.co_0.txt"), min_cols=5)
+    hs = safe_load_table(os.path.join(run_dir, f"{base}.horizon_summary_0.txt"), min_cols=12, tcol=1)
+    z4c_hst = safe_load_table(os.path.join(run_dir, f"{base}.z4c.user.hst"), min_cols=10, tcol=0)
+    nrp_hst = safe_load_table(os.path.join(run_dir, f"{base}.nrpic.hst"), min_cols=27, tcol=0)
+    co0 = safe_load_table(os.path.join(run_dir, f"{base}.co_0.txt"), min_cols=5, tcol=1)
     idinfo = parse_idsolve_summary(os.path.join(run_dir, f"{base}.idsolve.txt"))
 
-    wf22_re = safe_load_table(os.path.join(run_dir, "waveforms", "rpsi4_real_0022.txt"), min_cols=6)
-    wf22_im = safe_load_table(os.path.join(run_dir, "waveforms", "rpsi4_imag_0022.txt"), min_cols=6)
-    wf30_re = safe_load_table(os.path.join(run_dir, "waveforms", "rpsi4_real_0030.txt"), min_cols=6)
+    wf22_re = safe_load_table(os.path.join(run_dir, "waveforms", "rpsi4_real_0022.txt"), min_cols=6, tcol=0)
+    wf22_im = safe_load_table(os.path.join(run_dir, "waveforms", "rpsi4_imag_0022.txt"), min_cols=6, tcol=0)
+    wf30_re = safe_load_table(os.path.join(run_dir, "waveforms", "rpsi4_real_0030.txt"), min_cols=6, tcol=0)
 
     _, t_alp, vlist_a, blocks_a = read_latest_bin(os.path.join(run_dir, "bin", f"{base}.alpha_xy.*.bin"))
     _, t_con, vlist_c, blocks_c = read_latest_bin(os.path.join(run_dir, "bin", f"{base}.conH_xy.*.bin"))
@@ -270,14 +275,14 @@ def plot_figures(run_dir, out_dir, tag):
     ax.axvspan(0.0, min(0.5, t_max), color="grey", alpha=0.12)
     ax.plot(pn_ref["t"], pn_ref["e_in"], **cz.GUIDE, label="1PN+1.5PN scout")
     ax.plot(t_tr, e_nr, color=cz.PAL["red"], lw=1.6, label="Full 3+1 NR")
-    post_mask = t_tr >= min(0.5, 0.25 * t_max)
-    e_hi = float(np.max(e_nr[post_mask])) if np.any(post_mask) else float(np.max(e_nr))
+    post_mask = (t_tr >= min(0.5, 0.25 * t_max)) & np.isfinite(e_nr)
+    e_hi = float(np.nanmax(e_nr[post_mask])) if np.any(post_mask) else float(np.nanmax(e_nr))
     ax.set_xlim(0.0, t_max)
-    ax.set_ylim(0.0, max(0.25, 1.35 * max(e_hi, float(np.max(pn_ref["e_in"])))))
+    ax.set_ylim(0.0, min(1.05, max(0.25, 1.35 * max(e_hi, float(np.max(pn_ref["e_in"]))))))
     ax.set_xlabel(r"Time $t\,[M]$", labelpad=2)
     ax.set_ylabel(r"Inner eccentricity $e_{\rm in}$")
     ax.legend(loc="upper right", fontsize=8.5, frameon=False)
-    med_e = float(np.median(e_nr[post_mask])) if np.any(post_mask) else float(e_nr[-1])
+    med_e = float(np.nanmedian(e_nr[post_mask])) if np.any(post_mask) else float(e_nr[-1])
     ax.set_title(rf"Inner $e_{{\rm in}}(t)$ (med $={med_e:.3f}$)")
 
     # (1,1) Mutual inclination I(t) & semimajor axis a_in(t)

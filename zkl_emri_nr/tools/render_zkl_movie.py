@@ -133,6 +133,20 @@ def read_traj_binary(path):
     return t[:n], p0[:n], u0[:n], p1[:n], u1[:n]
 
 
+def keep_latest_monotonic(t_arr, tol=1e-12):
+    """Return boolean mask keeping the newest strictly increasing timeline across restarts."""
+    n = len(t_arr)
+    if n <= 1:
+        return np.ones(n, dtype=bool)
+    keep = np.zeros(n, dtype=bool)
+    t_cap = np.inf
+    for i in range(n - 1, -1, -1):
+        if t_arr[i] < t_cap - tol:
+            keep[i] = True
+            t_cap = float(t_arr[i])
+    return keep
+
+
 def nr_osculating_elements(t, x0, u0, x1, u1, m0, m1, m2):
     """
     Invert centered coordinate trajectories into local Fermi-normal Keplerian (e_in, inc_deg, r_prop).
@@ -198,7 +212,7 @@ def main():
         return
     t_tr, x0_tr, u0_tr, x1_tr, u1_tr = traj
     if len(t_tr) > 1:
-        keep = np.concatenate([[True], np.diff(t_tr) > 1e-12])
+        keep = keep_latest_monotonic(t_tr)
         t_tr, x0_tr, u0_tr, x1_tr, u1_tr = t_tr[keep], x0_tr[keep], u0_tr[keep], x1_tr[keep], u1_tr[keep]
     e_nr, i_nr, r_nr = nr_osculating_elements(
         t_tr, x0_tr, u0_tr, x1_tr, u1_tr, 1.0, cfg["m1"], cfg["m2"]
@@ -218,6 +232,7 @@ def main():
         try:
             wf_dat = np.loadtxt(wf_files[0], comments="#")
             if wf_dat.ndim == 2 and len(wf_dat) > 1:
+                wf_dat = wf_dat[keep_latest_monotonic(wf_dat[:, 0])]
                 wf_t = wf_dat[:, 0]
                 # col 1 is usually l=2, m=-2..2; pick column with max RMS after initial junk
                 wf_22 = wf_dat[:, min(5, wf_dat.shape[1] - 1)]
@@ -231,6 +246,7 @@ def main():
         try:
             hs = np.loadtxt(hs_path, comments="#")
             if hs.ndim == 2 and len(hs) > 0:
+                hs = hs[keep_latest_monotonic(hs[:, 1])]
                 hs_t, hs_m, hs_rmin = hs[:, 1], hs[:, 2], hs[:, 11]
         except Exception:
             pass
@@ -307,7 +323,7 @@ def main():
         pn_m = pn_ref["t"] <= t_s + 1e-6
         ax2.plot(pn_ref["t"][pn_m], pn_ref["e_in"][pn_m], color="k", ls="--", lw=1.2, label="1PN+1.5PN scout")
         ax2.plot(t_tr[:k_cur+1], e_nr[:k_cur+1], color=cz.PAL["red"], lw=1.6, label="Full 3+1 NR")
-        ax2.set_xlim(0.0, max(t_s, 10.0)); ax2.set_ylim(0.0, max(0.35, float(np.max(e_nr[:k_cur+1])) * 1.25))
+        ax2.set_xlim(0.0, max(t_s, 10.0)); ax2.set_ylim(0.0, min(1.05, max(0.35, float(np.nanmax(e_nr[:k_cur+1])) * 1.25)))
         ax2.set_xlabel(r"Time $t\,[M]$"); ax2.set_ylabel(r"Inner eccentricity $e_{\rm in}$")
         ax2.legend(loc="upper left", fontsize=8.5, frameon=False)
         ax2.set_title("Inner eccentricity: Full NR vs 1PN baseline")
