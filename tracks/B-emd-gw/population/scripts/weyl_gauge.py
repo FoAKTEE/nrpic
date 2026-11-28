@@ -305,9 +305,12 @@ def cmd_fig(args):
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
     from nrpic import figstyle as fs
-    fs.apply() if hasattr(fs, "apply") else None
-    test = json.load(open(os.path.join(args.out, "weyl_test.json")))
-    data = json.load(open(os.path.join(args.out, "weyl_gauge.json")))
+    fs.use_style()
+    test = json.load(open(os.path.join(args.test_dir, "weyl_test.json")))
+    data = json.load(open(os.path.join(args.data_dir, "weyl_gauge.json")))
+    split = None
+    if args.split_dir and os.path.exists(os.path.join(args.split_dir, "weyl_split.json")):
+        split = json.load(open(os.path.join(args.split_dir, "weyl_split.json")))
     tab = data["table"]
     fig, ax = plt.subplots(2, 2, figsize=(9.0, 7.0))
     # (a) analytic test
@@ -332,6 +335,12 @@ def cmd_fig(args):
     a1.plot(A, [np.sqrt(e["R_Bband"]) for e in tab], "^--", label=r"$B_{ij}$ band $|n|\le 8$, rms")
     am = [e["a"] for e in tab if "M_B" in e]
     a1.plot(am, [e["M_B"] for e in tab if "M_B" in e], "kd:", label=r"$I_B$: $256^3/128^3$, Gamma driver")
+    if split is not None:
+        st = split["table"]
+        a1.plot([e["a"] for e in st], [e["R_I_B_void"] for e in st], "v-",
+                label=r"$I_B$ over the larger-lapse half (W4)")
+        a1.plot([e["a"] for e in st], [e["R_B2_q50"] for e in st], "x-",
+                label=r"median of $B_{ij}B^{ij}$ (W4)")
     a1.axhspan(0.95, 1.05, color="0.9", zorder=0)
     a1.axhline(1.0, color="0.5", lw=0.8)
     a1.set_xlabel("$a$"); a1.set_ylabel("Gamma driver / zero shift ($128^3$)")
@@ -365,6 +374,9 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("mode", choices=["test", "data", "fig", "split"])
     ap.add_argument("--t256", type=float, nargs="*", default=[])
+    ap.add_argument("--test-dir", default=None)
+    ap.add_argument("--data-dir", default=None)
+    ap.add_argument("--split-dir", default=None)
     ap.add_argument("--out", required=True)
     ap.add_argument("--np", type=int, default=3)
     ap.add_argument("--np-big", type=int, default=2)
