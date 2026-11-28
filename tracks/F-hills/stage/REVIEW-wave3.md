@@ -443,7 +443,7 @@ No helper finished since batch 35. What this lead checked itself, from the raw f
 a report: the chain's `STATUS` (DONE) and `events.log` (each PREEMPTED job followed by its
 resubmission), `sacct` states and ElapsedRaw of the thirteen jobs (2.69 card-hours), the segment
 logs of jobs 5570-5676 for MeshBlocks (2206-2318) and card memory (peak 78789 MiB), and the
-finder-1 status rows of 160.6-179.2 M (315 rows with |mean expansion| above 0.01, area mass
+finder-1 status rows of 160.6-179.2 M (315 rows with |status column 10| above 0.01 (an integral of H over the surface, core's outbox 20261128T021500Z), area mass
 0.12890-0.12918: the unconverged branch of batch 35, none after 186 M). Readers rerun on the
 record to 200 M (F-20261128-160721-f0e18c8, F-20261128-160749-2ba694f); the three figures read.
 D35-1..9 judged in JOURNAL batch 41: eight met, D35-1 failed in its segment count only.

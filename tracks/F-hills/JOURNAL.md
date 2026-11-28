@@ -1544,8 +1544,9 @@ Registered, one core each: F-20261128-160721-f0e18c8 (`b21_a2_state.py`: record,
 state; 23 s) and F-20261128-160749-2ba694f (`b34_horizons.py`: status files 133-200 M; 23 s).
 Figures read: fig_b21_a2_state (label "A2 COMPLETE (200.0 M, chain DONE)"; overlaps all below
 1e-9 M; s and m2-M rise monotonically to 21 M; m1-M at 0 from about 145 M), fig_b34_horizons
-(finder 2 and finder 1 found to 200 M; finder 0 not found after 147.7 M; |mean expansion| of
-finder 2 about 0.04 after 165 M; finder 1's branch at |mean expansion| 0.035-0.052 over
+(finder 2 and finder 1 found to 200 M; finder 0 not found after 147.7 M; |status column 10| of
+finder 2 about 0.04 after 165 M (the figure's label "mean expansion" is the file's column name;
+the column is the surface integral of H, see core's answer below); finder 1's branch at |mean expansion| 0.035-0.052 over
 160.6-179.2 M is the unconverged branch of batch 35, not after 186 M), fig_b34_f1 (unchanged:
 F1's window 133-137.4 M).
 
@@ -1568,7 +1569,10 @@ F1's window 133-137.4 M).
   1.11367-1.11375 (in [1.1128, 1.1146]); summary: Christodoulou mass 1.122827-1.122912 (in
   [1.1220, 1.1235]), S/M_chr^2 0.25277-0.25288 (in [0.2520, 0.2540]), hrms 3.37e-4 to 3.77e-4
   (in [1e-4, 1e-3]). At 199.969 M: M_chr 1.122827, S 0.31877, chi 0.25284, hrms 3.77e-4, mean
-  expansion -0.0434. Not converged in the sense of F5 (the pre-capture upper branch had hrms
+  expansion -0.0434 (summary hmean = status column 10: the surface INTEGRAL of H, a length, by
+  core's reading of fastflow.cpp, outbox 20261128T021500Z; area-mean H = 0.0434/(16 pi 1.11367^2) =
+  7.0e-4, times m 7.8e-4, a lower bound of the rms measure of core-v0.9's trapped_tol). Not
+  converged in the sense of F5 (the pre-capture upper branch had hrms
   1e-8): every remnant number is quoted with this residual.
 - D35-6 m2's horizon (finder 1): MET. 517 of 517 found; area mass 0.129628-0.129640 (in
   [0.1285, 0.1300]); summary hrms 1.28e-6 to 1.82e-6, chi at most 1.06e-3; at 199.969 M 0.129628.
@@ -1586,3 +1590,22 @@ F1's window 133-137.4 M).
 Not changed by the reading: m2's fate is undecided in coordinates (two-body energy of batch 34);
 F1 decided for 86.6-131 M by hrms; one resolution only (C2 at m/12 to 106.69 M is G2).
 Card-hours this session: 0 new submissions; q0091's 2.69 card-hours were spent overnight.
+
+### Inbox, outbox and close of batch 41
+
+- Acknowledged five messages. core 20261128T021500Z: status column 10 ("mean_expansion") and the
+  summary's hmean are the surface INTEGRAL of H (a length; area-mean H = col10/(16 pi m^2));
+  `hmean_tol` (100 when absent) is an abort test, not an acceptance test; a core-v0.5 restart
+  file under core-v0.8 is untested (one-cycle comparison suggested): the batch-41 texts (C8,
+  this entry, REVIEW-wave3, RISKS R25) now name it so; older texts (batches 34-35, the note)
+  still say "mean expansion" and are corrected when note v3 is written. orch queue audit: q0001,
+  q0069, q0003 known (A2 continued by q0091; C2 stopped at its cap, G2). kb claims5: claim 451
+  superseded by 638; SCOPING l. 210 cites the paper locator, so nothing changes. core v0.9 and
+  orch's release note: information; no deck of this owner changes.
+- Outbox: one line to orch, `g1-passage-200m` (run ids, state and log of the full pass).
+- Stage G1: collect (20 kept), verify with the cache PASS (0 failed; 3925 output files, 8 hashed
+  again; 15 of 15 scripts rerun, 42 files compared, 30 figures regenerated), report regenerated
+  with the lead's note. The full pass (pid 1346011) was still running at 08:16 PST (9 min).
+- Card-hours this session: 0 submitted. Processor: two reader runs (one core, 23 s each), the
+  finish (8 min, one core) and the full pass (one core, running).
+- Failed prediction this session: D35-1's clause "3 counted segments" (one counted).
