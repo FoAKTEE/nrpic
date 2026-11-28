@@ -1331,3 +1331,63 @@ Condition (b) of decision 0047 after FP and FPb: P0L6 found at t = 140 from the 
 iterations (3444 used); S1L found at t = 220 only from a start radius near the surface; no false acceptance in 82 +
 57 searches; the false acceptance of the card run at t = 118.1 untested (no restart file). Request to core updated
 (outbox, batch 31).
+
+## 2026-11-27 16:39 PST (lead of batch 34): conditions (c) and (d) of decision 0047, predictions before any run
+
+State read this session: core's answer `finder-box-and-level-faces` (core/faces-finder, 2026-11-28 00:13Z): the
+finder's default flow (`flow = standard`) moves the surface by a step that scales as 1/m^2, so the box horizons (m
+6.3, 10.7) need thousands of iterations; with `flow = shear` (in every release) core-v0.8 finds S1L t = 220 from 0.6,
+0.2, 0.1, 0.03, 1.5 in 125-139 iterations (m 10.73958, r 0.16196) and P0L6 t = 140 (m 6.30324), and nothing at
+P0L6 t = 130 [core's VERIFIED; retested here under FD below]. Our batch-31 masses of the standard flow carry ~1e-3.
+
+### (c) A2Q: S1L at a quarter of the amplitude, the run that can refute the named cause
+
+Named cause [JUDGEMENT, the candidate of A2X/A2H]: the nonlinear relation between the curvature perturbation and the
+density in the data (the physical first-axis eigenvalue lower than the coordinate one by a factor that is first order
+in zeta at the peak), so that the GR crossing lags the Newtonian one by a factor in a with ln(lag_a) = c zeta_peak.
+Calibration [VERIFIED as arithmetic on judged outcomes]: S1L (zeta_max 0.296) lag_a 1.37-1.59 against Newton at 128^3
+(c = 1.06-1.57); A2H (zeta_max 0.148) lag_a 1.24 (c = 1.45). Versions of the factor for orientation: the data's
+psi^4 (c ~ 1.15 at small zeta) and the gradient-expansion e^(-2 zeta) (c = 2).
+Member S1L-q: `make_peak_ic.py --mu 0.075 --e 0.2 --eps-i 1 --n 64 --nfilter 2 --compensate` (S_mu0.3's command with mu
+quartered), deck peak_leak.athinput unchanged except snapshots every 5 and a restart file every 30, to t = 410
+(41.9 t_H); card build of release core-v0.8. Scalings [BACKGROUND: EdS self-similarity in lambda a, used for A2H and
+held there]: lambda_z quartered, a_sc x 4, t x 8: Newton at 128^3 8 x 3.62 = 29.0 t_H (8 x (3.59-3.73) = 28.7-29.8),
+first-order Zel'dovich 8 x 4.35 = 34.8 t_H (note: Zel'dovich runs behind second-order Newton).
+- D-q: the solve converges (residual <= 1e-10), zeta_max 0.074 +- 0.002, delta_N_max 0.0294 (a quarter of 0.1176 within
+  2 per cent), jacobian_min ~0.97, alpha_min ~0.95. Refuted otherwise; then nothing is queued.
+- SM-q (processor build v0.8, 4 cycles): starts, reads 262144 particles, finite fields, no guard stop, first step
+  larger than S1L-h's 2.83e-3 (shallower peak: light speed alpha psi^-2 larger), status file "not found". Refuted
+  otherwise; then nothing is queued.
+- A2Q [JUDGEMENT]: S1L-q first crosses along z at the centre (sign of det(dx/dq), a2_invariant.py; axis by
+  a2_crossing.py), with the crossing bracket inside [32.0, 35.5] t_H (c = 1.06-1.57 gives lag_a 1.08-1.12, lag_t
+  1.12-1.19, on 28.7-29.8), no horizon found, central lapse above 0.85 at the crossing.
+  Refuted toward an amplitude-independent lag (S1L-h's 1.38 in t kept: 40.0 t_H) if the bracket lies entirely above
+  37.5 t_H; refuted toward a lag that falls faster than first order if it lies entirely below 30.5 t_H; the
+  gradient-expansion version (c = 2: 36.2 t_H) is refuted if the bracket lies entirely below 35.5; undecided in the
+  gaps. What a hold does NOT separate (written now): the nonlinear zeta-delta relation from a relativistic (aH/k)^2
+  correction, which in an EdS box scales the same way (at fixed mu the crossing epoch in a/a_H is fixed, so
+  (aH/k)^2 at the crossing is ~ 2 mu (1 + 3e)/15, first order in the amplitude too); nor physics from a numerical
+  error that is itself first order in zeta. The run can refute the first-order class and the c = 2 version; it can
+  name the coefficient c at small zeta, not the mechanism. The Newtonian scaling by 8 is a premise (BACKGROUND) that
+  a Newtonian quarter control (N-z128 at mu = 0.075, processors) would test; not run this session.
+  Cost [JUDGEMENT from S1L-h: 1.18 card-hours to t = 220 on the same mesh]: ~2.2 card-hours to t = 410, chain of
+  three segments, cap 2.6.
+
+### (d) S1L-F: the triaxial phase-1 run with the new finder lines, to a found horizon, bound read at detection
+
+Member S1L-F: S1L's data (S_mu0.3 of A-emd-pbh-20261115-155802-9a6596f), deck `inputs/peak_leak_f.athinput` = peak_leak
+with the finder lines of decision 0047 item 6 and of core's answer: `flow = shear`, `flow_iterations_0 = 4000`,
+`polish_iterations_0 = 100`, `mass_tol_0 = 1e-5`, `diagnostics = true`, `initial_radius_0 = 0.16` (the outermost
+trapped round sphere of the FPb scan at t = 220), `start_time_0 = 150`; region norms with region_horizon = 0 (the
+SCOPE section-3 ratio inside/outside the found horizon in `peak.region.hst`); to t = 205; card build core-v0.8.
+- F1: the first row "found" of peak.horizon_status_0.txt lies at t in (178, 195] (S1L's first trapped round sphere in
+  (180, 190], FPb), with area mass between 5 and 10.74 and mean radius between 0.08 and 0.17; every later search to
+  t = 205 is found (no stall), masses non-decreasing within 1e-3. Refuted by no row found to t = 205, a first found
+  row before 178 (an acceptance where no round sphere was trapped would be a false acceptance), or a stall.
+- F2: at the first detection the SCOPE section-3 ratio outside the horizon (region.hst, ||H|| / ||16 pi E|| outside
+  the horizon) is ABOVE 0.1 (the floor of condition (a) is not cured in the box either; S1L's own region ratio at
+  t = 190-220 is read from its region.hst before this run starts, as a check of the premise). Refuted (good news) if below 0.1.
+- F3: the evolution repeats S1L to the card's round-off level in the history (alpha_min at t = 100 within 1e-6
+  relative of S1L's): v0.8 changes nothing on this set without new options. Refuted otherwise.
+  Cost: ~1.1 card-hours (S1L-h's rate), cap 1.6.
+Together 2.2 + 1.1 = 3.3 card-hours expected, caps 4.2, within the six of this session.
