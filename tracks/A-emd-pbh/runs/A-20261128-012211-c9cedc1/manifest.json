@@ -117,30 +117,52 @@
     "nodes": 1,
     "gpus": 1,
     "cores": 1,
-    "walltime_s": null,
+    "walltime_s": 3846.0,
     "wall_limit": null,
     "segments_max": 1,
     "gpu_hours_requested": 0.9833,
-    "gpu_hours": null,
-    "particles": null
+    "gpu_hours": 1.0628,
+    "particles": null,
+    "gpu_hours_basis": "sum over 9 jobs of the chain: sacct ElapsedRaw for 9",
+    "gpu_seconds_by_job": {
+      "5549": 23.0,
+      "5556": 165.0,
+      "5564": 19.0,
+      "5573": 41.0,
+      "5581": 2035.0,
+      "5587": 1371.0,
+      "5593": 9.0,
+      "5599": 8.0,
+      "5606": 155.0
+    }
   },
   "slurm": {
     "partition": "preempt",
     "job_name": "A-20261128-012211-c9cedc1",
-    "job_ids": []
+    "job_ids": [
+      "5549",
+      "5556",
+      "5564",
+      "5573",
+      "5581",
+      "5587",
+      "5593",
+      "5599",
+      "5606"
+    ]
   },
   "outputs": {
     "dir": "scratch/A-emd-pbh/A-20261128-012211-c9cedc1",
     "sha256sums": "sha256sums.txt",
-    "sha256sums_sha256": null,
-    "bytes": null,
-    "files": null
+    "sha256sums_sha256": "16ec8ae5f2e663d2b5559f6f1ab85f6bae07b1730e80bdda2157ef7f31a5b2e9",
+    "bytes": 17271611423,
+    "files": 827
   },
-  "status": "submitted",
-  "exit_code": null,
+  "status": "completed",
+  "exit_code": 0,
   "registered": "2026-11-28T01:22:12Z",
-  "started": null,
-  "ended": null,
+  "started": "2026-11-27T17:47:40-08:00",
+  "ended": "2026-11-27T21:52:39-08:00",
   "parents": [
     "A-20261128-004246-1c854c6",
     "A-20261128-004123-bc1fcf8",
@@ -156,5 +178,6 @@
     "cores_busy": 4,
     "runs": 353,
     "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md + 0026-cards-loaded-allotment-cost.md + 0031-level2-branch-and-ablation.md + 0032-new-account-preemption-allotments.md + 0038-track-e-g2-signed-g3-scope.md + 0039-rulings-after-batch-17.md + 0045-track-d-g2-signed-release-v08.md"
-  }
+  },
+  "finished": "2026-11-28T07:34:56Z"
 }
