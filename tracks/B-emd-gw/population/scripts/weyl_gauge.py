@@ -365,9 +365,97 @@ def cmd_fig(args):
     print(fn)
 
 
+# ------------------------------------------------------------------- splitx (batch 40: W5b, W6)
+# Every file is chosen by the time in its header: chains write an extra dump at each segment end,
+# so a file index is not a time (W5, B-20261128-040950-1404d91, read 256^3 files 14, 18, 21 as
+# t = 14, 18, 21; their headers say 12, 15, 18).
+MEMBERS = {
+    "zs128": [f"{S}/B-20261123-014847-f295ab4/bin"],                  # 1 ppc, zero shift
+    "gd128": [f"{S}/B-20261124-210431-6bf48af/bin"],                  # 1 ppc, Gamma driver
+    "zs8": [f"{S}/B-20261124-223926-33194d9/bin",                     # 8 ppc, zero shift (q0006)
+            f"{S}/B-20261125-221742-5100a22/p8_cont/bin"],            #   and its continuation
+    "gd8": [f"{S}/B-20261128-034731-640f4f4/bin"],                    # 8 ppc, Gamma driver (q0107)
+    "gd256": [f"{S}/B-20261126-105021-6343c13/bin"],                  # 1 ppc, 256^3, Gamma driver
+}
+PAIRS = {"R1": ("gd128", "zs128"), "R8": ("gd8", "zs8"), "Pgd": ("gd8", "gd128"),
+         "Pzs": ("zs8", "zs128"), "M": ("gd256", "gd128")}
+STATS = ("I_B", "I_B_void", "I_B_core", "B2_q50", "B2_q90", "V", "K_V", "alpha_V",
+         "alpha_q50", "alpha_q10")
+
+
+def header_time(path):
+    with open(path, "rb") as f:
+        head = f.read(600).decode("latin-1")
+    for tok in head.split():
+        if tok.startswith("time="):
+            return float(tok[5:])
+    raise ValueError(f"no time in header of {path}")
+
+
+def find_dump(member, t, tol=0.02):
+    best = None
+    for d in MEMBERS[member]:
+        for fn in sorted(os.listdir(d)):
+            if not (fn.startswith("pop.z4cd.") and fn.endswith(".bin")):
+                continue
+            p = os.path.join(d, fn)
+            dt = abs(header_time(p) - t)
+            if best is None or dt < best[0]:
+                best = (dt, p)
+    if best is None or best[0] > tol:
+        raise ValueError(f"{member}: no dump within {tol} of t = {t} (nearest {best})")
+    return best[1]
+
+
+def splitx_job(job):
+    run, t, path = job
+    t0 = time.time()
+    d = binio.read_bin(path, strip_prefix=True)
+    grid = d["grid"]
+    chi, gt, At, trK, alpha, beta = readers.z4c_tensors(d)
+    psi4 = chi ** (4.0 / d.get("chi_psi_power", -4.0))
+    gamma = psi4 * gt
+    row = {"run": run, "file": path, "t_req": t, "t": float(d["time"]),
+           "a": float(scale(float(d["time"]))), "n": int(grid.n[0])}
+    row.update(invariants(gamma, psi4 * At, trK, alpha, grid))
+    row["wall_s"] = time.time() - t0
+    print(f"{run} t={row['t']:.3f} a={row['a']:.1f} I_B={row['I_B']:.4e} q50={row['B2_q50']:.4e} "
+          f"({row['wall_s']:.0f} s)", flush=True)
+    return row
+
+
+def cmd_splitx(args):
+    times = (12.0, 14.0, 18.0, 21.0)
+    small = [(m, t, find_dump(m, t)) for t in times for m in ("zs128", "gd128", "zs8", "gd8")]
+    big = [("gd256", t, find_dump("gd256", t)) for t in args.t256]
+    for j in small + big:
+        print("file", j[0], j[1], j[2], flush=True)
+    os.makedirs(args.out, exist_ok=True)
+    with Pool(args.np) as pool:
+        rows = pool.map(splitx_job, small, chunksize=1)
+    if big:
+        with Pool(args.np_big) as pool:
+            rows += pool.map(splitx_job, big, chunksize=1)
+    for r in rows:
+        if abs(r["t"] - r["t_req"]) > 0.02:
+            raise ValueError(f"epoch mismatch {r['run']} {r['t']} {r['t_req']}")
+    by = {(r["run"], r["t_req"]): r for r in rows}
+    table = []
+    for t in times:
+        e = {"t": t, "a": scale(t)}
+        for pname, (num, den) in PAIRS.items():
+            if (num, t) in by and (den, t) in by:
+                for k in STATS:
+                    e[f"{pname}_{k}"] = by[(num, t)][k] / by[(den, t)][k]
+        table.append(e)
+        print(json.dumps({k: round(v, 4) for k, v in e.items()}), flush=True)
+    with open(os.path.join(args.out, "weyl_splitx.json"), "w") as f:
+        json.dump({"rows": rows, "table": table, "pairs": PAIRS}, f, indent=1, default=float)
+
+
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("mode", choices=["test", "data", "fig", "split"])
+    ap.add_argument("mode", choices=["test", "data", "fig", "split", "splitx"])
     ap.add_argument("--t256", type=float, nargs="*", default=[])
     ap.add_argument("--test-dir", default=None)
     ap.add_argument("--data-dir", default=None)
@@ -377,7 +465,8 @@ def main():
     ap.add_argument("--np", type=int, default=3)
     ap.add_argument("--np-big", type=int, default=2)
     args = ap.parse_args()
-    {"test": cmd_test, "data": cmd_data, "fig": cmd_fig, "split": cmd_split}[args.mode](args)
+    {"test": cmd_test, "data": cmd_data, "fig": cmd_fig, "split": cmd_split,
+     "splitx": cmd_splitx}[args.mode](args)
 
 
 if __name__ == "__main__":
