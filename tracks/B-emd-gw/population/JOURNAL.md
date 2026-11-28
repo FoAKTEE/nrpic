@@ -1566,3 +1566,14 @@ changed to pick each file by the time in its header (mode splitx), for every mem
   [JUDGEMENT] A difference that is the same to 1e-4 at one and eight particles per cell is not
   particle noise; truncation that differs between the two coordinate systems in the cores is the
   candidate left at a = 49, and only W5b (256^3) can test it.
+
+## 2026-11-28 00:01 PST (lead of batch 40): W6 rows at a = 64 (run still going)
+
+From the run log of B-20261128-074116-363f95f (rows printed as they came; the run has not ended,
+so this is a reading of its log, not of its table): at a = 64.07 the gauge ratio of I_B is
+1.6604/1.8097 = 0.9175 at eight per cell against 1.6622/1.8201 = 0.9132 at one; of the median
+9.3441/9.4878 = 0.9849 against 0.9848. Particle number at fixed gauge: I_B 8/1 = 0.9989 (Gamma
+driver), 0.9943 (zero shift). So to a = 64 the invariant's gauge difference does not fall with
+the sampling (|R-1| of I_B 0.083 against 0.087). W6 itself is judged at a = 100, 132. The band
+analysis B-20261128-074111-e2fcd72 is CPU-bound (two workers, 18 min each at 00:00 PST, no dump
+finished yet; eight per cell means eight times the particles for the particle-side estimator).
