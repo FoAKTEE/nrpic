@@ -90,30 +90,54 @@
     "nodes": 1,
     "gpus": 1,
     "cores": 1,
-    "walltime_s": null,
+    "walltime_s": 7963.0,
     "wall_limit": null,
     "segments_max": 3,
     "gpu_hours_requested": 2.95,
-    "gpu_hours": null,
-    "particles": null
+    "gpu_hours": 2.1986,
+    "particles": null,
+    "gpu_hours_basis": "sum over 10 jobs of the chain: sacct ElapsedRaw for 10",
+    "gpu_seconds_by_job": {
+      "5617": 15.0,
+      "5626": 55.0,
+      "5632": 331.0,
+      "5639": 3.0,
+      "5645": 13.0,
+      "5653": 3.0,
+      "5663": 313.0,
+      "5673": 3004.0,
+      "5684": 3004.0,
+      "5691": 1174.0
+    }
   },
   "slurm": {
     "partition": "preempt",
     "job_name": "D-20261128-062142-c5666c4",
-    "job_ids": []
+    "job_ids": [
+      "5617",
+      "5626",
+      "5632",
+      "5639",
+      "5645",
+      "5653",
+      "5663",
+      "5673",
+      "5684",
+      "5691"
+    ]
   },
   "outputs": {
     "dir": "scratch/D-bh-dress/D-20261128-062142-c5666c4",
     "sha256sums": "sha256sums.txt",
-    "sha256sums_sha256": null,
-    "bytes": null,
-    "files": null
+    "sha256sums_sha256": "95d79baa1b221fe4de99ef9fe2de627adc237a121d5eba21b4b26482a8fb5d9a",
+    "bytes": 71763297977,
+    "files": 242
   },
-  "status": "submitted",
-  "exit_code": null,
+  "status": "completed",
+  "exit_code": 0,
   "registered": "2026-11-28T06:22:05Z",
-  "started": null,
-  "ended": null,
+  "started": "2026-11-27T22:39:47-08:00",
+  "ended": "2026-11-28T07:27:47-08:00",
   "parents": [],
   "notes": "",
   "budget_at_submit": {
@@ -125,5 +149,6 @@
     "cores_busy": 0,
     "runs": 346,
     "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md + 0026-cards-loaded-allotment-cost.md + 0031-level2-branch-and-ablation.md + 0032-new-account-preemption-allotments.md + 0038-track-e-g2-signed-g3-scope.md + 0039-rulings-after-batch-17.md + 0045-track-d-g2-signed-release-v08.md + 0048-rulings-after-batch-34.md"
-  }
+  },
+  "finished": "2026-11-28T16:04:37Z"
 }
