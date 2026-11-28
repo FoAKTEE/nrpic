@@ -1,0 +1,69 @@
+k	cls	claim_id	verdict	right	borderline	action	note
+48	T	324	right	1	1	verify(locator+)	table rows L953-956 as printed; quantities (first maximum and zero of the binding energy, L941-947) not named; locator debris kept
+49	T	205	right	1	0	verify	definition eq. rhoK at L260
+50	T	101	right	1	1	verify	noun phrase; grid limit b_min ~ N^(-4/9) of eq. gridlimit, condition s_v^2 << delta_m/N^(2/3) (L521) not carried; sibling 100 is the top hat at rest
+51	T	45	right	1	0	verify	fail is a gloss: the first crashed without lapse collapse (L230), the second cut the lapse growth from 20 to 2, not enough for a stable collapse (L236)
+52	T	195	right	1	0	verify	L2396-2402 as worded
+53	T	173	right	1	0	verify(locator+)	Zeldovich until maximum expansion, Hubble flow neglected after (L610-612)
+54	T	231	right	1	0	verify	L274: 1.62 reached at v(0) = 0.566c, Z(0) = 0.750; b = 0.1-0.5: (0.566-0.564)c, Z(0) = 0.750-0.622
+55	T	444	right	1	1	verify	L317-318 as worded; trailing note words (Point masses, extreme q.) kept
+56	T	206	right	1	0	verify	eq. ham_recast_full L256 and definitions L260-263
+57	T	680	right	1	0	verify	footnote L918-920; SFW is Sadeghian, Ferrer, Will, arXiv 1305.2619 (kerrdm.bbl L318-327, kerrdm.tex L140)
+58	T	322	right	1	1	verify	L151: M_in 1.8e-3 M_0 (SMFP region), 4.2e-2 SIDM only, M_seed = M_in; locator debris kept
+59	T	627	right	1	1	verify	noun phrase; equations ddotx-ddotz of the restricted parabolic problem and t(f), fdot(f) at L229-259
+60	T	241	right	1	0	verify	eq. ms9 L341
+61	T	182	fragment	0	0	supersede	subject of sigma^(7/2) cut (B REFERENCES.md:33-35 joins it to the line before); whole sentence from L1030-1031
+62	T	234	wrong	0	1	supersede	L283 says the criterion is sufficient but may not be necessary; the text drops the hedge (not necessary); the epsilon, Z(0) agreement is right
+63	T	46	right	1	0	verify	S = 450 at L244 (largest stable), T update L246-248, best result of this section L250
+64	T	265	right	1	0	verify	L1186-1193 say it of every collapse in their simulations; the King-model collapse is the case of the figures (L1221, L1244)
+65	T	193	fragment	0	0	supersede	the end of a quotation; B REFERENCES.md:51-53 holds the sentence; no sibling carries it (135 is the ball)
+66	T	329	wrong_label	0	0	supersede(judgement)	C judgement about the brief (the continuum solver the brief names for collisions is collisionless) stored as fulltext; L18 and methods.tex L196 support the reading
+67	T	326	right	1	1	verify	abstract L88-89 as worded; locator debris kept
+68	T	22	right	1	0	verify	L960-967; p is the prolateness (L841), dust fluid L171
+69	T	320	right	1	1	verify	list of definitions L388-409 as printed; H bare; locator debris kept
+70	T	229	right	1	0	verify	dilute classical limit eq. C_distribution L110-116, b and Tolman-Klein L118, w(0) boundary value L146
+71	T	639	right	1	0	verify(locator+)	L141-146 and L291 (column 3BH1, header L288); equal puncture masses 0.315269 in table ID L161-176
+72	T	230	wrong_label	0	0	supersede+add(judgement)	noun phrase of the paper (right) joined to C own reproduction (script, run id) under fulltext; split into a paper claim and a judgement claim
+73	T	317	right	1	1	verify	L408-412 with footnote as worded; locator debris kept
+74	T	315	right	1	1	verify	L672 (rigorous treatment requires the full collisional Boltzmann equation, Gurian:2025zpc) and f_P eq. pfac L674-675; debris kept
+75	T	87	fragment	0	0	supersede	qualifier without its subject: the order-unity factors of the Case I/II non-formation conditions L366-374
+76	T	253	right	1	0	verify	abstract L47-58 and L866-873 as worded
+77	T	334	right_locator	1	1	verify(locator+)	cut start (reason:); capture below L_c = 4Gm for E = 1 is at L376-384, not at L120 alone
+78	T	628	right	1	1	verify	noun phrase; E2 = -E1 L347, eq. E1par L353-356 carries the unit (G m1 m2/a)(M/m)^(1/3) with 1/D and a bracket
+79	T	323	right	1	1	verify	L74 as worded (0.3c, 1e-10 to 1e-8, ~1 M_sun for 1e9 M_sun); locator debris and an unrelated sibling of the same note row
+80	T	684	part_unsupported	0	0	supersede(to 910)	1805.09034 part right at L195-200; the 1901.08528 part sits outside the locator and the corpus remark is not a paper statement; 910 (claims4) carries both papers, each read
+81	T	211	right	1	0	verify	L142-154: metric eq. metric, Poisson gauge conditions kept beyond perturbation theory L150-152
+82	T	188	right	1	0	verify	L208-214 as worded
+83	T	201	right	1	0	verify	L2630 as worded
+84	T	72	right	1	0	verify	eq. a*1_a*2 L900-907
+85	T	440	right	1	0	verify	authors L105-113, HRNA L123 and L150, compared with Newtonian and 1PN L123
+86	T	318	right	1	1	verify	L1482-1491 (more than five times smaller than Chapman-Enskog); locator debris kept
+87	T	79	right	1	0	verify	L198-245; caustics at L234
+88	T	5	right	1	0	verify	L549 as worded
+89	T	278	right	1	0	verify	eq. st-dimensionless L1055-1059
+90	T	270	right	1	0	verify	L612 as worded
+91	T	305	right	1	1	verify	L274 (same content as 231); locator debris kept
+92	T	242	wrong_label	0	1	supersede	the paper part is right (gamma = 5/3 for the non-relativistic case, L344; no other value of gamma in the source by grep) but a TO VERIFY question of C rides under fulltext; superseded by the resolved sentence
+93	T	640	right	1	0	verify	L185-194 and L1253-1261 (one order of magnitude bigger)
+94	T	15	right	1	0	verify	L1064-1074 as worded
+95	T	71	right	1	0	verify	L894
+96	T	78	right	1	0	verify	L93-95
+97	T	546	right	1	0	verify	absence checked by grep of main.tex (1515 lines): kappa1, kappa2 at L243-338, kappa_{1,0} L395-397, eta_0 and M_ref L391-393, mu_S L376-380, none with a value
+98	T	70	right	1	0	verify	L849-866: |L1| proportional to q delta_s, |L2| to I <delta_s^2>^(1/2) delta_s (sigma)
+99	T	362	right	1	0	verify	eq. Motion2 L188-190
+100	T	352	fragment	0	0	supersede	second half of 351 (D REFERENCES.md:44-45); whole sentence from appendix A L462-468
+101	T	366	right	1	0	verify	eq. Mhalo L218
+102	T	316	right	1	1	verify	eq-condition_P L667-673 and eq-condition_r32 L680-685; locator debris kept
+103	T	19	wrong_label	0	0	supersede(judgement)	A inference (one particle per cell implied) under fulltext; the source states no particle number (only a plotting caption, L1132), regular alignment and filling L1065-1066, mass with the cell volume L1072
+104	T	310	right	1	1	verify	L384 as worded; locator debris kept
+105	T	204	right	1	0	verify	eq. decom L164, LL L168, vector Laplacian veceq L171-175
+106	T	95	right	1	0	verify	eq. bBH L314-316 (for delta_m << 1)
+107	T	271	right	1	0	verify	L559: T = 1000 M
+108	T	442	right	1	0	verify	L194 as worded
+109	T	356	right	1	0	verify	L235; the two bib keys are 1984ApJ...281....1F and 1985ApJS...58...39B
+110	T	247	right	1	0	verify	L474: t_c ~ 0.1 t_0 at 445.8 t_0, ~40 t_0 by about 460 t_0
+111	T	21	right	1	0	verify	L766-768 as worded (LTB is the spherical case)
+112	T	76	right	1	0	verify	abstract L81-86
+113	T	433	right	1	0	verify	authors first.tex L29-42, second.tex L30-37; abstracts as worded
+114	T	255	right	1	1	verify	noun phrase; four tables Case 1-4 (captions L778, L797, L818, L836) with L_0 = 0.1 (L760-761)
+115	T	275	right	1	0	verify	table st-suite caption and columns L1016-1031
