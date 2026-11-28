@@ -912,3 +912,33 @@ for its own ball that the set's interior gain shrinks with time (8 times below s
 t = 16), so for detection at t ~ 44-46 the bracket members need both: the face set and faces as far out as the cost
 allows, and the outer part read per region at detection. Next (cards): smooth CIC members at the bracket on M/16 and
 M/32 with the face set and faces at 32, to the horizon, the section-3 ratio at detection split by region.
+
+## Entry 19, 2026-11-27 23:35 PST (lead of batch 40): FC, does the outer-face part converge with core-v0.6's face set? Prediction before the run
+
+State: OB (faces at 32) and FR (core-v0.6 face set at 16) both cut the outer-face part of the section-3 line ratio
+(entry 18), and the stock part does not converge (S2c-A -> S2c-B: 0.091 -> 0.099 at t = 1, every cell halved; checked
+this session in conv_ball/decks: nest16_L16 root 32^3 over [-16, 16], nest32_L16 root 64^3, so the outermost cells ARE
+halved in that pair). Core's answer (outbox 20261128T021000Z, item 4) names the number that decides decision 0048
+item 5: the face part at two meshes with the set on. A full-mesh pair to t = 45 does not fit processors (S2c-B alone:
+9987 s to t = 1 on two threads). The band 13-16 is causally cut off from the matter (r < 4.9) until t ~ 5.7 even at
+the 1+log gauge speed sqrt(2), so a pair with COARSE inner levels and every cell halved measures the same face part
+cheaply. Run FC (scripts/fc_run.sh, decks nest4_L16_fr, nest8h_L16, nest8h_L16_fr; v0.6 threaded build as LF and FR;
+CIC, no compensation; to t = 1, line tables every 0.25):
+N4F = LF's N4 (root dx 1, M/2 to 7.8, M/4 to 3.9; LF's table and nest4 lattice) + face set; N8 = every cell of N4
+halved, stock; N8F = N8 + face set. Stock partner at dx 1: LF's N4 (A-20261128-005331-874ec88/N4). Reader: a new
+registered script face_conv.py (absolute ||H|| per band with the weight x^2 dx, the E norm, the ratio, the factor
+between the two meshes) and ratio_split.py.
+Predictions [JUDGEMENT]:
+- FC0 (control of the proxy): the 13-16 band of N4F equals FR's (S2c-AFR, same root and level-1 cells near the
+  faces) within 10 per cent in absolute ||H|| at t = 0.5, 0.75, 1; the 13-16 band of N8 equals S2c-B's within 10 per
+  cent at the same times. Refuted otherwise: then the inner levels reach the face band and the proxy pair does not
+  stand for the full meshes.
+- FC1 (stock, the known non-convergence repeated): ||H||(13-16) of N4 over N8 at t = 1 lies in [0.8, 1.25].
+- FC2 (the question): with the set, the factor F = ||H||(13-16, N4F) / ||H||(13-16, N8F) at t = 1 lies in [1.0, 2.5]:
+  the set lowers the level but what is left converges at first order at best (a radiative condition that does not
+  preserve the constraints puts an O(1) violation in at the continuum level; the fall-off fill with the stock powers
+  is a first-order error where the power is wrong). Refuted toward a cure if F >= 3 (near second order: then the
+  non-converging part of the scope's ratio was the stock face treatment, and the set with refinement removes it);
+  refuted toward no gain from refinement if F < 1.0. Undecided in (2.5, 3).
+What FC does not show: anything after t = 1 (core measured the set's gain shrinking with time in its own ball); the
+matter and taper parts (coarse here by design, not read); faces at 32 with the set.
