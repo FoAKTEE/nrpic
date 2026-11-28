@@ -5,7 +5,7 @@
                        [--dt-frac 0.1] [--pmax 0.1] [--dx-frac 0.25] [--nsnap 24]
                        [--tend 2.0] [--sigma-scale 1] [--nproc P] [--tag NAME]
     run_mode.py prep   (same options) --list FILE [--exe-gpu]
-    run_mode.py reduce BATCHDIR --prep PREPDIR [--nproc P]
+    run_mode.py reduce BATCHDIR --prep PREPDIR --out OUTDIR [--nproc P]
 
 lambda = 1 (rest-mass density 1, sigma/m = 1), box of one wavelength Lx = 2 pi/k along x,
 nx = 2^ceil(log2(Lx/(dx_frac lambda))) cells (dx <= dx_frac lambda); transverse
@@ -143,6 +143,9 @@ def main():
     ap.add_argument("--tag", default="")
     ap.add_argument("--list", default=None)
     ap.add_argument("--prep", default=None, help="reduce: the prep run directory")
+    ap.add_argument("--out", default=None,
+                    help="reduce: own output directory (the reduction run's); the card run "
+                         "directory is only read and nothing in it is deleted")
     ap.add_argument("--append", action="store_true", help="prep: append to --list")
     ap.add_argument("--nt-fixed", type=int, default=None, help="T8: transverse cells")
     ap.add_argument("--ly-fixed", type=float, default=None, help="T8: transverse box")
@@ -152,22 +155,33 @@ def main():
     if a.cmd == "reduce":
         # BATCHDIR/<name>/ holds the snapshots of a card run; --prep PREPDIR/<name>/ the
         # case.json and the particle file written by `prep`
+        # Since 2026-11-28 (decision 0048 item 1): --out is required; products go to
+        # OUTDIR/<name>/ and the card run directory is left as it is (the reduction of
+        # 2026-11-24 wrote into it and deleted the intermediate snapshots).
+        if not a.out:
+            sys.exit("reduce: --out OUTDIR is required (the card run directory is read-only)")
+        if os.path.realpath(a.out) == os.path.realpath(a.batchdir):
+            sys.exit("reduce: --out must not be the card run directory")
         names = sorted(x for x in os.listdir(a.batchdir)
                        if os.path.isdir(os.path.join(a.batchdir, x)) and
                        os.path.isfile(os.path.join(a.prep, x, "case.json")))
         def red(name):
             d = os.path.join(a.batchdir, name)
+            o = os.path.join(a.out, name)
+            os.makedirs(o, exist_ok=True)
             P = json.load(open(os.path.join(a.prep, name, "case.json")))
-            with open(os.path.join(d, "case.json"), "w") as fh:
+            P["card_run_dir"] = d
+            with open(os.path.join(o, "case.json"), "w") as fh:
                 json.dump(P, fh, indent=1)
             u0 = snap.read_nrp(P["particle_file"])["u"]
-            r = hl.SnapReducer(d, hl.mode_fun(P["k"], u0=u0))
+            r = hl.SnapReducer(d, hl.mode_fun(P["k"], u0=u0), outdir=o)
             r.step(final=True)
             r.save()
-            summ = dict(name=name, coll=hl.coll_summary(d))
-            with open(os.path.join(d, "summary.json"), "w") as fh:
+            summ = dict(name=name, card_run_dir=d, snapshots=[os.path.basename(f) for f in r.done],
+                        coll=hl.coll_summary(d))
+            with open(os.path.join(o, "summary.json"), "w") as fh:
                 json.dump(summ, fh, indent=1)
-            return d
+            return o
         with ThreadPoolExecutor(a.nproc) as ex:
             for d in ex.map(red, names):
                 print("reduced", d, flush=True)

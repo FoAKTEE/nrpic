@@ -111,8 +111,10 @@ class SnapReducer:
     (or the run has ended), and deleted after reduction unless it is the first or the last
     or keep_all is set."""
 
-    def __init__(self, rundir, fun, keep_all=False):
-        self.rundir, self.fun, self.keep_all = rundir, fun, keep_all
+    def __init__(self, rundir, fun, keep_all=False, outdir=None):
+        # outdir: where save() writes (default rundir); with outdir set nothing is deleted
+        self.rundir, self.fun, self.keep_all = rundir, fun, keep_all or outdir is not None
+        self.outdir = outdir or rundir
         self.done = []          # paths reduced
         self.records = []
         self.lock = threading.Lock()
@@ -139,7 +141,8 @@ class SnapReducer:
         keys = [k for k in self.records[0] if k != "file"]
         out = {k: np.array([r[k] for r in self.records]) for k in keys}
         out["files"] = np.array([r["file"] for r in self.records])
-        np.savez(os.path.join(self.rundir, name), **out)
+        os.makedirs(self.outdir, exist_ok=True)
+        np.savez(os.path.join(self.outdir, name), **out)
         return out
 
 

@@ -1248,3 +1248,38 @@ Failed predictions of this entry: none.
 - open: C18 (fresh verifier); verify --full results (log scratch/C-sidm/tmp/verify_full_g2.log).
 - card-hours: none submitted by this session; closed 6.3844 + 2.6175 = 9.00; nrpic-run budget at
   08:53Z: G2 54.76 used, 0 reserved, 25.24 left of 80.
+
+## 2026-11-28T01:59Z  session C-sidm lead (batch 35): predictions before the heat reruns HR (decision 0048 item 1)
+
+What runs: heat_C1 and heat_C2 again (the eight and three cases of
+`longruns/inputs/heat_C1.list`, `heat_C2.list`, unchanged: same deck, same particle files of prep
+run C-20261121-202552-883e2c2, same seeds 6 and 7) on the release card build of core-v0.8
+(`.work/build_gpu_v08/src/athena`, sha256 a95fcaf61f55e6c4...) instead of core-v0.6. Two queue
+entries at priority 2, about 0.4 card-hours together. Nothing in the collision path changed after
+core-v0.4 (CHANGELOG: v0.5-v0.8 list no collision change; serial byte regressions 75 of 75). The
+reduction afterwards is `heat/scripts/run_mode.py reduce --out '$NRPIC_RUN_DIR'`: it writes
+case.json, reduced.npz and summary.json into its own run directory and deletes nothing (the
+v0.6 reduction wrote into the card runs' directories and deleted the intermediate snapshots,
+GATE_REVIEW section 1). The series is read by the unchanged `longruns/scripts/heat_series.py`
+on the two reduction run directories. Reference values (H, entry of 2026-11-24, analysis
+C-20261124-131012-f920f45): f0 = 1.0149 +- 0.0026 at k lambda 0.2, 1.0187 +- 0.0026 at 0.1,
+kappa/kappa_1 = (4 f0(0.1) - f0(0.2))/3 = 1.020 +- 0.004; per-case f_S in heat_series.json with
+noise sd 0.00432 (k lambda 0.2) and 0.00305 (0.1) from the T7 seeds.
+
+- HR.0 both batch jobs end COMPLETED in sacct with all 11 cases exit 0 and 16 snapshots each
+  (00000-00016). Refuted by a preempted job (then re-added, not read).
+- HR.1 per case: |f_S(v0.8) - f_S(v0.6)| < 2 sqrt(2) sd for each of the 11 cases (0.0122 at
+  k lambda 0.2, 0.0086 at 0.1); the bound is that of two independent realisations, which is
+  conservative because the initial particles are the same. Refuted by any case beyond 3 sqrt(2)
+  sd or by more than one case beyond 2 sqrt(2) sd.
+- HR.2 the reproduced value: f0(0.2) within 0.0074 of 1.0149, f0(0.1) within 0.0074 of 1.0187,
+  and kappa/kappa_1 within 0.0113 (2 sqrt(2) x 0.004) of 1.020, i.e. in [1.009, 1.031]. Refuted
+  outside. (If HR.3 finds the runs bit-identical, HR.1 and HR.2 hold trivially and the rerun only
+  repairs provenance; then the statement stays "one seed per point, no second realisation".)
+- HR.3 [JUDGEMENT, I give it even odds] the last snapshot heat.part.00016.bin of each case is
+  NOT byte-identical to the one the v0.6 run kept (the card collision path has not been shown to
+  be deterministic from run to run). Either outcome is recorded; neither refutes HR.1/HR.2.
+- HR.4 the reduction changes no byte of the card runs: `nrpic-run verify` of both card runs
+  passes after their reduction, and the reduction run's own sha256sums lists the reduced.npz it
+  wrote. Refuted by any change in a card run directory.
+- HR.5 cost: each batch 0.15 to 0.30 card-hours (v0.6: 0.19 and 0.21). Refuted outside.
