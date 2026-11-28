@@ -1,38 +1,35 @@
 # STATUS of A-emd-pbh
 
 gate:        G0 PASSED 2026-11-19; G1 PASSED with reservations 2026-11-21. G2 NOT PASSED on the independent review
-             (coord/GATES.md; decision 0047; stage/G2/GATE_REVIEW.md, batch 30): the threshold as defined at G0
-             cannot be measured with the present capability in either set-up. Five conditions for the next review
-             (0047 item 2; state in stage/G2/OPEN.md): (a) cause of the constraint floor and the section-3 bound met
-             at the bracket, falling with the mesh; (b) finder on the restart files of the periodic chain and the
-             triaxial run; (c) cause of the triaxial lag named; (d) one triaxial run to a found horizon with the
-             bound; (e) corrections. No amplitude is compared with arXiv:2609.14218 before (c).
-headline:    (b) partly met on processors: the core-v0.8 finder finds P0L6's horizon at t = 140 from the deck's
-             start radius with 4000 flow iterations (area mass 6.30 at r 0.104; line 6.28 at 0.103) and S1L's at
-             t = 220 from r 0.16 (10.73 at 0.161), but not S1L from the decks' radii; no false acceptance in 139
-             searches (A-20261126-233542-fd9f9f0, A-20261126-234232-84f3e98). (a) narrowed: no first-step jump;
-             the early H rise is the t = 0 momentum residual and converges; the floor is a source acting during
-             the evolution (A-20261126-234222-dbf8624, A-20261126-234642-8a4784b).
-last-result: batch 31 (15:30-16:05 PST; processors only, 0 card-hours):
-             - FP: FP0, FP1, FP2, FP3, FP5 hold; FP4 refuted for P0L6 (the finder works with more iterations).
-             - FPb: FP6 refuted (S1L first trapped round sphere in t (180, 190] = (18.4, 19.4] t_H); FP7, FP8 hold.
-             - C3-F: CF0, CF2 hold; CF1 refuted as written (S_x = 0 on the line at t = 0; normalization wrong).
-             - C3-G (gauge frozen, particles at rest, A-20261126-235005-d58354f): G1 refuted, line ratio 0.21 at t = 1
-               (0.129 live): the floor is neither gauge dynamics nor motion across cells.
-             - S1-S3 of S1L job 2 judged (A-20261126-234332-ec02d47): S1, S3 hold; S2 refuted as written.
-             - Corrections (e): note V.A-V.D, VI, Summary, Fig. 7(a) ticks, Table V ranges and signal; READMEs;
-               CHECKLIST C9, C18 (PASS), C21-C23 (SCOPE section 7, open); EVIDENCE, OPEN; note run
-               A-20261126-234358-f761d8d, compiled, 0 undefined, 0 overfull.
-             - Full checksum pass of the stage check (gate reviewer, 3fcd428): PASS, every byte read; kept.
-cards:       none submitted; nothing of A in the shared queue.
-processors:  nothing running at the end; 12 registered runs this session, all closed (one failed: replot arg).
-next:        1. Core's answers: deposit fixes at level faces, finder request finder-slow-convergence-box; then the
-                condition-(a) retest on two meshes to the horizon (cards, prediction first).
-             2. C3: a member without level faces in the matter (frozen gauge, processors); the review's offline-H test.
-             3. Box decks for G3: flow_iterations_0 = 4000 with polishing; a start rule from round-sphere scans.
-blockers:    G2 not passed; C3 cause unnamed; S1L's horizon not found from the decks' start radii; A2 lag unnamed.
-needs:       core: deposit fixes; finder convergence advice and the t = 118.1 false-acceptance question.
-             orch: a processor session for the next C3 tests; cards for (a) after core's fixes.
-offers:      periodic_threshold/scripts/finder_probe_box.py (restart-file finder probe with round-sphere scan,
-             --replot), threshold_ball/scripts/c3_first_step.py (H and M_x line ratios every cycle).
-budget:      card-hours batch 31: 0. Processors: up to 6 cores, ~75 min.
+             (coord/GATES.md; decision 0047). Conditions (a)-(d) for the second review; state in stage/G2/OPEN.md.
+             No amplitude is compared with arXiv:2609.14218 before (c).
+headline:    (b) MET on the existing restart files: with `flow = shear` the finder finds S1L's horizon at t = 190.0,
+             198.7, 220.0 (m 7.61, 8.34, 10.74) and P0L6's at t = 140 (m 6.3032) from every start, nothing at P0L6
+             t = 130 (A-20261128-004123-bc1fcf8); only the t = 118.1 false acceptance is untestable (no restart file).
+             (a) narrowed and partly NAMED: the part of the ball's section-3 line ratio that does not converge enters
+             at the outflow outer faces (R-split A-20261128-004947-8fc6ba9; OB A-20261128-004659-f512816: faces moved
+             to 32 cut it 300-fold on 0 < x < 16); inside the matter the smooth CIC member converges (0.059 -> 0.016).
+             (c), (d) queued on cards (q0089, q0090), predictions A2Q and F1-F3 committed first.
+last-result: batch 34 (16:32-17:20 PST):
+             - D-q holds (quarter data, A-20261128-003940-60a3521); SM-F holds; SM-q's start-up step clause REFUTED
+               (step falls with the amplitude), queued anyway with the reason on record.
+             - FD holds on every tested clause (t = 180 clause untested: file mapping).
+             - C3-G's batch-31 reading WITHDRAWN (frozen matter makes a violation by construction; entry 18).
+             - OH UNDECIDED (A-20261128-005454-eb7b26b): the line reader is not accurate enough.
+             - OB: 13-16 part and matter clauses hold; the total clause refuted at t = 1 (matter + edge = 0.091 on M/16).
+             - LF (matter inside one level vs a face in it, A-20261128-005331-874ec88): see threshold_ball entry 18.
+             - S1L's region ratio outside r = 0.6 is 0.43 at t = 190 (periodic: violation in the collapsing matter).
+cards:       queued, waiting (shared queue, priority 2): q0089 a-s1l-quarter (cap 2.6 card-hours), q0090
+             a-s1l-finder (cap 1.6). 0 card-hours used this session.
+processors:  13 registered runs this session, all closed or closing; at most 6 cores.
+next:        1. Read q0090 (F1-F3) and q0089 (A2Q) when they end (periodic_threshold JOURNAL, scripts named there).
+             2. Outer-face remedy for the ball (core asked which v0.6 options), with the deposit-fix build, S2c-A/B to
+                t = 2 on processors, prediction first; then smooth CIC bracket members on two meshes to the horizon.
+             3. Box violation (condition (d)): a resolution pair in the box (P0L four vs six levels' region ratios).
+blockers:    G2 not passed; (a) the outer faces of the ball; (d) the box violation in the collapsing matter.
+needs:       core: outer-face options for the expanding ball; card check q0086 of the faces-finder build.
+             orch: the second review of (b) on the existing files; note that 0047 item 6's C3-G sentence is withdrawn.
+offers:      threshold_ball/scripts/ratio_split.py (section-3 ratio by region), offline_h_line.py (spherical line
+             reader); periodic_threshold/inputs/peak_leak_f.athinput (box deck with flow = shear);
+             conv_ball/scripts/prep_bh.py --custom (lattices on any level list).
+budget:      card-hours batch 34: 0 used, 4.2 capped in the queue. Processors: up to 6 cores, ~50 min.
