@@ -177,3 +177,34 @@ Predictions for `scripts/vbranch.py` (branches by the summary's hrms and the sta
   upper-branch row below 1e-6 (no overlap of the two hrms ranges). Refuted: overlapping ranges.
 - PT18. On finder 1's alternating stretch the lower-branch searches take fewer flow iterations
   than the upper ones (they stop on the mass rule early). Refuted: equal or more.
+
+## Entry 4, 2026-11-27 17:22 PST: outcomes of vbranch (run F-20261128-004549-2a094fb), figure looked at
+
+Figure read: `fig_t_branches.png` of the run.
+
+- PT16 MET. Finder 1 alternates from 160.56 to 179.22 M: upper branch (300 searches, mass
+  0.12956-0.12963) hrms 1.2e-6 to 2.8e-6, continuous with the searches outside the stretch;
+  lower branch (298 searches, 0.12890-0.12918) hrms 0.154 to 0.231. All 598 marked found.
+- PT18 MET. Lower branch: exactly 6 flow iterations at every search, mean expansion -0.043;
+  upper: 43-47 iterations, mean expansion -6.2e-4. The status file's "found" does not certify a
+  converged surface: a search that meets the mass rule after 6 iterations with an expansion
+  residual of 0.2 is written as found.
+- PT17 REFUTED as written: the hrms ranges of the heavy hole's branches overlap, because the
+  upper branch's hrms rises from 1e-7 at 133 M to 1.1e-2 at 137.47 M while m1 closes in (its mass
+  rises to 1.0161). Before about 131 M the separation is clean: upper branch 9.4e-9 to 3e-8,
+  lower branches 1.4e-4 to 6.5e-4 (none below 1e-5). And the smooth decline of 62-86.6 M (the
+  first part's -1.72e-5 per M) has hrms 1.6e-4 to 3.7e-4: it belongs to the lower class.
+- F1 answered [JUDGEMENT on what hrms means: the area mean of the squared expansion, zero on a
+  marginally trapped surface]: the converged heavy horizon is the upper branch, median 1.004222
+  (1.004189 to about 1.00425 from 86.6 to about 131 M); the decline of the first part and the
+  lower branches (last lower row 129.41 M) are unconverged surfaces, four orders of magnitude
+  larger in hrms. The status files start at 133 M, after the lower branches ended, so they hold
+  only upper-branch searches (all found) and cannot by themselves decide F1.
+- Waves against u = t - r*: the curves at 40, 48 and 70 M coincide in u (outgoing), with an onset
+  (amplitude three times its 60-130 M baseline and staying there) at u = 97.2, 95.2, 95.6 M; at
+  90 M the record ends before that u. The amplitude grows to the end of the record; the capture
+  at 137.5 M is reached only at r = 40 M (u = 139.7 at 186 M).
+
+Prediction PT19 (A2-5's mesh clause, from the chain's logs): the largest number of MeshBlocks
+printed in A2's segments stays below 2864 and no segment ends with an out-of-memory message.
+Refuted: a count at or above 2864, or a memory error.
