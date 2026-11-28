@@ -223,3 +223,32 @@ Read of G-8 (run D-20261128-062142-c5666c4; reader tools/g8_read.py, one registe
   window. Information only: G3-G5 is read at the finest member.
 - Cost: the sum of the elapsed times of the ten jobs in [1.9, 3.0] card-hours (entry 7: 2.48).
 Claim D is not read from G-8: D1* is not yet fixed (A2).
+
+## Entry 9 (2026-11-28 08:08 PST, lead of batch 41): outcome of the read of G-8 (run D-20261128-062142-c5666c4 closed by nrpic-run finish, 242 files, card-hours 2.1986 by sacct; reader D-20261128-160553-b500509 after D-20261128-160544-089d6f8 failed at a syntax error of the reader; figure g8_read.png looked at)
+
+Outputs: `scratch/D-bh-dress/D-20261128-160553-b500509/g8_read.json`, `g8_read.png`. 119584 dust removals read
+(R0 from 3.29 to 31.55 M, tau_rem to 492.3 M); the filtered summary dropped no row (every search after 2 M found).
+- G3-G1 HELD: 45 counted bins from tau_rem = 50 M to the end, medians +0.172 to +0.254 per cent (limit +-0.5).
+- P-G1 HELD: raw in [+0.05, +0.30] per cent; with the lead correction +0.115 to +0.241 per cent (held bracket) and
+  +0.100 to +0.241 (extrapolated), inside [-0.10, +0.25].
+- Entry 8's sharper band [+0.12, +0.30] per cent HELD (no bin below +0.10 or above +0.35).
+- Lead bias: FAILED as predicted in size. The shift of the bin medians after 100 M is 1.05e-4 to 6.3e-4 (mean
+  4.6e-4, held bracket; 1.05e-4 to 7.4e-4 extrapolated), not inside [2e-4, 1.2e-3]: the bins just after 100 M
+  hold shells of R0 near 20 M whose lead is 0.17 M, which I did not weigh. The corrected medians fall with time
+  (about +0.23 per cent at 50-130 M to +0.12-0.16 per cent after 300 M, panel b), the raw ones less (+0.24 to +0.20):
+  the lead correction grows with R0 as the lead does. Not a criterion; A2's per-particle lead replaces the
+  verifier's three tracer values when it runs.
+- Excision HELD: all 119848 dust removals by reason 3 (FK: the same count to 399.5 M, g2long entry 19); no reason 2;
+  smallest horizon radius 4.528 M and mass 1.4918 at 399.5 M (seen before entry 8, not a prediction).
+- Finder HELD: 795 of 795 searches after 2 M found; t = 0 mass 0.99151469 (S-G8's 0.991514686, entry 5).
+  G-8 minus FK: median 1.09e-4 in [2e-5, 1.2e-4] as written, BUT not constant (panel d): it rises nearly linearly
+  from 6.5e-5 at 20 M to 1.6e-4 at 400 M and leaves the band after about 220 M, with a dip to -7e-5 at 38-50 M
+  (FK's side; FK's finder started each segment from its last surface). Not predicted: the gap between the polished
+  and the unpolished rule grows with the hole [JUDGEMENT: with the area, as the mass rule's stopping tolerance is
+  relative]. Every G3 member uses the polished finder, so it does not enter member differences; it does enter
+  any comparison with G2's unpolished FK, FN4, FNQ and FL16 (FL16's cross-check of A6 carries it).
+- Slope (information): eight windows of 0.1 in ln a from tau = 50 M, |s_8 - s_LTB| at most 0.0027 (limit 0.03).
+- Cost HELD: 2.21 card-hours from the segment logs, 2.20 by sacct, in [1.9, 3.0]; seven of ten jobs preempted.
+Summary: at M/8 the code reproduces the exact LTB growth law to +0.17 to +0.25 per cent in every bin from 50 to
+492 M of the swallowed dust's proper time, +0.10 to +0.24 per cent once the shells' lead is carried; the growth's
+logarithmic slope agrees to 3e-3. One member: no mesh statement. Claim D not read (D1* not fixed).
