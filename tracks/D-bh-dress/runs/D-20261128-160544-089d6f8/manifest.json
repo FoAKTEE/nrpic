@@ -1,0 +1,102 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "D-20261128-160544-089d6f8",
+  "track": "D-bh-dress",
+  "gate": "G3",
+  "kind": "production",
+  "purpose": "Read of G-8 (q0100, run D-20261128-062142-c5666c4) against g3/amend entry 8: G3-G1, P-G1, the lead carried as a bias, excision, finder, G-8 - FK, slope, card time",
+  "preregistered_in": "tracks/D-bh-dress/g3/amend/JOURNAL.md",
+  "launcher": "local",
+  "command": [
+    "python3",
+    "tracks/D-bh-dress/g3/amend/tools/g8_read.py",
+    "--g8",
+    "/data/haiyangw/nrpic/scratch/D-bh-dress/D-20261128-062142-c5666c4",
+    "--fk",
+    "/data/haiyangw/nrpic/scratch/D-bh-dress/D-20261123-022725-a553496",
+    "--data",
+    "/data/haiyangw/nrpic/scratch/D-bh-dress/D-20261121-203042-82deeec",
+    "--out",
+    "$NRPIC_RUN_DIR"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "089d6f83c1cd5d04dfebfcd22d36ce23e0f28569",
+    "branch": "track/D-bh-dress",
+    "dirty": false,
+    "package": [
+      "tracks/D-bh-dress/g3/amend"
+    ],
+    "outside_package": {
+      "count": 0,
+      "first": []
+    },
+    "merge_base_main": "008712a713c179fc0f50df46ac68e069d5551aca",
+    "worktree": "wt/D-bh-dress"
+  },
+  "code": {
+    "core_tag": "core-v0.9",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "7757edd28ab45f72d45b1eb3102963c4861dbde67ea407e2adc102d8b3653500",
+    "machine_file_sha256": "aaddef7596beac4923fa5ca549514169cc663e2bac8ec8cf222735ed07f2fd09",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/D-bh-dress/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "tracks/D-bh-dress/g3/amend/tools/g8_read.py",
+      "role": "argv",
+      "sha256": "8989f160a1da6c15ff301a0dc730f55d40aa227258733793983d2e32fcbcf939",
+      "bytes": 12658,
+      "tracked": true
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 1,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/D-bh-dress/D-20261128-160544-089d6f8",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-28T16:05:45Z",
+  "started": null,
+  "ended": null,
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 60.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 3.7213,
+    "gpu_hours_reserved": 0.6,
+    "gpu_hours_without_gate": 0.0,
+    "cores_busy": 4,
+    "runs": 351,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md + 0026-cards-loaded-allotment-cost.md + 0031-level2-branch-and-ablation.md + 0032-new-account-preemption-allotments.md + 0038-track-e-g2-signed-g3-scope.md + 0039-rulings-after-batch-17.md + 0045-track-d-g2-signed-release-v08.md + 0048-rulings-after-batch-34.md + 0051-track-b-g2-signed-rulings-after-batch-40.md"
+  }
+}
