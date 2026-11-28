@@ -1,12 +1,12 @@
 # Re-verification: B-emd-gw G2
 
-`harness/bin/nrpic-stage verify B-emd-gw G2` on 2026-11-28T00:07:25Z, clean export of commit `d7c7ce2b1892` in `scratch/B-emd-gw/tmp/stage-verify/B-emd-gw-G2-d7c7ce2-20261128T000458Z`. Result: **PASS**.
+`harness/bin/nrpic-stage verify B-emd-gw G2` on 2026-11-28T02:21:53Z, clean export of commit `631acef88457` in `scratch/B-emd-gw/tmp/stage-verify/B-emd-gw-G2-631acef-20261128T000814Z`. Result: **PASS**.
 
 | Check | Result | Message |
 |---|---|---|
 | clean | PASS | worktree clean (outside the stage directory being assembled) |
 | sync | PASS | main is merged into the branch |
-| export | PASS | clean export of d7c7ce2b1892 (HEAD) in /data/haiyangw/nrpic/scratch/B-emd-gw/tmp/stage-verify/B-emd-gw-G2-d7c7ce2-20261128T000458Z/tree |
+| export | PASS | clean export of 631acef88457 (HEAD) in /data/haiyangw/nrpic/scratch/B-emd-gw/tmp/stage-verify/B-emd-gw-G2-631acef-20261128T000814Z/tree |
 | size | PASS | no committed file of the track above 5 MB |
 | note | PASS | tracks/<ID>/note/main.tex present |
 | package | PASS | EVIDENCE.md, OPEN.md, CHECKLIST.md present (decision 0012); scoping text: scope/SCOPE.md; no verifier's report yet (VERIFIER.md, decision 0016) |
@@ -14,13 +14,32 @@
 | style | PASS | 2 style copies equal harness/style/SHA256SUMS (czstyle.py, paperfig.py) |
 | fig-script | PASS | 15 figures, each with its script |
 | min-figs | PASS | 6 schematics and 9 data figures (brief 13.4 asks at least 1 and 5 at G2) |
-| runs | PASS | 383 run manifests finished (78 hand-written, read as decision 0012 allows) |
+| runs | PASS | 383 run manifests finished (78 hand-written, read as decision 0012 allows); failures of 1 runs waived by coord/WAIVERS.md (decision 0019), output checksums verified where recorded |
+| runs-waived | WARN | failures of the manifest check waived: 1 runs named in main's coord/WAIVERS.md (decision 0019 item 6): B-20261115-164157-40b9f6d: outputs moved into the run directory after the run finished; data unchanged |
 | run-notes | WARN | 78 runs read with defaults or not fully re-verifiable (nrpic-run lint) |
-| checksums | WARN | output checksums not re-verified (--no-checksums) |
+| checksums | PASS | 13883 output files: 13883 hashed again (bytes read, 1166.91 GB), 0 taken from the cache (0.0 MB) (--full); every byte read again (none taken from the cache, where a checksum taken from the cache proves unchanged size and modification time since it was hashed, not bytes read again) |
 | status | PASS | STATUS.md has 40 lines |
 | rerun | PASS | 15 of 15 scripts and commands ran cleanly in the export |
 | compare | PASS | 30 regenerated files compared with the committed ones; 0 differ beyond tolerance (rtol 1e-06, atol 1e-12, PNG rms 0.005) |
 | regenerate | PASS | all 30 committed figure files regenerated |
+
+## runs-waived
+
+```
+{
+ "B-20261115-164157-40b9f6d": {
+  "waived_by": "coord/WAIVERS.md",
+  "reason": "outputs moved into the run directory after the run finished; data unchanged",
+  "problems": [
+   "output not in sha256sums.txt: reference.png",
+   "output not in sha256sums.txt: reference.pdf",
+   "output not in sha256sums.txt: reference_g.npz",
+   "output not in sha256sums.txt: sha256sums.moved.txt",
+   "output not in sha256sums.txt: reference.json"
+  ]
+ }
+}
+```
 
 ## run-notes
 
@@ -30,19 +49,22 @@
   "status 'done' read as completed",
   "output directory read from a field other than outputs.dir",
   "no gate",
-  "status 'done' read as completed"
+  "status 'done' read as completed",
+  "no scratch/B-emd-gw/B-emd-gw-20261115-112946-b7b431d/sha256sums.txt (hand-written manifest; outputs not re-verifiable)"
  ],
  "B-emd-gw-20261115-112947-b7b431d": [
   "status 'done' read as completed",
   "output directory read from a field other than outputs.dir",
   "no gate",
-  "status 'done' read as completed"
+  "status 'done' read as completed",
+  "no scratch/B-emd-gw/B-emd-gw-20261115-112947-b7b431d/sha256sums.txt (hand-written manifest; outputs not re-verifiable)"
  ],
  "B-emd-gw-20261115-112948-b7b431d": [
   "status 'done' read as completed",
   "output directory read from a field other than outputs.dir",
   "no gate",
-  "status 'done' read as completed"
+  "status 'done' read as completed",
+  "no scratch/B-emd-gw/B-emd-gw-20261115-112948-b7b431d/sha256sums.txt (hand-written manifest; outputs not re-verifiable)"
  ],
  "B-emd-gw-20261115-113102-bc5e082": [
   "hand-written (fields nrpic-run never writes: card_hours, commit, cores, output_dir, package)"
@@ -60,151 +82,116 @@
   "status 'done' read as completed",
   "output directory read from a field other than outputs.dir",
   "no gate",
-  "status 'done' read as completed"
+  "status 'done' read as completed",
+  "no scratch/B-emd-gw/B-emd-gw-20261115-113212-0ea0f74/sha256sums.txt (hand-written manifest; outputs not re-verifiable)"
  ],
  "B-emd-gw-20261115-113213-0ea0f74": [
   "status 'done' read as completed",
   "output directory read from a field other than outputs.dir",
   "no gate",
-  "status 'done' read as completed"
+  "status 'done' read as completed",
+  "no scratch/B-emd-gw/B-emd-gw-20261115-113213-0ea0f74/sha256sums.txt (hand-written manifest; outputs not re-verifiable)"
  ],
  "B-emd-gw-20261115-113214-0ea0f74": [
   "status 'done' read as completed",
   "output directory read from a field other than outputs.dir",
   "no gate",
-  "status 'done' read as completed"
+  "status 'done' read as completed",
+  "no scratch/B-emd-gw/B-emd-gw-20261115-113214-0ea0f74/sha256sums.txt (hand-written manifest; outputs not re-verifiable)"
  ],
  "B-emd-gw-20261115-113215-0ea0f74": [
   "status 'done' read as completed",
   "output directory read from a field other than outputs.dir",
   "no gate",
-  "status 'done' read as completed"
+  "status 'done' read as completed",
+  "no scratch/B-emd-gw/B-emd-gw-20261115-113215-0ea0f74/sha256sums.txt (hand-written manifest; outputs not re-verifiable)"
  ],
  "B-emd-gw-20261115-113216-0ea0f74": [
   "status 'done' read as completed",
   "output directory read from a field other than outputs.dir",
   "no gate",
-  "status 'done' read as completed"
+  "status 'done' read as completed",
+  "no scratch/B-emd-gw/B-emd-gw-20261115-113216-0ea0f74/sha256sums.txt (hand-written manifest; outputs not re-verifiable)"
  ],
  "B-emd-gw-20261115-113217-0ea0f74": [
   "status 'done' read as completed",
   "output directory read from a field other than outputs.dir",
   "no gate",
-  "status 'done' read as completed"
+  "status 'done' read as completed",
+  "no scratch/B-emd-gw/B-emd-gw-20261115-113217-0ea0f74/sha256sums.txt (hand-written manifest; outputs not re-verifiable)"
  ],
  "B-emd-gw-20261115-113218-0ea0f74": [
   "status 'done' read as completed",
   "output directory read from a field other than outputs.dir",
   "no gate",
-  "status 'done' read as completed"
+  "status 'done' read as completed",
+  "no scratch/B-emd-gw/B-emd-gw-20261115-113218-0ea0f74/sha256sums.txt (hand-written manifest; outputs not re-verifiable)"
  ],
  "B-emd-gw-20261115-113219-0ea0f74": [
   "status 'done' read as completed",
   "output directory read from a field other than outputs.dir",
   "no gate",
-  "status 'done' read as completed"
+  "status 'done' read as completed",
+  "no scratch/B-emd-gw/B-emd-gw-20261115-113219-0ea0f74/sha256sums.txt (hand-written manifest; outputs not re-verifiable)"
  ],
  "B-emd-gw-20261115-113220-0ea0f74": [
   "status 'done' read as completed",
   "output directory read from a field other than outputs.dir",
   "no gate",
-  "status 'done' read as completed"
+  "status 'done' read as completed",
+  "no scratch/B-emd-gw/B-emd-gw-20261115-113220-0ea0f74/sha256sums.txt (hand-written manifest; outputs not re-verifiable)"
  ],
  "B-emd-gw-20261115-113221-0ea0f74": [
   "status 'done' read as completed",
   "output directory read from a field other than outputs.dir",
   "no gate",
-  "status 'done' read as completed"
+  "status 'done' read as completed",
+  "no scratch/B-emd-gw/B-emd-gw-20261115-113221-0ea0f74/sha256sums.txt (hand-written manifest; outputs not re-verifiable)"
  ],
  "B-emd-gw-20261115-113222-0ea0f74": [
   "status 'done' read as completed",
   "output directory read from a field other than outputs.dir",
   "no gate",
-  "status 'done' read as completed"
+  "status 'done' read as completed",
+  "no scratch/B-emd-gw/B-emd-gw-20261115-113222-0ea0f74/sha256sums.txt (hand-written manifest; outputs not re-verifiable)"
  ],
  "B-emd-gw-20261115-113223-0ea0f74": [
   "status 'done' read as completed",
   "output directory read from a field other than outputs.dir",
   "no gate",
-  "status 'done' read as completed"
+  "status 'done' read as completed",
+  "no scratch/B-emd-gw/B-emd-gw-20261115-113223-0ea0f74/sha256sums.txt (hand-written manifest; outputs not re-verifiable)"
  ],
  "B-emd-gw-20261115-113227-0ea0f74": [
   "status 'done' read as completed",
   "output directory read from a field other than outputs.dir",
   "no gate",
-  "status 'done' read as completed"
+  "status 'done' read as completed",
+  "no scratch/B-emd-gw/B-emd-gw-20261115-113227-0ea0f74/sha256sums.txt (hand-written manifest; outputs not re-verifiable)"
  ],
  "B-emd-gw-20261115-113231-0ea0f74": [
   "status 'done' read as completed",
   "output directory read from a field other than outputs.dir",
   "no gate",
-  "status 'done' read as completed"
+  "status 'done' read as completed",
+  "no scratch/B-emd-gw/B-emd-gw-20261115-113231-0ea0f74/sha256sums.txt (hand-written manifest; outputs not re-verifiable)"
  ],
  "B-emd-gw-20261115-113232-0ea0f74": [
-  "status 'done' read as completed",
-  "output directory read from a field other than outputs.dir",
-  "no gate",
-  "status 'done' read as completed"
- ],
- "B-emd-gw-20261115-113236-0ea0f74": [
-  "status 'done' read as completed",
-  "output directory read from a field other than outputs.dir",
-  "no gate",
-  "status 'done' read as completed"
- ],
- "B-emd-gw-20261115-113246-50c684b": [
-  "hand-written (fields nrpic-run never writes: card_hours, commit, cores, output_dir, package)"
- ],
- "B-emd-gw-20261115-113254-0ea0f74": [
-  "status 'done' read as completed",
-  "output directory read from a field other than outputs.dir",
-  "no gate",
-  "status 'done' read as completed"
- ],
- "B-emd-gw-20261115-113304-0ea0f74": [
-  "status 'done' read as completed",
-  "output directory read from a field other than outputs.dir",
-  "no gate",
-  "status 'done' read as completed"
- ],
- "B-emd-gw-20261115-113321-0ea0f74": [
-  "status 'done' read as completed",
-  "output directory read from a field other than outputs.dir",
-  "no gate",
-  "status 'done' read as completed"
- ],
- "B-emd-gw-20261115-113418-0ea0f74": [
-  "status 'done' read as completed",
-  "output directory read from a field other than outputs.dir",
-  "no gate",
-  "status 'done' read as completed"
- ],
- "B-emd-gw-20261115-113517-0ea0f74": [
-  "status 'done' read as completed",
-  "output directory read from a field other than outputs.dir",
-  "no gate",
-  "status 'done' read as completed"
- ],
- "B-emd-gw-20261115-113548-0ea0f74": [
-  "status 'done' read as completed",
-  "output directory read from a field other than outputs.dir",
-  "no gate",
-  "status 'done' read as completed"
- ],
- "B-emd-gw-20261115-113600-0ea0f74": [
-  "status 'done' read as completed",
-  "output directory read from a field other than outputs.dir",
-  "no gate",
-  "status 'done' read as completed"
- ],
- "B-emd-gw-20261115-113615-0ea0f74": [
-  "status 'done' read as completed",
-  "output directory read from a field other than outputs.dir",
-  "no gate",
-  "status 'done' read as completed"
- ],
- "B-emd-gw-20261115-113632-2960145": [
-  "hand-written (fields nrpic-run never writes: card_hours, commit, cores, 
+  "status 'done' read as co
+```
+
+## checksums
+
+```
+{
+ "rehashed_files": 13883,
+ "rehashed_bytes": 1166913927270,
+ "cached_files": 0,
+ "cached_bytes": 0,
+ "full": true,
+ "meaning_of_a_cached_entry": "a checksum taken from the cache proves unchanged size and modification time since it was hashed, not bytes read again",
+ "notes": []
+}
 ```
 
 ## compare

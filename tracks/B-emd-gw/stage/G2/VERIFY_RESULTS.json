@@ -1,9 +1,9 @@
 {
   "track": "B-emd-gw",
   "gate": "G2",
-  "commit": "d7c7ce2b189273d67dfee4fdc1ea5e961129e793",
-  "verified_utc": "2026-11-28T00:07:25Z",
-  "export": "/data/haiyangw/nrpic/scratch/B-emd-gw/tmp/stage-verify/B-emd-gw-G2-d7c7ce2-20261128T000458Z",
+  "commit": "631acef88457af67e64d8470600aacd5c0cda3e9",
+  "verified_utc": "2026-11-28T02:21:53Z",
+  "export": "/data/haiyangw/nrpic/scratch/B-emd-gw/tmp/stage-verify/B-emd-gw-G2-631acef-20261128T000814Z",
   "result": "PASS",
   "checks": [
     {
@@ -21,7 +21,7 @@
     {
       "check": "export",
       "status": "PASS",
-      "message": "clean export of d7c7ce2b1892 (HEAD) in /data/haiyangw/nrpic/scratch/B-emd-gw/tmp/stage-verify/B-emd-gw-G2-d7c7ce2-20261128T000458Z/tree",
+      "message": "clean export of 631acef88457 (HEAD) in /data/haiyangw/nrpic/scratch/B-emd-gw/tmp/stage-verify/B-emd-gw-G2-631acef-20261128T000814Z/tree",
       "detail": null
     },
     {
@@ -69,8 +69,26 @@
     {
       "check": "runs",
       "status": "PASS",
-      "message": "383 run manifests finished (78 hand-written, read as decision 0012 allows)",
+      "message": "383 run manifests finished (78 hand-written, read as decision 0012 allows); failures of 1 runs waived by coord/WAIVERS.md (decision 0019), output checksums verified where recorded",
       "detail": null
+    },
+    {
+      "check": "runs-waived",
+      "status": "WARN",
+      "message": "failures of the manifest check waived: 1 runs named in main's coord/WAIVERS.md (decision 0019 item 6): B-20261115-164157-40b9f6d: outputs moved into the run directory after the run finished; data unchanged",
+      "detail": {
+        "B-20261115-164157-40b9f6d": {
+          "waived_by": "coord/WAIVERS.md",
+          "reason": "outputs moved into the run directory after the run finished; data unchanged",
+          "problems": [
+            "output not in sha256sums.txt: reference.png",
+            "output not in sha256sums.txt: reference.pdf",
+            "output not in sha256sums.txt: reference_g.npz",
+            "output not in sha256sums.txt: sha256sums.moved.txt",
+            "output not in sha256sums.txt: reference.json"
+          ]
+        }
+      }
     },
     {
       "check": "run-notes",
@@ -81,19 +99,22 @@
           "status 'done' read as completed",
           "output directory read from a field other than outputs.dir",
           "no gate",
-          "status 'done' read as completed"
+          "status 'done' read as completed",
+          "no scratch/B-emd-gw/B-emd-gw-20261115-112946-b7b431d/sha256sums.txt (hand-written manifest; outputs not re-verifiable)"
         ],
         "B-emd-gw-20261115-112947-b7b431d": [
           "status 'done' read as completed",
           "output directory read from a field other than outputs.dir",
           "no gate",
-          "status 'done' read as completed"
+          "status 'done' read as completed",
+          "no scratch/B-emd-gw/B-emd-gw-20261115-112947-b7b431d/sha256sums.txt (hand-written manifest; outputs not re-verifiable)"
         ],
         "B-emd-gw-20261115-112948-b7b431d": [
           "status 'done' read as completed",
           "output directory read from a field other than outputs.dir",
           "no gate",
-          "status 'done' read as completed"
+          "status 'done' read as completed",
+          "no scratch/B-emd-gw/B-emd-gw-20261115-112948-b7b431d/sha256sums.txt (hand-written manifest; outputs not re-verifiable)"
         ],
         "B-emd-gw-20261115-113102-bc5e082": [
           "hand-written (fields nrpic-run never writes: card_hours, commit, cores, output_dir, package)"
@@ -111,97 +132,113 @@
           "status 'done' read as completed",
           "output directory read from a field other than outputs.dir",
           "no gate",
-          "status 'done' read as completed"
+          "status 'done' read as completed",
+          "no scratch/B-emd-gw/B-emd-gw-20261115-113212-0ea0f74/sha256sums.txt (hand-written manifest; outputs not re-verifiable)"
         ],
         "B-emd-gw-20261115-113213-0ea0f74": [
           "status 'done' read as completed",
           "output directory read from a field other than outputs.dir",
           "no gate",
-          "status 'done' read as completed"
+          "status 'done' read as completed",
+          "no scratch/B-emd-gw/B-emd-gw-20261115-113213-0ea0f74/sha256sums.txt (hand-written manifest; outputs not re-verifiable)"
         ],
         "B-emd-gw-20261115-113214-0ea0f74": [
           "status 'done' read as completed",
           "output directory read from a field other than outputs.dir",
           "no gate",
-          "status 'done' read as completed"
+          "status 'done' read as completed",
+          "no scratch/B-emd-gw/B-emd-gw-20261115-113214-0ea0f74/sha256sums.txt (hand-written manifest; outputs not re-verifiable)"
         ],
         "B-emd-gw-20261115-113215-0ea0f74": [
           "status 'done' read as completed",
           "output directory read from a field other than outputs.dir",
           "no gate",
-          "status 'done' read as completed"
+          "status 'done' read as completed",
+          "no scratch/B-emd-gw/B-emd-gw-20261115-113215-0ea0f74/sha256sums.txt (hand-written manifest; outputs not re-verifiable)"
         ],
         "B-emd-gw-20261115-113216-0ea0f74": [
           "status 'done' read as completed",
           "output directory read from a field other than outputs.dir",
           "no gate",
-          "status 'done' read as completed"
+          "status 'done' read as completed",
+          "no scratch/B-emd-gw/B-emd-gw-20261115-113216-0ea0f74/sha256sums.txt (hand-written manifest; outputs not re-verifiable)"
         ],
         "B-emd-gw-20261115-113217-0ea0f74": [
           "status 'done' read as completed",
           "output directory read from a field other than outputs.dir",
           "no gate",
-          "status 'done' read as completed"
+          "status 'done' read as completed",
+          "no scratch/B-emd-gw/B-emd-gw-20261115-113217-0ea0f74/sha256sums.txt (hand-written manifest; outputs not re-verifiable)"
         ],
         "B-emd-gw-20261115-113218-0ea0f74": [
           "status 'done' read as completed",
           "output directory read from a field other than outputs.dir",
           "no gate",
-          "status 'done' read as completed"
+          "status 'done' read as completed",
+          "no scratch/B-emd-gw/B-emd-gw-20261115-113218-0ea0f74/sha256sums.txt (hand-written manifest; outputs not re-verifiable)"
         ],
         "B-emd-gw-20261115-113219-0ea0f74": [
           "status 'done' read as completed",
           "output directory read from a field other than outputs.dir",
           "no gate",
-          "status 'done' read as completed"
+          "status 'done' read as completed",
+          "no scratch/B-emd-gw/B-emd-gw-20261115-113219-0ea0f74/sha256sums.txt (hand-written manifest; outputs not re-verifiable)"
         ],
         "B-emd-gw-20261115-113220-0ea0f74": [
           "status 'done' read as completed",
           "output directory read from a field other than outputs.dir",
           "no gate",
-          "status 'done' read as completed"
+          "status 'done' read as completed",
+          "no scratch/B-emd-gw/B-emd-gw-20261115-113220-0ea0f74/sha256sums.txt (hand-written manifest; outputs not re-verifiable)"
         ],
         "B-emd-gw-20261115-113221-0ea0f74": [
           "status 'done' read as completed",
           "output directory read from a field other than outputs.dir",
           "no gate",
-          "status 'done' read as completed"
+          "status 'done' read as completed",
+          "no scratch/B-emd-gw/B-emd-gw-20261115-113221-0ea0f74/sha256sums.txt (hand-written manifest; outputs not re-verifiable)"
         ],
         "B-emd-gw-20261115-113222-0ea0f74": [
           "status 'done' read as completed",
           "output directory read from a field other than outputs.dir",
           "no gate",
-          "status 'done' read as completed"
+          "status 'done' read as completed",
+          "no scratch/B-emd-gw/B-emd-gw-20261115-113222-0ea0f74/sha256sums.txt (hand-written manifest; outputs not re-verifiable)"
         ],
         "B-emd-gw-20261115-113223-0ea0f74": [
           "status 'done' read as completed",
           "output directory read from a field other than outputs.dir",
           "no gate",
-          "status 'done' read as completed"
+          "status 'done' read as completed",
+          "no scratch/B-emd-gw/B-emd-gw-20261115-113223-0ea0f74/sha256sums.txt (hand-written manifest; outputs not re-verifiable)"
         ],
         "B-emd-gw-20261115-113227-0ea0f74": [
           "status 'done' read as completed",
           "output directory read from a field other than outputs.dir",
           "no gate",
-          "status 'done' read as completed"
+          "status 'done' read as completed",
+          "no scratch/B-emd-gw/B-emd-gw-20261115-113227-0ea0f74/sha256sums.txt (hand-written manifest; outputs not re-verifiable)"
         ],
         "B-emd-gw-20261115-113231-0ea0f74": [
           "status 'done' read as completed",
           "output directory read from a field other than outputs.dir",
           "no gate",
-          "status 'done' read as completed"
+          "status 'done' read as completed",
+          "no scratch/B-emd-gw/B-emd-gw-20261115-113231-0ea0f74/sha256sums.txt (hand-written manifest; outputs not re-verifiable)"
         ],
         "B-emd-gw-20261115-113232-0ea0f74": [
           "status 'done' read as completed",
           "output directory read from a field other than outputs.dir",
           "no gate",
-          "status 'done' read as completed"
+          "status 'done' read as completed",
+          "no scratch/B-emd-gw/B-emd-gw-20261115-113232-0ea0f74/sha256sums.txt (hand-written manifest; outputs not re-verifiable)"
         ],
         "B-emd-gw-20261115-113236-0ea0f74": [
           "status 'done' read as completed",
           "output directory read from a field other than outputs.dir",
           "no gate",
-          "status 'done' read as completed"
+          "status 'done' read as completed",
+          "no scratch/B-emd-gw/B-emd-gw-20261115-113236-0ea0f74/sha256sums.txt (hand-written manifest; outputs not re-verifiable)"
         ],
         "B-emd-gw-20261115-113246-50c684b": [
           "hand-written (fields nrpic-run never writes: card_hours, commit, cores, output_dir, package)"
@@ -210,49 +247,57 @@
           "status 'done' read as completed",
           "output directory read from a field other than outputs.dir",
           "no gate",
-          "status 'done' read as completed"
+          "status 'done' read as completed",
+          "no scratch/B-emd-gw/B-emd-gw-20261115-113254-0ea0f74/sha256sums.txt (hand-written manifest; outputs not re-verifiable)"
         ],
         "B-emd-gw-20261115-113304-0ea0f74": [
           "status 'done' read as completed",
           "output directory read from a field other than outputs.dir",
           "no gate",
-          "status 'done' read as completed"
+          "status 'done' read as completed",
+          "no scratch/B-emd-gw/B-emd-gw-20261115-113304-0ea0f74/sha256sums.txt (hand-written manifest; outputs not re-verifiable)"
         ],
         "B-emd-gw-20261115-113321-0ea0f74": [
           "status 'done' read as completed",
           "output directory read from a field other than outputs.dir",
           "no gate",
-          "status 'done' read as completed"
+          "status 'done' read as completed",
+          "no scratch/B-emd-gw/B-emd-gw-20261115-113321-0ea0f74/sha256sums.txt (hand-written manifest; outputs not re-verifiable)"
         ],
         "B-emd-gw-20261115-113418-0ea0f74": [
           "status 'done' read as completed",
           "output directory read from a field other than outputs.dir",
           "no gate",
-          "status 'done' read as completed"
+          "status 'done' read as completed",
+          "no scratch/B-emd-gw/B-emd-gw-20261115-113418-0ea0f74/sha256sums.txt (hand-written manifest; outputs not re-verifiable)"
         ],
         "B-emd-gw-20261115-113517-0ea0f74": [
           "status 'done' read as completed",
           "output directory read from a field other than outputs.dir",
           "no gate",
-          "status 'done' read as completed"
+          "status 'done' read as completed",
+          "no scratch/B-emd-gw/B-emd-gw-20261115-113517-0ea0f74/sha256sums.txt (hand-written manifest; outputs not re-verifiable)"
         ],
         "B-emd-gw-20261115-113548-0ea0f74": [
           "status 'done' read as completed",
           "output directory read from a field other than outputs.dir",
           "no gate",
-          "status 'done' read as completed"
+          "status 'done' read as completed",
+          "no scratch/B-emd-gw/B-emd-gw-20261115-113548-0ea0f74/sha256sums.txt (hand-written manifest; outputs not re-verifiable)"
         ],
         "B-emd-gw-20261115-113600-0ea0f74": [
           "status 'done' read as completed",
           "output directory read from a field other than outputs.dir",
           "no gate",
-          "status 'done' read as completed"
+          "status 'done' read as completed",
+          "no scratch/B-emd-gw/B-emd-gw-20261115-113600-0ea0f74/sha256sums.txt (hand-written manifest; outputs not re-verifiable)"
         ],
         "B-emd-gw-20261115-113615-0ea0f74": [
           "status 'done' read as completed",
           "output directory read from a field other than outputs.dir",
           "no gate",
-          "status 'done' read as completed"
+          "status 'done' read as completed",
+          "no scratch/B-emd-gw/B-emd-gw-20261115-113615-0ea0f74/sha256sums.txt (hand-written manifest; outputs not re-verifiable)"
         ],
         "B-emd-gw-20261115-113632-2960145": [
           "hand-written (fields nrpic-run never writes: card_hours, commit, cores, output_dir, package)"
@@ -261,51 +306,66 @@
           "status 'done' read as completed",
           "output directory read from a field other than outputs.dir",
           "no gate",
-          "status 'done' read as completed"
+          "status 'done' read as completed",
+          "no scratch/B-emd-gw/B-emd-gw-20261115-113700-0ea0f74/sha256sums.txt (hand-written manifest; outputs not re-verifiable)"
         ],
         "B-emd-gw-20261115-113713-0ea0f74": [
           "status 'done' read as completed",
           "output directory read from a field other than outputs.dir",
           "no gate",
-          "status 'done' read as completed"
+          "status 'done' read as completed",
+          "no scratch/B-emd-gw/B-emd-gw-20261115-113713-0ea0f74/sha256sums.txt (hand-written manifest; outputs not re-verifiable)"
         ],
         "B-emd-gw-20261115-113816-0ea0f74": [
           "status 'done' read as completed",
           "output directory read from a field other than outputs.dir",
           "no gate",
-          "status 'done' read as completed"
+          "status 'done' read as completed",
+          "no scratch/B-emd-gw/B-emd-gw-20261115-113816-0ea0f74/sha256sums.txt (hand-written manifest; outputs not re-verifiable)"
         ],
         "B-emd-gw-20261115-113850-0ea0f74": [
           "status 'done' read as completed",
           "output directory read from a field other than outputs.dir",
           "no gate",
-          "status 'done' read as completed"
+          "status 'done' read as completed",
+          "no scratch/B-emd-gw/B-emd-gw-20261115-113850-0ea0f74/sha256sums.txt (hand-written manifest; outputs not re-verifiable)"
         ],
         "B-emd-gw-20261115-113859-0ea0f74": [
           "status 'done' read as completed",
           "output directory read from a field other than outputs.dir",
           "no gate",
-          "status 'done' read as completed"
+          "status 'done' read as completed",
+          "no scratch/B-emd-gw/B-emd-gw-20261115-113859-0ea0f74/sha256sums.txt (hand-written manifest; outputs not re-verifiable)"
         ],
         "B-emd-gw-20261115-113943-0ea0f74": [
           "status 'done' read as completed",
           "output directory read from a field other than outputs.dir",
           "no gate",
-          "status 'done' read as completed"
+          "status 'done' read as completed",
+          "no scratch/B-emd-gw/B-emd-gw-20261115-113943-0ea0f74/sha256sums.txt (hand-written manifest; outputs not re-verifiable)"
         ],
         "B-emd-gw-20261115-114004-0ea0f74": [
           "status 'done' read as completed",
           "output directory read from a field other than outputs.dir",
           "no gate",
-          "status 'done' read as completed"
+          "status 'done' read as completed",
+          "no scratch/B-emd-gw/B-emd-gw-20261115-114004-0ea0f74/sha256sums.txt (hand-written manifest; outputs not re-verifiable)"
         ]
       }
     },
     {
       "check": "checksums",
-      "status": "WARN",
-      "message": "output checksums not re-verified (--no-checksums)",
-      "detail": null
+      "status": "PASS",
+      "message": "13883 output files: 13883 hashed again (bytes read, 1166.91 GB), 0 taken from the cache (0.0 MB) (--full); every byte read again (none taken from the cache, where a checksum taken from the cache proves unchanged size and modification time since it was hashed, not bytes read again)",
+      "detail": {
+        "rehashed_files": 13883,
+        "rehashed_bytes": 1166913927270,
+        "cached_files": 0,
+        "cached_bytes": 0,
+        "full": true,
+        "meaning_of_a_cached_entry": "a checksum taken from the cache proves unchanged size and modification time since it was hashed, not bytes read again",
+        "notes": []
+      }
     },
     {
       "check": "status",
