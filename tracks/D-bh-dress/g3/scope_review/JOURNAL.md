@@ -100,7 +100,7 @@ and each deck's `mesh_structure.dat`.
   +-9 M, 296 on level 6, 448 on levels 0-5): 2.27 times G-8's cells, 4.44 times its cells with ghosts.
 No figure: block counts are integers read from the code's own mesh file.
 
-## Entry 3 (2026-11-27 17:02 PST): outcome of B (G3 criteria of Claim G on G2's outputs)
+## Entry 3 (2026-11-27 16:48 PST): outcome of B (G3 criteria of Claim G on G2's outputs)
 
 Run D-20261128-004801-cd648e5 (`tools/g2_analogs.py`, one core, exit 0; byte-identical to an
 unregistered dry run in scratch/D-bh-dress/tmp/scope_review). Figure g2_analogs.png looked at: (a) the
