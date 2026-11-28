@@ -1,6 +1,6 @@
 # HANDOFF of F-hills
 
-State in three lines (2026-11-27 18:15 PST, end of the batch-35 lead session, processors only):
+State in three lines (2026-11-27 18:13 PST, end of the batch-35 lead session, processors only):
 - G0 signed. G1: gate review recommends PASS WITH RESERVATIONS; decision 0048 item 2 signs it once
   the passage reaches t = 200 M (queue entry q0091) and a registered reading shows it. The
   verifier's part-2 corrections are applied (batch 35). The lead did not pass G1.
