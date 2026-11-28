@@ -1516,3 +1516,31 @@ the invariant by a few per cent in amplitude at a = 100 and up to 9 per cent at 
 as I worded it (W2: 5 per cent in I_B) is NOT met; what remains is to separate truncation (W5,
 background run B-20261128-040950-1404d91) from the constraint violation (eight per cell in both
 gauges: q0006's member and q0107).
+
+## 2026-11-27 23:35 PST (lead of batch 40): q0107 ended; W5 was read at the wrong epochs; predictions W5b, W6 before any number of q0107
+
+q0107 (run B-20261128-034731-640f4f4): chain DONE (tlim, t = 21.916, cycle 1421) after two SIGTERM
+cuts, each continued from its restart file (chain/events.log). Closed with nrpic-run finish before
+any analysis. G8a-G8c stand as written at 19:36; nothing of the run has been read yet but the
+events log.
+
+W5 (B-20261128-040950-1404d91, ended 20:17 PST, exit 0) is INVALID as run [VERIFIED from its own
+rows file]: weyl_gauge.py took the 256^3 file index as t (dumps "every 1.0"), but the chain writes
+an extra dump at each segment end (headers: file 5 at t = 4.484, 11 at 9.195, 17 at 14.164, 23 at
+19.414). Files 14, 18, 21 are t = 12, 15, 18, so its M_* ratios compare a = 49, 72, 100 with
+a = 64, 100, 132 (M_V = 0.45 = (49/64)^3, M_alpha_V = 0.765 = 49/64: the lapse tracks a). The
+W5 outcome is therefore not judged; the files at t = 14, 18, 21 are 16, 21, 25. The script is
+changed to pick each file by the time in its header (mode splitx), for every member.
+- W5b (W5 rerun, prediction as written at 20:10, unchanged): if the late gauge difference is
+  truncation, |M - 1| (256^3 over 128^3, Gamma driver) is at least |R - 1| for each statistic at
+  a = 100 and 132; refuted (truncation not the cause) if every mesh difference is below half the
+  gauge difference at a = 132.
+- W6 (the remainder of the gauge difference against sampling; decision 0050 item 5). If the part
+  of the invariant's gauge difference that is not coordinate comes from particle noise and the
+  constraint violation it drives, then at eight per cell (q0006 zero shift against q0107 Gamma
+  driver) the gauge ratio of the bulk statistics moves toward one: |R_8 - 1| at most half of
+  |R_1 - 1| for the median and the expanding-half mean at a = 100 and 132 (one per cell: median
+  0.936, 0.821; expanding half 0.957, 0.883). REFUTED (the remainder does not fall with the
+  sampling) if |R_8 - 1| is at least 0.8 |R_1 - 1| for both statistics at a = 132. Between: it
+  falls, but not as fast as the noise.
+- W6b (slices): V, <K>_V, <alpha>_V agree between the 8 ppc gauges within 1e-3 (as W1).
