@@ -48,7 +48,7 @@ in VERIFY_RESULTS.md (`nrpic-stage verify`), not here.
   - evidence: Gate review (batch 30): PASS WITH RESERVATION. As C8 (with its reservations: a different quantity than the source's; mesh C below the tracked set's resolution). Locators main.tex:945 and main.tex:1484 checked by the gate reviewer.
 - [ ] **C23** "one triaxial particle run of phase 1 to horizon formation with the constraint bound of section 3" (SCOPE section 7, G2)
   - status: OPEN
-  - evidence: Gate review (batch 30): FAIL as written. S1L (mu = 0.3, e = 0.2, A-20261123-025907-97bab8d) ran to t = 220 with no horizon in 314 searches (gate review G1); the bound of section 3 is met in no run (C3). Batch 31 (FP, A-20261126-233542-fd9f9f0): the core-v0.8 finder on S1L's restart files at t = 210 and 220 (see periodic_threshold JOURNAL, outcome FP). FAIL as written.
+  - evidence: Gate review (batch 30): FAIL as written. S1L (mu = 0.3, e = 0.2, A-20261123-025907-97bab8d) ran to t = 220 with no horizon in 314 searches (gate review G1); the bound of section 3 is met in no run (C3). Batch 31 (FP, A-20261126-233542-fd9f9f0): the core-v0.8 finder on S1L's restart files at t = 210 and 220 (see periodic_threshold JOURNAL, outcome FP). FAIL as written. Batch 40 (condition (d) of 0047): S1L-F (q0090, A-20261128-012211-c9cedc1, reader A-20261128-073831-fce5805) reaches a found horizon from t = 169.28 (51 of 57 later searches found), but the section-3 ratio outside the found horizon is 0.514 at detection and 0.5-0.6 to t = 205: horizon formation shown, the bound NOT met. FAIL as written.
 
 ## Rulings of the orchestrator on the criteria (coord/DECISIONS; check that they apply to G2)
 
