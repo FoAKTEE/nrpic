@@ -29,3 +29,13 @@ The allotments stand.
    inference that streams cross in the shearing-dust case as run conflicts with the
    reference paper, where the codes that report a number at that amplitude are
    particle codes: the cause of that failure is open again.
+5. Added after batch 39 (2026-11-27 20:20 PST). Condition (a) was measured and is not
+   met: a reader of the magnetic part of the Weyl tensor, tested on an analytic wave
+   and unmoved by three families of coordinate maps, still differs between the two
+   gauges on slices that agree (median ratio 0.94 and 0.82 at a = 100 and 132, against
+   0.80 and 0.64 for the band strain). Most of the gauge dependence of the late strain
+   is therefore a coordinate effect, and up to about a tenth to a fifth is not. The
+   gate stays held; condition (b), the member at eight particles per cell in the
+   shifted gauge (queue entry q0107), decides whether the remainder falls with the
+   sampling. The second review follows its reading.
+

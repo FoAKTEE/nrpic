@@ -182,3 +182,4 @@ tracks/D-bh-dress/outbox/20261128T021145Z__to-orch__g3-scope-amended-first-step.
 tracks/C-sidm/outbox/20261128T021956Z__to-orch__g3-scope-review-and-g2-corrections.md	2026-11-28T02:56:08Z	ruled on in coord/DECISIONS/0049
 tracks/B-emd-gw/outbox/20261128T031107Z__to-orch__g2-p8-gamma-driver-partner-128.md	2026-11-28T03:16:55Z	ruled on in coord/DECISIONS/0049 items 7 and 8
 tracks/B-emd-gw/outbox/20261128T031107Z__to-orch__g2-verifier-answered-package-ready.md	2026-11-28T03:16:55Z	ruled on in coord/DECISIONS/0049 items 7 and 8
+tracks/B-emd-gw/outbox/20261128T041156Z__to-orch__g2-held-condition-a-not-met-b-pending.md	2026-11-28T04:15:01Z	read; decision 0050 item 5
