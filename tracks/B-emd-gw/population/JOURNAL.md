@@ -1293,3 +1293,22 @@ Predictions:
   minima 1.10-1.18 (the verifier's 1.39-1.41 and 1.13-1.17).
 - P3. Eight per cell, momentum ratio 64/128: smallest over a >= 36 about 1.45 (below 1.7); over
   a >= 49 1.71-2.16 (Table VIII).
+
+## 2026-11-27 19:11 PST (lead of batch 37): outcomes P1-P3 (pairings)
+
+Runs B-20261128-030537-0172236 and B-20261128-030556-5ef9294 (the same numbers; the second with
+the figure's band label corrected), pair_ratio.png looked at (left: F and C on top of each other,
+peaking at 1.40-1.41 near a = 55; N, the nearest record, shifted and up to 1.50; E's circles on the
+interpolated curves; right: the eight-per-cell Hamiltonian ratio peaks 2.34 near a = 40, the
+momentum ratio rises through 1.45 at a = 36 to 2.16 near a = 64). [VERIFIED by these runs]
+- P1 HOLDS for Table VIII, FAILS for Table VII: pairing E gives 1.05 and 1.37 over 25 <= a <= 100
+  (Table VIII's numbers), but 1.13 and 1.37 over 36 <= a <= 100, not Table VII's 1.11 and 1.36
+  (run B-20261126-024849-87e72b7, six epochs with its own interpolation; its pairing is not the one
+  of judge_c3.py). Table VII's row now says it is the six epochs and points to the pairing row.
+- P2 HOLDS for F and C (maxima 1.405, 1.405; minima over 36 <= a <= 100 1.131, 1.165), FAILS for N
+  (maximum 1.50: the nearest record of the coarser history sits up to half a record stride away in
+  a, where the ratio changes quickly; N is a pairing artefact, not a measurement).
+- P3 HOLDS: momentum ratio 64/128 at eight per cell 1.45-1.99 for 36 <= a < 49 and 1.71-2.16 from
+  a = 49; the note's "from a ~ 36 on ... 1.7 to 2.2" was wrong and is corrected (verifier a).
+Reading [JUDGEMENT]: the one-per-cell ratio is 1.05-1.41 by any interpolating pairing, against
+1.6-2.3 at eight per cell; the verifier's correction b changes digits, not the conclusion of C3.
