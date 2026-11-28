@@ -81,7 +81,8 @@ def main():
     from nrpic import figstyle
     figstyle.use_style()
     cols = figstyle.series_colors(4)
-    fig, axs = plt.subplots(1, 3, figsize=(13.0, 3.6))
+    fig, axs = plt.subplots(1, 3, figsize=(13.0, 3.6),
+                            gridspec_kw={"width_ratios": [1.0, 1.0, 0.8]})
 
     ax = axs[0]
     for c, (run, lab) in zip(cols, ((a.f0, "standard flow (default)"),
@@ -98,14 +99,18 @@ def main():
 
     ax = axs[1]
     k = 0
+    seen = set()
     for run in a.new:
         s = json.load(open(os.path.join(run, "summary.json")))
         for h in s["horizons"]:
             sc = scan(run, h["horizon"])
             if len(sc) == 0:
                 continue
-            lab = "%s t = %g" % ("S1L" if "97bab8d" in s["rst"] else "P0L6",
-                                 s["header"]["time"])
+            lab = "%s t = %.0f" % ("S1L" if "97bab8d" in s["rst"] else "P0L6",
+                                   s["header"]["time"])
+            if lab in seen:          # the scan does not depend on the flow function
+                break
+            seen.add(lab)
             ax.semilogx(sc[:, 0], sc[:, 2] * np.sqrt(sc[:, 1] / (16 * np.pi)), "o-", ms=2.5,
                         lw=0.9, color=cols[k % 4], label=lab)
             c = h.get("columns_all", [])
@@ -129,8 +134,8 @@ def main():
     ax.set_yticklabels(["%s %s: %s" % (t["rst"][5:10], t["flow"][:5], t["name"][:34])
                         for t in rows], fontsize=5)
     ax.set_xscale("log")
-    ax.set_xlabel("rms expansion times area mass (blue: found, red: not)")
-    ax.set_title("(c) the measure of trapped_tol", fontsize=9)
+    ax.set_xlabel("rms expansion times area mass")
+    ax.set_title("(c) the measure of trapped_tol (blue: found, red: not)", fontsize=9)
     fig.tight_layout()
     figstyle.save(fig, os.path.join(a.out, "fig_finder"))
     return 0
