@@ -85,10 +85,10 @@ def main():
         txt = open(f).read()
         ts = re.findall(r"time=([0-9.eE+-]+) cycle=(\d+)", txt)
         cpu = re.search(r"cpu time used\s*=\s*([0-9.eE+-]+)", txt)
-        init = re.search(r"elapsed=([0-9.eE+-]+) cycle=", txt)
-        if len(ts) < 1 or not cpu:
+        init = re.search(r"elapsed=([0-9.eE+-]+) cycle=(\d+) time=([0-9.eE+-]+)", txt)
+        if len(ts) < 1 or not cpu or not init:
             continue
-        t0 = float(ts[0][0])
+        t0 = float(init.group(3))   # first cycle of the segment (the restart time)
         t1 = float(ts[-1][0])
         segs.append(dict(log=os.path.basename(f), t0=t0, t1=t1, cpu_s=float(cpu.group(1)),
                          init_s=float(init.group(1)) if init else 0.0))
