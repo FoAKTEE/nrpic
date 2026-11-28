@@ -187,3 +187,6 @@ tracks/core/outbox/20261128T074500Z__to-orch__core-v09-ready-for-the-clerk.md	20
 tracks/D-bh-dress/outbox/20261128T074522Z__to-orch__g3-mesh-leg-ruling.md	2026-11-28T09:16:45Z	ruled on in coord/DECISIONS/0051, coord/GATES.md
 tracks/B-emd-gw/outbox/20261128T075335Z__to-orch__g2-second-review-c2-ready-in-part.md	2026-11-28T09:16:45Z	ruled on in coord/DECISIONS/0051, coord/GATES.md
 tracks/A-emd-pbh/outbox/20261128T082906Z__to-orch__g2-after-batch-40-d-not-met-ruling-on-a.md	2026-11-28T09:16:45Z	ruled on in coord/DECISIONS/0051, coord/GATES.md
+tracks/F-hills/outbox/20261128T161528Z__to-orch__g1-passage-200m.md	2026-11-28T16:44:15Z	ruled on in coord/DECISIONS/0052
+tracks/A-emd-pbh/outbox/20261128T161612Z__to-orch__b41-condition-c-ruling-and-a-on-mesh-a.md	2026-11-28T16:44:15Z	ruled on in coord/DECISIONS/0052
+tracks/D-bh-dress/outbox/20261128T162656Z__to-orch__g3-mesh-leg-m6-not-qualified.md	2026-11-28T16:44:15Z	ruled on in coord/DECISIONS/0052
