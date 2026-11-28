@@ -52,8 +52,10 @@ Verdicts: REPRODUCED (digits stated), NOT REPRODUCED, NOT CHECKABLE (why). Run i
 | X plus over prediction - 1 at N = 48, 64: amplitude 0.0263, 0.0997; phase 0.102, 0.391 | plus over cross - 1: 0.026, 0.100; 0.102, 0.391 | REPRODUCED (the prediction equals the cross error at these N) |
 | non-TT part of F small (rounding of the TT data) | non-TT over W at the last dump 0.8e-9 to 2.1e-9 | consistent |
 
-Figure `figs/v1_waves.png`. The scale factor of the code in X departs from ((t+2)/2)^2 by
--5.5e-8 to -7.0e-8 at t = 10.
+Figure `figs/v1_waves.png`. The box-mean lapse of X (equal to a in this slicing) departs
+from ((t+2)/2)^2 by -5.5e-8 to -7.0e-8 at t = 10; the ledger's "largest relative error of the
+scale factor" (3.2e-8 to 5.1e-8) is a different measure, not compared. Not recomputed: the
+Weyl diagnostic rows of Table V and the flat wave F2.
 
 ### 2.2 Population box: strain, gauges, halos, the zero-shift stop
 
@@ -194,3 +196,68 @@ f. The detached `nrpic-stage verify B-emd-gw G2 --full` (PID 2643528) ended at 1
    `stage/G2/VERIFY_RESULTS.md` and `.json` modified and uncommitted (log
    `scratch/B-emd-gw/tmp/verify_full_b34.log`). Its package line still says "no verifier's
    report yet".
+
+### Coverage of the ledger (C18 asks for every number of the Supplemental Material)
+
+- Table VIII (convergence statements of G2), rows 273 to 279: recomputed, all but the GM3
+  counts at a = 81, 100, 132 (I ran two of the five catalogue epochs) and the zero-shift
+  one-per-cell Hamiltonian extremes (not reproduced, section 2.3).
+- Table VII: rows 233, 234, 237, 238, 242, 243 (momentum part reproduced, Hamiltonian part
+  not), 244, 246, 247, 260 recomputed; rows 239 (one epoch), 249 (high-k part not, band part
+  not) in part; rows 231, 232, 235, 236, 240, 241, 245, 248, 250 to 259 not recomputed (the
+  0.028 box, the cut particle leg, the superseded rest-mass reading, the zero-shift 256^3
+  halos, the same-particle estimator).
+- Table V (waves): the F and X error rows and orders recomputed to every digit; the Weyl rows,
+  the polarization-ratio and non-TT rows only in part.
+- Tables I to VI (G1 and the first source): not in this package (signed at G1).
+So C18 as worded ("every number recomputed") is not met by this report; the numbers the gate
+rests on (Table VIII and the strain, halo, stop and constraint rows of Table VII) are.
+
+## 6. Against the lead's verdicts (written after sections 1 to 5)
+
+Read only now: the verdict column of `stage/G2/CHECKLIST.md` (C1 to C20), `stage/REVIEW-wave3.md`
+section "Batch 34", `population/JOURNAL.md` entries 2026-11-27 15:24 and 15:28, and the lines of
+`shear/JOURNAL.md` on the L2 crossing (around its lines 60-66, 425-436, 446-514).
+
+- C1 (PASS under 0046 item 2(a); L2 FAILED on record; series-7 constraint floor open): I
+  agree, with every series-7 number reproduced. The lead's own review left the crossing
+  measure unchecked ("left to the verifier"): I recomputed it from the snapshots and it
+  holds (0.699; first crossing 9.25, 9.25, 9.00). One difference of reading: the claim that
+  L2's streams cross before its rays arrive rests on a plane-parallel Zel'dovich estimate
+  (t = 2.1 to 2.2, called conservative) and an observer-metric kink at t = 3.1, not on L2
+  particle data. The same estimate put series 7's crossing at 10.7 to 14.9; the snapshots show
+  9.0 to 9.25, so the estimate is not conservative as stated. For L2 the margin (2.1 against
+  t_A = 6.5) is wide enough that the attribution likely survives [JUDGEMENT], but it is an
+  inference, not a measurement, and should be worded so (my correction d).
+- C2 (PASS "for the strain with that limit stated"): I agree on the numbers (band strain
+  1.1 and 2.8 per cent; Omega 0.851; halo counts 8/11 and 15/31 at the epochs I ran; largest
+  mass 1.32 and 1.13; 256^3 catalogue equal to the lead's file). I differ on the gauge leg:
+  the checklist item asks for convergence in gauge, and the lead's evidence is a choice of
+  gauge (the zero-shift high-k field identified as coordinates, the strain read in the driven
+  gauge), while the band strain itself differs by 20 per cent between the gauges at a = 100.
+  I would record C2 as passed for mesh and particle number of the band strain, with the gauge
+  leg met only as an identified gauge dependence, and the halo catalogue failed at one
+  particle per cell (the ruling the lead asked for). The particle-number leg (Q1, 2e-3) I did
+  not recompute.
+- C3 (PASS under 0046 item 2(b) and 0039 item 2(c)): I agree; the lead's interpolation (128^3
+  in log a onto the 64^3 rows) and mine (log q in t, both directions, nearest records) give
+  the same 8-per-cell extremes to the third digit. The lead's one-per-cell zero-shift range
+  1.05 to 1.37 (and Table VII's 1.11 to 1.36) I do not reproduce at the maximum (1.39 to
+  1.41); the conclusion (1.05 to 1.4 against 1.6 to 2.3) stands. The note's "from a ~ 36 on"
+  for the momentum ratio contradicts the lead's own journal (1.45 at a = 36.7) and Table VIII
+  (a >= 49).
+- GM2 Omega part, GM3, C3a: the lead's "fails as written, not refuted" and "fails in part"
+  match my numbers; I found no failed prediction recorded as held.
+- C7 (FLRW, PASS) and C9's earlier shearing cases (S1 to S4, M1, L1, P10): not recomputed by
+  me; no statement.
+- C18: this report; it is in the helper's directory, the lead copies it to
+  `stage/G2/VERIFIER.md`. Section "Coverage" says what it does not cover.
+- The `--full` stage verify the lead left running ended PASS (0 failed checks, 13883 files,
+  1166.91 GB read again) with `VERIFY_RESULTS.{md,json}` modified and uncommitted in the
+  worktree; its package line predates this report.
+
+Net: every number I recomputed that the gate rests on holds to its printed digits, with two
+exceptions that change no conclusion (the zero-shift one-per-cell constraint maximum; the
+high-k ratio's dependence on the shell cut) and one claim not checkable from the outputs (L2's
+crossing time). My reading of the gate agrees with the lead's except that the gauge leg of C2
+is a choice of gauge, not a convergence, and should be recorded as such.
