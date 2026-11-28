@@ -67,3 +67,51 @@ k	cls	claim_id	verdict	right	borderline	action	note
 113	T	433	right	1	0	verify	authors first.tex L29-42, second.tex L30-37; abstracts as worded
 114	T	255	right	1	1	verify	noun phrase; four tables Case 1-4 (captions L778, L797, L818, L836) with L_0 = 0.1 (L760-761)
 115	T	275	right	1	0	verify	table st-suite caption and columns L1016-1031
+116	T	99	right	1	0	verify	L478 as worded
+117	T	262	right	1	0	verify	table bindengmax L948-958
+118	T	363	right	1	0	verify	L193 as worded
+119	T	135	right	1	1	verify	noun phrase; two-stage load L2174, glass-like step L2183, vanishing quadrupole L2234, affine Zeldovich map L2174
+120	T	451	wrong_label	0	0	supersede(to 638)	F novelty-search statement (theses, INSPIRE) under fulltext of the paper; and stated plan overstates could be continued for at least until 128:1:1 (L708-712); 638 (verified, claims4) carries the paper part
+121	T	33	fragment	0	0	supersede	second half of 32 (A REFERENCES.md:50-54): evaluated at ... without the subject (the analytic criterion line); one whole sentence from L911-919 and L984-988
+122	T	637	right	1	1	verify	noun phrase; L223-225 (dynamical range of 1e4 makes full NR intractable)
+123	T	83	right	1	0	verify	L349-360, eq. nonform
+124	T	208	right	1	1	verify	section title L369 with the distinction stated at L377-379 (gauge and hypersurface dependence are different concepts)
+125	T	75	right	1	0	verify	L919-927
+126	T	630	right	1	1	verify	19 percent L748-749; survival windows is a bare noun for the phi ranges of L784-785
+127	T	364	right	1	0	verify	L195-199
+128	T	629	right	1	0	verify	L597-599
+129	T	240	right	1	0	verify	abstract L52-72; Misner-Sharp L235-255; Eckart heat flux L268-270
+130	T	590	right	1	1	verify	noun phrases; Fastflow and BHaHAHA masses L945, Psi_4 strain L1362; L674 is the AthenaK implementation
+131	T	319	right	1	1	verify	L320-323; locator debris kept
+132	T	445	right_locator	1	0	verify(locator+)	the intractable part is at L223-225; authors L94-97, parabolic orbit L112, free-fall frame and GEM force L230-234 sit outside the stored locator
+133	T	44	right	1	0	verify	L213-222: K_FLRW from local proper time L216, lapse to ~0.5 L220, lifted back L222
+134	T	484	wrong_label	0	0	supersede	core table row with its verdict (imprecise: an upper bound) under fulltext; the paper part (OS section L864-953) is right at L945
+135	T	261	right	1	0	verify	eq. def_central redshift L684-689
+136	T	32	right_locator	1	1	verify(locator+)	the criterion is eq. ana_cri L911-914, h-hat L917-918; first half of the sentence whose second half is 33
+137	T	4	right	1	1	verify	noun phrase; typical BBKS profile for the peaked spectrum of L844 (narrow is a gloss)
+138	T	90	right	1	0	verify	eq. t1equation L222-226
+139	T	92	right	1	0	verify	L240 as worded
+140	T	264	right	1	0	verify	L1155-1170: failure of the turning point principle; the same steady states are unstable as Einstein-Euler states while still stable for Vlasov
+141	T	215	right	1	0	verify	L1446-1452 (unequal time correlator, Wronskian method)
+142	T	137	right	1	0	verify	L1036-1063 and L2277
+143	T	489	right	1	1	verify	noun phrase; L945; BHaHAHA is Etienne:2025auk, eprint 2505.15912 (references.bib L896-899)
+144	T	82	right	1	0	verify	eq. sigma_v(t) L330-334
+145	T	100	right	1	0	verify	L483-489 (zero speed, uniform random positions, 1.2 N^(-1/3) line)
+146	T	331	right	1	1	verify	L289-291; note debris (helper, per scope) kept
+147	T	16	right	1	0	verify	L776, L942
+148	T	306	wrong	0	1	supersede(to successor of 234)	same as 234: L283 says sufficient but may not be necessary; the hedge is dropped; locator debris
+149	T	260	right	1	0	verify	eq. Ansatz_Poly, Ansatz_King L630-636
+150	T	338	right	1	0	verify	constant distribution function L421-424, Gondolo-Silk approximation L436-440, eq. rhoGS
+151	T	286	right	1	0	verify	L116: Kn = lambda/H, H, C = 0.75 in kappa_lmfp
+152	T	360	right	1	0	verify	conclusion L20 (capture disregarded, GR could modify results near R_S)
+153	T	8	right	1	0	verify	absence checked by grep: boundary condition occurs at L483 (compatibility only) and L1394 (slicing function of the LTB comparison appendix)
+154	T	26	right	1	0	verify	L1145
+155	T	446	right	1	0	verify	authors template.tex L23-26 (seven, Trani last), abstract L45, L80
+156	T	252	fragment	0	0	supersede	first part is the tail of a list item of C REFERENCES.md:40-42 (velocity-dependent cross-sections (520)) with no statement and its locator outside the stored one; whole sentence from L520 and L672-676
+157	T	73	right	1	0	verify	L948
+158	T	236	right	1	0	verify	end of L327: b >~ 0.1 at the onset for collapse in the classical regime
+159	T	30	right	1	0	verify	L1148-1149, L1176-1186
+160	T	291	right	1	0	verify	L133-142
+161	T	104	right	1	0	verify	L547 (N = 100 to 2000), L549 (10000 shells, Plummer), L551 (0.41)
+162	T	632	right	1	1	verify	L368-379; fit coefficients is a bare noun
+163	T	77	right	1	0	verify	abstract L76-77
