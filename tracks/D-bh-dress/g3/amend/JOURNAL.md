@@ -171,7 +171,7 @@ obstacle is memory, not card-hours: no executable runs G-16u on this machine (on
 two ranks is published). What is lost if the leg stays on one card: the M/16 member, and with it the third mesh
 member that A3's G3-G2 order and G3-G3 ratio need; G-8 and G-12u alone give one difference and no order.
 
-## Entry 8 (2026-11-28 08:10 PST, lead of batch 41, before the runs it predicts): ruling 0051 item 3; predictions for the M/6 checks, the build identity and the read of G-8
+## Entry 8 (2026-11-28 08:03 PST, lead of batch 41, before the runs it predicts): ruling 0051 item 3; predictions for the M/6 checks, the build identity and the read of G-8
 
 Ruling (coord/DECISIONS/0051 item 3): no run on two cards; the mesh leg is G-8 and G-12u and, if it qualifies,
 a coarser uniform member G-6u (its timing run finds the horizon at t = 0 and a null test at M/6 stays within
