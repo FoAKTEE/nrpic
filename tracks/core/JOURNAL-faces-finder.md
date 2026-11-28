@@ -426,3 +426,19 @@ the linear cloud and `deposit_fine_shape` (clouds on a lattice coarser than the 
 to a finer block that is not above the cap). That is the one case where the rule chosen
 in entry 1 differs from the lead's proposed flag in what it deposits; `dep_levels.py`
 has caps at the root level only.
+
+### Prediction CM (the case where my rule for item 0 differs from the lead's proposed flag)
+
+`cap_mid.py`: three levels along x1 (level 1 in |x1| < 8, level 2 in |x1| < 4), cap at
+level 1, linear cloud, one lattice of particles everywhere at the centres of the level-1
+cells. With `deposit_fine_shape`:
+- this branch: E/rho0 = 1 to 1e-12 in every cell of the line, at the faces 0/1 and 1/2
+  alike. At the face 1/2 the clouds of level-1 blocks whose own cells are all level-1
+  leaves (not "capped" in the sense of the proposed flag) must leave their share in the
+  level-2 cells beside them, because the clouds of the level-2 block are held on the
+  same lattice; a flag "this cloud was capped" would drop that share.
+- core-v0.8: the same at the face 1/2, and a dipole in the level-1 cells next to the face
+  0/1 (clouds on the root lattice beside a block whose clouds are on the finer lattice).
+Without the option: uniform, and the same bytes on the line in both builds.
+Refuted for my rule if this branch is not uniform at the face 1/2 (then the share I keep
+is wrong) or at 0/1 (then the share I drop was needed).
