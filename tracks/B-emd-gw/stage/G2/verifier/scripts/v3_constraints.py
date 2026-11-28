@@ -81,6 +81,38 @@ for name, (a_, b_) in pairs.items():
                           "36-100": extremes(t, r, 36, 100), "le31": extremes(t, r, 1.01, 31),
                           "at_a25": float(np.interp(25.0, vlib.scale(t), r)),
                           "last": {"a": float(vlib.scale(t[-1])), "r": float(r[-1])}}
+# sensitivity to the pairing: the other direction (times of den, num interpolated) and
+# nearest records without interpolation
+def ratio_rev(num, den, col):
+    tn, td = H[num]["time"], H[den]["time"]
+    m = (td >= tn.min()) & (td <= tn.max())
+    qn = np.exp(np.interp(td[m], tn, np.log(H[num][col])))
+    return td[m], qn/H[den][col][m]
+
+
+def ratio_nearest(num, den, col):
+    tn, td = H[num]["time"], H[den]["time"]
+    j = np.array([int(np.argmin(np.abs(td - x))) for x in tn])
+    ok = np.abs(td[j] - tn) < 0.13
+    return tn[ok], H[num][col][ok]/H[den][col][j[ok]]
+
+
+res["pairing_sensitivity"] = {}
+for name, (a_, b_) in pairs.items():
+    for col in ("Hr_mean", "Mr_mean"):
+        for lab, fn in (("reverse", ratio_rev), ("nearest", ratio_nearest)):
+            t, r = fn(a_, b_, col)
+            res["pairing_sensitivity"][f"{name}:{col}:{lab}"] = {
+                "25-141": extremes(t, r, 25, 141), "36-100": extremes(t, r, 36, 100), "49-": extremes(t, r, 49)}
+# last record against last record (the particle leg ends at different a in the two runs)
+for col in ("Hr_mean", "Mr_mean"):
+    res["ppc1_over_ppc8_128"][col]["last_vs_last"] = {
+        "a1": float(vlib.scale(H["zs_128"]["time"][-1])), "a8": float(vlib.scale(H["p8_128"]["time"][-1])),
+        "r": float(H["zs_128"][col][-1]/H["p8_128"][col][-1])}
+# where the 8-per-cell ratio is below 1 before a = 31
+t, r = series["p8_64_over_128", "Hr_mean"]
+a_ = vlib.scale(t)
+res["p8_64_over_128"]["Hr_mean"]["below1_a"] = a_[(r < 1) & (a_ > 1.01)].tolist()
 # the particle leg at a = 141
 for col in ("Hr_mean", "Mr_mean"):
     t, r = series["ppc1_over_ppc8_128", col]
