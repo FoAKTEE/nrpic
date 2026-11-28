@@ -1,0 +1,133 @@
+k	cls	claim_id	track	verdict	right	borderline	action	successor	note
+48	T	324	C-sidm	right	1	1	verify(locator+)		table rows L953-956 as printed; quantities (first maximum and zero of the binding energy, L941-947) not named; locator debris kept
+49	T	205	B-emd-gw	right	1	0	verify		definition eq. rhoK at L260
+50	T	101	A-emd-pbh	right	1	1	verify		noun phrase; grid limit b_min ~ N^(-4/9) of eq. gridlimit, condition s_v^2 << delta_m/N^(2/3) (L521) not carried; sibling 100 is the top hat at rest
+51	T	45	A-emd-pbh	right	1	0	verify		fail is a gloss: the first crashed without lapse collapse (L230), the second cut the lapse growth from 20 to 2, not enough for a stable collapse (L236)
+52	T	195	B-emd-gw	right	1	0	verify		L2396-2402 as worded
+53	T	173	B-emd-gw	right	1	0	verify(locator+)		Zeldovich until maximum expansion, Hubble flow neglected after (L610-612)
+54	T	231	C-sidm	right	1	0	verify		L274: 1.62 reached at v(0) = 0.566c, Z(0) = 0.750; b = 0.1-0.5: (0.566-0.564)c, Z(0) = 0.750-0.622
+55	T	444	F-hills	right	1	1	verify		L317-318 as worded; trailing note words (Point masses, extreme q.) kept
+56	T	206	B-emd-gw	right	1	0	verify		eq. ham_recast_full L256 and definitions L260-263
+57	T	680	D-bh-dress	right	1	0	verify		footnote L918-920; SFW is Sadeghian, Ferrer, Will, arXiv 1305.2619 (kerrdm.bbl L318-327, kerrdm.tex L140)
+58	T	322	C-sidm	right	1	1	verify		L151: M_in 1.8e-3 M_0 (SMFP region), 4.2e-2 SIDM only, M_seed = M_in; locator debris kept
+59	T	627	F-hills	right	1	1	verify		noun phrase; equations ddotx-ddotz of the restricted parabolic problem and t(f), fdot(f) at L229-259
+60	T	241	C-sidm	right	1	0	verify		eq. ms9 L341
+61	T	182	B-emd-gw	fragment	0	0	supersede	923	subject of sigma^(7/2) cut (B REFERENCES.md:33-35 joins it to the line before); whole sentence from L1030-1031
+62	T	234	C-sidm	wrong	0	1	supersede	924	L283 says the criterion is sufficient but may not be necessary; the text drops the hedge (not necessary); the epsilon, Z(0) agreement is right
+63	T	46	A-emd-pbh	right	1	0	verify		S = 450 at L244 (largest stable), T update L246-248, best result of this section L250
+64	T	265	C-sidm	right	1	0	verify		L1186-1193 say it of every collapse in their simulations; the King-model collapse is the case of the figures (L1221, L1244)
+65	T	193	B-emd-gw	fragment	0	0	supersede	925	the end of a quotation; B REFERENCES.md:51-53 holds the sentence; no sibling carries it (135 is the ball)
+66	T	329	C-sidm	wrong_label	0	0	supersede(judgement)	926	C judgement about the brief (the continuum solver the brief names for collisions is collisionless) stored as fulltext; L18 and methods.tex L196 support the reading
+67	T	326	C-sidm	right	1	1	verify		abstract L88-89 as worded; locator debris kept
+68	T	22	A-emd-pbh	right	1	0	verify		L960-967; p is the prolateness (L841), dust fluid L171
+69	T	320	C-sidm	right	1	1	verify		list of definitions L388-409 as printed; H bare; locator debris kept
+70	T	229	C-sidm	right	1	0	verify		dilute classical limit eq. C_distribution L110-116, b and Tolman-Klein L118, w(0) boundary value L146
+71	T	639	F-hills	right	1	0	verify(locator+)		L141-146 and L291 (column 3BH1, header L288); equal puncture masses 0.315269 in table ID L161-176
+72	T	230	C-sidm	wrong_label	0	0	supersede+add(judgement)	927	noun phrase of the paper (right) joined to C own reproduction (script, run id) under fulltext; split into a paper claim and a judgement claim
+73	T	317	C-sidm	right	1	1	verify		L408-412 with footnote as worded; locator debris kept
+74	T	315	C-sidm	right	1	1	verify		L672 (rigorous treatment requires the full collisional Boltzmann equation, Gurian:2025zpc) and f_P eq. pfac L674-675; debris kept
+75	T	87	A-emd-pbh	fragment	0	0	supersede	929	qualifier without its subject: the order-unity factors of the Case I/II non-formation conditions L366-374
+76	T	253	C-sidm	right	1	0	verify		abstract L47-58 and L866-873 as worded
+77	T	334	D-bh-dress	right_locator	1	1	verify(locator+)		cut start (reason:); capture below L_c = 4Gm for E = 1 is at L376-384, not at L120 alone
+78	T	628	F-hills	right	1	1	verify		noun phrase; E2 = -E1 L347, eq. E1par L353-356 carries the unit (G m1 m2/a)(M/m)^(1/3) with 1/D and a bracket
+79	T	323	C-sidm	right	1	1	verify		L74 as worded (0.3c, 1e-10 to 1e-8, ~1 M_sun for 1e9 M_sun); locator debris and an unrelated sibling of the same note row
+80	T	684	D-bh-dress	part_unsupported	0	0	supersede(to 910)	910	1805.09034 part right at L195-200; the 1901.08528 part sits outside the locator and the corpus remark is not a paper statement; 910 (claims4) carries both papers, each read
+81	T	211	B-emd-gw	right	1	0	verify		L142-154: metric eq. metric, Poisson gauge conditions kept beyond perturbation theory L150-152
+82	T	188	B-emd-gw	right	1	0	verify		L208-214 as worded
+83	T	201	B-emd-gw	right	1	0	verify		L2630 as worded
+84	T	72	A-emd-pbh	right	1	0	verify		eq. a*1_a*2 L900-907
+85	T	440	F-hills	right	1	0	verify		authors L105-113, HRNA L123 and L150, compared with Newtonian and 1PN L123
+86	T	318	C-sidm	right	1	1	verify		L1482-1491 (more than five times smaller than Chapman-Enskog); locator debris kept
+87	T	79	A-emd-pbh	right	1	0	verify		L198-245; caustics at L234
+88	T	5	A-emd-pbh	right	1	0	verify		L549 as worded
+89	T	278	C-sidm	right	1	0	verify		eq. st-dimensionless L1055-1059
+90	T	270	C-sidm	right	1	0	verify		L612 as worded
+91	T	305	C-sidm	right	1	1	verify		L274 (same content as 231); locator debris kept
+92	T	242	C-sidm	wrong_label	0	1	supersede	930	the paper part is right (gamma = 5/3 for the non-relativistic case, L344; no other value of gamma in the source by grep) but a TO VERIFY question of C rides under fulltext; superseded by the resolved sentence
+93	T	640	F-hills	right	1	0	verify		L185-194 and L1253-1261 (one order of magnitude bigger)
+94	T	15	A-emd-pbh	right	1	0	verify		L1064-1074 as worded
+95	T	71	A-emd-pbh	right	1	0	verify		L894
+96	T	78	A-emd-pbh	right	1	0	verify		L93-95
+97	T	546	core	right	1	0	verify		absence checked by grep of main.tex (1515 lines): kappa1, kappa2 at L243-338, kappa_{1,0} L395-397, eta_0 and M_ref L391-393, mu_S L376-380, none with a value
+98	T	70	A-emd-pbh	right	1	0	verify		L849-866: |L1| proportional to q delta_s, |L2| to I <delta_s^2>^(1/2) delta_s (sigma)
+99	T	362	D-bh-dress	right	1	0	verify		eq. Motion2 L188-190
+100	T	352	D-bh-dress	fragment	0	0	supersede	931	second half of 351 (D REFERENCES.md:44-45); whole sentence from appendix A L462-468
+101	T	366	D-bh-dress	right	1	0	verify		eq. Mhalo L218
+102	T	316	C-sidm	right	1	1	verify		eq-condition_P L667-673 and eq-condition_r32 L680-685; locator debris kept
+103	T	19	A-emd-pbh	wrong_label	0	0	supersede(judgement)	932	A inference (one particle per cell implied) under fulltext; the source states no particle number (only a plotting caption, L1132), regular alignment and filling L1065-1066, mass with the cell volume L1072
+104	T	310	C-sidm	right	1	1	verify		L384 as worded; locator debris kept
+105	T	204	B-emd-gw	right	1	0	verify		eq. decom L164, LL L168, vector Laplacian veceq L171-175
+106	T	95	A-emd-pbh	right	1	0	verify		eq. bBH L314-316 (for delta_m << 1)
+107	T	271	C-sidm	right	1	0	verify		L559: T = 1000 M
+108	T	442	F-hills	right	1	0	verify		L194 as worded
+109	T	356	D-bh-dress	right	1	0	verify		L235; the two bib keys are 1984ApJ...281....1F and 1985ApJS...58...39B
+110	T	247	C-sidm	right	1	0	verify		L474: t_c ~ 0.1 t_0 at 445.8 t_0, ~40 t_0 by about 460 t_0
+111	T	21	A-emd-pbh	right	1	0	verify		L766-768 as worded (LTB is the spherical case)
+112	T	76	A-emd-pbh	right	1	0	verify		abstract L81-86
+113	T	433	F-hills	right	1	0	verify		authors first.tex L29-42, second.tex L30-37; abstracts as worded
+114	T	255	C-sidm	right	1	1	verify		noun phrase; four tables Case 1-4 (captions L778, L797, L818, L836) with L_0 = 0.1 (L760-761)
+115	T	275	C-sidm	right	1	0	verify		table st-suite caption and columns L1016-1031
+116	T	99	A-emd-pbh	right	1	0	verify		L478 as worded
+117	T	262	C-sidm	right	1	0	verify		table bindengmax L948-958
+118	T	363	D-bh-dress	right	1	0	verify		L193 as worded
+119	T	135	A-emd-pbh	right	1	1	verify		noun phrase; two-stage load L2174, glass-like step L2183, vanishing quadrupole L2234, affine Zeldovich map L2174
+120	T	451	F-hills	wrong_label	0	0	supersede(to 638)	638	F novelty-search statement (theses, INSPIRE) under fulltext of the paper; and stated plan overstates could be continued for at least until 128:1:1 (L708-712); 638 (verified, claims4) carries the paper part
+121	T	33	A-emd-pbh	fragment	0	0	supersede	933	second half of 32 (A REFERENCES.md:50-54): evaluated at ... without the subject (the analytic criterion line); one whole sentence from L911-919 and L984-988
+122	T	637	F-hills	right	1	1	verify		noun phrase; L223-225 (dynamical range of 1e4 makes full NR intractable)
+123	T	83	A-emd-pbh	right	1	0	verify		L349-360, eq. nonform
+124	T	208	B-emd-gw	right	1	1	verify		section title L369 with the distinction stated at L377-379 (gauge and hypersurface dependence are different concepts)
+125	T	75	A-emd-pbh	right	1	0	verify		L919-927
+126	T	630	F-hills	right	1	1	verify		19 percent L748-749; survival windows is a bare noun for the phi ranges of L784-785
+127	T	364	D-bh-dress	right	1	0	verify		L195-199
+128	T	629	F-hills	right	1	0	verify		L597-599
+129	T	240	C-sidm	right	1	0	verify		abstract L52-72; Misner-Sharp L235-255; Eckart heat flux L268-270
+130	T	590	core	right	1	1	verify		noun phrases; Fastflow and BHaHAHA masses L945, Psi_4 strain L1362; L674 is the AthenaK implementation
+131	T	319	C-sidm	right	1	1	verify		L320-323; locator debris kept
+132	T	445	F-hills	right_locator	1	0	verify(locator+)		the intractable part is at L223-225; authors L94-97, parabolic orbit L112, free-fall frame and GEM force L230-234 sit outside the stored locator
+133	T	44	A-emd-pbh	right	1	0	verify		L213-222: K_FLRW from local proper time L216, lapse to ~0.5 L220, lifted back L222
+134	T	484	core	wrong_label	0	0	supersede	934	core table row with its verdict (imprecise: an upper bound) under fulltext; the paper part (OS section L864-953) is right at L945
+135	T	261	C-sidm	right	1	0	verify		eq. def_central redshift L684-689
+136	T	32	A-emd-pbh	right_locator	1	1	verify(locator+)		the criterion is eq. ana_cri L911-914, h-hat L917-918; first half of the sentence whose second half is 33
+137	T	4	A-emd-pbh	right	1	1	verify		noun phrase; typical BBKS profile for the peaked spectrum of L844 (narrow is a gloss)
+138	T	90	A-emd-pbh	right	1	0	verify		eq. t1equation L222-226
+139	T	92	A-emd-pbh	right	1	0	verify		L240 as worded
+140	T	264	C-sidm	right	1	0	verify		L1155-1170: failure of the turning point principle; the same steady states are unstable as Einstein-Euler states while still stable for Vlasov
+141	T	215	B-emd-gw	right	1	0	verify		L1446-1452 (unequal time correlator, Wronskian method)
+142	T	137	A-emd-pbh	right	1	0	verify		L1036-1063 and L2277
+143	T	489	core	right	1	1	verify		noun phrase; L945; BHaHAHA is Etienne:2025auk, eprint 2505.15912 (references.bib L896-899)
+144	T	82	A-emd-pbh	right	1	0	verify		eq. sigma_v(t) L330-334
+145	T	100	A-emd-pbh	right	1	0	verify		L483-489 (zero speed, uniform random positions, 1.2 N^(-1/3) line)
+146	T	331	C-sidm	right	1	1	verify		L289-291; note debris (helper, per scope) kept
+147	T	16	A-emd-pbh	right	1	0	verify		L776, L942
+148	T	306	C-sidm	wrong	0	1	supersede(to successor of 234)	924	same as 234: L283 says sufficient but may not be necessary; the hedge is dropped; locator debris
+149	T	260	C-sidm	right	1	0	verify		eq. Ansatz_Poly, Ansatz_King L630-636
+150	T	338	D-bh-dress	right	1	0	verify		constant distribution function L421-424, Gondolo-Silk approximation L436-440, eq. rhoGS
+151	T	286	C-sidm	right	1	0	verify		L116: Kn = lambda/H, H, C = 0.75 in kappa_lmfp
+152	T	360	D-bh-dress	right	1	0	verify		conclusion L20 (capture disregarded, GR could modify results near R_S)
+153	T	8	A-emd-pbh	right	1	0	verify		absence checked by grep: boundary condition occurs at L483 (compatibility only) and L1394 (slicing function of the LTB comparison appendix)
+154	T	26	A-emd-pbh	right	1	0	verify		L1145
+155	T	446	F-hills	right	1	0	verify		authors template.tex L23-26 (seven, Trani last), abstract L45, L80
+156	T	252	C-sidm	fragment	0	0	supersede	935	first part is the tail of a list item of C REFERENCES.md:40-42 (velocity-dependent cross-sections (520)) with no statement and its locator outside the stored one; whole sentence from L520 and L672-676
+157	T	73	A-emd-pbh	right	1	0	verify		L948
+158	T	236	C-sidm	right	1	0	verify		end of L327: b >~ 0.1 at the onset for collapse in the classical regime
+159	T	30	A-emd-pbh	right	1	0	verify		L1148-1149, L1176-1186
+160	T	291	C-sidm	right	1	0	verify		L133-142
+161	T	104	A-emd-pbh	right	1	0	verify		L547 (N = 100 to 2000), L549 (10000 shells, Plummer), L551 (0.41)
+162	T	632	F-hills	right	1	1	verify		L368-379; fit coefficients is a bare noun
+163	T	77	A-emd-pbh	right	1	0	verify		abstract L76-77
+164	T	244	C-sidm	right	1	0	verify		L384 as worded
+165	T	80	A-emd-pbh	right_locator	1	0	verify(locator+)		Case I and II are defined at L252-263 (and L298), t_vir at L282 only
+166	T	634	F-hills	right	1	1	verify		noun phrase; eq. CoordtEqs L245-256 with 1/(m Gamma^2) on the gradient of Phi
+167	T	248	C-sidm	wrong	0	1	supersede	936	the paper evolves the non-equilibrium equations and finds the core evolution can still be approximated as quasi-static (L457); treatment states it as the method
+168	T	232	C-sidm	right	1	0	verify		L280: 0.0352 at 0.506c, Z(0) 0.548; 0.0352-0.0356 at Z(0) 0.548-0.522 for b = 0.1-0.5
+169	T	387	D-bh-dress	right	1	0	verify		caption L132-133, L174
+170	T	98	A-emd-pbh	right	1	0	verify		L635
+171	T	685	D-bh-dress	part_unsupported	0	0	supersede(to 910)	910	L235 attributes r^(-9/4) to Fillmore-Goldreich 1984 and Bertschinger 1985 for spherical collapse in EdS, not to a self-similar solution of Bertschinger alone; the 1805.09034 part sits outside the locator; 910 carries both papers
+172	T	330	C-sidm	right	1	1	verify		table st-suite rows L1024-1028 (t_BH 109 and 73 M); locator debris kept
+173	T	246	C-sidm	right	1	0	verify		L429 (rho_c >~ 1e5 rho_s) and L440 (445.0, 5e7 M_sun = 1 percent at 445.6, ~1e-4 at 445.8)
+174	T	103	A-emd-pbh	right	1	1	verify		noun phrase; L542: the 5/3 of the yellow line comes from the virial theorem
+175	T	239	C-sidm	right	1	1	verify		noun phrase; table of b = 0.1 rows L490-503 and the b = 0.2 subcaption L510
+176	T	321	C-sidm	right	1	1	verify		L116 as worded; locator debris kept
+177	T	143	A-emd-pbh	right	1	0	verify		L2277: departure from Zeldovich at shell crossing t/t_k ~ 22.5, breakdown for t/t_k >~ 20
+178	T	626	F-hills	right	1	0	verify		L86-88
+-	added	928	C-sidm	-	-	-	add		judgement split off from 230 (Track C's reproduction run)

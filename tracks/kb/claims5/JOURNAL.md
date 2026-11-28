@@ -43,3 +43,61 @@ samples pooled 46/61 = 75.4 %, CP 62.7-85.5 %):
   any difference.
 - Q5 (whole class, [JUDGEMENT: extrapolation]). With claims4's 13, about 25 % of the 144 are not
   right as worded, 25-45 claims; refuted if the stratified estimate falls outside 20-50.
+
+## Entry 2, 2026-11-27 18:45 PST: reading, writes, rates (outcomes)
+
+Read: all 131 unread members of T (k = 48..178 of order run kb-20261128-003945-e1d65ba, in that
+order), each at every stored locator row in the raw TeX with `scripts/show.py`, plus a whole-file
+grep where a word, number, author or absence was not in the cited lines (the grep is named in the
+verdict note). With claims4's 13, class T is now a census (144 of 144). Verdicts:
+`work/verdicts_T.tsv`; ledger `LEDGER.tsv` (successor ids). One slip caught before any verdict: I
+typed two ids (342, 285) from memory instead of from the order list; both are already checked and
+outside the population; they got no verdict and no action.
+
+| | n | right (incl. right_locator) | not right | CP 95 % | borderline both ways |
+|---|---|---|---|---|---|
+| claims5 T (seeded part k = 48-178) | 131 | 114 = 87.0 % | 17 | 80.0-92.3 % | 61.8-90.1 % |
+| T census (claims4 13 + claims5 131) | 144 | 124 = 86.1 % | 20 | 79.4-91.3 % | 61.1-88.9 % |
+
+Not right (17): wrong_label 6 (C 329, 230, 242; A 19; F 451; core 484), fragment 6 (B 182, 193;
+A 87, 33; D 352; C 252), wrong 3 (C 234 and 306: the hedge 'may not be necessary' of
+2108.11967 L283 dropped; C 248: 'quasi-static treatment' where the paper finds the core can be
+approximated as quasi-static), part_unsupported 2 (D 684, 685: the other paper's attribution and a
+corpus remark outside the locator). Borderline: 33 counted right (noun phrases, locator or note
+debris, glosses), 4 counted not right (234, 306, 248, 242).
+By track of the claim (n, not right): A 40/3, B 12/2, C 45/7, D 13/3, F 17/1, core 4/1.
+
+Predictions:
+- Q1 REFUTED, on the good side: 87.0 % right, CP 95 % 80.0-92.3 % excludes the predicted 75 %
+  (17 not right of 131; the binomial range for p = 0.25 at n = 131 is far above). The cited class
+  is cleaner than the pooled machine-located samples. As far as the reading shows, the reason is
+  that C (cuts) was removed from it first and a track citing a claim tends to cite its well-formed
+  rows; but with the 33 borderline rows counted not right the rate falls to 61.8 %, so the result
+  depends on the claims4 rule that a readable noun phrase or a row with debris is right.
+- Q2 HELD at the margin: wrong_label 6 = fragment 6 (refuted only if fragments outnumber).
+- Q3 HELD, not significant: lower-case starts 49/57 = 86.0 % against 65/74 = 87.8 %.
+- Q4 HELD: dry run kb-20261128-024311-9e8af45 and real run kb-20261128-024327-81f35d6 give the same
+  new claims (923-936; 638 and 910 reused as targets), identical before.tsv, after.tsv, others.json
+  and result.json; the hash of the 789 other claim rows is unchanged in both.
+- Q5 HELD at its edge: 20 of 144 not right (predicted 25-45, refuted outside 20-50).
+New stratified estimate for claims4's 389 (C census 16, T census 20, R sample 5/13 scaled to 211):
+about 117 not right (s.e. 29), right as worded 69.9 % (s.e. 7.4 %) [JUDGEMENT: R still rests on 13
+read claims]; 41 of them are now corrected.
+
+Writes (plan `plans/P1_claims5.json`, committed in 9e8af45 before its runs; 132 actions): 114 verify
+(7 with an extended locator: 324, 173, 639, 334, 445, 32, 80), 13 supersede by new whole-sentence
+texts read at the source (923-927, 929-936; 926 and 932 labelled judgement with the track named),
+4 supersede to existing claims (684, 685 -> 910; 451 -> 638; 306 -> 924), 1 add (928, C's
+reproduction run split off 230, judgement; status unlocated as in claims4's add). Rates run
+kb-20261128-024430-2b76f58; its rerun kb-20261128-024452-cfc4954 changed only two figure labels
+(rates.json identical by cmp). Figure looked at: `figures/fig_claims5_rates.png`; the label of the
+prediction line touches the verifier2 marker.
+
+## Entry 3, 2026-11-27 18:47 PST: snapshot and QA, prediction (before the run)
+
+The run repeats claims4's kb-20261128-005138-5cef2a2 (verify-downloads, `kb qa run --hybrid`,
+`kb snapshot`, status). Expected: verify-downloads exit 1 for the known gr-qc/9412071 row only;
+C1 counts agree; C3 not ok 25; C8 40/41; C7 rows unchanged (no chunk changed); C9: 936 claims,
+labels fulltext 672, judgement 84, refuted 127; statuses checked 452, located 279, superseded 85;
+locators 1223, all resolved; a new snapshot with a new hash. Refuted by any other C1/C3/C7/C8 value
+or a C9 count different from these.
