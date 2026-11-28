@@ -2532,3 +2532,40 @@ are judged: q0049 PASS with K3 in part refuted (release v0.8 final), q0039 K7 CA
 P4a/P4c held and P4b held in its test, q0035 R5 held. Card time of this session: none
 submitted. Processor time: MPI build 2.5 min on 4 jobs; analyses on 1 to 2 cores, about 25
 core-minutes. Where I stopped: nothing half-done; q0059 (row 4, 0.755 member) pending in Slurm.
+
+## 2026-11-28T02:02Z (18:02 PST), session core-lead-35 (batch 35): merge of core/faces-finder for core-v0.9
+
+State at start: `core/nrpic` was an ancestor of main (fast-forward to 9d5cb255). Merge
+8139c969 of `origin/core/faces-finder` (no conflict): `git diff ad54460e HEAD --
+athenak/src` is empty [VERIFIED], so the merged source is the branch's source commit
+ad54460e, the one the published `scratch/core/exe/core_faces-finder/` was built from.
+Card check q0086: the queue lists it as done, but `sacct -j 5544` says PREEMPTED after 5 s
+(2026-11-27T17:24, four of eight cases started); run core-20261128-002929-335815e closed as
+stopped (55771e22). It is added again at priority 2 (below), judged against prediction K
+of `JOURNAL-faces-finder.md` entry 5 unchanged.
+
+Serial build of the merged tree: `.work/build_cpu_v09rc/src/athena` (JOBS=6).
+
+### Predictions B35 (before the runs)
+
+- **R9** byte regression (`regress_v04.py`, twelve set-ups, 75 items) of the merged build
+  against release `.work/build_cpu_v08/src/athena`: 75 of 75 identical (no item sets
+  `deposit_comp_c` or `deposit_fine_shape` on a refined mesh, none is continued with new
+  parameters, none uses the new finder options). Refuted by any item not identical.
+- **T9** the branch's processor tests with the merged build (`dep_compare.py`,
+  `comp_cons.py`, `cap_mid.py`, `diag_restart.py`, `finder_bytes.py`, `finder_box.py` with
+  `case_new_s1l_shear.json` on Track A's S1L restart file): every output file AthenaK
+  writes equals the branch session's run of the same script byte for byte (same source,
+  compiler and flags; only the build directory differs), and each script's own verdict is
+  the branch's: dep_compare closes failed only by the split check of C0 (entry 4), the
+  others pass; in `diag_restart.py` case a (`-r rst fastflow/diagnostics=true`) starts
+  and logs "Parameter added on restart from the command line". Compared by a registered
+  script `analysis/faces_finder/rerun_compare.py`. Refuted by any differing output file
+  or a changed verdict.
+- **Q9** quick test of the restart path (`parameter_input.cpp` and `main.cpp` changed):
+  `restart_test.py` with the merged build against release core-v0.8: ALL OK, 19 checks, as
+  Q8 (run core-20261126-024518-e1e16dc). Refuted by any failed check.
+- **V8** (clerk's request, orch outbox 20261126T130731Z) `.work/build_cpu_v08/src/athena`
+  against core's published `core_nrpic_v08/athena_cpu`, `regress_v04.py`: 75 of 75
+  identical (same tree 01d4aeeb; other build directory). The card build
+  `.work/build_gpu_v08` does not run on processors: not compared by a run here.
