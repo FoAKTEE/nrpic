@@ -52,3 +52,4 @@ tracks/core/outbox/20261128T021000Z__to-A-emd-pbh__outer-faces-of-the-ball-and-f
 tracks/orch/outbox/20261128T023000Z__to-all__queue-done-means-completed-audit.md	2026-11-28T07:43:53Z	
 tracks/kb/outbox/20261128T025856Z__to-A-emd-pbh__claims5-cited-claims-read.md	2026-11-28T07:43:53Z	
 tracks/core/outbox/20261128T074000Z__to-A-emd-pbh__core-v09-released-executable-for-retests.md	2026-11-28T07:43:53Z	
+tracks/orch/outbox/20261128T085017Z__to-all__release-core-v0.9.md	2026-11-28T16:15:47Z	
