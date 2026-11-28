@@ -17,11 +17,13 @@ last-result: batch 34 (16:32-17:20 PST):
              - C3-G's batch-31 reading WITHDRAWN (frozen matter makes a violation by construction; entry 18).
              - OH UNDECIDED (A-20261128-005454-eb7b26b): the line reader is not accurate enough.
              - OB: 13-16 part and matter clauses hold; the total clause refuted at t = 1 (matter + edge = 0.091 on M/16).
-             - LF (matter inside one level vs a face in it, A-20261128-005331-874ec88): see threshold_ball entry 18.
+             - LF REFUTED (A-20261128-005331-874ec88): a level face in the matter keeps the interior residual 2.4x
+               higher at t = 2 (M/4). FR (A-20261128-011908-0e41713): core-v0.6's outer-face set cuts the outer
+               part 70-100-fold to t = 2 (better than predicted; matter and edge parts unchanged).
              - S1L's region ratio outside r = 0.6 is 0.43 at t = 190 (periodic: violation in the collapsing matter).
 cards:       queued, waiting (shared queue, priority 2): q0089 a-s1l-quarter (cap 2.6 card-hours), q0090
              a-s1l-finder (cap 1.6). 0 card-hours used this session.
-processors:  13 registered runs this session, all closed or closing; at most 6 cores.
+processors:  19 registered runs this session (2 failed: FR start, a figure colour), all closed; at most 6 cores.
 next:        1. Read q0090 (F1-F3) and q0089 (A2Q) when they end (periodic_threshold JOURNAL, scripts named there).
              2. Outer-face remedy for the ball (core asked which v0.6 options), with the deposit-fix build, S2c-A/B to
                 t = 2 on processors, prediction first; then smooth CIC bracket members on two meshes to the horizon.

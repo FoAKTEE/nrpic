@@ -24,12 +24,10 @@ the end (A2Q, F1-F3, FD, SM-q/SM-F); `threshold_ball/JOURNAL.md` entry 18 (C3-G 
 
 Close each with `harness/bin/nrpic-run finish <run_id>` before reading. The chain continues itself; do not resubmit.
 
-## Processor run that may still be going
+## Processor runs
 
-FR (core-v0.6 outer-face set on S2c-A, `threshold_ball/scripts/fr_run.sh`), registered by nrpic-run at ~17:18 PST
-(run id in `tracks/A-emd-pbh/runs/`, newest `A-20261128-0118*`); if its outcome is not in threshold_ball entry 18,
-close it and read it: `ratio_split.py --tmax 2 S2c-A=<S2c-A> S2c-AL32=<OB> S2c-AFR=<FR dir>/S2c-AFR` against
-prediction FR (entry 18, 17:20 PST).
+None running. FR (core-v0.6 outer-face set on S2c-A) ended and is judged in threshold_ball entry 18
+(A-20261128-011908-0e41713; reader A-20261128-012759-577c95b): outer part cut 70-100-fold to t = 2.
 
 ## What batch 34 established (0 card-hours used; 4.2 capped in the queue)
 

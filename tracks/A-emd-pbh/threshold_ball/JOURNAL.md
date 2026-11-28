@@ -899,3 +899,16 @@ matter part moves by more than 25 per cent (then the options reach the interior 
 speed from 16, and something else changed).
 FR's first run A-20261128-011804-365c88b FAILED at start (exit 1, 0 s): "Parameter 'extrap_order' in block 'z4c' on
 command line not found" - overrides cannot create parameters. Deck decks/nest16_L16_fr.athinput carries the set; rerun.
+
+### Entry 18, outcome FR (run A-20261128-011908-0e41713 completed, 128 cycles, 508 s on four threads; reader A-20261128-012759-577c95b) - 17:29 PST
+
+S2c-A with the core-v0.6 outer-face set (faces at 16) against the stock faces at 16 and at 32, 0 < x < 16:
+- 13-16 part: 0.0009 / 0.0031 at t = 1 / 2 (stock 0.091 / 0.214; faces at 32: 0.0003 / 0.0005): a fall by 100 / 69.
+  The first clause (factor >= 3) HOLDS; the second ("more than 10 times above the faces at 32") is REFUTED on the good
+  side (3 and 6 times).
+- matter 0.0590 / 0.0759, edge 0.0689 / 0.0809: unchanged. HOLDS. Total 0.092 / 0.117, as with the faces at 32.
+Reading [VERIFIED to t = 2 on M/16]: the face set removes most of the outer-face part over the first 2 M; core measured
+for its own ball that the set's interior gain shrinks with time (8 times below stock, 55 times above faces at 32 at
+t = 16), so for detection at t ~ 44-46 the bracket members need both: the face set and faces as far out as the cost
+allows, and the outer part read per region at detection. Next (cards): smooth CIC members at the bracket on M/16 and
+M/32 with the face set and faces at 32, to the horizon, the section-3 ratio at detection split by region.
