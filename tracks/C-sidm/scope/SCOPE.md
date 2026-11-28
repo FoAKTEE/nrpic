@@ -326,6 +326,21 @@ From the charter (section 9.6) with numbers [JUDGEMENT where marked].
   0.02 in Z(0)]; with core's collision module: Minkowski-box tests of section 6 pass,
   and in curved spacetime the rest-mass, energy and momentum budgets close to the
   round-off of pairwise conservation plus the measured collisionless drift.
+  **Amendment of 2026-11-27 (decision 0048 item 1), made after the results of the family
+  that was run and recorded as such.** The G2 criterion in force is the wording of
+  decision 0013, set before any threshold run: the collisionless threshold located with
+  three-way convergence and compared with the binding-energy criterion; it names no family.
+  This clause was not brought in line with it then and is now. The G2 package used the King
+  family with b = 1 (named "for verification" at G0, JOURNAL.md:94-95); gate G2 was signed,
+  pass with reservations, on that family (coord/GATES.md, 2026-11-27). The monoenergetic
+  family and the King family with b = 0.1 were not run at G2; neither failed. Both become
+  the first step of G3 (`scope/SCOPE_G3.md` section 2): no production run of G3 on b = 0.1
+  models starts before the collisionless bracket of that family is located at a million
+  particles on two meshes with the horizon finder of core-v0.8 (`<fastflow>` diagnostics,
+  flow = shear, polishing) and at least three seeds for the members next to the threshold.
+  The compared value is the first maximum of the binding energy of arXiv:2009.08163
+  (paper.tex:952-958), whose authors reject the turning-point principle of the mass-radius
+  curve (paper.tex:969-972).
 - G3 (science): M_BH/M against Kn_c for at least one King model on each side of the
   collisionless threshold, Kn_c from 0.1 to 100 plus the two limits, converged in
   collision sub-step and particle number (two of each) [JUDGEMENT on the counts].

@@ -1,70 +1,68 @@
-# C-sidm G2: what the gate still lacks
+# C-sidm G2: what stays open after the gate
 
-State at the end of the lead session of batch 32 (2026-11-27). Nineteen of twenty checklist items
-pass; the one open item is C18, the fresh verifier (decision 0016 item 4; ruling 0045 item 5: it is
-sent once q0057 and q0058 are read, which this session did). Failures on record that stay with the
-passing items: A.4 and BA.3 (N = 1e5 controls collapse by particle noise; ruling 0045 item 5),
-NS.2, D2.3 seed-pair part (2.24 M against 2 M), the failed run D2eta1 (guard stop after its
-collapse), the withdrawn predictions B17.1-B17.3 (JOURNAL). Every collapse time of the package is
-the alpha_min = 0.3 lapse marker of a run made without the horizon finder
-(C-20261125-160207-05b6db1; ruling 0041 item 3).
+State at the end of the lead session of batch 35 (2026-11-28 UTC). **Gate G2 is signed, pass with
+reservations** (coord/GATES.md, 2026-11-27; decision 0048 item 1; independent review
+`GATE_REVIEW.md`, fresh verifier `VERIFIER.md`). Every checklist item is PASS. This file lists
+what the gate leaves open and where each item now goes.
 
-## What changed in batch 32
+## The stage check's one failed item: two conductivity runs
 
-- Closed (nrpic-run finish) and judged with registered analyses, figures read: A16b324
-  C-20261126-121449-1d37e77 (6.3844 card-hours; B20.1 held: no collapse on M/16, block means
-  -0.0171..+0.0107, C-20261127-084538-8e98060) and N6b324e1 C-20261126-130519-1a79a66 (2.6175
-  card-hours; B20.3 second half held: no collapse, central lapse within 1.4e-5 of shift_eta 2.0,
-  C-20261127-084417-79c0e4d). C1, C2, C7, C9 pass: the bracket keeps its fates on both meshes and
-  in both gauges at N = 1e6.
-- Note figures of G2 (C10, C11, C13, C15, C16) from run C-20261127-084828-b6ca5ce; note compiled
-  and checked (C17); rerun list RERUN.md (C6).
+`nrpic-stage verify --full` (VERIFY_RESULTS.md, 2026-11-27T10:40Z, 9199 outputs and 1184.70 GB
+re-hashed) fails only on `runs`, for two card runs:
 
-## Item by item
-
-| Item | State | What it waits for |
+| Run | What is missing | Why |
 |---|---|---|
-| C18 verifier | OPEN | a fresh verifier with the artefacts (this package, RERUN.md), not the conclusions |
-| all others | PASS | - |
+| heat_C1 C-20261121-210524-36a658e | 120 intermediate snapshots `heat.part.00001-00015.bin` listed in its sha256sums.txt; 8 case directories gained case.json, reduced.npz, summary.json | the reduction runs C-20261124-130338-43b5ffa and -c4ac85e (`heat/scripts/run_mode.py reduce`) wrote into the card run directories and `heatlib.SnapReducer` deleted every snapshot but the first and last |
+| heat_C2 C-20261122-183030-2f3a471 | 45 snapshots; 3 case directories changed | same |
 
-## What the verifier should recompute first
+Bearing: only the conductivity kappa/kappa_1 = 1.020 +- 0.004 (series C-20261124-131012-f920f45;
+G1 reservation 1) and C6. Remedy under way (decision 0048 item 1): both runs again on the release
+card build of core-v0.8, queue entries **q0092 (heat_C1r) and q0093 (heat_C2r)**, priority 2, with
+predictions HR.0-HR.5 written first (JOURNAL 2026-11-28T01:59Z). The reduction now writes into its
+own run directory and deletes nothing (`run_mode.py reduce --out`, commit of 2026-11-28). Reading
+them: close each with `nrpic-run finish`, check sacct shows COMPLETED, reduce each into a registered
+run of its own, then `longruns/scripts/heat_series.py` on the two reduction run ids. The two old
+runs stay on record with their failed checksum item (no waiver requested).
 
-1. The fates of the eleven threshold runs (RERUN.md section 1) from the raw `cc.nrpic.hst` with a
-   reader of its own that applies the restart rule (a later row replaces earlier rows from its
-   time on): the marker crossings 295.78, 534.81, 252.31, 217.97, 252.41, 229.79 M and "no
-   crossing by 600 M" for N6c, N6b324, A16b324, N6b324e1, A324s1i.
-2. The band readings of the stable members (block means of alpha_c - alpha_c(0) within +-0.03;
-   eta1 minus eta2 below 0.01) and that the 20 M windows were fixed before the runs (JOURNAL
-   2026-11-25T16:02Z, B20.1-B20.3).
-3. That the decks of the legs differ from N6b344/N6b324 only in the mesh (M/16) or in shift_eta
-   (make_decks_b20.py) and that all N = 1e6 members share the sampler and seed of N6c.
-4. That no run had the horizon finder (no horizon file in any output directory).
+## The verifier's requests (VERIFIER.md, README "Requests") and what was done
 
-## Further items for the verifier (from batch 27)
+| | Request | Done in batch 35 |
+|---|---|---|
+| (a) | "BA.3 failed" is wrong | BA.3 held (it predicted that A.4 stays failed); corrected in CHECKLIST C1, C19 and here; A.4 is the failure on record |
+| (b) | state the count test per member and window | CHECKLIST C8 now gives each member over (0, t_c]: D2f2s1 1.00080 (z +0.27), D2f2s2 0.99414 (-1.95), D2f1s1 0.99816 (-0.61), D2f4s1 0.98995 (-3.34), M16 0.99827 (-0.56), D2eta1 0.98847 (-3.83); four of six pass, two fall short by about one per cent (VERIFIER.md section 4) |
+| (c) | stale risk that A334s3c ends at 0.25 M | RISKS.md 25 corrected: its rerun reaches 600 M, marker crossing 563.29 M (VERIFIER.md X.3) |
+| (d) | the M/4 seed-2 collisional run is broken after its first excision | on record in CHECKLIST C19 (alpha_min -2.7e8, 335 non-finite rows; t_c read before) |
+| (e) | the gauge leg changes the shift damping only | stated in the note (Sec. V B) and below |
 
-- Recompute from the raw histories, with readers of its own: collapse times and alpha_c changes of
-  the N-series (N4c, the N = 1e5 control, N6c), the bracket (N6b344, N6b324, their N = 1e5
-  members, the gauge and mesh members), block A (15 runs), D2 (ctrl, f1s1, f2s1, f4s1, f2s2, m16,
-  eta1), and the collision counts per particle and per M.
-- That every collapse time is the lapse marker (no horizon file in any run), including the two
-  t_c the batch-20 recheck did not cover: 206.64 M (M/4) and 163.41 M (D2 f2).
-- That the decks of batches 17 and 20 differ from their series only where make_decks_b17.py and
-  make_decks_b20.py say; that the N = 1e6 samples share the sampler and seed of N6c.
-- The count test of the collision rate before t_c (z = -3.39 at f = 4; REVIEW-wave3 section 14);
-  the conductivity series (1.020 +- 0.004); every failed prediction on record (JOURNAL
-  2026-11-24T13:12Z, 2026-11-25T12:21Z, 2026-11-26T12:20Z).
-- The reading of the D2 seed pair: whether the five M/8 variants may be pooled as realisations
-  (lead's JUDGEMENT, JOURNAL 2026-11-26T12:20Z).
+Runs the verifier suggests to turn "consistent" into "shown" (a second N4c seed; N6c continued to
+about 900 M against the predicted crossing near 830 M): not queued in this batch; they are listed
+in scope/SCOPE_G3.md section 9 as optional, after the first step.
 
-## Reservations of G1 and where they stand
+## Corrections of the gate review (GATE_REVIEW.md section 8)
 
-| G1 reservation | State |
+- VERIFIER.md copied to stage/G2/ where the stage tool reads it (C14); C18 judged PASS.
+- Full-pass VERIFY_RESULTS committed (987d33c03); the two heat runs named above.
+- EVIDENCE.md rewritten to the final state; STAGE_REPORT.md regenerated.
+- Note: the compared value is the first maximum of the binding energy of arXiv:2009.08163
+  (paper.tex:952-958), whose authors reject the turning-point principle (paper.tex:969-972);
+  "the location of the threshold is [converged]" replaced by what is shown; the control
+  collapses are "a finite-particle-number effect"; the gauge leg varies the shift damping only.
+- scope/SCOPE.md G2 clause amended with the date (decision 0048 item 1).
+- Still owed: the constraint histories of the bracket legs in a package figure (they are in the
+  reviewer's `scratch/C-sidm/C-20261127-232854-8859b86/fig_review_check.png`, right panel); the
+  schematic `schem_ladder.png` still says "turning-point model" in two labels. Both need a
+  registered note run; they go with the next note run.
+
+## Reservations carried to G3 (coord/GATES.md) and where each is answered
+
+| Reservation | Answered by (scope/SCOPE_G3.md) |
 |---|---|
-| 1 conductivity at the per-cent level | answered: kappa/kappa_1 = 1.020 +- 0.004 (batch 11) |
-| 2 threshold from collapse times or contraction against a control, three seeds | controls hold at N = 1e6; the bracket is read from fates against N6c; one seed per bracket member at N = 1e6 |
-| 3 quantities named after the data | the block A ripple window was changed after the data (labelled); the 20 M band of B17.6 was written before the run |
-| 4 card tests without a second check | open: verifier above |
-| 5 M/4 mesh does not hold the equilibrium | M/8 holds it at N = 1e6 (N6c); M/16 member read next |
-
-Removed from the queue in batch 17 (they serve no G2 item once the threshold is read at
-N = 1e6): q0019-q0021, q0025-q0027 (kicked N = 1e5 continuations); their partial records stay.
+| monoenergetic and King b = 0.1 families not run | section 2, first step: brackets at N = 1e6 on two meshes, finder, three seeds near the threshold |
+| gauge leg could hardly fail (shift damping only) | section 6: slicing leg (harmonic against 1+log) and domain leg (outer face 512 M against 1024 M), each able to fail |
+| one seed per member | section 2 and 5: three seeds for every member next to a threshold |
+| collapse time not converged (13.6 per cent between meshes) | section 6: three meshes for the science members; times quoted as envelopes, no order claimed from two |
+| collapse is a lapse marker; no finder | section 3: a collapse is a found horizon (core-v0.8 finder, shear flow, polishing, diagnostics) |
+| constraint floor is deposit noise and rises when the core is refined at fixed N | section 6: mesh legs at fixed particles per cell |
+| only the pairwise budget closes; count test short by one per cent in two members | section 7: whole-system budget with the measured collisionless drift; count test per member with its window |
+| conductivity runs not re-verifiable | q0092, q0093 above |
+| control collapses shown only as a finite-N effect | section 9 (optional runs) |

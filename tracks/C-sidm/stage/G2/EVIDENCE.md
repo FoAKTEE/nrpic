@@ -1,51 +1,72 @@
-# C-sidm G2: evidence (artefacts and run ids)
+# C-sidm G2: evidence (artefacts and run ids), final state
 
-Paths relative to the worktree root `wt/C-sidm`. Manifests `tracks/C-sidm/runs/<run_id>/`;
-outputs `scratch/C-sidm/<run_id>/` (untracked). G1 evidence: `../G1/EVIDENCE.md` (signed
-2026-11-21, coord/GATES.md). Predictions of every card run below: `tracks/C-sidm/JOURNAL.md`
-entry 2026-11-21T20:25Z (batch-5 queue) and 2026-11-24T13:14Z (batch-11 follow-ups);
-outcomes: entries 2026-11-24T12:59Z (state, resume rule) and 13:12Z. Executable: release
-core-v0.6 card build (`.work/build_gpu_v06/src/athena`) except run (v) (core-v0.3, so that it
-differs from its partner only in N).
+Rewritten in batch 35 (2026-11-28 UTC) after the gate was signed (coord/GATES.md, 2026-11-27,
+pass with reservations). The state of 2026-11-24 (runs "queued", "running") is in git history
+(`git log -- tracks/C-sidm/stage/G2/EVIDENCE.md`). Paths relative to the worktree root
+`wt/C-sidm`; manifests `tracks/C-sidm/runs/<run_id>/manifest.json`; outputs
+`scratch/C-sidm/<run_id>/` (untracked) with `sha256sums.txt`. How to redo every number:
+`RERUN.md`. Predictions of every card run: `tracks/C-sidm/JOURNAL.md` entries 2026-11-21T20:25Z,
+2026-11-24T13:14Z, 2026-11-25T16:02Z (B20.1-B20.3), outcomes in the entries after them.
+Executable of every threshold and collisional run: release core-v0.6 card build
+(`.work/build_gpu_v06/src/athena`, sha256 ea473498500f...), cfl_number 0.25, no dt_gauge.
 
-## Card runs of the batch-5 queue (package `tracks/C-sidm/longruns/`)
+## Collisionless threshold of the King family b = 1 (C2, C7, C9)
 
-| Item | Run id | State on 2026-11-24 13:20Z | Read with |
+| Label | Run id | y0, kick | N | Mesh, shift_eta | Fate (alpha_min = 0.3 marker) |
+|---|---|---|---|---|---|
+| N4c | C-20261125-132112-edf3fbc | 0.334032, none | 1e4 | M/8, 2 | 295.78 M |
+| A334s1c | C-20261121-214601-40dc927 | 0.334032, none | 1e5 | M/8, 2 | 534.81 M |
+| N6c | C-20261124-221122-928c9eb | 0.334032, none | 1e6 | M/8, 2 | holds 600 M |
+| A344s1i | C-20261122-220118-ab099ac | 0.344, in | 1e5 | M/8, 2 | 229.79 M |
+| A324s1i | C-20261123-221955-a773578 | 0.324, in | 1e5 | M/8, 2 | holds 600 M |
+| N6b344 | C-20261125-224959-d1d4494 | 0.344, in | 1e6 | M/8, 2 | 252.31 M |
+| N6b324 | C-20261126-020831-fabf2d7 | 0.324, in | 1e6 | M/8, 2 | holds 600 M |
+| A16b344 | C-20261126-043714-8ea1c35 | 0.344, in | 1e6 | M/16, 2 | 217.97 M |
+| A16b324 | C-20261126-121449-1d37e77 | 0.324, in | 1e6 | M/16, 2 | holds 600 M |
+| N6b344e1 | C-20261126-050124-00e10ae | 0.344, in | 1e6 | M/8, 1 | 252.41 M |
+| N6b324e1 | C-20261126-130519-1a79a66 | 0.324, in | 1e6 | M/8, 1 | holds 600 M |
+
+Readers: nseries.py analyses C-20261126-120656-f5c62bb (N-series), -121836-c7a76c1 (bracket),
+-124143-b485eac and C-20261127-084538-8e98060 (mesh leg), C-20261126-123219-f734997 and
+C-20261127-084417-79c0e4d (gauge leg); horizon status of every collapse time
+C-20261125-160207-05b6db1 (no run had the horizon finder). Second readers: the verifier
+(C-20261127-090942-697c4b3; equilibrium sequence C-20261127-090849-dcfc1ae, y_max 0.3340322)
+and the gate reviewer (C-20261127-232854-8859b86), each reproducing every crossing to 0.05 M.
+Literature value: first maximum of the binding energy, King y_max = 0.334
+(kb-data/raw/arxiv/2009.08163/v1/src/paper.tex:952-958) [VERIFIED].
+
+## Collisional series CC2 at Kn_c = 10 (C1, C4, C8)
+
+| Label | Run id | Mesh, collision cell, gauge | t_c (marker) |
 |---|---|---|---|
-| run (v), N = 1e4 on M/4 | C-20261121-202459-12183c5 | completed | C-20261124-130021-5c9c207 (compare), -130222-6a4924d (diffusion) |
-| timing | C-20261121-203004-c2c14e7 | completed | C-20261124-131129-e93be29 |
-| heat_C1, heat_C2 | C-20261121-210524-36a658e, C-20261122-183030-2f3a471 | completed | reductions C-20261124-130338-43b5ffa, -130338-c4ac85e; series C-20261124-131012-f920f45 |
-| D2ctl, D2f2s1, D2f1s1, D2f4s1 | C-20261122-103854-4670b59, -141414-399ad97, -144455-6e0992e, -181011-60baef9 | completed (300 M) | C-20261124-130442-0819c88; recheck -132113-52c2abe |
-| D2f2s2 | C-20261124-035054-c06503f | cut at 116.5 M by preemption; continuation queued | same reader |
-| A334s1c, A334s1i, A334s1o | C-20261121-214601-40dc927, C-20261122-012719-b14e654, -065807-b302875 | completed (600 M) | C-20261124-130634-3338d9b; recheck -132113-52c2abe |
-| A344s1c, A344s1i | C-20261122-213602-729aeed, -220118-ab099ac | completed | same |
-| A344s1o | C-20261123-025228-6ecb543 | cut at 420.5 M; continuation queued | same |
-| A324s1i | C-20261123-221955-a773578 | completed | same |
-| A324s1c, A324s1o | C-20261123-032324-938ecbd, C-20261123-222003-02195a0 | cut at 19.5 and 407.8 M; continued (A324s1c running) | same |
-| A334s2c/i/o, A334s3c/i | C-20261124-053105-2fcc8af, -061134-ab6cc0a, -075153-72499e7, -082221-7f03a8e, -091733-b92f4e5 | cut at 249, 245, 190, 0.25, 103.8 M; continuations queued | same |
-| A334s3o | C-20261124-120250-9e6a3ba | running (segment cap raised to 24, restart every 10 M) | same |
+| M4s1, M4s2 | C-20261120-221846-797bdbe | M/4, M/4, eta 2 | 206.556, 206.728 M (M4s2 broken after its first excision) |
+| D2f2s1, D2f2s2 | C-20261122-141414-399ad97, C-20261124-035054-c06503f | M/8, M/4 | 163.41, 165.65 M |
+| D2f1s1, D2f4s1 | C-20261122-144455-6e0992e, -181011-60baef9 | M/8, M/8 and M/2 | 164.01, 165.97 M |
+| M16 | C-20261125-044843-2d048b6 | M/16, M/4 | 158.42 M |
+| D2eta1 | C-20261126-034500-4b34b1c | M/8, M/4, eta 1 | 164.01 M (failed run: guard stop at 190.375 M) |
+| D2ctl | C-20261122-103854-4670b59 | M/8, no collisions | none in 300 M |
 
-## Batch-11 follow-ups (queued; predictions JOURNAL 2026-11-24T13:14Z)
+Readers: d2_analysis.py C-20261126-121702-b6b1eda (budgets: collision energy below 3.2e-16 of
+sum M H to the first excision, momentum below 4e-19, rest mass exact); count test per member and
+window in CHECKLIST C8 (VERIFIER.md section 4, C-20261127-090913-97ee992).
 
-| Item | Deck | Inputs made by |
+## Conductivity (G1 reservation 1)
+
+| Item | Run id | State |
 |---|---|---|
-| N6c, control of y0 = 0.334032 at N = 1e6 on M/8 | `longruns/inputs/A8N_y0p33403_N1e6_s1_ctrl.athinput` | C-20261124-130731-e1d24de (particles), -131231-74f067d (deck), smoke C-20261124-131249-b06c218 |
-| N4c, the same at N = 1e4 | `longruns/inputs/A8N_y0p33403_N1e4_s1_ctrl.athinput` | C-20261124-130732-a383ef5, -131231-74f067d |
-| M16, D2 on M/16 (collision cells M/4) | `longruns/inputs/D2M16_cc2_kn10_f4_s1.athinput` | -131231-74f067d, smoke -131249-b06c218 |
+| heat_C1, heat_C2 (core-v0.6) | C-20261121-210524-36a658e, C-20261122-183030-2f3a471 | completed; intermediate snapshots deleted by the reduction (OPEN.md) |
+| reductions, series | C-20261124-130338-43b5ffa, -130338-c4ac85e; C-20261124-131012-f920f45 | kappa/kappa_1 = 1.020 +- 0.004 (one seed per point, no second check) |
+| heat_C1r, heat_C2r (core-v0.8) | queue q0092, q0093 (priority 2) | queued 2026-11-28; predictions HR.0-HR.5 (JOURNAL 2026-11-28T01:59Z) |
 
-## Key numbers (each from the run named)
+## Block A at N = 1e5 (15 runs; unfit for the scan, kept on record)
 
-| Quantity | Value | Run |
-|---|---|---|
-| H-norm2 ratio N = 1e4 / 1e5 at t = 0, 100-300 M | 9.95, 9.97 | C-20261124-130021-5c9c207 |
-| energy diffusion D ratio 1e4 / 1e5 (25-300 M, 25-75 M) | 11.07, 11.41 | C-20261124-130222-6a4924d |
-| step time, collisionless / collisional M/8 deck | 8.29 / 8.53-8.57 s per M | C-20261124-131129-e93be29 |
-| kappa/kappa_1 at zero cell, k lambda 0.2 and 0.1 | 1.0149 +- 0.0026, 1.0187 +- 0.0026 | C-20261124-131012-f920f45 |
-| cell coefficient c of f = f0 + c (dx/lambda)^2, k lambda 0.2 and 0.1 | 0.101 +- 0.017, 0.055 +- 0.017 | same |
-| t_c of CC2 at Kn = 10 on M/8, collision cells M/8, M/4, M/2 | 164.01, 163.41, 165.97 M | C-20261124-130442-0819c88 |
-| collisions per particle before t_c (f = 1, 2, 4) | 2.23, 2.21, 2.19 | same |
-| collision budget max summed dH / sum MH before excision | 2.8e-16, 3.0e-16, 3.2e-16 | same |
-| D2 control alpha_c change 280-300 M | -0.0049 | same |
-| block A t_c: 0.334032 ctrl / kin / kout | 534.8 / 294.5 / 449.0 M | C-20261124-130634-3338d9b |
-| block A t_c: 0.344 ctrl / kin | 549.3 / 229.8 M | same |
-| block A controls, alpha_c change at 400 M (0.334032, 0.344) | -0.0188, -0.0076 | same |
+blockA_delta.py C-20261125-160056-a5b7282 over the fifteen runs listed in its manifest; the
+controls decay by finite N (A.4 failed; BA.3 held).
+
+## Package documents
+
+CHECKLIST.md (20 of 20 PASS), OPEN.md, RERUN.md, VERIFY_RESULTS.{md,json} (full pass
+2026-11-27T10:40Z), VERIFIER.md (copy of verifier/VERIFIER.md), GATE_REVIEW.md, STAGE_REPORT.md;
+note `tracks/C-sidm/note/main.pdf` Sec. V, Figs. 10-12, Table VI (figures of run
+C-20261127-084828-b6ca5ce); scope `tracks/C-sidm/scope/SCOPE.md` (G2 clause amended 2026-11-27)
+and `scope/SCOPE_G3.md`.
