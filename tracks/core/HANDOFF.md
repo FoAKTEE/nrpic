@@ -99,3 +99,20 @@ checker, read pages).
   checks its sha256).
 - The clock: `date -u` (the shell's local time is PST). Temporary files of the lead:
   `scratch/core/tmp/` (this session: `b27_*`).
+
+## Source session faces-finder (batch 34a, 2026-11-27 PST), written by that session on branch core/faces-finder
+
+Not merged into `core/nrpic`. Everything is in `tracks/core/JOURNAL-faces-finder.md`
+(entries 1 to 6), the three interface proposals `interfaces/level_faces.md`,
+`restart_parameters.md`, `finder_box.md`, the top section of `CHANGELOG.md`, and the READY
+of `/data/haiyangw/nrpic/scratch/core/exe/core_faces-finder/` (source ad54460e).
+- Done on processors: items 0, 0b, 1 of `NEXT_SOURCE.md` and the finder in periodic boxes;
+  byte regression against core-v0.8 PASS 75 of 75 (run core-20261128-000404-015d78b).
+- **Pending: the card check, shared-queue entry q0086** (label core-ff-card). How to judge
+  it: journal entry 6. Until then the card executable is untested.
+- For the maintainer's merge: the lines of shared files are listed at the end of journal
+  entry 6; `tracks/core/analysis/restart_diag/diag_restart.py` now expects case a to
+  start (`--expect v08` keeps the old expectation).
+- Outbox of this session: three messages of 2026-11-28T00:13Z (A, D, F).
+- The finder's failure in Track A's boxes is the default flow function; `flow = shear`
+  cures it with release core-v0.8 already (`finder_box.md` sections 1 and 2).

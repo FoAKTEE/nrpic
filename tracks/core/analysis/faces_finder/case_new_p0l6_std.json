@@ -1,0 +1,28 @@
+{
+ "rst_output": 7,
+ "verbose": true,
+ "horizons": [
+  {
+   "name": "control: v08 rule from 0.15",
+   "initial_radius": 0.15,
+   "flow_iterations": 400,
+   "polish_iterations": 100
+  },
+  {
+   "name": "start_scan 24, 400 it, trapped_tol",
+   "initial_radius": 0.15,
+   "flow_iterations": 400,
+   "polish_iterations": 100,
+   "start_scan": 24,
+   "trapped_tol": 0.05
+  },
+  {
+   "name": "start_scan 24, 4000 it, trapped_tol",
+   "initial_radius": 0.15,
+   "flow_iterations": 4000,
+   "polish_iterations": 100,
+   "start_scan": 24,
+   "trapped_tol": 0.05
+  }
+ ]
+}

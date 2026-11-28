@@ -388,6 +388,9 @@ class Particles {
   void NrpicConsReadRestart(std::FILE *fp);
   void NrpicConsStartRestart();
   void NrpicCompensateLimited(const Real c, const Real c2, const Real lim);
+  // its correction at the faces between refinement levels (nrpic_levelface.cpp)
+  void NrpicCompensateLevelFaces(const int dir, const Real c, const Real q,
+                                 const Real lim);
   void NrpicUpdateTimeStep();
   void NrpicFilterSources();
   void NrpicAddLambda();

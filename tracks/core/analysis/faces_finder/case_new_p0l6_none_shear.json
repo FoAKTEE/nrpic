@@ -1,0 +1,63 @@
+{
+ "rst_output": 7,
+ "verbose": true,
+ "horizons": [
+  {
+   "name": "shear from 0.15",
+   "initial_radius": 0.15,
+   "flow_iterations": 400,
+   "polish_iterations": 100
+  },
+  {
+   "name": "shear from 0.6",
+   "initial_radius": 0.6,
+   "flow_iterations": 400,
+   "polish_iterations": 100
+  },
+  {
+   "name": "shear from 0.15, trapped_tol",
+   "initial_radius": 0.15,
+   "flow_iterations": 400,
+   "polish_iterations": 100,
+   "trapped_tol": 0.05
+  },
+  {
+   "name": "shear from 0.6, trapped_tol",
+   "initial_radius": 0.6,
+   "flow_iterations": 400,
+   "polish_iterations": 100,
+   "trapped_tol": 0.05
+  },
+  {
+   "name": "shear start_scan 24 from 0.15",
+   "initial_radius": 0.15,
+   "flow_iterations": 400,
+   "polish_iterations": 100,
+   "start_scan": 24,
+   "trapped_tol": 0.05
+  },
+  {
+   "name": "shear start_scan 24 from 0.6",
+   "initial_radius": 0.6,
+   "flow_iterations": 400,
+   "polish_iterations": 100,
+   "start_scan": 24,
+   "trapped_tol": 0.05
+  },
+  {
+   "name": "shear mass_tol 1e-2 no polishing from 0.6",
+   "initial_radius": 0.6,
+   "flow_iterations": 400,
+   "polish_iterations": 0,
+   "mass_tol": "1.0e-2"
+  },
+  {
+   "name": "shear mass_tol 1e-2 no polishing from 0.6, trapped_tol",
+   "initial_radius": 0.6,
+   "flow_iterations": 400,
+   "polish_iterations": 0,
+   "mass_tol": "1.0e-2",
+   "trapped_tol": 0.05
+  }
+ ]
+}

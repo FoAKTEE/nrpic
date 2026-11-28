@@ -36,6 +36,7 @@
 //========================================================================================
 
 #include <algorithm>
+#include <cctype>
 #include <cmath>
 #include <cstdlib>
 #include <iostream>
@@ -337,6 +338,10 @@ void ParameterInput::AddParameter(InputBlock *pb, std::string name, std::string 
     pb->line.front().accessed = from_code;
     pb->max_len_parname = name.length();
     pb->max_len_parvalue = value.length();
+    if (log_additions && !from_code && global_variable::my_rank == 0) {
+      std::cout << "Parameter added on restart from the input file: <" << pb->block_name
+                << "> " << name << " = " << value << std::endl;
+    }
     return;
 
   // else search linked list of InputBlocks to see if name exists, replace contents
@@ -355,6 +360,10 @@ void ParameterInput::AddParameter(InputBlock *pb, std::string name, std::string 
   // Parameter not found, so create new node in linked list
     pb->line.emplace_back(name,value,comment);
     pb->line.back().accessed = from_code;
+    if (log_additions && !from_code && global_variable::my_rank == 0) {
+      std::cout << "Parameter added on restart from the input file: <" << pb->block_name
+                << "> " << name << " = " << value << std::endl;
+    }
     if (name.length() > pb->max_len_parname) pb->max_len_parname = name.length();
     if (value.length() > pb->max_len_parvalue) pb->max_len_parvalue = value.length();
   }
@@ -367,7 +376,23 @@ void ParameterInput::AddParameter(InputBlock *pb, std::string name, std::string 
 //  \brief parse commandline for changes to input parameters
 // Note this function is very forgiving (no warnings!) if there is an error in format
 
-void ParameterInput::ModifyFromCmdline(int argc, char *argv[]) {
+//
+// add_missing (set by main for a run continued from a restart file): the parameters of
+// such a run are those stored in the restart file, so an option that the code learned
+// after the run began, or that the first input did not name, could not be given at all
+// (<fastflow> diagnostics, <z4c> dt_gauge in a chain).  A parameter or block that is
+// missing is then added, and the log names it; names with characters other than letters,
+// digits and '_' are refused as before (a path with '=' in it is not a parameter).  On a
+// fresh start a missing name stays a fatal error, which catches misspelt names.
+
+void ParameterInput::ModifyFromCmdline(int argc, char *argv[], bool add_missing) {
+  auto valid_name = [](const std::string &s) {
+    if (s.empty()) return false;
+    for (const char ch : s) {
+      if (!(std::isalnum(static_cast<unsigned char>(ch)) || ch == '_')) return false;
+    }
+    return true;
+  };
   std::string input_text, block,name, value;
   InputBlock *pb;
   InputLine *pl;
@@ -387,6 +412,12 @@ void ParameterInput::ModifyFromCmdline(int argc, char *argv[]) {
 
     // get pointer to node with same block name in linked list of InputBlocks
     pb = GetPtrToBlock(block);
+    const bool may_add = add_missing && valid_name(block) && valid_name(name);
+    if (pb == nullptr && may_add) {
+      pb = FindOrAddBlock(block);
+      pb->max_len_parname = 0;
+      pb->max_len_parvalue = 0;
+    }
     if (pb == nullptr) {
       std::cout << "### FATAL ERROR in " << __FILE__ << " at line " << __LINE__
                 << std::endl << "Block name '" << block << "' on command line not found"
@@ -396,6 +427,14 @@ void ParameterInput::ModifyFromCmdline(int argc, char *argv[]) {
 
     // get pointer to node with same parameter name in linked list of InputLines
     pl = pb->GetPtrToLine(name);
+    if (pl == nullptr && may_add) {
+      AddParameter(pb, name, value, "# added from the command line on restart");
+      if (global_variable::my_rank == 0) {
+        std::cout << "Parameter added on restart from the command line: <" << block
+                  << "> " << name << " = " << value << std::endl;
+      }
+      continue;
+    }
     if (pl == nullptr) {
       std::cout << "### FATAL ERROR in " << __FILE__ << " at line " << __LINE__
                 << std::endl << "Parameter '" << name << "' in block '" << block

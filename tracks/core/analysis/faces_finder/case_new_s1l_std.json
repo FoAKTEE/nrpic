@@ -1,0 +1,62 @@
+{
+ "rst_output": 7,
+ "verbose": true,
+ "horizons": [
+  {
+   "name": "control: v08 rule from 0.6",
+   "initial_radius": 0.6,
+   "flow_iterations": 400,
+   "polish_iterations": 100
+  },
+  {
+   "name": "control: v08 rule from 0.2",
+   "initial_radius": 0.2,
+   "flow_iterations": 400,
+   "polish_iterations": 100
+  },
+  {
+   "name": "control: v08 rule from 0.1",
+   "initial_radius": 0.1,
+   "flow_iterations": 400,
+   "polish_iterations": 100
+  },
+  {
+   "name": "default mass_tol 1e-2 from 0.6 (false acceptance expected)",
+   "initial_radius": 0.6,
+   "flow_iterations": 400,
+   "polish_iterations": 0,
+   "mass_tol": "1.0e-2"
+  },
+  {
+   "name": "default mass_tol 1e-2 from 0.6, trapped_tol",
+   "initial_radius": 0.6,
+   "flow_iterations": 400,
+   "polish_iterations": 0,
+   "mass_tol": "1.0e-2",
+   "trapped_tol": 0.05
+  },
+  {
+   "name": "start_scan 24, 400 it, trapped_tol",
+   "initial_radius": 0.6,
+   "flow_iterations": 400,
+   "polish_iterations": 100,
+   "start_scan": 24,
+   "trapped_tol": 0.05
+  },
+  {
+   "name": "start_scan 24, 4000 it, trapped_tol",
+   "initial_radius": 0.6,
+   "flow_iterations": 4000,
+   "polish_iterations": 100,
+   "start_scan": 24,
+   "trapped_tol": 0.05
+  },
+  {
+   "name": "start_scan 24, 4000 it",
+   "initial_radius": 0.6,
+   "flow_iterations": 4000,
+   "polish_iterations": 100,
+   "start_scan": 24
+  }
+ ]
+}
