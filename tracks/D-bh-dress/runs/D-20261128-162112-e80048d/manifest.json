@@ -1,0 +1,110 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "D-20261128-162112-e80048d",
+  "track": "D-bh-dress",
+  "gate": "G3",
+  "kind": "scouting",
+  "purpose": "Processor smoke tests of the particle-leg (G-8-4N) and gauge-leg (G-8-e1) decks, two cycles each, core-v0.9 (g3/amend entry 11)",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "python3",
+    "tracks/D-bh-dress/g3/amend/tools/legs_smoke.py",
+    "--out",
+    "$NRPIC_RUN_DIR"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "e80048df8d0c623b2b124a914670c32334fa3f4a",
+    "branch": "track/D-bh-dress",
+    "dirty": false,
+    "package": [
+      "tracks/D-bh-dress/g3/amend"
+    ],
+    "outside_package": {
+      "count": 0,
+      "first": []
+    },
+    "merge_base_main": "008712a713c179fc0f50df46ac68e069d5551aca",
+    "worktree": "wt/D-bh-dress"
+  },
+  "code": {
+    "core_tag": "core-v0.9",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "7757edd28ab45f72d45b1eb3102963c4861dbde67ea407e2adc102d8b3653500",
+    "machine_file_sha256": "aaddef7596beac4923fa5ca549514169cc663e2bac8ec8cf222735ed07f2fd09",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/D-bh-dress/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "tracks/D-bh-dress/g3/amend/decks/g3g84n.athinput",
+      "role": "input",
+      "sha256": "f37b8bc8e8f1404f2426b4bd2ad10dfd918c570d6dec9672ffcdf70c7e262039",
+      "bytes": 6431,
+      "tracked": true
+    },
+    {
+      "path": "tracks/D-bh-dress/g3/amend/decks/g3g8e1.athinput",
+      "role": "input",
+      "sha256": "b5e498828315805b912ac96e9372881aa637319b41545c56046a5046100b1492",
+      "bytes": 6401,
+      "tracked": true
+    },
+    {
+      "path": "tracks/D-bh-dress/g3/amend/tools/legs_smoke.py",
+      "role": "argv",
+      "sha256": "485f4f1244a59fafe4d73880b3fbb7f088818a859ea2ce7c75ac9d18986b2773",
+      "bytes": 2432,
+      "tracked": true
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 2,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/D-bh-dress/D-20261128-162112-e80048d",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-28T16:21:12Z",
+  "started": null,
+  "ended": null,
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 60.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 3.7213,
+    "gpu_hours_reserved": 0.6,
+    "gpu_hours_without_gate": 0.0,
+    "cores_busy": 4,
+    "runs": 353,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md + 0026-cards-loaded-allotment-cost.md + 0031-level2-branch-and-ablation.md + 0032-new-account-preemption-allotments.md + 0038-track-e-g2-signed-g3-scope.md + 0039-rulings-after-batch-17.md + 0045-track-d-g2-signed-release-v08.md + 0048-rulings-after-batch-34.md + 0051-track-b-g2-signed-rulings-after-batch-40.md"
+  }
+}
