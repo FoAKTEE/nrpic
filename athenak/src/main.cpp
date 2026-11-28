@@ -285,11 +285,15 @@ int main(int argc, char *argv[]) {
   // override parameters from the restart file
   if (iarg_flag) {
     infile.Open(input_file.c_str(), IOWrapper::FileMode::read);
+    pinput->log_additions = res_flag;   // on a restart the log names what -i adds
     pinput->LoadFromFile(infile);
+    pinput->log_additions = false;
     infile.Close();
     pinput->CheckBlockNames();
   }
-  pinput->ModifyFromCmdline(argc, argv);
+  // on a restart a parameter that the stored input does not hold is added (with a line
+  // in the log); on a fresh start it is an error
+  pinput->ModifyFromCmdline(argc, argv, res_flag);
   // trackers, refined regions and horizon finders of the punctures of nrpic_cf
   if (!res_flag) nrpic_by::NrpicPunctureSetup(pinput);
   // remember the restart file, so that modules that keep their own restart data next

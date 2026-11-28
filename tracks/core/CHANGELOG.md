@@ -6,6 +6,155 @@ decision 0019 item 4). Tags that exist: core-v0.1 = 7daed19 (asymptotically flat
 core-v0.2 = 52c44eb (periodic particles and cosmological gauge; source of main a1c2237),
 core-v0.3 = 609a875 (below).
 
+## core-v0.9 (release, 2026-11-28): branch core/faces-finder (merged into core/nrpic at 8139c969)
+
+Record: `tracks/core/RELEASE-v0.9.md` (first line: source commit ad54460e, REGRESSION PASS,
+CARD CHECK PASS). Executables with READY, COMMIT and SHA256SUMS:
+`/data/haiyangw/nrpic/scratch/core/exe/core_nrpic_v09/` (`athena_cpu` serial, `athena_gpu`
+one A100, `athena_cpu_omp` threaded, `athena_cpu_mpi` several ranks). Interface documents
+for `coord/INTERFACES/`: new `tracks/core/interfaces/level_faces.md`,
+`restart_parameters.md`, `finder_box.md`; changed `finder_stop.md`.
+
+In short: four options of the horizon finder (`<fastflow> start_scan_<n>,
+start_scan_rmin_<n>, start_scan_rmax_<n>, trapped_tol_<n>`, all off when absent, read at
+every start), two reasons (7, 8) and three optional columns (16 to 18) of its status
+file, and three changes without an option (below, with the runs they change). No file
+format changes; restart files are written as by core-v0.8 (a parameter added on restart
+adds a line to the stored input).
+
+Options (details: "Options" below and `finder_box.md` section 3):
+
+| Option | Type, when absent | What it does |
+|---|---|---|
+| `<fastflow> start_scan_<n>` | integer 0 or >= 2; off | start radius from N round spheres (outermost with a negative expansion integral); none trapped: no flow, reason 8 |
+| `<fastflow> start_scan_rmax_<n>` | real; `initial_radius_<n>` | largest radius of the scan |
+| `<fastflow> start_scan_rmin_<n>` | real; rmax/32 | smallest radius of the scan |
+| `<fastflow> trapped_tol_<n>` | real >= 0; off | accept only a surface with smallest radius > 0 and rms(H) times area mass below the value; reason 7 at the cap |
+
+For every deck that uses the finder, in every release (decision 0049 item 3): without
+`<problem> puncture_setup = true` the finder searches only if the deck names
+`<fastflow> start_time_<n>` and `stop_time_<n>` (the defaults, the largest double and
+-1, never search; `finder_box.md` section 0). The defaults are not changed.
+
+Which runs change without an option:
+
+| Change | Runs whose output changes | Runs that keep the bytes of core-v0.8 |
+|---|---|---|
+| 1. linear cloud with `deposit_fine_shape` | refined mesh, `deposit_shape = cic`, `deposit_fine_shape = true`, clouds not on the lattice of a level cap: the fine cells beside them (the dipole of -+1/8 is gone) | uniform meshes; quadratic and cubic clouds; clouds on the cap lattice |
+| 2. compensation across level faces | every run on a refined mesh with `deposit_comp_c > 0`, from its first deposit (coarse cells at level faces, cells near level edges; with the plain pass every cell at rounding level). Track A's nested meshes with the cubic cloud and compensation are of this kind | uniform meshes (also with compensation); refined meshes without `deposit_comp_c`; the source filter `nfilter` is not touched |
+| 3. parameters added on restart | runs continued with `-r` and a `block/name=value` (or `-i` file) that the stored input does not hold: they now start (log line per addition) instead of ending with a fatal error | every fresh start (an unknown name is still fatal); every continued run without additions |
+
+Not done in this release (each stated in the interface texts):
+- **Level faces between ranks**: on several MPI ranks a face between a coarse block and
+  a fine block that sit on different ranks is not corrected by change 2; that face keeps
+  the two fluxes and is not conservative. Not tested on several ranks at all.
+- **The cost of the compensated deposit**: two more ghost exchanges of the ten source
+  components per deposit on a refined mesh with compensation, and for the plain pass
+  three directional passes in place of one product. On processors, in a test that
+  evolves no metric (indicative, run core-20261127-234843-fa6c2e9): cubic cloud with c2
+  11.9 s before and 12.1 s now; linear cloud with the plain pass 5.3 s and 10.7 s. Not
+  timed on a card; the share in a run with the spacetime solver is not measured.
+- The ripple of the deposit at a level face for a lattice of particles (0.19 to 0.34 of
+  the density in the cells at the face) is not removed; conservation is.
+- The weighted flow is not tested on punctures; `start_scan` is not applied to a
+  horizon tied to a puncture; parameters added on restart are tested on a single
+  continued run (processors and card), not inside a chain.
+- **The false acceptance of Track A's chain** (P0L6 at t = 118.12, mass 562, smallest
+  radius -3.59) is not retested: no restart file lies between t = 110 and 120. The same
+  class of event is reproduced and refused on two other files (`finder_box.md` section 4).
+
+Card check (q0094): run core-20261128-052151-e5a2d55 (job 5601, eight cases, 0.0067
+card-hours), judged by core-20261128-072820-d5fa2ca (`analysis/faces_finder/card_check.py`,
+`JOURNAL.md` after entry 2026-11-28T07:27Z): K1 to K4 held. The planar deposit lines equal
+the processors to 2.0e-15, the three compensated cases on three levels conserve to
+9.9e-16 at each of 12 records, the six S1L finder members are found with masses equal to
+1e-15, and a continued run takes `fastflow/diagnostics=true` from the command line. The
+first attempt q0086 (job 5544) was preempted after 5 s.
+
+The branch's own entries follow (written by its session for the maintainer's merge).
+
+### Entries of the branch core/faces-finder
+
+Source commit
+ad54460e (the last one that touches `athenak/src`), on release core-v0.8 (main at
+f65fafd2). Journal `tracks/core/JOURNAL-faces-finder.md`; interface proposals
+`tracks/core/interfaces/level_faces.md`, `restart_parameters.md`, `finder_box.md`;
+executables with READY `/data/haiyangw/nrpic/scratch/core/exe/core_faces-finder/`. In one
+line: two changes of the deposit at faces between refinement levels without an option,
+one change for continued runs without an option (the command line may add parameters),
+four options of the horizon finder, off when absent (`<fastflow> start_scan_<n>,
+start_scan_rmin_<n>, start_scan_rmax_<n>, trapped_tol_<n>`), two new reasons and three
+optional columns of the finder's status file. And one finding without source: the
+finder's failure in periodic boxes is the flow function, and `<fastflow> flow = shear`,
+which every release has, cures it.
+
+### Behaviour that changes without an option
+
+1. **Linear cloud with `deposit_fine_shape` on a refined mesh** (`particles/nrpic.cpp`,
+   `NrpicDepositSources`). A lattice cell beside a linear cloud that lies in a finer
+   block got a share that nothing cancelled unless the cloud was held at the level cap:
+   -1/8 and +1/8 of the density in the two fine cells next to a level face. Now such a
+   cell is visited only when the cloud's lattice is the lattice of its cap. Changes:
+   runs with `deposit_shape = cic`, `deposit_fine_shape = true` and refinement, in the
+   fine cells next to clouds that are not on the cap lattice (without a cap the option
+   is now inert, as documented). Quadratic and cubic clouds, capped clouds on the cap
+   lattice: unchanged.
+2. **Compensation of the cloud on a refined mesh** (`particles/nrpic.cpp`,
+   `NrpicCompensateLimited`; new file `particles/nrpic_levelface.cpp`). The pass of
+   `deposit_comp_c > 0` was not conservative across a face between levels (0.02 to 0.1
+   per cent of the mass in the tests). Now the flux of the fine side counts for both
+   sides, the ghost cells are filled before each of the three directions, and the plain
+   pass (no `deposit_comp_c2`, no limiter) is taken in flux form like the other. Changes:
+   every run with refinement and `deposit_comp_c > 0`: the coarse cells at level faces
+   by c times the jump of the deposit, cells near level edges by prolongation
+   differences, and with the plain pass every cell at rounding level. Two more ghost
+   exchanges of the ten source components per deposit in such runs.
+3. **Parameters on the command line of a continued run** (`parameter_input.cpp`,
+   `main.cpp`). With `-r`, a parameter or block that the input stored in the restart
+   file does not hold is added instead of ending the run, with a line in the log; `-i`
+   next to `-r` logs what it adds. A fresh start is unchanged (fatal error). No output
+   of a run that does not use it changes.
+
+Uniform meshes, refined meshes without `deposit_comp_c` and without the linear cloud with
+fine shape, and every run that is not continued with new parameters: bytes of core-v0.8.
+Of the 75 items of the byte regression none uses the two deposit settings on a refined
+mesh (the refined set-ups `dep`, `os`, `c3` use the source filter `nfilter`, which is
+not touched), so none may differ: result in the READY file and journal entry 6.
+
+### Options (all off when absent; read only if present)
+
+- `<fastflow> start_scan_<n> = N` with `start_scan_rmin_<n>`, `start_scan_rmax_<n>`: a
+  search that would start from `initial_radius_<n>` starts where the expansion integral
+  of round spheres changes sign outside the outermost trapped one; no trapped sphere,
+  no flow (reason 8).
+- `<fastflow> trapped_tol_<n> = x`: a surface is accepted only if its smallest radius is
+  positive and the rms of its expansion times its area mass is below x; a search that
+  ends at its cap after the mass rule was met on a refused surface has reason 7.
+- Status file (`diagnostics = true`): reasons 7 and 8; for a horizon with either option
+  the columns `16:rms_expansion_x_area_mass 17:scan_start_radius 18:scan_trapped_spheres`.
+
+### Finding without a source change
+
+The default flow function (`flow = standard`, rho = H |grad F|) moves the surface by a
+step that is not invariant under the unit of length: about A/(4 m^2) of the distance to
+a horizon of mass m per iteration (0.13 for m = 1, 0.0013 for m = 10). In Track A's
+periodic boxes (area masses 6.3 and 10.7, comoving coordinates) that is the cap of
+iterations the card runs hit. With `flow = shear` release core-v0.8 finds both horizons
+from the decks' start radii in 125 to 144 iterations (a hundred of them polishing), and
+ends in under twenty iterations where nothing is trapped (`finder_box.md` sections 1, 2).
+
+### Tests (processors; every number with its run in the interface texts)
+
+Deposit: uniform lattice across a level face (`dep_compare.py`, 16 cases, core-v0.8
+against the branch): 14 tables byte-identical, `cic_fs` now equal to `cic`, line sum of
+the compensated cubic cloud 32 (was 32.0413), run core-20261127-234848-7d666df; random
+particles on a three-level mesh (`comp_cons.py`): integral of E equal to the particle
+sum within 3.3e-14 in the four compensated cases (core-v0.8: 2.4e-4 to 9.9e-4), run
+core-20261127-234843-fa6c2e9. Restart: `diag_restart.py` F1a to F1e, run
+core-20261127-234458-4baaaa4. Finder: nine runs on Track A's restart files, table of run
+core-20261128-000846-a3722c7. Not done: the false acceptance at t = 118.12 of P0L6 cannot
+be retested (no restart file); several ranks; timing on a card.
+
 ## core-v0.8 (release, 2026-11-26): branch core/restart-finder (merged into core/nrpic at b755cdcf)
 
 Record: `tracks/core/RELEASE-v0.8.md` (first line: source commit 01d4aeeb, REGRESSION PASS,
