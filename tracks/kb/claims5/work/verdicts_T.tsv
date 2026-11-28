@@ -115,3 +115,18 @@ k	cls	claim_id	verdict	right	borderline	action	note
 161	T	104	right	1	0	verify	L547 (N = 100 to 2000), L549 (10000 shells, Plummer), L551 (0.41)
 162	T	632	right	1	1	verify	L368-379; fit coefficients is a bare noun
 163	T	77	right	1	0	verify	abstract L76-77
+164	T	244	right	1	0	verify	L384 as worded
+165	T	80	right_locator	1	0	verify(locator+)	Case I and II are defined at L252-263 (and L298), t_vir at L282 only
+166	T	634	right	1	1	verify	noun phrase; eq. CoordtEqs L245-256 with 1/(m Gamma^2) on the gradient of Phi
+167	T	248	wrong	0	1	supersede	the paper evolves the non-equilibrium equations and finds the core evolution can still be approximated as quasi-static (L457); treatment states it as the method
+168	T	232	right	1	0	verify	L280: 0.0352 at 0.506c, Z(0) 0.548; 0.0352-0.0356 at Z(0) 0.548-0.522 for b = 0.1-0.5
+169	T	387	right	1	0	verify	caption L132-133, L174
+170	T	98	right	1	0	verify	L635
+171	T	685	part_unsupported	0	0	supersede(to 910)	L235 attributes r^(-9/4) to Fillmore-Goldreich 1984 and Bertschinger 1985 for spherical collapse in EdS, not to a self-similar solution of Bertschinger alone; the 1805.09034 part sits outside the locator; 910 carries both papers
+172	T	330	right	1	1	verify	table st-suite rows L1024-1028 (t_BH 109 and 73 M); locator debris kept
+173	T	246	right	1	0	verify	L429 (rho_c >~ 1e5 rho_s) and L440 (445.0, 5e7 M_sun = 1 percent at 445.6, ~1e-4 at 445.8)
+174	T	103	right	1	1	verify	noun phrase; L542: the 5/3 of the yellow line comes from the virial theorem
+175	T	239	right	1	1	verify	noun phrase; table of b = 0.1 rows L490-503 and the b = 0.2 subcaption L510
+176	T	321	right	1	1	verify	L116 as worded; locator debris kept
+177	T	143	right	1	0	verify	L2277: departure from Zeldovich at shell crossing t/t_k ~ 22.5, breakdown for t/t_k >~ 20
+178	T	626	right	1	0	verify	L86-88

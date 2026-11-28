@@ -1,0 +1,735 @@
+{
+ "by": "kb-claims5",
+ "note": "claims5: verdicts of the 131 unread cited machine-located claims (class T of claims4, k = 48-178 of order run kb-20261128-003945-e1d65ba); JOURNAL.md entry 2, work/verdicts_T.tsv",
+ "actions": [
+  {
+   "do": "verify",
+   "id": 324,
+   "evidence": "claims5 T (k=48): right [borderline]; table rows L953-956 as printed; quantities (first maximum and zero of the binding energy, L941-947) not named; locator debris kept",
+   "locator": "2009.08163v1:paper.tex:L941-956"
+  },
+  {
+   "do": "verify",
+   "id": 205,
+   "evidence": "claims5 T (k=49): right; definition eq. rhoK at L260"
+  },
+  {
+   "do": "verify",
+   "id": 101,
+   "evidence": "claims5 T (k=50): right [borderline]; noun phrase; grid limit b_min ~ N^(-4/9) of eq. gridlimit, condition s_v^2 << delta_m/N^(2/3) (L521) not carried; sibling 100 is the top hat at rest"
+  },
+  {
+   "do": "verify",
+   "id": 45,
+   "evidence": "claims5 T (k=51): right; fail is a gloss: the first crashed without lapse collapse (L230), the second cut the lapse growth from 20 to 2, not enough for a stable collapse (L236)"
+  },
+  {
+   "do": "verify",
+   "id": 195,
+   "evidence": "claims5 T (k=52): right; L2396-2402 as worded"
+  },
+  {
+   "do": "verify",
+   "id": 173,
+   "evidence": "claims5 T (k=53): right; Zeldovich until maximum expansion, Hubble flow neglected after (L610-612)",
+   "locator": "2403.15126v1:pII_GW_Vir_C2_Arx.tex:L610-612"
+  },
+  {
+   "do": "verify",
+   "id": 231,
+   "evidence": "claims5 T (k=54): right; L274: 1.62 reached at v(0) = 0.566c, Z(0) = 0.750; b = 0.1-0.5: (0.566-0.564)c, Z(0) = 0.750-0.622"
+  },
+  {
+   "do": "verify",
+   "id": 444,
+   "evidence": "claims5 T (k=55): right [borderline]; L317-318 as worded; trailing note words (Point masses, extreme q.) kept"
+  },
+  {
+   "do": "verify",
+   "id": 206,
+   "evidence": "claims5 T (k=56): right; eq. ham_recast_full L256 and definitions L260-263"
+  },
+  {
+   "do": "verify",
+   "id": 680,
+   "evidence": "claims5 T (k=57): right; footnote L918-920; SFW is Sadeghian, Ferrer, Will, arXiv 1305.2619 (kerrdm.bbl L318-327, kerrdm.tex L140)"
+  },
+  {
+   "do": "verify",
+   "id": 322,
+   "evidence": "claims5 T (k=58): right [borderline]; L151: M_in 1.8e-3 M_0 (SMFP region), 4.2e-2 SIDM only, M_seed = M_in; locator debris kept"
+  },
+  {
+   "do": "verify",
+   "id": 627,
+   "evidence": "claims5 T (k=59): right [borderline]; noun phrase; equations ddotx-ddotz of the restricted parabolic problem and t(f), fdot(f) at L229-259"
+  },
+  {
+   "do": "verify",
+   "id": 241,
+   "evidence": "claims5 T (k=60): right; eq. ms9 L341"
+  },
+  {
+   "do": "supersede",
+   "id": 182,
+   "evidence": "claims5 T (k=61): fragment; subject of sigma^(7/2) cut (B REFERENCES.md:33-35 joins it to the line before); whole sentence from L1030-1031",
+   "text": "In arXiv:2403.15126, when sigma is decreased with the sigma-dependent ratio <t_max>/t_k kept fixed, the shape of the average GW spectrum nearly does not change: it decreases roughly as sigma^(7/2), and its peak shifts to smaller frequencies as omega_peak ~ sigma^(3/2) (pII_GW_Vir_C2_Arx.tex L1030-1031).",
+   "label": "fulltext",
+   "locator": "2403.15126v1:pII_GW_Vir_C2_Arx.tex:L1030-1031",
+   "origin": "tracks/kb/claims5"
+  },
+  {
+   "do": "supersede",
+   "id": 234,
+   "evidence": "claims5 T (k=62): wrong [borderline]; L283 says the criterion is sufficient but may not be necessary; the text drops the hedge (not necessary); the epsilon, Z(0) agreement is right",
+   "text": "arXiv:2108.11967 compares with the fully relativistic N-body simulations of Shapiro and Teukolsky (1985), in which the system can collapse to a black hole at fractional binding energy epsilon ~ 0.035 and Z(0) ~ 0.5, in excellent agreement with its semi-analytical method; since in several unstable cases of those simulations the adiabatic index condition is not satisfied, it calls the criterion gamma_cr > <gamma> 'a sufficient, but may not be necessary condition' (main.tex L283).",
+   "label": "fulltext",
+   "locator": "2108.11967v2:main.tex:L283",
+   "origin": "tracks/kb/claims5"
+  },
+  {
+   "do": "verify",
+   "id": 46,
+   "evidence": "claims5 T (k=63): right; S = 450 at L244 (largest stable), T update L246-248, best result of this section L250"
+  },
+  {
+   "do": "verify",
+   "id": 265,
+   "evidence": "claims5 T (k=64): right; L1186-1193 say it of every collapse in their simulations; the King-model collapse is the case of the figures (L1221, L1244)"
+  },
+  {
+   "do": "supersede",
+   "id": 193,
+   "evidence": "claims5 T (k=65): fragment; the end of a quotation; B REFERENCES.md:51-53 holds the sentence; no sibling carries it (135 is the ball)",
+   "text": "arXiv:2605.04487 builds its initial particle load by a glass-like relaxation and a quadrupole clean-up designed to reduce artificial GW emission seeded purely by shot noise: the residual initial quadrupole is |Q_ij| ~ 1e-1 (code units) for a purely random realization and as small as ~1e-14 after the procedure (main_v3.tex L2234-2238).",
+   "label": "fulltext",
+   "locator": "2605.04487v2:main_v3.tex:L2234-2238",
+   "origin": "tracks/kb/claims5"
+  },
+  {
+   "do": "supersede",
+   "id": 329,
+   "evidence": "claims5 T (k=66): wrong_label; C judgement about the brief (the continuum solver the brief names for collisions is collisionless) stored as fulltext; L18 and methods.tex L196 support the reading",
+   "text": "Track C reads arXiv:2602.17487, the continuum Vlasov solver that the brief names for collisions, as a collisionless solver: its Vlasov equation is reduced 'in the absence of collisions or sources' (results.tex L18) and its validation runs are counter-streaming instabilities in collisionless plasmas (methods.tex L196) [JUDGEMENT: Track C's reading].",
+   "label": "judgement",
+   "locator": "2602.17487v1:results.tex:L18; 2602.17487v1:methods.tex:L196",
+   "origin": "tracks/kb/claims5"
+  },
+  {
+   "do": "verify",
+   "id": 326,
+   "evidence": "claims5 T (k=67): right [borderline]; abstract L88-89 as worded; locator debris kept"
+  },
+  {
+   "do": "verify",
+   "id": 22,
+   "evidence": "claims5 T (k=68): right; L960-967; p is the prolateness (L841), dust fluid L171"
+  },
+  {
+   "do": "verify",
+   "id": 320,
+   "evidence": "claims5 T (k=69): right [borderline]; list of definitions L388-409 as printed; H bare; locator debris kept"
+  },
+  {
+   "do": "verify",
+   "id": 229,
+   "evidence": "claims5 T (k=70): right; dilute classical limit eq. C_distribution L110-116, b and Tolman-Klein L118, w(0) boundary value L146"
+  },
+  {
+   "do": "verify",
+   "id": 639,
+   "evidence": "claims5 T (k=71): right; L141-146 and L291 (column 3BH1, header L288); equal puncture masses 0.315269 in table ID L161-176",
+   "locator": "0710.0879v2:first.tex:L141-146; 0710.0879v2:first.tex:L161-176; 0710.0879v2:first.tex:L288-291"
+  },
+  {
+   "do": "supersede",
+   "id": 230,
+   "evidence": "claims5 T (k=72): wrong_label; noun phrase of the paper (right) joined to C own reproduction (script, run id) under fulltext; split into a paper claim and a judgement claim",
+   "text": "arXiv:2108.11967 writes the number density, density, energy density and pressure of its truncated distribution as integrals I(b, w) (eqs. eos and integrals, main.tex L122-139) and closes the model with the Tolman-Oppenheimer-Volkoff equations for M(r) and w(r), with M = 0 and w = w(0) at r = 0 and M = M(R), w = 0 at r = R (L141-146).",
+   "label": "fulltext",
+   "locator": "2108.11967v2:main.tex:L122-146",
+   "origin": "tracks/kb/claims5"
+  },
+  {
+   "do": "add",
+   "text": "Track C reproduces the equilibrium sequence of arXiv:2108.11967 with tracks/C-sidm/scope/scripts/king_sequence.py (run C-sidm-20261115-115348-eb8b752) [JUDGEMENT: Track C's run, not re-run by kb].",
+   "label": "judgement",
+   "kind": "result",
+   "paper": "2108.11967",
+   "locator": "2108.11967v2:main.tex:L122-146",
+   "track": "C-sidm",
+   "origin": "tracks/kb/claims5",
+   "evidence": "claims5: C's run part of claim 230, split off (wrong_label); the run id and script path are from 230's text, the script exists on track/C-sidm"
+  },
+  {
+   "do": "verify",
+   "id": 317,
+   "evidence": "claims5 T (k=73): right [borderline]; L408-412 with footnote as worded; locator debris kept"
+  },
+  {
+   "do": "verify",
+   "id": 315,
+   "evidence": "claims5 T (k=74): right [borderline]; L672 (rigorous treatment requires the full collisional Boltzmann equation, Gurian:2025zpc) and f_P eq. pfac L674-675; debris kept"
+  },
+  {
+   "do": "supersede",
+   "id": 87,
+   "evidence": "claims5 T (k=75): fragment; qualifier without its subject: the order-unity factors of the Case I/II non-formation conditions L366-374",
+   "text": "arXiv:2211.13950 rewrites its PBH non-formation condition, depending on whether the halos of the small scale k form before the collapse of the PBH scale k~, as delta_ent < k~^4/k^4 for Case I (k^2 delta_ent > k~^2 delta~_ent) and delta_ent > (k/k~) delta~_ent^(5/2) for Case II (k^2 delta_ent < k~^2 delta~_ent), ignoring factors of order unity (MD_threshold10.tex L366-375).",
+   "label": "fulltext",
+   "locator": "2211.13950v3:MD_threshold10.tex:L366-375",
+   "origin": "tracks/kb/claims5"
+  },
+  {
+   "do": "verify",
+   "id": 253,
+   "evidence": "claims5 T (k=76): right; abstract L47-58 and L866-873 as worded"
+  },
+  {
+   "do": "verify",
+   "id": 334,
+   "evidence": "claims5 T (k=77): right_locator [borderline]; cut start (reason:); capture below L_c = 4Gm for E = 1 is at L376-384, not at L120 alone",
+   "locator": "1305.2619v1:SFWpaper.tex:L120; 1305.2619v1:SFWpaper.tex:L376-384"
+  },
+  {
+   "do": "verify",
+   "id": 628,
+   "evidence": "claims5 T (k=78): right [borderline]; noun phrase; E2 = -E1 L347, eq. E1par L353-356 carries the unit (G m1 m2/a)(M/m)^(1/3) with 1/D and a bracket"
+  },
+  {
+   "do": "verify",
+   "id": 323,
+   "evidence": "claims5 T (k=79): right [borderline]; L74 as worded (0.3c, 1e-10 to 1e-8, ~1 M_sun for 1e9 M_sun); locator debris and an unrelated sibling of the same note row"
+  },
+  {
+   "do": "supersede",
+   "id": 684,
+   "evidence": "claims5 T (k=80): part_unsupported; 1805.09034 part right at L195-200; the 1901.08528 part sits outside the locator and the corpus remark is not a paper statement; 910 (claims4) carries both papers, each read",
+   "to": 910
+  },
+  {
+   "do": "verify",
+   "id": 211,
+   "evidence": "claims5 T (k=81): right; L142-154: metric eq. metric, Poisson gauge conditions kept beyond perturbation theory L150-152"
+  },
+  {
+   "do": "verify",
+   "id": 188,
+   "evidence": "claims5 T (k=82): right; L208-214 as worded"
+  },
+  {
+   "do": "verify",
+   "id": 201,
+   "evidence": "claims5 T (k=83): right; L2630 as worded"
+  },
+  {
+   "do": "verify",
+   "id": 72,
+   "evidence": "claims5 T (k=84): right; eq. a*1_a*2 L900-907"
+  },
+  {
+   "do": "verify",
+   "id": 440,
+   "evidence": "claims5 T (k=85): right; authors L105-113, HRNA L123 and L150, compared with Newtonian and 1PN L123"
+  },
+  {
+   "do": "verify",
+   "id": 318,
+   "evidence": "claims5 T (k=86): right [borderline]; L1482-1491 (more than five times smaller than Chapman-Enskog); locator debris kept"
+  },
+  {
+   "do": "verify",
+   "id": 79,
+   "evidence": "claims5 T (k=87): right; L198-245; caustics at L234"
+  },
+  {
+   "do": "verify",
+   "id": 5,
+   "evidence": "claims5 T (k=88): right; L549 as worded"
+  },
+  {
+   "do": "verify",
+   "id": 278,
+   "evidence": "claims5 T (k=89): right; eq. st-dimensionless L1055-1059"
+  },
+  {
+   "do": "verify",
+   "id": 270,
+   "evidence": "claims5 T (k=90): right; L612 as worded"
+  },
+  {
+   "do": "verify",
+   "id": 305,
+   "evidence": "claims5 T (k=91): right [borderline]; L274 (same content as 231); locator debris kept"
+  },
+  {
+   "do": "supersede",
+   "id": 242,
+   "evidence": "claims5 T (k=92): wrong_label [borderline]; the paper part is right (gamma = 5/3 for the non-relativistic case, L344; no other value of gamma in the source by grep) but a TO VERIFY question of C rides under fulltext; superseded by the resolved sentence",
+   "text": "arXiv:2601.17117 closes its equations with the ideal-gas law P = (gamma - 1) epsilon rho, gamma the adiabatic index, and states a value only for the non-relativistic case, gamma = 5/3 (SIDM_MS.tex L341-344).",
+   "label": "fulltext",
+   "locator": "2601.17117v2:SIDM_MS.tex:L341-344",
+   "origin": "tracks/kb/claims5"
+  },
+  {
+   "do": "verify",
+   "id": 640,
+   "evidence": "claims5 T (k=93): right; L185-194 and L1253-1261 (one order of magnitude bigger)"
+  },
+  {
+   "do": "verify",
+   "id": 15,
+   "evidence": "claims5 T (k=94): right; L1064-1074 as worded"
+  },
+  {
+   "do": "verify",
+   "id": 71,
+   "evidence": "claims5 T (k=95): right; L894"
+  },
+  {
+   "do": "verify",
+   "id": 78,
+   "evidence": "claims5 T (k=96): right; L93-95"
+  },
+  {
+   "do": "verify",
+   "id": 546,
+   "evidence": "claims5 T (k=97): right; absence checked by grep of main.tex (1515 lines): kappa1, kappa2 at L243-338, kappa_{1,0} L395-397, eta_0 and M_ref L391-393, mu_S L376-380, none with a value"
+  },
+  {
+   "do": "verify",
+   "id": 70,
+   "evidence": "claims5 T (k=98): right; L849-866: |L1| proportional to q delta_s, |L2| to I <delta_s^2>^(1/2) delta_s (sigma)"
+  },
+  {
+   "do": "verify",
+   "id": 362,
+   "evidence": "claims5 T (k=99): right; eq. Motion2 L188-190"
+  },
+  {
+   "do": "supersede",
+   "id": 352,
+   "evidence": "claims5 T (k=100): fragment; second half of 351 (D REFERENCES.md:44-45); whole sentence from appendix A L462-468",
+   "text": "In appendix A of arXiv:1901.08528, integrating over the radial orbits of the WIMPs after they decouple from the background expansion gives an r^(-9/4) profile like that of its eq. (profile) but 53 per cent denser (PBH-UCMH-ArXiv-v2.tex L462-468).",
+   "label": "fulltext",
+   "locator": "1901.08528v2:PBH-UCMH-ArXiv-v2.tex:L462-468",
+   "origin": "tracks/kb/claims5"
+  },
+  {
+   "do": "verify",
+   "id": 366,
+   "evidence": "claims5 T (k=101): right; eq. Mhalo L218"
+  },
+  {
+   "do": "verify",
+   "id": 316,
+   "evidence": "claims5 T (k=102): right [borderline]; eq-condition_P L667-673 and eq-condition_r32 L680-685; locator debris kept"
+  },
+  {
+   "do": "supersede",
+   "id": 19,
+   "evidence": "claims5 T (k=103): wrong_label; A inference (one particle per cell implied) under fulltext; the source states no particle number (only a plotting caption, L1132), regular alignment and filling L1065-1066, mass with the cell volume L1072",
+   "text": "Track A reads arXiv:2609.14218 as placing one particle per grid cell: the paper states no particle number (its only count, in a figure caption, is a plotting reduction to 1/80, MDPBH.tex L1132), aligns the particles regularly so that they fill the region with no space and no overlap (L1065-1066), and gives each particle the mass E sqrt(gamma) Delta x Delta y Delta z / Gamma_p of a cell (L1070-1074) [JUDGEMENT: Track A's reading].",
+   "label": "judgement",
+   "locator": "2609.14218v1:MDPBH.tex:L1064-1074; 2609.14218v1:MDPBH.tex:L1132",
+   "origin": "tracks/kb/claims5"
+  },
+  {
+   "do": "verify",
+   "id": 310,
+   "evidence": "claims5 T (k=104): right [borderline]; L384 as worded; locator debris kept"
+  },
+  {
+   "do": "verify",
+   "id": 204,
+   "evidence": "claims5 T (k=105): right; eq. decom L164, LL L168, vector Laplacian veceq L171-175"
+  },
+  {
+   "do": "verify",
+   "id": 95,
+   "evidence": "claims5 T (k=106): right; eq. bBH L314-316 (for delta_m << 1)"
+  },
+  {
+   "do": "verify",
+   "id": 271,
+   "evidence": "claims5 T (k=107): right; L559: T = 1000 M"
+  },
+  {
+   "do": "verify",
+   "id": 442,
+   "evidence": "claims5 T (k=108): right; L194 as worded"
+  },
+  {
+   "do": "verify",
+   "id": 356,
+   "evidence": "claims5 T (k=109): right; L235; the two bib keys are 1984ApJ...281....1F and 1985ApJS...58...39B"
+  },
+  {
+   "do": "verify",
+   "id": 247,
+   "evidence": "claims5 T (k=110): right; L474: t_c ~ 0.1 t_0 at 445.8 t_0, ~40 t_0 by about 460 t_0"
+  },
+  {
+   "do": "verify",
+   "id": 21,
+   "evidence": "claims5 T (k=111): right; L766-768 as worded (LTB is the spherical case)"
+  },
+  {
+   "do": "verify",
+   "id": 76,
+   "evidence": "claims5 T (k=112): right; abstract L81-86"
+  },
+  {
+   "do": "verify",
+   "id": 433,
+   "evidence": "claims5 T (k=113): right; authors first.tex L29-42, second.tex L30-37; abstracts as worded"
+  },
+  {
+   "do": "verify",
+   "id": 255,
+   "evidence": "claims5 T (k=114): right [borderline]; noun phrase; four tables Case 1-4 (captions L778, L797, L818, L836) with L_0 = 0.1 (L760-761)"
+  },
+  {
+   "do": "verify",
+   "id": 275,
+   "evidence": "claims5 T (k=115): right; table st-suite caption and columns L1016-1031"
+  },
+  {
+   "do": "verify",
+   "id": 99,
+   "evidence": "claims5 T (k=116): right; L478 as worded"
+  },
+  {
+   "do": "verify",
+   "id": 262,
+   "evidence": "claims5 T (k=117): right; table bindengmax L948-958"
+  },
+  {
+   "do": "verify",
+   "id": 363,
+   "evidence": "claims5 T (k=118): right; L193 as worded"
+  },
+  {
+   "do": "verify",
+   "id": 135,
+   "evidence": "claims5 T (k=119): right [borderline]; noun phrase; two-stage load L2174, glass-like step L2183, vanishing quadrupole L2234, affine Zeldovich map L2174"
+  },
+  {
+   "do": "supersede",
+   "id": 451,
+   "evidence": "claims5 T (k=120): wrong_label; F novelty-search statement (theses, INSPIRE) under fulltext of the paper; and stated plan overstates could be continued for at least until 128:1:1 (L708-712); 638 (verified, claims4) carries the paper part",
+   "to": 638
+  },
+  {
+   "do": "supersede",
+   "id": 33,
+   "evidence": "claims5 T (k=121): fragment; second half of 32 (A REFERENCES.md:50-54): evaluated at ... without the subject (the analytic criterion line); one whole sentence from L911-919 and L984-988",
+   "text": "arXiv:2609.14218 writes its analytic criterion for PBH formation as mu > h-hat(e,p) 6a^2H^2/k^2 with h-hat(e,p) = (15/pi) e (1+3e+p)^(-2) E(sqrt(1-(e+p)^2/(4e^2))) (MDPBH.tex L911-919), and draws it at aH = k/sqrt(6) (blue solid line of its threshold figure), a line that does not take into account the effect of the inhomogeneity discussed in its spherical section (L984-988).",
+   "label": "fulltext",
+   "locator": "2609.14218v1:MDPBH.tex:L911-919; 2609.14218v1:MDPBH.tex:L984-988",
+   "origin": "tracks/kb/claims5"
+  },
+  {
+   "do": "verify",
+   "id": 637,
+   "evidence": "claims5 T (k=122): right [borderline]; noun phrase; L223-225 (dynamical range of 1e4 makes full NR intractable)"
+  },
+  {
+   "do": "verify",
+   "id": 83,
+   "evidence": "claims5 T (k=123): right; L349-360, eq. nonform"
+  },
+  {
+   "do": "verify",
+   "id": 208,
+   "evidence": "claims5 T (k=124): right [borderline]; section title L369 with the distinction stated at L377-379 (gauge and hypersurface dependence are different concepts)"
+  },
+  {
+   "do": "verify",
+   "id": 75,
+   "evidence": "claims5 T (k=125): right; L919-927"
+  },
+  {
+   "do": "verify",
+   "id": 630,
+   "evidence": "claims5 T (k=126): right [borderline]; 19 percent L748-749; survival windows is a bare noun for the phi ranges of L784-785"
+  },
+  {
+   "do": "verify",
+   "id": 364,
+   "evidence": "claims5 T (k=127): right; L195-199"
+  },
+  {
+   "do": "verify",
+   "id": 629,
+   "evidence": "claims5 T (k=128): right; L597-599"
+  },
+  {
+   "do": "verify",
+   "id": 240,
+   "evidence": "claims5 T (k=129): right; abstract L52-72; Misner-Sharp L235-255; Eckart heat flux L268-270"
+  },
+  {
+   "do": "verify",
+   "id": 590,
+   "evidence": "claims5 T (k=130): right [borderline]; noun phrases; Fastflow and BHaHAHA masses L945, Psi_4 strain L1362; L674 is the AthenaK implementation"
+  },
+  {
+   "do": "verify",
+   "id": 319,
+   "evidence": "claims5 T (k=131): right [borderline]; L320-323; locator debris kept"
+  },
+  {
+   "do": "verify",
+   "id": 445,
+   "evidence": "claims5 T (k=132): right_locator; the intractable part is at L223-225; authors L94-97, parabolic orbit L112, free-fall frame and GEM force L230-234 sit outside the stored locator",
+   "locator": "2402.02178v1:main.tex:L94-112; 2402.02178v1:main.tex:L216-234"
+  },
+  {
+   "do": "verify",
+   "id": 44,
+   "evidence": "claims5 T (k=133): right; L213-222: K_FLRW from local proper time L216, lapse to ~0.5 L220, lifted back L222"
+  },
+  {
+   "do": "supersede",
+   "id": 484,
+   "evidence": "claims5 T (k=134): wrong_label; core table row with its verdict (imprecise: an upper bound) under fulltext; the paper part (OS section L864-953) is right at L945",
+   "text": "For its fiducial Oppenheimer-Snyder collapse (section of main.tex L864), arXiv:2611.12831 measures the final black-hole mass after particle excision with the Fastflow module of AthenaK and the external BHaHAHA finder and reports a relative error Delta M/M_ADM <~ 1e-3 against the initial ADM mass (L945).",
+   "label": "fulltext",
+   "locator": "2611.12831v1:main.tex:L864; 2611.12831v1:main.tex:L945",
+   "origin": "tracks/kb/claims5"
+  },
+  {
+   "do": "verify",
+   "id": 261,
+   "evidence": "claims5 T (k=135): right; eq. def_central redshift L684-689"
+  },
+  {
+   "do": "verify",
+   "id": 32,
+   "evidence": "claims5 T (k=136): right_locator [borderline]; the criterion is eq. ana_cri L911-914, h-hat L917-918; first half of the sentence whose second half is 33",
+   "locator": "2609.14218v1:MDPBH.tex:L911-919"
+  },
+  {
+   "do": "verify",
+   "id": 4,
+   "evidence": "claims5 T (k=137): right [borderline]; noun phrase; typical BBKS profile for the peaked spectrum of L844 (narrow is a gloss)"
+  },
+  {
+   "do": "verify",
+   "id": 90,
+   "evidence": "claims5 T (k=138): right; eq. t1equation L222-226"
+  },
+  {
+   "do": "verify",
+   "id": 92,
+   "evidence": "claims5 T (k=139): right; L240 as worded"
+  },
+  {
+   "do": "verify",
+   "id": 264,
+   "evidence": "claims5 T (k=140): right; L1155-1170: failure of the turning point principle; the same steady states are unstable as Einstein-Euler states while still stable for Vlasov"
+  },
+  {
+   "do": "verify",
+   "id": 215,
+   "evidence": "claims5 T (k=141): right; L1446-1452 (unequal time correlator, Wronskian method)"
+  },
+  {
+   "do": "verify",
+   "id": 137,
+   "evidence": "claims5 T (k=142): right; L1036-1063 and L2277"
+  },
+  {
+   "do": "verify",
+   "id": 489,
+   "evidence": "claims5 T (k=143): right [borderline]; noun phrase; L945; BHaHAHA is Etienne:2025auk, eprint 2505.15912 (references.bib L896-899)"
+  },
+  {
+   "do": "verify",
+   "id": 82,
+   "evidence": "claims5 T (k=144): right; eq. sigma_v(t) L330-334"
+  },
+  {
+   "do": "verify",
+   "id": 100,
+   "evidence": "claims5 T (k=145): right; L483-489 (zero speed, uniform random positions, 1.2 N^(-1/3) line)"
+  },
+  {
+   "do": "verify",
+   "id": 331,
+   "evidence": "claims5 T (k=146): right [borderline]; L289-291; note debris (helper, per scope) kept"
+  },
+  {
+   "do": "verify",
+   "id": 16,
+   "evidence": "claims5 T (k=147): right; L776, L942"
+  },
+  {
+   "do": "supersede",
+   "id": 306,
+   "evidence": "claims5 T (k=148): wrong [borderline]; same as 234: L283 says sufficient but may not be necessary; the hedge is dropped; locator debris",
+   "to": "@14"
+  },
+  {
+   "do": "verify",
+   "id": 260,
+   "evidence": "claims5 T (k=149): right; eq. Ansatz_Poly, Ansatz_King L630-636"
+  },
+  {
+   "do": "verify",
+   "id": 338,
+   "evidence": "claims5 T (k=150): right; constant distribution function L421-424, Gondolo-Silk approximation L436-440, eq. rhoGS"
+  },
+  {
+   "do": "verify",
+   "id": 286,
+   "evidence": "claims5 T (k=151): right; L116: Kn = lambda/H, H, C = 0.75 in kappa_lmfp"
+  },
+  {
+   "do": "verify",
+   "id": 360,
+   "evidence": "claims5 T (k=152): right; conclusion L20 (capture disregarded, GR could modify results near R_S)"
+  },
+  {
+   "do": "verify",
+   "id": 8,
+   "evidence": "claims5 T (k=153): right; absence checked by grep: boundary condition occurs at L483 (compatibility only) and L1394 (slicing function of the LTB comparison appendix)"
+  },
+  {
+   "do": "verify",
+   "id": 26,
+   "evidence": "claims5 T (k=154): right; L1145"
+  },
+  {
+   "do": "verify",
+   "id": 446,
+   "evidence": "claims5 T (k=155): right; authors template.tex L23-26 (seven, Trani last), abstract L45, L80"
+  },
+  {
+   "do": "supersede",
+   "id": 252,
+   "evidence": "claims5 T (k=156): fragment; first part is the tail of a list item of C REFERENCES.md:40-42 (velocity-dependent cross-sections (520)) with no statement and its locator outside the stored one; whole sentence from L520 and L672-676",
+   "text": "arXiv:2601.17117 names two limits of its fluid model: a velocity-dependent cross-section, expected as high as sigma >~ 100 cm^2/g at low velocities and suppressed at v >~ 1e3 km/s, could fundamentally alter the late-time evolution (SIDM_MS.tex L520); and where the relaxation time approaches the shell-crossing time, a rigorous treatment requires the full collisional Boltzmann equation, which the paper replaces by the phenomenological pressure factor f_P = (t_r/t_sc + 1)^(-1) (L672-676).",
+   "label": "fulltext",
+   "locator": "2601.17117v2:SIDM_MS.tex:L520; 2601.17117v2:SIDM_MS.tex:L672-676",
+   "origin": "tracks/kb/claims5"
+  },
+  {
+   "do": "verify",
+   "id": 73,
+   "evidence": "claims5 T (k=157): right; L948"
+  },
+  {
+   "do": "verify",
+   "id": 236,
+   "evidence": "claims5 T (k=158): right; end of L327: b >~ 0.1 at the onset for collapse in the classical regime"
+  },
+  {
+   "do": "verify",
+   "id": 30,
+   "evidence": "claims5 T (k=159): right; L1148-1149, L1176-1186"
+  },
+  {
+   "do": "verify",
+   "id": 291,
+   "evidence": "claims5 T (k=160): right; L133-142"
+  },
+  {
+   "do": "verify",
+   "id": 104,
+   "evidence": "claims5 T (k=161): right; L547 (N = 100 to 2000), L549 (10000 shells, Plummer), L551 (0.41)"
+  },
+  {
+   "do": "verify",
+   "id": 632,
+   "evidence": "claims5 T (k=162): right [borderline]; L368-379; fit coefficients is a bare noun"
+  },
+  {
+   "do": "verify",
+   "id": 77,
+   "evidence": "claims5 T (k=163): right; abstract L76-77"
+  },
+  {
+   "do": "verify",
+   "id": 244,
+   "evidence": "claims5 T (k=164): right; L384 as worded"
+  },
+  {
+   "do": "verify",
+   "id": 80,
+   "evidence": "claims5 T (k=165): right_locator; Case I and II are defined at L252-263 (and L298), t_vir at L282 only",
+   "locator": "2211.13950v3:MD_threshold10.tex:L252-263; 2211.13950v3:MD_threshold10.tex:L282"
+  },
+  {
+   "do": "verify",
+   "id": 634,
+   "evidence": "claims5 T (k=166): right [borderline]; noun phrase; eq. CoordtEqs L245-256 with 1/(m Gamma^2) on the gradient of Phi"
+  },
+  {
+   "do": "supersede",
+   "id": 248,
+   "evidence": "claims5 T (k=167): wrong [borderline]; the paper evolves the non-equilibrium equations and finds the core evolution can still be approximated as quasi-static (L457); treatment states it as the method",
+   "text": "arXiv:2601.17117 finds that, although its formalism includes bulk velocity, the core evolution in the late non-relativistic self-similar phase can still be approximated as quasi-static, because the bulk velocity in the deep core stays negligible against the local sound speed; non-equilibrium effects matter only in the rapidly expanding outer envelope (SIDM_MS.tex L457).",
+   "label": "fulltext",
+   "locator": "2601.17117v2:SIDM_MS.tex:L457",
+   "origin": "tracks/kb/claims5"
+  },
+  {
+   "do": "verify",
+   "id": 232,
+   "evidence": "claims5 T (k=168): right; L280: 0.0352 at 0.506c, Z(0) 0.548; 0.0352-0.0356 at Z(0) 0.548-0.522 for b = 0.1-0.5"
+  },
+  {
+   "do": "verify",
+   "id": 387,
+   "evidence": "claims5 T (k=169): right; caption L132-133, L174"
+  },
+  {
+   "do": "verify",
+   "id": 98,
+   "evidence": "claims5 T (k=170): right; L635"
+  },
+  {
+   "do": "supersede",
+   "id": 685,
+   "evidence": "claims5 T (k=171): part_unsupported; L235 attributes r^(-9/4) to Fillmore-Goldreich 1984 and Bertschinger 1985 for spherical collapse in EdS, not to a self-similar solution of Bertschinger alone; the 1805.09034 part sits outside the locator; 910 carries both papers",
+   "to": 910
+  },
+  {
+   "do": "verify",
+   "id": 330,
+   "evidence": "claims5 T (k=172): right [borderline]; table st-suite rows L1024-1028 (t_BH 109 and 73 M); locator debris kept"
+  },
+  {
+   "do": "verify",
+   "id": 246,
+   "evidence": "claims5 T (k=173): right; L429 (rho_c >~ 1e5 rho_s) and L440 (445.0, 5e7 M_sun = 1 percent at 445.6, ~1e-4 at 445.8)"
+  },
+  {
+   "do": "verify",
+   "id": 103,
+   "evidence": "claims5 T (k=174): right [borderline]; noun phrase; L542: the 5/3 of the yellow line comes from the virial theorem"
+  },
+  {
+   "do": "verify",
+   "id": 239,
+   "evidence": "claims5 T (k=175): right [borderline]; noun phrase; table of b = 0.1 rows L490-503 and the b = 0.2 subcaption L510"
+  },
+  {
+   "do": "verify",
+   "id": 321,
+   "evidence": "claims5 T (k=176): right [borderline]; L116 as worded; locator debris kept"
+  },
+  {
+   "do": "verify",
+   "id": 143,
+   "evidence": "claims5 T (k=177): right; L2277: departure from Zeldovich at shell crossing t/t_k ~ 22.5, breakdown for t/t_k >~ 20"
+  },
+  {
+   "do": "verify",
+   "id": 626,
+   "evidence": "claims5 T (k=178): right; L86-88"
+  }
+ ]
+}
