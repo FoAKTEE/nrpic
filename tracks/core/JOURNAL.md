@@ -2582,3 +2582,33 @@ closed failed only by the split check C0_change, with the branch's numbers (-0.0
 (core-20261128-020317-73134bb) PASS; finder_box S1L (core-20261128-020447-28dbb9f) exit 0;
 R9 (core-20261128-020122-3a1a3dd) REGRESSION PASS. Byte comparison with the branch's runs
 follows in one registered run (T9).
+
+### Outcomes R9, T9, Q9 (02:16Z)
+
+- **R9 HOLDS**, run core-20261128-020122-3a1a3dd (figure core-20261128-020936-0826227
+  looked at: twelve bars, one colour): 75 of 75 items identical with release core-v0.8
+  (geo 2, boris 2, dep 1, east 12, os 16, jeans 5, binary 1, c1 5, c2 3, c3 14, c4 4,
+  c5 10), REGRESSION PASS. Wall time about 5 min on 3 cores.
+- **T9 HOLDS** (second pass), run core-20261128-021251-d4575ac (figure looked at): of 416
+  files of the six branch runs, 371 byte-identical and 45 identical once the run
+  directory's name is replaced (input decks and the restart files, which store the input
+  with its paths); none differs, none is missing; the scripts' verdicts are the branch's
+  (dep_compare closes failed by its split check C0_change, -0.00755 and -0.03377 as in
+  entry 4 of the branch journal; comp_cons, diag_restart F1a-F1e, finder_bytes, cap_mid
+  PASS; finder_box exit 0 with every horizon file identical). The first pass,
+  core-20261128-021119-fb199ef, is on record as failed: my script compared the test
+  scripts' own `summary.json` files, which differ only by wall times and the executable's
+  path; the prediction was about the files AthenaK writes. The script now skips them
+  and compares the verdict lines instead (committed before the second pass).
+  The six runs of the merged build: dep_compare core-20261128-020214-a173064 (figure
+  looked at: the dipole of core-v0.8 at 7.25/7.75 gone, only the point at 8.5 moves),
+  comp_cons -020250-1981d90 (largest E error 2.7e-14 against 9.9e-4), diag_restart
+  -020255-72e53c6 (case a starts, "Parameter added on restart from the command line"),
+  finder_bytes -020317-73134bb, finder_box S1L -020447-28dbb9f (154.7 s), cap_mid
+  -020922-7d1da68.
+- **Q9 HOLDS**, run core-20261128-020910-9292e5d (figure looked at): ALL OK; the script
+  prints 20 "ok" lines (I wrote 19, the count I took from Q8's text; the checks are the
+  same). The core-v0.8 reference cuts lose nothing (tracker continuous, cons records
+  complete, two header lines), as added before the run.
+- So the merged tree is on processors what the branch was: candidate core-v0.9 prepared,
+  `RELEASE-v0.9.md` written NOT RELEASED (card check q0094 waiting, priority 2).

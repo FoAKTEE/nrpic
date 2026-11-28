@@ -39,17 +39,20 @@ cures it in every release.
 | Check | Run | Result |
 |---|---|---|
 | R9 byte regression against release `.work/build_cpu_v08/src/athena`, twelve set-ups, 3 cores | core-20261128-020122-3a1a3dd (figure core-20261128-020936-0826227) | 75 of 75 items identical, classes a, b, a+b, other empty: REGRESSION PASS (R9 held). Figure looked at: twelve bars, one colour |
-| T9 the branch's tests again with the merged build, outputs against the branch session's runs byte for byte (`rerun_compare.py`) | see section "T9" | see section "T9" |
-| Q9 `restart_test.py` (restart outputs across cuts at every residue of the record interval and a chain) against release core-v0.8 | see section "Q9" | see section "Q9" |
+| T9 the branch's tests again with the merged build, outputs against the branch session's runs byte for byte (`rerun_compare.py`) | core-20261128-021251-d4575ac (first pass -021119-fb199ef failed on the scripts' own summary files: wall times, executable path) | 416 output files (AthenaK outputs, input decks, the scripts' tables): 371 identical, 45 identical after the run directory's name is replaced (input decks and restart files store the path), none differs, none missing; the scripts' verdicts equal. T9 HOLDS. Figure looked at |
+| Q9 `restart_test.py` (restart outputs across cuts at every residue of the record interval and a chain) against release core-v0.8 | core-20261128-020910-9292e5d | ALL OK, 20 checks "ok": the uninterrupted run equals core-v0.8 byte for byte; cuts at 24, 25, 26, 27 and the chain give every output file byte-identical to the uninterrupted run, restart and `.prt` files identical. Q9 held. The reference cuts with core-v0.8 (labelled "v0.7" by the script) lose no tracker or `cons.hst` record and write two header lines, as written before the run. Figure looked at |
 | Branch tests of the source session (deposit at level faces, conservation on three levels, cap between levels, parameters on restart, finder on Track A's files, threaded build) | `JOURNAL-faces-finder.md` entries 2 to 6 | held, except the split of C0 between the two faces (entry 4) and the standard flow's "not found within 400" of S2 (entry 5): both on record |
 
-## T9
+## T9 (the branch's tests with the merged build)
 
-PENDING (filled in below when the runs are closed).
-
-## Q9
-
-PENDING (filled in below when the run is closed).
+| Test (merged build) | Run | Verdict | Branch run compared |
+|---|---|---|---|
+| `dep_compare.py`, 16 deposit cases across a level face | core-20261128-020214-a173064 | as the branch: D held (`cic_fs` = `cic`, 14 tables identical to core-v0.8), C0 line sum 32 held, the split between the two faces failed as in entry 4 (-0.00755, -0.03377): closed failed by that check | core-20261127-234848-7d666df |
+| `comp_cons.py`, random particles on three levels, ten steps | core-20261128-020250-1981d90 | COMP CONS PASS: largest error of the E integral 2.7e-14 (`pcs_c2`; core-v0.8 9.9e-4) | core-20261127-234843-fa6c2e9 |
+| `diag_restart.py`, parameters added on restart | core-20261128-020255-72e53c6 | F1a to F1e held: case a (`-r rst fastflow/diagnostics=true`) starts and writes the status file | core-20261127-234458-4baaaa4 |
+| `finder_bytes.py`, finder without the new options | core-20261128-020317-73134bb | PASS: files of core-v0.8 byte for byte | core-20261128-000807-e413b5e |
+| `finder_box.py` on Track A's S1L restart file (t = 220), weighted flow, scan, `trapped_tol` | core-20261128-020447-28dbb9f | exit 0; every horizon file byte-identical to the branch run | core-20261127-235215-27c6606 |
+| `cap_mid.py`, cap between the levels | core-20261128-020922-7d1da68 | CAP MID PASS | core-20261128-002502-76a25c3 |
 
 ## Card check (PENDING)
 
