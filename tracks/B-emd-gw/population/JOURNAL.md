@@ -1497,3 +1497,22 @@ both gauges (q0006's zero-shift member exists; q0107 is the Gamma-driver partner
   ratio for each statistic at a = 100 and 132 (I_B: 16 per cent; expanding half: 4 and 12; median:
   6 and 18). Refuted (truncation not the cause) if every mesh difference is below half the gauge
   difference at a = 132.
+
+## 2026-11-27 20:12 PST (lead of batch 39): figure of W0-W4 looked at; reading for condition (a)
+
+Figure population/figs/weyl_gauge.png (run B-20261128-041012-0e5b3f2), looked at: (a) the invariant
+moves by 1e-11 to 2e-5 under all three map families while the TT band moves by 2e-4 to 4e-2 (the
+single and mixed curves lie on top of each other); (b) every invariant ratio stays above the band
+strain ratio from a ~ 80 on, the bulk statistics (90th percentile, expanding half, median) inside
+the 5 per cent band to a = 64 and leaving it at a = 100 (median) and 132 (expanding half), while
+the mean and the core tenth sit at 0.90-0.91 already at a = 49-64; (c) volume, <K>_V and <alpha>_V
+agree to 3e-4 or better; (d) mean and median fall together in both gauges, the median curves
+indistinguishable to a = 100. Units: I_B is quadratic in the field and the band strain is an rms
+amplitude, so the amplitude-like gauge ratios of the invariant are the square roots: median 0.97
+and 0.91, expanding half 0.98 and 0.94 at a = 100 and 132, against 0.80 and 0.64 for the band strain.
+Reading [JUDGEMENT]: most of the late gauge difference of the band strain is coordinate (the
+invariant differs far less), but not all of it: on the same slices the computed fields differ in
+the invariant by a few per cent in amplitude at a = 100 and up to 9 per cent at 132. Condition (a)
+as I worded it (W2: 5 per cent in I_B) is NOT met; what remains is to separate truncation (W5,
+background run B-20261128-040950-1404d91) from the constraint violation (eight per cell in both
+gauges: q0006's member and q0107).
