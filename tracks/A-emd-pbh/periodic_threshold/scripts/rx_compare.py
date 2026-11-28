@@ -43,19 +43,26 @@ def main():
             if c <= c0 or c not in ia:
                 continue
             x, y = A[ia[c]], B[j]
+            # columns whose value is itself at round-off (|x| < 1e-12: the momentum sums of particles at rest)
+            # are reported by their absolute difference and left out of the relative maximum (reading fixed after
+            # the v0.6 data were seen: their relative differences are O(1) by construction)
+            small = np.abs(x) < 1e-12
             den = np.maximum(np.abs(x), 1e-300)
-            rel = np.where((x == 0) & (y == 0), 0.0, np.abs(x - y) / den)
+            rel = np.where(small | ((x == 0) & (y == 0)), 0.0, np.abs(x - y) / den)
+            absdiff_small = float(np.max(np.abs(x - y)[small])) if small.any() else 0.0
             k = int(np.argmax(rel))
             rows.append(dict(cycle=c, t=float(x[0]), maxrel=float(rel.max()), worst=names[k],
-                             alpha_min_rel=float(rel[15]), int_E_rel=float(rel[8]), identical=bool(np.all(x == y))))
+                             alpha_min_rel=float(rel[15]), int_E_rel=float(rel[8]), identical=bool(np.all(x == y)),
+                             n_small=int(small.sum()), absdiff_small=absdiff_small))
         res[v] = dict(restart_cycle=c0, n_rows=len(rows), all_identical=all(r["identical"] for r in rows),
                       maxrel=max((r["maxrel"] for r in rows), default=None), rows=rows)
         curves[v] = rows
         print(v, "restart cycle", c0, "rows", len(rows), "all identical", res[v]["all_identical"],
               "max rel", res[v]["maxrel"])
         for r in rows:
-            print("   cycle %3d t %.5f maxrel %.3e (%s) alpha_min %.3e int_E %.3e" % (
-                r["cycle"], r["t"], r["maxrel"], r["worst"], r["alpha_min_rel"], r["int_E_rel"]))
+            print("   cycle %3d t %.5f maxrel %.3e (%s) alpha_min %.3e int_E %.3e; %d round-off columns, abs diff %.1e" % (
+                r["cycle"], r["t"], r["maxrel"], r["worst"], r["alpha_min_rel"], r["int_E_rel"], r["n_small"],
+                r["absdiff_small"]))
     json.dump(res, open(os.path.join(a.out, "rx_compare.json"), "w"), indent=1)
 
     sys.path.insert(0, HERE)
