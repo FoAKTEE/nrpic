@@ -87,3 +87,15 @@ No figure: a two-cycle start-up check with three numbers, not a test of the phys
 EG8 entered the shared queue at priority 2 at 15:37 PST: q0085, run D-20261127-233719-db5be88, job 5536
 (pending, Priority, at 15:48 PST). E1-E8 are judged when it ends, by the readers named in entry 1, with
 figures; the outcome goes to core (core asked for it, outbox 2026-11-26 "v08-guard-and-polishing").
+
+## Entry 3 (2026-11-27 23:38 PST, lead of batch 40, before the reader is run): what was seen, the reader
+
+Seen before this entry (needed to close the run): the chain's STATUS is DONE (11 attempts, 10 cut by a
+signal and not counted; the last, job 5596, ended at t = 260 M, cycle 8320, exit 0); sacct of 5596
+COMPLETED; the segment logs' start and end stamps (E7's input). The run was closed with `nrpic-run finish`
+in this session. Nothing of the finder, the removal record or the criteria had been read.
+Reader `tools/eg8_read.py` (written now, one registered processor run, one core): the finder summary
+filtered by the status file (searches not found dropped, decision 0040 item 3), then the existing tools
+`g2runs/tools/esf_criteria.py` (E2, E5) and `g2long/tools/d4_timing.py` (E6, EG8 beside FK), and its own
+E1, E3, E4, E7, E8; one figure `eg8_read.png`. E1-E8 are judged as entry 1 wrote them; nothing is
+re-banded.
