@@ -63,7 +63,7 @@ def invariants(gamma, Ktf, trK, alpha, grid, order=4):
     detg = tt.det3(gamma)
     sq = np.sqrt(detg)
     _, B = weyl.electric_magnetic(gamma, Ktf, grid, order=order)
-    gi = tt.inv3(gamma)
+    gi, _ = tt.inv3(gamma)
     Bup = np.einsum("ia...,jb...,ab...->ij...", gi, gi, B)
     B2 = np.einsum("ij...,ij...->...", B, Bup)
     dV = float(np.prod(grid.dx))
@@ -101,7 +101,7 @@ def analytic(n=64, Lb=1.0, A=1e-3, nwave=2, eps=0.0, order=4):
     K0[1, 1] = +(A * k / 2) * np.sin(k * zx)
     gamma = np.einsum("ia...,jb...,ij...->ab...", J, J, g0)
     K = np.einsum("ia...,jb...,ij...->ab...", J, J, K0)
-    gi = tt.inv3(gamma)
+    gi, _ = tt.inv3(gamma)
     trK = np.einsum("ij...,ij...->...", gi, K)
     Ktf = K - gamma * trK / 3.0
     out = invariants(gamma, Ktf, trK, np.ones_like(trK), grid, order=order)
