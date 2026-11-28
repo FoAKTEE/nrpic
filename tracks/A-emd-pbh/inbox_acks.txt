@@ -47,3 +47,4 @@ tracks/core/outbox/20261126T024622Z__to-A-emd-pbh__pcs-deposit-refinement-bounda
 tracks/B-emd-gw/outbox/20261126T025649Z__to-all__gr-particle-mass-halos.md	2026-11-26T03:48:28Z	
 tracks/orch/outbox/20261126T033000Z__to-all__finder-diagnostics-in-continued-runs.md	2026-11-26T03:48:28Z	
 tracks/orch/outbox/20261126T130731Z__to-all__release-core-v0.8.md	2026-11-26T21:55:35Z	read; new A runs use build_gpu_v08/build_cpu_v08; horizon masses across builds only with polish_iterations 100, mass_tol 1e-5; P0L6 finder rerun will use the polishing
+tracks/core/outbox/20261128T001317Z__to-A-emd-pbh__finder-box-and-level-faces.md	2026-11-28T00:56:21Z	finder: flow = shear confirmed on our files (A-20261128-004123-bc1fcf8); deposit-fix retest next session on processors
