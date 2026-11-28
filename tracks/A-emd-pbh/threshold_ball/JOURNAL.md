@@ -827,3 +827,23 @@ cent of each other (same root and faces). Refuted if N4's x < 3.5 part exceeds U
 three times (then a face in the matter contaminates the interior, and core's deposit fixes at faces are the next
 retest). What a hold does not show: the size of the residual at M/4 against M/16; the band 4-4.5 differs in cell size
 between the members and is reported, not judged.
+
+### Entry 18, outcome OH (run A-20261128-005454-eb7b26b, completed; fig_offline_h.png looked at) - 16:56 PST
+
+Reader fixed before the registered run (rows shared by two level segments took the spacing across the face; rows next
+to the axis origin dropped). Over 0.15 < r < 4.5, rms over the line rows:
+- reader check at t = 0: rms(H_off - con_H) 7.9e-4 (M/16) and 1.5e-4 (M/32), against rms con_H 8.4e-4 and 7.0e-5.
+  The reader is accurate to 1e-7 in the uniform core but not where the smooth step R1-R2 sits on the coarse levels
+  (largest differences at r = 2.6-3.1, cells 0.125-0.25): quartic fits on five rows are worse there than the code's
+  stencils.
+- t = 1: rms con_H 3.6e-3 (M/16), 1.3e-3 (M/32); rms H_off 4.6e-3, 3.6e-3; rms of the difference 6.7e-3, 2.7e-3.
+Judgement against OH as written: the agreement clause (difference < 0.3 x con_H at t = 0.5-1) is REFUTED on both
+meshes (ratio 0.9-1.9), and the reader clause (reader error at t = 0 below 0.1 x con_H(t = 1)) FAILS (0.22 on M/16,
+0.11 on M/32), so by the rule written before the run OH is UNDECIDED: the spherical reduction of a line cannot tell
+a diagnostic defect from grid-scale structure that the particle source puts into the fields after t = 0 (not
+spherical at the grid scale, and seen differently by quartic fits and by the code's 3D stencils). Both H_off and
+con_H are of the same size (1e-3 to 1e-2 in the matter) and of the order 1e-2 of 16 pi E; neither shows a matter
+residual near 0.1. Not done: the gate review's 3D version (dump of gamma_ij, K_ij, E with ghost cells, the same
+stencil offline). Since con_H is computed from the ADM variables with K = Khat + 2 Theta (athenak/src/z4c/z4c_adm.cpp
+lines 230-233 and 484-487), the same formula as the tables, a disagreement in 3D would have to be a stencil or a
+timing difference; after R-split this test bears only on the matter part, which converges.
