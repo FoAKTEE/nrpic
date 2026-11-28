@@ -2569,3 +2569,16 @@ Serial build of the merged tree: `.work/build_cpu_v09rc/src/athena` (JOBS=6).
   against core's published `core_nrpic_v08/athena_cpu`, `regress_v04.py`: 75 of 75
   identical (same tree 01d4aeeb; other build directory). The card build
   `.work/build_gpu_v08` does not run on processors: not compared by a run here.
+
+### Addition to Q9 before its run (02:12Z)
+
+`restart_test.py` takes core-v0.8 as `--ref-exe` this time (Q8 took core-v0.7). Its
+reference cuts are not part of the verdict; for the record I expect them to lose no
+tracker record and no `cons.hst` record and to write two header lines (the fix of
+core-v0.8), unlike the v0.7 cuts of Q8. The figure labels those cuts "v0.7" (the script's
+text, not changed). Outcomes so far: dep_compare (run core-20261128-020214-a173064)
+closed failed only by the split check C0_change, with the branch's numbers (-0.00755,
+-0.03377); comp_cons (core-20261128-020250-1981d90) COMP CONS PASS; finder_bytes
+(core-20261128-020317-73134bb) PASS; finder_box S1L (core-20261128-020447-28dbb9f) exit 0;
+R9 (core-20261128-020122-3a1a3dd) REGRESSION PASS. Byte comparison with the branch's runs
+follows in one registered run (T9).

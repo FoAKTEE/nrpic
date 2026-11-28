@@ -6,9 +6,44 @@ decision 0019 item 4). Tags that exist: core-v0.1 = 7daed19 (asymptotically flat
 core-v0.2 = 52c44eb (periodic particles and cosmological gauge; source of main a1c2237),
 core-v0.3 = 609a875 (below).
 
-## Candidate for core-v0.9: branch core/faces-finder (source session of batch 34a, 2026-11-27; not merged)
+## core-v0.9 (release candidate, 2026-11-28; NOT RELEASED until its card check has passed): branch core/faces-finder (merged into core/nrpic at 8139c969)
 
-Entries of the branch, written by its session for the maintainer's merge. Source commit
+In short: four options of the horizon finder (`<fastflow> start_scan_<n>,
+start_scan_rmin_<n>, start_scan_rmax_<n>, trapped_tol_<n>`, all off when absent), two
+reasons and three optional columns of its status file, and three changes without an
+option (below, with the runs they change). Release record `tracks/core/RELEASE-v0.9.md`
+(byte regression of the merged tree, branch tests repeated, card check q0094 pending).
+
+Which runs change without an option:
+
+| Change | Runs whose output changes | Runs that keep the bytes of core-v0.8 |
+|---|---|---|
+| 1. linear cloud with `deposit_fine_shape` | refined mesh, `deposit_shape = cic`, `deposit_fine_shape = true`, clouds not on the lattice of a level cap: the fine cells beside them (the dipole of -+1/8 is gone) | uniform meshes; quadratic and cubic clouds; clouds on the cap lattice |
+| 2. compensation across level faces | every run on a refined mesh with `deposit_comp_c > 0`, from its first deposit (coarse cells at level faces, cells near level edges; with the plain pass every cell at rounding level). Track A's nested meshes with the cubic cloud and compensation are of this kind | uniform meshes (also with compensation); refined meshes without `deposit_comp_c`; the source filter `nfilter` is not touched |
+| 3. parameters added on restart | runs continued with `-r` and a `block/name=value` (or `-i` file) that the stored input does not hold: they now start (log line per addition) instead of ending with a fatal error | every fresh start (an unknown name is still fatal); every continued run without additions |
+
+Not done in this release (each stated in the interface texts):
+- **Level faces between ranks**: on several MPI ranks a face between a coarse block and
+  a fine block that sit on different ranks is not corrected by change 2; that face keeps
+  the two fluxes and is not conservative. Not tested on several ranks at all.
+- **The cost of the compensated deposit**: two more ghost exchanges of the ten source
+  components per deposit on a refined mesh with compensation, and for the plain pass
+  three directional passes in place of one product. On processors, in a test that
+  evolves no metric (indicative, run core-20261127-234843-fa6c2e9): cubic cloud with c2
+  11.9 s before and 12.1 s now; linear cloud with the plain pass 5.3 s and 10.7 s. Not
+  timed on a card; the share in a run with the spacetime solver is not measured.
+- The ripple of the deposit at a level face for a lattice of particles (0.19 to 0.34 of
+  the density in the cells at the face) is not removed; conservation is.
+- The false acceptance of Track A's P0L6 at t = 118.12 is not retested (no restart
+  file); the weighted flow is not tested on punctures; `start_scan` is not applied to a
+  horizon tied to a puncture; parameters added on restart are tested on a single
+  continued run, not inside a chain on a card.
+
+The branch's own entries follow (written by its session for the maintainer's merge).
+
+### Entries of the branch core/faces-finder
+
+Source commit
 ad54460e (the last one that touches `athenak/src`), on release core-v0.8 (main at
 f65fafd2). Journal `tracks/core/JOURNAL-faces-finder.md`; interface proposals
 `tracks/core/interfaces/level_faces.md`, `restart_parameters.md`, `finder_box.md`;
