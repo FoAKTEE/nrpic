@@ -253,7 +253,7 @@ Summary: at M/8 the code reproduces the exact LTB growth law to +0.17 to +0.25 p
 492 M of the swallowed dust's proper time, +0.10 to +0.24 per cent once the shells' lead is carried; the growth's
 logarithmic slope agrees to 3e-3. One member: no mesh statement. Claim D not read (D1* not fixed).
 
-## Entry 10 (2026-11-28 08:10 PST, lead of batch 41, before any of these runs is queued): predictions for the card runs of A6
+## Entry 10 (2026-11-28 08:09 PST, lead of batch 41, before any of these runs is queued): predictions for the card runs of A6
 
 Entries, all priority 2 (scope A6; queue ids in HANDOFF): T-6u (batch, one job, `decks/timing6.list`, cap 0.2),
 N6-ES and N6-V (chains, caps 1.2 each), G-12u (chain, cap 11). Build: release core-v0.9 if K3 of entry 8 holds,
@@ -277,3 +277,30 @@ core-v0.8 otherwise (A6, builds).
   100 M [JUDGEMENT: the lead falls with h, 0.78 M at M/8 to 0.53 M predicted at M/12]. Refuted for the direction if
   e-bar_12 exceeds e-bar_8 by three standard errors in any window after 100 M. No G-12u output is read for a
   criterion before the processor work of A5 is committed (A6).
+
+## Entry 11 (2026-11-28 08:23 PST, lead of batch 41): the search at t = 0 at M/6 is not found; predictions for the smoke tests of the particle and gauge legs
+
+Seen in the M/6 smoke tests of run D-20261128-160418-b618bff while it runs (the run is closed and its json read
+in entry 12): the search at t = 0 is NOT found in any of the three M/6 decks. g3g6u (start 1.6 M): reason 6 (flow
+iteration limit 400 reached without convergence of the mass), area mass 1.00533, mean radius 0.607 M, smallest
+0.598 M. n6es and n6v (start 0.8 M): identical rows, reason 6, area mass 1.00092, mean radius 0.617 M. At M/8 the same
+finder on the same data stops found after 136 iterations at 0.991515 (S-G8, entry 5). K2's prediction "found" is
+REFUTED for all three; its "n6es and n6v equal" holds (identical rows). By entry 8 and A6, Q1 fails on processors:
+the finder at M/6 cannot settle on the horizon of the data (coordinate radius 0.5 M, three cells), as M/4 lay outside
+the convergent regime at G2. Consequence by A6: G-6u is not run; the null pair at M/6 is not queued (Q2 no longer
+decides anything); the mesh error is the envelope of |e-bar_8 - e-bar_12| with no order, FL16 beside it. The card
+timing run T-6u, the ruling's literal test, is queued once (one job, cap 0.2) so that the card's own search at
+t = 0 is on record [JUDGEMENT: the same finder on a metric that differs at round-off will not converge either].
+Not done: a retest with more flow iterations or another start radius at M/6; a setting chosen after seeing the
+failure would not be the qualifying test the ruling names.
+
+Next step the amended scope allows (A6 order 4-5): the particle leg G-8-4N and the gauge leg G-8-e1 (decks
+`g3g84n`, `g3g8e1` from tools/make_g3_decks.py, function write_legs; the existing decks unchanged). Smoke tests
+(tools/legs_smoke.py, one registered run, two cores, core-v0.9 processor build, two cycles each):
+- S-4N: exit 0, 456 MeshBlocks, 3402632 particles read; the search at t = 0 found with area mass within 1e-9 of
+  G-8's 0.991514686 (the metric data are the same table, `esf.tab` identical byte for byte; the particles do not
+  enter the slice at t = 0); peak resident memory below 40 GiB. Refuted if any fails.
+- S-e1: exit 0, 456 MeshBlocks, 850724 particles; the search at t = 0 identical to S-G8's row (shift_eta does not act
+  before the first step). Refuted if the t = 0 row differs in any printed digit.
+Card runs after them (if K3 holds, core-v0.9): G-8-4N to 400 M, cap 4 (FN4 cost 3.19 card-hours to 400 M at
+release v0.6, EVIDENCE.md; prediction [2.6, 4.0]); G-8-e1 later (two D chains at most: G-12u and G-8-4N).

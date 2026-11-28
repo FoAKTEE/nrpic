@@ -396,7 +396,7 @@ G2); (c) G-16u on two cards, which needs a card build on two ranks from core (ab
 20); (d) M/16 by FL16's hierarchy (level 8 over +-3 M, 512 blocks, one card), read only to about 190 M, where the
 horizon leaves level 8. Nothing of A2-A5 changes until the ruling; the processor work of A5 stays first.
 
-### Amendment A6 of 2026-11-28 08:10 PST (lead of batch 41): the mesh leg by decision 0051 item 3
+### Amendment A6 of 2026-11-28 08:08 PST (lead of batch 41): the mesh leg by decision 0051 item 3
 
 Reason: the ruling on the note under A1 (coord/DECISIONS/0051 item 3): no run on two cards; the leg is M/8 and M/12
 and, if it qualifies, a coarser member at M/6. Written after G-8 was read for G3-G1 only (g3/amend entry 9: no

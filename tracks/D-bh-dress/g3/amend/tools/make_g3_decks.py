@@ -69,6 +69,7 @@ def main():
         (OUT / f"{name}.athinput").write_text(hdr + head + txt)
         print(OUT / f"{name}.athinput")
     write_m6(body, src)
+    write_legs(body, src)
     return 0
 
 
@@ -114,6 +115,29 @@ def write_m6(body, src):
                "# root 72 and blocks of 18 (M/6 at the puncture), tlim 300 M, polish_iterations_0 = 100, diagnostics = true.\n"
                "# Executable: release core-v0.9 (.work/build_gpu_v09/src/athena). G2's header follows.\n#\n")
         (OUT / f"{name}.athinput").write_text(hdr + h0 + t)
+        print(OUT / f"{name}.athinput")
+
+
+def write_legs(body, src):
+    """Particle and gauge legs of G3 (SCOPE_G3 section 3, A6 order 4-5), written 2026-11-28 (lead of batch 41).
+    G-8-4N (g3g84n.athinput): G-8's deck with the 4N data of run D-20261124-130942-29c5de2 (dust lattice h_p
+             4^(-1/3) M, 3402632 particles; its esf.tab equals the N data's byte for byte), as FN4 of G2.
+    G-8-e1 (g3g8e1.athinput): G-8's deck with shift_eta = 1.0 (from 2.0); the slicing unchanged (A4 S6).
+    Executable: release core-v0.9 (A6, builds)."""
+    head = src[:src.index("<comment>")]
+    n4 = body.replace("/D-20261121-203042-82deeec/esf.nrp", "/D-20261124-130942-29c5de2/esf.nrp")
+    assert n4.count("/D-20261124-130942-29c5de2/esf.nrp") == 1
+    e1 = rep(body, "shift_eta       = 2.0\n", "shift_eta       = 1.0\n")
+    for name, txt, what, how in (
+            ("g3g84n", n4, "G-8-4N: M/8 with the 4N dust (particle leg)",
+             "the particle file of run D-20261124-130942-29c5de2 (4N, 3402632 particles)"),
+            ("g3g8e1", e1, "G-8-e1: M/8 with shift_eta = 1.0 (gauge leg, shift damping)", "shift_eta 1.0 instead of 2.0")):
+        txt = set_key(txt, "job", "basename", name)
+        hdr = (f"# {name}: {what}. Track D, G3 (scope/SCOPE_G3.md section 3 and amendments A4, A6, 2026-11-28).\n"
+               "# Written by tracks/D-bh-dress/g3/amend/tools/make_g3_decks.py from excguard/inputs/esflg8.athinput:\n"
+               f"# G-8's deck (tlim 400 M, initial_radius_0 1.6, ah_exc_max_growth 4, z4c slices every 5 M) with {how}.\n"
+               "# Executable: release core-v0.9 (.work/build_gpu_v09/src/athena). EG8's header follows.\n#\n")
+        (OUT / f"{name}.athinput").write_text(hdr + head + txt)
         print(OUT / f"{name}.athinput")
 
 
