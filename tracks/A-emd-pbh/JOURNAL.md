@@ -614,3 +614,21 @@ overrides cannot create parameters): core-v0.6's outer-face set cuts the outer p
 clause untested (file mapping wrong in the prediction).
 Records: OPEN.md, REVIEW-wave3 section 14, STATUS, HANDOFF, RISKS 48-51; outbox to core (b34-finder-confirmed-outer-
 faces) and orch (g2-conditions-after-batch-34); core's answer acknowledged. Card-hours used: 0 (4.2 capped in queue).
+
+## 2026-11-27 23:26 - 2026-11-28 00:40 PST, lead of batch 40 (q0090 read; condition (a) on processors; RT2a queued)
+
+No helper package; worktree clean at start (merge of main). Predictions first in the package journals
+(periodic_threshold 2026-11-27 23:45/23:47 PST; threshold_ball entries 19, 20).
+(d) q0090 S1L-F: jobs completed (chain DONE, 9 segments), closed (1.063 card-hours). Reader f_read.py
+(A-20261128-073739-d0bfd67 first pass, superseded-segment comparison, kept; A-20261128-073831-fce5805): horizon found
+from t = 169.28 (m 5.83 -> 9.12 at 205), ratio outside it 0.514 at detection: (d) NOT met. F1 REFUTED (early find;
+6 of 57 later searches at the iteration cap), F2 HELD, F3 REFUTED (history departs from S1L's at t = 50, S1L's
+restart point, by ~1e-3 in alpha_min).
+(a) FC (A-20261128-073120-9feebf2; reader A-20261128-080645-b3c9c7c): FC0 and FC1 held, FC2 REFUTED: the outer-face part
+does not converge with the mesh with or without core-v0.6's face set (~100x lower with it). Ruling asked of orch on
+what the bound of 0047 2(a) covers. RT2a decks (faces at 32 + set + region norms) smoke-tested on core-v0.9
+(A-20261128-075804-b2908e4) and queued q0108/q0109 (priority 2, caps 0.5/1.2) with predictions R1-R3.
+RX (restart exactness of the box deck on processors): first attempt A-20261128-074045-15a6f1e stopped by me on cost
+(failed, kept); second A-20261128-074500-daf8285, RX_JOURNAL.
+Records: OPEN.md, REVIEW-wave3 section 15, CHECKLIST C23, STATUS, HANDOFF, RISKS 52-54; acks of four messages; outbox
+to orch (b40 state, ruling on (a)) and core (FC answer to item 4, restart observation). Card-hours ran: 0.
