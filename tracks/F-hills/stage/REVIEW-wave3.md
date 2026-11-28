@@ -408,3 +408,31 @@ outputs (JOURNAL.md batch 34: predictions D34 written before any reader ran; out
 - F-B2 (F-20261126-052133-10f9a5f) DONE at tlim 140, F-C2 (F-20261126-131751-89eaff8) stopped at
   106.69 M: health check only (trackers and history to their last time, no non-finite value);
   closed. Both are G2 material.
+
+## Batch 35 (lead, 2026-11-27 evening): the verifier's part 2 and the gate review answered; A2 to 200 M queued
+
+Read: `G1/VERIFIER.md` sections 10-17 (part 2, fresh agent, batch 34) with `G1/verifier-tail/`
+(README, JOURNAL, scripts, results), `G1/GATE_REVIEW.md` (batch 34a, recommendation PASS WITH
+RESERVATIONS, its own check F-20261128-013351-b85a9a5), decision 0048 item 2. My own check from the
+artefacts: the A2 state reader rerun with the corrections below, F-20261128-020208-d7c6f1c (one
+core, 15 s; fig_b21_a2_state read: title now from the chain's state, "ENDED at 186.000 M, chain
+FAILED"; overlaps, separation and distances as in batch 34).
+
+| Item (VERIFIER 16, 17; GATE_REVIEW 5) | My check | Verdict | What the track does |
+|---|---|---|---|
+| 16(a), 17(1): the record ends at 186.0 M, criterion (iv) says 200 M | `chain/events.log`: wall-clock stop at 186.002 M, then "sbatch failed" | CONFIRMED | 0048 item 2(a): not amended; continued to 200 M by q0091 (`continue_chain.sh --reopen`, new option for a run closed `stopped`; dry run passed); predictions D35-1..9 committed first (72543633f). C8 states the open clause |
+| 16(b): m2's fate undecided in coordinates | S7 of F-20261128-020208-d7c6f1c at 186.0 M: d = 17.5297 M, v_rel = 0.3739 (radial 0.2445), M's tracker moves at 0.0358 | CONFIRMED (v_rel equal to the verifier's to four digits) | stated as undecided in C8, T4, OPEN; a gauge-invariant measure or a longer record is a G2 item |
+| 16(c), 17(2): F1 decided for 86.6-131 M by hrms | S6: 618 searches of A2 with hrms < 1e-6 in 86.6-131 M, median 1.004216, range 6.4e-5, hrms at most 3.6e-8; the lower branches and the decline have hrms 1e-4 to 6.5e-4 (verifier's numbers; fig_t_branches) | CONFIRMED (my count 618 by a cut at 1e-6; the verifier's 825 by its own classes; the range 6.4e-5 against its "about 3e-5" of section 12 and "about 6e-5" of section 17) | F1 stated as decided there by the summary's residual [JUDGEMENT: hrms vanishes on a marginally trapped surface]; open during m1's approach; the polished-search test stays on the G2 list as the independent check |
+| 16(d), 17(3): 'found' is not converged; m2's range includes an unconverged branch | S6: finder 1 has 421 accepted searches in A2 with hrms > 1e-2; with them removed m2's mass is 0.12939-0.12964; finder 0: 245 removed; member drifts 65-95 M on hrms <= 1e-2: 2.21e-5 and -3.4e-7 per M (3.09e-5 and -8.1e-6 with them) | CONFIRMED | drift fits of the reader now drop hrms > 1e-2; every horizon number of C8/T4 quoted with its hrms; core's answer (inbox, batch 35): `<fastflow> trapped_tol_<n>` in the core-v0.9 candidate makes 'found' require a small residual: for G2 runs |
+| 17(4): "1.55e-3 by 133 M" | S6: the converged branch changes by 6.4e-5 to 131 M; 1.00444 at 133 M, 1.00531 at 135 M, at most 1.0161 (hrms 1.1e-2) before 137.4 M; the 1.55e-3 is the range of all accepted searches with hrms <= 1e-2 before 133 M, i.e. lower branch to approach | CONFIRMED; the batch-34 wording was wrong | restated in C8, T4 and OPEN; A2-5's heavy clause stays REFUTED (by the capture) |
+| 17(5), GATE_REVIEW 5(e): the source of MeshBlocks 2584 | segment logs per run (S6.mb_and_memory): A 2374-2584 (segments 3 and 4, jobs 4866 and 4875), A2 1968-2514 ("Total" at the start of segment 5, job 5230; the largest end count 2444) | the verifier is right: 2584 is A's, not A2's; batch 34's reader joined A and A2 | corrected in C8 and T4 |
+| 16(e): the capture's wave reaches only r = 40 M, no ring-down | not rechecked by me (the verifier's fig_t_branches d, fig_t_waves_overlaps a) | NOT CHECKED by the lead | stated in C8; the 200-M record carries the signal to about r = 54 M only (u = 137.5 at t about 200 M with r* > r), so a ring-down at the outer spheres needs a longer run: G2 |
+| 16(f): A2-A2 overlap 1.25e-9 M at 104 M | S2 of F-20261128-020208-d7c6f1c: max overlap 1.248e-9 M, at the 104-M stretch of tracker 0 (fig panel b) | CONFIRMED | stated in C8 (restart round-off) |
+| 16, to core: found flag on finder 1's 6-iteration branch | core's message `restart-parameters-and-finder-check` (acknowledged) | answered by core | for G2 runs: `polish_iterations_<n> = 100`, `mass_tol_<n> = 1e-5`, `trapped_tol_<n>` after reading column 16 |
+| GATE_REVIEW 6 item 7: figure title PARTIAL | fixed in the reader | DONE | F-20261128-020208-d7c6f1c |
+| GATE_REVIEW 6 item 7, C10/C11: schematics as of core-v0.3 | `note/scripts/schem_*.py` changed, run_all F-20261128-020409-a3edb04: the four items now green; every numbers JSON, ledger.tex and parameters.tex byte-equal to v2's (D35-N MET); both PNGs read | DONE | note v2.1 compiled (24 pages, 0 undefined references, 0 overfull boxes) |
+| GATE_REVIEW 6 item 7, C17: note v3 with the passage | not done | OPEN | written once after the 200-M reading (OPEN.md item 5) |
+| GATE_REVIEW 6 item 8: no `--full` checksum pass | not done (about 2 TB) | OPEN | listed for the orchestrator; the stage verify of this batch uses the cache |
+
+Wrong in my own records and corrected: the batch-34 "1.55e-3 by 133 M", "MeshBlocks 1968-2584"
+and "m2 within 6.4e-4" (above); the fixed PARTIAL label of b21_a2_state.py.
