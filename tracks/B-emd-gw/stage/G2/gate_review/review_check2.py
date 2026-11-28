@@ -43,6 +43,7 @@ MEMBERS = {
     "gd8": [f"{S}/B-20261128-034731-640f4f4/bin"],
 }
 TIMES = (8.0, 10.0, 12.0, 14.0, 16.0, 18.0, 20.0, 21.0)
+COR_TIMES = (21.0, 18.0, 14.0, 12.0)          # corrected strain here (a = 132, 100, 64, 49)
 PART1 = f"{S}/B-20261128-032405-7c4aa64/review_check.json"
 
 
@@ -78,11 +79,13 @@ def bands(fields, a):
     return exact, form, float(p[ok].sum())
 
 
-def measure_arrays(g, a):
-    """g: dict name -> array of the conformal metric. Raw and corrected bands."""
+def measure_arrays(g, a, corrected=True):
+    """g: dict name -> array of the conformal metric. Raw and (if asked) corrected bands."""
     raw = {k: g[nm] - (1.0 if k[0] == k[1] else 0.0) for nm, k in zip(G6, KEYS)}
     out = {}
     out["raw_exact"], out["raw_form"], out["raw_all"] = bands(raw, a)
+    if not corrected:
+        return out
     nz, ny, nx = raw[0, 0].shape
     gt = np.empty((3, 3, nz, ny, nx))
     for (i, j), v in raw.items():
@@ -97,13 +100,13 @@ def measure_arrays(g, a):
 
 
 def job(args):
-    member, t = args
+    member, t, corrected = args
     fn, th = find_dump(member, t)
     d, h = vlib.read_mesh(fn, G6)
     a = float(vlib.scale(h["time"]))
     row = {"member": member, "t_req": t, "file": fn, "t": h["time"], "a": a, "cycle": h["cycle"]}
-    row.update(measure_arrays(d, a))
-    print(f"{member} t={h['time']:.4f} a={a:.2f} cor_form={row['cor_form']:.6e} "
+    row.update(measure_arrays(d, a, corrected))
+    print(f"{member} t={h['time']:.4f} a={a:.2f} cor_form={row.get('cor_form', float('nan')):.6e} "
           f"raw_form={row['raw_form']:.6e}", flush=True)
     return row
 
@@ -136,7 +139,11 @@ def main():
     if not res["RE0"]["holds"]:
         json.dump(res, open(os.path.join(args.out, "review_check2.json"), "w"), indent=1)
         sys.exit("RE0 refuted: reader not trusted")
-    jobs = [(m, t) for t in TIMES for m in ("gd8", "gd1", "zs8", "zs1")]
+    # The gauge piece costs 6-12 min per dump (first run B-20261128-083507-772ea1c, stopped):
+    # corrected only at the epochs the predictions judge, those first; raw at every epoch.
+    cor_t = set(COR_TIMES)
+    order = list(COR_TIMES) + [t for t in TIMES if t not in cor_t]
+    jobs = [(m, t, t in cor_t) for t in order for m in ("gd8", "gd1", "zs8", "zs1")]
     with Pool(args.np) as pool:
         rows = []
         for r in pool.imap(job, jobs, chunksize=1):
@@ -149,6 +156,8 @@ def main():
     for t in TIMES:
         e = {"t": t, "a": R["gd1", t]["a"]}
         for kind in ("cor_form", "cor_exact", "raw_form", "raw_exact"):
+            if kind not in R["gd1", t]:
+                continue
             b = {m: R[m, t][kind] for m in ("gd8", "gd1", "zs8", "zs1")}
             e[f"P_gd_{kind}"] = float(np.sqrt(b["gd8"]/b["gd1"]))
             e[f"P_zs_{kind}"] = float(np.sqrt(b["zs8"]/b["zs1"]))
@@ -160,7 +169,7 @@ def main():
     if os.path.exists(PART1):
         p1 = json.load(open(PART1))["gauge_leg"]
         cmp_ = []
-        for e in ratios:
+        for e in [x for x in ratios if "R1_cor_form" in x]:
             j = int(np.argmin([abs(x["a"] - e["a"]) for x in p1]))
             if abs(p1[j]["a"] - e["a"]) < 0.01*e["a"]:
                 cmp_.append({"a": e["a"], "a_part1": p1[j]["a"], "R1_mine": e["R1_cor_form"],
@@ -180,6 +189,8 @@ def figure(res, out):
     fs.use_style()
     import matplotlib.pyplot as plt
     rr = res["ratios"]
+    nan = float("nan")
+    rr = [dict({k: nan for k in ("P_gd_cor_form", "P_zs_cor_form", "R1_cor_form", "R8_cor_form")}, **e) for e in rr]
     a = np.array([e["a"] for e in rr])
     fig, axs = plt.subplots(1, 2, figsize=(8.4, 3.4))
     fig.subplots_adjust(left=0.08, right=0.98, bottom=0.15, top=0.9, wspace=0.28)
@@ -187,9 +198,10 @@ def figure(res, out):
     ax.axhspan(0.95, 1.05, color="0.92", lw=0)
     ax.axhspan(0.99, 1.01, color="0.82", lw=0)
     ax.axhline(1.0, color="k", lw=0.8)
-    ax.plot(a, [e["P_gd_cor_form"] for e in rr], "o-", color=fs.PAL["red"], label="Gamma driver, corrected")
+    ax.plot(a, [e["P_gd_cor_form"] for e in rr], "o", color=fs.PAL["red"], ms=7, label="Gamma driver, corrected")
     ax.plot(a, [e["P_gd_raw_form"] for e in rr], "s--", color=fs.PAL["red"], mfc="none", label="Gamma driver, raw")
-    ax.plot(a, [e["P_zs_cor_form"] for e in rr], "^-", color=fs.PAL["blue"], label="zero shift, corrected")
+    ax.plot(a, [e["P_zs_cor_form"] for e in rr], "^", color=fs.PAL["blue"], label="zero shift, corrected")
+    ax.plot(a, [e["P_zs_raw_form"] for e in rr], "v:", color=fs.PAL["blue"], mfc="none", label="zero shift, raw")
     ax.set_xscale("log")
     ax.set_ylim(0.93, 1.07)
     ax.set_xlabel(r"$a$")
@@ -198,8 +210,10 @@ def figure(res, out):
     ax.legend(frameon=False, fontsize=7, loc="lower left")
     ax = axs[1]
     ax.axhline(1.0, color="k", lw=0.8)
-    ax.plot(a, [e["R1_cor_form"] for e in rr], "o-", color=fs.PAL["blue"], label="1 per cell, corrected")
-    ax.plot(a, [e["R8_cor_form"] for e in rr], "s--", color=fs.PAL["red"], mfc="none", label="8 per cell, corrected")
+    ax.plot(a, [e["R1_cor_form"] for e in rr], "o", color=fs.PAL["blue"], ms=7, label="1 per cell, corrected")
+    ax.plot(a, [e["R8_cor_form"] for e in rr], "s", color=fs.PAL["red"], mfc="none", ms=7, label="8 per cell, corrected")
+    ax.plot(a, [e["R1_raw_form"] for e in rr], "-", color=fs.PAL["blue"], lw=1, label="1 per cell, raw")
+    ax.plot(a, [e["R8_raw_form"] for e in rr], "--", color=fs.PAL["red"], lw=1, label="8 per cell, raw")
     if "RE3_cmp" in res:
         c = res["RE3_cmp"]
         ax.plot([x["a_part1"] for x in c], [x["R1_part1"] for x in c], "x", color="k", ms=7,
