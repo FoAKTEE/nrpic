@@ -1276,3 +1276,20 @@ these runs]
 Decision (decision 0048 item 3): it fits; step 1 (initial data) starts now, detached, one core;
 predictions I1-I4 and K1-K3 of the 19:02 entry stand; K1 is extended: the card member takes
 8-16.4 card-h, refuted above 20.
+
+## 2026-11-27 19:12 PST (lead of batch 37): verifier's corrections a and b; predictions for pair_ratio.py
+
+The G2 verifier (stage/G2/VERIFIER.md section 5) reads the one-per-cell zero-shift Hamiltonian
+ratio 128^3/256^3 as 1.39-1.41 at its maximum against the ledger's 1.36 (Table VII, run
+B-20261126-024849-87e72b7, 36 <= a <= 100) and 1.37 (Table VIII, judge_c3.py run
+B-20261127-232628-1361e3b), and the eight-per-cell momentum ratio from a = 36 down to 1.45. The
+lead's scripts evaluate the one-per-cell ratio only at the catalogue epochs (judge_c3.py:
+A_LIST; both histories interpolated in log a). `pair_ratio.py` computes four pairings.
+Predictions:
+- P1. Pairing E (epochs only) gives 1.11 and 1.36 over 36 <= a <= 100 and 1.05 and 1.37 over
+  25 <= a <= 100 (to the printed digits); refuted if not (then the ledger's pairing is not
+  identified).
+- P2. The pairings over every record (F, C, N) give maxima 1.38-1.42 and, over 36 <= a <= 100,
+  minima 1.10-1.18 (the verifier's 1.39-1.41 and 1.13-1.17).
+- P3. Eight per cell, momentum ratio 64/128: smallest over a >= 36 about 1.45 (below 1.7); over
+  a >= 49 1.71-2.16 (Table VIII).
