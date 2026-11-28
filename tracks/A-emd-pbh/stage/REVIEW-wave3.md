@@ -477,3 +477,26 @@ Four superseded claims are cited, by the classifier, at lines that quote paper l
 (periodic_threshold/DESIGN.md:180, conv_ball/DESIGN.md:153, scope/SCOPE.md:285, criteria/JOURNAL.md:10-11, G0 stage
 files): read; each line states the paper at its locator and none states the one-particle-per-cell reading as the
 paper's. No edit; journals and the signed G0 package stay as written.
+
+### 15.3 Condition (a): does the face part converge? (FC, threshold_ball entry 19; core's item 4)
+
+A full-mesh pair to t = 45 does not fit processors (S2c-B alone took 9987 s to t = 1 on two threads). I used a pair
+with coarse inner levels and EVERY cell halved, since the band 13-16 cannot see the matter before t ~ 5.7; checked
+first that the proxy stands for the full meshes (FC0: N4F = FR within 1e-3, N8 = S2c-B within 1e-4 in that band) and
+that the nests of the earlier pair S2c-A/S2c-B do halve the outer cells (root 32^3 vs 64^3 over [-16, 16]). Outcome
+(A-20261128-073120-9feebf2, reader A-20261128-080645-b3c9c7c; figure looked at): the face part does not converge, stock
+(0.70-0.92 coarse/fine) or with core-v0.6's face set (0.64-0.87; level ~100x lower). FC2 refuted toward no gain from
+refinement. Track action: the whole-line bound of 0047 2(a) cannot be met by refinement in any member with outflow
+faces; ruling asked (outbox to orch); every part read separately; RT2a measures distance plus set over 45 M.
+
+### 15.4 Condition (a): the retest on core-v0.9, queued (RT2a, threshold_ball entry 20)
+
+core-v0.9 is released by core (card check PASS; scratch/core/exe/core_nrpic_v09). Predictions R1-R3 written and
+committed before the entries; decks nest16_L32_fr and nest32_L32_fr smoke-tested on core's v0.9 processor build
+(A-20261128-075804-b2908e4: three cycles each, face set and region keys accepted, region.hst written); queued q0108
+(mesh A, cap 0.5) and q0109 (mesh B, cap 1.2), priority 2. Mesh C (8.6 card-hours on v0.6) is not queued: the pair A/B
+at B's detection time answers "falling with the mesh at fixed sampling" for the part that can fall.
+
+### 15.5 S1L's restart step and RX
+
+RX_REVIEW
