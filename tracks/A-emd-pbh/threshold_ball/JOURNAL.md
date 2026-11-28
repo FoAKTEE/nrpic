@@ -974,3 +974,23 @@ Predictions RT2a [JUDGEMENT]:
 Condition (a) is met by this pair only if R2 is refuted toward a pass on B-F AND A-F's ratio at the same time is
 higher than B-F's. Cost [JUDGEMENT from A-20261121-204149-c48bd33, 0.59 card-hours to t = 51, and A-d0.42's share of
 0.16]: about 0.2 + 0.7 card-hours with the extra ghost exchanges; chain caps 0.5 and 1.2.
+
+### Entry 19, outcome FC (run A-20261128-073120-9feebf2 completed, N4F 1 thread, N8 2, N8F 3 threads, 1873 s; reader A-20261128-080645-b3c9c7c; fig_face_conv.png looked at) - 00:08 PST
+
+Absolute ||H|| on 13 < x < 16 (weight x^2 dx), factor coarse/fine:
+- FC0 HOLDS: N4F equals FR (S2c-A with the set) within 1e-3 at t = 0.25-1, and N8 equals S2c-B within 1e-4: the band
+  13-16 is set by the outer cells and the faces only, so the coarse-inner pair stands for the full meshes.
+- FC1 HOLDS: stock, N4/N8 = 0.74 / 0.70 / 0.79 / 0.92 at t = 0.25 / 0.5 / 0.75 / 1 (= S2c-A/S2c-B to the digits): the
+  face part does not fall when every cell is halved; it is 10-30 per cent LARGER on the finer mesh.
+- FC2 REFUTED toward "no gain from refinement": with core-v0.6's face set the part is about 100 times smaller
+  (5.2e-4 at t = 1 on dx 1, 6.3e-4 on dx 0.5, against 5.4e-2 and 5.9e-2 stock) but the factor N4F/N8F is 0.87 / 0.64 /
+  0.70 / 0.82: it does not converge either; it too grows on the finer mesh.
+Named [VERIFIED for t <= 1, one data set, pair of meshes differing in every cell]: the part of the section-3 line
+ratio that enters at the outer outflow faces does not converge with the mesh, with or without the face set; the set
+lowers it about 100-fold over the first M, faces moved from 16 to 32 300-fold (OB). This is the continuum-level
+inconsistency of a boundary condition that does not preserve the constraints, not a truncation error; mesh
+refinement cannot remove it, only its size relative to the matter part can be made small (distance, the set) or the
+ratio can be read where it is not (inside a radius, or excluding the outer cells). Consequence for 0047 item 2(a):
+a ratio over the whole line to the outer face cannot "fall with the mesh" in any member with outflow faces; what can
+fall is the matter part. Which of the two the bound applies to needs a ruling (outbox to orch). RT2a (entry 20)
+measures how small distance plus the set make the face part by t ~ 46.
