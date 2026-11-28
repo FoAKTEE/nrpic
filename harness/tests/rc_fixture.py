@@ -8,7 +8,10 @@ make_repo(name) builds, under <main checkout>/scratch/harness/<name>-<UTC>-<pid>
   fakebin/         fake sbatch, squeue, sacct, scancel, srun, nvidia-smi and a fake athena, so that
                    scripts/gpu_batch.sh and scripts/submit_chain.sh run end to end with no card used
                    (`sbatch --hold` makes a job that squeue lists as PENDING; every other job is RUNNING;
-                   squeue renders -o %i %j %T %Z, the working directory being sbatch's -D or its cwd)
+                   squeue renders -o %i %j %T %Z, the working directory being sbatch's -D or its cwd;
+                   <slurmstate>/sbatch_refuse makes sbatch refuse the next submissions; sacct answers
+                   JobID, State, ExitCode, Elapsed from how a job ended, scripted by the tests through
+                   <slurmstate>/<job>/sacct_state, <job>/sacct_hide and <slurmstate>/sacct_down: FAKE_SACCT)
 The machine file of the scratch repository puts fakebin/ first on PATH and points NRPIC_GPU_EXE at
 the fake athena. Nothing here touches the live branches or worktrees.
 """
@@ -59,6 +62,20 @@ while i < len(args) and args[i].startswith("-"):
         k, _, v = a.partition("="); opts[k] = v; i += 1
 script, sargs = args[i], args[i + 1:]
 os.makedirs(STATE, exist_ok=True)
+# <STATE>/sbatch_refuse holding N (default 1): the next N submissions are refused as Slurm refused a chain's
+# resubmission on anta (decision 0048 item 6)
+ref = os.path.join(STATE, "sbatch_refuse")
+if os.path.exists(ref):
+    try:
+        n = int(open(ref).read().strip() or 1)
+    except ValueError:
+        n = 1
+    if n <= 1:
+        os.remove(ref)
+    else:
+        open(ref, "w").write(str(n - 1))
+    sys.stderr.write("sbatch: error: Batch job submission failed: I/O error writing script/environment to file\n")
+    sys.exit(1)
 cnt = os.path.join(STATE, "counter")
 n = int(open(cnt).read()) + 1 if os.path.exists(cnt) else 1000
 open(cnt, "w").write(str(n))
@@ -120,15 +137,88 @@ for j in live:
 '''
 
 FAKE_SACCT = r'''#!/usr/bin/python3 -I
+"""fake sacct of the self-tests: -j ID[,ID...] -o FIELDS (JobID, JobName, State, ExitCode, Elapsed, ElapsedRaw);
+-P separates the fields by |. A job's State: what the test wrote into <STATE>/<job>/sacct_state (PREEMPTED,
+"CANCELLED by 0", TIMEOUT, ...), else from how it ended (exit 0 COMPLETED, else FAILED; its process gone with
+no exit recorded: CANCELLED), PENDING or RUNNING while it is queued. Scripted by the tests:
+  <STATE>/<job>/sacct_hide holding N   the job is unknown to sacct (no line) for the next N calls that ask for it
+  <STATE>/sacct_down [holding N]       every call (the next N calls) fails, as when the database does not answer
+-o ElapsedRaw alone (nrpic-run's card-hours) prints, as before, the seconds of a job that has started."""
 import os, sys, time
 STATE = "@STATE@"
 args = sys.argv[1:]
-j = args[args.index("-j") + 1]
-d = os.path.join(STATE, j)
-if os.path.isfile(os.path.join(d, "start")):
-    s = int(open(os.path.join(d, "start")).read())
-    e = int(open(os.path.join(d, "end")).read()) if os.path.isfile(os.path.join(d, "end")) else int(time.time())
-    print(max(1, e - s))
+down = os.path.join(STATE, "sacct_down")
+if os.path.exists(down):
+    try:
+        n = int(open(down).read().strip() or 0)
+    except ValueError:
+        n = 0
+    if n == 1:
+        os.remove(down)
+    elif n > 1:
+        open(down, "w").write(str(n - 1))
+    sys.stderr.write("sacct: error: Problem talking to the database: Connection refused\n")
+    sys.exit(1)
+def opt(k, default=None):
+    for i, a in enumerate(args):
+        if a == k and i + 1 < len(args):
+            return args[i + 1]
+        if a.startswith(k + "="):
+            return a.split("=", 1)[1]
+    return default
+ids = [x for x in (opt("-j") or opt("--jobs") or "").split(",") if x]
+fields = (opt("-o") or opt("--format") or "JobID,JobName,State,ExitCode,Elapsed").split(",")
+sep = "|" if ("-P" in args or "--parsable2" in args) else " "
+def read(j, f):
+    try:
+        return open(os.path.join(STATE, j, f)).read().strip()
+    except OSError:
+        return ""
+def alive(j):
+    try:
+        os.kill(int(read(j, "pid")), 0)
+        return True
+    except (OSError, ValueError):
+        return False
+def hms(s):
+    return f"{s // 3600:02d}:{s % 3600 // 60:02d}:{s % 60:02d}"
+if "-n" not in args and "--noheader" not in args and fields != ["ElapsedRaw"]:
+    print(sep.join(fields))
+for j in ids:
+    d = os.path.join(STATE, j)
+    if not j.isdigit() or not os.path.isdir(d):
+        continue
+    hide = os.path.join(d, "sacct_hide")
+    if os.path.exists(hide):
+        try:
+            n = int(read(j, "sacct_hide") or 0)
+        except ValueError:
+            n = 0
+        if n > 0:
+            open(hide, "w").write(str(n - 1))
+            continue
+    started = os.path.isfile(os.path.join(d, "start"))
+    ended = os.path.isfile(os.path.join(d, "end"))
+    if fields == ["ElapsedRaw"]:
+        if started:
+            s = int(read(j, "start"))
+            e = int(read(j, "end")) if ended else int(time.time())
+            print(max(1, e - s))
+        continue
+    rc = read(j, "rc")
+    s = int(read(j, "start") or time.time())
+    e = int(read(j, "end") or time.time())
+    st = read(j, "sacct_state")
+    if not st:
+        if ended:
+            st = "COMPLETED" if rc == "0" else "FAILED"
+        elif alive(j):
+            st = "PENDING" if (os.path.exists(os.path.join(d, "pending")) or not started) else "RUNNING"
+        else:
+            st = "CANCELLED by 0"
+    vals = {"JobID": j, "JobName": read(j, "name"), "State": st, "ExitCode": f"{rc or 0}:0",
+            "Elapsed": hms(max(0, e - s)), "ElapsedRaw": str(max(0, e - s))}
+    print(sep.join(vals.get(f, "") for f in fields))
 '''
 
 FAKE_SCANCEL = r'''#!/usr/bin/python3 -I

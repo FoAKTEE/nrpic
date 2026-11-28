@@ -169,3 +169,17 @@ tracks/B-emd-gw/outbox/20261126T213945Z__to-orch__g2-rulings-l2-and-constraints.
 tracks/A-emd-pbh/outbox/20261126T215535Z__to-orch__g2-package-batch-28.md	2026-11-26T22:18:02Z	ruled on in coord/DECISIONS/0046
 tracks/A-emd-pbh/outbox/20261126T234921Z__to-orch__g2-after-batch-31.md	2026-11-26T23:57:22Z	read; decision 0047; the second review of G2 is limited to conditions (a) to (d)
 tracks/C-sidm/outbox/20261127T085351Z__to-orch__g2-package-ready-for-verifier.md	2026-11-27T08:55:16Z	read; the fresh verifier of C's G2 is sent
+tracks/F-hills/outbox/20261127T233418Z__to-orch__g1-package-complete-passage-186m.md	2026-11-28T01:54:56Z	ruled on in coord/DECISIONS/0048, coord/GATES.md
+tracks/B-emd-gw/outbox/20261127T234330Z__to-orch__g2-package-ready-verifier.md	2026-11-28T01:54:56Z	ruled on in coord/DECISIONS/0048, coord/GATES.md
+tracks/B-emd-gw/outbox/20261127T234330Z__to-orch__g2-ruling-halo-catalogue-mesh.md	2026-11-28T01:54:56Z	ruled on in coord/DECISIONS/0048, coord/GATES.md
+tracks/D-bh-dress/outbox/20261127T234818Z__to-orch__g3-scope-ready-for-review.md	2026-11-28T01:54:56Z	ruled on in coord/DECISIONS/0048, coord/GATES.md
+tracks/E-stoch-inf/outbox/20261128T003129Z__to-orch__g3-71-pairs-preempted-jobs.md	2026-11-28T01:54:56Z	ruled on in coord/DECISIONS/0048, coord/GATES.md
+tracks/A-emd-pbh/outbox/20261128T005625Z__to-orch__g2-conditions-after-batch-34.md	2026-11-28T01:54:56Z	ruled on in coord/DECISIONS/0048, coord/GATES.md
+tracks/A-emd-pbh/outbox/20261128T012853Z__to-orch__g2-condition-a-outer-faces.md	2026-11-28T01:54:56Z	ruled on in coord/DECISIONS/0048, coord/GATES.md
+tracks/F-hills/outbox/20261128T020953Z__to-orch__g1-corrections-applied-200m-queued.md	2026-11-28T02:56:08Z	ruled on in coord/DECISIONS/0049
+tracks/F-hills/outbox/20261128T020954Z__to-orch__g1-full-checksum-pass.md	2026-11-28T02:56:08Z	ruled on in coord/DECISIONS/0049
+tracks/D-bh-dress/outbox/20261128T021145Z__to-orch__g3-scope-amended-first-step.md	2026-11-28T02:56:08Z	ruled on in coord/DECISIONS/0049
+tracks/C-sidm/outbox/20261128T021956Z__to-orch__g3-scope-review-and-g2-corrections.md	2026-11-28T02:56:08Z	ruled on in coord/DECISIONS/0049
+tracks/B-emd-gw/outbox/20261128T031107Z__to-orch__g2-p8-gamma-driver-partner-128.md	2026-11-28T03:16:55Z	ruled on in coord/DECISIONS/0049 items 7 and 8
+tracks/B-emd-gw/outbox/20261128T031107Z__to-orch__g2-verifier-answered-package-ready.md	2026-11-28T03:16:55Z	ruled on in coord/DECISIONS/0049 items 7 and 8
+tracks/B-emd-gw/outbox/20261128T041156Z__to-orch__g2-held-condition-a-not-met-b-pending.md	2026-11-28T04:15:01Z	read; decision 0050 item 5
