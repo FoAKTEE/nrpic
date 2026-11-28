@@ -1,15 +1,15 @@
 {
   "track": "A-emd-pbh",
   "gate": "G2",
-  "commit": "2c735b532a37c322d9b040525b826b7d6025d92a",
-  "verified_utc": "2026-11-28T16:15:20Z",
-  "export": "/data/haiyangw/nrpic/scratch/A-emd-pbh/tmp/stage-verify/A-emd-pbh-G2-2c735b5-20261128T161052Z",
-  "result": "FAIL",
+  "commit": "84744c5ecb3a9fe07a8594d1ce87adcde1ff2607",
+  "verified_utc": "2026-11-28T16:19:41Z",
+  "export": "/data/haiyangw/nrpic/scratch/A-emd-pbh/tmp/stage-verify/A-emd-pbh-G2-84744c5-20261128T161905Z",
+  "result": "PASS",
   "checks": [
     {
       "check": "clean",
-      "status": "FAIL",
-      "message": "2 uncommitted paths: commit them first (tracks/A-emd-pbh/periodic_threshold/JOURNAL.md, tracks/A-emd-pbh/threshold_ball/JOURNAL.md)",
+      "status": "PASS",
+      "message": "worktree clean (outside the stage directory being assembled)",
       "detail": null
     },
     {
@@ -21,7 +21,7 @@
     {
       "check": "export",
       "status": "PASS",
-      "message": "clean export of 2c735b532a37 (HEAD) in /data/haiyangw/nrpic/scratch/A-emd-pbh/tmp/stage-verify/A-emd-pbh-G2-2c735b5-20261128T161052Z/tree",
+      "message": "clean export of 84744c5ecb3a (HEAD) in /data/haiyangw/nrpic/scratch/A-emd-pbh/tmp/stage-verify/A-emd-pbh-G2-84744c5-20261128T161905Z/tree",
       "detail": null
     },
     {
@@ -69,7 +69,7 @@
     {
       "check": "runs",
       "status": "PASS",
-      "message": "369 run manifests finished (102 hand-written, read as decision 0012 allows); failures of 1 runs waived by coord/WAIVERS.md (decision 0019), output checksums verified where recorded",
+      "message": "370 run manifests finished (102 hand-written, read as decision 0012 allows); failures of 1 runs waived by coord/WAIVERS.md (decision 0019), output checksums verified where recorded",
       "detail": null
     },
     {
@@ -260,12 +260,12 @@
     {
       "check": "checksums",
       "status": "WARN",
-      "message": "36136 output files: 119 hashed again (bytes read, 7.85 GB), 36017 taken from the cache (894.73 GB); a checksum taken from the cache proves unchanged size and modification time since it was hashed, not bytes read again; --full reads every byte",
+      "message": "36140 output files: 4 hashed again (bytes read, 0.6 MB), 36136 taken from the cache (902.58 GB); a checksum taken from the cache proves unchanged size and modification time since it was hashed, not bytes read again; --full reads every byte",
       "detail": {
-        "rehashed_files": 119,
-        "rehashed_bytes": 7852861765,
-        "cached_files": 36017,
-        "cached_bytes": 894728587492,
+        "rehashed_files": 4,
+        "rehashed_bytes": 627888,
+        "cached_files": 36136,
+        "cached_bytes": 902581449257,
         "full": false,
         "meaning_of_a_cached_entry": "a checksum taken from the cache proves unchanged size and modification time since it was hashed, not bytes read again",
         "notes": []
@@ -274,7 +274,7 @@
     {
       "check": "status",
       "status": "PASS",
-      "message": "STATUS.md has 34 lines",
+      "message": "STATUS.md has 36 lines",
       "detail": null
     },
     {

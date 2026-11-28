@@ -1,6 +1,6 @@
 # Stage report: A-emd-pbh G2
 
-Date: 2026-11-28 · branch `track/A-emd-pbh` at `2c735b532a37` · checklist
+Date: 2026-11-28 · branch `track/A-emd-pbh` at `84744c5ecb3a` · checklist
 `tracks/A-emd-pbh/stage/G2/CHECKLIST.md` (from `nrpic-stage collect`)
 
 ## Verdict
@@ -8,7 +8,6 @@ Date: 2026-11-28 · branch `track/A-emd-pbh` at `2c735b532a37` · checklist
 **FAIL**. Tag: `stage/A-emd-pbh/G2-fail-20261128` (created and pushed by the orchestrator after review, decision 0003).
 
 - 5 checklist items not PASS or NA: C1 FAIL, C3 FAIL, C21 OPEN, C22 OPEN, C23 OPEN
-- verify reported FAIL: clean
 
 ## Package documents (decision 0012)
 
@@ -52,13 +51,13 @@ Date: 2026-11-28 · branch `track/A-emd-pbh` at `2c735b532a37` · checklist
 
 ## Re-verification on a clean checkout (`nrpic-stage verify`)
 
-`nrpic-stage verify` on 2026-11-28T16:15:20Z, clean export of `2c735b532a37`: **FAIL**. Details: `VERIFY_RESULTS.md`.
+`nrpic-stage verify` on 2026-11-28T16:19:41Z, clean export of `84744c5ecb3a`: **PASS**. Details: `VERIFY_RESULTS.md`.
 
 | Check | Result | Message |
 |---|---|---|
-| clean | FAIL | 2 uncommitted paths: commit them first (tracks/A-emd-pbh/periodic_threshold/JOURNAL.md, tracks/A-emd-pbh/threshold_ball/JOURNAL.md) |
+| clean | PASS | worktree clean (outside the stage directory being assembled) |
 | sync | PASS | main is merged into the branch |
-| export | PASS | clean export of 2c735b532a37 (HEAD) in /data/haiyangw/nrpic/scratch/A-emd-pbh/tmp/stage-verify/A-emd-pbh-G2-2c735b5-20261128T161052Z/tree |
+| export | PASS | clean export of 84744c5ecb3a (HEAD) in /data/haiyangw/nrpic/scratch/A-emd-pbh/tmp/stage-verify/A-emd-pbh-G2-84744c5-20261128T161905Z/tree |
 | size | PASS | no committed file of the track above 5 MB |
 | note | PASS | tracks/<ID>/note/main.tex present |
 | package | PASS | EVIDENCE.md, OPEN.md, CHECKLIST.md present (decision 0012); scoping text: scope/SCOPE.md; verifier's report VERIFIER.md |
@@ -66,11 +65,11 @@ Date: 2026-11-28 · branch `track/A-emd-pbh` at `2c735b532a37` · checklist
 | style | PASS | 3 style copies equal harness/style/SHA256SUMS (czstyle.py, paperfig.py, figstyle.py) |
 | fig-script | PASS | 10 figures, each with its script |
 | min-figs | PASS | 4 schematics and 6 data figures (brief 13.4 asks at least 1 and 5 at G2) |
-| runs | PASS | 369 run manifests finished (102 hand-written, read as decision 0012 allows); failures of 1 runs waived by coord/WAIVERS.md (decision 0019), output checksums verified where recorded |
+| runs | PASS | 370 run manifests finished (102 hand-written, read as decision 0012 allows); failures of 1 runs waived by coord/WAIVERS.md (decision 0019), output checksums verified where recorded |
 | runs-waived | WARN | failures of the manifest check waived: 1 runs named in main's coord/WAIVERS.md (decision 0019 item 6): A-20261121-064515-aa13c8f: the gate reviewer's failed first attempt; its scratch script was edited for the rerun A-20261121-064537-2bcf310 |
 | run-notes | WARN | 80 runs read with defaults or not fully re-verifiable (nrpic-run lint) |
-| checksums | WARN | 36136 output files: 119 hashed again (bytes read, 7.85 GB), 36017 taken from the cache (894.73 GB); a checksum taken from the cache proves unchanged size and modification time since it was hashed, not bytes read again; --full reads every byte |
-| status | PASS | STATUS.md has 34 lines |
+| checksums | WARN | 36140 output files: 4 hashed again (bytes read, 0.6 MB), 36136 taken from the cache (902.58 GB); a checksum taken from the cache proves unchanged size and modification time since it was hashed, not bytes read again; --full reads every byte |
+| status | PASS | STATUS.md has 36 lines |
 | rerun | WARN | re-run skipped (--no-rerun) |
 
 ## Figures
@@ -151,7 +150,7 @@ Date: 2026-11-28 · branch `track/A-emd-pbh` at `2c735b532a37` · checklist
 ## Open risks
 
 
-State 2026-11-28 (lead, batch 40; rows 52-54 new; batch 34 rows 48-51; batch 31 rows 45-47, row 31 superseded by 45; earlier: batch 28 rows 32, 39, 43, 44; first written 2026-11-15). Likelihood and effect:
+State 2026-11-28 (lead, batch 41; rows 55-57 new, row 39 updated; batch 40 rows 52-54; batch 34 rows 48-51; batch 31 rows 45-47, row 31 superseded by 45; earlier: batch 28 rows 32, 39, 43, 44; first written 2026-11-15). Likelihood and effect:
 H high, M medium, L low [JUDGEMENT]. Sources: `scope/SCOPE.md` sections 8 and 10.9,
 `gauge/GAUGE.md`, `stage/REVIEW-wave2.md`, `stage/REVIEW-wave3.md`, `stage/G1/GATE_REVIEW.md`,
 core's messages of 2026-11-20/21, the helpers' journals. "Realized" means a run showed it;
