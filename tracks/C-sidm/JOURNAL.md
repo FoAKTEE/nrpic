@@ -1283,3 +1283,14 @@ noise sd 0.00432 (k lambda 0.2) and 0.00305 (0.1) from the T7 seeds.
   passes after their reduction, and the reduction run's own sha256sums lists the reduced.npz it
   wrote. Refuted by any change in a card run directory.
 - HR.5 cost: each batch 0.15 to 0.30 card-hours (v0.6: 0.19 and 0.21). Refuted outside.
+
+## 2026-11-28T02:10Z  batch 35: predictions before the particle files of G3 step 1a (b = 0.1, N = 1e6)
+
+Four registered processor runs of `longruns/scripts/make_ic_seeds.py --maker models --seeds 1
+--N 1000000 --tag <tag>` for tmb01_Z0p5200, tmb01_Z0p5404, tmb01_Z0p5600, tmb01_Z0p6000 (the
+models README table, w0 3.069027, 3.165241, 3.255887, 3.435919). Expected (refuted otherwise):
+P1a.1 each writes the unkicked .nrp, the _kin and _kout files and the .tab, with Z_c equal to the
+tag within 1e-5 and |sum m W/psi / M - 1| below 1e-3 (the 1e5 builds: models README M3);
+P1a.2 mean radial velocity of the _kin file negative, of order -0.01 times the mean speed, net
+momentum below 1e-6; P1a.3 wall time 2 to 6 minutes each on one core (the King 1e6 build took
+186 s, C-20261125-120426-f261c3e).
