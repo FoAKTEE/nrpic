@@ -317,3 +317,16 @@ release v0.6, EVIDENCE.md; prediction [2.6, 4.0]); G-8-e1 later (two D chains at
 Consequences (A6, fixed before): the mesh family, the particle leg and the gauge leg run on release core-v0.9 and
 G-8 (v0.8) is one build with them in effect; G-6u does not qualify on processors (Q1); the null pair at M/6 is not
 queued; T-6u is queued once as the ruling's literal test (entry 11); G-12u is queued (chain, cap 11).
+
+## Entry 13 (2026-11-28 08:42 PST, lead of batch 41): outcome of the leg smoke tests (run D-20261128-162112-e80048d, closed by nrpic-run; legs_smoke.json read; no figure)
+
+- S-4N: exit 0, 456 MeshBlocks, peak resident memory 31.4 GiB (below 40: held); the search at t = 0 found after 136
+  iterations with area mass 0.9915146860704984, equal to G-8's in every digit (held). FAILED in letter: 3402772
+  particles read, not 3402632; the difference is the 140 tracers (tags 0-139), which my number from the scope's
+  table (dust only) left out [JUDGEMENT from the count; N's 850724 includes them].
+- S-e1: exit 0, 456 MeshBlocks, 850724 particles, peak 31.0 GiB; the t = 0 search found with the same iterations,
+  area, mass and radii as S-G8. FAILED as written ("identical in every printed digit"): the two expansion columns
+  differ in the last two or three printed digits (mean -4.056480452900190e-02 against S-G8's ...370e-02; S-4N's
+  ...131e-02), a relative 5e-14 to 7e-13; why shift_eta or the particle file reach them at t = 0 is not read.
+  Masses and shapes are equal, which is what the legs compare.
+Consequence: G-8-4N is queued (chain, cap 4, production, core-v0.9, priority 2); G-8-e1 waits (two D chains).
