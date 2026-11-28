@@ -1340,3 +1340,44 @@ lines 26-31 and 177-200) [VERIFIED by those records, not by me].
   stop or a stop before a = 132, or a momentum constraint above the one-per-cell member's.
 - G8c (cost). 0.6-1.2 card-h (126.8 s per unit t of the zero-shift eight-per-cell member,
   B-20261128-030350-19295a4, times 22, plus the shift); refuted above 2 (the cap of the entry).
+
+## 2026-11-27 19:37 PST (lead of batch 39): condition (a) of decision 0050, a gauge-invariant reading of the late strain; predictions W0-W3, before any number
+
+Queued meanwhile: q0107 (label pop_s014_gr_p8_gd), the member of the 19:36 entry.
+
+Why the two gauges can be compared by an invariant [JUDGEMENT, from the deck]: both 128^3 members
+evolve the lapse with the same condition along the normal, (d_t - beta^i d_i) alpha = f(alpha, K)
+(lapse_advect = 1 in the Gamma-driver member, beta = 0 in the other), from the same initial slice:
+the foliation is the same and only the spatial coordinates on each slice differ. A scalar built
+from the slice's geometry and integrated over proper volume is then the same number in both runs
+up to truncation error. The measure: the magnetic part of the Weyl tensor, B_ij = sym(eps_i^kl
+D_k K_lj) (gw_diag/gwdiag/weyl.py, the reader of the wave tests), as I_B = <B_ij B^ij>_V, the
+proper-volume mean over the torus. B_ij vanishes on the background and, for dust, for linear
+scalar perturbations; it is carried by tensor modes and by the nonlinear frame dragging of the
+halos. It is not the band strain: it says whether the two runs computed the same spacetime, and
+if they did, the 5-36 per cent of the band strain is a property of the coordinate observable, not
+a defect of the capability. K_ij enters through its trace-free part only (the trace contributes
+eps_ij^k d_k K/3, antisymmetric, removed by the symmetrization: the same B with less round-off of
+the float32 dumps). Mesh scale of the invariant itself: the Gamma-driver member at 256^3 (q0060,
+B-20261126-105021-6343c13, dumps at integer t) against 128^3 in the same gauge.
+Dumps: 128^3 every 0.25 in t, so a = 49, 64, 100, 132.25 are files 48, 56, 72, 84 of
+B-20261123-014847-f295ab4 (zero shift) and B-20261124-210431-6bf48af (Gamma driver); 256^3 files
+12, 14, 18, 21.
+- W0 (reader on an analytic field first). A plane TT wave h_+ = A cos(k z), A = 1e-3, k = 4 pi / L,
+  K_ij = -(A k/2) sin(k z) diag(1, -1, 0) on 64^3: I_B equals A^2 k^4 / 4 within 1e-3. The same
+  field written in coordinates y with x = y + xi(y), xi periodic with max |d xi| = 0.03 and 0.3:
+  I_B and the proper volume change by less than 1e-3, while the coordinate band power of the TT
+  part of gamma - delta (|n| <= 8) changes by more than 10 per cent for both maps. Refuted if the
+  invariant moves by more than 1e-3 (the reader is not invariant), or if the band power does not
+  move (the test cannot tell the two kinds of measure apart).
+- W1 (same slices). The proper volume and <K>_V agree between the 128^3 gauges within 1e-3 at
+  a = 49, 64, 100, 132. Refuted above 1e-2: then the slices differ and no spatial invariant can
+  compare the runs.
+- W2 (condition (a)). R_B = I_B(Gamma driver) / I_B(zero shift) at 128^3 within 5 per cent of one
+  at a = 64, 100, 132, and |R_B - 1| no larger than the mesh difference |I_B(256)/I_B(128) - 1| in
+  the Gamma-driver gauge at the same a. REFUTED if |R_B - 1| exceeds 10 per cent at a = 100 or
+  132 while the mesh difference is smaller: the two gauges computed different spacetimes beyond
+  truncation, and condition (a) is not met. Between 5 and 10 per cent: the prediction fails and
+  the difference is quoted as an error of the late strain.
+- W3 (secondary, not a criterion). The band strain ratio of the same dumps by the track's reader
+  (analyze_gr._dump_job, corrected spectra) reproduces 0.950, 0.803, 0.643 within 1 per cent.
