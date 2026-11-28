@@ -759,3 +759,22 @@ Card-hours this session: 0.
   complete for review.
 - Failed predictions: (V) of entry 4 (first clause). Failed runs: preemptions of jobs 5419, 5420, 5525-5529, 5532-5534.
 - Card-hours: none newly consumed beyond preempted seconds; G3B07b running (about 0.75 card-h when it ends).
+
+## 2026-11-27 lead batch 36 (18:20-18:45 PST, short, one aim: re-enter the preempted G3 members; no analysis, no stage)
+
+- Merged main (decision 0048 item 9: the queue's `done` now means completed; batch 36 spec). Inbox: orch's note on the
+  queue audit (acknowledged).
+- `nrpic-queue audit --owner E-stoch-inf`: 15 entries marked done by the old rule were PREEMPTED (q0065, q0066, q0071-
+  q0079, q0082-q0084, q0087); q0080, q0081 completed. From batch.list.status and the final dump of each member (none read):
+  complete baseline pairs 0-76, 82-104, 115-116 = 102 of 128; level 2: lp005 only (g3 entry 19 lists every run).
+- Closed with `nrpic-run finish` the eight runs still open: 5a83c08, 7ea62cc completed; 922a7ab, f4fbf9f, ea3b9f3,
+  7ca1bf1, dbef4a2, 3b47d95 stopped (preempted).
+- q0088 (G3L02b, job 5561) was preempted at 18:27 PST under the corrected dispatcher and went back to waiting by itself
+  (auto-retry 1 of 2): not entered again.
+- Prediction first (g3 entry 19, committed 9cb50d8c1 before queuing), then six entries at priority 2, lines copied by
+  label (g3/inputs/pick_lists.py, check_lists.py clean, seeds and signs checked): q0101-q0104 (G3B12-G3B15: 47 baseline
+  runs), q0105 (G3L03 = l2_00.list: 12), q0106 (G3L04: 11). About 25 minutes a job. When all seven entries have
+  completed: 128 of 128 baseline pairs, 16 of 16 level-2 pairs and k000/k001.
+- Failed predictions: none judged this session. Failed runs: the preemptions of jobs 5537, 5541, 5546, 5552, 5558, 5561.
+- Card-hours: none submitted by hand; about 2.3 card-h ended since batch 34 (5538, 5540 complete: 1.53; preempted
+  fragments 0.75; G3 now 8.01 used of 60); about 3 card-h queued.
