@@ -441,3 +441,40 @@ E-20261128-000627-00ed437 (`pairs.json`, `fig_g3_onepoint.png`, `fig_g3_tails.pn
 G3L01 (q0077, job 5533, E-20261127-232915-206b9ba) and G3L02 (q0078, job 5534, E-20261127-232917-76e1e18) were PREEMPTED
 after 68 s at 15:58 PST; no member finished; both closed as stopped. Queued again unchanged as G3L01b, G3L02b (entry 14's
 rule). G3B07b (q0079, job 5537) is running since 16:02; q0080-q0082 pend in Slurm; q0083, q0084 wait in the shared queue.
+
+## entry-19 (2026-11-27 18:32 PST, lead of E, batch 36): the members still missing after the queue audit; predictions before they are queued
+
+Found (queue audit of decision 0048 item 9, `nrpic-queue audit --owner E-stoch-inf`; sacct; each run's batch.list.status
+and, per member, the final dump usr.sf.00001.dump; nothing of the dumps read): of the re-queued jobs of entries 14, 16 and
+18, G3B08b (q0080, job 5538, E-20261127-233721-5a83c08) and G3B09b (q0081, job 5540, E-20261128-000123-7ea62cc) COMPLETED
+with 22 of 22 members rc = 0 (pairs 82-103); every other one was PREEMPTED: G3B07b (job 5537, -233720-922a7ab) after 12 of
+21 (m071, pairs 72-76, p077; m077 cut), G3B10b (job 5541, E-20261128-000127-f4fbf9f) after 2 of 22 (pair 104; p105 cut),
+G3B11b (job 5546, -011609-ea3b9f3) after 4 of 22 (pairs 115-116; p117 cut), G3L00b (job 5552, -012413-7ca1bf1) after 0 of
+12 (lp000 cut), G3L01b (job 5558, -014814-dbef4a2) after 1 of 12 (lp005; lm005 cut), G3L02b (q0088, job 5561,
+-015422-3b47d95) after 0 of 14 at 18:27 PST (lp011 cut). All eight runs are closed (completed or stopped) and stay on
+record. Complete baseline pairs now: 0-76, 82-104, 115-116, i.e. 102 of 128 (pair 71 joins p071 of job 5419 with m071 of
+job 5537: same seed, sign, deck and build, entry 14's rule). Level-2 pairs: none (lp005 alone).
+Missing: baseline m077, pairs 78-81, 105-114, 117-125 (47 runs), and 126-127 (in q0088); level 2: pairs 0-4 with k000,
+k001 (12 runs), lm005 and pairs 6-10 (11 runs), pairs 11-15 (in q0088).
+q0088 was dispatched under the corrected queue (dispatcher restarted 02:25Z): as a preempted batch entry it goes back to
+waiting by itself (at most twice, RULES "Automatic retry"), so its 14 members are NOT entered again here. If the
+dispatcher leaves it `incomplete` instead, the next lead retries it by hand (`nrpic-queue retry q0088`).
+Entered again at priority 2 (six entries at most, no spares; shorter jobs than before, about 25 minutes each, so that a
+preemption costs less and a retry repeats less), lines copied unchanged by label with `inputs/pick_lists.py`, every
+override checked by `check_lists.py`, seeds and signs checked against the labels, release card build core-v0.7 as before:
+G3B12 (base12.list: m077, pairs 78-81 and 105; 11 runs), G3B13 (base13: pairs 106-111; 12), G3B14 (base14: pairs 112-114,
+117-119; 12), G3B15 (base15: pairs 120-125; 12), G3L03 (l2_00.list as it stands: level-2 pairs 0-4 with k000, k001; 12),
+G3L04 (l2_04.list: lm005, level-2 pairs 6-10; 11). When all six and q0088 have completed: 128 of 128 baseline pairs and
+16 of 16 level-2 pairs with the two kdriver records (A8, A11, A13).
+Predictions (written before the entries are queued):
+- P19-1 (C6-1 restated): a baseline run 0.033-0.038 card-h (on record 125.7 s); G3B12 in 22-26 min, G3B13-G3B15 in 24-28
+  min; refuted if a job reaches its 45-minute limit.
+- P19-2 (C6-2 kept as written, 1.1-1.7 times a baseline run): my expectation 1.05-1.15 (lp000 pointed to 1.08, lp005
+  finished 141 s after the job started, start-up included), so the band's lower edge may fail; G3L03 and G3L04 in 24-32 min.
+- P19-3 (C6-3 and P15-1 restated): every member rc = 0, finite records, max <|H-<H>|/[H]> < 1e-9, max <|M|/[M]> < 0.1;
+  refuted by one member that fails.
+- P19-4 (queue): preemption stays frequent (15 of 22 jobs of entries 14-18 were cut); I expect at least one of the seven
+  entries to be preempted at least once and all seven to complete within their two automatic retries; refuted, in the sense
+  that the plan needs a lead, if an entry ends `incomplete` after its third preemption.
+- The readings and pair statistics follow entries 15 and 17 unchanged (same reader, rules, script, `--pairs 0-127`); the
+  pairs read in entry 17 are not read again except with --save-fields where a member lacks them.
