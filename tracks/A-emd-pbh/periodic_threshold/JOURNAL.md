@@ -1392,7 +1392,7 @@ SCOPE section-3 ratio inside/outside the found horizon in `peak.region.hst`); to
   Cost: ~1.1 card-hours (S1L-h's rate), cap 1.6.
 Together 2.2 + 1.1 = 3.3 card-hours expected, caps 4.2, within the six of this session.
 
-### (b) FD: the new deck's finder lines on the batch-31 restart files, prediction before the run (16:55 PST)
+### (b) FD: the new deck's finder lines on the batch-31 restart files, prediction before the run (16:40 PST)
 
 Deck lines under test (`inputs/peak_leak_f.athinput`): flow_iterations 4000, polish 100, mass_tol 1e-5, diagnostics,
 start radius from the round-sphere scan, plus `flow = shear` (core's answer). Probe: finder_probe_box.py sets FD_S1L
@@ -1417,3 +1417,27 @@ Solve converged (17 outer iterations; Hamiltonian residual 3.0e-12, momentum 3.7
 on every clause. Change of the solve c = 0.052 (it was 0.014 at mu = 0.15 and 0.137 at 0.3: not monotonic; recorded,
 not predicted). The smoke tests SM-q and SM-F follow (script scripts/smoke_b34.sh; SM-F: the finder lines of
 peak_leak_f parse and a search with flow = shear runs, status file written, finite fields over 4 cycles).
+
+### Outcome FD (run A-20261128-004123-bc1fcf8, completed, 5 restart files, 30 probes; fig_finder_probe_box.png looked at) - 16:48 PST
+
+File mapping corrected: S1L rst 15, 16, 19 hold t = 190.0, 198.7, 220.0 (not 180, 190, 220 as written in FD1); no
+file at t = 180 was probed, so FD1's t = 180 clause is UNTESTED.
+- S1L t = 220: found from 0.16, 0.6 and 0.1 after 119, 127, 129 flow iterations; area mass 10.73958040610838 from
+  all three (equal to 1e-14; core's 10.73958041), mean radius 0.161959, smallest 0.156468, expansion integral
+  -1.9e-5. HOLDS.
+- S1L t = 198.7: found from all three (119-136 it.), m 8.336185, mean radius 0.1004. t = 190.0: found from all three
+  (123-130 it.), m 7.605602, mean radius 0.0912, smallest 0.0886. The round spheres 0.12, 0.16, 0.2 are not trapped
+  at 190 and 198.7 (positive expansion integral): the found surfaces lie inside 0.12. The t = 190 clause HOLDS
+  (found, mass below 10.74). The horizon of S1L therefore exists by t = 190.0 (19.4 t_H), with area mass 7.61,
+  growing to 8.34 (198.7) and 10.74 (220).
+- P0L6 t = 140: found from 0.103, 0.15 and 0.6 (125-141 it.), m 6.303242134205 from all three (core's 6.30324213),
+  mean radius 0.103986. HOLDS. P0L6 t = 130: not found from any start, each search ended after 14-18 iterations with
+  "mean radius negative" (reason 4), no acceptance at any radius; spheres 0.09-0.12 untrapped. HOLDS.
+FD HOLDS on every clause that was tested: the new deck lines with flow = shear find the trapped surface on the
+restart files of the periodic chain and of the triaxial run from the scan radius and from far starts, with masses
+equal to 1e-14 between starts, in < 150 iterations, and accept nothing at P0L6 t = 130. With the standard flow
+(batch 31) the same deck needed 1927-3444 iterations and a start near the surface. So condition (b) is met on the
+existing restart files EXCEPT the false acceptance at t = 118.1, which has no restart file (core's trapped_tol on the
+faces-finder build refuses that class on core's reproducer; not run by this track). The 4000-iteration cap of
+decision 0047 item 6 is not needed with flow = shear; it is kept in peak_leak_f as a cap.
+Figure note: the x-axis labels of the left panel overlap at 9e-2 and 1e-1 (cosmetic).

@@ -733,7 +733,7 @@ third: a member without level faces in the matter (frozen gauge keeps it cheap o
 Figure defect noted: the four-panel layout crowds the titles and legends (readable; not a data defect).
 C3 stays FAILED as written.
 
-## Entry 18, 2026-11-27 16:50 PST (lead of batch 34): what C3-G could not separate, which tests can, and OH before it runs
+## Entry 18, 2026-11-27 16:42 PST (lead of batch 34): what C3-G could not separate, which tests can, and OH before it runs
 
 Re-reading C3-G (entry 17) before any new run. With the lapse frozen at its table value and the shift zero, the
 particles stayed at rest on the grid (deposited S_x at round-off), so the deposited source per coordinate volume did
@@ -766,7 +766,7 @@ both meshes while the reader check at t = 0 passes: then the diagnostic is impli
 line ratio report a violation the ADM fields do not carry). Undecided if the reader error at t = 0 exceeds 0.1 x
 con_H(t = 1).
 
-### Entry 18, a reading made while testing the OH reader (17:05 PST), and prediction OB before its run
+### Entry 18, a reading made while testing the OH reader (16:45 PST), and prediction OB before its run
 
 While testing offline_h_line.py (first attempt, unregistered, scratch/A-emd-pbh/tmp/oh_test: mesh A NaN at the first
 row, mesh B reader error 6.5e-4 at t = 0, i.e. about half of con_H at t = 1, so OH as specified is UNDECIDED on B and
