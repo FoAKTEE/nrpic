@@ -1440,3 +1440,23 @@ ids) after three dumps: its table keyed the rows by the dump time (8.01) instead
 epoch (8.0) and would have failed after all the work. Its three printed rows (a = 25: I_B 2.9597e-13
 in both gauges, V 8.037229e6 in both, <K>_V -2.394598e-2 in both) are not used; the rerun
 B-20261128-034914-1e7a68f writes the rows as they come. The 256^3 member is read at a = 64, 100, 132 only.
+
+## 2026-11-27 19:58 PST (lead of batch 39): first rows of the data run; prediction W4 for a split of the invariant
+
+Seen before writing this (rows of B-20261128-034914-1e7a68f as they came, not yet judged): at
+a = 25 the two gauges give the same I_B, V and <K>_V to every printed digit; at a = 49, I_B(Gamma
+driver)/I_B(zero shift) = 2.8200/3.1260 = 0.902 while V and <K>_V agree to 3e-6 and 1.2e-5; at
+a = 64, 0.913. At a = 49 the band strain of the two gauges agrees within 1.6 per cent, so I_B
+already differs more than the band strain where the gauges agree on it: I_B is dominated by the
+halo cores, where the two coordinate systems resolve differently [JUDGEMENT, to be tested].
+Test of that reading, with statistics that weigh the cores less and stay coordinate-free on a
+common slice (the lapse is a scalar of the slice, so a split by lapse is the same set of points
+in both gauges): `weyl_gauge.py split`: proper-volume median and 90th percentile of B_ij B^ij,
+and its proper-volume mean over the half of the volume with the larger lapse ("expanding half")
+and over the tenth with the smallest lapse ("cores").
+- W4 (written now, before the split runs). If the I_B difference is truncation in the cores:
+  the expanding-half mean and the median agree between the gauges within 3 per cent at
+  a = 49, 64, 100, 132, while the core mean carries most of the 9-10 per cent. Refuted if the
+  expanding-half mean or the median differs by more than 5 per cent at a = 100 or 132: then the
+  gauges differ where both resolve the field, and the gauge difference is not a truncation effect
+  of the cores.

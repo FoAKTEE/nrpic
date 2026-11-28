@@ -72,7 +72,72 @@ def invariants(gamma, Ktf, trK, alpha, grid, order=4):
            "K_V": float((sq * trK).sum() / W), "alpha_V": float((sq * alpha).sum() / W),
            "B2_p99": float(np.percentile(B2, 99.0)), "B2_max": float(B2.max())}
     out["B_band"] = band_power(tt.tensor_rfft(B), grid)
+    out.update(split_stats(B2, sq, alpha))
     return out
+
+
+def wquantile(x, w, q):
+    """Quantile q of x with weights w (proper volume): the same number in any spatial coordinates
+    on the same slice, up to truncation."""
+    i = np.argsort(x, axis=None)
+    xs, ws = x.ravel()[i], w.ravel()[i]
+    c = np.cumsum(ws)
+    return float(xs[np.searchsorted(c, q * c[-1])])
+
+
+def split_stats(B2, sq, alpha):
+    """W4 (population/JOURNAL batch 39): invariant statistics that weigh the halo cores less:
+    proper-volume quantiles of B_ij B^ij, and its proper-volume mean over the half of the
+    proper volume with the larger lapse (expanding, underdense) and over the tenth with the
+    smallest lapse (cores). The lapse is a scalar of the slice, so the split is coordinate-free."""
+    a50 = wquantile(alpha, sq, 0.5)
+    a10 = wquantile(alpha, sq, 0.1)
+    hi, lo = alpha >= a50, alpha <= a10
+    return {"B2_q50": wquantile(B2, sq, 0.5), "B2_q90": wquantile(B2, sq, 0.9),
+            "I_B_void": float((sq * B2)[hi].sum() / sq[hi].sum()),
+            "I_B_core": float((sq * B2)[lo].sum() / sq[lo].sum()),
+            "alpha_q50": a50, "alpha_q10": a10}
+
+
+def split_job(job):
+    run, t = job
+    step = 0.25 if run.endswith("128") else 1.0
+    path = RUNS[run] % int(round(t / step))
+    t0 = time.time()
+    d = binio.read_bin(path, strip_prefix=True)
+    grid = d["grid"]
+    chi, gt, At, trK, alpha, beta = readers.z4c_tensors(d)
+    psi4 = chi ** (4.0 / d.get("chi_psi_power", -4.0))
+    gamma = psi4 * gt
+    row = {"run": run, "file": path, "t_req": t, "t": float(d["time"]),
+           "a": float(scale(float(d["time"]))), "n": int(grid.n[0])}
+    row.update(invariants(gamma, psi4 * At, trK, alpha, grid))
+    row["wall_s"] = time.time() - t0
+    print(f"{run} a={row['a']:.1f} I_B={row['I_B']:.4e} void={row['I_B_void']:.4e} "
+          f"core={row['I_B_core']:.4e} q50={row['B2_q50']:.4e} ({row['wall_s']:.0f} s)", flush=True)
+    return row
+
+
+def cmd_split(args):
+    jobs = [(r, t) for t in (12.0, 14.0, 18.0, 21.0) for r in ("zs128", "gd128")]
+    jobs += [("gd256", t) for t in args.t256]
+    os.makedirs(args.out, exist_ok=True)
+    with Pool(args.np) as pool:
+        rows = pool.map(split_job, jobs, chunksize=1)
+    by = {(r["run"], r["t_req"]): r for r in rows}
+    table = []
+    for t in (12.0, 14.0, 18.0, 21.0):
+        zs, gd = by[("zs128", t)], by[("gd128", t)]
+        e = {"t": t, "a": scale(t)}
+        for k in ("I_B", "I_B_void", "I_B_core", "B2_q50", "B2_q90", "V", "K_V", "alpha_V",
+                  "alpha_q50", "alpha_q10"):
+            e["R_" + k] = gd[k] / zs[k]
+            if ("gd256", t) in by:
+                e["M_" + k] = by[("gd256", t)][k] / gd[k]
+        table.append(e)
+        print(json.dumps({k: round(v, 4) for k, v in e.items()}))
+    with open(os.path.join(args.out, "weyl_split.json"), "w") as f:
+        json.dump({"rows": rows, "table": table}, f, indent=1, default=float)
 
 
 # ------------------------------------------------------------------------------- test W0
@@ -298,12 +363,13 @@ def cmd_fig(args):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("mode", choices=["test", "data", "fig"])
+    ap.add_argument("mode", choices=["test", "data", "fig", "split"])
+    ap.add_argument("--t256", type=float, nargs="*", default=[])
     ap.add_argument("--out", required=True)
     ap.add_argument("--np", type=int, default=3)
     ap.add_argument("--np-big", type=int, default=2)
     args = ap.parse_args()
-    {"test": cmd_test, "data": cmd_data, "fig": cmd_fig}[args.mode](args)
+    {"test": cmd_test, "data": cmd_data, "fig": cmd_fig, "split": cmd_split}[args.mode](args)
 
 
 if __name__ == "__main__":
