@@ -684,7 +684,7 @@ carried out the ruling on the mesh leg, every reader committed before it ran, fi
 |---|---|---|---|---|
 | G-8 D-20261128-062142-c5666c4 (q0100, core-v0.8) | 10 jobs: 5617, 5626, 5632, 5639, 5645, 5653, 5663 PREEMPTED (resumed from SIGTERM restart files), 5673, 5684, 5691 COMPLETED; chain DONE at 400 M | `nrpic-run finish`, 242 files, 2.1986 card-hours | g3/amend/tools/g8_read.py, run D-20261128-160553-b500509 (D-20261128-160544-089d6f8 failed at a syntax error of the reader), `g8_read.png` | G3-G1 holds (45 bins from 50 M, +0.172 to +0.254 per cent); P-G1 holds raw and with the lead (+0.100 to +0.241); excision, finder status (795/795), slope (3e-3), cost hold; the lead-bias size band failed at its low end (1.05e-4 against 2e-4); G-8 - FK median in band but rising with time, not predicted (g3/amend entry 9) |
 | A6 checks D-20261128-160418-b618bff (processors, core-v0.9, four cores) | local | closed by nrpic-run, 88 files | g3/amend/tools/m6_smoke.py | K1 holds (456 blocks, dx 1/6 to +-6 M); K2: the searches at t = 0 NOT found at M/6 in all three decks (reason 6) - G-6u fails Q1 on processors; K3 holds: core-v0.9 gives every output of the G-8 deck byte for byte as core-v0.8 (entries 11-12) |
-| Leg smoke tests D-20261128-162112-e80048d (processors, two cores) | local | see HANDOFF | g3/amend/tools/legs_smoke.py | entry 11's predictions; outcome in entry 13 if read this session |
+| Leg smoke tests D-20261128-162112-e80048d (processors, two cores) | local | closed by nrpic-run, 44 files | g3/amend/tools/legs_smoke.py | t = 0 masses equal G-8's, 456 blocks, 31 GiB; count prediction off by the 140 tracers; S-e1's expansion columns differ at round-off (entry 13); G-8-4N queued (q0112) |
 
 Confirmed from the artefacts (not from a conclusion): at M/8 the growth of the horizon follows the exact LTB
 growth law to +0.17 to +0.25 per cent over 50-492 M of the swallowed dust's proper time; the polished finder
@@ -696,4 +696,4 @@ grows with the hole (a JUDGEMENT on the relative stopping tolerance). Wrong and 
 The ruling: G-6u's qualifying test failed on processors at t = 0, so by A6 (written before) G-6u is not run and the
 null pair at M/6 is not queued; the mesh error of G3 will be the envelope of |e-bar_8 - e-bar_12| with no order, FL16
 beside it. The card twin T-6u is queued once (q0110) as the ruling's literal test. Queued: q0110 D-T6u (batch, cap
-0.2), q0111 D-G3-G12u (chain, cap 11), both core-v0.9, priority 2; G-8-4N follows its smoke test (HANDOFF).
+0.2), q0111 D-G3-G12u (chain, cap 11), q0112 D-G3-G8-4N (chain, cap 4), all core-v0.9, priority 2.
