@@ -18,6 +18,7 @@ Writes DIR/offline_h.json and DIR/fig_offline_h.{pdf,png}.
 import argparse
 import glob
 import json
+import math
 import os
 import sys
 
@@ -65,14 +66,21 @@ def offline(adm, tm, con):
     E = tm["tmunu_E"][sel][order]
     Hc = con["con_H"][sel][order]
     segs, dx = segments(x)
-    h = np.empty_like(x)
-    for a, b in segs:
-        hh = (x[min(b - 1, a + 1)] - x[a]) if b - a > 1 else np.nan
-        h[a:b] = hh
+    # cell size of each row: the neighbouring spacing that is a power-of-two multiple of the finest one
+    # (the spacing across a level face, (h_f + h_c)/2, is not); fixes the boundary rows shared by two segments
+    hmin = float(np.min(dx))
+    h = np.full_like(x, np.nan)
+    for i in range(len(x)):
+        for c in ([dx[i - 1]] if i > 0 else []) + ([dx[i]] if i < len(dx) else []):
+            k = math.log2(c / hmin)
+            if abs(k - round(k)) < 1e-6:
+                h[i] = c
+                break
     yo = 0.5 * h
     r = np.sqrt(x * x + 2.0 * yo * yo)
     nx, ny = x / r, yo / r
     w = nx * nx - ny * ny
+    w = np.where(np.abs(w) < 0.5, np.nan, w)       # rows next to the axis origin: reduction undefined
     dg = (g["gxx"] - g["gyy"]) / w
     B = g["gyy"] - dg * ny * ny
     A = B + dg
@@ -83,7 +91,7 @@ def offline(adm, tm, con):
     out = []
     for a, b in segs:
         for i in range(a + 2, b - 2):
-            if r[i] < 0.15:
+            if r[i] < 0.15 or not np.all(np.isfinite(w[i - 2:i + 3])):
                 continue
             Rp, Rpp = deriv_fit(r, Rr, i)
             Ap, _ = deriv_fit(r, A, i)

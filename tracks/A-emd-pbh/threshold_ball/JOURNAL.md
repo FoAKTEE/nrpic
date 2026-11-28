@@ -812,7 +812,7 @@ below 0.1 on M/32, while the top-hat PCS bracket members carry their own matter 
 failures, then: the outer faces (all members) and the data/deposit of the top-hat PCS members (known since entry 13).
 Figure note: the y-axis label is clipped at the left edge (cosmetic).
 
-### Entry 18, prediction LF before its run (16:58 PST): the matter inside one level (U4) against a level face in it (N4)
+### Entry 18, prediction LF before its run (16:52 PST): the matter inside one level (U4) against a level face in it (N4)
 
 The gate review's third cheap test, made consistent (live gauge, moving particles). Data S2 (smooth top hat, R1 = 1.22,
 R2 = 3.27, taper to rm = 4.88; prep_bh.py as edge_data.sh) on two new decks with the same root and outer faces as
