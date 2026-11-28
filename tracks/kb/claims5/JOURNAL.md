@@ -101,3 +101,21 @@ C1 counts agree; C3 not ok 25; C8 40/41; C7 rows unchanged (no chunk changed); C
 labels fulltext 672, judgement 84, refuted 127; statuses checked 452, located 279, superseded 85;
 locators 1223, all resolved; a new snapshot with a new hash. Refuted by any other C1/C3/C7/C8 value
 or a C9 count different from these.
+
+Outcome (run kb-20261128-024540-477cbc9): HELD in every predicted value. verify-downloads exit 1
+(gr-qc/9412071 only; 683 of 684 arXiv ok, 63 GitHub ok); C1 counts agree; C3 not ok 25; C8 40/41;
+C7 section identical to claims4's run by diff (text 27/32, hybrid 28/32 locator 23, rerank 28/32
+locator 25); C9: 936 claims, fulltext 672, judgement 84, refuted 127, checked 452, located 279,
+superseded 85, locators 1223 resolved 1223 (also: claims with a chunk 689, labels set by a person
+659, which I had not predicted). Snapshot db/current -> kb-20261128-bd57a33 (sha256 bd57a33b...).
+Copy of the QA report: work/QA_REPORT_after_P1.md.
+
+## Entry 4, 2026-11-27 18:53 PST: notes to owners
+
+Run kb-20261128-025251-f8edef3 (`scripts/notes.py`; its first run kb-20261128-025231-adeb3f4 lacked
+the section for claims seeded from an owner's files, which only core needed): one note per citing
+owner in `notes/` (A 4 superseded, B 2, C 7, D 3, F 1; core: its seeded 484, cited by A). Each
+superseded claim with the places where the owner's files cite it (claims4's classifier, branch
+state 2026-11-27 17:05 PST). By hand afterwards: one line in NOTE_C-sidm.md naming 928, the
+judgement split off 230. The notes are for the kb lead to post to tracks/kb/outbox (I write only
+in this package).
