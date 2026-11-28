@@ -2,52 +2,58 @@
 
 Written for a reader with no memory of the last session. Rewritten at the end of every session.
 
-State (2026-11-27 23:48 PST, lead of batch 40): G0, G1 and G2 SIGNED (G1 and G2 with reservations;
-coord/GATES.md). Toward G3 (60 card-hours, 1.52 used): the scope `scope/SCOPE_G3.md` carries amendments A1-A5
-(section 11) and a dated note under A1 of this session: the M/16 member of the uniform mesh family (G-16u) does
-not fit one card, so the full mesh leg as designed ends and the orchestrator is asked to rule (outbox
-`g3-mesh-leg-ruling`, options a-d). The guard test EG8 and the timing runs are read and closed. Owner
-D-bh-dress, branch `track/D-bh-dress`, worktree `wt/D-bh-dress`.
+State (2026-11-28 08:35 PST, lead of batch 41): G0, G1 and G2 SIGNED (G1 and G2 with reservations;
+coord/GATES.md). Toward G3 (60 card-hours, 3.72 used): the scope `scope/SCOPE_G3.md` carries amendments A1-A6
+(section 11). A6 (this session) carries out decision 0051 item 3: the mesh leg is G-8 and G-12u; a coarser G-6u
+only if its search at t = 0 is found, and on processors it is not (reason 6), so G-6u is not run and the mesh
+error will be |e-bar_8 - e-bar_12| with no order, FL16 beside it. G-8 (the first production member) is read:
+G3-G1 holds. core-v0.9 reproduces core-v0.8 byte for byte on the G-8 deck: new members run on core-v0.9.
+Owner D-bh-dress, branch `track/D-bh-dress`, worktree `wt/D-bh-dress`.
 
 Run next: `cd /data/haiyangw/nrpic/wt/D-bh-dress && git merge --no-edit main && harness/bin/nrpic-ctx inbox &&
   git status --short && harness/bin/nrpic-queue list --owner D-bh-dress && squeue -u $USER`
 
-Files to read first: `STATUS.md`; `scope/SCOPE_G3.md` section 11 (A1-A5 and the note under A1);
-`g3/amend/JOURNAL.md` entries 4 (predictions for the amended criteria), 6-7 (timing outcome);
-`excguard/JOURNAL.md` entry 4 (EG8 outcome); `stage/REVIEW-wave3.md` section 27; the orchestrator's answer to
-`outbox/20261128T074522Z__to-orch__g3-mesh-leg-ruling.md` (inbox).
+Files to read first: `STATUS.md`; `scope/SCOPE_G3.md` section 11, amendment A6 (the last one); `g3/amend/JOURNAL.md`
+entries 8-13 (predictions and outcomes of this session); `stage/REVIEW-wave3.md` section 28; the orchestrator's
+answer to `outbox/20261128T162656Z__to-orch__g3-mesh-leg-m6-not-qualified.md` (inbox).
 
-## Card jobs in flight (check sacct for every job of an entry before reading it)
+## Card entries in the shared queue (none in Slurm at 08:35 PST; check sacct of every job before reading)
 
-- q0100 D-G3-G8 (production, chain, cap 3.5), run D-20261128-062142-c5666c4, chain at t = 17.5 M (finder) after three
-  preemptions; next job 5639 PENDING at 23:48 PST. Deck `g3/amend/decks/g3g8.athinput` (core-v0.8, start/stop times of the finder set, diagnostics on,
-  polishing 100), to 400 M, about 2.5 card-hours. Output `scratch/D-bh-dress/D-20261128-062142-c5666c4/` (base
-  g3g8). When the chain is DONE: `harness/bin/nrpic-run finish D-20261128-062142-c5666c4`, then read it with the
-  amended Claim G criteria (SCOPE_G3 section 4 as replaced by A3), which need the vacuum offsets of item 2 below
-  first; filter the summary by the status file (eg8_read.py's `filtered_view`).
+- q0110 D-T6u (batch, one job, cap 0.2, core-v0.9 card build): `g3/amend/decks/timing6.list` (member t6u, deck
+  `g3g6u_t2`, G-6u to 2 M). The ruling's literal test of Q1. Read: the first row of `t6u/g3g6u.horizon_status_0.txt`
+  (found or not, reason, area mass) against g3/amend entry 10 (prediction: not found, as K2 on processors; if it IS
+  found, A6 then needs Q2: queue the null pair `n6es`, `n6v` as chains, cap 1.2 each), the block count and peak
+  memory in its log, seconds per M (timing_read.py's method). Close with `nrpic-run finish` first.
+- q0111 D-G3-G12u (chain, cap 11, production, core-v0.9): deck `g3/amend/decks/g3g12u.athinput` (M/12 uniform,
+  456 blocks of 36, to 400 M; about 9.4 card-hours, several days of queue). Read when chain/STATUS is DONE with
+  g8_read.py's method (a copy with base g3g12u) against g3/amend entry 10 and SCOPE_G3 A3/A6: G3-G1 bins; e-bar_12
+  against e-bar_8 per 50 M window (no order); the lead; NO criterion read before the processor work below is
+  committed (A6).
 
 ## What waits, in order
 
-1. The orchestrator's ruling on the mesh leg (no G-16u, G-12u or G-6u entry before it). If (b) is chosen:
-   a deck G-6u (root 72, blocks of 18; add it to `g3/amend/tools/make_g3_decks.py`, count blocks with `athena
-   -m`), a prediction in g3/amend's journal, then a 2 M card timing run (one job, cap 0.2) before production.
-2. Processor work A5 puts before every later member (at most 6 cores): (i) Claim D reader (A2):
+1. Smoke test of the leg decks, run D-20261128-162112-e80048d (processors, two cores, started 08:21 PST, about 20
+   minutes; `harness/bin/nrpic-run status D-20261128-162112-e80048d`): read `legs_smoke.json` against g3/amend
+   entry 11 (S-4N: 3402632 particles, t = 0 mass within 1e-9 of 0.991514686; S-e1: t = 0 row identical to S-G8).
+   If entry 13 is missing, write it, then queue G-8-4N (`decks/g3g84n.athinput`, chain, cap 4, production,
+   core-v0.9, priority 2; prediction [2.6, 4.0] card-hours in entry 11). Two D chains at most (G-12u + one).
+2. Processor work of A5/A6 before any G-12u criterion is read (at most 6 cores): (i) Claim D reader (A2):
    dtau_p = tau_p - tau_LTB(R_p; R0_p) on G2's snapshots (FK, FN4, FNQ, FL16 to 190 M), D1* = twice FN4's largest
-   |median dtau| (prediction P-A2, g3/amend entry 4); (ii) polished re-searches of the restart files of V-1L4,
-   V-1L, V-1L16 (vacuum offsets at 4, 8, 16 cells per M; core-v0.9 lets `-r` add `fastflow/polish_iterations_0`
-   and `diagnostics` from the command line, `scratch/core/exe/core_nrpic_v09/athena_cpu_omp`; whether a v0.9
-   executable reads the older restart files is untested: try one first); (iii) G3-G3 power on phase-randomised
-   surrogates of FK - FL16 noise (50-190 M) and, once q0100 has run, of G-8's own noise (P-A3).
-3. Then, by the ruling: G-12u (9.4 card-hours, cap 11), G-8-4N, G-8-16N (data by flux_tools/esf_data.py at
-   lattice h/2.52; check memory), G-8-e1 (shift_eta 1.0); two D chains at most at once; priority 2.
+   |median dtau| (prediction P-A2, g3/amend entry 4); the same reader gives the per-particle lead that replaces the
+   verifier's three tracer values in g8_read.py; (ii) polished re-searches of the restart files of V-1L4, V-1L,
+   V-1L16 (vacuum offsets at 4, 8, 16 cells per M; core-v0.9 lets `-r` add `fastflow/polish_iterations_0` and
+   `diagnostics`: `scratch/core/exe/core_nrpic_v09/athena_cpu_omp`; try one restart file first); (iii) G3-G3 power
+   on phase-randomised surrogates of FK - FL16 noise and of G-8's own noise (P-A3).
+3. G-8-e1 (`decks/g3g8e1.athinput`, gauge leg) after G-8-4N; G-8-16N needs its data (flux_tools/esf_data.py at
+   lattice h/2.52) and a memory check.
 
-## What this session did (batch 40)
+## What this session did (batch 41)
 
-- Closed q0085 (EG8) and q0095 (timing) after sacct; readers committed before they ran; figures looked at.
-- EG8: E1, E3-E8 hold; E2 failed at the first bin (band defect). Timing: T-12u held but for its mass band;
-  T-16u and P-A1 refuted (memory). Costs: G-8 2.5, G-12u 9.4, G-16u 25.9 (estimate) card-hours to 400 M.
-- Note under A1; outbox to orch (ruling) and core (EG8 outcome, memory question); three inbox messages acked;
-  rd_checks.py cites kb claim 931 with its hedge. Queued nothing (A5).
+- Closed q0100 (G-8, 2.20 card-hours) and read it with g8_read.py (run D-20261128-160553-b500509, figure
+  looked at): G3-G1 holds; lead-bias band failed at its low end; the polished-minus-unpolished gap grows.
+- SCOPE_G3 A6; decks g3g6u(_t2), n6es, n6v, g3g84n, g3g8e1 (make_g3_decks.py; older decks unchanged).
+- A6 checks (run D-20261128-160418-b618bff): K1 held, K2 refuted (M/6 not found at t = 0), K3 held (v0.9 = v0.8).
+- Queued q0110, q0111; outbox to orch; release message acked.
 
 ## Traps (kept; new ones marked)
 
@@ -62,13 +68,13 @@ not times. (13) `nrpic-run submit` refuses an unclean package: commit first. (16
 the smallest horizon radius exceeds ah_exc_max_growth (4 when absent) x initial_radius_0; G3 uses 4 x 1.6.
 (17) The unpolished finder sits up to ~6e-5 off the converged mass. (18) Removal records of preempted
 segments: fluxio.drop_overlaps. (20) Judge each mesh against its own-mesh vacuum control. (21) Closes of
-40-90 GB chains take 2-10 min. (25) FL16 and V-1L16 end at 299-299.75 M. (26) Close local background runs with
-`nrpic-run finish` before reading them. (27) note/main.pdf is 1.1 MB. (28) A serial processor smoke test of an
-M/8 ES-FL deck takes ~17 min for two cycles. (30) NEW: AthenaK aligns a refined region to the blocks of the
-next coarser level and keeps one block of buffer per level: always count blocks with `athena -m` (g3/amend
-tools/check_review.py) before trusting a hierarchy; t = 0 horizon mass of these data is 1 (Schwarzschild),
-so the M/8 finder offset is -8.5e-3, M/16 -1.9e-4. (31) use `date` for journal times (sessions write times ahead of the clock). (32) NEW: a
-finder summary repeats the last mass for a search not found; drop such rows by the status file before any
-criterion (eg8_read.py does). (33) NEW: card memory of the uniform family is about 6.1 GiB + 1696 bytes per cell
-(456 blocks with ghost zones): blocks of 36 fit (69 GiB), 48 do not (about 133 GiB); `athena -m` counts blocks,
-not bytes.
+40-90 GB chains take 2-10 min (G-8: 72 GB, about 6 min). (25) FL16 and V-1L16 end at 299-299.75 M. (26) Close local
+background runs with `nrpic-run finish` before reading them. (27) note/main.pdf is 1.1 MB. (28) A serial processor
+smoke test of an M/8 ES-FL deck takes ~17-20 min for two cycles. (30) AthenaK aligns a refined region to the
+blocks of the next coarser level and keeps one block of buffer per level: count blocks with `athena -m`; t = 0
+horizon mass of these data is 1 (Schwarzschild), M/8 finder offset -8.5e-3, M/12 -2.5e-4, M/16 -1.9e-4. (31) use
+`date` for journal times. (32) a finder summary repeats the last mass for a search not found; drop such rows by the
+status file (eg8_read.filtered_view). (33) card memory of the uniform family is about 6.1 GiB + 1696 bytes per
+cell (456 blocks with ghost zones). (34) NEW: a production `nrpic-run submit` needs `--preregistered <path>`.
+(35) NEW: at M/6 the finder does not settle at t = 0 (reason 6 after 400 flow iterations, surface near r = 0.6 M).
+(36) NEW: G-8's finder minus FK's grows from 6.5e-5 to 1.6e-4 over 400 M: compare polished with polished only.

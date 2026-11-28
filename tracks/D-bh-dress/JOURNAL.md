@@ -685,3 +685,23 @@ open: T-12u/T-16u and G-8 results; Claim D reader, vacuum offsets and G3-G3 powe
 - Journal times of this session were written from `date`, two first written a few minutes ahead and corrected.
 open: the ruling; the three processor items of A5; G-8 at 400 M. Card-hours used this session: 0 new jobs (EG8's
   last segments, 0.79, and the timing job, 0.05, ran between sessions).
+
+## 2026-11-28 07:58-08:40 PST, lead of batch 41 (Opus; G-8 read, the mesh leg by decision 0051 item 3)  commits f176e6fbe..(this)  runs D-20261128-160553-b500509, D-20261128-160544-089d6f8, D-20261128-160418-b618bff, D-20261128-162112-e80048d
+- q0100 G-8 (D-20261128-062142-c5666c4): ten jobs (seven PREEMPTED and resumed, 5673/5684/5691 COMPLETED), chain
+  DONE at 400 M; closed with nrpic-run finish (242 files, 2.1986 card-hours). Predictions (g3/amend entry 8)
+  committed before the reader g8_read.py was written and run; figure looked at. G3-G1 HOLDS (45 bins +0.172 to
+  +0.254 per cent), P-G1 holds raw and with the lead; lead-bias size band FAILED at its low end; G-8 - FK rises
+  with time (not predicted). Entry 9.
+- Ruling 0051 item 3: SCOPE_G3 amendment A6 (members G-6u if it qualifies, G-8, G-12u; Q1/Q2; G3-G2 and G3-G3 for
+  h = 1/6, 1/8, 1/12 with R = ((4/3)^p - 1)/(1 - (2/3)^p); G-12u the finest member; builds per family; budget).
+- A6 checks on processors (entry 8 predictions first; run D-20261128-160418-b618bff, four cores): K1 held (456
+  blocks); K2 REFUTED: the search at t = 0 is not found at M/6 (reason 6) in G-6u and in both null-pair decks;
+  K3 held: core-v0.9 = core-v0.8 byte for byte on the G-8 deck, restart files included. By A6: G-6u not run,
+  null pair not queued, mesh error = |e-bar_8 - e-bar_12| without order, FL16 beside it. Entries 10-12.
+- Queued (priority 2, core-v0.9): q0110 D-T6u (the ruling's literal test, cap 0.2), q0111 D-G3-G12u (chain,
+  cap 11). Particle- and gauge-leg decks written (g3g84n, g3g8e1); their smoke test D-20261128-162112-e80048d
+  runs on two cores (predictions entry 11).
+- Outbox: orch g3-mesh-leg-m6-not-qualified (request: confirm the reading of Q1). Inbox: release-core-v0.9 acked.
+- Journal times from `date`; three headers first written a minute or two ahead and corrected before push.
+open: G-8-4N to the queue after its smoke test; the processor work of A5; G-12u's read. Card-hours this session:
+  none run (G-8's jobs ran between sessions, 2.20).
