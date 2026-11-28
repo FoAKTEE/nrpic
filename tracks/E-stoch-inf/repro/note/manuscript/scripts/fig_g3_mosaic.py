@@ -56,7 +56,11 @@ def main():
     for row, (img, vm, cmap, lab) in enumerate(((s1, v1, fs.CMAP["diverging"], r"$\zeta/\sigma_\zeta$"),
                                                  (s2, v2, "PuOr_r", r"$(\zeta + \mathcal{R})/\sigma_\zeta$"))):
         for k, ax in enumerate(axes[row]):
-            im = ax.imshow(img, origin="lower", extent=ext, cmap=cmap, vmin=-vm, vmax=vm, interpolation="nearest")
+            h = int(halves[k])                     # draw only the cells of this panel (smaller vector file)
+            c0 = N // 2
+            sub = img[c0 - h:c0 + h, c0 - h:c0 + h]
+            im = ax.imshow(sub, origin="lower", extent=[-h, h, -h, h], cmap=cmap, vmin=-vm, vmax=vm,
+                           interpolation="nearest")
             if k + 1 < len(halves):
                 fs.zoom_marker(ax, halves[k + 1], halves[k], connect="right")
             else:
