@@ -17,6 +17,7 @@ Helper package of owner B-emd-gw (checklist item C18; decisions 0016 item 4, 004
 | `scripts/v3_constraints.py` | V5/V6: constraint ratios of the mesh pairs and the particle leg, the 256^3 zero-shift stop |
 | `scripts/v4_shear.py` | V7: shearing dust, series 7 and L2: Delta, differences, order, Richardson value, closed-form cos(theta_lin), stream crossing from the particle snapshots |
 | `scripts/v5_halos.py` | V4: FoF catalogues with equal masses, GR against the Newtonian mode, 256^3 against 128^3 |
+| `scripts/v6_figs.py`, `scripts/v7_highk.py`, `scripts/v8_shear_cstat.py` | figures of V1 and V4; the high-k shell-cut check; the series-7 constraint means |
 | `scripts/figstyle.py` | copy of `python/nrpic/figstyle.py` |
 | `figs/` | the figures of the registered runs, copied here (PNG) |
 
@@ -26,12 +27,17 @@ Helper package of owner B-emd-gw (checklist item C18; decisions 0016 item 4, 004
 |---|---|
 | `B-20261128-021054-577fc9d` | V0 analytic tests (all pass) |
 | `B-20261128-021125-515c0cc` | V1 waves F and X, N = 16, 32, 48, 64 |
-| `B-20261128-021335-a7a2a49` | V5/V6 first reading (figure unreadable: superseded by the next) |
-| `B-20261128-021515-a6306af` | V5/V6 second reading: figure, pairing sensitivity, last records |
-| `B-20261128-021337-d0c2105` | V7 shearing dust |
-| `B-20261128-021349-a57f21e` | V2/V3 first attempt: FAILED (int32 overflow in my reader on a 256^3 meshblock; the file part had run) |
-| `B-20261128-021412-072e411` | V2/V3 after the reader fix |
+| `B-20261128-021335-a7a2a49` | V5/V6 first reading (figure unreadable: superseded) |
+| `B-20261128-021515-a6306af` | V5/V6 second reading: pairing sensitivity, last records |
+| `B-20261128-022330-6e6076d` | V5/V6 third reading: the same numbers, figure with a linear axis (`figs/v3_constraints.png`) |
+| `B-20261128-021337-d0c2105` | V7 shearing dust (`figs/v4_shear_crossing.png`) |
+| `B-20261128-022420-5d1f804` | V7c series-7 constraint means (`v8_shear_cstat.png` in the run directory) |
+| `B-20261128-021349-a57f21e` | V2/V3 first attempt: FAILED (int32 overflow in my reader on a 256^3 meshblock; the files part had printed) |
+| `B-20261128-021412-072e411` | V2/V3 second attempt: FAILED (exact-time match of the two gauges' dumps, after the raw measurements) |
+| `B-20261128-021923-351e31f` | V2/V3 completed (`figs/v2_strain.png`) |
+| `B-20261128-022328-1a9d681` | V3 follow-up: the files' shell cut at n/2 explains the raw high-k ratio |
 | `B-20261128-021413-6b4d7a1` | V4 FoF catalogues |
+| `B-20261128-021948-d182a2d` | figures of V1 and V4 (`figs/v1_waves.png`, `figs/v5_halos.png`) |
 
 ## How to rerun
 
@@ -53,5 +59,20 @@ V2 several minutes (four 256^3 dumps of 2.95 GB).
 ## Requests
 
 - To the lead (B-emd-gw): copy `VERIFIER.md` to `stage/G2/VERIFIER.md` (the file the stage
-  check looks for); the wording corrections listed in its section 6.
+  check looks for); apply or answer the corrections a to e of its section 5 (momentum ratio
+  "from a ~ 36", the zero-shift one-per-cell extremes of Tables VII and VIII, the shell cut of
+  the high-k measure, the L2 crossing worded as an estimate, the SPEC criterion that a
+  non-converging series can meet); record C2's gauge leg as an identified gauge dependence
+  (section 6); commit or regenerate `stage/G2/VERIFY_RESULTS.{md,json}`, which the `--full`
+  verify (PASS) left modified.
 - None to other owners.
+
+## Results in one paragraph
+
+Every number the gate rests on that I recomputed holds to its printed digits (waves F and X;
+the band strain 1.1 and 2.8 per cent; halo counts 108, 98, 106 and the 256^3 deficit 0.48;
+the 256^3 zero-shift stop; the eight-per-cell constraint ratios 1.6 to 2.3; series 7 with its
+crossing check), except the zero-shift one-per-cell constraint maximum (1.39 to 1.41 against
+1.36 and 1.37) and the high-k ratio's dependence on the spectrum's shell cut (1864 raw with the
+cut, 1700 without). L2's crossing before the rays arrive is not checkable from its outputs.
+Details and the comparison with the lead: `VERIFIER.md`.
