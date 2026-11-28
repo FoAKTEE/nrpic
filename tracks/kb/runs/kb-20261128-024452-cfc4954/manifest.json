@@ -1,0 +1,117 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "kb-20261128-024452-cfc4954",
+  "track": "kb",
+  "gate": "G3",
+  "kind": "scouting",
+  "purpose": "claims5: rates, ledger and figure (rerun with corrected figure labels; numbers as kb-20261128-024430-2b76f58)",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "python",
+    "tracks/kb/claims5/scripts/rates.py",
+    "--order",
+    "/data/haiyangw/nrpic/scratch/kb/kb-20261128-003945-e1d65ba",
+    "--apply",
+    "/data/haiyangw/nrpic/scratch/kb/kb-20261128-024327-81f35d6",
+    "--claims4",
+    "/data/haiyangw/nrpic/scratch/kb/kb-20261128-005107-c2d924a/rates.json",
+    "--out",
+    "$NRPIC_RUN_DIR"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "cfc4954ee78cb8b754c26ef841de64da4d825075",
+    "branch": "kb/main",
+    "dirty": false,
+    "package": [
+      "tracks/kb/claims5"
+    ],
+    "outside_package": {
+      "count": 0,
+      "first": []
+    },
+    "merge_base_main": "2d93a83de2c8f0054ea9b4a8a745157c720044ae",
+    "worktree": "wt/kb"
+  },
+  "code": {
+    "core_tag": "core-v0.8",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "c7e770b3e0be132ee7c21860fd4541200b8c7248ed832b31a0ce80d1b3c6bbf3",
+    "machine_file_sha256": "0b480f5c2078e1d9fef1d97a0babb27b14009b045b4021ee578d6fc3cd243dd1",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/kb/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "tracks/kb/claims5/work/verdicts_T.tsv",
+      "role": "input",
+      "sha256": "2dad55228b9075bfa7bd4116bca09749d38addb8cfd7f28702ed0daf869a819b",
+      "bytes": 13155,
+      "tracked": true
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/kb/kb-20261128-005107-c2d924a/rates.json",
+      "role": "input",
+      "sha256": "4a6da71e700d8d11b7f173bb5701240d3f4e89c08443a43c47ab72baef21c330",
+      "bytes": 2847,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "tracks/kb/claims5/scripts/rates.py",
+      "role": "argv",
+      "sha256": "23d6a27561ebee1d86f43c78b8784976b339d61e8cbea4064fcce77b3dc2624a",
+      "bytes": 9514,
+      "tracked": true
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 1,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/kb/kb-20261128-024452-cfc4954",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-28T02:44:52Z",
+  "started": null,
+  "ended": null,
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 0.0,
+    "cores_allotted": 8,
+    "gpu_hours_used": 0.0,
+    "gpu_hours_reserved": 0.0,
+    "gpu_hours_without_gate": 0.0,
+    "cores_busy": 0,
+    "runs": 285,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md + 0026-cards-loaded-allotment-cost.md + 0031-level2-branch-and-ablation.md + 0032-new-account-preemption-allotments.md + 0038-track-e-g2-signed-g3-scope.md + 0039-rulings-after-batch-17.md + 0045-track-d-g2-signed-release-v08.md + 0048-rulings-after-batch-34.md"
+  }
+}
