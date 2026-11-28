@@ -655,3 +655,22 @@ above 2 M in every bin inside 30 M" fails at 27-30 M (0.4-1.1 M).
 
 Scope amended by dated amendments A1-A5 (`scope/SCOPE_G3.md` section 11, commit acee85249), predictions for
 the amended criteria in `g3/amend/JOURNAL.md` entry 4, committed and pushed before any production entry.
+
+## 27. Lead session of batch 40 (2026-11-27 23:26 PST on, Opus): the guard test and the timing runs read
+
+No helper package ended since batch 35; this session read the two card entries that ended (q0085, q0095)
+from their artefacts with readers written and committed before they ran, figures looked at.
+
+| Run | Jobs (sacct) | Closed | Reader | Verdict against the predictions written before |
+|---|---|---|---|---|
+| EG8 D-20261127-233719-db5be88 (q0085) | 11 jobs, 10 PREEMPTED and resumed from SIGTERM restart files, last 5596 COMPLETED; chain DONE | `nrpic-run finish` (1.47 card-hours) | excguard/tools/eg8_read.py, run D-20261128-074210-aa0a37a, `eg8_read.png` | E1, E3-E8 hold; E2 failed at one bin (tau_rem 0-10 M, +0.056 per cent, below a band built from FK's late bins only; FK's own first bin +0.050), not refuted (excguard entry 4) |
+| Timing D-20261128-055309-41ea07a (q0095) | 5610 COMPLETED; member t16u exit 134 | `nrpic-run finish` (status failed: the t16u member) | g3/amend/tools/timing_read.py, runs D-20261128-074025-07d95a4 (parse defect: no G-8 segment found; kept on record) and D-20261128-074128-24b2565, `timing_read.png` | T-12u held except its mass band (0.99975 against 0.9990 +- 0.0007); T-16u refuted (does not fit one card); P-A1 refuted (g3/amend entry 7) |
+
+What I could not confirm: the G-16u cost (25.9 card-hours) is an estimate from cells x steps x G-12u's
+measured efficiency, not a measurement; the identity of the "dg" array (the finder's metric derivatives) is my
+reading of 18 doubles per cell, not checked in the source; G-12u's rate is from its first 2 M (start-up phase,
+7 searches) and G-8's from EG8's long segments, whose output cadence differs from the G3 decks (slices every 5 M).
+Asked of others: the orchestrator rules on the mesh leg (options a-d, outbox g3-mesh-leg-ruling); core answers
+whether a two-card build or a lower memory per cell is possible (outbox eg8-read-and-g16u-memory).
+Queued: nothing. Under A5 the later members wait for the processor work (none of it done yet), and G-16u
+additionally for the ruling; G-8 (q0100) is in Slurm (job 5632, pending).

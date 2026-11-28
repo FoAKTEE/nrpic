@@ -30,7 +30,10 @@ TABLE1 = [  # y0, lambda, tau_ta, tau_ta/lam^1.5, y_ta, y_ta/lam, y_ta^3/tau_ta^
 ]
 ETA_2106 = 1.086          # sections/appendix.tex:127, sections/cosmo_setup.tex:66
 RATIOS_1901 = (0.964, 0.999)   # PBH-UCMH-ArXiv-v2.tex:497 (analytic, numerical)
-BOOST_1901 = 1.53         # PBH-UCMH-ArXiv-v2.tex:468 ("53% denser")
+BOOST_1901 = 1.53         # PBH-UCMH-ArXiv-v2.tex:468 ("53% denser"); kb claim 931 (successor of 352).
+#   Hedge (kb lead, check run kb-20261128-025758-95806ac): the same line says the integral should be cut at
+#   matter-radiation equality, not at infinity, so the physical correction is smaller than 53 per cent; this
+#   number is the paper's integral to infinity, quoted as such, not a dress of the track.
 
 
 def rhs(tau, s):

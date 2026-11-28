@@ -664,3 +664,24 @@ open: EG8 (q0085) pending; the independent review of SCOPE_G3; no production run
   times before push.
 open: T-12u/T-16u and G-8 results; Claim D reader, vacuum offsets and G3-G3 power on processors before the
   later members; EG8. Card-hours submitted this session: 0 run yet (two entries waiting).
+
+## 2026-11-27 23:26-23:48 PST, lead of batch 40 (Opus; the guard test and the timing runs read)  commits e6aef4d75..(this)  runs D-20261128-074210-aa0a37a, D-20261128-074025-07d95a4, D-20261128-074128-24b2565
+- q0085 EG8 (D-20261127-233719-db5be88): 11 jobs, chain DONE, sacct of the last COMPLETED; closed (1.47
+  card-hours). Reader excguard/tools/eg8_read.py committed before it ran (entry 3). E1, E3-E8 HOLD: with
+  `ah_exc_max_growth = 8` and `initial_radius_0 = 0.8` every dust removal is by the horizon rule to 260 M
+  (13352 after 219.5 M); (iii) in [+0.175, +0.250] per cent after the first bin; polished minus FK +8.6e-5.
+  E2 FAILED as written (first bin +0.056 per cent; my band ignored FK's own first bin, +0.050). Entry 4.
+- q0095 timing (D-20261128-055309-41ea07a): job 5610 COMPLETED; t12u exit 0, t16u exit 134; closed. Reader
+  g3/amend/tools/timing_read.py committed before it ran (entry 6); its first run had a parse defect (no G-8
+  segment), fixed and rerun. T-12u held (fits, 456 blocks, found at t = 0, 3.81 x G-8's s per M) except its mass
+  band (0.99975); T-16u REFUTED (does not fit one card: about 133 GiB); P-A1 refuted. Entry 7.
+- Mesh leg: G-8 2.5, G-12u 9.4, G-16u 25.9 card-hours to 400 M (the last an estimate at one card's speed);
+  with G-16u the G3 total is about 51 of 60: memory, not card-hours, is the obstacle. SCOPE_G3: dated note under
+  A1 (t_16 not fixed; options a-d). Outbox: orch g3-mesh-leg-ruling; core eg8-read-and-g16u-memory.
+- Queued nothing: A5 holds the later members until the processor work is committed (not started), and G-16u
+  until the ruling. q0100 (G-8) pending in Slurm as job 5632.
+- Inbox acked: orch queue-done-means-completed-audit (audit: all six D entries completed), kb claims5 (rd_checks.py
+  cites 931 with the kb lead's hedge; older places left as written), core v0.9 executable (G3 decks stay on v0.8).
+- Journal times of this session were written from `date`, two first written a few minutes ahead and corrected.
+open: the ruling; the three processor items of A5; G-8 at 400 M. Card-hours used this session: 0 new jobs (EG8's
+  last segments, 0.79, and the timing job, 0.05, ran between sessions).
