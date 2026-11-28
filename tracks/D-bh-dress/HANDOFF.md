@@ -2,7 +2,7 @@
 
 Written for a reader with no memory of the last session. Rewritten at the end of every session.
 
-State (2026-11-27 18:30 PST, lead of batch 35): G0, G1 and G2 SIGNED (G1 and G2 with reservations;
+State (2026-11-27 18:28 PST, lead of batch 35): G0, G1 and G2 SIGNED (G1 and G2 with reservations;
 coord/GATES.md). Toward G3 (60 card-hours): the scope `scope/SCOPE_G3.md` was reviewed independently
 (`g3/scope_review/SCOPE_REVIEW.md`: do not queue as written) and is now amended by dated amendments A1-A5
 (its section 11; the earlier text is kept). The first step allowed by the amended scope is queued: the

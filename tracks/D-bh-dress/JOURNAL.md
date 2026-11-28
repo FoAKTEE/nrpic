@@ -642,7 +642,7 @@ open: C17 (fresh verifier) and the gate review; full-checksum verify; G3 design 
 open: EG8 (q0085) pending; the independent review of SCOPE_G3; no production run before it. Card-hours
   used this session: 0 (EG8 had not started at 15:48 PST).
 
-## 2026-11-27 17:56-18:32 PST, lead of batch 35 (Opus; G3 scope review checked, scope amended, first step queued)  commits c4079e991..(this)  runs D-20261128-020346-c4079e9, D-20261128-020622-50e2cb6
+## 2026-11-27 17:55-18:29 PST, lead of batch 35 (Opus; G3 scope review checked, scope amended, first step queued)  commits c4079e991..(this)  runs D-20261128-020346-c4079e9, D-20261128-020622-50e2cb6
 - The independent review of the G3 scope (g3/scope_review, decision 0048 item 4) checked from its artefacts
   with my own code (g3/amend/tools/check_review.py; predictions C1-C6 committed first in c4079e991):
   B1 confirmed (athena -m: G-16 3648 blocks, G-12 2176 with finest +-4 M; t = 0 masses 0.99152 / 0.99981);
