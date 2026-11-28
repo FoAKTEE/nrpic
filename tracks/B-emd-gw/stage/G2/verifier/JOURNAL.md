@@ -101,3 +101,91 @@ constraint over 1 <= t <= t_A at N_y = 64, 128, 256: 3.62e-6, 2.73e-6, 2.55e-6; 
 time average of the cstat columns Hr_mean and Mr_mean (trapezoid in t, my choice; the lead's
 averaging is unknown to me) gives these to two digits; refuted if any differs by more than
 5 per cent. If they reproduce, the 128-to-256 step lowers Mr by less than 2 per cent.
+
+## Entry 3 (18:30 PST): outcomes, prediction by prediction
+
+V0 (B-20261128-021054-577fc9d): PASS on every test. Failed as written in an unregistered dry
+run before it (scratch/B-emd-gw/tmp/v0dry): the projector's round trip through a real field
+failed at 1.6 relative because the Nyquist planes of a real field cannot carry a
+direction-dependent projection with Hermitian symmetry; every measure of mine excludes the
+Nyquist planes since (as the lead's measures do), and the test zeroes them in its inputs.
+Recorded as a failed prediction of the dry run, corrected before any claim was touched.
+
+V1 (B-20261128-021125-515c0cc): holds, better than predicted. F amplitude -1.4092e-4,
+-1.7174e-6, -1.5742e-7, -3.1218e-8; phase 2.5310e-4, 1.2176e-5, 2.2728e-6, 7.0694e-7 (N = 16,
+32, 48, 64): every claimed digit reproduced. X cross amplitude -7.0481e-5, 1.3169e-6,
+4.2498e-7, 1.3989e-7; phase 8.3039e-5, 3.0650e-6, 5.8797e-7, 2.7624e-7: every claimed digit.
+X plus polarization against cross: amplitude +2.6 and +10.0 per cent, phase +10.2 and +39.1
+per cent at N = 48, 64 (claim: 0.0263, 0.0997, 0.102, 0.391 against the prediction, which
+equals the cross error): reproduced. Sign convention of the phase the same as the claims'.
+
+V2 (files part in all three attempts; raw part in B-20261128-021923-351e31f; attempts
+B-20261128-021349-a57f21e and B-20261128-021412-072e411 FAILED on bugs of mine, an int32
+overflow in the reader and an exact-time match, both after the files part had printed):
+(a) holds: largest |256^3/128^3 - 1| of the corrected band 0.010897 (a <= 64) and 0.027699
+(a <= 132.25) against claimed 0.0109, 0.0277. (b) holds, far inside the bound: my raw rms and
+band from the dumps equal the files' to 1e-15 relative at all 14 dumps read. (c) holds: the
+gauge piece is 0.03 to 1.07 per cent of the rms in the shifted gauge, raw and corrected
+band ratios agree within 0.02 per cent. (d) holds: the 128^3 dumps lie 0.0082 later in t;
+interpolating them to the 256^3 times moves the deviation to 0.0115 (a <= 64) and 0.0271
+(a <= 132.25). Extra: with an exact per-mode band (no n^-2 shell weighting) the ratio at
+a = 64 is 1.0119 and at a = 132.25 0.9983 (files form 1.0023): the 1.1 per cent is
+reproduced within 0.1 percentage point; the a = 121 maximum was not recomputed in the exact
+form.
+
+V3 (B-20261128-021923-351e31f, B-20261128-022328-1a9d681): the claimed 946 is reproduced
+from the files' corrected spectra (945.56 at a = 121.1). My raw recomputation with all
+modes off the Nyquist planes gives 1700, the files' raw 1864: prediction "within 10 per
+cent" FAILED as written for the raw form, cause found in a run that could have failed: the
+files' spectrum stops at shell 64 (n/2), so the cube's corner modes (|n| > 64.5) drop out;
+with that cut my raw ratio is 1864.09, equal to the files' to 1e-15. In the Gamma-driver
+run 9.0 per cent of the measure above 16 k_f lies in the corners, in the zero-shift run
+0.17 per cent. The "about 950 times" depends on that cut by about 10 per cent; no
+conclusion changes (ratio 1700 to 1864 raw).
+
+V4 (B-20261128-021413-6b4d7a1): holds. Counts of >= 100 particles at a = 121: 108 (zero
+shift), 98 (Gamma driver), 106 (Newtonian mode): exact. Median |M_GR/M_N - 1| of the ten
+largest: 0.0264 (zero shift, claim 0.0264), 0.0124 (Gamma driver, claim 0.0123: last digit).
+Largest halo at a = 121: 0.909 (zero shift) and 1.029 (Gamma driver) of the Newtonian one,
+inside the claimed ranges. 256^3 against 128^3 (Gamma driver): counts above the common limit
+8/11 = 0.727 and 15/31 = 0.484 at a = 64, 121; largest mass ratio 1.3235 and 1.1279 (claims
+0.484, 1.32, 1.13): exact; my 256^3 catalogues equal the lead's file (242, 8, 1.038 and 431,
+15, 1.905). |15 - 31| = 16 exceeds 2 sqrt(31) + 2 = 13.1: outside the counting band at a = 121.
+
+V5 (B-20261128-021335-a7a2a49, -021515-a6306af, -022330-6e6076d): holds for the 8-per-cell
+pair: Hr 64/128 1.324 to 2.340 over 25 <= a <= 141, at least 1.638 for a >= 36 and a >= 49;
+Mr 1.715 to 2.159 for a >= 49 (claims 1.32, 2.34, 1.64; 1.71, 2.16). Pairing sensitivity
+(interpolation either way, nearest records): extremes within 0.1 for Hr, the minimum for
+a >= 49 1.62 to 1.64. One-per-cell pairs: Gamma driver 1.105 to 1.36 with nearest records
+(claim 1.11, 1.36: exact), 1.106 to 1.38 interpolated; zero shift 1.047 to 1.405 over
+25 <= a <= 100 (claim Table VIII 1.05, 1.37; the note's "1.05 to 1.4"), 1.13 to 1.40 over
+36 <= a <= 100 (claim Table VII 1.11, 1.36): the zero-shift maximum is 1.39 to 1.41 in all
+three of my pairings, 2 to 3 per cent above both claimed maxima; the minimum of Table VII
+(1.11) I do not find in that window (1.13 to 1.17). Not reproduced to the claimed digits;
+no conclusion changes. Particle leg at the last records (a = 140.74 in both runs): Hr 1.575,
+Mr 2.932 (claims 1.58, 2.93); continuation against the cut run 4.23e-12 (claim 4.23e-12).
+Wording: the note says the 8-per-cell momentum ratio is 1.7 to 2.2 "from a ~ 36 on"; from
+a = 36 it reaches down to 1.45, from a = 49 it is 1.71 to 2.16 (Table VIII says a >= 49).
+
+V6 (same runs): holds. First record with K_max > 0 at a = 79.88 (linear zero crossing
+79.36); last finite record a = 101.25, K_max 0.02244 there (claims 79.9, 101, 0.0224); guard
+stop at t = 18.21. K_max does not stay positive after a = 79.9 (it returns below zero in
+some records before the stop). Gamma driver after t = 9: largest K -0.000844 (256^3),
+-0.00141 (128^3); last a of the 256^3 run 142.5 (claims -0.000844, -0.00141, 143).
+
+V7 (B-20261128-021337-d0c2105): holds. Delta 0.0537486, 0.0538000, 0.0538206; Delta =
+cos/cos_lin - 1 from the stored cos to all digits; d2/d1 = 0.4007, order 1.32, Richardson
+0.0538344, finest minus Richardson -1.379e-5 (claims 0.401, -1.38e-5). My closed form gives
+cos_lin = 0.1259217103254327 (b = beta (HL)^2 = 2) equal to the files' to all digits
+(second quadrature 4e-14). Crossing: smallest spacing up to t_A 0.6992, 0.6993, 0.6993 of the
+lattice spacing; first crossing in the snapshots at t = 9.25, 9.25, 9.00 (claims 0.699,
+9.25, 9.25, 9): no stream crosses before the rays arrive (t_A = 4.118). V7b holds for the
+Delta series: L2 at four per cell, N_y = 64, 128, 256: -0.82180, -0.83123, -0.83915, distance
+to -0.8183 0.0035, 0.0129, 0.0208, growing; differences ratio 0.84 (no convergence). The
+crossing part of V7b is NOT CHECKABLE: the L2 runs wrote only the t = 0 particle snapshot.
+V7c (B-20261128-022420-5d1f804): holds: plain record means 3.62e-6, 2.73e-6, 2.55e-6 (Hr),
+2.33e-4, 1.66e-4, 1.64e-4 (Mr) equal the claims; Mr falls 1.5 per cent from 128 to 256.
+
+Side result: the lead's detached --full stage verify (PID 2643528) ended at 18:21 PST:
+PASS, 0 failed checks, 13883 output files hashed again (1166.91 GB read); it left
+stage/G2/VERIFY_RESULTS.{md,json} modified in the worktree (the lead's files; not touched).
