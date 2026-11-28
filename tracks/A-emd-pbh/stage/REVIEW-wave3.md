@@ -400,3 +400,45 @@ Predictions in threshold_ball entries 16 and 17 before the runs; outcomes there.
 Gate review section 6: items 1-7 done in note main.tex and the scripts (run A-20261126-234358-f761d8d, compiled, checker
 0 undefined, 0 overfull; page 7 read), item 8 done (STAGE_REPORT regenerated, EVIDENCE header, C9 text, C18 set,
 OPEN adds P18 at tau 40 and AZ1's first clause, S1-S3 of S1L judged: A-20261126-234332-ec02d47).
+
+## 14. Batch 34 (2026-11-27 afternoon, lead; first round of the new usage week; conditions (a)-(d) of 0047)
+
+No helper package finished since batch 31; the worktree was clean at the start (merge of main only). One message
+received: core's answer `finder-box-and-level-faces` (core/faces-finder, 2026-11-28 00:13Z), acknowledged. What I
+checked from artefacts, not from conclusions:
+
+### 14.1 Core's finder answer, checked on our files (FD, A-20261128-004123-bc1fcf8; prediction first)
+
+Confirmed independently, with the release v0.8 threaded processor build and only `flow = shear` added to our new deck
+lines: S1L t = 220 area mass 10.73958040610838 from three starts (core: 10.73958041, five starts), P0L6 t = 140
+6.303242134205 (core: 6.30324213), nothing at P0L6 t = 130 (core: reason 4, 16-18 iterations; ours 14-18). New, not
+in core's message: S1L is found at t = 190.0 (m 7.6056, r 0.0912) and 198.7 (m 8.3362, r 0.1004), inside radii where
+no round sphere is trapped. Not checked: core's trapped_tol (faces-finder build; card build unchecked until q0086) and
+its claim that our standard-flow masses carry ~1e-3 (consistent with our 10.73 at 1927 iterations against 10.7396).
+Track action: the new deck peak_leak_f carries flow = shear; condition (b) is met on the existing files except the
+t = 118.1 event, which has no restart file.
+
+### 14.2 The batch-31 test C3-G, re-read (threshold_ball entry 18)
+
+WRONG as a reading: with the gauge frozen and the particles held at rest the matter cannot follow the evolving
+geometry, so that test makes a constraint violation whatever the cause; R-split (A-20261128-004947-8fc6ba9) shows it
+did: C3-G's matter part at t = 1 is 0.174, three times the live member's 0.059. The outcome numbers stand; the reading
+"neither the gauge nor the motion makes the floor" is withdrawn (it is quoted in decision 0047 item 6; outbox to orch).
+
+### 14.3 What the failing line ratio is made of (R-split; OH)
+
+Confirmed from the registered tables: the SCOPE section-3 line ratio (weight x^2 dx, the same as edge_compare.py) is
+dominated from t ~ 1 by the outermost cells next to the outflow faces, in S2c-A/B and in the bracket members
+B-d0.42/B-d0.40 alike, and that part does not fall with the mesh; the matter part of the smooth CIC member falls at
+order 1.9. Not confirmed: that the outer faces CAUSE it (OB, outer faces at 32, running) and that level faces in the
+matter do not add to it (LF, running). OH (offline H on the line, A-20261128-005454-eb7b26b) could not decide between
+fields and diagnostic: the line reader is not accurate enough once the source puts grid-scale structure into the
+fields; the gate review's 3D version remains undone.
+
+### 14.4 Conditions (c) and (d) designed and queued (predictions A2Q and F1-F3 written and committed first)
+
+q0089 a-s1l-quarter (S1L at a quarter amplitude, data A-20261128-003940-60a3521 checked against D-q, smoke
+A-20261128-004246-89d4d0b) and q0090 a-s1l-finder (S1L on the new deck, smoke A-20261128-004246-1c854c6). The quarter
+member can refute the first-order class and the gradient-expansion coefficient; it cannot separate the nonlinear
+zeta-delta relation from an (aH/k)^2 correction (written before the run). SM-q's start-up step clause was refuted and I
+queued nonetheless, with the reason on record (periodic_threshold JOURNAL, 16:52 PST).
