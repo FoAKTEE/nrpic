@@ -1,10 +1,10 @@
 {
   "track": "F-hills",
   "gate": "G1",
-  "commit": "da850964ac7f66d3a1848a35b528a4b85b2f3f6e",
-  "verified_utc": "2026-11-27T23:38:53Z",
-  "export": "/data/haiyangw/nrpic/scratch/F-hills/tmp/stage-verify/F-hills-G1-da85096-20261127T233445Z",
-  "result": "FAIL",
+  "commit": "ec55f2a882d4553dd6d400686b422669efabd5a4",
+  "verified_utc": "2026-11-28T01:45:50Z",
+  "export": "/data/haiyangw/nrpic/scratch/F-hills/tmp/stage-verify/F-hills-G1-ec55f2a-20261128T013108Z",
+  "result": "PASS",
   "checks": [
     {
       "check": "clean",
@@ -21,7 +21,7 @@
     {
       "check": "export",
       "status": "PASS",
-      "message": "clean export of da850964ac7f (HEAD) in /data/haiyangw/nrpic/scratch/F-hills/tmp/stage-verify/F-hills-G1-da85096-20261127T233445Z/tree",
+      "message": "clean export of ec55f2a882d4 (HEAD) in /data/haiyangw/nrpic/scratch/F-hills/tmp/stage-verify/F-hills-G1-ec55f2a-20261128T013108Z/tree",
       "detail": null
     },
     {
@@ -68,18 +68,51 @@
     },
     {
       "check": "runs",
-      "status": "FAIL",
-      "message": "3 of 274 runs have problems",
+      "status": "PASS",
+      "message": "280 run manifests finished (78 hand-written, read as decision 0012 allows); failures of 3 runs waived by coord/WAIVERS.md (decision 0019), output checksums verified where recorded",
+      "detail": null
+    },
+    {
+      "check": "runs-waived",
+      "status": "WARN",
+      "message": "failures of the manifest check waived: 3 runs named in main's coord/WAIVERS.md (decision 0019 item 6): F-20261115-173719-923135a: outputs moved into the run directory after the run finished; data unchanged (decision 0021); F-20261115-181805-f9c3473: outputs moved into the run directory after the run finished; data unchanged (decision 0021); F-20261115-182100-613c9c6: outputs moved into the run directory after the run finished; data unchanged (decision 0021)",
       "detail": {
-        "F-20261124-210400-902c650": [
-          "status is submitted: not finished (nrpic-run finish)"
-        ],
-        "F-20261126-052133-10f9a5f": [
-          "status is submitted: not finished (nrpic-run finish)"
-        ],
-        "F-20261126-131751-89eaff8": [
-          "status is submitted: not finished (nrpic-run finish)"
-        ]
+        "F-20261115-173719-923135a": {
+          "waived_by": "coord/WAIVERS.md",
+          "reason": "outputs moved into the run directory after the run finished; data unchanged (decision 0021)",
+          "problems": [
+            "output not in sha256sums.txt: out/fig_test_nrread_synthetic.pdf",
+            "output not in sha256sums.txt: out/fig_test_nrread_synthetic.png",
+            "output not in sha256sums.txt: out/test_nrread_synthetic.json",
+            "output not in sha256sums.txt: out/run/hills.horizon_summary_0.txt",
+            "output not in sha256sums.txt: out/run/hills.co_0.txt",
+            "output not in sha256sums.txt: out/run/hills.horizon_summary_1.txt",
+            "output not in sha256sums.txt: out/run/hills.co_1.txt",
+            "output not in sha256sums.txt: out/run/hills.co_2.txt",
+            "output not in sha256sums.txt: out/run/hills.horizon_summary_2.txt",
+            "output not in sha256sums.txt: out/run/trk_keep/seg1/hills.co_0.txt",
+            "output not in sha256sums.txt: out/run/trk_keep/seg1/hills.co_1.txt",
+            "output not in sha256sums.txt: out/run/trk_keep/seg1/hills.co_2.txt"
+          ]
+        },
+        "F-20261115-181805-f9c3473": {
+          "waived_by": "coord/WAIVERS.md",
+          "reason": "outputs moved into the run directory after the run finished; data unchanged (decision 0021)",
+          "problems": [
+            "output not in sha256sums.txt: test_nrread_three.json"
+          ]
+        },
+        "F-20261115-182100-613c9c6": {
+          "waived_by": "coord/WAIVERS.md",
+          "reason": "outputs moved into the run directory after the run finished; data unchanged (decision 0021)",
+          "problems": [
+            "output not in sha256sums.txt: out/single_analysis.json",
+            "output not in sha256sums.txt: out/fig_single_gauge.pdf",
+            "output not in sha256sums.txt: out/fig_single_junk.png",
+            "output not in sha256sums.txt: out/fig_single_junk.pdf",
+            "output not in sha256sums.txt: out/fig_single_gauge.png"
+          ]
+        }
       }
     },
     {
@@ -90,65 +123,78 @@
         "F-hills-20261115-045124-ae6bca8": [
           "output directory read from a field other than outputs.dir",
           "no gate",
+          "no scratch/F-hills/F-hills-20261115-045124-ae6bca8/sha256sums.txt (hand-written manifest; outputs not re-verifiable)",
           "input tracks/F-hills/novelty/scripts/scale_estimate.py changed since the run (sha256 differs)",
           "input python/nrpic/figstyle.py changed since the run (sha256 differs)"
         ],
         "F-hills-20261115-045332-ae6bca8": [
           "output directory read from a field other than outputs.dir",
           "no gate",
+          "no scratch/F-hills/F-hills-20261115-045332-ae6bca8/sha256sums.txt (hand-written manifest; outputs not re-verifiable)",
           "input tracks/F-hills/novelty/scripts/scale_estimate.py changed since the run (sha256 differs)",
           "input python/nrpic/figstyle.py changed since the run (sha256 differs)"
         ],
         "F-hills-20261115-045407-bf52f4e": [
           "output directory read from a field other than outputs.dir",
           "no gate",
+          "no scratch/F-hills/F-hills-20261115-045407-bf52f4e/sha256sums.txt (hand-written manifest; outputs not re-verifiable)",
           "input tracks/F-hills/novelty/scripts/scale_estimate.py changed since the run (sha256 differs)",
           "input python/nrpic/figstyle.py changed since the run (sha256 differs)"
         ],
         "F-hills-20261115-045410-bf52f4e": [
           "output directory read from a field other than outputs.dir",
           "no gate",
+          "no scratch/F-hills/F-hills-20261115-045410-bf52f4e/sha256sums.txt (hand-written manifest; outputs not re-verifiable)",
           "input tracks/F-hills/novelty/scripts/compute_estimate.py changed since the run (sha256 differs)"
         ],
         "F-hills-20261115-045435-f62d553": [
           "output directory read from a field other than outputs.dir",
           "no gate",
+          "no scratch/F-hills/F-hills-20261115-045435-f62d553/sha256sums.txt (hand-written manifest; outputs not re-verifiable)",
           "input python/nrpic/figstyle.py changed since the run (sha256 differs)"
         ],
         "F-hills-20261115-045438-f62d553": [
           "output directory read from a field other than outputs.dir",
           "no gate",
+          "no scratch/F-hills/F-hills-20261115-045438-f62d553/sha256sums.txt (hand-written manifest; outputs not re-verifiable)",
           "input tracks/F-hills/novelty/scripts/compute_estimate.py changed since the run (sha256 differs)"
         ],
         "F-hills-20261115-045918-e7d0a66": [
           "output directory read from a field other than outputs.dir",
-          "no gate"
+          "no gate",
+          "no scratch/F-hills/F-hills-20261115-045918-e7d0a66/sha256sums.txt (hand-written manifest; outputs not re-verifiable)"
         ],
         "F-hills-20261115-125858-0232c4c": [
           "no gate",
+          "no scratch/F-hills/F-hills-20261115-125858-0232c4c/sha256sums.txt (hand-written manifest; outputs not re-verifiable)",
           "input tracks/F-hills/geodesic_binary/hrna.py changed since the run (sha256 differs)",
           "input tracks/F-hills/geodesic_binary/tests/t1_metric_checks.py changed since the run (sha256 differs)"
         ],
         "F-hills-20261115-125915-9518508": [
           "no gate",
+          "no scratch/F-hills/F-hills-20261115-125915-9518508/sha256sums.txt (hand-written manifest; outputs not re-verifiable)",
           "input tracks/F-hills/geodesic_binary/hrna.py changed since the run (sha256 differs)",
           "input tracks/F-hills/geodesic_binary/tests/t1_metric_checks.py changed since the run (sha256 differs)"
         ],
         "F-hills-20261115-125918-9518508": [
           "no gate",
+          "no scratch/F-hills/F-hills-20261115-125918-9518508/sha256sums.txt (hand-written manifest; outputs not re-verifiable)",
           "input tracks/F-hills/geodesic_binary/hrna.py changed since the run (sha256 differs)"
         ],
         "F-hills-20261115-130007-80eb1b9": [
           "no gate",
+          "no scratch/F-hills/F-hills-20261115-130007-80eb1b9/sha256sums.txt (hand-written manifest; outputs not re-verifiable)",
           "input tracks/F-hills/geodesic_binary/hrna.py changed since the run (sha256 differs)"
         ],
         "F-hills-20261115-130058-00c6bf4": [
           "no gate",
+          "no scratch/F-hills/F-hills-20261115-130058-00c6bf4/sha256sums.txt (hand-written manifest; outputs not re-verifiable)",
           "input tracks/F-hills/geodesic_binary/hrna.py changed since the run (sha256 differs)",
           "input tracks/F-hills/geodesic_binary/tests/t3_time_dilation.py changed since the run (sha256 differs)"
         ],
         "F-hills-20261115-130124-76059c5": [
           "no gate",
+          "no scratch/F-hills/F-hills-20261115-130124-76059c5/sha256sums.txt (hand-written manifest; outputs not re-verifiable)",
           "input tracks/F-hills/geodesic_binary/hrna.py changed since the run (sha256 differs)"
         ],
         "F-hills-20261115-130237-cbfaf6b": [
@@ -175,17 +221,20 @@
         ],
         "F-hills-20261115-130319-7f2c45b": [
           "no gate",
+          "no scratch/F-hills/F-hills-20261115-130319-7f2c45b/sha256sums.txt (hand-written manifest; outputs not re-verifiable)",
           "input tracks/F-hills/geodesic_binary/hrna.py changed since the run (sha256 differs)",
           "input tracks/F-hills/geodesic_binary/scan.py changed since the run (sha256 differs)"
         ],
         "F-hills-20261115-130342-0471114": [
           "no gate",
+          "no scratch/F-hills/F-hills-20261115-130342-0471114/sha256sums.txt (hand-written manifest; outputs not re-verifiable)",
           "input tracks/F-hills/three_punctures/scripts/newton_start.py changed since the run (sha256 differs)",
           "input tracks/F-hills/newton3/hills3/threebody.py changed since the run (sha256 differs)",
           "input python/nrpic/figstyle.py changed since the run (sha256 differs)"
         ],
         "F-hills-20261115-130405-ce17dcf": [
           "no gate",
+          "no scratch/F-hills/F-hills-20261115-130405-ce17dcf/sha256sums.txt (hand-written manifest; outputs not re-verifiable)",
           "input tracks/F-hills/geodesic_binary/hrna.py changed since the run (sha256 differs)",
           "input tracks/F-hills/geodesic_binary/scan.py changed since the run (sha256 differs)"
         ],
@@ -199,31 +248,37 @@
         ],
         "F-hills-20261115-130724-982aba0": [
           "no gate",
+          "no scratch/F-hills/F-hills-20261115-130724-982aba0/sha256sums.txt (hand-written manifest; outputs not re-verifiable)",
           "input tracks/F-hills/geodesic_binary/hrna.py changed since the run (sha256 differs)",
           "input tracks/F-hills/geodesic_binary/examples.py changed since the run (sha256 differs)"
         ],
         "F-hills-20261115-130755-982aba0": [
           "no gate",
+          "no scratch/F-hills/F-hills-20261115-130755-982aba0/sha256sums.txt (hand-written manifest; outputs not re-verifiable)",
           "input tracks/F-hills/three_punctures/scripts/newton_start.py changed since the run (sha256 differs)",
           "input tracks/F-hills/newton3/hills3/threebody.py changed since the run (sha256 differs)",
           "input python/nrpic/figstyle.py changed since the run (sha256 differs)"
         ],
         "F-hills-20261115-130922-634fb86": [
           "no gate",
+          "no scratch/F-hills/F-hills-20261115-130922-634fb86/sha256sums.txt (hand-written manifest; outputs not re-verifiable)",
           "input tracks/F-hills/geodesic_binary/hrna.py changed since the run (sha256 differs)",
           "input tracks/F-hills/geodesic_binary/scan.py changed since the run (sha256 differs)"
         ],
         "F-hills-20261115-131109-634fb86": [
           "no gate",
+          "no scratch/F-hills/F-hills-20261115-131109-634fb86/sha256sums.txt (hand-written manifest; outputs not re-verifiable)",
           "input python/nrpic/figstyle.py changed since the run (sha256 differs)"
         ],
         "F-hills-20261115-131348-634fb86": [
           "no gate",
+          "no scratch/F-hills/F-hills-20261115-131348-634fb86/sha256sums.txt (hand-written manifest; outputs not re-verifiable)",
           "input tracks/F-hills/three_punctures/scripts/mesh_count_b.py changed since the run (sha256 differs)",
           "input python/nrpic/figstyle.py changed since the run (sha256 differs)"
         ],
         "F-hills-20261115-131605-634fb86": [
           "no gate",
+          "no scratch/F-hills/F-hills-20261115-131605-634fb86/sha256sums.txt (hand-written manifest; outputs not re-verifiable)",
           "input python/nrpic/figstyle.py changed since the run (sha256 differs)"
         ],
         "F-hills-20261115-131754-907e5fe": [
@@ -246,6 +301,7 @@
         ],
         "F-hills-20261115-131832-907e5fe": [
           "no gate",
+          "no scratch/F-hills/F-hills-20261115-131832-907e5fe/sha256sums.txt (hand-written manifest; outputs not re-verifiable)",
           "input tracks/F-hills/newton3/hills3/threebody.py changed since the run (sha256 differs)",
           "input python/nrpic/figstyle.py changed since the run (sha256 differs)"
         ],
@@ -269,10 +325,12 @@
         ],
         "F-hills-20261115-131933-907e5fe": [
           "no gate",
+          "no scratch/F-hills/F-hills-20261115-131933-907e5fe/sha256sums.txt (hand-written manifest; outputs not re-verifiable)",
           "input python/nrpic/figstyle.py changed since the run (sha256 differs)"
         ],
         "F-hills-20261115-131944-360a12e": [
           "no gate",
+          "no scratch/F-hills/F-hills-20261115-131944-360a12e/sha256sums.txt (hand-written manifest; outputs not re-verifiable)",
           "input tracks/F-hills/geodesic_binary/hrna.py changed since the run (sha256 differs)",
           "input tracks/F-hills/geodesic_binary/scan.py changed since the run (sha256 differs)"
         ],
@@ -299,6 +357,7 @@
         ],
         "F-hills-20261115-132220-efddfc0": [
           "no gate",
+          "no scratch/F-hills/F-hills-20261115-132220-efddfc0/sha256sums.txt (hand-written manifest; outputs not re-verifiable)",
           "input tracks/F-hills/three_punctures/scripts/plan_numbers.py changed since the run (sha256 differs)"
         ],
         "F-hills-20261115-132240-42345c2": [
@@ -308,7 +367,8 @@
           "input tracks/F-hills/newton3/scripts/runlib.py changed since the run (sha256 differs)"
         ],
         "F-hills-20261115-132430-7d0c6dd": [
-          "no gate"
+          "no gate",
+          "no scratch/F-hills/F-hills-20261115-132430-7d0c6dd/sha256sums.txt (hand-written manifest; outputs not re-verifiable)"
         ],
         "F-hills-20261115-132433-7d0c6dd": [
           "input tracks/F-hills/newton3/hills3/threebody.py changed since the run (sha256 differs)",
@@ -321,13 +381,21 @@
     {
       "check": "checksums",
       "status": "WARN",
-      "message": "output checksums not re-verified (--no-checksums)",
-      "detail": null
+      "message": "3761 output files: 1509 hashed again (bytes read, 110.28 GB), 2252 taken from the cache (1850.89 GB); a checksum taken from the cache proves unchanged size and modification time since it was hashed, not bytes read again; --full reads every byte",
+      "detail": {
+        "rehashed_files": 1509,
+        "rehashed_bytes": 110282582070,
+        "cached_files": 2252,
+        "cached_bytes": 1850887438652,
+        "full": false,
+        "meaning_of_a_cached_entry": "a checksum taken from the cache proves unchanged size and modification time since it was hashed, not bytes read again",
+        "notes": []
+      }
     },
     {
       "check": "status",
       "status": "PASS",
-      "message": "STATUS.md has 44 lines",
+      "message": "STATUS.md has 41 lines",
       "detail": null
     },
     {
