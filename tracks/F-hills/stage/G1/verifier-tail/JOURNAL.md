@@ -208,3 +208,20 @@ Figure read: `fig_t_branches.png` of the run.
 Prediction PT19 (A2-5's mesh clause, from the chain's logs): the largest number of MeshBlocks
 printed in A2's segments stays below 2864 and no segment ends with an out-of-memory message.
 Refuted: a count at or above 2864, or a memory error.
+
+## Entry 5, 2026-11-27 17:32 PST: PT19 outcome (run F-20261128-004718-796bd33); PT20
+
+- PT19 MET. 46 segment logs of A2: MeshBlocks 1968 to 2514 (below 2864); card-memory peak
+  78789 MiB (the wrapper's gpu_mem_peak_MiB; an A100 of 80 GB), exits 0 and 143 only, no line
+  with an error word. A2-5's mesh clause holds, with the memory 96 percent full [JUDGEMENT on
+  the card's 81920 MiB].
+- Seen in the rerun's `fig_v_horizons.png` (first verifier's figure, completed passage): finder 1
+  dips to a lower mass (down to 0.1289) in episodes already in A (about 14-25, 37-41, 48-50,
+  58-60 M) and in A2 (85-96, 101-102 M), not only at 160-179 M. Not stated in the first part.
+
+PT20 (for `scripts/vhrms.py`): the member finders 0 and 1 accept, before the capture, searches of
+two residual classes: most below 1e-4 in hrms, and episodes with hrms above 1e-2 whose masses lie
+2e-4 to 6e-4 below their low-hrms neighbours; these make up 5 to 25 percent of a member's searches
+in A and in A2. The heavy finder has no accepted search with hrms above 1e-2 before 131 M.
+Refuted: no high-hrms class among the member searches, or a fraction outside 5-25 percent, or a
+heavy search above 1e-2 before 131 M.
