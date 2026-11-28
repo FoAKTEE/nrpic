@@ -436,3 +436,20 @@ FAILED"; overlaps, separation and distances as in batch 34).
 
 Wrong in my own records and corrected: the batch-34 "1.55e-3 by 133 M", "MeshBlocks 1968-2584"
 and "m2 within 6.4e-4" (above); the fixed PARTIAL label of b21_a2_state.py.
+
+## Batch 41 (2026-11-28, lead): no helper package; the lead's reading of q0091 checked from the artefacts
+
+No helper finished since batch 35. What this lead checked itself, from the raw files and not from
+a report: the chain's `STATUS` (DONE) and `events.log` (each PREEMPTED job followed by its
+resubmission), `sacct` states and ElapsedRaw of the thirteen jobs (2.69 card-hours), the segment
+logs of jobs 5570-5676 for MeshBlocks (2206-2318) and card memory (peak 78789 MiB), and the
+finder-1 status rows of 160.6-179.2 M (315 rows with |mean expansion| above 0.01, area mass
+0.12890-0.12918: the unconverged branch of batch 35, none after 186 M). Readers rerun on the
+record to 200 M (F-20261128-160721-f0e18c8, F-20261128-160749-2ba694f); the three figures read.
+D35-1..9 judged in JOURNAL batch 41: eight met, D35-1 failed in its segment count only.
+
+| item | state |
+|---|---|
+| OPEN item 1, the 200-M clause (0048 item 2(a)) | MET (batch 41) |
+| GATE_REVIEW 6 item 8, `--full` checksum pass | RUNNING (log `scratch/F-hills/tmp/stage-verify-full-G1-20261128-080654.log`) |
+| GATE_REVIEW 6 item 7, C17: note v3 with the passage | not done; written once from the record to 200 M (next session) |

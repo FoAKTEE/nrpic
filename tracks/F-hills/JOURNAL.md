@@ -1516,3 +1516,73 @@ checksums from the cache, no --full), report regenerated with a lead's note: the
 the gate's; the 200-M clause waits for q0091 (waiting, 5 of 5 account jobs in Slurm). Outbox: two
 messages to orch (g1-corrections-applied-200m-queued; g1-full-checksum-pass). Inbox: core's
 restart-parameters-and-finder-check acknowledged. Pushed 48a885357. Card-hours this session: 0.
+
+## 2026-11-28 batch 41 (lead, about 45 minutes): the passage read to 200 M; D35-1..9 judged
+
+Start 07:58 PST (`date`); main merged (core-v0.9 on main; nothing of this owner rebuilt); no
+pause flag. No helper packages finished since batch 35.
+
+### q0091 closed
+
+- Chain `F-20261124-210400-902c650/chain/STATUS` DONE at 03:59 PST: "finished: time=2.000000e+02
+  cycle=102400". Jobs since the continuation (events.log): 5570, 5579, 5588, 5597, 5604, 5613,
+  5620, 5628, 5635, 5642, 5651, 5664 PREEMPTED (each followed by "submitted job" of the next in
+  events.log), 5676 COMPLETED (2335 s). Sum of ElapsedRaw of the 13 jobs 9669 s = 2.69
+  card-hours (sacct). Restart files advanced 166 -> 176 through the signal-cut attempts.
+- `nrpic-run finish F-20261124-210400-902c650`: completed (exit 0), 641 output files
+  checksummed (131 hashed again, 78.0 GB read; 510 from the cache, 776.5 GB), card-hours of the
+  whole run A2 22.39 over 59 jobs (manifest). Nothing of the restart files deleted.
+- Full checksum pass started detached at 08:06 PST, before the readings (pid 1346011):
+  `harness/bin/nrpic-stage verify F-hills G1 --full`, log
+  `/data/haiyangw/nrpic/scratch/F-hills/tmp/stage-verify-full-G1-20261128-080654.log`; it verifies
+  commit f0e18c850 (the finish commit) and rewrites `stage/G1/VERIFY_RESULTS.{json,md}` when it ends
+  (hours; about 2 TB).
+
+### Readings (the predictions are D35-1..9 of batch 35, committed in 72543633f before q0091 ran)
+
+Registered, one core each: F-20261128-160721-f0e18c8 (`b21_a2_state.py`: record, health, end
+state; 23 s) and F-20261128-160749-2ba694f (`b34_horizons.py`: status files 133-200 M; 23 s).
+Figures read: fig_b21_a2_state (label "A2 COMPLETE (200.0 M, chain DONE)"; overlaps all below
+1e-9 M; s and m2-M rise monotonically to 21 M; m1-M at 0 from about 145 M), fig_b34_horizons
+(finder 2 and finder 1 found to 200 M; finder 0 not found after 147.7 M; |mean expansion| of
+finder 2 about 0.04 after 165 M; finder 1's branch at |mean expansion| 0.035-0.052 over
+160.6-179.2 M is the unconverged branch of batch 35, not after 186 M), fig_b34_f1 (unchanged:
+F1's window 133-137.4 M).
+
+- D35-1 chain: DONE, every job COMPLETED or cut by a signal and resubmitted, 2.69 card-hours
+  (in 2.4-3.2). The refutation clauses (not DONE, a fifth counted segment, above 3.5 card-hours)
+  did not occur. FAILED IN ONE CLAUSE: "3 counted segments": one counted segment (job 5676);
+  12 attempts were cut by preemption (8 s to 2446 s) and not counted; the chain's counter stood at
+  27 of 31 through them. Decision 0048 item 2(a)'s "about one card-hour" was low by a factor 2.7,
+  as predicted.
+- D35-2 record: MET. A + A2 trackers joined to 199.998 M (in [199.95, 200.05]); largest step
+  2^-9 M over the whole record (S1), largest restart overlap 1.248e-9 M (S2, the one at 104 M; no
+  new overlap above it); summaries, history (to 200.0 M, step 0.5 M) and the four wave spheres
+  (to 199.75 M, none missing on the 0.25-M grid) complete (S3).
+- D35-3 m2-M at 200 M: MET. 21.072 M (in [20.5, 21.5]), monotonic over 186-200 M; radial speed
+  0.260.
+- D35-4 speeds at 200 M: MET. v_rel 0.3539 (in [0.33, 0.37]), radial 0.2602 (in [0.22, 0.27]),
+  m2's own 0.3199 (in [0.30, 0.345]); M's tracker 0.0344.
+- D35-5 merged black hole (finder 2): MET. Status file: found at 517 of 517 rows after 186 M
+  (rows include the repeats of restarts; 447 distinct search times in the summary); area mass
+  1.11367-1.11375 (in [1.1128, 1.1146]); summary: Christodoulou mass 1.122827-1.122912 (in
+  [1.1220, 1.1235]), S/M_chr^2 0.25277-0.25288 (in [0.2520, 0.2540]), hrms 3.37e-4 to 3.77e-4
+  (in [1e-4, 1e-3]). At 199.969 M: M_chr 1.122827, S 0.31877, chi 0.25284, hrms 3.77e-4, mean
+  expansion -0.0434. Not converged in the sense of F5 (the pre-capture upper branch had hrms
+  1e-8): every remnant number is quoted with this residual.
+- D35-6 m2's horizon (finder 1): MET. 517 of 517 found; area mass 0.129628-0.129640 (in
+  [0.1285, 0.1300]); summary hrms 1.28e-6 to 1.82e-6, chi at most 1.06e-3; at 199.969 M 0.129628.
+- D35-7 constraint: MET. rms H at most 1.80e-5 over the 29 history records 186-200 M (bound
+  2.0e-5); 1.30e-5 at 200 M; the whole record's maximum stays 6.19e-5 at 135.5 M.
+- D35-8 mesh: MET as meant. Segment logs of jobs 5570-5676: MeshBlocks 2206-2318 at start
+  ("Total"), 2318 at the end of 5676 (bound 2584); card memory peak 78789 MiB (76.9 GiB) in jobs
+  5570, below the card's 80 GiB (81920 MiB). Written as "80 GB" in the prediction: read as 80e9
+  bytes it would be exceeded (82.6e9); I meant the card's capacity, as in batch 35's reading.
+- D35-9 outcome: MET. At 200 M m1's tracker sits on M's (2.6e-12 M), finder 0 found nothing at
+  the 517 searches after 186 M (last found 147.66 M, a surface that is not a horizon: batch 34),
+  finder 2's centre within 1.5e-7 M of M's tracker; m2 recedes (monotonic). Newton from the same
+  deck: the reverse fates (F-20261127-232940-3f652bf), unchanged.
+
+Not changed by the reading: m2's fate is undecided in coordinates (two-body energy of batch 34);
+F1 decided for 86.6-131 M by hrms; one resolution only (C2 at m/12 to 106.69 M is G2).
+Card-hours this session: 0 new submissions; q0091's 2.69 card-hours were spent overnight.

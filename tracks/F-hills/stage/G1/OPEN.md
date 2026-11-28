@@ -1,13 +1,23 @@
-# G1 of F-hills: what the gate still lacks (2026-11-27, lead, batch 35)
+# G1 of F-hills: what the gate still lacks (2026-11-28, lead, batch 41)
 
 The independent gate review (`GATE_REVIEW.md`, batch 34a) recommends PASS WITH RESERVATIONS.
 Decision 0048 item 2 leaves two things before the tag: (a) the passage continued to t = 200 M,
 (b) the corrections of the verifier's part 2. (b) is done in batch 35 (item 2 below). (a) is
-queued (item 1). When a registered reading shows the record to 200 M with its health checks,
-the gate is signed without a further review (0048 item 2). The lead does not pass the gate.
+done in batch 41 (item 1). What remains for the signature is the full checksum pass, started
+in batch 41 and running (item 0). The lead does not pass the gate.
 
-1. **Trackers to t = 200 M (scope criterion (iv); 0048 item 2(a)): QUEUED, not yet met.** The
-   record ends at 186.0 M because Slurm refused the chain's next submission (I/O error,
+0. **Full checksum pass (GATE_REVIEW 6 item 8): RUNNING.** `harness/bin/nrpic-stage verify F-hills
+   G1 --full` started detached at 08:06 PST 2026-11-28 on commit f0e18c850 (pid 1346011), log
+   `/data/haiyangw/nrpic/scratch/F-hills/tmp/stage-verify-full-G1-20261128-080654.log`; about 2 TB,
+   hours. It rewrites `VERIFY_RESULTS.{json,md}` beside this file when it ends; the next session
+   commits them and reports the outcome.
+1. **Trackers to t = 200 M (scope criterion (iv); 0048 item 2(a)): MET in batch 41.** q0091 ended
+   DONE at 200.0 M (job 5676 COMPLETED, twelve earlier attempts preempted and resubmitted; 2.69
+   card-hours); A2 closed (`nrpic-run finish`, completed); registered readings
+   F-20261128-160721-f0e18c8 (b21_a2_state) and F-20261128-160749-2ba694f (b34_horizons), figures
+   read; D35-2..9 met, D35-1 failed only in its count of counted segments (JOURNAL batch 41;
+   CHECKLIST C8). The plan as written in batch 35 follows. The
+   record ended at 186.0 M because Slurm refused the chain's next submission (I/O error,
    `chain/slurm-5492.out`). Queue entry **q0091** (label F-A2-to200, priority 2) continues A2
    (F-20261124-210400-902c650) in place from `rst/hills.00166.rst` with the same executable, deck
    and `<fastflow> diagnostics = true` (`binary_conv/scripts/continue_chain.sh --reopen ... 31
