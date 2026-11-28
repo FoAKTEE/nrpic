@@ -1,13 +1,12 @@
 # Stage report: B-emd-gw G2
 
-Date: 2026-11-28 · branch `track/B-emd-gw` at `a92d32519991` · checklist
+Date: 2026-11-28 · branch `track/B-emd-gw` at `a553fd89a2bf` · checklist
 `tracks/B-emd-gw/stage/G2/CHECKLIST.md` (from `nrpic-stage collect`)
 
 ## Verdict
 
 **FAIL**. Tag: `stage/B-emd-gw/G2-fail-20261128` (created and pushed by the orchestrator after review, decision 0003).
 
-- verify ran on 92696fd; files changed since: tracks/B-emd-gw/HANDOFF.md, tracks/B-emd-gw/JOURNAL.md, tracks/B-emd-gw/RISKS.md, tracks/B-emd-gw/STATUS.md (run verify again)
 - verify reported FAIL: runs
 
 ## Package documents (decision 0012)
@@ -49,13 +48,13 @@ Date: 2026-11-28 · branch `track/B-emd-gw` at `a92d32519991` · checklist
 
 ## Re-verification on a clean checkout (`nrpic-stage verify`)
 
-`nrpic-stage verify` on 2026-11-28T03:13:57Z, clean export of `92696fdfcb7d`: **FAIL**. Details: `VERIFY_RESULTS.md`.
+`nrpic-stage verify` on 2026-11-28T03:15:55Z, clean export of `a553fd89a2bf`: **FAIL**. Details: `VERIFY_RESULTS.md`.
 
 | Check | Result | Message |
 |---|---|---|
 | clean | PASS | worktree clean (outside the stage directory being assembled) |
 | sync | PASS | main is merged into the branch |
-| export | PASS | clean export of 92696fdfcb7d (HEAD) in /data/haiyangw/nrpic/scratch/B-emd-gw/tmp/stage-verify/B-emd-gw-G2-92696fd-20261128T031117Z/tree |
+| export | PASS | clean export of a553fd89a2bf (HEAD) in /data/haiyangw/nrpic/scratch/B-emd-gw/tmp/stage-verify/B-emd-gw-G2-a553fd8-20261128T031436Z/tree |
 | size | PASS | no committed file of the track above 5 MB |
 | note | PASS | tracks/<ID>/note/main.tex present |
 | package | PASS | EVIDENCE.md, OPEN.md, CHECKLIST.md present (decision 0012); scoping text: scope/SCOPE.md; verifier's report VERIFIER.md |
@@ -66,8 +65,8 @@ Date: 2026-11-28 · branch `track/B-emd-gw` at `a92d32519991` · checklist
 | runs | FAIL | 1 of 403 runs have problems; 1 waived |
 | runs-waived | WARN | failures of the manifest check waived: 1 runs named in main's coord/WAIVERS.md (decision 0019 item 6): B-20261115-164157-40b9f6d: outputs moved into the run directory after the run finished; data unchanged |
 | run-notes | WARN | 78 runs read with defaults or not fully re-verifiable (nrpic-run lint) |
-| checksums | WARN | 14013 output files: 76 hashed again (bytes read, 2.5 MB), 13937 taken from the cache (1166.92 GB); a checksum taken from the cache proves unchanged size and modification time since it was hashed, not bytes read again; --full reads every byte |
-| status | PASS | STATUS.md has 42 lines |
+| checksums | WARN | 14013 output files: 0 hashed again (bytes read, 0.0 MB), 14013 taken from the cache (1166.92 GB); a checksum taken from the cache proves unchanged size and modification time since it was hashed, not bytes read again; --full reads every byte |
+| status | PASS | STATUS.md has 38 lines |
 | rerun | PASS | 15 of 15 scripts and commands ran cleanly in the export |
 | compare | PASS | 30 regenerated files compared with the committed ones; 0 differ beyond tolerance (rtol 1e-06, atol 1e-12, PNG rms 0.005) |
 | regenerate | PASS | all 30 committed figure files regenerated |
@@ -189,4 +188,4 @@ column names the measurement that decides. Sources: `scope/SCOPE.md` section 8,
 
 ## Decision requested from the group
 
-Lead, batch 37: the package is complete for the independent gate review. The automated FAIL comes from one check only, runs, and there from one run only: the initial data B-20261128-030420-33ccdca of the 256^3 member at eight per cell (decision 0048 item 3), running by design for about two days; it is pending, not required by any criterion as worded, and is named in OPEN.md. Every other check passes; the full checksum pass of batch 34 (13883 files, 1166.91 GB) passed. Failures on record with their rulings: stage/G2/OPEN.md.
+Lead, batch 37: the package is complete for the independent gate review. The automated FAIL comes from one check only, runs, and there from one run only: the initial data B-20261128-030420-33ccdca of the 256^3 member at eight per cell (decision 0048 item 3), running by design for about two days; it is pending, not required by any criterion as worded, and is named in OPEN.md. Every other check passes on a553fd8; the full checksum pass of batch 34 (13883 files, 1166.91 GB) passed. Failures on record with their rulings: stage/G2/OPEN.md.

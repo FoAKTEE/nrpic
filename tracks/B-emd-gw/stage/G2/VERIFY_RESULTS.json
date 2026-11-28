@@ -1,9 +1,9 @@
 {
   "track": "B-emd-gw",
   "gate": "G2",
-  "commit": "92696fdfcb7d9fa33183482628eccf53258b35a7",
-  "verified_utc": "2026-11-28T03:13:57Z",
-  "export": "/data/haiyangw/nrpic/scratch/B-emd-gw/tmp/stage-verify/B-emd-gw-G2-92696fd-20261128T031117Z",
+  "commit": "a553fd89a2bf52097b7e798f3ebb3c27b8436ff6",
+  "verified_utc": "2026-11-28T03:15:55Z",
+  "export": "/data/haiyangw/nrpic/scratch/B-emd-gw/tmp/stage-verify/B-emd-gw-G2-a553fd8-20261128T031436Z",
   "result": "FAIL",
   "checks": [
     {
@@ -21,7 +21,7 @@
     {
       "check": "export",
       "status": "PASS",
-      "message": "clean export of 92696fdfcb7d (HEAD) in /data/haiyangw/nrpic/scratch/B-emd-gw/tmp/stage-verify/B-emd-gw-G2-92696fd-20261128T031117Z/tree",
+      "message": "clean export of a553fd89a2bf (HEAD) in /data/haiyangw/nrpic/scratch/B-emd-gw/tmp/stage-verify/B-emd-gw-G2-a553fd8-20261128T031436Z/tree",
       "detail": null
     },
     {
@@ -361,12 +361,12 @@
     {
       "check": "checksums",
       "status": "WARN",
-      "message": "14013 output files: 76 hashed again (bytes read, 2.5 MB), 13937 taken from the cache (1166.92 GB); a checksum taken from the cache proves unchanged size and modification time since it was hashed, not bytes read again; --full reads every byte",
+      "message": "14013 output files: 0 hashed again (bytes read, 0.0 MB), 14013 taken from the cache (1166.92 GB); a checksum taken from the cache proves unchanged size and modification time since it was hashed, not bytes read again; --full reads every byte",
       "detail": {
-        "rehashed_files": 76,
-        "rehashed_bytes": 2486154,
-        "cached_files": 13937,
-        "cached_bytes": 1166921151172,
+        "rehashed_files": 0,
+        "rehashed_bytes": 0,
+        "cached_files": 14013,
+        "cached_bytes": 1166923637326,
         "full": false,
         "meaning_of_a_cached_entry": "a checksum taken from the cache proves unchanged size and modification time since it was hashed, not bytes read again",
         "notes": []
@@ -375,7 +375,7 @@
     {
       "check": "status",
       "status": "PASS",
-      "message": "STATUS.md has 42 lines",
+      "message": "STATUS.md has 38 lines",
       "detail": null
     },
     {
