@@ -297,7 +297,8 @@ from 138.5 M, drift +1.0e-6 per M; at 186 M mass 1.122912, S = 0.31887, chi = 0.
 1340 (1302 iteration limit, 31 mean expansion above tolerance, 6 negative mean radius, 1 area
 mass below 1e-10); it keeps finding a 0.1298-0.1300 surface until about 139.5 M, i.e. for about
 2 M after the common horizon appeared, then "found" surfaces of 0.12, 0.97-1.06 and 0.80 that are
-no member horizon (last found 147.656 M) (fig_t_horizons a). So: m1 is captured (common horizon
+no member horizon (last found 147.656 M) (fig_t_horizons a). [Corrected in section 17: the 0.12 surfaces of
+140.3-141.1 M have a small mean expansion; my "no member horizon" holds for the later ones only.] So: m1 is captured (common horizon
 of M and m1 from 137.5 M); m2's horizon persists to 186 M.
 
 **The signature of part 1 against the status files.** On the 3 x 1697 searches where both exist
@@ -404,3 +405,33 @@ the capture's signal passes r >= 48 M).
   expansion residual of 0.15-0.23 (A2, finder 1, 160.6-179.2 M, `mass_tol` rule without
   polishing on the core-v0.5 card build). Please say whether `polish_iterations_<n>` of core-v0.8
   removes such a branch on this case, or record the case in `finder_stop.md`.
+
+## 17. Comparison with the lead's verdicts (written after sections 10-16 were committed, 88fa5d04a)
+
+Read: the lead's batch-34 entries (`../../JOURNAL.md` l. 1280-1421), CHECKLIST C8 and OPEN.md
+items 1-5 (current). One further reading made after that, with a prediction first (PT21,
+`verifier-tail/JOURNAL.md` entry 7): run **F-20261128-005105-f29eb5a** (`vf0.py`).
+
+| Point | Lead | Mine | Agreement |
+|---|---|---|---|
+| C8 | MET, "beyond the 170 M asked" | met in substance; criterion (iv) says trackers until t = 200 M, the record ends at 186.0 M | same outcome; I ask that the 186-against-200 M departure be stated or the criterion amended by the orchestrator (decision 0042's "at least 170 M" is the run's target, not an amendment of (iv) that I can find) |
+| capture of m1 | common horizon from 137.5 M; area mass 1.0053 -> 1.1137 | same time; summary (Christodoulou) mass 1.12015 -> 1.1228, area mass 1.11375 at 186 M, chi 0.253 | agree (the lead quotes the irreducible mass, I the summary mass; both are in the files) |
+| m1's own horizon after 137.5 M | lasts to about 141 M (area mass 0.13, mean expansion below 2e-3) | part 2 said the 140-141 M surfaces were no member horizon | **I correct myself** (PT21): to 141.09 M the found surfaces have small mean expansion (mostly below 2e-3, at most 0.21) but hrms 2e-3 to 7.5e-2 and a mass that drops from 0.133 to 0.119 at 140.3 M: found, distorted surfaces; "m1's horizon to about 141 M" is a fair reading of the mean expansion, not of the residual. Spurious found surfaces 141.1-147.7 M: we agree |
+| m2 | found at every search, mass within 6.4e-4 of 0.12954; recedes on a marginal orbit, fate undecided | same; but 160.6-179.2 M finder 1 alternates and the lower branch (298 searches) has hrms 0.15-0.23 after 6 flow iterations | agree on the fate; the lead's "constant mass within 6.4e-4" includes the unconverged lower branch (finding F5) |
+| m2's energy | +0.12 units with M's pre-merger mass, about -0.04 with the remnant; UNDECIDED | -0.036 (remnant 1.12284 at M's tracker), -0.051 (c.o.m. of M and m1), +0.121; not conserved (-0.50 at 145 M to -0.04 at 186 M) | agree |
+| F1 | "decided in part": the status file does not separate the two branches near m1's approach (from 135.2 M both found, mean expansions 4.64e-3 and 4.61e-3); which branch is converged not established; test proposed with polished searches on restart files 87-133 M | from 86.6 to about 131 M the summary's hrms separates the branches by four orders of magnitude (upper 9.4e-9 to 3e-8, lower 1.4e-4 to 6.5e-4; the 62-86.6 M decline also 1.6e-4 to 3.7e-4): the upper branch, 1.00422, is the converged surface | **differ**: the lead did not use the hrms column; on it F1 is decided for 86.6-131 M [JUDGEMENT: hrms vanishes on a marginally trapped surface]. Near the approach (from about 131-135 M) the hrms rises on both and no longer separates them: there I agree with the lead. The polished-search test the lead proposes would confirm independently |
+| heavy hole's change, A2-5 | REFUTED; "1.55e-3 by 133 M before the merger" | REFUTED by the capture; on the converged branch constant to about 6e-5 from 86.6 to about 131 M; at 133.0 M the status file's first row is 1.00444 | same verdict; the lead's 1.55e-3 is reached only by about 135 M as m1 approaches (its own text: 1.00443 at 133.0 rising to 1.0055), so "by 133 M" should read "by 135 M, during m1's approach" |
+| A2-1, A2-2, A2-3, A2-4 | refuted (A2-1 on timing) | the same | agree |
+| A2-5 members, rms H, mesh | MET; MeshBlocks 1968-2584 | MET; MeshBlocks 1968-2514 (registered read of all 46 segment logs, start and end counts); 2584 not found anywhere in the chain directory (text search) | agree on the verdict; ask the lead for the source of 2584 |
+| overlaps | <= 1.25e-9 M | the same, located at 104.0-104.4 M (tracker 0) | agree |
+| waveforms | every sample to 186 M, none missing | the same; plus: the plunge chirp from u = 95-97 M at 40, 48, 70 M; the capture's signal reaches only r = 40 M; no ring-down recorded | agree; the lead says nothing of what the waves contain |
+| found flag | "a found search means the mass rule held, not a vanishing expansion" (D34-1); request to core sent | the same, with numbers for the members (F5: 3.8-29 percent of member searches at hrms above 1e-2 before the capture, m2's branch at 160-179 M) | agree; F5 widens it to the members and to the drift fits (H2, S6) |
+| failed predictions | A2-1 (timing), A2-2, A2-3, A2-4, A2-5 heavy clause, C25-1 tracker clause, C25-3 rate, D34-1, D34-2 in part | I did not judge C25 or D34 one by one; my readings agree with the numbers the lead gives for them (8.733 M at 134.3 M; 140.55 M below 0.5 M from my d0 series: 0.604 M at 140 M) | no disagreement found |
+
+Where the lead's text should change: (1) C8's evidence should say 186.0 M against the 200 M of
+criterion (iv) and leave the acceptance to the orchestrator; (2) F1 can be stated as decided for
+86.6-131 M by the summary's hrms (upper branch 1.00422 converged; the decline of part 1 and the
+lower branches unconverged), and open only during m1's approach; (3) "m2's mass constant within
+6.4e-4" should say that the lower half of that range is an unconverged branch found at 160-179 M;
+(4) "1.55e-3 by 133 M" -> "by about 135 M, during m1's approach"; (5) the source of MeshBlocks
+2584.

@@ -259,3 +259,17 @@ Two differences with the lead that a reading can settle:
   expansion| above 2e-3, or none after 140 M.
 - The lead's MeshBlocks range 1968-2584 (C25-4) against my 1968-2514 (vlogs): a text search of
   every file in A2's chain directory finds no 2584 (search, not a registered run).
+
+Outcome of PT21 (run F-20261128-005105-f29eb5a, `vf0.json`; rows 139-142 M read one by one):
+- MET on the extent: finder 0 finds surfaces of area mass 0.10-0.16 at 129 searches from 137.0 to
+  141.094 M (0.1309-0.1329 to 140.25 M, then 0.1188-0.1226 from 140.31 M).
+- REFUTED as written on the expansion: most of these rows have |mean expansion| below 2e-3, but not
+  all (largest 0.206 in 137-141 M; 1.06e-2 at 140.25 M), and their hrms is 2e-3 to 7.5e-2 (against
+  1e-6 to 2e-4 for m1's low-class surfaces before the capture), with the mass dropping by 8 percent
+  at 140.31 M. The rows of area mass above 0.16 (100 searches, 141.125-147.656 M) have |mean
+  expansion| 1.2 to 23.7: MET.
+- So the lead's "m1's own horizon to about 141 M" holds for the mean expansion; my part 2 sentence
+  that the 140-141 M surfaces are "no member horizon" was too strong. What the data say: a found,
+  increasingly distorted surface (hrms 1e-2 to 7.5e-2) whose mass is 0.131-0.133 to 140.25 M and
+  0.119-0.123 after; whether the latter is m1's marginally trapped surface I cannot tell.
+- MeshBlocks: not settled; my registered reading of the segment logs gives 2514 at most.
