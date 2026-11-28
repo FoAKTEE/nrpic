@@ -928,3 +928,22 @@ Predictions, written before the runs:
   note to all. Inbox: nothing unacknowledged.
 - failed predictions: A1 as first written (count slip, corrected before the run). A2, S3 held.
 - gate: KB-G3 signed (pass with reservations), the claim reservations closed; 0 card-hours.
+
+## 2026-11-27 ~19:00 PST, kb lead batch 37 (short session): review of package claims5
+
+Read: CLAUDE.md, CHARTER to "Owners", decision 0049 item 6, claims5 README/JOURNAL/verdicts,
+KB-G3 OPEN.md. State: worktree clean after `git merge main`; claims5 committed and pushed by its
+helper (264ff1b8b, 2017c631e); no kb run going, no kb queue entry.
+
+Predictions, written before the check run (script tracks/kb/lead_b37/scripts/check5.py, seed
+3720261127, stratified draw: 3 of the 114 rows claims5 counted right, 2 of the 17 it counted not
+right, so both directions of a verdict are tested):
+- L1: all five verdicts hold when I read each claim at its stored locator rows (show.py, ctx 2):
+  each "right" text is supported as worded by its lines; each "not right" text is a fragment,
+  wrong, wrongly labelled or partly unsupported as the verdict says. My prior is about 80 % that
+  all five hold (helpers' verdicts were confirmed 7 of 7 and 60 of 61 in earlier reviews; the
+  borderline rule leaves room for a disagreement on a noun phrase). Refuted by one verdict I judge
+  otherwise at the source lines, or by a locator row that does not resolve.
+- L2: the census recount from the two verdict files gives 124 of 144 right as worded, Clopper-
+  Pearson 95 % 0.794-0.913, and claims5's part 114/131 (0.800-0.923), as in rates.json of run
+  kb-20261128-024452-cfc4954. Refuted by any other count or interval.
