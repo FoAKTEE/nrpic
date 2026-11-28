@@ -1,12 +1,12 @@
 # Re-verification: B-emd-gw G2
 
-`harness/bin/nrpic-stage verify B-emd-gw G2` on 2026-11-26T22:03:36Z, clean export of commit `664bfbdf16b6` in `scratch/B-emd-gw/tmp/stage-verify/B-emd-gw-G2-664bfbd-20261126T215912Z`. Result: **FAIL**.
+`harness/bin/nrpic-stage verify B-emd-gw G2` on 2026-11-28T00:07:25Z, clean export of commit `d7c7ce2b1892` in `scratch/B-emd-gw/tmp/stage-verify/B-emd-gw-G2-d7c7ce2-20261128T000458Z`. Result: **PASS**.
 
 | Check | Result | Message |
 |---|---|---|
 | clean | PASS | worktree clean (outside the stage directory being assembled) |
 | sync | PASS | main is merged into the branch |
-| export | PASS | clean export of 664bfbdf16b6 (HEAD) in /data/haiyangw/nrpic/scratch/B-emd-gw/tmp/stage-verify/B-emd-gw-G2-664bfbd-20261126T215912Z/tree |
+| export | PASS | clean export of d7c7ce2b1892 (HEAD) in /data/haiyangw/nrpic/scratch/B-emd-gw/tmp/stage-verify/B-emd-gw-G2-d7c7ce2-20261128T000458Z/tree |
 | size | PASS | no committed file of the track above 5 MB |
 | note | PASS | tracks/<ID>/note/main.tex present |
 | package | PASS | EVIDENCE.md, OPEN.md, CHECKLIST.md present (decision 0012); scoping text: scope/SCOPE.md; no verifier's report yet (VERIFIER.md, decision 0016) |
@@ -14,23 +14,13 @@
 | style | PASS | 2 style copies equal harness/style/SHA256SUMS (czstyle.py, paperfig.py) |
 | fig-script | PASS | 15 figures, each with its script |
 | min-figs | PASS | 6 schematics and 9 data figures (brief 13.4 asks at least 1 and 5 at G2) |
-| runs | FAIL | 1 of 373 runs have problems |
+| runs | PASS | 383 run manifests finished (78 hand-written, read as decision 0012 allows) |
 | run-notes | WARN | 78 runs read with defaults or not fully re-verifiable (nrpic-run lint) |
 | checksums | WARN | output checksums not re-verified (--no-checksums) |
-| status | PASS | STATUS.md has 35 lines |
+| status | PASS | STATUS.md has 40 lines |
 | rerun | PASS | 15 of 15 scripts and commands ran cleanly in the export |
 | compare | PASS | 30 regenerated files compared with the committed ones; 0 differ beyond tolerance (rtol 1e-06, atol 1e-12, PNG rms 0.005) |
 | regenerate | PASS | all 30 committed figure files regenerated |
-
-## runs
-
-```
-{
- "B-20261126-212212-c54d979": [
-  "status is running: not finished (nrpic-run finish)"
- ]
-}
-```
 
 ## run-notes
 

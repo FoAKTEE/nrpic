@@ -1,10 +1,10 @@
 {
   "track": "B-emd-gw",
   "gate": "G2",
-  "commit": "664bfbdf16b6c889db8eab2ea27fa2e719f940d0",
-  "verified_utc": "2026-11-26T22:03:36Z",
-  "export": "/data/haiyangw/nrpic/scratch/B-emd-gw/tmp/stage-verify/B-emd-gw-G2-664bfbd-20261126T215912Z",
-  "result": "FAIL",
+  "commit": "d7c7ce2b189273d67dfee4fdc1ea5e961129e793",
+  "verified_utc": "2026-11-28T00:07:25Z",
+  "export": "/data/haiyangw/nrpic/scratch/B-emd-gw/tmp/stage-verify/B-emd-gw-G2-d7c7ce2-20261128T000458Z",
+  "result": "PASS",
   "checks": [
     {
       "check": "clean",
@@ -21,7 +21,7 @@
     {
       "check": "export",
       "status": "PASS",
-      "message": "clean export of 664bfbdf16b6 (HEAD) in /data/haiyangw/nrpic/scratch/B-emd-gw/tmp/stage-verify/B-emd-gw-G2-664bfbd-20261126T215912Z/tree",
+      "message": "clean export of d7c7ce2b1892 (HEAD) in /data/haiyangw/nrpic/scratch/B-emd-gw/tmp/stage-verify/B-emd-gw-G2-d7c7ce2-20261128T000458Z/tree",
       "detail": null
     },
     {
@@ -68,13 +68,9 @@
     },
     {
       "check": "runs",
-      "status": "FAIL",
-      "message": "1 of 373 runs have problems",
-      "detail": {
-        "B-20261126-212212-c54d979": [
-          "status is running: not finished (nrpic-run finish)"
-        ]
-      }
+      "status": "PASS",
+      "message": "383 run manifests finished (78 hand-written, read as decision 0012 allows)",
+      "detail": null
     },
     {
       "check": "run-notes",
@@ -314,7 +310,7 @@
     {
       "check": "status",
       "status": "PASS",
-      "message": "STATUS.md has 35 lines",
+      "message": "STATUS.md has 40 lines",
       "detail": null
     },
     {
