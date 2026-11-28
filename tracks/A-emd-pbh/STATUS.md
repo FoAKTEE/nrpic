@@ -2,37 +2,33 @@
 
 gate:        G0 PASSED 2026-11-19; G1 PASSED with reservations 2026-11-21. G2 NOT PASSED on the independent review
              (coord/GATES.md; decision 0047). Conditions (a)-(d) for the second review; state in stage/G2/OPEN.md.
-             No amplitude is compared with arXiv:2609.14218 before (c).
-headline:    (b) MET on the existing restart files: with `flow = shear` the finder finds S1L's horizon at t = 190.0,
-             198.7, 220.0 (m 7.61, 8.34, 10.74) and P0L6's at t = 140 (m 6.3032) from every start, nothing at P0L6
-             t = 130 (A-20261128-004123-bc1fcf8); only the t = 118.1 false acceptance is untestable (no restart file).
-             (a) narrowed and partly NAMED: the part of the ball's section-3 line ratio that does not converge enters
-             at the outflow outer faces (R-split A-20261128-004947-8fc6ba9; OB A-20261128-004659-f512816: faces moved
-             to 32 cut it 300-fold on 0 < x < 16); inside the matter the smooth CIC member converges (0.059 -> 0.016).
-             (c), (d) queued on cards (q0089, q0090), predictions A2Q and F1-F3 committed first.
-last-result: batch 34 (16:32-17:35 PST):
-             - D-q holds (quarter data, A-20261128-003940-60a3521); SM-F holds; SM-q's start-up step clause REFUTED
-               (step falls with the amplitude), queued anyway with the reason on record.
-             - FD holds on every tested clause (t = 180 clause untested: file mapping).
-             - C3-G's batch-31 reading WITHDRAWN (frozen matter makes a violation by construction; entry 18).
-             - OH UNDECIDED (A-20261128-005454-eb7b26b): the line reader is not accurate enough.
-             - OB: 13-16 part and matter clauses hold; the total clause refuted at t = 1 (matter + edge = 0.091 on M/16).
-             - LF REFUTED (A-20261128-005331-874ec88): a level face in the matter keeps the interior residual 2.4x
-               higher at t = 2 (M/4). FR (A-20261128-011908-0e41713): core-v0.6's outer-face set cuts the outer
-               part 70-100-fold to t = 2 (better than predicted; matter and edge parts unchanged).
-             - S1L's region ratio outside r = 0.6 is 0.43 at t = 190 (periodic: violation in the collapsing matter).
-cards:       shared queue, priority 2: q0089 a-s1l-quarter SUBMITTED 17:16 (run A-20261128-011607-3e2d530, job
-             5545, cap 2.6 card-hours); q0090 a-s1l-finder SUBMITTED (run A-20261128-012211-c9cedc1,
-             job 5549, cap 1.6). 0 card-hours used by this session.
-processors:  19 registered runs this session (2 failed: FR start, a figure colour), all closed; at most 6 cores.
-next:        1. Read q0090 (F1-F3) and q0089 (A2Q) when they end (periodic_threshold JOURNAL, scripts named there).
-             2. Ball: deposit-fix build with the v0.6 face set (FR) and faces at 32, S2c-A/B and LF to t = 2 on
-                processors, prediction first; then smooth CIC bracket members on two meshes to the horizon (cards).
-             3. Box violation (condition (d)): a resolution pair in the box (P0L four vs six levels' region ratios).
-blockers:    G2 not passed; (a) the outer faces of the ball; (d) the box violation in the collapsing matter.
-needs:       core: outer-face options for the expanding ball; card check q0086 of the faces-finder build.
-             orch: the second review of (b) on the existing files; note that 0047 item 6's C3-G sentence is withdrawn.
-offers:      threshold_ball/scripts/ratio_split.py (section-3 ratio by region), offline_h_line.py (spherical line
-             reader); periodic_threshold/inputs/peak_leak_f.athinput (box deck with flow = shear);
-             conv_ball/scripts/prep_bh.py --custom (lattices on any level list).
-budget:      card-hours batch 34: 0 used, 4.2 capped in the queue. Processors: up to 6 cores, ~50 min.
+             No amplitude is compared with arXiv:2609.14218 before (c). Second review NOT yet to be asked for.
+headline:    (d) NOT MET by the run made for it: S1L-F (q0090, A-20261128-012211-c9cedc1; reader
+             A-20261128-073831-fce5805) finds S1L's horizon from t = 169.28 (m 5.83 -> 9.12 at t = 205), but the
+             section-3 ratio outside it is 0.514 at detection (bound 0.1); the box violation sits in the matter.
+             (a) the outer-face part of the ball's line ratio does NOT converge with the mesh, with or without
+             core-v0.6's face set (FC, A-20261128-073120-9feebf2, reader A-20261128-080645-b3c9c7c: factor
+             coarse/fine 0.70-0.92 stock, 0.64-0.87 with the set; the set lowers it ~100x). A whole-line ratio to an
+             outflow face cannot fall with the mesh: a ruling is asked for. Retest RT2a queued on core-v0.9.
+last-result: batch 40 (23:26-00:40 PST):
+             - q0090 closed (jobs completed, 1.063 card-hours): F1 REFUTED (first find 169.3, before the window
+               (178, 195]; 6 of 57 later searches at the iteration cap), F2 HELD (0.514 > 0.1), F3 REFUTED (history
+               off S1L's by ~1e-3 from t = 50, S1L's own restart point).
+             - FC: FC0 held (proxy = full meshes in the face band), FC1 held, FC2 REFUTED (no convergence with set).
+             - RX (restart exactness of the box deck on processors, A-20261128-074500-daf8285): RX_RESULT
+             - RT2a smoke (A-20261128-075804-b2908e4): v0.9 decks with the face set and region norms run.
+cards:       shared queue, priority 2: q0089 a-s1l-quarter SUBMITTED (A-20261128-011607-3e2d530, chain at t = 133 of
+             410, job 5633 pending); q0108 a-rt2a-A and q0109 a-rt2a-B WAITING (core-v0.9 card build, caps 0.5 and
+             1.2 card-hours). 0 card-hours ran in this session; 1.063 closed (q0090).
+processors:  8 registered runs this session (1 failed: RX first attempt, stopped by me on cost); at most 6 cores.
+next:        1. Read q0108/q0109 (RT2a, predictions R1-R3, threshold_ball entry 20) and q0089 (A2Q) when they end.
+             2. (d): the cause of the box violation - resolution pair of region ratios (P0L four vs P0L6 six levels).
+             3. (a): with orch's ruling on what the bound covers, faces farther out or a coarser outer level for the
+                face part; the top-hat matter part separately.
+blockers:    G2 not passed; (a) face part does not converge by construction; (d) the box violation in the matter.
+needs:       orch: a ruling on 0047 2(a) - is the bound read over the whole line to the outflow face, or over the
+             matter/inside a radius, given FC; core: RX_CORE_NEED.
+offers:      threshold_ball/scripts/face_conv.py (band norms, coarse/fine factors), decks nest*_L32_fr (face set +
+             region norms); periodic_threshold/scripts/f_read.py (status, region at detection, history vs a
+             reference with chain segments resolved), rx_run.sh/rx_compare.py (restart exactness).
+budget:      card-hours batch 40: 0 ran, 1.7 newly capped in the queue (2.6 still capped for q0089).
