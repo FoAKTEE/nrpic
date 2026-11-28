@@ -1,9 +1,9 @@
 {
   "track": "F-hills",
   "gate": "G1",
-  "commit": "f01b5bfec24c6513dae63a60ee43f0bf5ed79e3f",
-  "verified_utc": "2026-11-28T02:11:14Z",
-  "export": "/data/haiyangw/nrpic/scratch/F-hills/tmp/stage-verify/F-hills-G1-f01b5bf-20261128T020925Z",
+  "commit": "fc89fd469707bb39a817e72827c1303f4050c1ac",
+  "verified_utc": "2026-11-28T02:12:14Z",
+  "export": "/data/haiyangw/nrpic/scratch/F-hills/tmp/stage-verify/F-hills-G1-fc89fd4-20261128T021138Z",
   "result": "PASS",
   "checks": [
     {
@@ -21,7 +21,7 @@
     {
       "check": "export",
       "status": "PASS",
-      "message": "clean export of f01b5bfec24c (HEAD) in /data/haiyangw/nrpic/scratch/F-hills/tmp/stage-verify/F-hills-G1-f01b5bf-20261128T020925Z/tree",
+      "message": "clean export of fc89fd469707 (HEAD) in /data/haiyangw/nrpic/scratch/F-hills/tmp/stage-verify/F-hills-G1-fc89fd4-20261128T021138Z/tree",
       "detail": null
     },
     {
@@ -381,12 +381,12 @@
     {
       "check": "checksums",
       "status": "WARN",
-      "message": "3817 output files: 15 hashed again (bytes read, 1.1 MB), 3802 taken from the cache (1961.17 GB); a checksum taken from the cache proves unchanged size and modification time since it was hashed, not bytes read again; --full reads every byte",
+      "message": "3817 output files: 0 hashed again (bytes read, 0.0 MB), 3817 taken from the cache (1961.17 GB); a checksum taken from the cache proves unchanged size and modification time since it was hashed, not bytes read again; --full reads every byte",
       "detail": {
-        "rehashed_files": 15,
-        "rehashed_bytes": 1071418,
-        "cached_files": 3802,
-        "cached_bytes": 1961173078740,
+        "rehashed_files": 0,
+        "rehashed_bytes": 0,
+        "cached_files": 3817,
+        "cached_bytes": 1961174150158,
         "full": false,
         "meaning_of_a_cached_entry": "a checksum taken from the cache proves unchanged size and modification time since it was hashed, not bytes read again",
         "notes": []
@@ -395,7 +395,7 @@
     {
       "check": "status",
       "status": "PASS",
-      "message": "STATUS.md has 41 lines",
+      "message": "STATUS.md has 40 lines",
       "detail": null
     },
     {

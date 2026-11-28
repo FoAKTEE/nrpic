@@ -1,12 +1,12 @@
 # Re-verification: F-hills G1
 
-`harness/bin/nrpic-stage verify F-hills G1` on 2026-11-28T02:11:14Z, clean export of commit `f01b5bfec24c` in `scratch/F-hills/tmp/stage-verify/F-hills-G1-f01b5bf-20261128T020925Z`. Result: **PASS**.
+`harness/bin/nrpic-stage verify F-hills G1` on 2026-11-28T02:12:14Z, clean export of commit `fc89fd469707` in `scratch/F-hills/tmp/stage-verify/F-hills-G1-fc89fd4-20261128T021138Z`. Result: **PASS**.
 
 | Check | Result | Message |
 |---|---|---|
 | clean | PASS | worktree clean (outside the stage directory being assembled) |
 | sync | PASS | main is merged into the branch |
-| export | PASS | clean export of f01b5bfec24c (HEAD) in /data/haiyangw/nrpic/scratch/F-hills/tmp/stage-verify/F-hills-G1-f01b5bf-20261128T020925Z/tree |
+| export | PASS | clean export of fc89fd469707 (HEAD) in /data/haiyangw/nrpic/scratch/F-hills/tmp/stage-verify/F-hills-G1-fc89fd4-20261128T021138Z/tree |
 | size | PASS | no committed file of the track above 5 MB |
 | note | PASS | tracks/<ID>/note/main.tex present |
 | package | PASS | EVIDENCE.md, OPEN.md, CHECKLIST.md present (decision 0012); scoping text: novelty/scope/SCOPE.md; REVIEW.md present; verifier's report VERIFIER.md |
@@ -17,8 +17,8 @@
 | runs | PASS | 283 run manifests finished (78 hand-written, read as decision 0012 allows); failures of 3 runs waived by coord/WAIVERS.md (decision 0019), output checksums verified where recorded |
 | runs-waived | WARN | failures of the manifest check waived: 3 runs named in main's coord/WAIVERS.md (decision 0019 item 6): F-20261115-173719-923135a: outputs moved into the run directory after the run finished; data unchanged (decision 0021); F-20261115-181805-f9c3473: outputs moved into the run directory after the run finished; data unchanged (decision 0021); F-20261115-182100-613c9c6: outputs moved into the run directory after the run finished; data unchanged (decision 0021) |
 | run-notes | WARN | 78 runs read with defaults or not fully re-verifiable (nrpic-run lint) |
-| checksums | WARN | 3817 output files: 15 hashed again (bytes read, 1.1 MB), 3802 taken from the cache (1961.17 GB); a checksum taken from the cache proves unchanged size and modification time since it was hashed, not bytes read again; --full reads every byte |
-| status | PASS | STATUS.md has 41 lines |
+| checksums | WARN | 3817 output files: 0 hashed again (bytes read, 0.0 MB), 3817 taken from the cache (1961.17 GB); a checksum taken from the cache proves unchanged size and modification time since it was hashed, not bytes read again; --full reads every byte |
+| status | PASS | STATUS.md has 40 lines |
 | rerun | PASS | 15 of 15 scripts and commands ran cleanly in the export |
 | compare | PASS | 42 regenerated files compared with the committed ones; 0 differ beyond tolerance (rtol 1e-06, atol 1e-12, PNG rms 0.005) |
 | regenerate | PASS | all 30 committed figure files regenerated |
@@ -174,10 +174,10 @@
 
 ```
 {
- "rehashed_files": 15,
- "rehashed_bytes": 1071418,
- "cached_files": 3802,
- "cached_bytes": 1961173078740,
+ "rehashed_files": 0,
+ "rehashed_bytes": 0,
+ "cached_files": 3817,
+ "cached_bytes": 1961174150158,
  "full": false,
  "meaning_of_a_cached_entry": "a checksum taken from the cache proves unchanged size and modification time since it was hashed, not bytes read again",
  "notes": []

@@ -1,13 +1,11 @@
 # Stage report: F-hills G1
 
-Date: 2026-11-28 · branch `track/F-hills` at `44f1eaaf8561` · checklist
+Date: 2026-11-28 · branch `track/F-hills` at `fc89fd469707` · checklist
 `tracks/F-hills/stage/G1/CHECKLIST.md` (from `nrpic-stage collect`)
 
 ## Verdict
 
-**FAIL**. Tag: `stage/F-hills/G1-fail-20261128` (created and pushed by the orchestrator after review, decision 0003).
-
-- verify ran on f01b5bf; files changed since: tracks/F-hills/JOURNAL.md, tracks/F-hills/RISKS.md, tracks/F-hills/outbox/20261128T020953Z__to-orch__g1-corrections-applied-200m-queued.md, tracks/F-hills/outbox/20261128T020954Z__to-orch__g1-full-checksum-pass.md (run verify again)
+**PASS**. Tag: `stage/F-hills/G1-pass-20261128` (created and pushed by the orchestrator after review, decision 0003).
 
 ## Package documents (decision 0012)
 
@@ -34,8 +32,8 @@ Date: 2026-11-28 · branch `track/F-hills` at `44f1eaaf8561` · checklist
 | C7 | Constraint residuals and junk radiation of the three-puncture data are quantified | [JUDGEMENT, with reservations] Constraints quantified (nr_first E2, F-20261115-173547-a02af7d, -181434-b9c8916; card smoke F-20261115-174602-c6879fe). Junk: one member E/m = 7e-5 (4e-5 to 2e-4; F-20261120-222808-b65001c, -223018-a5c0838, -223121-c921d2d); three-hole data at P1's spheres: burst 0.40-0.63e-6 M at u of about -33 M, then a steady emission of 5.0-5.4e-8 M per M; window u in [-35, 6] holds 2.3-2.8e-6 M (junk_gauge J4b F-20261121-075600-4480a13; lead L5, L5b F-20261121-155457-5f36517, -155549-4359678). Reservations (OPEN.md 5): l <= 8 only; m/8 binary spirals in numerically; steady part not identified; remeasure at P1b. 2026-11-21 batch 4a. G1 verifier (VERIFIER.md 3.4, F4; run F-20261125-175931-32701e4): window energies 2.73, 2.50, 2.28, 2.36e-6 M at r = 40, 48, 70, 90 M reproduced within 3-9 percent; the four radii agree within 19.8 percent, so criterion (iii)'s "two radii within 20 percent" is MET AT ITS EDGE (batch 25). | PASS |
 | C8 | One complete vacuum passage is done | MET IN SUBSTANCE; ONE CLAUSE NOT YET MET AS WRITTEN (batch 35, 2026-11-27, after the verifier's part 2, VERIFIER.md sections 10-17, and the gate review, GATE_REVIEW.md). Scope criterion (iv) (`../G0/SCOPING.md` l. 139-141) asks for the trackers to t = 200 M; the record ends at 186.0 M because Slurm refused the chain's next submission (I/O error, `chain/slurm-5492.out`). Decision 0048 item 2(a): the criterion is not amended; the passage is continued to 200 M: queue entry **q0091** (label F-A2-to200, priority 2, `continue_chain.sh --reopen F-20261124-210400-902c650 31 --extra-input binary_conv/inputs/fastflow_diag.athinput`; predictions D35-1..9 in JOURNAL batch 35, committed in 72543633f before it was queued). Until it has run and a registered reading shows the record to 200 M, this clause is open. The record to 186.0 M: P1b m/16, A (F-20261121-203144-b2cf16b, 0-61.8 M) + A2 (F-20261124-210400-902c650, 61.8-186.0 M; diagnostics from 133.0 M by q0069) joined without a gap (largest step 2^-9 M; overlaps <= 1.25e-9 M, the largest at 104.0-104.4 M, restart round-off; F-20261127-232849-14345be and, with the corrections below, F-20261128-020208-d7c6f1c, fig_b21_a2_state). Outcome (horizon numbers quoted with the summary's residual hrms; 'found' in a status file means the mass rule held, not a converged surface: finding F5): the binary is disrupted between 120 and 133 M; m1 is captured by M: common horizon from 137.5 M (finder 2 found at all 1697 searches 133-186 M; area mass 1.0053 -> 1.1137; Christodoulou mass 1.12291, S/M^2 = 0.2529 at 186 M with hrms 3.4e-4 and mean expansion -0.040, so not converged to the level of the pre-capture upper branch); m1's own surface is found to about 141 M with small mean expansion but hrms 2e-3 to 7.5e-2 (distorted, VERIFIER 17); m2's horizon is found at every search: converged searches (hrms <= 1e-2) 0.12939-0.12964 over 61.8-186 M, while 160.6-179.2 M finder 1 alternates with an unconverged branch (298 searches, 0.12890-0.12918, hrms 0.15-0.23 after 6 flow iterations) which the earlier "0.12954 within 6.4e-4" included; m2 passes M at 8.733 M (134.3 M, trackers) and recedes (17.53 M at 186 M, relative speed 0.374 against an escape speed of 0.378): m2's fate is undecided in coordinates (two-body energy -0.04 to +0.12 units by mass convention, not conserved). The capture's wave reaches only the 40-M sphere before 186 M, with no ring-down recorded (VERIFIER 12). Newton from the same deck ejects m1 and binds m2 (F-20261127-232940-3f652bf). rms H at most 6.19e-5 (135.5 M), 1.51e-5 at 186 M. MeshBlocks of A2 1968-2514 (start and end counts of its 46 segment logs); the 2584 quoted in batch 34 is A's maximum (0-61.8 M, segments 3-4, jobs 4866 and 4875), which the batch-34 reader joined with A2 (F-20261128-020208-d7c6f1c, S6.mb_and_memory); card memory peak 78789 MiB. Failed predictions on record: A2-1 (timing), A2-2, A2-3, A2-4, A2-5's heavy-hole clause, C25-1's tracker clause, C25-3's rate clause, D34-1, D34-2 in part (JOURNAL batches 21, 25, 34). One resolution only (C2 at m/12 stopped at 106.69 M, G2). Finding F1: decided for 86.6-131 M by the summary's hrms (upper branch 1.00422, hrms 9.4e-9 to 3.6e-8, constant to 6.4e-5 on 618 searches of A2; the 62-86.6 M decline, -1.72e-5 per M, and the lower branches 1.00289-1.00394, hrms 1.4e-4 to 6.5e-4, are unconverged surfaces); open only during m1's approach (131-137.4 M), where both classes' hrms rise. Earlier state (batch 25 and before): `JOURNAL.md` batches 21, 25, 34 and `STATUS.md` T4. | PASS |
 | C9 | Track F (amends 0005). Mass ratio four for the convergence study and the first scan line; the passage at mass ratio ten follows when the mesh fits. The first passage of a clump binary comes right after the first black-hole passage. (0013) | followed: P1 and the convergence plan are at q = 4 (nr_first/inputs/p1_q4.athinput; STATUS.md); q = 10 waits for the mesh and for momenta from a GR parabola (V9a: the q = 10 input turns at 5.77 M in GR); the clump passage (object b) follows the first black-hole passage (core's wave-3a clump-table package) | PASS |
-| C10 | Schematic: Updated architecture | note/figures/schem_architecture.png updated to the state of core-v0.3 (exists / to be ported / new; multi-puncture data, trackers, finders, chain wrapper, readers, three references), script note/scripts/schem_architecture.py, run F-20261120-222908-4ffcfba (note package); PNG read by the note helper and by the lead on 2026-11-21. Drawn as of core-v0.3: two items it marks 'to be ported' (common horizon of one pair, mass-scaled shift damping) are in release core-v0.4 (`punc_pair_a_<n>`, `shift_eta_profile`); to update on the note's resume | PASS |
-| C11 | Schematic: Data-flow diagram | note/figures/schem_dataflow.png (input, chained card segments, output streams, readers, analyses with the references, note), script note/scripts/schem_dataflow.py, run F-20261120-222908-4ffcfba; PNG read by the note helper and by the lead on 2026-11-21 | PASS |
+| C10 | Schematic: Updated architecture | note/figures/schem_architecture.png updated to the state of core-v0.3 (exists / to be ported / new; multi-puncture data, trackers, finders, chain wrapper, readers, three references), script note/scripts/schem_architecture.py, run F-20261120-222908-4ffcfba (note package); PNG read by the note helper and by the lead on 2026-11-21. Redrawn in batch 35 to the release core-v0.8 (gate review C10, section 6 item 7): the tracker file kept on a continued run and the status file with the found flag of each search are now 'exists'; run F-20261128-020409-a3edb04 (numbers and ledger of the note unchanged), PNG read by the lead; note v2.1 | PASS |
+| C11 | Schematic: Data-flow diagram | note/figures/schem_dataflow.png (input, chained card segments, output streams, readers, analyses with the references, note), script note/scripts/schem_dataflow.py, run F-20261120-222908-4ffcfba; PNG read by the note helper and by the lead on 2026-11-21. Redrawn in batch 35 to core-v0.8 (tracker file kept on a continued run, resubmission after a preemption, status file with found flag and residual: all 'exists'), run F-20261128-020409-a3edb04, PNG read by the lead | PASS |
 | C12 | Data figure: Baseline results | note/figures/fig_newton.png, fig_geodesic.png, fig_rp_scan.png, fig_passage.png (scripts note/scripts/fig_*.py, run F-20261115-180609-abc9f6e); nr_first/figures/fig_baselines_p1.png (F-20261115-174102-ffa764f); all looked at (note/JOURNAL.md; lead review) | PASS |
 | C13 | Data figure: Validation figures for the analysis pipeline | nr_first/figures/fig_test_nrread_synthetic.png (reader test), fig_e10a_s3_s2_compare.png (comparison script on S3/S2), fig_e11_tree_check.png (tree model against restart trees), fig_e3_single_gauge.png (rerun F-20261119-145619-8246322), fig_e7_p1smoke.png; lead fig_review_nr.png (F-20261119-145434-82c05f2); all looked at by the lead (REVIEW-wave2.md). Drawn by the package scripts with python/nrpic/figstyle.py, not yet note figures | PASS |
 | C14 | Package documents of decision 0012: STAGE_REPORT.md (nrpic-stage report), EVIDENCE.md, OPEN.md and this CHECKLIST.md in the stage directory; REVIEW.md where the lead rechecked helpers; the scoping text in SCOPE.md or SCOPING.md beside them or in the scope directory, named in the report (no REPORT.md needed) | STAGE_REPORT.md (nrpic-stage report), EVIDENCE.md, OPEN.md, CHECKLIST.md, REVIEW.md (points to ../REVIEW-wave2.md and SCOPING.md section 10); the criterion-by-criterion text is STATUS.md beside them, the scoping text ../G0/SCOPING.md, both named in the report | PASS |
@@ -48,13 +46,13 @@ Date: 2026-11-28 · branch `track/F-hills` at `44f1eaaf8561` · checklist
 
 ## Re-verification on a clean checkout (`nrpic-stage verify`)
 
-`nrpic-stage verify` on 2026-11-28T02:11:14Z, clean export of `f01b5bfec24c`: **PASS**. Details: `VERIFY_RESULTS.md`.
+`nrpic-stage verify` on 2026-11-28T02:12:14Z, clean export of `fc89fd469707`: **PASS**. Details: `VERIFY_RESULTS.md`.
 
 | Check | Result | Message |
 |---|---|---|
 | clean | PASS | worktree clean (outside the stage directory being assembled) |
 | sync | PASS | main is merged into the branch |
-| export | PASS | clean export of f01b5bfec24c (HEAD) in /data/haiyangw/nrpic/scratch/F-hills/tmp/stage-verify/F-hills-G1-f01b5bf-20261128T020925Z/tree |
+| export | PASS | clean export of fc89fd469707 (HEAD) in /data/haiyangw/nrpic/scratch/F-hills/tmp/stage-verify/F-hills-G1-fc89fd4-20261128T021138Z/tree |
 | size | PASS | no committed file of the track above 5 MB |
 | note | PASS | tracks/<ID>/note/main.tex present |
 | package | PASS | EVIDENCE.md, OPEN.md, CHECKLIST.md present (decision 0012); scoping text: novelty/scope/SCOPE.md; REVIEW.md present; verifier's report VERIFIER.md |
@@ -65,8 +63,8 @@ Date: 2026-11-28 · branch `track/F-hills` at `44f1eaaf8561` · checklist
 | runs | PASS | 283 run manifests finished (78 hand-written, read as decision 0012 allows); failures of 3 runs waived by coord/WAIVERS.md (decision 0019), output checksums verified where recorded |
 | runs-waived | WARN | failures of the manifest check waived: 3 runs named in main's coord/WAIVERS.md (decision 0019 item 6): F-20261115-173719-923135a: outputs moved into the run directory after the run finished; data unchanged (decision 0021); F-20261115-181805-f9c3473: outputs moved into the run directory after the run finished; data unchanged (decision 0021); F-20261115-182100-613c9c6: outputs moved into the run directory after the run finished; data unchanged (decision 0021) |
 | run-notes | WARN | 78 runs read with defaults or not fully re-verifiable (nrpic-run lint) |
-| checksums | WARN | 3817 output files: 15 hashed again (bytes read, 1.1 MB), 3802 taken from the cache (1961.17 GB); a checksum taken from the cache proves unchanged size and modification time since it was hashed, not bytes read again; --full reads every byte |
-| status | PASS | STATUS.md has 41 lines |
+| checksums | WARN | 3817 output files: 0 hashed again (bytes read, 0.0 MB), 3817 taken from the cache (1961.17 GB); a checksum taken from the cache proves unchanged size and modification time since it was hashed, not bytes read again; --full reads every byte |
+| status | PASS | STATUS.md has 40 lines |
 | rerun | PASS | 15 of 15 scripts and commands ran cleanly in the export |
 | compare | PASS | 42 regenerated files compared with the committed ones; 0 differ beyond tolerance (rtol 1e-06, atol 1e-12, PNG rms 0.005) |
 | regenerate | PASS | all 30 committed figure files regenerated |
@@ -221,3 +219,14 @@ Lead (batch 34): every G1 criterion met in the lead's judgement, C8 met by the p
 - C10, C11 PASS: G1 schematics drawn by the note package (run F-20261120-222908-4ffcfba), read.
 - C17, C18 OPEN: the note's G1 revision is paused before its compile; no G1 verifier yet.
 - Review of the wave-3 material: `../REVIEW-wave3.md` (eih confirmed; p1's merger confirmed).
+
+## Lead's notes (batch 35, 2026-11-27; read before the verdict above)
+
+The verdict above is the stage tool's (every checklist item PASS, verify PASS with 3802 of 3817
+output checksums from the cache). It is not the gate's: the lead does not pass G1. Decision 0048
+item 2 signs G1 once (a) the passage reaches t = 200 M (scope criterion (iv); queue entry q0091,
+A2 F-20261124-210400-902c650 continued in place, predictions D35-1..9 in JOURNAL batch 35) and a
+registered reading shows the record to 200 M with its health checks, and (b) the verifier's
+part-2 corrections are applied (done in batch 35: CHECKLIST C8, C18; STATUS.md T4; OPEN.md;
+REVIEW-wave3 batch 35). C8 is marked PASS for its substance and names the open 200-M clause.
+Reservations carried to G2: GATE_REVIEW.md section 6 and OPEN.md item 4.
