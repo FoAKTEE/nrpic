@@ -377,3 +377,11 @@ log lines), one public flag; `main.cpp`: three lines where the input is loaded;
 `z4c/fastflow.{hpp,cpp}`: reading of four options at the end of the constructor, the
 status block of `Write`, five lines in `Find`, the acceptance in `FastFlowLoop`, new
 `StartScan` before `MetricDerivatives`.
+
+### Prediction R2 (a block the stored input does not hold)
+
+`athena -r hc.00001.rst zz_block/x=1 time/nlim=1` (the restart file of run
+core-20261127-234458-4baaaa4, at cycle 1, so no cycle is taken): exit 0, the log line
+"Parameter added on restart from the command line: <zz_block> x = 1", and no fatal error
+from a check of block names (which runs only for input files). Refuted by a non-zero
+exit or a missing line.
