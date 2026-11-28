@@ -112,22 +112,49 @@ def main():
     print(f"bound (all of the 128^3/8 ppc peak charged to particles): {bound:7.0f} MiB "
           f"of {total:.0f} MiB")
 
-    # card time: seconds per cycle; particle cost per particle-cycle from 128^3 8 vs 1 ppc
-    t = {r["name"]: r["wall_s"] / r["cycles"] for r in rows}
-    s128_8, s128_1 = t["128^3, 8 ppc (ZS)"], t["128^3, 1 ppc (GD)"]
-    s256_1 = t["256^3, 1 ppc (GD)"]
-    per_pc = (s128_8 - s128_1) / (7 * 128 ** 3)
-    s256_8 = s256_1 + 7 * per_pc * 256 ** 3
-    cyc256 = rows[2]["cycles"]
-    ch = s256_8 * cyc256 / 3600.0
-    print(f"s/cycle: 128/8 {s128_8:.3f}, 128/1 {s128_1:.3f}, 256/1 {s256_1:.3f}; particle "
-          f"{per_pc:.3e} s per particle-cycle -> 256/8 {s256_8:.2f} s/cycle, "
-          f"{cyc256} cycles, {ch:.2f} card-h (wall, incl. writes)")
+    # card time. The wall time of the segment logs cannot be divided by the cycle count: the
+    # preempted segments of the 128^3/8 ppc member wrote no end line (first run of this script,
+    # B-20261128-030214-20f2961, divided 804 s of the last segment by all 1408 cycles: wrong).
+    # Instead: the median wall time between consecutive restart files (modification times,
+    # written every dt_rst of code time; intervals across a segment gap are outliers), per
+    # unit code time. 128^3 eight against one per cell gives the particle cost per unit time
+    # of 2^24 particles at the 128^3 step; at 256^3 the step count is cycles256/cycles128 times.
+    def rate(dirs, dt_rst):
+        iv = []
+        for d in dirs:
+            fl = sorted(glob.glob(os.path.join(a.scratch, d, "rst", "*.rst")))
+            mt = [os.path.getmtime(f) for f in fl]
+            iv += list(np.diff(mt))
+        iv = np.array([x for x in iv if x > 0])
+        return float(np.median(iv)) / dt_rst, iv
+    DT_RST = {"128^3, 8 ppc (ZS)": 2.0, "128^3, 1 ppc (GD)": 2.0, "256^3, 1 ppc (GD)": 1.0}
+    t, ivs = {}, {}
+    for r in rows:
+        if r["name"] in DT_RST:
+            t[r["name"]], ivs[r["name"]] = rate(r["dirs"], DT_RST[r["name"]])
+    r8, r1, R1 = t["128^3, 8 ppc (ZS)"], t["128^3, 1 ppc (GD)"], t["256^3, 1 ppc (GD)"]
+    cyc = {r["name"]: r["cycles"] for r in rows}
+    step = cyc["256^3, 1 ppc (GD)"] / cyc["128^3, 1 ppc (GD)"]
+    P128 = r8 - r1          # 2^24 particles per unit t at the 128^3 step (ZS mesh is cheaper:
+    P256 = P128 * step      # this underestimates the particle cost a little)
+    R8 = R1 + 7 * P256
+    ch1 = rows[2]["wall_s"] / 3600.0
+    ch = ch1 * R8 / R1
+    # bracket: particle part of the 256^3/1 ppc time between 0 (all mesh) and P256 doubled
+    ch_lo = ch1 * (R1 + 7 * 0.5 * P256) / R1
+    ch_hi = ch1 * (R1 + 7 * 1.5 * P256) / R1
+    print(f"wall s per unit t: 128/1 {r1:.1f}, 128/8 {r8:.1f}, 256/1 {R1:.1f}; particles "
+          f"(2^24) {P128:.1f} at 128^3, {P256:.1f} at 256^3 (steps x{step:.3f}) -> 256/8 "
+          f"{R8:.1f} s per unit t; card-h 256/1 measured {ch1:.2f} -> 256/8 {ch:.1f} "
+          f"(half to 1.5 times the particle cost: {ch_lo:.1f}-{ch_hi:.1f})")
 
     res = dict(members=rows, fits=fits, bound_MiB=bound, card_total_MiB=total,
-               card=mem[2]["card"], seconds_per_cycle=t, particle_s_per_particle_cycle=per_pc,
-               predicted_256_8ppc_s_per_cycle=s256_8, predicted_256_8ppc_card_h=ch,
-               cycles_256=cyc256)
+               card=mem[2]["card"], wall_s_per_unit_t=t,
+               restart_intervals_s={k: list(v) for k, v in ivs.items()},
+               particle_s_per_unit_t_2e24={"128": P128, "256": P256},
+               predicted_256_8ppc_s_per_unit_t=R8, card_h_256_1ppc_measured=ch1,
+               predicted_256_8ppc_card_h=ch, predicted_256_8ppc_card_h_range=[ch_lo, ch_hi],
+               cycles=cyc)
     with open(os.path.join(a.out, "mem_fit.json"), "w") as f:
         json.dump(res, f, indent=1, default=float)
 
@@ -150,14 +177,19 @@ def main():
     ax.set_ylabel("peak card memory [GiB]")
     ax.legend(fontsize=6, loc="center left")
     ax = axs[1]
-    names = list(t)
-    ax.bar(np.arange(len(names)), [t[k] for k in names], color="0.55")
-    ax.bar([len(names)], [s256_8], color="C0")
-    ax.set_xticks(np.arange(len(names) + 1))
+    names = ["128^3, 1 ppc (GD)", "128^3, 8 ppc (ZS)", "256^3, 1 ppc (GD)"]
+    for i, k in enumerate(names):
+        v = ivs[k] / DT_RST[k]
+        ax.plot(np.full(len(v), i) + np.linspace(-0.15, 0.15, len(v)), v, ".", color="0.6",
+                ms=3)
+        ax.plot([i - 0.25, i + 0.25], [t[k], t[k]], color="k", lw=1.2)
+    ax.plot([3 - 0.25, 3 + 0.25], [R8, R8], color="C0", lw=1.6)
+    ax.set_yscale("log")
+    ax.set_xticks(np.arange(4))
     ax.set_xticklabels([k.replace(" (", "\n(") for k in names] + ["256^3, 8 ppc\n(predicted)"],
                        fontsize=6)
-    ax.set_ylabel("wall seconds per cycle")
-    ax.text(0.02, 0.92, f"256^3, 8 ppc: {ch:.1f} card-h for {cyc256} cycles",
+    ax.set_ylabel("wall s per unit code time")
+    ax.text(0.02, 0.92, f"256^3, 8 ppc: {ch:.1f} card-h ({ch_lo:.1f}-{ch_hi:.1f})",
             transform=ax.transAxes, fontsize=7)
     fs.save(fig, os.path.join(a.out, "mem_fit"))
     plt.close(fig)
