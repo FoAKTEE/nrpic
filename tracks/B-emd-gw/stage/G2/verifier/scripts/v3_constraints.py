@@ -128,11 +128,16 @@ for ax, col, lab in ((axs[0], "Hr_mean", "Hamiltonian"), (axs[1], "Mr_mean", "mo
                              ("gd_128_over_256", fs.PAL["blue"], "--", r"1 per cell: $128^3/256^3$, Gamma driver"),
                              ("ppc1_over_ppc8_128", fs.PAL["yellow"], ":", r"$128^3$: 1 over 8 per cell")):
         t, r = series[name, col]
-        ax.plot(vlib.scale(t), r, color=c, ls=ls, label=txt)
+        m = vlib.scale(t) >= 2.0          # the t = 0 ratio is that of the initial-data residuals
+        ax.plot(vlib.scale(t)[m], r[m], color=c, ls=ls, label=txt)
     ax.axhline(1.0, **fs.MASK_LINE)
+    ax.axhspan(1.6, 2.3, color=fs.PAL["red"], alpha=0.08)
+    ax.axhspan(1.05, 1.4, color=fs.PAL["blue"], alpha=0.08)
     ax.set_xscale("log")
+    ax.set_yscale("log")
+    ax.set_ylim(0.5, 6.0)
     ax.set_xlabel(r"$a$")
     ax.set_title(f"mean relative {lab} constraint", fontsize=10)
-axs[0].set_ylabel("ratio of the means")
+axs[0].set_ylabel("ratio of the means (bands: the claims)")
 axs[0].legend(loc="upper left", fontsize=8, frameon=False)
 fs.save(fig, os.path.join(out, "v3_constraints"))

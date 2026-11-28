@@ -122,7 +122,7 @@ def main():
     fs.use_style()
     import matplotlib.pyplot as plt
     fig, axs = plt.subplots(1, 2, figsize=(8, 3.2))
-    fig.subplots_adjust(left=0.09, right=0.98, bottom=0.15, top=0.9, wspace=0.28)
+    fig.subplots_adjust(left=0.1, right=0.98, bottom=0.15, top=0.9, wspace=0.28)
     cols = fs.series_colors(3)
     for pre, ax, ttl in (("N7", axs[0], r"series 7: $\beta=0.125$, $HL=4$"),):
         ks = sorted([k for k in res if k.startswith(pre) and not k.startswith("series")], key=lambda k: res[k]["ny"])
@@ -135,7 +135,7 @@ def main():
         ax.set_xlabel(r"$t$")
         ax.set_title(ttl, fontsize=10)
         ax.legend(frameon=False, fontsize=8, loc="lower left")
-    axs[0].set_ylabel("smallest neighbour spacing / lattice spacing")
+    axs[0].set_ylabel("smallest spacing / lattice spacing")
     # right: Delta against N_y for both series, L2 with CosmoGRaPH's value
     for pre, c, lab in (("N7", fs.PAL["red"], r"series 7 ($\beta=0.125$)"), ("L2", fs.PAL["yellow"], r"L2 ($\beta=0.5$), 4 per cell")):
         ser = res.get("series_" + pre)
