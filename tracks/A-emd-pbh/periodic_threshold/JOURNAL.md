@@ -1458,3 +1458,47 @@ Figure note: the x-axis labels of the left panel overlap at 9e-2 and 1e-1 (cosme
   Decision on the queue rule written at 16:39 ("refuted otherwise; then nothing is queued"): that rule was meant for
   the health of the run; the step clause was a prediction about start-up only, and its failure does not bear on the
   health of the run. I queue S1L-q and say so here; the refuted clause stays on record.
+
+## 2026-11-27 23:45 PST (lead of batch 40): outcome S1L-F (q0090, run A-20261128-012211-c9cedc1)
+
+Queue entry q0090 done with its jobs completed: chain STATUS DONE (tlim 205, cycle 21258) after nine segments, eight
+of them cut by SIGTERM and continued from the restart file each wrote (exit 143); closed with nrpic-run finish (827
+files checksummed, 1.063 card-hours). Reader f_read.py, registered: A-20261128-073739-d0bfd67 (first pass; it compared
+S1L rows of a superseded chain segment and is kept on record) and A-20261128-073831-fce5805 (continued segments
+resolved: later rows of a repeated time win); fig_s1l_finder.png of the second looked at.
+- F1 REFUTED in two of its clauses. The first found row is at t = 169.28 (17.3 t_H), before the window (178, 195]:
+  area mass 5.828, mean radius 0.0673 (outside the predicted 0.08-0.17), 188 flow iterations, expansion integral
+  -2.6e-5. After it 57 searches to t = 205: 51 found, 6 stopped at the 4000-iteration cap (t = 169.9, 170.5, 171.2,
+  171.8, 175.5, 186.2) - the "no stall" clause is refuted too. Masses of found rows are non-decreasing (holds):
+  5.83 at 169.3, 7.59-7.64 at 189.9-190.5, 9.12 at 204.9; mean radius 0.067 -> 0.117.
+  Is the early find a false acceptance? [JUDGEMENT, not verified] Probably not: the mass and the radius continue
+  smoothly from 169.3 through the 51 found rows into the restart-file probes of S1L (FD, found from three starts:
+  7.6056 at 190.0 against 7.5975 interpolated here, 1.1e-3, the size of the card-to-card difference below); the
+  class of the t = 118.1 false acceptance had mean radius > 0.3. The premise of the window was FPb's scan of ROUND
+  spheres, which cannot see a trapped surface smaller than its smallest sphere; FD found the t = 190 surface inside
+  0.12 with every round sphere 0.12-0.2 untrapped. No restart file between 169 and 178 was probed, so the find at
+  169.3 has no second check. The horizon of S1L thus exists from t = 169.3 at the latest in this run.
+- F2 HOLDS (the bound fails, as predicted): at the first region row after detection (t = 169.59, horizon radius
+  0.067) the SCOPE section-3 ratio outside the found horizon is 0.514 (inside 0.168; outside r = 0.6 0.331; whole box
+  0.294). It stays 0.5-0.6 to t = 205. Condition (d) - one triaxial run to a found horizon WITH the bound - is NOT met:
+  the horizon is found, the bound is missed by a factor 5. The ratio outside r = 0.6 equals S1L's within 0.2 per cent
+  at t = 170-200 (0.332/0.332, 0.388/0.388, 0.425/0.425, 0.462/0.462): the new deck lines do not change it.
+- F3 REFUTED: alpha_min at t = 100 differs from S1L's by 2.3e-3 relative (largest 8e-3 over 0-205), not 1e-6.
+  Panel (c): the two runs agree to 1e-16-1e-11 up to t = 50 and the departure jumps to ~1e-3 in one step AT t = 50,
+  the time of S1L's restart file rst/peak.00001.rst from which S1L's chain (v0.6 card build) was continued after its
+  segment 3 (which itself had run on to t = 66.25; batch 11 entry). Against that superseded uninterrupted segment the
+  first pass shows agreement to 1e-11 up to t = 66. Reading [JUDGEMENT; a run that could refute it follows, RX]: the
+  continuation of S1L from its restart file at t = 50 did not repeat the uninterrupted evolution (alpha_min off by
+  ~1e-3 at once, int_E only 8e-7 at t = 100), so a state of this deck is not fully restored from a restart file on
+  that build, or the card deposit after the restart differs at that level. Not a property of v0.8 or of the new deck
+  lines (agreement to 1e-11 before t = 50). Bearing: every card chain of this track was continued from restart files.
+
+### Prediction RX before its runs (23:47 PST): is a continued run of the box deck exact on processors?
+
+Test: deck peak_leak.athinput with S1L's data on the processor builds of core-v0.6 and core-v0.8 (byte-reproducible),
+one core each: (A) 24 cycles straight; (B) 12 cycles writing a restart file, then continued with -r to cycle 24.
+Compare nrpic.hst and z4c.user.hst rows of cycles 13-24 (alpha_min, int_E, H-norm2).
+- RX [JUDGEMENT]: on both builds B repeats A to the last digit printed in every column of every row 13-24 (restarts
+  are exact for periodic set-ups, CLAUDE.md). Refuted if any column of a row after the restart differs beyond 1e-14
+  relative: then a state is not restored, the S1L step at t = 50 has a candidate cause in the code, and core is asked.
+  A hold leaves the card deposit after a restart (atomics) as the candidate, which this test cannot reach.
