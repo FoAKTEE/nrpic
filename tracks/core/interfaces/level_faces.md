@@ -1,13 +1,16 @@
 # The deposit at faces between refinement levels: two corrections without an option
 
-Owner core. Branch `core/faces-finder` (batch 34a, 2026-11-27), candidate for release
-core-v0.9; proposal for `coord/INTERFACES/level_faces.md`. Items 0 and 0b of
+Owner core. Release **core-v0.9** (branch `core/faces-finder`, batch 34a, 2026-11-27,
+source ad54460e, merged into `core/nrpic` at 8139c969). Ready to be copied to
+`coord/INTERFACES/level_faces.md` by the release clerk. Items 0 and 0b of
 `tracks/core/NEXT_SOURCE.md`; Track A's request `pcs-deposit-refinement-boundary` and
 decision 0047 item 2(a) (the retest of the constraint floor after these fixes). Evidence
 and every number: `tracks/core/JOURNAL-faces-finder.md` (entries 1, 3, 4, 5); scripts
 `tracks/core/analysis/faces_finder/dep_compare.py`, `comp_cons.py`,
-`tracks/core/analysis/deposit_levels/dep_levels.py`. Executables:
-`/data/haiyangw/nrpic/scratch/core/exe/core_faces-finder/` (READY there).
+`tracks/core/analysis/deposit_levels/dep_levels.py`, `faces_finder/card_check.py`.
+Executables of the release: `/data/haiyangw/nrpic/scratch/core/exe/core_nrpic_v09/` (READY
+there); the branch's `scratch/core/exe/core_faces-finder/` holds builds of the same
+source.
 
 Neither change has an option. Both act only on a mesh with refinement
 (`<mesh_refinement> refinement = static | adaptive`), and only in runs that set one of
@@ -114,7 +117,20 @@ Tests (processors, release core-v0.8 against this branch):
 | momentum integrals, the four cases (error over the sum of m W) | 5.9e-5 to 1.5e-4 | below 1e-15 | same |
 | no compensation; uniform mesh with either pass | | histories byte-identical | same |
 
-Figures: `fig_dep_compare.png`, `fig_comp_cons.png` in the two run directories.
+Figures: `fig_dep_compare.png`, `fig_comp_cons.png` in the two run directories. The
+same tests with the merged tree of the release: runs core-20261128-020214-a173064 and
+core-20261128-020250-1981d90 (outputs byte-identical to the branch's runs, run
+core-20261128-021251-d4575ac).
+
+**On a card** [VERIFIED; card check of the release, run core-20261128-052151-e5a2d55,
+shared-queue entry q0094, job 5601; judged by core-20261128-072820-d5fa2ca,
+`card_check.py`, figure `fig_card_check.png`]: the planar lines of `cic` and `cic_fs`
+equal the processor run in every cell (0.0), `pcs_comp` within 2.0e-15, line sum 32.0,
+`cic_fs` equal to `cic`; the three compensated cases on the three-level mesh (cubic cloud
+with c2, the same with the limiter, linear cloud with the plain pass) conserve the
+integral of E against the sum of m W to 9.9e-16 at each of 12 records, one unit in the
+last digit the history file prints. So the level-face kernel does on the device what it
+does on the processors.
 
 ## 3. What these changes do not do
 
@@ -140,7 +156,7 @@ Figures: `fig_dep_compare.png`, `fig_comp_cons.png` in the two run directories.
   one product. On processors, in a test that evolves no metric (the deposit is all of
   its time; serial build, indicative): cubic cloud with c2 11.9 s before and 12.1 s now;
   linear cloud with the plain pass 5.3 s and 10.7 s (run core-20261127-234843-fa6c2e9).
-  Not timed on a card in this session.
+  Not timed on a card, and not measured inside a run with the spacetime solver.
 
 ## 4. Which runs change, and the byte regression
 
@@ -155,4 +171,6 @@ Unchanged: everything else. Of the twelve set-ups (75 items) of the byte regress
 `analysis/release/regress_v04.py`, three have refinement (`dep`, `os`, `c3`) and none of
 them sets `deposit_comp_c` or `deposit_fine_shape` (they use `nfilter`, the source
 filter); the cosmology set-ups with compensation of the filter are on uniform meshes. So
-no item may differ. Result: section 5 of the journal and the READY file.
+no item may differ. Result: 75 of 75 items identical, with the branch's build (run
+core-20261128-000404-015d78b) and with the merged tree of the release (run
+core-20261128-020122-3a1a3dd).

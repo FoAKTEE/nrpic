@@ -22,7 +22,9 @@ ah_exc_max_growth = g        # real > 0; absent: 4
 
 Both are read only when the input holds them: a run without them has the parameter dump
 and every output of release core-v0.7 (byte regression, section 6). To set one on the
-command line the input must declare it (`polish_iterations_0 = 0` is "off").
+command line of a fresh start the input must declare it (`polish_iterations_0 = 0` is
+"off"); from release core-v0.9 a run continued with `-r` may add it on the command line
+(`restart_parameters.md`).
 
 ## 2. What the stopping rule of the finder is [VERIFIED by reading `z4c/fastflow.cpp`: `Find`, `InitialGuess`, `FastFlowLoop`]
 
@@ -96,9 +98,20 @@ finite area and integral, |integral| <= `hmean_tol_<n>`, mean radius > 0, mass >
 iteration (reason 3), not an acceptance test: a small value stops searches whose first
 iterations are far from the horizon. Track F saw surfaces "found" with |integral| up to
 23.7 at area masses about one (a mean expansion of about 0.47). The acceptance test on
-the expansion is `trapped_tol_<n>` of candidate core-v0.9 (`finder_box.md`, section 3:
+the expansion is `trapped_tol_<n>` of release core-v0.9 (`finder_box.md`, section 3:
 rms(H) times area mass, column 16); without it, read column 10 / (16 pi m) as a screen
 (the mean H times m, a lower bound of the rms one).
+
+**A search happens only between `start_time_<n>` and `stop_time_<n>`** (added
+2026-11-28, decision 0049 item 3, Track C `finder-start-stop-defaults`) [VERIFIED by
+reading `z4c/fastflow.cpp` lines 177 to 179, 482, 576, 771 at ad54460e, identical in
+core-v0.8]. When absent they are the largest double and -1, so the finder never searches:
+the summary file has its header only, and no status file is written even with
+`diagnostics = true`. `puncture_setup = true` sets 0 and 1e30 for each puncture's
+horizon; every other deck that uses the finder (`nrpic_cf` without `puncture_setup`,
+`nrpic_cosmo`) names both, for example `start_time_0 = 0.0`, `stop_time_0 = 1.0e30`
+(`finder_box.md`, section 0; Track C's runs C-20261128-021146-0f3b8f2 without them and
+C-20261128-021714-46cc308 with them).
 
 **Angular resolution** [numbers of Track D, runs D-20261124-130935-fdca920 and
 D-20261124-140606-286a302; not recomputed by core]: with the grid of `puncture_setup`

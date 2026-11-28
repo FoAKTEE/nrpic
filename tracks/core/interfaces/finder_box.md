@@ -1,17 +1,47 @@
 # Horizon finder in periodic boxes: what limits the flow, the weighted flow, a start scan, a check of the accepted surface
 
-Owner core. Branch `core/faces-finder` (batch 34a, 2026-11-27), candidate for release
-core-v0.9; proposal for `coord/INTERFACES/finder_box.md` (it extends `finder_stop.md` of
+Owner core. Release **core-v0.9** (branch `core/faces-finder`, batch 34a, 2026-11-27,
+source ad54460e, merged into `core/nrpic` at 8139c969). Ready to be copied to
+`coord/INTERFACES/finder_box.md` by the release clerk (it extends `finder_stop.md` of
 core-v0.8). Requests served: Track A `finder-false-accept-and-stall-p0l6` and
 `finder-slow-convergence-box` (decision 0047 items 4 and 6; condition (b) of the track's
-gate G2). Evidence and every number: `tracks/core/JOURNAL-faces-finder.md` (entries 1 to
-3, 6); scripts `tracks/core/analysis/faces_finder/finder_box.py`, `fig_finder.py`,
-`finder_bytes.py`, cases `case_*.json` there. Executables:
-`/data/haiyangw/nrpic/scratch/core/exe/core_faces-finder/` (READY there). The restart
+gate G2); Track C `finder-start-stop-defaults` (section 0). Evidence and every number:
+`tracks/core/JOURNAL-faces-finder.md` (entries 1 to 3, 6); scripts
+`tracks/core/analysis/faces_finder/finder_box.py`, `fig_finder.py`, `finder_bytes.py`,
+`card_check.py`, cases `case_*.json` there. Executables of the release:
+`/data/haiyangw/nrpic/scratch/core/exe/core_nrpic_v09/` (READY there); the branch's
+`scratch/core/exe/core_faces-finder/` holds builds of the same source. The restart
 files are Track A's: S1L `scratch/A-emd-pbh/A-20261123-025907-97bab8d/rst/peak.00019.rst`
 (t = 220, triaxial, four levels), P0L6 `scratch/A-emd-pbh/A-20261125-044641-7d5bd16/rst/
 peak.00017.rst` (t = 140, six levels) and `peak.00016.rst` (t = 130, no trapped round
 sphere by the track's scan).
+
+## 0. A deck without `puncture_setup` must set `start_time_<n>` and `stop_time_<n>` [VERIFIED by reading; decision 0049 item 3]
+
+The finder searches for horizon n only while `start_time_<n> <= t <= stop_time_<n>`.
+When absent, `start_time_<n>` is the largest double and `stop_time_<n>` is -1
+(`z4c/fastflow.cpp` lines 177 to 179 at ad54460e), so with the defaults the finder never
+searches: `FastFlow::Write`, `Find` and `MetricDerivatives` return at once (lines 482,
+576, 771). The summary file gets its header and nothing else, and with `diagnostics =
+true` no status file is written at all. `<problem> puncture_setup = true` sets them for
+each puncture's horizon (0 and 1e30, `pgen/nrpic/nrpic_puncture_setup.hpp` lines 182 to
+183), so puncture decks of `nrpic_cf` that use it search; every other deck of `nrpic_cf`
+or `nrpic_cosmo` that uses the finder (a cluster, a ball, a box) names both:
+
+```
+<fastflow>
+num_horizons   = 1
+start_time_0   = 0.0      # or the first time at which a horizon may exist
+stop_time_0    = 1.0e30
+```
+
+Track C's smoke tests (threaded build of core-v0.8): without the keys no status file
+(run C-20261128-021146-0f3b8f2); with `start_time_0 = 0`, `stop_time_0 = 1e4` status
+rows from t = 0 on (run C-20261128-021714-46cc308). The defaults are not changed in this
+release: a change would make every deck that names `num_horizons` without the times
+start to search (and cost time), and outputs of such runs would change [JUDGEMENT]. The two
+keys are read at every start, so a continued run can be given them on the command line
+(`restart_parameters.md`).
 
 ## 1. What limits the convergence [VERIFIED for the step; the rate at a horizon by the Schwarzschild case]
 
@@ -155,7 +185,15 @@ core-20261128-000846-a3722c7 (`fig_finder.py`; journal entry 6).
 
 Without the options the finder writes the bytes of core-v0.8: `finder_bytes.py` on
 `problems/tests/by_horizon_coarse.athinput` and `finder_polish.athinput` with
-diagnostics (journal entry 6, READY).
+diagnostics (journal entry 6, run core-20261128-000807-e413b5e; again with the merged
+tree, run core-20261128-020317-73134bb).
+
+**On a card** [VERIFIED; card check of the release, run core-20261128-052151-e5a2d55,
+shared-queue entry q0094, job 5601; judged by core-20261128-072820-d5fa2ca,
+`card_check.py`, figure `fig_card_check.png`]: the six S1L members of the weighted flow
+(with and without scan, check and polishing) are found on the card as on the processors
+(run core-20261127-235215-27c6606), with the same iteration counts; area masses equal to
+1e-15 relative, column 16 to 3e-16, scan start 0.1615097240063816 identical.
 
 ## 5. What is not done, and limits
 
@@ -182,4 +220,6 @@ diagnostics (journal entry 6, READY).
   trapped the search ends by "mean radius negative" (reason 4) or "area mass below
   1e-10" (reason 5), not by the cap. `flow_alpha_beta_const_<n> = 0.5` halves the step
   (found after 156 instead of 127 iterations on S1L).
-- Card build: one check queued (READY, journal). Several ranks: not tested.
+- Card build: checked on one file (above); not timed against the processors. Several
+  ranks: not tested. The weighted flow on punctures: not tested (Tracks C, D, F keep the
+  default flow).

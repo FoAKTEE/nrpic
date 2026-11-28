@@ -1,13 +1,15 @@
 # Parameters that the restart file does not hold, given to a continued run
 
-Owner core. Branch `core/faces-finder` (batch 34a, 2026-11-27), candidate for release
-core-v0.9; proposal for `coord/INTERFACES/restart_parameters.md`. Item 1 of
+Owner core. Release **core-v0.9** (branch `core/faces-finder`, batch 34a, 2026-11-27,
+source ad54460e, merged into `core/nrpic` at 8139c969). Ready to be copied to
+`coord/INTERFACES/restart_parameters.md` by the release clerk. Item 1 of
 `tracks/core/NEXT_SOURCE.md` (decision 0042 item 4; Track D and Track F: `<fastflow>
 diagnostics` in chains started without it; Track B `restart-new-parameters`: `<z4c>
 dt_gauge`, `dt_lightspeed`; Track F `finder-diagnostics-on-restart`). Evidence:
 `tracks/core/JOURNAL-faces-finder.md` (entries 3 and 5), run
 core-20261127-234458-4baaaa4, script `tracks/core/analysis/restart_diag/diag_restart.py`.
-Executables: `/data/haiyangw/nrpic/scratch/core/exe/core_faces-finder/`.
+Executables of the release: `/data/haiyangw/nrpic/scratch/core/exe/core_nrpic_v09/` (READY
+there).
 
 ## 1. What changes [VERIFIED]
 
@@ -58,7 +60,13 @@ every cycle; continuations to cycle 2), expectations of prediction R:
 | R2 | `-r rst zz_block/x=1` (a block the input does not hold) | exit 0, log line `<zz_block> x = 1` (run core-20261128-001433-ddd0f14) |
 
 The restart files that case a wrote hold `diagnostics = true # added from the command
-line on restart` in their stored input.
+line on restart` in their stored input. The same script with the merged tree of the
+release: F1a to F1e held (run core-20261128-020255-72e53c6).
+
+On a card [VERIFIED; card check of the release, run core-20261128-052151-e5a2d55, case
+`rst_add`, judged by core-20261128-072820-d5fa2ca]: a continued run given
+`fastflow/diagnostics=true` on the command line exits 0, writes the status file, and logs
+"Parameter added on restart from the command line: <fastflow> diagnostics = true".
 
 ## 3. For chains
 
@@ -69,9 +77,13 @@ For a chain that is continued from its restart file by a wrapper (`nrpic-queue a
 '...'`, or the chain script started on a run directory that already holds restart
 files), the arguments reach only continued segments and the new rule applies: this is
 the case of Tracks D and F (finder diagnostics and the finder options of core-v0.8 and
-of this branch in running chains) and of Track B (`dt_gauge`). Not tested inside a chain
-on a card in this session [TO VERIFY by the first track that uses it; the processor test
-above is the same code path].
+of this release in running chains) and of Track B (`dt_gauge`). Tested on one continued
+run on processors and on a card (section 2), not inside a chain [TO VERIFY by the first
+track that uses it; it is the same code path]. A chain started before core-v0.9 that is
+continued with the executables of core-v0.9 takes the additions at its first segment
+under core-v0.9. The release does not change the format of restart files [by reading
+the diff ad54460e against core-v0.8: only the stored input text gains the added lines];
+a continuation across the two executables was not run [TO VERIFY].
 
 Options that are read only at the start of a run and whose state is in the restart file
 are not made changeable by this: what a parameter does when it appears in a continued
