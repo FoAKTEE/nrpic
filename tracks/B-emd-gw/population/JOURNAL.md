@@ -1312,3 +1312,31 @@ momentum ratio rises through 1.45 at a = 36 to 2.16 near a = 64). [VERIFIED by t
   a = 49; the note's "from a ~ 36 on ... 1.7 to 2.2" was wrong and is corrected (verifier a).
 Reading [JUDGEMENT]: the one-per-cell ratio is 1.05-1.41 by any interpolating pairing, against
 1.6-2.3 at eight per cell; the verifier's correction b changes digits, not the conclusion of C3.
+
+## 2026-11-27 19:36 PST (lead of batch 39): the 128^3 member at eight per cell with the Gamma-driver shift; predictions G8a-G8c, before it is queued
+
+Gate G2 is HELD (coord/GATES.md 2026-11-27; decision 0050): the convergence item fails as worded
+after a = 50, because the band strain differs between the gauges (0.950, 0.803, 0.643 at a = 64,
+100, 132; reviewer's run B-20261128-032405-7c4aa64) and its particle-number leg was run only with
+zero shift. Decision 0050 item 2(b) names this member. Deck and options exactly those of the
+128^3 one-per-cell Gamma-driver leg B-20261124-210431-6bf48af (shift_Gamma 0.75, shift_eta 1.0,
+shift and lapse advection 1; default outputs, Z4c dumps every 0.25), only the two files changed
+to the eight-per-cell data B-20261124-135029-3fe13f6 (those of q0006). Executable: the release
+build core-v0.8 (`.work/build_gpu_v08`), not the core-v0.6 build of the partner; core-v0.7 and
+v0.8 change no output of an uninterrupted run (byte regression 75 of 75, tracks/core/CHANGELOG.md
+lines 26-31 and 177-200) [VERIFIED by those records, not by me].
+- G8a (particle number, the gauge the strain is read in). Band rms |k| <= 8 k_f (compare_legs.py
+  band_rms2, corrected spectra), eight over one per cell, both Gamma driver: within 1 per cent at
+  a = 64 and 100 and within 2 per cent at a = 132 (zero shift gave 2.0e-3 at worst, RC1). The
+  prediction fails between those bounds and 5 per cent; convergence in particle number is
+  REFUTED if the ratio leaves 0.95-1.05 at any of a = 64, 100, 132: then the late Gamma-driver
+  strain carries a particle-number error as large as the gauge difference it is meant to settle.
+  Corollary: the eight-per-cell gauge ratio (Gamma driver over q0006's zero shift) reproduces
+  0.950, 0.803, 0.643 within 2 per cent each; if not, the gauge dependence depends on sampling.
+- G8b (gate review K1 at 128^3: the driven shift holds at eight per cell). The chain reaches
+  t = 22 (a = 144) with no guard stop (exit 3) and no non-finite field; the mean relative momentum
+  constraint at a = 141 lies at or below the one-per-cell Gamma-driver member's (0.18-0.20, C3
+  reservation iii) and near the eight-per-cell zero-shift value (about 0.07). Refuted by a guard
+  stop or a stop before a = 132, or a momentum constraint above the one-per-cell member's.
+- G8c (cost). 0.6-1.2 card-h (126.8 s per unit t of the zero-shift eight-per-cell member,
+  B-20261128-030350-19295a4, times 22, plus the shift); refuted above 2 (the cap of the entry).
