@@ -1,0 +1,12 @@
+{
+ "name": "38 (2026-11-27 evening: gate review)",
+ "what": "independent review of gate G2 of Track B",
+ "note": "Release core-v0.8 is on main. Rulings: coord/DECISIONS/0039 to 0049. Track B's G2 package: a fresh verifier reported (stage/G2/VERIFIER.md) and the lead answered its corrections; a full checksum pass passed (13883 files, 1167 GB). Failures on record by ruling (decisions 0046 item 2, 0048 item 3, 0049 items 1 and 7): the shearing-dust case as run (it moves away from the reference code with each refinement; a run free of stream crossing converges; that streams cross in the case as run is an inference, no snapshot shows it); the constraints at one particle per cell do not fall with the spacing (they do at eight per cell); the halo catalogue at one particle per cell is not converged with the mesh; the gauge leg of item C2 is an identified dependence on the gauge, not a convergence (the band strain differs by 20 per cent between the two gauges at a = 100); the zero-shift gauge fails at 256 cells. One member is pending and will not be read for two or three days: 256 cells at eight particles per cell (its initial data are being solved). Judge whether the gate (a verified capability for this track's science: gravitational waves from structure in an early matter era) can be passed with those failures stated and that member pending, and under which conditions for G3; say whether the pending member's outcome could change your verdict; do not reword a criterion; say plainly if the answer is no and what would change it. Compare what the track's own scope text asks of G2 with what the checklist holds.",
+ "items": [
+  {
+   "type": "gate",
+   "owner": "B-emd-gw",
+   "gate": "G2"
+  }
+ ]
+}

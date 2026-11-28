@@ -1,0 +1,12 @@
+{
+ "name": "36 (2026-11-27 evening, short)",
+ "what": "Track E enters again the G3 members whose jobs were preempted",
+ "note": "Rulings: coord/DECISIONS/0039 to 0048. The week's usage is budgeted: this is a short session with one aim. Prediction before every new run; at most 6 cores.",
+ "items": [
+  {
+   "type": "lead",
+   "owner": "E-stoch-inf",
+   "extra": "Extra for this session: a SHORT one, about thirty minutes, with one aim. The shared queue is corrected (the orchestrator's note of 2026-11-28 02:30Z in your inbox; decision 0048 item 9): `harness/bin/nrpic-queue audit --owner E-stoch-inf` lists fifteen of your G3 entries whose batch job was PREEMPTED although the queue had called them done (q0065, q0066, q0071 to q0079, q0082 to q0084, q0087). (1) From each run's batch.list.status and outputs, work out which members of the baseline pairs and of the level-2 pairs are still missing; close the preempted runs (nrpic-run finish). (2) Enter the missing members again at priority 2, several per job, six entries at most; from now on a preempted batch entry is dispatched again by itself, at most twice, so do not enter spares. (3) HANDOFF with the entry ids, what each holds and how many pairs the gate will have when they are done; one journal entry; commit, push. No analysis, no stage package."
+  }
+ ]
+}

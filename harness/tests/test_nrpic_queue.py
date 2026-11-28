@@ -25,7 +25,12 @@ status says HUNG for a stopped dispatcher; STOP; restart from the files; a job i
 the entry's own run-id name, never by a generic name (second review W1, W2, R2); jobs submitted through a
 dispatch carry nothing of the Slurm stubs on their PATH; the cap keeper reports and cancels nothing in the
 scenarios (a) to (f) and in R1 (a chain between two segments), one report per set of job ids, not halting;
-`squeue -r` counts array tasks; the pause flag does not stop submissions (decision 0026 item 2).
+`squeue -r` counts array tasks; the pause flag does not stop submissions (decision 0026 item 2). Decision 0048
+item 6 (outcomes, with the scripted fake sacct): a preempted batch job goes back to waiting and is dispatched
+again, at most twice, then the entry is incomplete; a completed one is done, also when sacct does not know its job
+at the first two looks; a chain whose last job completed but whose chain/STATUS is FAILED (Slurm refused its
+resubmission) is incomplete and not retried; sacct unreadable gives `unknown`; --after an incomplete entry is
+blocked; `audit` lists a done entry whose job was preempted and changes nothing.
 """
 import calendar
 import json
@@ -369,7 +374,10 @@ def refusal(t, c):
          "run id)", json.dumps(e)[:2000] + log)
     sh = t.q(A, ["show", r1 or "q9999"]).stdout
     c.ok(f"nrpic-run finish {rid}" in sh, "show names the run and how to close it", sh[-800:])
-    c.ok(wait_until(lambda: t.state("r1") == "done", 120), "its batch job ends: the entry is done")
+    c.ok(wait_until(lambda: t.state("r1") == "done", 120)
+         and [x.get("state") for x in t.e("r1").get("acct") or []] == ["COMPLETED"]
+         and "every job COMPLETED" in t.e("r1").get("end_reason", ""),
+         "its batch job ends: the entry is done, the accounting record (COMPLETED) recorded", json.dumps(t.e("r1"))[:1500])
     brun = os.path.join(B, "tracks", "B-emd-gw", "runs")
     bruns0, bhead0 = sorted(os.listdir(brun)), t.head(B)
     r = F.sh([os.path.join(B, "harness", "bin", "nrpic-run"), "submit", "--kind", "scouting", "--gate", "G1",
@@ -908,6 +916,191 @@ def keeper(t, c):
     t.mon_pause = False
 
 
+WAITEXE = r"""#!/bin/bash
+# fake athena of a batch that the queue self-test preempts or lets complete: runs until @REL@/job-<its job id>
+echo "Setup complete"
+for ((i = 0; i < 3000; i++)); do [[ -e "@REL@/job-$SLURM_JOB_ID" ]] && break; sleep 0.2; done
+echo "time=5.0e-01 cycle=5 dt=1.0e-01"
+echo "Terminating on time limit"
+"""
+
+RFEXE = r"""#!/bin/bash
+# fake athena of a chain whose resubmission Slurm refuses (decision 0048 item 6): segment 1 makes the fake sbatch
+# refuse the next submission, then stops at its wall clock (restart written, cycle advanced: the chain resubmits)
+mode=; d=.
+while [[ $# -gt 0 ]]; do
+  case $1 in -i) mode=i; shift 2 ;; -r) mode=r; shift 2 ;; -d) d=$2; shift 2 ;; *) shift ;; esac
+done
+mkdir -p "$d/rst"
+echo "Setup complete"
+echo rst1 > "$d/rst/fake.00001.rst"
+echo 1 > "@STATE@/sbatch_refuse"
+echo "time=5.0e-01 cycle=5 dt=1.0e-01"
+echo "Terminating on wall clock limit"
+"""
+
+
+def quiet(t):
+    """Release every job of the test and wait until no entry is submitted or submitting any more (the outcome of
+    each read) and nothing may be dispatched."""
+    t.settle()
+
+    def calm():
+        ed = os.path.join(t.qdir, "entries")
+        for fn in os.listdir(ed):
+            if json.load(open(os.path.join(ed, fn))).get("state") in ("submitted", "submitting"):
+                return False
+        return "next, in order:" not in t.q(t.repo, ["status"]).stdout
+    return wait_until(calm, 90)
+
+
+def outcomes(t, c):
+    """Decision 0048 item 6: when an entry's jobs have left squeue its outcome is read, from the accounting record
+    (the fake sacct, scripted) and for a chain from chain/STATUS. A preempted batch goes back to waiting and is
+    dispatched again, at most twice, then stays incomplete; a completed batch is done, also when sacct does not know
+    its job at the first two looks; a chain whose last job completed but whose STATUS is FAILED (Slurm refused its
+    resubmission) is incomplete and not retried; sacct unreadable gives `unknown`; --after an incomplete entry is
+    blocked; `audit` lists a done entry whose job was preempted and changes nothing."""
+    c.ok(quiet(t), "outcomes: every job released, no entry submitted, nothing to dispatch")
+    waitexe = os.path.join(t.fx["root"], "waitexe.sh")
+    F.write_exe(waitexe, WAITEXE.replace("@REL@", t.rel))
+    st = t.fx["state"]
+    dout = os.path.join(t.fx["root"], "dispatcher.out")
+
+    def batch(owner, purpose):
+        return ["--", "--kind", "scouting", "--gate", "G1", "--purpose", purpose, "--launcher", "batch", "--list",
+                f"tracks/{owner}/q/batch.txt", "--wall", "00:10:00", "--exe", waitexe]
+    # (1) a batch whose job is preempted three times
+    r, pb = t.add(t.A, "pb", batch("A-emd-pbh", "a batch preempted three times"))
+    seen, rids, back = [], [], []
+    for k in range(3):
+        ok = wait_until(lambda: t.state("pb") == "submitted" and (t.e("pb").get("job_ids") or ["-"])[0] not in seen, 90)
+        if not c.ok(ok, f"pb: dispatch {k + 1} submitted (a batch through nrpic-run)", json.dumps(t.e("pb"))[:1500]
+                    + t.log()[-1200:]):
+            return
+        jid = t.e("pb")["job_ids"][0]
+        seen.append(jid)
+        rids.append(t.e("pb")["run_id"])
+        t.names.add(f"job-{jid}")
+        open(os.path.join(st, jid, "sacct_state"), "w").write("PREEMPTED")
+        t.release(f"job-{jid}")
+        if k < 2:
+            ok = wait_until(lambda: t.e("pb").get("auto_retries") == k + 1, 60, 0.05)
+            back.append(ok and t.state("pb") in ("waiting", "submitting", "submitted"))
+    ok = wait_until(lambda: t.state("pb") == "incomplete", 60)
+    time.sleep(2)                                        # four looks: it stays incomplete, no third retry
+    e = t.e("pb")
+    ev = [h["event"] for h in e.get("history", [])]
+    c.ok(ok and all(back) and len(set(seen)) == 3 and e["state"] == "incomplete" and e.get("auto_retries") == 2
+         and e.get("attempts") == 3 and [x.get("run_id") for x in e.get("earlier_runs", [])] == rids[:2]
+         and e.get("run_id") == rids[2] and "PREEMPTED" in e.get("end_reason", "")
+         and "automatic retries used: 2 of 2" in e["end_reason"] and seen[2] in e["end_reason"]
+         and sum("back to waiting automatically" in x for x in ev) == 2,
+         f"a preempted batch job goes back to waiting and is dispatched again, at most twice (jobs {seen}, runs "
+         f"{rids}); the third preemption leaves it incomplete with the reason and its job id, and it stays so",
+         json.dumps(e)[:2500])
+    log = t.log()
+    c.ok(log.count(f"preempted {pb} ") == 2 and f"ENDED WITHOUT COMPLETING {pb} " in log
+         and f"ENDED WITHOUT COMPLETING {pb} " in open(dout).read(),
+         "the log says each automatic retry, and loudly (also on the dispatcher's stderr) that it ended without "
+         "completing", log[-1500:])
+    lst, sta, sh = (t.q(t.repo, a).stdout for a in (["list"], ["status"], ["show", pb or "q9999"]))
+    c.ok(re.search(rf"^{pb} .* incomplete .*ended without completing: job {seen[2]} PREEMPTED", lst, re.M)
+         and re.search(rf"^  ended without completing: {pb} A-emd-pbh/pb: job {seen[2]} PREEMPTED", sta, re.M)
+         and sh.count("earlier attempt: run ") == 2 and f"nrpic-run finish {rids[0]}" in sh
+         and f"nrpic-queue retry {pb}" in sh,
+         "list, status ('ended without completing: ...') and show (its earlier runs to close, what to do) say it",
+         lst[-600:] + sta[-800:] + sh[-1500:])
+    # (2) an entry --after an incomplete one is blocked
+    r, pa = t.add(t.A, "pa", ["--after", "pb"] + t.hold_cmd("pa"))
+    time.sleep(1.5)
+    sta = t.q(t.repo, ["status"]).stdout
+    c.ok(pa and t.state("pa") == "waiting" and re.search(rf"blocked: {pa} .*which ended without completing", sta),
+         "--after an entry that ended without completing: blocked, status says why", sta[-800:])
+    t.q(t.A, ["remove", pa or "q9999"])
+    # (3) a batch that completes while sacct does not know its job at the first two looks
+    r, pc = t.add(t.B, "pc", batch("B-emd-gw", "a batch that completes; sacct lags by two looks"))
+    ok = wait_until(lambda: t.state("pc") == "submitted", 90)
+    jc = (t.e("pc").get("job_ids") or ["?"])[0] if ok else "?"
+    t.names.add(f"job-{jc}")
+    if ok:
+        open(os.path.join(st, jc, "sacct_hide"), "w").write("2")
+    waited = []
+    t.release(f"job-{jc}")
+    ok = wait_until(lambda: waited.append(t.e("pc").get("acct_looks") or 0) or t.state("pc") != "submitted", 60, 0.05)
+    e = t.e("pc")
+    c.ok(ok and e["state"] == "done" and max(waited) >= 1 and [x["state"] for x in e.get("acct") or []] == ["COMPLETED"]
+         and "every job COMPLETED" in e.get("end_reason", "") and not e.get("auto_retries")
+         and any("waits for the accounting record" in h["event"] for h in e["history"])
+         and open(os.path.join(st, jc, "sacct_hide")).read().strip() == "0",
+         f"a completed batch job unknown to sacct for the first two looks: the entry waits for the record "
+         f"({max(waited or [0])} looks), then is done (COMPLETED recorded)", json.dumps(e)[:1500])
+    # (4) a chain whose last job completed but whose chain/STATUS is FAILED: Slurm refused its resubmission
+    rfexe = os.path.join(t.fx["root"], "rfexe.sh")
+    F.write_exe(rfexe, RFEXE.replace("@STATE@", st))
+    deck = "tracks/A-emd-pbh/q/rfchain.athinput"
+    F.commit_file(t.A, deck, "<problem>\npgen_name = fake_chain\n<output9>\nfile_type = rst\ndcycle = 5\n")
+    r, rf = t.add(t.A, "rf", ["--", "--kind", "scouting", "--gate", "G1", "--purpose", "a chain whose resubmission "
+                              "Slurm refuses", "--launcher", "chain", "--gpu-hours", "2", "--exe", rfexe, "--", deck,
+                              "time/tlim=1"])
+    ok = wait_until(lambda: t.state("rf") not in ("waiting", "submitting", "submitted", None), 120)
+    time.sleep(2)
+    e = t.e("rf")
+    acct = e.get("acct") or [{}]
+    c.ok(ok and e["state"] == "incomplete" and e.get("chain_status") == "FAILED" and acct[-1].get("state") == "COMPLETED"
+         and "sbatch failed after" in e.get("end_reason", "") and "did not reach its end" in e["end_reason"]
+         and e.get("attempts") == 1 and not e.get("auto_retries") and not os.path.exists(os.path.join(st, "sbatch_refuse")),
+         "a chain whose last job COMPLETED but whose chain/STATUS is FAILED (Slurm refused its resubmission) is "
+         "incomplete and is not retried", json.dumps(e)[:2000])
+    r = t.q(t.A, ["retry", rf or "q9999"])
+    sh = t.q(t.A, ["show", rf or "q9999"]).stdout
+    c.ok(r.returncode == 1 and "--from-zero" in r.stderr and t.state("rf") == "incomplete" and "-cont --cmd" in sh,
+         "retry of a chain that did not reach its end is refused without --from-zero; show says to continue it",
+         r.stderr + sh[-800:])
+    # (5) sacct cannot be read: left the queue, outcome unknown
+    r, u1 = t.add(t.C, "u1", t.hold_cmd("u1"))
+    ok = wait_until(lambda: t.state("u1") == "submitted", 30)
+    down = os.path.join(st, "sacct_down")
+    open(down, "w").close()
+    try:
+        t.release("u1")
+        ok = ok and wait_until(lambda: t.state("u1") != "submitted", 60)
+        e = t.e("u1")
+    finally:
+        os.remove(down)
+    sta = t.q(t.repo, ["status"]).stdout
+    c.ok(ok and e["state"] == "unknown" and "sacct could not be read" in e.get("end_reason", "")
+         and f"at {5} looks" in e["end_reason"] and f"OUTCOME UNKNOWN {u1} " in t.log()
+         and f"OUTCOME UNKNOWN {u1} " in open(dout).read()
+         and re.search(rf"^  left the queue, outcome unknown: {u1} C-sidm/u1: ", sta, re.M),
+         "sacct unreadable at every look: the entry is unknown (not done), the log says so loudly, status shows it",
+         json.dumps(e)[:1200] + sta[-600:])
+    r = t.q(t.C, ["mark-done", u1 or "q9999"])
+    r2 = t.q(t.A, ["mark-done", pb or "q9999"])
+    c.ok(r.returncode == 0 and t.state("u1") == "done" and r2.returncode == 0 and t.state("pb") == "done"
+         and t.e("pb").get("marked_done_by") == "A-emd-pbh",
+         "mark-done: the owner accepts an unknown and an incomplete entry", r.stderr + r2.stderr)
+    t.q(t.A, ["mark-done", rf or "q9999"])
+    # (6) audit: a done entry whose job the accounting record says was preempted (as the old rule left them)
+    open(os.path.join(st, jc, "sacct_state"), "w").write("PREEMPTED")
+    ed = os.path.join(t.qdir, "entries")
+    snap = {fn: open(os.path.join(ed, fn)).read() for fn in os.listdir(ed)}
+    r = t.q(t.B, ["audit"])
+    ra = t.q(t.repo, ["audit", "--all", "--owner", "A"])
+    same = snap == {fn: open(os.path.join(ed, fn)).read() for fn in os.listdir(ed)}
+    c1, ch1 = t.ids.get("c1"), t.ids.get("ch1")
+    c.ok(r.returncode == 0 and re.search(rf"^{pc} .* done +NOT COMPLETED .*{jc} PREEMPTED", r.stdout, re.M)
+         and re.search(rf"^{c1} .* done +completed .*COMPLETED", r.stdout, re.M)
+         and re.search(rf"^{ch1} .* done +completed .*chain/STATUS DONE", r.stdout, re.M)
+         and re.search(r"NOT COMPLETED", r.stdout.splitlines()[-2] + r.stdout.splitlines()[-1])
+         and ra.returncode == 0 and re.search(rf"^{rf} .* NOT COMPLETED .*chain/STATUS FAILED", ra.stdout, re.M)
+         and same and "audit" not in t.log(),
+         "audit lists a done entry whose job was preempted (NOT COMPLETED), completed ones and a chain that reached its "
+         "end as completed, --all also other ended entries; it changes nothing", r.stdout[-2500:] + ra.stdout[-800:]
+         + r.stderr)
+    quiet(t)
+
+
 def attribution(t, c):
     """Second review W1 (second half), W2, R2: a job is the entry's by its id (printed and new at its dispatch) or
     by the entry's own run-id name, never by a generic name; and the PATH of jobs submitted through a dispatch
@@ -992,6 +1185,7 @@ def main():
             exception(t, c)
             alert(t, c)
             attribution(t, c)
+            outcomes(t, c)
             keeper(t, c)
         r = t.q(t.repo, ["stop", "--wait", "30"])
         arrays(t, c)
