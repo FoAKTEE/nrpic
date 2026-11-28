@@ -38,7 +38,7 @@ def files(d):
     out = {}
     for root, _, fs in os.walk(d):
         for f in fs:
-            if f in ("athena.log", "in.athinput"):
+            if f in ("athena.log", "in.athinput", "infall.nrp"):
                 continue
             p = os.path.join(root, f)
             out[os.path.relpath(p, d)] = open(p, "rb").read()
@@ -66,6 +66,12 @@ def main():
             os.makedirs(d, exist_ok=True)
             with open(os.path.join(d, "in.athinput"), "w") as f:
                 f.write(txt)
+            if name == "finder_polish" and not os.path.exists(os.path.join(d, "infall.nrp")):
+                # the particle file of that deck, as its own test makes it
+                sys.path.insert(0, os.path.join(REPO, "tracks", "core", "analysis",
+                                                "restart_finder"))
+                from finder_test import make_infall
+                make_infall(os.path.join(d, "infall.nrp"))
             log = open(os.path.join(d, "athena.log"), "w")
             procs.append((name, tag, subprocess.Popen([exe, "-i", "in.athinput"] + args,
                                                       cwd=d, stdout=log,
