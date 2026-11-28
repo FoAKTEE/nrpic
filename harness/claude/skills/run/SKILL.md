@@ -26,7 +26,10 @@ Start (relative paths are relative to the worktree root):
   --launcher chain --gpu-hours H -- <athinput> [args]` (wraps scripts/submit_chain.sh; at most floor(H /
   59 min) segments). The input needs a restart output block. `nrpic-queue status` and `list` show the
   queue; harness/RULES.md section "Shared card queue" has the rest (--after, a wrapper that continues a
-  cut chain with --cmd, which calls `nrpic-queue check-dispatch`).
+  cut chain with --cmd, which calls `nrpic-queue check-dispatch`). An entry is `done` only when its jobs
+  completed (a chain: its chain/STATUS is DONE); one preempted, cancelled, failed or cut is `incomplete`
+  ("ended without completing" in `status`; a preempted batch goes back to waiting by itself at most twice, a
+  chain never): `nrpic-queue show ID` says what to do (retry, continue the chain, or mark-done).
 - `--exe` defaults to the main checkout's card executable; give your own build
   (`harness/bin/nrpic-env build gpu`) only if you changed source. `--input` adds files to checksum,
   `--parent` names runs whose outputs are inputs.

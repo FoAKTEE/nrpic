@@ -19,9 +19,16 @@ reports an excess that came in by any way; it cancels nothing.
     harness/bin/nrpic-queue show ID
     harness/bin/nrpic-queue status
     harness/bin/nrpic-queue remove ID          a waiting entry (an owner its own entries, orch any)
-    harness/bin/nrpic-queue retry ID           a failed entry back to waiting (same rule; not while a job of it
-                                               is queued)
-    harness/bin/nrpic-queue mark-done ID       a submitted or failed entry of which no job is queued
+    harness/bin/nrpic-queue retry ID [--from-zero]
+                                               a failed, incomplete or unknown entry back to waiting (same rule;
+                                               not while a job of it is queued; a chain that did not reach its
+                                               end only with --from-zero: its run starts again from zero)
+    harness/bin/nrpic-queue mark-done ID       a submitted, failed, incomplete or unknown entry of which no job
+                                               is queued (the owner accepts it as it is)
+    harness/bin/nrpic-queue audit [--all] [--owner ID]
+                                               read-only: the accounting state (sacct) of the jobs of every done
+                                               entry (--all: also incomplete and unknown ones), and a chain's
+                                               chain/STATUS: finds the entries the old rule marked done
     harness/bin/nrpic-queue check-dispatch     exit 0 only inside a valid dispatch (for --cmd wrappers)
     harness/bin/nrpic-queue run [--poll S] [--cmd-timeout S] [--keeper S] [--keeper-confirm S]   (orch)
     harness/bin/nrpic-queue stop [--wait S]                                                       (orch)
@@ -41,8 +48,8 @@ Who and where (identity from the path). A command that changes the queue (add, r
 run, stop, clear-alert) acts on the worktree the caller stands in; -C must name that same worktree, except
 for the orchestrator standing in the main checkout, who may name any (`-C wt/<ID> add ...` queues a run for
 that owner). From a data root of the main checkout (scratch/, locks/, ...) or outside a worktree these
-commands refuse. run, stop and clear-alert need the caller in the main checkout. list, show, status read
-from anywhere. Any copy of this command may be called; the state belongs to the machine.
+commands refuse. run, stop and clear-alert need the caller in the main checkout. list, show, status, audit
+read from anywhere. Any copy of this command may be called; the state belongs to the machine.
 
 Entries. Either the arguments of an `nrpic-run submit` call after `--` (a leading `submit` or
 `harness/bin/nrpic-run submit` is dropped; the launcher must be batch or chain; `nrpic-run submit
@@ -50,8 +57,9 @@ Entries. Either the arguments of an `nrpic-run submit` call after `--` (a leadin
 one job, run with bash in the worktree root (a wrapper that continues a cut chain from its restart file;
 it tests its dispatch with `nrpic-queue check-dispatch`, never by the marker being set: a job the wrapper
 submits itself inherits the variable). --after LABEL: wait until that entry of the same owner (the last one
-added with that label) is done, that is until none of its jobs is in squeue; an entry after one that failed
-or was removed stays blocked until that one is retried or this one removed. --priority N: 0 first, default
+added with that label) is done (its jobs have left squeue and completed, see States); an entry after one that
+failed, ended without completing (incomplete), ended with its outcome unknown or was removed stays blocked
+until that one is retried or marked done, or this one removed. --priority N: 0 first, default
 5; 0 and 1 are the orchestrator's (0 for runs a user request waits for; 2 for runs a gate package waits
 for); a waiting entry improves by one class per AGING_HOURS (8) hours, never past 1, so nothing starves
 (`list` shows the effective priority). Labels are 1 to 48 of [A-Za-z0-9._-], unique per owner among entries
@@ -59,9 +67,35 @@ not done or removed.
 
 States. waiting -> submitting (the dispatcher runs its command) -> submitted (the command exited 0; the
 run id and Slurm job ids it printed are kept, and the job's name: nrpic-run names a job after its run id,
-and a chain resubmits itself under that name) -> done (no job of that name or id in squeue at two looks
-in a row). failed: the command exited non-zero for another reason than those below, timed out
-(--cmd-timeout, default 900 s), or was running when the dispatcher ended; what it submitted is recorded
+and a chain resubmits itself under that name). When no job of that name or id has been in squeue at two
+looks in a row, the outcome is read (decision 0048 item 6), for a chain from its own chain/STATUS
+(scripts/submit_chain.sh; the directory its command printed, else scratch/<owner>/<run id>/chain), for every
+other entry from the accounting record (`sacct -n -P -X -j <ids> -o JobID,State,ExitCode,Elapsed`, 60 s
+timeout), and recorded in the entry (acct, end_reason, chain_status):
+  done        every job COMPLETED; a chain: chain/STATUS DONE (it reached its end; a segment preempted on the
+              way was continued by the chain itself). For a batch, done says the Slurm job completed: whether
+              each member succeeded is in its batch.list.status and `nrpic-run finish`.
+  incomplete  ended without completing: a job PREEMPTED, CANCELLED, FAILED, TIMEOUT, NODE_FAIL, OUT_OF_MEMORY
+              (BOOT_FAIL, DEADLINE, REVOKED), or a chain whose chain/STATUS is not DONE (FAILED, STOPPED, or
+              QUEUED/RUNNING with no job queued: left between segments, e.g. Slurm refused its resubmission).
+              The reason and the job ids are recorded; list, show and status say "ended without completing: ...".
+              Exception: a batch entry (launcher batch, no chain) whose one job was PREEMPTED goes back to waiting
+              by itself, at most AUTO_RETRIES (2) times per entry (auto_retries, earlier_runs; a retry by hand
+              does not renew the count), since a preempted batch job starts again from its beginning without
+              harm; the run it leaves stays registered for its owner to close (`nrpic-run finish`); after the
+              second retry the next preemption leaves it incomplete. A chain, and a --cmd entry, is never retried
+              by itself: a restart of a chain entry would start its run again from zero; its owner continues it
+              (a --cmd entry with the wrapper), then marks this one done.
+  unknown     left the queue, outcome unknown: sacct did not answer, did not know a job, or still listed it as
+              running, at each of ACCT_LOOKS (5) looks after the jobs left squeue (sacct lags: the entry stays
+              submitted meanwhile, "waits for the accounting record"); or no job of the entry was ever
+              identified. Logged loudly (stderr of the dispatcher, nohup.out).
+What the owner does with an entry that is not done: show ID says it; then retry ID (incomplete, unknown and
+failed alike; a chain only with --from-zero), mark-done ID (accept it as it is), or for a chain continue it.
+`audit` lists the accounting state of the jobs of entries already done (the old rule marked every entry done
+whose jobs had left squeue, whatever had happened to them).
+failed: the command exited non-zero for another reason than those below, timed out (--cmd-timeout, default
+900 s), or was running when the dispatcher ended; what it submitted is recorded
 on every outcome, so retry and mark-done refuse while such a job is queued; `list` shows the first line of
 its stderr, `show` all of it. removed: by remove. A job is the entry's by its id (printed by its command and
 new at that dispatch, array tasks included), or by name only when the name is the entry's own run id (a
@@ -72,8 +106,9 @@ refused for the queue cap ("queue cap: ...": a job came in between the two count
 segment); nrpic-run refused because the worktree is not clean (tried again every fifth look until it is
 clean); the worktree is in the middle of a merge, rebase, cherry-pick or revert (passed over until it ends).
 
-The dispatcher, at each look (every POLL seconds, default 120): runs the cap keeper; marks submitted
-entries done; then, while the account has fewer than QUEUE_CAP jobs in squeue (harness/lib/nrpic_harness.py,
+The dispatcher, at each look (every POLL seconds, default 120): runs the cap keeper; reads the outcome of
+submitted entries whose jobs have left squeue (done, incomplete, unknown, or a preempted batch back to
+waiting); then, while the account has fewer than QUEUE_CAP jobs in squeue (harness/lib/nrpic_harness.py,
 the count nrpic-run uses; `squeue -r`, so every task of a job array counts) and an entry may be dispatched,
 takes the next one: the lowest effective priority; within it, the owner served longest ago (round robin);
 within the owner, the order of adding. It holds the machine's submit lock (locks/queue/submit.lock) from
@@ -122,15 +157,23 @@ sys.path.insert(0, os.path.join(os.path.dirname(os.path.realpath(__file__)), "..
 import nrpic_harness as H  # noqa: E402
 
 SCHEMA = "nrpic-queue-entry/1"
-OPEN_STATES = ("waiting", "submitting", "submitted", "failed")     # a label is unique among these, per owner
+# a label is unique among these, per owner (an entry that ended without completing waits for its owner too)
+OPEN_STATES = ("waiting", "submitting", "submitted", "failed", "incomplete", "unknown")
+ENDED_STATES = ("done", "incomplete", "unknown")     # its jobs have left the queue and the outcome was read
 POLL = 120.0
 CMD_TIMEOUT = 900.0        # nrpic-run waits up to five minutes for another writer's index.lock
-DONE_AFTER = 2             # looks in a row without a job of the entry in squeue
+DONE_AFTER = 2             # looks in a row without a job of the entry in squeue, then the outcome is read
+ACCT_LOOKS = 5             # looks to wait for the accounting record (sacct lags) before "outcome unknown"
+ACCT_TIMEOUT = 60.0        # seconds for one sacct call
+AUTO_RETRIES = 2           # a preempted batch entry goes back to waiting by itself at most this often
+OK_STATES = ("COMPLETED",)
+BAD_STATES = ("PREEMPTED", "CANCELLED", "FAILED", "TIMEOUT", "NODE_FAIL", "OUT_OF_MEMORY", "BOOT_FAIL",
+              "DEADLINE", "REVOKED")                 # final states of a job that did not complete
 KEEPER = 30.0              # the cap keeper counts the account's jobs this often (seconds), whatever --poll is
 KEEPER_CONFIRM = 20.0      # ... and acts only on an excess that lasted this long (a chain's hand-over: seconds)
 AGING_HOURS = 8            # a waiting entry's priority improves by one class per this many hours, never past 1
 HUNG_LOOKS = 3             # status says HUNG when the heartbeat is older than this many looks
-STATE_CHANGING = ("add", "remove", "retry", "mark-done", "run", "stop", "clear-alert")
+STATE_CHANGING = ("add", "remove", "retry", "mark-done", "run", "stop", "clear-alert")   # audit is read-only
 ORCH_ONLY = ("run", "stop", "clear-alert")
 DATA_ROOTS = ("scratch", "kb-data", "cache", "locks", "wt", "runs", ".work")   # as nrpic-ctx
 LABEL_RX = re.compile(r"[A-Za-z0-9][A-Za-z0-9._-]{0,47}")
@@ -434,6 +477,9 @@ def blocked_reason(e, by_id):
     if a["state"] in ("failed", "removed"):
         return f"after {a['label']} ({aid}), which {a['state'] == 'failed' and 'failed' or 'was removed'}: " \
                f"retry it, or remove {e['id']}"
+    if a["state"] in ("incomplete", "unknown"):
+        what = "ended without completing" if a["state"] == "incomplete" else "left the queue, outcome unknown"
+        return f"after {a['label']} ({aid}), which {what}: retry it, mark-done it, or remove {e['id']}"
     return f"after {a['label']} ({aid}, {a['state']})"
 
 
@@ -510,20 +556,246 @@ def classify_jobs(jobs, entries, home):
     return out
 
 
-def chain_status(home, e):
-    if not e.get("run_id"):
+def entry_launcher(e):
+    """batch, chain (or local) for an entry of `nrpic-run submit` arguments; None for a --cmd entry."""
+    if e.get("kind") != "submit":
         return None
-    p = os.path.join(home, "scratch", e["owner"], e["run_id"], "chain", "STATUS")
+    a = list(e.get("argv") or [])
+    opts = a[:a.index("--")] if "--" in a else a
+    for i, x in enumerate(opts):
+        if x == "--launcher" and i + 1 < len(opts):
+            return opts[i + 1]
+        if x.startswith("--launcher="):
+            return x.split("=", 1)[1]
+    return "local"
+
+
+def chain_dir(home, e):
+    """The chain directory of a chain entry (scripts/submit_chain.sh keeps STATUS and events.log there), or None
+    for an entry that is not a chain: the directory its command named ("chain started in DIR"), else
+    scratch/<owner>/<run id>/chain (nrpic-run's run directory) when the entry's launcher is chain or when that
+    directory exists (a --cmd wrapper that continues a chain in place)."""
+    if e.get("chain_dir"):
+        return e["chain_dir"]
+    if e.get("run_id"):
+        p = os.path.join(home, "scratch", e["owner"], e["run_id"], "chain")
+        if entry_launcher(e) == "chain" or os.path.isdir(p):
+            return p
+    return None
+
+
+def read_status(cdir):
+    """The word in a chain's STATUS file (DONE, FAILED, STOPPED, QUEUED, RUNNING), or None."""
+    if not cdir:
+        return None
     try:
-        return open(p).read().strip() or None
+        return open(os.path.join(cdir, "STATUS")).read().strip() or None
     except OSError:
         return None
 
 
-def track_done(Q, jobs):
-    """Submitted entries none of whose jobs (by name, then by id) is in squeue at DONE_AFTER looks in a
-    row become done. Returns the entries marked done."""
-    done = []
+def chain_status(home, e):
+    return read_status(chain_dir(home, e))
+
+
+def last_status_event(cdir):
+    """The chain's last STATUS line of events.log without its time stamp ("STATUS FAILED (sbatch failed after:
+    ...)"), or ''."""
+    last = ""
+    try:
+        for ln in open(os.path.join(cdir, "events.log"), errors="replace"):
+            m = re.search(r"\bSTATUS \S.*$", ln.strip())
+            if m:
+                last = m.group(0)
+    except (OSError, TypeError):
+        pass
+    return last[:300]
+
+
+def jidkey(j):
+    m = re.match(r"(\d+)", str(j))
+    return int(m.group(1)) if m else 0
+
+
+def entry_job_ids(e, cdir=None):
+    """The job ids whose accounting record tells the entry's outcome: those recorded at its dispatch, and for a
+    chain every segment chain/events.log and chain/jobid name from the entry's first job on (a chain continued
+    in place holds the segments of earlier entries too)."""
+    ids = [str(j) for j in e.get("job_ids") or []]
+    if cdir:
+        seg = []
+        try:
+            for ln in open(os.path.join(cdir, "events.log"), errors="replace"):
+                m = re.search(r"submitted job (\d+)", ln)
+                if m:
+                    seg.append(m.group(1))
+        except OSError:
+            pass
+        try:
+            j = open(os.path.join(cdir, "jobid")).read().strip()
+            if j.isdigit():
+                seg.append(j)
+        except OSError:
+            pass
+        first = min((jidkey(j) for j in ids), default=0)
+        ids += [j for j in seg if jidkey(j) >= first]
+    out = []
+    for j in ids:
+        if j not in out:
+            out.append(j)
+    return sorted(out, key=lambda j: (jidkey(j), j))
+
+
+def read_acct(ids, env, timeout=ACCT_TIMEOUT):
+    """The accounting record of the jobs `ids` (`sacct -n -P -X -j <ids> -o JobID,State,ExitCode,Elapsed`):
+    ({id: [{"job", "state", "exit", "elapsed"}, ...]}, None), an array's tasks as lines of their own under the
+    array's id, an id sacct does not know without a key; or (None, why) when sacct fails or does not answer
+    within `timeout` seconds."""
+    ids = [str(i) for i in ids if str(i)]
+    out = {}
+    for k in range(0, len(ids), 200):
+        chunk = ids[k:k + 200]
+        try:
+            r = subprocess.run(["sacct", "-n", "-P", "-X", "-j", ",".join(chunk), "-o", "JobID,State,ExitCode,Elapsed"],
+                               capture_output=True, text=True, timeout=timeout, env=env)
+        except subprocess.TimeoutExpired:
+            return None, f"sacct did not answer within {timeout:g} s"
+        except OSError as ex:
+            return None, f"sacct could not be run: {ex}"
+        if r.returncode != 0:
+            return None, f"sacct exit status {r.returncode}: {first_line(r.stderr, r.stdout) or 'no message'}"
+        for ln in r.stdout.splitlines():
+            p = [x.strip() for x in ln.split("|")] + ["", "", ""]
+            if not p[0] or not p[1]:
+                continue
+            base = re.split(r"[_+.]", p[0], 1)[0]
+            key = next((i for i in chunk if p[0] == i or base == i), None)
+            if key is not None:
+                out.setdefault(key, []).append({"job": p[0], "state": p[1], "exit": p[2], "elapsed": p[3]})
+    return out, None
+
+
+def sword(line):
+    """The state word of an accounting line ("CANCELLED by 1234" -> CANCELLED)."""
+    return (line.get("state") or "?").split()[0].rstrip("+")
+
+
+def jobs_text(lines):
+    return ", ".join(f"{l['job']} {l['state']}" + (f" (exit {l['exit']}, after {l['elapsed']})" if l.get("elapsed") else "")
+                     for l in lines)
+
+
+def acct_lines(acct, ids):
+    return [l for i in ids for l in (acct or {}).get(i, [])]
+
+
+def judge(home, x, env, reader=read_acct):
+    """What happened to a submitted entry none of whose jobs has been in squeue for DONE_AFTER looks (decision
+    0048 item 6): {"outcome": done | incomplete | unknown | retry | wait, "reason", "acct", "acct_error",
+    "chain_status"}. A chain: its own chain/STATUS decides (DONE: it reached its end; anything else, or none:
+    it did not), sacct's states of its jobs are recorded; an earlier segment that was preempted was continued by
+    the chain itself. Every other entry: sacct, every job COMPLETED is done; a job PREEMPTED, CANCELLED, FAILED,
+    TIMEOUT, NODE_FAIL, OUT_OF_MEMORY, ... is incomplete, except one preempted job of a batch entry (launcher
+    batch, no chain) with automatic retries left: retry. A job sacct does not know yet, one it still lists as
+    running, or sacct not answering: wait (the dispatcher looks again, ACCT_LOOKS times, then unknown)."""
+    cdir = chain_dir(home, x)
+    ids = entry_job_ids(x, cdir)
+    acct, why = reader(ids, env) if ids else ({}, None)
+    lines = acct_lines(acct, ids)
+    v = {"acct": lines if acct is not None else None, "acct_error": why}
+    if cdir is not None or entry_launcher(x) == "chain":
+        cs = read_status(cdir)
+        v["chain_status"] = cs
+        last = (f"; its last job {jobs_text([lines[-1]])}" if lines else
+                f"; sacct: {why}" if why else f"; its last job {ids[-1]} unknown to sacct" if ids else "")
+        if cs == "DONE":
+            v.update(outcome="done", reason=f"the chain reached its end (chain/STATUS DONE){last}")
+            return v
+        if cdir is None:
+            what = "no run id was recorded, so its chain/STATUS cannot be read"
+        elif cs is None:
+            what = f"no chain/STATUS in {cdir}"
+        else:
+            what = f"chain/STATUS {cs}" + (": left between segments, no job of it is queued"
+                                           if cs in ("QUEUED", "RUNNING") else "")
+        ev = last_status_event(cdir)
+        v.update(outcome="incomplete", reason=f"the chain did not reach its end: {what}"
+                 + (f" [last event: {ev}]" if ev else "") + last)
+        return v
+    if not ids:
+        v.update(outcome="unknown", reason="no job of it was identified (its command printed no job id): there is "
+                                           "no accounting record to read its outcome from")
+        return v
+    if acct is None:
+        v.update(outcome="wait", reason=f"sacct could not be read ({why})")
+        return v
+    missing = [i for i in ids if not acct.get(i)]
+    running = [l for l in lines if sword(l) not in OK_STATES + BAD_STATES]
+    if missing or running:
+        v.update(outcome="wait", reason="; ".join(
+            ([f"sacct does not know job(s) {', '.join(missing)}"] if missing else [])
+            + ([f"sacct lists {jobs_text(running)}, not a final state"] if running else [])))
+        return v
+    bad = [l for l in lines if sword(l) not in OK_STATES]
+    if not bad:
+        v.update(outcome="done", reason=f"every job COMPLETED ({jobs_text(lines)})")
+        return v
+    n = x.get("auto_retries", 0)
+    preempted_batch = entry_launcher(x) == "batch" and len(lines) == 1 and sword(lines[0]) == "PREEMPTED"
+    if preempted_batch and n < AUTO_RETRIES:
+        v.update(outcome="retry", reason=f"job {jobs_text(bad)}")
+    else:
+        v.update(outcome="incomplete", reason=f"job {jobs_text(bad)}"
+                 + (f"; automatic retries used: {n} of {AUTO_RETRIES}" if preempted_batch else ""))
+    return v
+
+
+def settle(z, v):
+    """Apply a verdict of judge() to entry z (under the queue's lock). Returns the outcome applied (done,
+    incomplete, unknown, retry, wait), or False when z is no longer submitted."""
+    if z["state"] != "submitted":
+        return False
+    out, reason = v["outcome"], v["reason"]
+    if out == "wait":
+        n = z.get("acct_looks", 0) + 1
+        if n < ACCT_LOOKS:
+            if n == 1:
+                event(z, f"its jobs left squeue; waits for the accounting record: {reason}")
+            z["acct_looks"], z["acct_wait"] = n, reason
+            return "wait"
+        out, reason = "unknown", f"{reason}, at {n} looks after its jobs left squeue"
+    for k in ("acct_looks", "acct_wait"):
+        z.pop(k, None)
+    z["acct"], z["acct_error"] = v.get("acct"), v.get("acct_error")
+    if "chain_status" in v:
+        z["chain_status"] = v["chain_status"]
+    if out == "retry":
+        n = z.get("auto_retries", 0) + 1
+        rid = z.get("run_id")
+        z.setdefault("earlier_runs", []).append({"run_id": rid, "job_ids": z.get("job_ids"), "acct": v.get("acct"),
+                                                 "ended": H.utcnow(), "why": reason})
+        for k in ("run_id", "job_ids", "job_name", "chain_dir", "absent_looks"):
+            z.pop(k, None)
+        z["auto_retries"] = n
+        z["state"] = "waiting"
+        event(z, f"preempted: {reason}; back to waiting automatically (automatic retry {n} of {AUTO_RETRIES}: a "
+                 "preempted batch job starts again from its beginning)" + (
+                     f"; its run {rid} stays registered: close it with `nrpic-run finish {rid}`" if rid else ""))
+        return "retry"
+    z["state"] = out
+    z["ended"] = H.utcnow()
+    z["end_reason"] = reason
+    event(z, {"done": "done", "incomplete": "ended without completing",
+              "unknown": "left the queue, outcome unknown"}[out] + f": {reason}")
+    return out
+
+
+def track_done(Q, jobs, env=None, reader=read_acct):
+    """Submitted entries none of whose jobs (by name, then by id) is in squeue at DONE_AFTER looks in a row:
+    their outcome is read (judge: the chain's STATUS, the accounting record) and applied (settle): done,
+    incomplete, unknown, back to waiting (a preempted batch), or still submitted while sacct lags. The sacct
+    call runs outside the queue's lock. Returns the entries that changed state."""
+    ended = []
     for e in Q.entries():
         if e["state"] != "submitted":
             continue
@@ -533,29 +805,43 @@ def track_done(Q, jobs):
             if x["state"] != "submitted":
                 return False
             if live:
-                if x.get("absent_looks"):
+                if x.get("absent_looks") or x.get("acct_looks"):
                     x["absent_looks"] = 0
+                    x.pop("acct_looks", None)
+                    x.pop("acct_wait", None)
                     return True
                 return False
             x["absent_looks"] = x.get("absent_looks", 0) + 1
-            if x["absent_looks"] < DONE_AFTER:
-                return True
-            x["state"] = "done"
-            x["ended"] = H.utcnow()
-            cs = chain_status(Q.home, x)
-            if cs:
-                x["chain_status"] = cs
-            how = (f"job name {x['job_name']}" if x.get("job_name") else
-                   f"job id {', '.join(x['job_ids'])}" if x.get("job_ids") else "no job of it was ever identified")
-            if cs in ("QUEUED", "RUNNING"):
-                how += f"; its chain/STATUS still says {cs} (its job ended without the chain closing it)"
-            event(x, f"done: not in squeue at {DONE_AFTER} looks in a row ({how})")
             return True
         x = Q.change(e["id"], upd)
-        if x is not None and x["state"] == "done":
-            done.append(x)
-            Q.log(f"done {x['id']} {x['owner']}/{x['label']}: {x['history'][-1]['event']}")
-    return done
+        if x is None or live or x.get("absent_looks", 0) < DONE_AFTER:
+            continue
+        v = judge(Q.home, x, env, reader)
+        res = {}
+        y = Q.change(e["id"], lambda z, v=v: bool(res.setdefault("out", settle(z, v))))
+        out = res.get("out")
+        if y is None or not out:
+            continue
+        who = f"{y['id']} {y['owner']}/{y['label']}"
+        if out == "wait":
+            if y.get("acct_looks") == 1:
+                Q.log(f"{who}: its jobs left squeue; the outcome waits for the accounting record ({v['reason']}; "
+                      f"looked again at each look, at most {ACCT_LOOKS})")
+            continue
+        ended.append(y)
+        if out == "done":
+            Q.log(f"done {who}: {y['history'][-1]['event']}")
+        elif out == "retry":
+            Q.log(f"preempted {who}: {v['reason']}: back to waiting automatically (automatic retry "
+                  f"{y['auto_retries']} of {AUTO_RETRIES})")
+        elif out == "incomplete":
+            Q.log(f"ENDED WITHOUT COMPLETING {who}: {y['end_reason']} (not done; the owner decides: nrpic-queue show "
+                  f"{y['id']})", loud=True)
+        else:
+            Q.log(f"OUTCOME UNKNOWN {who}: left the queue, {y['end_reason']} (not done: look at its outputs and at "
+                  f"`sacct -j {','.join(entry_job_ids(y, chain_dir(Q.home, y))) or '<id>'}`, then mark-done or retry "
+                  f"it)", loud=True)
+    return ended
 
 
 # ------------------------------------------------------------------ a dispatch
@@ -891,7 +1177,7 @@ class Dispatcher:
     def look(self):
         jobs = H.queue_jobs(self.env)
         if jobs is not None:
-            track_done(self.Q, jobs)
+            track_done(self.Q, jobs, self.env)
         self.note_pause()
         while not self.stopping():
             if os.path.exists(self.Q.path("ALERT")) and alert_halts(self.Q.path("ALERT")):
@@ -1126,6 +1412,8 @@ class Dispatcher:
                 jids = [j for j in jids if j not in claimed]
                 name = None if name and any(entry_name(x) == name for x in others) else name
 
+            cm = re.search(r"chain started in (/\S+): job \d+", text)
+
             def upd(x):
                 x["state"] = "submitted"
                 x["submitted"] = H.utcnow()
@@ -1133,6 +1421,10 @@ class Dispatcher:
                 x.pop("wait", None)
                 x["run_id"], x["job_ids"], x["job_name"] = run_id, jids, name
                 x["absent_looks"] = 0
+                for k in ("acct_looks", "acct_wait", "chain_dir"):
+                    x.pop(k, None)
+                if cm:                           # where the chain keeps its STATUS (read when its jobs have left)
+                    x["chain_dir"] = os.path.join(cm.group(1).rstrip("/"), "chain")
                 x["dispatch_no"] = self.Q.next_dispatch_no()
                 x["stdout_tail"] = tail(out, 1500)
                 x["output_log"] = logp
@@ -1143,8 +1435,8 @@ class Dispatcher:
                        f"job {', '.join(jids) or '-'}, name {name or '-'}; "
                        f"{len(after) if after is not None else '?'} of {H.QUEUE_CAP} jobs queued")
             if not name and not jids:
-                self.Q.log(f"note: {eid}: its command exited 0 but no job of it was identified; it will be marked "
-                           f"done at the next looks ({logp})")
+                self.Q.log(f"note: {eid}: its command exited 0 but no job of it was identified; at the next looks it "
+                           f"leaves the queue with its outcome unknown (nothing to read it from) ({logp})")
             e = x or e
         else:
             why = (f"timed out after {self.cmd_timeout:g} s and was ended" if timed_out else f"exit status {rc}")
@@ -1457,34 +1749,61 @@ def cmd_remove(wt, args):
     return 0
 
 
+RETRY_STATES = ("failed", "incomplete", "unknown")
+
+
+def is_chain(home, e):
+    return chain_dir(home, e) is not None or entry_launcher(e) == "chain"
+
+
 def cmd_retry(wt, args):
-    if len(args) != 1:
-        raise H.HarnessError("usage: nrpic-queue retry ID")
+    zero = "--from-zero" in args
+    rest = [a for a in args if a != "--from-zero"]
+    if len(rest) != 1:
+        raise H.HarnessError("usage: nrpic-queue retry ID [--from-zero]")
     Q = Queue(wt.home)
-    e = Q.load(args[0])
+    e = Q.load(rest[0])
     who = may_change(wt, e)
-    if e["state"] == "failed" and (e.get("job_name") or e.get("job_ids")):
+    if e["state"] in ("incomplete", "unknown") and is_chain(wt.home, e) and not zero:
+        raise H.HarnessError(f"{e['id']} is a chain that ended without reaching its end: a retry runs its command "
+                             "again and starts the run again from zero. To continue it from its restart file, queue "
+                             f"your wrapper (nrpic-queue add --label {e['label'][:40]}-cont --cmd '<wrapper> "
+                             f"{e.get('run_id') or '<run_id>'} ...'), then `nrpic-queue mark-done {e['id']}`; to start "
+                             f"it again from zero: `nrpic-queue retry {e['id']} --from-zero`")
+    if e["state"] in RETRY_STATES and (e.get("job_name") or e.get("job_ids")):
         jobs = H.queue_jobs(H.build_env(wt))
         if jobs is None:
             raise H.HarnessError("squeue did not answer: cannot tell whether a job of the entry is still queued")
         if job_live(e, jobs):
-            raise H.HarnessError(f"{e['id']} submitted job(s) before it failed and one is still in squeue (name "
+            raise H.HarnessError(f"{e['id']} submitted job(s) and one is still in squeue (name "
                                  f"{e.get('job_name')}, ids {e.get('job_ids')}): a retry would submit it again. "
                                  "Wait until it has ended (then `retry`, or `mark-done` if it did what it should), "
                                  "or cancel it (scancel <id>) first")
 
     def upd(x):
-        if x["state"] != "failed":
-            raise H.HarnessError(f"{x['id']} is {x['state']}: only a failed entry is retried")
-        for k in ("run_id", "job_ids", "job_name"):
+        if x["state"] not in RETRY_STATES:
+            raise H.HarnessError(f"{x['id']} is {x['state']}: only a failed entry, or one that ended without "
+                                 "completing or with its outcome unknown, is retried")
+        was = x["state"]
+        if was != "failed" and x.get("run_id"):     # the run it leaves behind: its owner closes it
+            x.setdefault("earlier_runs", []).append({"run_id": x.get("run_id"), "job_ids": x.get("job_ids"),
+                                                     "acct": x.get("acct"), "ended": x.get("ended"),
+                                                     "why": f"{was}: {x.get('end_reason')}"})
+        for k in ("run_id", "job_ids", "job_name", "chain_dir", "acct", "acct_error", "chain_status", "absent_looks"):
             x.pop(k, None)
         x["state"] = "waiting"
-        x["last_error"] = x.pop("error", None)
-        event(x, f"back to waiting by {who} (retry)")
+        if was == "failed":
+            x["last_error"] = x.pop("error", None)
+        else:
+            x["last_end_reason"] = x.pop("end_reason", None)
+        event(x, f"back to waiting by {who} (retry of an entry that was {was}"
+                 + ("; from zero" if zero else "") + ")")
         return True
-    Q.change(e["id"], upd)
-    Q.log(f"retry {e['id']} {e['owner']}/{e['label']} by {who}")
-    print(f"{e['id']} ({e['owner']}/{e['label']}) is waiting again")
+    x = Q.change(e["id"], upd)
+    Q.log(f"retry {e['id']} {e['owner']}/{e['label']} by {who} (was {e['state']})")
+    print(f"{e['id']} ({e['owner']}/{e['label']}) is waiting again"
+          + (f"; close the run it left, {x['earlier_runs'][-1]['run_id']}, with `nrpic-run finish "
+             f"{x['earlier_runs'][-1]['run_id']}`" if x and e["state"] != "failed" and e.get("run_id") else ""))
     return 0
 
 
@@ -1494,8 +1813,10 @@ def cmd_mark_done(wt, args):
     Q = Queue(wt.home)
     e = Q.load(args[0])
     who = may_change(wt, e)
-    if e["state"] not in ("submitted", "failed"):
-        raise H.HarnessError(f"{e['id']} is {e['state']}: only a submitted or failed entry is marked done")
+    markable = ("submitted", "failed", "incomplete", "unknown")
+    if e["state"] not in markable:
+        raise H.HarnessError(f"{e['id']} is {e['state']}: only a submitted or failed entry, or one that ended without "
+                             "completing or with its outcome unknown, is marked done")
     jobs = H.queue_jobs(H.build_env(wt))
     if jobs is None:
         raise H.HarnessError("squeue did not answer: cannot tell whether a job of the entry is queued")
@@ -1503,11 +1824,13 @@ def cmd_mark_done(wt, args):
         raise H.HarnessError(f"a job of {e['id']} is still in squeue (name {e.get('job_name')}, ids {e.get('job_ids')})")
 
     def upd(x):
-        if x["state"] not in ("submitted", "failed"):
+        if x["state"] not in markable:
             return False
+        was = x["state"]
         x["state"] = "done"
         x["ended"] = H.utcnow()
-        event(x, f"marked done by {who} (no job of it in squeue)")
+        x["marked_done_by"] = who
+        event(x, f"marked done by {who} (was {was}; no job of it in squeue)")
         return True
     Q.change(e["id"], upd)
     Q.log(f"mark-done {e['id']} {e['owner']}/{e['label']} by {who}")
@@ -1527,9 +1850,18 @@ def note_of(e, by_id):
     """The last column of `list`: run and job; why a waiting entry waits; the first line of a failure."""
     if e["state"] == "waiting":
         b = blocked_reason(e, by_id)
-        return ("waits: " + b) if b else (wait_text(e) or "-")
+        again = (f"again after a preemption (automatic retry {e['auto_retries']} of {AUTO_RETRIES})"
+                 if e.get("auto_retries") and (e.get("history") or [{}])[-1].get("event", "").startswith("preempted")
+                 else "")
+        return ("waits: " + b) if b else (wait_text(e) or again or "-")
     if e["state"] == "failed":
         return "failed: " + (e.get("error_line") or first_line(e.get("error")) or "?")[:160]
+    if e["state"] == "incomplete":
+        return "ended without completing: " + (e.get("end_reason") or "?")[:160]
+    if e["state"] == "unknown":
+        return "left the queue, outcome unknown: " + (e.get("end_reason") or "?")[:140]
+    if e["state"] == "submitted" and e.get("acct_looks"):
+        return runjob(e) + f"; left squeue, waits for the accounting record ({e['acct_looks']} looks)"
     return runjob(e)
 
 
@@ -1587,6 +1919,32 @@ def cmd_show(wt, args):
     if e.get("state") == "failed":
         print(f"\nfailed: {e.get('error_line') or first_line(e.get('error'))}   (fix, commit, then: "
               f"harness/bin/nrpic-queue retry {e['id']})")
+    rid = e.get("run_id") or "<run_id>"
+    if e.get("state") == "incomplete":
+        print(f"\nended without completing: {e.get('end_reason')}")
+        if is_chain(Q.home, e):
+            print(f"what to do: the chain did not reach its end; continue it from its restart file with your wrapper "
+                  f"(harness/bin/nrpic-queue add --label {e['label'][:40]}-cont --cmd '<wrapper> {rid} ...'), then "
+                  f"`harness/bin/nrpic-queue mark-done {e['id']}`. `retry {e['id']} --from-zero` would start the run "
+                  "again from zero. The queue never retries a chain by itself.")
+        else:
+            print(f"what to do: look at its outputs (harness/bin/nrpic-run status {rid}), close the run "
+                  f"(harness/bin/nrpic-run finish {rid}), then `harness/bin/nrpic-queue retry {e['id']}` (the "
+                  f"submission runs again from its start: a new run) or `harness/bin/nrpic-queue mark-done {e['id']}` "
+                  "(accept it as it is)")
+    if e.get("state") == "unknown":
+        ids = ",".join(entry_job_ids(e, chain_dir(Q.home, e))) or "<id>"
+        print(f"\nleft the queue, outcome unknown: {e.get('end_reason')}\nwhat to do: look at its outputs "
+              f"(harness/bin/nrpic-run status {rid}) and at `sacct -n -P -X -j {ids} -o JobID,State,ExitCode,Elapsed`; "
+              f"then `harness/bin/nrpic-queue mark-done {e['id']}` (it completed) or `retry {e['id']}`")
+    if e.get("state") == "submitted" and e.get("acct_looks"):
+        print(f"\nits jobs left squeue; the outcome waits for the accounting record ({e.get('acct_wait')}; "
+              f"{e['acct_looks']} of at most {ACCT_LOOKS} looks)")
+    for r in e.get("earlier_runs") or []:
+        if r.get("run_id"):
+            print(f"\nearlier attempt: run {r['run_id']}, {jobs_text(r.get('acct') or []) or 'job ' + ', '.join(r.get('job_ids') or [])}"
+                  f" ({r.get('why')}): close it with `harness/bin/nrpic-run finish {r['run_id']}` in {e['worktree']} "
+                  "(it reserves its requested card-hours until then)")
     if e.get("run_id"):
         print(f"\nquery: harness/bin/nrpic-run status {e['run_id']}   close when its jobs have ended: "
               f"harness/bin/nrpic-run finish {e['run_id']}   (in {e['worktree']})")
@@ -1692,6 +2050,95 @@ def cmd_status(wt, args):
         if e["state"] == "failed":
             print(f"  failed: {e['id']} {e['owner']}/{e['label']}: "
                   f"{(e.get('error_line') or first_line(e.get('error')))[:160]}")
+    for e in ents:
+        if e["state"] == "incomplete":
+            print(f"  ended without completing: {e['id']} {e['owner']}/{e['label']}: {(e.get('end_reason') or '?')[:180]}")
+        elif e["state"] == "unknown":
+            print(f"  left the queue, outcome unknown: {e['id']} {e['owner']}/{e['label']}: "
+                  f"{(e.get('end_reason') or '?')[:170]}")
+    for e in ents:
+        if e["state"] == "submitted" and e.get("acct_looks"):
+            print(f"  left squeue, waits for the accounting record: {e['id']} {e['owner']}/{e['label']} "
+                  f"({e['acct_looks']} of at most {ACCT_LOOKS} looks: {(e.get('acct_wait') or '')[:120]})")
+    return 0
+
+
+def audit_verdict(home, e, acct):
+    """(verdict, detail) of an ended entry from the accounting record and, for a chain, its STATUS: completed,
+    NOT COMPLETED, or not in sacct (no line for a job, or a state that is not final)."""
+    cdir = chain_dir(home, e)
+    ids = entry_job_ids(e, cdir)
+    lines = acct_lines(acct, ids)
+    missing = [i for i in ids if i not in acct]
+    if cdir is not None or entry_launcher(e) == "chain":
+        then, now = e.get("chain_status"), read_status(cdir)
+        st = then or now
+        detail = (f"chain/STATUS {then} when it ended" if then else f"chain/STATUS {now or 'missing'}") + (
+            f", {now} now (continued later?)" if then and now and now != then else "")
+        shown = lines[-3:]
+        jobs = (f"{len(lines)} jobs, last: " if len(lines) > 3 else "") + (jobs_text(shown) or "no job in sacct")
+        return ("completed" if st == "DONE" else "NOT COMPLETED"), f"{detail}; {jobs}"
+    if not ids:
+        return "no job id", "no job of it was recorded"
+    bad = [l for l in lines if sword(l) in BAD_STATES]
+    if bad:
+        return "NOT COMPLETED", jobs_text(lines) + (f"; unknown to sacct: {', '.join(missing)}" if missing else "")
+    if missing or any(sword(l) not in OK_STATES for l in lines):
+        return "not in sacct", (jobs_text(lines) + "; " if lines else "") + (
+            f"unknown to sacct: {', '.join(missing)}" if missing else "not a final state")
+    return "completed", jobs_text(lines)
+
+
+def cmd_audit(wt, args):
+    """Read-only (decision 0048 item 6): for every done entry with recorded job ids (with --all also those that
+    ended without completing or with their outcome unknown), the accounting state of its jobs from sacct, and
+    for a chain its chain/STATUS, so that owners find the entries the old rule marked done although they did not
+    complete. It changes nothing."""
+    show_all = "--all" in args
+    only = None
+    if "--owner" in args:
+        k = args.index("--owner")
+        only = H.owner_from_short(args[k + 1]) if k + 1 < len(args) else None
+        if only is None:
+            raise H.HarnessError("--owner ID: an owner id (A, A-emd-pbh, core, kb, orch, ...)")
+    bad_opt = [a for a in args if a.startswith("-") and a not in ("--all", "--owner")]
+    if bad_opt:
+        raise H.HarnessError(f"unknown option {bad_opt[0]!r} of audit (--all, --owner ID)")
+    states = ENDED_STATES if show_all else ("done",)
+    Q = Queue(wt.home)
+    rows = []
+    for e in Q.entries():
+        if e["state"] not in states or (only and e["owner"] != only):
+            continue
+        cdir = chain_dir(wt.home, e)
+        ids = entry_job_ids(e, cdir)
+        if ids or cdir is not None:
+            rows.append((e, ids))
+    all_ids = sorted({i for _, ids in rows for i in ids}, key=lambda j: (jidkey(j), j))
+    acct, why = read_acct(all_ids, H.build_env(wt)) if all_ids else ({}, None)
+    if acct is None:
+        print(f"nrpic-queue: audit: the accounting record could not be read: {why}", file=sys.stderr)
+        return 1
+    count = {}
+    print(f"{'id':6s} {'owner':11s} {'label':24s} {'state':10s} {'accounting':14s} run; jobs (sacct), chain/STATUS")
+    for e, ids in rows:
+        verdict, detail = audit_verdict(wt.home, e, acct)
+        by = e.get("marked_done_by") or next((m.group(1) for h in reversed(e.get("history") or [])
+                                              for m in [re.match(r"marked done by (\S+)", h.get("event", ""))] if m), None)
+        if by and e["state"] == "done":
+            detail += f"; marked done by {by}"
+        count[verdict] = count.get(verdict, 0) + 1
+        print(f"{e['id']:6s} {e['owner']:11s} {e['label'][:24]:24s} {e['state']:10s} {verdict:14s} "
+              f"{e.get('run_id') or '-'}; {detail}")
+    print(f"{len(rows)} {'entry' if len(rows) == 1 else 'entries'} ({', '.join(states)}) with recorded jobs: "
+          + (", ".join(f"{n} {v}" for v, n in sorted(count.items())) or "none"))
+    if count.get("NOT COMPLETED"):
+        print("An entry marked done whose job did not complete (preempted, cancelled, failed, timed out, ...) or whose "
+              "chain did not reach its end: look at its outputs (nrpic-run status <run_id>), close the run "
+              "(nrpic-run finish), and queue the run again (nrpic-queue add; a chain: continue it with your wrapper). "
+              "audit changes nothing: the entry stays as it is.")
+    for fn, w in Q.bad:
+        print(f"UNREADABLE {os.path.join(Q.edir, fn)}: {w}", file=sys.stderr)
     return 0
 
 
@@ -1769,7 +2216,7 @@ def cmd_clear_alert(wt, args):
 
 COMMANDS = {"add": (cmd_add, True), "remove": (cmd_remove, True), "retry": (cmd_retry, True),
             "mark-done": (cmd_mark_done, True), "list": (cmd_list, False), "show": (cmd_show, False),
-            "status": (cmd_status, False), "run": (cmd_run, True), "stop": (cmd_stop, True),
+            "status": (cmd_status, False), "audit": (cmd_audit, False), "run": (cmd_run, True), "stop": (cmd_stop, True),
             "clear-alert": (cmd_clear_alert, True), "check-dispatch": (cmd_check_dispatch, True)}
 
 
