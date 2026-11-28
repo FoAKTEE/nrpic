@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """B2b of the scope review: power of a whole-run form of G3-G3 (means over 100-400 M) with the noise
 surrogates of g2_analogs.py (FK - FN4 high-pass and full; mesh correlation from FL16 - ES-FL).
-Usage: g3g3_power.py OUTDIR
+Usage: g3g3_power.py OUTDIR [sample|window]   (anchor of Delta M: the 20 M sample, or the mean over 20-40 M)
 """
 import json
 import sys
@@ -17,6 +17,7 @@ import matplotlib.pyplot as plt  # noqa: E402
 
 def main():
     out = Path(sys.argv[1])
+    anchor = sys.argv[2] if len(sys.argv) > 2 else "sample"
     grid = np.arange(20.0, 399.75, 0.5)
     M = {n: ga.on_grid(n, grid) for n in ("FK", "FN4", "ES-FL")}
     g300 = grid[grid <= 299.0]
@@ -32,6 +33,10 @@ def main():
             "full": np.nan_to_num(n_fk4 - np.nanmean(n_fk4)) / np.sqrt(1.25)}
     ramp = np.clip((grid - 20.0) / 130.0, 0.0, 1.0)
     late = grid >= 100.0
+    aw = (grid >= 20.0) & (grid < 40.0)
+
+    def anc(x):
+        return x[aw].mean() if anchor == "window" else x[0]
     h = {8: 1 / 8, 12: 1 / 12, 16: 1 / 16}
     rng = np.random.default_rng(271127)
     rows = []
@@ -46,9 +51,9 @@ def main():
                     nz = {k: np.sqrt(rho) * com + np.sqrt(1 - rho) * ga.surrogate(src, rng) for k in h}
                     if flat:   # no convergence: the 8-12 and 12-16 deterministic steps are equal
                         det = {8: 0.0, 12: 0.5 * amp * A16, 16: amp * A16}
-                        dm = {k: det[k] * ramp + nz[k] - nz[k][0] for k in h}
+                        dm = {k: det[k] * ramp + nz[k] - anc(nz[k]) for k in h}
                     else:
-                        dm = {k: amp * c * h[k] ** p * ramp + nz[k] - nz[k][0] for k in h}
+                        dm = {k: amp * c * h[k] ** p * ramp + nz[k] - anc(nz[k]) for k in h}
                     m1 = np.mean((dm[8] - dm[12])[late])
                     m2 = np.mean((dm[12] - dm[16])[late])
                     r = abs(m1) / max(abs(m2), 1e-30)
@@ -57,7 +62,7 @@ def main():
                 rows.append(dict(case=label, p=p, amp=amp, noise=kind, P_pass=ok / 1000,
                                  ratio_q10_q50_q90=[float(np.quantile(rat, q)) for q in (0.1, 0.5, 0.9)]))
                 print(rows[-1])
-    res = dict(rho=rho, sigma_N_highpass=float(sig_hp), A16=A16, rows=rows)
+    res = dict(anchor=anchor, rho=rho, sigma_N_highpass=float(sig_hp), A16=A16, rows=rows)
     (out / "g3g3_power.json").write_text(json.dumps(res, indent=1))
     fs.use_style()
     fig, ax = plt.subplots(figsize=(4.2, 3.0))
@@ -66,7 +71,7 @@ def main():
         ax.plot([r["amp"] for r in rr], [r["P_pass"] for r in rr], mk + "-", label={"p2": "order 2", "p1": "order 1", "none": "no convergence"}[label])
     ax.set_xscale("log"); ax.set_xlabel("deterministic mesh difference / G2's (+5.8e-4)")
     ax.set_ylabel("P(pass), whole-run means"); ax.set_ylim(-0.02, 1.02); ax.legend(fontsize=7)
-    ax.set_title("B2b: power of a whole-run G3-G3", fontsize=8)
+    ax.set_title(f"B2b/c: power of a whole-run G3-G3 (anchor: {anchor})", fontsize=8)
     fig.tight_layout(); fig.savefig(out / "g3g3_power.png", dpi=150); fig.savefig(out / "g3g3_power.pdf")
     return 0
 

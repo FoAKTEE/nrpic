@@ -174,3 +174,15 @@ is applied to a whole-run statistic: the means over 100-400 M of D_8,12 and D_12
 - B2b: at G2's amplitude this passes with probability above 0.8 for p = 2 and above 0.6 for p = 1; with
   no convergence (deterministic parts equal, ratio 1) it passes with probability below 0.1. Refuted if
   the p = 2 power is below 0.5 or the false-pass rate above 0.2.
+
+## Entry 6 (2026-11-27 16:58 PST): outcome of B2b; prediction B2c before its run
+
+Run D-20261128-005416-65b4dde (`tools/g3g3_power.py`, one core, exit 0).
+- B2b REFUTED: whole-run means pass with probability 0.30 (p = 2) and 0.29-0.30 (p = 1) at G2's
+  amplitude, 0.54-0.60 at twice it; with no convergence the false-pass rate is 0.22-0.24. Cause named
+  after this run (it could have failed): Delta M_h(t) = M_AH(t) - M_AH(20 M) anchors every member at ONE
+  finder sample, so that sample's noise (about 2.1e-4 between meshes after the 0.83 correlation) becomes a
+  constant offset of the whole series, which no window or whole-run average removes.
+- B2c (prediction, before the run): anchoring at the mean over 20-40 M instead (40 samples) makes the
+  whole-run form pass with probability above 0.7 at p = 2 and G2's amplitude, with a false-pass rate
+  below 0.15. Refuted if the power is below 0.5 or the false-pass rate above 0.2.
