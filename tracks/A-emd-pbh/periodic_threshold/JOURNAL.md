@@ -1409,3 +1409,11 @@ Files: S1L rst 15, 16, 19 (t = 180, 190, 220); P0L6 rst 16, 17 (t = 130, 140).
 Refuted by any "not found" where found is predicted, a found row at P0L6 t = 130, masses of one dump differing
 by more than 1e-6 between starts, or more than 400 iterations. The false acceptance at t = 118.1 stays untested
 (no restart file; core's trapped_tol needs the faces-finder build).
+
+### Outcome D-q (run A-20261128-003940-60a3521, completed, 78 s; id.json read)
+
+Solve converged (17 outer iterations; Hamiltonian residual 3.0e-12, momentum 3.7e-12), zeta_max 0.0741, delta_N_max
+0.02939 (0.250 of mu = 0.3's 0.1176), jacobian_min 0.970, alpha_min 0.955, masses 0.989-1.226 of the mean. D-q HOLDS
+on every clause. Change of the solve c = 0.052 (it was 0.014 at mu = 0.15 and 0.137 at 0.3: not monotonic; recorded,
+not predicted). The smoke tests SM-q and SM-F follow (script scripts/smoke_b34.sh; SM-F: the finder lines of
+peak_leak_f parse and a search with flow = shear runs, status file written, finite fields over 4 cycles).
