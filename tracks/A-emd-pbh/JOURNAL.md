@@ -632,3 +632,27 @@ RX (restart exactness of the box deck on processors): first attempt A-20261128-0
 (failed, kept); second A-20261128-074500-daf8285, HOLDS as a bound (A-20261128-082812-53d2583): continued run = straight run within 2.5e-15 on v0.6 and v0.8 at t ~ 0.02; S1L's restart step at t = 50 stays unexplained (card path or late state).
 Records: OPEN.md, REVIEW-wave3 section 15, CHECKLIST C23, STATUS, HANDOFF, RISKS 52-54; acks of four messages; outbox
 to orch (b40 state, ruling on (a)) and core (FC answer to item 4, restart observation). Card-hours ran: 0.
+
+## 2026-11-28T16:40Z  session A-emd-pbh lead batch 41  commits 8ad529cec..77830556d+  runs A-20261128-160444-e6c646e, A-20261128-160446-6c171f3, A-20261128-160447-c41d66a, A-20261128-160727-0d75d4e, A-20261128-160831-6fd1da1, A-20261128-161728-cabd2c5
+
+did: closed q0089 (S1L-q, A-20261128-011607-3e2d530, completed, 2.2517 card-hours) and q0108 (RT2a-A,
+A-20261128-081045-1e001cd, FAILED at the guard, 0.0908 card-hours; marked done in the queue). Read q0108's chain log
+(not a set-up error: three SIGTERM cuts continued as designed, segment 4 ran to the guard). Predictions written and
+committed before every reading (threshold_ball entry 21: RA1-RA3, GA; periodic_threshold 08:22: DR; A2Q was written in
+batch 34). New registered readers rt2a_read.py and box_region_pair.py; reproducer ga_repro.sh.
+found: A2Q HOLDS (crossing along z in (34.77, 35.28] t_H, band [32.0, 35.5]); the lag is first order in zeta with
+c ~ 1.5 at three amplitudes, c = 2 refuted. GA HOLDS: the mesh-A guard stop (t = 48.140625, MeshBlock 31 level 4 at
+(-0.4375, -0.4375, -1.4375)) repeats exactly on the v0.9 processor build in 9 cycles - inside the matter, not at the
+faces. RA1 holds (face set 6-7x on the outer part over 45 M), RA2 refuted at t = 45.75 (1.59 > 1.5), RA3 holds
+(exterior ratio 0.907 at the first held horizon; 95 per cent of E inside the horizon). DR: the box violation does not
+fall with two more levels at the same particles (0.94 at t = 100, 1.75 at t = 130; holds at 50/100, fails its 1.5
+clause at 130 without reaching either refutation).
+changed my mind about: the exterior ratio at detection is set as much by its denominator as by H: at detection the
+outer-face part that was 0.0076 of the box before is 0.150 of the exterior; under 0051 item 4 the faces must go
+farther than 32 even with the set. Also the data's psi^4 factor does not fit the measured c (no refutation had been
+written for it).
+evidence: figures fig_a2x.png, fig_a2_crossing.png, fig_a2_probe.png, fig_rt2a.png, fig_box_region_pair.png looked at.
+open: q0109 (B-F) waiting in the shared queue; (c) ruling asked; (d) sampling leg; Newtonian quarter control.
+Records: OPEN.md rewritten, REVIEW-wave3 section 16, STATUS, HANDOFF, RISKS 55-57 and 39; outbox to orch (ruling on
+(c), (a) on mesh A) and core (info: guard-stop reproducer); one inbox ack (release-core-v0.9). Card-hours ran in the
+session: 0; closed 2.343.
