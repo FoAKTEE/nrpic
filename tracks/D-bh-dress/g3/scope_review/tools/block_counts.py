@@ -5,6 +5,7 @@ Usage: block_counts.py OUTDIR   (run under nrpic-run; decks from tools/make_deck
 Writes OUTDIR/block_counts.json and one subdirectory per deck with mesh_structure.dat and the log.
 """
 import json
+import math
 import re
 import subprocess
 import sys
@@ -22,14 +23,24 @@ def count(deck, out):
         rc = subprocess.run([EXE, "-i", str(deck), "-m"], cwd=out, stdout=log, stderr=subprocess.STDOUT,
                             env={"OMP_NUM_THREADS": "1", "PATH": "/usr/bin:/bin"}).returncode
     ms = out / "mesh_structure.dat"
-    levels = Counter(int(m.group(1)) for m in re.finditer(r"#  Logical level (\d+)", ms.read_text())) if ms.exists() else {}
     txt = deck.read_text()
     nxb = int(re.search(r"<meshblock>\s*\nnx1\s*=\s*(\d+)", txt).group(1))
     nroot = int(re.search(r"<mesh>.*?\nnx1\s*=\s*(\d+)", txt, re.S).group(1))
+    nrbx = nroot // nxb
+    lroot = int(math.ceil(math.log2(nrbx)))      # logical level of the root grid in the tree
+    recs = [(int(m.group(1)), int(m.group(2)), int(m.group(3)), int(m.group(4))) for m in re.finditer(
+        r"#  Logical level (\d+), location = \((-?\d+) (-?\d+) (-?\d+)\)", ms.read_text())] if ms.exists() else []
+    levels = Counter(r[0] - lroot for r in recs)   # physical level: 0 = root, 7 = M/8 in G-8
+    width0 = 1536.0 / nrbx
+    extent = {}
+    for lev in sorted(levels):
+        w = width0 / 2 ** lev
+        xs = [r[1] for r in recs if r[0] - lroot == lev]
+        extent[str(lev)] = [-768.0 + min(xs) * w, -768.0 + (max(xs) + 1) * w]
     nb = sum(levels.values())
-    lmin = min(levels) if levels else 0
     return dict(deck=deck.name, returncode=rc, meshblock_nx=nxb, root_nx=nroot, n_blocks=nb,
-                by_level={str(k - lmin): v for k, v in sorted(levels.items())},
+                by_level={str(k): v for k, v in sorted(levels.items())},
+                x1_extent_by_level=extent, finest_dx=width0 / nxb / 2 ** max(levels),
                 cells=nb * nxb ** 3, cells_with_ghosts=nb * (nxb + 8) ** 3)
 
 
