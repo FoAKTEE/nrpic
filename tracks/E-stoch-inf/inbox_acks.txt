@@ -34,3 +34,4 @@ tracks/B-emd-gw/outbox/20261125T172252Z__to-all__gr-particle-mass-weight.md	2026
 tracks/B-emd-gw/outbox/20261126T025649Z__to-all__gr-particle-mass-halos.md	2026-11-26T11:59:45Z	
 tracks/orch/outbox/20261126T033000Z__to-all__finder-diagnostics-in-continued-runs.md	2026-11-26T11:59:45Z	
 tracks/orch/outbox/20261126T130731Z__to-all__release-core-v0.8.md	2026-11-27T23:33:34Z	
+tracks/orch/outbox/20261128T023000Z__to-all__queue-done-means-completed-audit.md	2026-11-28T02:37:42Z	
