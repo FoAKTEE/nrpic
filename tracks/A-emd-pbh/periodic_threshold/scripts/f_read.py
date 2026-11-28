@@ -23,7 +23,16 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 
 
 def load(path):
-    return np.loadtxt(path, comments="#", ndmin=2)
+    """History rows with continued segments resolved: a chain continued from an earlier restart file appends rows
+    whose time is not above the previous row's; the later segment supersedes the rows it repeats (batch 40: S1L's
+    nrpic.hst holds a segment to t = 66.3 followed by its continuation from t ~ 50)."""
+    d = np.loadtxt(path, comments="#", ndmin=2)
+    keep = []
+    for i in range(len(d)):
+        while keep and d[keep[-1], 0] >= d[i, 0]:
+            keep.pop()
+        keep.append(i)
+    return d[keep]
 
 
 def status(path):
