@@ -442,3 +442,12 @@ A-20261128-004246-89d4d0b) and q0090 a-s1l-finder (S1L on the new deck, smoke A-
 member can refute the first-order class and the gradient-expansion coefficient; it cannot separate the nonlinear
 zeta-delta relation from an (aH/k)^2 correction (written before the run). SM-q's start-up step clause was refuted and I
 queued nonetheless, with the reason on record (periodic_threshold JOURNAL, 16:52 PST).
+
+### 14.5 Outcomes that ended after 14.3 was written (17:08-17:29 PST)
+
+OB holds on its cause clause (faces at 32 cut the 13-16 part 300-fold; A-20261128-004659-f512816, reader
+A-20261128-010702-44edae6), its total clause refuted at t = 1; LF refuted (a level face in the matter keeps the
+interior residual 2.4x higher at t = 2; A-20261128-005331-874ec88, reader A-20261128-011717-7db1434 after the failed
+A-20261128-011658-019b3f8); FR (core-v0.6 face set, A-20261128-011908-0e41713 after the failed start
+A-20261128-011804-365c88b, reader A-20261128-012759-577c95b) cuts the outer part 70-100-fold to t = 2. Figures of all
+three readers looked at. Not confirmed: that the face set holds over ~45 M (core's own ball says it weakens with time).
