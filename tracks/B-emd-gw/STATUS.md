@@ -19,8 +19,10 @@ last-result: batch 34 (2026-11-27 15:21-15:45 PST): C3 step 1 data checked (146 
              a = 121, largest masses at a = 64 and 121); note v4 with Table VIII
              (B-20261127-232833-5891f77), checker and compile clean.
 running:     nothing of B on cards or processors, apart from the detached checksum pass
-             `nrpic-stage verify B-emd-gw G2 --full` (writes stage/G2/VERIFY_RESULTS.md and
-             .json; started at the end of batch 34, see HANDOFF)
+             `nrpic-stage verify B-emd-gw G2 --full` (PID 2643528, started 16:08 PST; writes
+             stage/G2/VERIFY_RESULTS.md/.json; log scratch/B-emd-gw/tmp/verify_full_b34.log).
+             Quick pass (--no-checksums) committed: PASS, 0 failed checks; report FAIL only
+             for C18 and the missing VERIFIER.md
 cards:       nothing queued (q0070 done, job 5524)
 next:        1. the fresh verifier for C18 (orchestrator); answer its findings with
                 registered runs

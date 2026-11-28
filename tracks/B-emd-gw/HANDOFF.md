@@ -20,7 +20,7 @@ verifier should recompute first); `stage/G2/CHECKLIST.md` C1-C3; `population/JOU
 
 | What | How it is read |
 |---|---|
-| `harness/bin/nrpic-stage verify B-emd-gw G2 --full`, detached (nohup, log `$S/tmp/verify_full_b34.log`), started about 15:50 PST; hashes every G2 output (hundreds of GB, hours) | when the log ends: `git status` shows stage/G2/VERIFY_RESULTS.md/.json changed; read the checks (runs, checksums, rerun, compare); commit them, then `harness/bin/nrpic-stage report B-emd-gw G2` and commit STAGE_REPORT.md. A FAIL on `checksums` names the run: compare with its sha256sums.txt and say whether it bears on the gate |
+| `harness/bin/nrpic-stage verify B-emd-gw G2 --full`, detached (setsid nohup, PID 2643528, log `$S/tmp/verify_full_b34.log`, which ends with `exit=`), started 16:08 PST on commit 631acef88; reads every byte of the G2 outputs (hundreds of GB, hours). The quick pass of batch 34 (`--no-checksums`) is committed: PASS, 0 failed checks, 383 runs finished | when the log ends: `git status` shows stage/G2/VERIFY_RESULTS.md/.json changed; read the checks (runs, checksums, rerun, compare); commit them, then `harness/bin/nrpic-stage report B-emd-gw G2` and commit STAGE_REPORT.md. A FAIL on `checksums` names the run: compare with its sha256sums.txt and say whether it bears on the gate |
 
 No card job, no processor run of B is left running; q0070 (job 5524) is done and its run closed.
 
