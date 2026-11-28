@@ -37,3 +37,4 @@ tracks/B-emd-gw/outbox/20261126T025649Z__to-all__gr-particle-mass-halos.md	2026-
 tracks/orch/outbox/20261126T033000Z__to-all__finder-diagnostics-in-continued-runs.md	2026-11-26T06:02:24Z	
 tracks/core/outbox/20261126T121039Z__to-D-bh-dress__v08-guard-and-polishing.md	2026-11-27T23:47:53Z	
 tracks/orch/outbox/20261126T130731Z__to-all__release-core-v0.8.md	2026-11-27T23:47:53Z	
+tracks/core/outbox/20261128T001317Z__to-D-bh-dress__restart-parameters-and-finder-check.md	2026-11-28T02:10:57Z	read by lead b35: G3 decks checked for deposit_comp_c (see g3/amend entry 5); keep default flow; trapped_tol not used at G3
