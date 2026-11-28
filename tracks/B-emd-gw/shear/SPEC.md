@@ -211,3 +211,11 @@ Reported results (numbers only from the text; the figures are not used):
    1e-10 relative.
 The multi-code row is met if 1-4 and 6-7 hold; 5 decides whether the particle code
 reproduces the strongly nonlinear, stream-crossing result of the paper's particle NR code.
+
+Amendment of 2026-11-27 (lead of batch 37, after the results; answer to the G2 verifier's
+finding e, stage/G2/VERIFIER.md section 5): item 5 is met only by a series that converges
+first, that is whose ratio of successive differences is below 0.7 over the three finest meshes;
+only then is 'own numerical error' (finest minus Richardson value) defined. L2 as run (ratio
+0.84; finest within 0.021 of -0.8183 against three times its last difference, 0.024) would
+have met the item as first worded and is judged FAILED for its non-convergence, as before;
+the amendment changes no verdict and applies to later series.
