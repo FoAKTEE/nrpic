@@ -500,3 +500,38 @@ at B's detection time answers "falling with the mesh at fixed sampling" for the 
 ### 15.5 S1L's restart step and RX
 
 F3 failed because S1L's history jumps by ~1e-3 in alpha_min at t = 50, S1L's restart point, while S1L-F agrees with S1L's superseded uninterrupted segment to 1e-11 up to t = 66. RX (A-20261128-074500-daf8285, reader A-20261128-082812-53d2583, figure looked at; prediction first) shows that on processors (v0.6 and v0.8) a continued run of the box deck repeats the straight one within 2.5e-15 at t ~ 0.02. Confirmed: restart exactness at round-off on processors at an early state. Not confirmed: the cause of the card step at t = 50 (card path or a late state); next test written in the periodic_threshold journal (processors from S1L's rst at t = 50); question to core. Track action: every horizon time or mass from a continued card chain carries this ~1e-3 spread until it is explained (risk 54).
+
+## 16. Batch 41 (2026-11-28 morning, lead; q0089 and q0108 read, after decision 0051)
+
+No helper ran in this batch; the lead read the two card runs that had ended, from their registered outputs, with
+readers registered this session; every number below has its run id, every figure was looked at. Card-hours: 2.2517
+(q0089, 19 jobs) and 0.0908 (q0108, 4 jobs) closed this session; none newly queued.
+
+### 16.1 Condition (c): A2Q (periodic_threshold, prediction 2026-11-27 16:39 PST)
+
+Confirmed from the artefacts: chain DONE at tlim 410 (events.log), 592 finder searches none found (status file),
+first crossing along z in (34.77, 35.28] t_H (a2_invariant.py A-20261128-160444-e6c646e, sign of det(dx/dq);
+a2_crossing.py A-20261128-160447-c41d66a), central particle at rest (a2_probe_check.py A-20261128-160446-6c171f3).
+A2Q HOLDS; c = 2 REFUTED as written; c measured 1.45-1.78 at the quarter amplitude. Could not confirm: the Newtonian
+quarter-amplitude crossing (a scaled premise, not a run). Figure defects seen: fig_a2_probe.png is titled "S1L"
+(known, cosmetic). Track action: (c) recorded as PARTLY met in OPEN.md - the class confirmed at a third amplitude
+and the coefficient measured, the mechanism within the class not separated (as written before the run).
+
+### 16.2 Condition (a): RT2a-A (threshold_ball entry 21)
+
+q0108 ended FAILED at the NRPIC guard (t = 48.140625). From the chain's events.log and segment logs: not a set-up
+error (segments 1-3 cut by SIGTERM and continued as designed; segment 4 ran 4.3 min to the stop). Prediction GA
+written before the processor run; GA HOLDS (A-20261128-160727-0d75d4e: same cycle, cell and count of non-finite
+values from the t = 48.0 restart file in 9 cycles). Finding: the known mesh-A blow-up of entry 5 repeats on the release
+build with faces at 32 and the face set, inside the matter, not at the faces. Reader rt2a_read.py (new; registered
+A-20261128-160831-6fd1da1; fig_rt2a.png looked at): RA1 holds (face set 6-7x on the outer part over 45 M), RA2 refuted
+at t = 45.75 (interior part 1.59x lower on v0.9), RA3 holds (exterior ratio 0.907 at the first row with a held
+horizon; 95 per cent of E inside the horizon). Judged against 0051 item 4 as written: mesh A misses the bound by 9x;
+the outer part, normalised by the exterior, is 0.150 even with faces at 32 and the set. Defect of the reader seen and
+not fixed: none. Limitation: region rows every 0.25 M, the finder every 0.125 M; the region row holds a horizon only
+where the latest search found one (46.0 and 47.0 here).
+
+### 16.3 What is still pending
+
+q0109 (B-F, mesh B, cap 1.2 card-hours) waits in the shared queue (five jobs of other owners in Slurm at 08:00 PST).
+It is read with rt2a_read.py (add B-F=<run dir>) and analyse.py at its detection; R1-R3 of entry 20 are judged then.

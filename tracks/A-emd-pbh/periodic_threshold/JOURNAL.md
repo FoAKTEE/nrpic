@@ -1542,8 +1542,9 @@ A-20261128-160446-6c171f3; fig_a2x.png, fig_a2_crossing.png, fig_a2_probe.png lo
   Across a factor 4 in amplitude: c = 1.06-1.57 (S1L, zeta 0.296), 1.45 (S1L-h, 0.148), 1.45-1.78 (S1L-q, 0.074). A
   linear fit of ln(lag_a) through the half and quarter members leaves an amplitude-independent part of ~0.02-0.03 in
   ln a, inside the spread of the Newtonian reference. The lag is first order in the amplitude with c ~ 1.5 at small
-  zeta; the e^(-2 zeta) version is excluded; the data's psi^4 version (c ~ 1.15 at small zeta) is low by ~25-50 per
-  cent but not excluded at the quarter amplitude alone.
+  zeta; the e^(-2 zeta) version is excluded (written before). The data's psi^4 version (c ~ 1.15) gives 32.6-33.9
+  t_H by the same arithmetic, below the bracket: disfavoured too, but no refutation was written for it beforehand
+  [JUDGEMENT]; c lies between the two versions of the factor that were named.
 - What it names (condition (c) of decision 0047: the cause named within the first-order class): the lag of the triaxial
   crossing is an effect first order in the curvature perturbation, by a run that could have failed toward an
   amplitude-independent delay and toward a faster fall, and did not. NOT separated (written before the run and still

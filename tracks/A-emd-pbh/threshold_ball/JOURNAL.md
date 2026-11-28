@@ -1029,7 +1029,7 @@ Predictions [JUDGEMENT], before the reader runs:
   -1.4375), 317832 non-finite values: the card stop to the cycle, the cell and the count, in 9 cycles and ~48 s of
   wall time. The blow-up is deterministic in the fields on the release build with faces at 32 and the face set; it
   is the mesh-A blow-up of entry 5 (v0.6, stock faces: t = 47.92, same cell), 0.22 M later. It sits at r = 1.56 inside
-  the collapsing matter on a level-4 block (dx 0.125), 0.08 M before 16632 particles are left of 77704 - not at the
+  the collapsing matter on a level-4 block (dx 0.125), when 61072 of the 77704 particles are excised - not at the
   outer faces. The candidate named in entry 5 (G3: excising the particles while the lapse is 0.3 removed the stop to
   48.5 on v0.6) stands untested on v0.9. Reproducer for core: `scripts/ga_repro.sh` (input rst/ball.00015.rst of
   A-20261128-081045-1e001cd). The queue entry q0108 is marked done: its chain cannot pass the guard, and its reading
