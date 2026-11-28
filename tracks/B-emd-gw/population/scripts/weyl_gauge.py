@@ -40,7 +40,7 @@ RUNS = {"zs128": f"{S}/B-20261123-014847-f295ab4/bin/pop.z4cd.%05d.bin",
         "gd256": f"{S}/B-20261126-105021-6343c13/bin/pop.z4cd.%05d.bin"}
 # code time t of each epoch; a = (1 + t/2)^2; 128^3 dumps every 0.25, 256^3 every 1.0
 T_EPOCH = [8.0, 12.0, 14.0, 16.0, 18.0, 20.0, 21.0]
-T_256 = [12.0, 14.0, 18.0, 21.0]
+T_256 = [14.0, 18.0, 21.0]
 NBAND = 8
 
 
@@ -175,8 +175,8 @@ def dump_job(job):
     psi4 = chi ** (4.0 / p)
     gamma = psi4 * gt
     Ktf = psi4 * At
-    row = {"run": run, "file": path, "t": float(d["time"]), "a": float(scale(float(d["time"]))),
-           "n": int(grid.n[0])}
+    row = {"run": run, "file": path, "t_req": t, "t": float(d["time"]),
+           "a": float(scale(float(d["time"]))), "n": int(grid.n[0])}
     row.update(invariants(gamma, Ktf, trK, alpha, grid))
     row["beta_rms"] = float(np.sqrt((beta ** 2).sum(0).mean()))
     del d, chi, gt, At, gamma, Ktf
@@ -196,13 +196,23 @@ def cmd_data(args):
     jobs = [(r, t) for t in T_EPOCH for r in ("zs128", "gd128")]
     big = [("gd256", t) for t in T_256]
     rows = []
-    with Pool(args.np) as pool:
-        res_small = pool.map_async(dump_job, jobs, chunksize=1)
-        with Pool(args.np_big) as pool2:
-            rows += pool2.map(dump_job, big, chunksize=1)
-        rows += res_small.get()
     os.makedirs(args.out, exist_ok=True)
-    by = {(r["run"], round(r["t"], 2)): r for r in rows}
+    # rows are written as they come (a stop before the table loses no dump; the first data
+    # run, B-20261128-033853-e516942, was stopped by hand because its table keyed the rows by
+    # the dump time, 8.01, not by the requested epoch, 8.0)
+    fl = open(os.path.join(args.out, "rows.jsonl"), "w")
+
+    def keep(r):
+        rows.append(r)
+        fl.write(json.dumps(r) + "\n")
+        fl.flush()
+    with Pool(args.np) as pool, Pool(args.np_big) as pool2:
+        res_big = [pool2.apply_async(dump_job, (j,), callback=keep) for j in big]
+        res_small = [pool.apply_async(dump_job, (j,), callback=keep) for j in jobs]
+        for r in res_big + res_small:
+            r.get()
+    fl.close()
+    by = {(r["run"], r["t_req"]): r for r in rows}
     table = []
     for t in T_EPOCH:
         zs, gd = by[("zs128", t)], by[("gd128", t)]
