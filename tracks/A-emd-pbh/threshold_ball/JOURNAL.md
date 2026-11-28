@@ -994,3 +994,30 @@ ratio can be read where it is not (inside a radius, or excluding the outer cells
 a ratio over the whole line to the outer face cannot "fall with the mesh" in any member with outflow faces; what can
 fall is the matter part. Which of the two the bound applies to needs a ruling (outbox to orch). RT2a (entry 20)
 measures how small distance plus the set make the face part by t ~ 46.
+
+## Entry 21, 2026-11-28 08:10 PST (lead of batch 41): RT2a-A ended at the guard; what is read from it, predictions before any reading
+
+State (read before any number of the member was computed): q0108 (A-F = A-20261128-081045-1e001cd, mesh A, faces at
+32 + core-v0.6 face set + region norms, core-v0.9 card build) ended FAILED: the chain's segment 4 (job 5678) stopped
+at the NRPIC guard at t = 48.140625, cycle 3081 (ball.guard.txt): non-finite Khat, A_ij, Theta in 47 MeshBlocks, chi
+and alpha in 10; first such cell MeshBlock 31 (level 4, dx 0.125), cell (4,4,4), position (-0.4375, -0.4375,
+-1.4375); 16632 particles left, 61072 excised. Not a set-up error: the segments 1-3 were cut by SIGTERM and continued
+from their restart files as designed, segment 4 ran from t ~ 4 to 48.14 in 4 min 20 s. The v0.6 member A-d0.42
+(stock faces at 32) stopped at the guard at t = 47.92, cycle 3067, at the SAME first cell (entry 5, G1, repeated on
+processors). So the stop repeats the known mesh-A blow-up after collapse, 0.22 M (14 cycles) later. The stop lies
+after the reading time of RT2a (B's detection, 45.875), so the member's data at the reading time exist. Closed with
+nrpic-run finish (0.091 card-hours). q0109 (B-F) waits in the shared queue (five jobs of other owners in Slurm).
+Predictions [JUDGEMENT], before the reader runs:
+- RA1 (face set over 45 M on mesh A): on the x line at t = 45.75 and 46.0 the part 13-32 of A-F's ratio is at least
+  3 times smaller than A-d0.42's (same mesh, stock faces at 32, v0.6). Refuted if less than 3 times smaller.
+- RA2 (the interior is not what the face set changes): the part x < 4.25 of A-F is within a factor 1.5 of A-d0.42's
+  at the same times (the v0.9 deposit fix moves the source by ~1e-4 of the mass). Refuted otherwise.
+- RA3 (the bound on mesh A): the region ratio of A-F over the whole exterior the run has at t ~ 45.875 (outside the
+  found horizon if the finder holds one then, otherwise outside r = 4.25 as the stand-in, said which) is above 0.1:
+  mesh A is the coarse member, and the matter part of the top hat alone was 0.05-0.33 (entry 18). Refuted (a pass on
+  the coarse mesh) if below 0.1.
+- GA (smallest reproducer of the stop on processors): the v0.9 threaded processor build continued from A-F's last
+  restart file before the stop (rst/ball.00015.rst, t = 48.0, 9 cycles before), 4 threads, to tlim 48.5, stops at the
+  guard at t = 48.140625 +- 0.0157 (one cycle) with the first non-finite cell in MeshBlock 31 at (-0.4375, -0.4375,
+  -1.4375). Refuted if it reaches 48.5 or stops at another cell: then the card stop was not deterministic in the
+  fields. A hold makes a 9-cycle processor reproducer for core.
