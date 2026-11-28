@@ -1415,3 +1415,28 @@ Run B-20261128-033937-4b23e2f. [VERIFIED by this run]
   A = 1e-3: band power changes by more than 1 per cent at eps = 0.03 and by more than a factor 10
   at eps = 0.3, while I_B and V move by less than 1e-3 at 64^3. Refuted if the invariant moves by
   more than 1e-3, or the band by less than 1 per cent at eps = 0.03.
+
+## 2026-11-27 19:49 PST (lead of batch 39): outcome W0c; the data run restarted
+
+Run B-20261128-034232-f589717 (all three maps, 32^3 and 64^3). [VERIFIED by this run]
+- W0c invariance HOLDS: product map, 64^3, I_B moves by 1.2e-7 (eps = 0.03) and 1.2e-5 (0.3);
+  V by less than 1e-15; det J stays above 0.91.
+- W0c discrimination FAILS (third time): the TT band moves by -2.1e-4 and -1.9e-2. A debugging
+  probe after the run (not registered, no file: the same function with A = 0) gave a TT band of
+  1e-32 for every map: flat space in these curvilinear coordinates has no TT power in the band to
+  round-off, so the TT projection removes the products (d xi)^2 of these maps too. My reasoning
+  that they carry a TT part of size eps^2 was wrong. What moves the coordinate band is the
+  coupling of the map with the perturbation itself (the wave pulled back: 2-4 per cent at
+  max |d xi| = 0.3). [JUDGEMENT] For the box this says: a relabelling of the slice changes the
+  band strain through the product of the coordinate deformation with the metric perturbation
+  that is there (the halos' potentials), not through the deformation alone.
+Reading of W0 as a test of the reader: the invariant is exact to 1e-4 at 64^3 on an analytic
+wave and invariant to 1e-5 or better under three families of finite coordinate maps; the coordinate
+band strain is not invariant (it moved by 2-4 per cent); W0's claim that the test would show a
+change of more than 10 per cent is refuted for all three maps.
+
+The first data run, B-20261128-033853-e516942, was stopped by hand (kill of its numeric process
+ids) after three dumps: its table keyed the rows by the dump time (8.01) instead of the requested
+epoch (8.0) and would have failed after all the work. Its three printed rows (a = 25: I_B 2.9597e-13
+in both gauges, V 8.037229e6 in both, <K>_V -2.394598e-2 in both) are not used; the rerun
+B-20261128-034914-1e7a68f writes the rows as they come. The 256^3 member is read at a = 64, 100, 132 only.
