@@ -1,0 +1,5 @@
+# Track D, G3 (scope/SCOPE_G3.md amendment A6, 2026-11-28; decision 0051 item 3; g3/amend JOURNAL entry 10): card
+# timing run to 2 M of the coarser member G-6u (root 72, blocks of 18, 456 blocks, dx 1/6 to +-6 M), Q1 of A6.
+# Read: finder status at t = 0 (found, mass against the processor smoke test K2), block count, wall seconds per M,
+# card memory.
+t6u tracks/D-bh-dress/g3/amend/decks/g3g6u_t2.athinput

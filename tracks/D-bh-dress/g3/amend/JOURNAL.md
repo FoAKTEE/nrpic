@@ -252,3 +252,28 @@ Outputs: `scratch/D-bh-dress/D-20261128-160553-b500509/g8_read.json`, `g8_read.p
 Summary: at M/8 the code reproduces the exact LTB growth law to +0.17 to +0.25 per cent in every bin from 50 to
 492 M of the swallowed dust's proper time, +0.10 to +0.24 per cent once the shells' lead is carried; the growth's
 logarithmic slope agrees to 3e-3. One member: no mesh statement. Claim D not read (D1* not fixed).
+
+## Entry 10 (2026-11-28 08:10 PST, lead of batch 41, before any of these runs is queued): predictions for the card runs of A6
+
+Entries, all priority 2 (scope A6; queue ids in HANDOFF): T-6u (batch, one job, `decks/timing6.list`, cap 0.2),
+N6-ES and N6-V (chains, caps 1.2 each), G-12u (chain, cap 11). Build: release core-v0.9 if K3 of entry 8 holds,
+core-v0.8 otherwise (A6, builds).
+- T-6u (Q1 of A6): starts and fits one card, peak memory in [12, 26] GiB (trap 33's line: 6.1 GiB plus 1696 bytes
+  per cell over 456 blocks of 26^3 with ghost zones gives 18.8 GiB); 456 blocks; the search at t = 0 found, with the
+  mass of the processor smoke test K2 within 1e-6 (the polished finder agrees between card and processors to
+  2.2e-16, finder_stop.md); wall seconds per M of evolution in [6, 14] [JUDGEMENT: 0.32 of G-8's cells x steps on
+  its mesh part of 17.9 s per M, blocks of 18 less efficient than 24 by up to 1.6, plus 1.1 s per M of particles], so
+  G-6u to 400 M by A1's rule (x 1.15) in [0.8, 1.8] card-hours. Refuted if the search is not found (Q1 fails), the
+  mass differs from K2's by more than 1e-6, or the seconds per M leave the band.
+- N6-ES, N6-V (Q2 of A6): both reach 300 M, no guard file, exit 0; at least 99 per cent of the searches after 2 M
+  found in each; t = 0 masses equal within 1e-6; max over common search times 100-300 M of |D_ES - D_V| in [3e-5,
+  1.5e-4] [JUDGEMENT: G2's tight re-search at M/8 gave at most 7.3e-5, fp_analyse run D-20261124-172508-c847ee4; the
+  production finder's floor was 2.28e-4 at M/8 and 1.99e-4 at M/16; M/6 resolves the vacuum hole with fewer cells,
+  which moves both members alike]. Q2 holds (A6) if the maximum is at most 2.0e-4; refuted (and G-6u not run) above.
+  Cost each in [0.4, 1.0] card-hours.
+- G-12u: reaches 400 M inside its cap of 11 card-hours (measured rate 73.8 s per M: 8.2, 9.4 with A1's 15 per cent);
+  every dust removal by reason 3; at least 99 per cent of the searches found; G3-G1 holds with raw bin medians in
+  [+0.05, +0.25] per cent; the window means e-bar_12 below e-bar_8 in at least four of the six 50 M windows after
+  100 M [JUDGEMENT: the lead falls with h, 0.78 M at M/8 to 0.53 M predicted at M/12]. Refuted for the direction if
+  e-bar_12 exceeds e-bar_8 by three standard errors in any window after 100 M. No G-12u output is read for a
+  criterion before the processor work of A5 is committed (A6).
