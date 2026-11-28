@@ -525,3 +525,28 @@ failed: C3a before a = 31 (1.32 at a = 25 against 1.5); GM2 Omega part (0.851 ag
 GM3 counts at a = 121 and largest masses at a = 64 (1.32) and 121 (1.13); the C3 step-1 wall time
 (61 min against 30-60). No failed run.
 Card-hours: 0.038 (q0070).
+
+## 2026-11-27 18:56-19:40 PST: lead of batch 37 (the fresh G2 verifier; the 256^3 member)
+
+Merged main (decisions to 0049). Pause flag absent throughout. Stranded: the --full stage verify
+of batch 34 had ended PASS (13883 files, 1166.91 GB) with VERIFY_RESULTS uncommitted: committed
+(397511402). (1) Verifier (stage/G2/verifier/VERIFIER.md) copied to stage/G2/VERIFIER.md; C18
+judged PASS with the verifier's coverage. Corrections: (a) note's momentum ratio "from a ~ 36"
+corrected (1.45-1.99 for 36 <= a < 49); (b) pairings: registered pair_ratio.py
+(B-20261128-030537-0172236, -030556-5ef9294; P1 holds for Table VIII, fails for Table VII; P2 holds
+for interpolated pairings, fails for nearest record; P3 holds); new ledger row g2_pair; (c) shell
+cut of the high-k ratio stated, row g2_hikcut from the verifier's run; (d) L2's crossing worded as
+an inference; (e) SPEC item 5 amended (convergence first; no verdict changes). C2's gauge leg
+recorded as an identified gauge dependence, the halo catalogue at one per cell as FAILED. Note v5
+(run_all B-20261128-030728-a5b1b32, then -030805-78634c0 for a cross-reference), compiled, checker
+clean on compile, page 16 read. (2) Decision 0048 item 3: mem_fit.py (B-20261128-030214-20f2961
+superseded for its card time; -030350-19295a4): 42-46 GiB of 80, bound 76: it fits; 12.2 card-h
+(8.0-16.4). Initial data started (B-20261128-030420-33ccdca, detached, one core). Queue entry
+deferred to the session that checks the data. (3) Stage collect, verify, report on this batch's
+commit. Outbox: info to orch (G2 answered, package ready); request to orch (128^3/8 ppc
+Gamma-driver partner). Acks: orch's queue audit (q0006, q0007 known and judged), kb claims5 (no
+B file cites 182 or 193).
+failed: E2 (card time 4-7 card-h expected, 12.2 estimated); P1 for Table VII (1.13 against 1.11);
+P2 for the nearest-record pairing (1.50); the first mem_fit run's card time (wrong division,
+superseded). No failed simulation.
+Card-hours: none. Processor: one core from 19:04 PST for the initial data (about two days).
