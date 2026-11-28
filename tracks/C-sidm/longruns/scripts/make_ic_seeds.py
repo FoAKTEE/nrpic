@@ -7,6 +7,9 @@ one-percent radial kicks inward and outward of threshold_scan/make_scan.py (same
     python3 make_ic_seeds.py --out DIR [--seeds 2 3] [--N 100000] [--tag king_y0p34400]
 
 --tag (batch 17) samples another model of the King b = 1 sequence with the same sampler and kicks.
+--maker models (batch 35, scope/SCOPE_G3.md step 1a) builds the model with
+tracks/C-sidm/models/make_models.py instead (the F21 b = 0.1 thermal cores, tags tmb01_Z0p5200 ...);
+same sampler, same kicks.
 """
 import argparse
 import json
@@ -31,8 +34,11 @@ def main():
     ap.add_argument("--seeds", type=int, nargs="+", default=[2, 3])
     ap.add_argument("--N", type=int, default=100000)
     ap.add_argument("--tag", default=TAG, help="model tag of make_equilibria.py (batch 17; default the threshold model)")
+    ap.add_argument("--maker", default="equilibria", choices=["equilibria", "models"],
+                    help="builder: equilibria/make_equilibria.py (King b = 1) or models/make_models.py (b = 0.1)")
     a = ap.parse_args()
-    make = os.path.join(TRACK, "equilibria", "make_equilibria.py")
+    make = os.path.join(TRACK, "equilibria", "make_equilibria.py") if a.maker == "equilibria" else \
+        os.path.join(TRACK, "models", "make_models.py")
     index = {}
     for s in a.seeds:
         out = os.path.join(a.out, f"s{s}")
