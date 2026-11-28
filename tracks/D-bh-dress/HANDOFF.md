@@ -19,8 +19,8 @@ Files to read first: `STATUS.md`; `scope/SCOPE_G3.md` section 11 (A1-A5 and the 
 
 ## Card jobs in flight (check sacct for every job of an entry before reading it)
 
-- q0100 D-G3-G8 (production, chain, cap 3.5), run D-20261128-062142-c5666c4, Slurm job 5632 PENDING at 23:26
-  PST. Deck `g3/amend/decks/g3g8.athinput` (core-v0.8, start/stop times of the finder set, diagnostics on,
+- q0100 D-G3-G8 (production, chain, cap 3.5), run D-20261128-062142-c5666c4, chain at t = 17.5 M (finder) after three
+  preemptions; next job 5639 PENDING at 23:48 PST. Deck `g3/amend/decks/g3g8.athinput` (core-v0.8, start/stop times of the finder set, diagnostics on,
   polishing 100), to 400 M, about 2.5 card-hours. Output `scratch/D-bh-dress/D-20261128-062142-c5666c4/` (base
   g3g8). When the chain is DONE: `harness/bin/nrpic-run finish D-20261128-062142-c5666c4`, then read it with the
   amended Claim G criteria (SCOPE_G3 section 4 as replaced by A3), which need the vacuum offsets of item 2 below

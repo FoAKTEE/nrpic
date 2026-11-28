@@ -30,6 +30,7 @@ offers:      excguard/tools/eg8_read.py (status-filtered finder view + criteria)
              (timing_read.py: card memory and s per M from logs; check_review.py; make_g3_decks.py)
 budget:      G3: 60 card-hours; used 1.52; q0100 G-8 cap 3.5 waiting. Processors this session: three
              reader runs on one core (seconds each).
-card jobs:   q0100 D-G3-G8, run D-20261128-062142-c5666c4, job 5632 PENDING (Priority); production base,
+card jobs:   q0100 D-G3-G8, run D-20261128-062142-c5666c4, at 17.5 M, preempted three times,
+             next job 5639 PENDING; production base,
              read at 400 M (SCOPE_G3 section 4 with A3; needs the vacuum offsets first).
 relaxed lapse: no run uses it; G3 states why no other slicing is possible (SCOPE_G3 section 8).

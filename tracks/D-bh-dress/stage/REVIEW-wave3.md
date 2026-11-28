@@ -673,4 +673,4 @@ reading of 18 doubles per cell, not checked in the source; G-12u's rate is from 
 Asked of others: the orchestrator rules on the mesh leg (options a-d, outbox g3-mesh-leg-ruling); core answers
 whether a two-card build or a lower memory per cell is possible (outbox eg8-read-and-g16u-memory).
 Queued: nothing. Under A5 the later members wait for the processor work (none of it done yet), and G-16u
-additionally for the ruling; G-8 (q0100) is in Slurm (job 5632, pending).
+additionally for the ruling; G-8 (q0100) runs as a chain (17.5 M at 23:48 PST, next job 5639 pending).
