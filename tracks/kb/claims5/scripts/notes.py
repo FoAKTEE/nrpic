@@ -53,6 +53,12 @@ def main():
                 continue
             owner, path, line = c.split(":", 2)
             by_owner.setdefault(owner, {}).setdefault(cid, []).append(f"{path}:{line}")
+    seeded = {}
+    for cid, r in rows.items():
+        if r["right"] == "0":
+            seeded.setdefault(meta[cid]["track"], []).append(cid)
+    for owner in seeded:
+        by_owner.setdefault(owner, {})
     for owner, cids in sorted(by_owner.items()):
         changed = [c for c in sorted(cids) if rows[c]["right"] == "0"]
         relocated = [c for c in sorted(cids) if c in newloc]
@@ -82,13 +88,22 @@ def main():
             for c in relocated:
                 L.append(f"- {c}: locator now {newloc[c]}. Cited at: {', '.join(sorted(set(cids[c])))}.")
             L.append("")
+        own = [c for c in sorted(seeded.get(owner, [])) if c not in cids]
+        if own:
+            L += ["## Claims seeded from your files that changed (cited by other owners)", ""]
+            for c in own:
+                old, _ = text(c)
+                t, lab = text(succ.get(c))
+                L.append(f"- **{c} -> {succ.get(c)}** ({rows[c]['verdict']}). Old: \"{old[:150]}\". New [{lab}]: "
+                         f"\"{t}\". Seeded from: {con.execute('SELECT origin_path FROM claim_meta WHERE claim_id=?', (c,)).fetchone()[0]}.")
+            L.append("")
         L += [f"## Verified as worded ({len(verified)}; text unchanged, status now checked)", "",
               ", ".join(str(c) for c in verified) if verified else "none", "",
               "No action is needed for verified claims. Borderline ones (noun phrases, locator debris left in "
               "the text) are verified as they stand; LEDGER.tsv marks them.", ""]
         with open(os.path.join(a.out, f"NOTE_{owner}.md"), "w") as f:
             f.write("\n".join(L))
-        print(owner, "cites", len(cids), "changed", len(changed), "relocated", len(relocated))
+        print(owner, "cites", len(cids), "changed", len(changed), "relocated", len(relocated), "own changed", len(own))
     return 0
 
 
