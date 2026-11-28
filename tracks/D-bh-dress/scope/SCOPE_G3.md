@@ -380,3 +380,18 @@ review's section 4 (reader of A2 on G2's snapshots, polished vacuum offsets, pow
 is committed.
 
 Predictions for the amended criteria: `g3/amend/JOURNAL.md` entry 4 (written before any of them is read).
+
+### Note under A1 of 2026-11-27 23:44 PST (lead of batch 40): t_16 is not fixed; the full mesh leg as designed ends
+
+Measured (`g3/amend/JOURNAL.md` entry 7; timing run D-20261128-055309-41ea07a, reader D-20261128-074128-24b2565,
+`timing_read.png` looked at): G-12u fits one card (69.0 of 80 GiB) at 73.8 s per M (3.81 times G-8's 19.4), 9.4
+card-hours to 400 M by A1's rule; its t = 0 mass 0.99975 satisfies A1's rule. G-16u does NOT fit one card: the
+run stopped at set-up (Kokkos could not allocate 10.74 GiB with 76.2 GB in use); the two measured peaks put it
+at 132.6 GiB, 1.66 cards. Its cost at one card's speed would be 25.9 card-hours to 400 M (t_16 = 309 M at A1's 20).
+A1's rule for t_16 < 200 M applies a fortiori: G-16u is not queued, and the orchestrator is asked for a ruling
+(outbox 2026-11-28, `g3-mesh-leg-ruling`) among: (a) G-8 and G-12u only (11.9 card-hours; one difference, no
+order); (b) (a) plus a coarser uniform member G-6u (root 72, blocks of 18; about 1 card-hour to 400 M by cells x
+steps; a 2 M timing run first; the t = 0 horizon spans three cells, and M/4 lay outside the convergent regime at
+G2); (c) G-16u on two cards, which needs a card build on two ranks from core (about 26-30 card-hours; t_16 = 309 M at
+20); (d) M/16 by FL16's hierarchy (level 8 over +-3 M, 512 blocks, one card), read only to about 190 M, where the
+horizon leaves level 8. Nothing of A2-A5 changes until the ruling; the processor work of A5 stays first.

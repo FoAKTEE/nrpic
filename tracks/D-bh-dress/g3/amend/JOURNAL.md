@@ -138,3 +138,35 @@ G-8's seconds per M from EG8's long segments, T-12u's from its log, the memory o
 through the two measured peaks, the cost to 400 M by A1's rule (seconds per M x 400 M x 1.15), and the checks
 of entry 3 and P-A1 as written; one figure `timing_read.png`. What the reader cannot change is already plain:
 T-16u does not fit one card, so entry 3's "fits a card" and P-A1 are refuted for G-16u before the reader runs.
+
+## Entry 7 (2026-11-27 23:44 PST, lead of batch 40): outcome of T-12u and T-16u (run D-20261128-055309-41ea07a; reader runs D-20261128-074025-07d95a4, which found no G-8 segment through a parse defect, and D-20261128-074128-24b2565 after the fix; figure `timing_read.png` looked at)
+
+Outputs: `scratch/D-bh-dress/D-20261128-074128-24b2565/timing_read.json`, `timing_read.png`.
+
+T-12u (G-12u, root 144, blocks of 36):
+- HELD: fits one card (peak 69043 MiB of 81920, 84 per cent); 456 blocks in eight physical levels (the `athena
+  -m` count); the search at t = 0 found after 139 flow iterations; wall seconds per M 73.8 (2 M after a start-up
+  of 12 s) against G-8's 19.4 (EG8's long segments, cpu seconds minus start-up over the span), ratio 3.81, band
+  [2.7, 6.6]; A1's rule -1e-4 <= 1 - M_0 <= 8.5e-3 holds (1 - M_0 = 2.5e-4).
+- FAILED: the mass band 0.9990 +- 0.0007 of entry 3. M_0 = 0.99975, 5e-5 above the band. The t = 0 offsets
+  8.5e-3 (M/8), 2.5e-4 (M/12), 1.85e-4 (M/16 at the puncture, FL16) follow no power of h; my (2/3)^5.5 scaling
+  was wrong. [JUDGEMENT: at t = 0 the horizon's coordinate radius is 0.5 M, four cells of M/8; the M/8 offset is
+  a few-cell effect that has gone at M/12.] One search of the 2 M (t = 0.667 M) was not found (mean expansion
+  above hmean_tol), as EG8's at t = 1.0 M.
+T-16u (G-16u, root 192, blocks of 48): REFUTED, it does not fit one card. After the 456 blocks were set up,
+  Kokkos failed to allocate 10.74 GiB (label "dg") with 76223 MiB in use; exit 134 at 3 s. The line through the
+  two measured peaks (6.2 GiB fixed plus 1696 bytes per cell over the 456 blocks with ghost zones) gives 132.6 GiB
+  for G-16u, 1.66 cards. The largest block of this family that fits one card at 97 per cent is 38 cells (M/12.7).
+  [JUDGEMENT: 10.74 GiB is 18 doubles per cell of 456 blocks of 56^3, the metric derivatives that `metric_drvts =
+  interpolant` keeps; dropping them alone would leave about 122 GiB.]
+P-A1 REFUTED: G-16u's timing run does not fit; t_16 is not defined on one card. By A1, the full mesh leg as
+  designed ends, and the orchestrator rules before G-16u is queued.
+
+Cost of the mesh leg to 400 M by A1's rule (measured seconds per M x 400 M x 1.15): G-8 2.48 card-hours (q0100,
+in Slurm), G-12u 9.43 (cap 11), G-16u 25.9 if it ran at one card's speed (cells x steps over G-8, times G-12u's
+measured efficiency 0.98; on two cards the communication is not measured and adds to it). With G-16u at 400 M
+the G3 total is about 51 card-hours (G-8 2.5, G-12u 9.4, G-16u 25.9, particle leg 3.2 + 5.2, gauge leg 2.7, EG8
+1.5, timing 0.05), inside the 60; A1's cap of 20 card-hours for G-16u would stop it at about 309 M. The
+obstacle is memory, not card-hours: no executable runs G-16u on this machine (one card per job; no card build on
+two ranks is published). What is lost if the leg stays on one card: the M/16 member, and with it the third mesh
+member that A3's G3-G2 order and G3-G3 ratio need; G-8 and G-12u alone give one difference and no order.

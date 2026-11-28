@@ -99,3 +99,40 @@ filtered by the status file (searches not found dropped, decision 0040 item 3), 
 `g2runs/tools/esf_criteria.py` (E2, E5) and `g2long/tools/d4_timing.py` (E6, EG8 beside FK), and its own
 E1, E3, E4, E7, E8; one figure `eg8_read.png`. E1-E8 are judged as entry 1 wrote them; nothing is
 re-banded.
+
+## Entry 4 (2026-11-27 23:43 PST, lead of batch 40): outcome of EG8 (run D-20261127-233719-db5be88; reader run D-20261128-074210-aa0a37a, figure `eg8_read.png` looked at)
+
+Outputs: `scratch/D-bh-dress/D-20261128-074210-aa0a37a/eg8_read.json`, `criteria/esf_criteria.json`,
+`d4/d4_timing.json`, `eg8_read.png`. One search not found (t = 1.0 M, iteration limit) was dropped from the
+summary before the criteria were read.
+
+- E1 HOLDS. The smallest horizon radius passes 3.2 M at t = 219.0 M and reaches 3.49 M at 259.5 M, below the
+  guard radius 6.4 M; all 76696 dust removals are by reason 3 (horizon), 13352 of them after 219.5 M, none by
+  reason 2 or any other reason; the last at t = 259.81 M. No record overlap had to be dropped. Answer to the
+  question of the batch: yes, removals by the horizon rule continue past 219.5 M with the guard factor 8 and
+  `initial_radius_0 = 0.8`, to the end of the run (panels a, b).
+- E2 FAILED as written, not refuted. 34 counted bins of criterion (iii); 33 lie in [+0.175, +0.250] per cent;
+  the first (tau_rem 0-10 M, 128 removals) is +0.056 per cent, below the band's lower edge 0.10. No bin above
+  0.45 per cent or below 0: the step of ES-FL (+0.62 per cent after 219.5 M) does not appear; the bins after
+  tau_rem 220 M lie in [+0.175, +0.250] per cent (panel c). Cause of the failure is in the prediction, not in
+  the run: I built the band from FK's late bins (tau_rem 280-500 M) only; FK's own first bin is +0.050 per cent
+  (n = 128, run D-20261125-115647-fd2f3f7), EG8's +6e-5 above it, the size of E3.
+- E3 HOLDS. M_EG8 - M_FK at 399 common finder times on 20-219 M: median +8.6e-5 (5-95 per cent +6.1e-5 to
+  +1.09e-4), band [2e-5, 1.2e-4]. Not predicted (panel d): the difference rises from +6e-5 at 20 M to +1.1e-4 at
+  219 M, and between about 38 and 48 M it is -7e-5, a 10 M window in which FK's unpolished finder sat on the
+  plateau 1.4e-4 higher (FK's plateaus, entry 1) while the horizon radius has its bump (panel a). [JUDGEMENT:
+  the unpolished rule's offset is not one number; G3's members all polish.]
+- E4 HOLDS. 515 of 515 searches after 2 M found; 112-145 flow iterations (median 126).
+- E5 HOLDS. D2: 480 samples after 20 M, no violation. D3: 76168 removals, smallest margin +1.2e-4 (FK -1.4e-4).
+- E6 HOLDS. Before t_rem = 219 M: 0 of 63344 removals precede their exact crossing, smallest lead +0.0715 M
+  (FK +0.0715 M). Bin t_rem 240-250 M: 5.4 per cent precede (192 of 3528), FK 5.4 per cent.
+- E7 HOLDS. 1.47 card-hours by sacct over the 11 jobs (`nrpic-run finish`), 1.49 by the segment stamps; band
+  1.2-1.7. Ten of the eleven attempts were cut by preemption; the guard of core-v0.7 wrote restart files each time.
+- E8 HOLDS. Chain DONE, last segment exit 0 at t = 260 M, no guard file.
+
+What it means [JUDGEMENT]: on this deck core's `ah_exc_max_growth = 8` with `initial_radius_0 = 0.8` does what
+finder_stop.md section 3 says: excision stays on past the radius where the default factor 4 stopped it, and the
+mass against the exact solution keeps FK's level. G3 needs nothing from it (A1 chose FK's remedy, start radius
+1.6 with factor 4), but either remedy is now tested to 260 M. Limits: one deck (M/8, N), to 260 M (the horizon
+radius 3.49 M at the end; the guard 6.4 M was never approached), so the factor is tested against loss of
+excision near 4 x 0.8 M, not near its own limit. Outcome posted to core (outbox, this session).
