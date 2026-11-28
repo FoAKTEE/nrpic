@@ -141,6 +141,7 @@ for j in (80,):
     raw["zs128"].append(measure(os.path.join(Z128, f"pop.z4cd.{j:05d}.bin")))
     raw["gd128"].append(measure(os.path.join(R128, f"pop.z4cd.{j:05d}.bin")))
 res["raw"] = raw
+json.dump(res, open(os.path.join(out, "v2_strain.json"), "w"), indent=1, default=float)   # before the comparisons
 
 
 def fdump(run, t):
@@ -162,7 +163,7 @@ res["raw_vs_files"] = cmp_
 mine = []
 for m in raw["gd256"]:
     t = m["t"]
-    c = [x for x in raw["gd128"] if abs(x["t"] - t) < 0.3 and x["t"] != 20.0081664514739419]
+    c = [x for x in raw["gd128"] if abs(x["t"] - t) < 0.3]
     c = sorted(c, key=lambda x: x["t"])[:2]
     t0, t1 = c[0]["t"], c[1]["t"]
     for key in ("band8_exact", "band8_filesform"):
@@ -171,7 +172,8 @@ for m in raw["gd256"]:
         mine.append({"t": t, "a": m["a"], "measure": key, "ratio_tinterp": float(np.sqrt(m[key]/np.exp(y))),
                      "ratio_nearest": float(np.sqrt(m[key]/nearest))})
 res["raw_ratios_mine"] = mine
-zz, gg = raw["zs128"][-1], [x for x in raw["gd128"] if abs(x["t"] - raw["zs128"][-1]["t"]) < 1e-9][0]
+# the two runs write their dumps at times that differ by ~6e-9 (different step histories)
+zz, gg = raw["zs128"][-1], [x for x in raw["gd128"] if abs(x["t"] - raw["zs128"][-1]["t"]) < 1e-3][0]
 res["raw_highk_zs_over_gd_mine"] = {"t": zz["t"], "a": zz["a"], "Om_gt16_ratio": zz["Om_gt16"]/gg["Om_gt16"],
                                    "band8_gd_over_zs": float(np.sqrt(gg["band8_exact"]/zz["band8_exact"]))}
 json.dump(res, open(os.path.join(out, "v2_strain.json"), "w"), indent=1, default=float)
