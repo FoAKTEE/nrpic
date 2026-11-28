@@ -569,3 +569,21 @@ made; scope amended with dates; note v6 (B-20261128-035351-296cf80, ladder -0354
 (second review after q0107 and W5). Stopped by hand, on record: data runs -033853-e516942 (row keys)
 and -034914-1e7a68f (too slow). Card-hours used: none (q0107 not started). Prediction-first kept:
 G8a-G8c, W0-W5 each committed before its run.
+
+## 2026-11-27 23:26 PST to about 00:10, lead of batch 40 (wave 3): q0107 closed; W5 void; G8a and W6 left running
+
+(1) q0107 (B-20261128-034731-640f4f4) DONE after two preemptions, closed with nrpic-run finish
+(88.2 GB hashed, 15 min on a loaded disk). G8c HOLDS (0.774 card-h); G8b guard part HOLDS (a =
+141.7, no exit 3). (2) W5 of batch 39 found VOID from its own rows: the 256^3 dumps were taken by
+index, and chain segment ends add dumps (t = 12, 15, 18 instead of 14, 18, 21). Predictions W5b and
+W6 written and committed before any reading of q0107 (population/JOURNAL 23:35). weyl_gauge.py got
+mode splitx (dumps by header time; four 128^3 members and 256^3), judge_g8.py written (band ratios,
+constraints, Weyl panel; dry check on a stand-in file in scratch/tmp, not evidence). (3) Two
+registered analyses started 07:41 UTC: B-20261128-074111-e2fcd72 (analyze_gr on q0107, G8a/G8b)
+and B-20261128-074116-363f95f (splitx, W5b/W6); both still running at the end of the session (disk
+saturated by other owners: 200-390 s per 128^3 dump). First rows: at a = 49 eight per cell leaves
+the invariant's gauge ratio unchanged (0.9022 against 0.9021). (4) C2 stated as measured over the
+whole range in stage/G2/CHECKLIST.md (still FAIL); stage collect, verify, report; outbox one line
+to orch (20261128T075335Z). Card-hours used this session: 0.774 (q0107). Failed predictions: none
+newly judged as failed; W5 not judged (void run). G8a, its corollary, the constraint part of G8b,
+W5b and W6 are NOT judged yet: the second review or the next lead reads them (HANDOFF.md).

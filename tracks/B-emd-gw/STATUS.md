@@ -2,40 +2,36 @@
 
 gate:        G0 PASS (2026-11-19), G1 PASS with reservations (2026-11-21, tag
              stage/B-emd-gw/G1-pass-20261121). G2 HELD, NOT SIGNED (coord/GATES.md 2026-11-27,
-             decision 0050): the convergence item C2 is met for the band strain only to a = 49;
-             after that the gauges differ by 5, 20, 36 per cent at a = 64, 100, 132 and the
-             particle-number leg exists only with zero shift. C2 reads FAIL in CHECKLIST.md.
-             Signed only after a second review limited to C2, when (a) a gauge-invariant measure
-             agrees between the gauges or (b) the particle leg converges in the driven gauge.
-headline:    Condition (a) measured and NOT met by the proper-volume magnetic Weyl invariant: on
-             the same slices (volume, <K>, <alpha> agree to 3e-4) the invariant ratios Gamma
-             driver/zero shift at a = 100, 132 are median 0.936, 0.821, larger-lapse half 0.957,
-             0.883, mean 0.837, 0.841 (B-20261128-040834-8e1587d). In amplitude far less than
-             the band strain's 0.80, 0.64: most of the gauge dependence is coordinate, not all.
-last-result: batch 39 (2026-11-27 19:31-20:45 PST): reader of the invariant tested on analytic
-             waves under three coordinate maps (B-20261128-034232-f589717: invariant to 2e-5; my
-             claim that the maps move the TT band by >10 per cent refuted); W1 holds, W2 fails, W4
-             refuted (population/JOURNAL batch 39); figure population/figs/weyl_gauge.png looked
-             at; gate review corrections made (C1 pancake row, C2 zero-shift leg, gauge ratio
-             against a, stream-crossing cause open again, note Sec. VII, ladder, EVIDENCE,
-             REPRODUCE); scope amended with dates (decision 0050 item 3); note v6 compiled.
-running:     card: q0107 (128^3, eight per cell, Gamma driver; run B-20261128-034731-640f4f4,
-             Slurm job 5585, pending at 20:12 PST; predictions G8a-G8c, population/JOURNAL
-             2026-11-27 19:36). Processor: W5 mesh scale of the invariant, background run
-             B-20261128-040950-1404d91 (256^3 Gamma driver, 3 cores, about an hour); initial data
-             256^3 at eight per cell, B-20261128-030420-33ccdca (one core, about two days).
-next:        1. when q0107 ends: nrpic-run finish, judge G8a-G8c (band strain 8/1 per cell in the
-                driven gauge at a = 64, 100, 132; K1 guard and constraints), and run the Weyl
-                statistics on it and on q0006's zero-shift member (8 per cell in both gauges)
-             2. when B-20261128-040950-1404d91 ends: finish, judge W5 (mesh scale against the
-                gauge difference); then outbox one line for the second review of C2
-             3. G3 scope text (lapse leg, gauge-qualified late strain, eight per cell) before any
-                production; the 256^3/8 ppc member after its initial data (I1-I4)
-needs:       orch: the second review of C2 after q0107 and W5 are read (outbox 20261128T041156Z).
+             decision 0050). C2 reads FAIL in stage/G2/CHECKLIST.md, now stated over the whole
+             range (batch 40 addendum). A second review limited to C2 follows this session.
+headline:    C2 as measured, band strain |k| <= 8 k_f of the halo box, a = 2.3-141: mesh
+             (Gamma driver 256^3/128^3) within 2.8 per cent over the whole range; particle number
+             (zero shift, 8/1 per cell) within 2e-3 to a = 132; gauge within 1.6 per cent only to
+             a = 49 (0.950, 0.803, 0.643 at a = 64, 100, 132). Condition (a) not met (batch 39).
+             Condition (b): q0107 ran and is closed; its band reading was still running.
+last-result: batch 40 (2026-11-27 23:26 PST on): q0107 (B-20261128-034731-640f4f4) DONE, 0.774
+             card-h, a = 141.7 with no guard stop: G8c and the guard part of G8b hold. Batch 39's
+             W5 (B-20261128-040950-1404d91) is VOID: it took the 256^3 file index for t, and
+             chain segments add dumps (headers: files 14, 18, 21 are t = 12, 15, 18).
+             weyl_gauge.py splitx now picks every dump by its header time. First rows of W6: at
+             a = 49 eight per cell leaves the gauge ratio of the Weyl invariant unchanged (I_B
+             0.9022 against 0.9021; median 0.9973 against 0.9976).
+running:     processor, registered, both started 07:41 UTC on a disk loaded by other owners
+             (200-390 s per 128^3 dump, 13 s on an idle disk):
+             B-20261128-074111-e2fcd72 analyze_gr on q0107 at t = 12, 14, 18, 21 (G8a, G8b);
+             B-20261128-074116-363f95f weyl_gauge.py splitx (W5b, W6; 16 dumps of 128^3 and
+             three of 256^3); initial data 256^3 at eight per cell B-20261128-030420-33ccdca
+             (one core, 30-55 h). No card job of this owner is queued.
+next:        1. when -074111-e2fcd72 ends: nrpic-run finish; judge_g8.py --gd8
+                $S/B-20261128-074111-e2fcd72/analysis_gr_p8gd.json (registered), look at
+                judge_g8.png; judge G8a, its corollary, G8b constraint part
+             2. when -074116-363f95f ends: finish; judge_g8.py again with --weyl; judge W5b, W6
+             3. G3 scope text: which gauge leg, the late strain with its measured gauge
+                dependence as error or a <= 49 only; the 256^3/8 ppc member after its data
+needs:       orch: the second review of C2 (outbox 20261128T075335Z); it can read G8a and W6
+             from the two runs above when they end (HANDOFF.md says how).
              core: parameters added at a restart (NEXT_SOURCE item 1).
-offers:      gw_diag (TT, rho_K, spectra, E/B/Psi_4; gauge G_tot); population/scripts/
-             weyl_gauge.py (proper-volume magnetic Weyl invariant, lapse split, quantiles, tested
-             under coordinate maps); analyze_gr.py --equal-mass; compare_legs.py; pair_ratio.py;
-             mem_fit.py; findings R25-R31
-budget:      card-hours toward G2: 11.64 used before this batch, 28.36 left; q0107 adds about
-             0.85 when it runs (none used in this session)
+offers:      gw_diag (TT, rho_K, spectra, E/B/Psi_4; gauge G_tot); weyl_gauge.py (magnetic
+             Weyl invariant, lapse split, quantiles; splitx picks dumps by header time);
+             judge_g8.py; analyze_gr.py --equal-mass; compare_legs.py; findings R25-R32
+budget:      card-hours toward G2: 12.42 used (11.64 + 0.774 for q0107), 27.58 left; none queued
