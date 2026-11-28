@@ -1246,3 +1246,33 @@ member (data B-20261124-135029-3fe13f6 exist, about 0.85 card-h) is asked of the
   counts; if it is the mesh, it stays]. This prediction is deliberately the null; its refutation
   (counts rising by more than the band toward the 128^3 counts) names sampling as the cause of
   GM3's failure.
+
+## 2026-11-27 19:05 PST (lead of batch 37): outcomes E1, E2; the member fits one card; initial data started
+
+Registered fit B-20261128-030350-19295a4 (`mem_fit.py`; mem_fit.png looked at: left the three
+measured peaks, the two models' predictions near 41-45 GiB and the bound at 76 GiB under the
+card's 80 GiB line; right the wall seconds per unit code time from the restart-file intervals,
+medians drawn, the outliers being segment gaps and time-limit restarts). The first run of the
+script, B-20261128-030214-20f2961, has the same memory numbers but a wrong card time (4.35
+card-h: it divided the last segment's 804 s of the 128^3/8 ppc member by all its cycles, the
+preempted segments having no end line); it is superseded and stays on record. [VERIFIED by
+these runs]
+- E1 HOLDS: peak card memory of the 256^3/8 ppc member 46317 MiB (model plain: constant 987
+  MiB, 1781 B per cell, 131.5 B per particle) or 42454 MiB (model with ghost cells: 756 MiB,
+  1526 B per ghosted cell, 97.0 B per particle); bound 78164 MiB; card 81920 MiB (A100 80GB
+  PCIe). It fits one card, with 35-39 GB to spare by the models and 3.7 GB by the bound.
+- E2 FAILS (refuted): card time 12.2 card-h (8.0-16.4 for half to 1.5 times the particle cost),
+  not 4-7. Wall seconds per unit code time: 128^3/1 ppc 29.8, 128^3/8 ppc 126.8, 256^3/1 ppc
+  598.3; the particles (2^24) cost 97 s per unit t at the 128^3 step and 193 at the 256^3 step
+  (x1.989 cycles), so the 256^3/8 ppc member takes 1950 s per unit t against 598. The
+  expectation of 4-7 card-h took the particle cost as small beside the mesh; at 128^3 it is
+  three quarters of the eight-per-cell member's time. The track has 28.36 card-h left toward
+  G2 (`nrpic-run budget`): the member is affordable, about 13-17 one-hour segments of a chain.
+- Disk: the 256^3/1 ppc member's directory holds 261 GB; eight times the particles add about
+  8.5 GB per particle snapshot (1.21 GB at 2^24, 22 snapshots) and per restart file's particle
+  part (27 restart files): about 0.4 TB more, about 0.65 TB for the member [arithmetic on the
+  file sizes; the volume has 12 TB free, decision 0048 item 8].
+
+Decision (decision 0048 item 3): it fits; step 1 (initial data) starts now, detached, one core;
+predictions I1-I4 and K1-K3 of the 19:02 entry stand; K1 is extended: the card member takes
+8-16.4 card-h, refuted above 20.
