@@ -406,3 +406,23 @@ build (the level-face kernel writes one coarse cell per index, so threads cannot
 collide); histories of the untouched cases need not be byte-identical to the serial
 release (the threaded build is not a byte reference), so check C1c may fail there and is
 not judged. Refuted by a conservation error above 1e-12.
+
+Outcome T (threaded build, three threads) HOLDS. S1L probe with the weighted flow, run
+core-20261128-001900-aefdc7b (81 s): the six members give the masses and iteration counts
+of the serial build (10.73958040610839 after 127; with the scan 114; without polishing
+14), differences at 1e-14. Conservation, run core-20261128-002140-cf20022: largest error
+1.1e-14 (`pcs_c2`), 7.1e-15 with the limiter, 8.9e-15 and 7.9e-15 for the plain pass with
+the quadratic and the linear cloud. The run is closed as failed because the script's
+check of byte-identical histories against the serial release (C1c) fails for a threaded
+build, as written in the prediction; it is not judged. `athena_cpu_omp` was added to the
+published directory at 00:24Z (a new file; nothing replaced), with its checksum.
+
+A 92-character line of `nrpic_levelface.cpp` (the style allows 90; the file `nrpic.cpp`
+holds longer ones from before) was left as built, so that the source equals the commit
+the executables were built from.
+
+Not tested and worth a line: a level cap between the coarsest and the finest level with
+the linear cloud and `deposit_fine_shape` (clouds on a lattice coarser than the cap next
+to a finer block that is not above the cap). That is the one case where the rule chosen
+in entry 1 differs from the lead's proposed flag in what it deposits; `dep_levels.py`
+has caps at the root level only.

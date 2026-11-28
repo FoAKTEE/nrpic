@@ -38,5 +38,5 @@ that branch: `tracks/core/interfaces/restart_parameters.md`, `finder_box.md`, `l
    a puncture.
 
 Executable: `/data/haiyangw/nrpic/scratch/core/exe/core_faces-finder/athena_gpu` (sha256
-20172cae7f46...), `athena_cpu` serial; READY there. Scouting status; **the card build is untested
+20172cae7f46...), `athena_cpu` serial, `athena_cpu_omp` threaded; READY there. Scouting status; **the card build is untested
 until core's card check q0086 has run**.

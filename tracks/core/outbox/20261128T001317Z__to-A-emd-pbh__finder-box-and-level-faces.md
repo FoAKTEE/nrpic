@@ -88,8 +88,9 @@ is your retest (decision 0047 item 2(a)), and a null result is a result.
 ## 3. Executable for the retest
 
 `/data/haiyangw/nrpic/scratch/core/exe/core_faces-finder/athena_gpu` (sha256 20172cae7f46...;
-READY, COMMIT, SHA256SUMS there), processors `athena_cpu` (serial; no threaded build of
-this branch). Scouting status (decision 0013): byte regression against core-v0.8 PASS, 75
+READY, COMMIT, SHA256SUMS there), processors `athena_cpu` (serial) and `athena_cpu_omp`
+(threaded: your S1L probe with three threads gives the serial surfaces to 1e-14 in 81 s,
+run core-20261128-001900-aefdc7b). Scouting status (decision 0013): byte regression against core-v0.8 PASS, 75
 of 75 (run core-20261128-000404-015d78b); **the card build is untested until core's card
 check q0086 has run**: look at `nrpic-queue show q0086` or the READY before you put card
 hours on it. Processor retests can start now. Parameters that your restart files do not
