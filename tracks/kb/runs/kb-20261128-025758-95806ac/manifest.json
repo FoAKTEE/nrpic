@@ -1,0 +1,105 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "kb-20261128-025758-95806ac",
+  "track": "kb",
+  "gate": "G3",
+  "kind": "scouting",
+  "purpose": "kb lead b37: five claims5 verdicts drawn with seed 3720261127 printed at their locators for reading; T census recount; figure",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "python",
+    "tracks/kb/lead_b37/scripts/check5.py",
+    "--seed",
+    "3720261127",
+    "--out",
+    "$NRPIC_RUN_DIR"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "95806acf469522d5205753a28fcc096d9de11dc8",
+    "branch": "kb/main",
+    "dirty": false,
+    "merge_base_main": "2718432b122ece9df5146f0c235d5b5b2555a55f",
+    "worktree": "wt/kb"
+  },
+  "code": {
+    "core_tag": "core-v0.8",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "c7e770b3e0be132ee7c21860fd4541200b8c7248ed832b31a0ce80d1b3c6bbf3",
+    "machine_file_sha256": "0b480f5c2078e1d9fef1d97a0babb27b14009b045b4021ee578d6fc3cd243dd1",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/kb/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "tracks/kb/claims5/work/verdicts_T.tsv",
+      "role": "input",
+      "sha256": "2dad55228b9075bfa7bd4116bca09749d38addb8cfd7f28702ed0daf869a819b",
+      "bytes": 13155,
+      "tracked": true
+    },
+    {
+      "path": "tracks/kb/claims4/work/verdicts_TR.tsv",
+      "role": "input",
+      "sha256": "69e5906e88212652effede1ed9f7a72017c87c3ab0765e2f083848c4681b4a14",
+      "bytes": 1674,
+      "tracked": true
+    },
+    {
+      "path": "tracks/kb/lead_b37/scripts/check5.py",
+      "role": "input",
+      "sha256": "51dc096706302850c20e392ba964f8b3de62a545b0a4b3707eda533369cb0f09",
+      "bytes": 4402,
+      "tracked": true
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 1,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/kb/kb-20261128-025758-95806ac",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-28T02:57:58Z",
+  "started": null,
+  "ended": null,
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 0.0,
+    "cores_allotted": 8,
+    "gpu_hours_used": 0.0,
+    "gpu_hours_reserved": 0.0,
+    "gpu_hours_without_gate": 0.0,
+    "cores_busy": 0,
+    "runs": 289,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md + 0026-cards-loaded-allotment-cost.md + 0031-level2-branch-and-ablation.md + 0032-new-account-preemption-allotments.md + 0038-track-e-g2-signed-g3-scope.md + 0039-rulings-after-batch-17.md + 0045-track-d-g2-signed-release-v08.md + 0048-rulings-after-batch-34.md"
+  }
+}
