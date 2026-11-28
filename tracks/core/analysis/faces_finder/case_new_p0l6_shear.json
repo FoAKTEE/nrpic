@@ -1,0 +1,50 @@
+{
+ "rst_output": 7,
+ "verbose": true,
+ "horizons": [
+  {
+   "name": "control: shear from the deck radius",
+   "initial_radius": 0.15,
+   "flow_iterations": 400,
+   "polish_iterations": 100
+  },
+  {
+   "name": "shear, trapped_tol",
+   "initial_radius": 0.15,
+   "flow_iterations": 400,
+   "polish_iterations": 100,
+   "trapped_tol": 0.05
+  },
+  {
+   "name": "shear, start_scan 24, trapped_tol",
+   "initial_radius": 0.15,
+   "flow_iterations": 400,
+   "polish_iterations": 100,
+   "start_scan": 24,
+   "trapped_tol": 0.05
+  },
+  {
+   "name": "shear, start_scan 24, no polishing, trapped_tol",
+   "initial_radius": 0.15,
+   "flow_iterations": 400,
+   "polish_iterations": 0,
+   "start_scan": 24,
+   "trapped_tol": 0.05
+  },
+  {
+   "name": "shear, mass_tol 1e-2 no polishing",
+   "initial_radius": 0.15,
+   "flow_iterations": 400,
+   "polish_iterations": 0,
+   "mass_tol": "1.0e-2"
+  },
+  {
+   "name": "shear, mass_tol 1e-2 no polishing, trapped_tol 0.01",
+   "initial_radius": 0.15,
+   "flow_iterations": 400,
+   "polish_iterations": 0,
+   "mass_tol": "1.0e-2",
+   "trapped_tol": 0.01
+  }
+ ]
+}

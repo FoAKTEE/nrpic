@@ -300,6 +300,43 @@ FastFlow::FastFlow(MeshBlockPack *pmbp, ParameterInput *pin, int n):
     diagnostics = pin->GetBoolean("fastflow", "diagnostics");
   }
   ofname_status = pin->GetString("job", "basename") + ".horizon_status_" + n_str + ".txt";
+
+  // Start radius from a scan of round spheres, and the check that an accepted surface
+  // is marginally trapped (read only if present: the parameter dump of an input without
+  // them does not change).  See fastflow.hpp and StartScan.
+  if (pin->DoesParameterExist("fastflow", "start_scan_" + n_str)) {
+    start_scan = pin->GetInteger("fastflow", "start_scan_" + n_str);
+    if (start_scan < 0 || start_scan == 1) {
+      std::cout << "### FATAL ERROR in " << __FILE__ << " at line " << __LINE__
+                << std::endl << "<fastflow> start_scan_" << n_str
+                << " must be 0 (off) or at least 2 spheres" << std::endl;
+      exit(EXIT_FAILURE);
+    }
+  }
+  scan_rmax = initial_radius;
+  if (pin->DoesParameterExist("fastflow", "start_scan_rmax_" + n_str)) {
+    scan_rmax = pin->GetReal("fastflow", "start_scan_rmax_" + n_str);
+  }
+  scan_rmin = scan_rmax/32.0;
+  if (pin->DoesParameterExist("fastflow", "start_scan_rmin_" + n_str)) {
+    scan_rmin = pin->GetReal("fastflow", "start_scan_rmin_" + n_str);
+  }
+  if (start_scan > 0 && !(scan_rmin > 0.0 && scan_rmax > scan_rmin)) {
+    std::cout << "### FATAL ERROR in " << __FILE__ << " at line " << __LINE__
+              << std::endl << "<fastflow> start_scan_" << n_str << " needs 0 < "
+              << "start_scan_rmin < start_scan_rmax (now " << scan_rmin << ", "
+              << scan_rmax << ")" << std::endl;
+    exit(EXIT_FAILURE);
+  }
+  if (pin->DoesParameterExist("fastflow", "trapped_tol_" + n_str)) {
+    trapped_tol = pin->GetReal("fastflow", "trapped_tol_" + n_str);
+    if (trapped_tol < 0.0) {
+      std::cout << "### FATAL ERROR in " << __FILE__ << " at line " << __LINE__
+                << std::endl << "<fastflow> trapped_tol_" << n_str
+                << " must not be negative (0: no check)" << std::endl;
+      exit(EXIT_FAILURE);
+    }
+  }
 }
 
 //----------------------------------------------------------------------------------------
@@ -447,10 +484,15 @@ void FastFlow::Write(int iter, Real time) {
 
     // Status of the search (<fastflow> diagnostics): found or the reason of the failure
     if (diagnostics) {
-      static const char *reason_text[7] = {"found", "area not finite",
+      static const char *reason_text[9] = {"found", "area not finite",
           "mean expansion not finite", "mean expansion above hmean_tol",
           "mean radius negative", "area mass below 1e-10 (surface shrank to a point)",
-          "iteration limit reached without convergence of the mass"};
+          "iteration limit reached without convergence of the mass",
+          "iteration limit reached: mass rule met, surface not trapped to trapped_tol",
+          "no round sphere of the start scan has a negative expansion integral"};
+      // with start_scan or trapped_tol three more columns follow the centre (a file
+      // begun without them keeps its header: the columns are counted from the left)
+      const bool more = (start_scan > 0 || trapped_tol > 0.0);
       const bool new_status = (access(ofname_status.c_str(), F_OK) != 0);
       FILE *pst = fopen(ofname_status.c_str(), "a");
       if (pst != NULL) {
@@ -458,17 +500,22 @@ void FastFlow::Write(int iter, Real time) {
           fprintf(pst, "# 1:cycle 2:time 3:found 4:reason 5:flow_iterations 6:area "
                        "7:area_mass 8:meanradius 9:minradius 10:mean_expansion "
                        "11:min_abs_mean_expansion 12:points_outside_mesh 13:center_x "
-                       "14:center_y 15:center_z  # reason in words\n");
+                       "14:center_y 15:center_z%s  # reason in words\n",
+                  more ? " 16:rms_expansion_x_area_mass 17:scan_start_radius "
+                         "18:scan_trapped_spheres" : "");
         }
-        const int rs = (fail_reason >= 0 && fail_reason < 7) ? fail_reason : 6;
+        const int rs = (fail_reason >= 0 && fail_reason < 9) ? fail_reason : 6;
         // the caller passes the Runge-Kutta stage as iter (summary file); the status
         // file records the cycle of the mesh
         fprintf(pst, "%d %.15e %d %d %d %.15e %.15e %.15e %.15e %.15e %.15e %d %.15e "
-                     "%.15e %.15e  # %s\n", pmbp->pmesh->ncycle, time, ah_found ? 1 : 0,
+                     "%.15e %.15e", pmbp->pmesh->ncycle, time, ah_found ? 1 : 0,
                 fail_reason,
                 iter_done, last_area, last_mass, last_meanradius, rr_min, last_hmean,
-                min_abs_hmean, n_outside, center[0], center[1], center[2],
-                reason_text[rs]);
+                min_abs_hmean, n_outside, center[0], center[1], center[2]);
+        if (more) {
+          fprintf(pst, " %.15e %.15e %d", last_res, scan_start, scan_trapped);
+        }
+        fprintf(pst, "  # %s\n", reason_text[rs]);
         fclose(pst);
       }
     }
@@ -532,7 +579,16 @@ void FastFlow::Find(int iter, Real time) {
     fprintf(pofile_verbose, "time=%.4f, cycle=%d\n", time, iter);
   }
 
+  // a search that would start from the radius of the input can take its start from a
+  // scan of round spheres instead (start_scan_<n>); without a trapped one there is no
+  // flow and the search is not found
+  const bool from_last = (ah_found && last_a0 > 0);
   InitialGuess();
+  scan_trapped = -1;
+  scan_start = 0.0;
+  if (start_scan > 0 && use_puncture < 0 && !from_last) {
+    if (!StartScan()) { return; }
+  }
   FastFlowLoop();
 
   // Retain `last_a0` in restart: this serves as primary ini. guess.
@@ -607,6 +663,101 @@ void FastFlow::InitialGuess() {
   ac.template sync<DevExeSpace>();
   as.template modify<HostMemSpace>();
   as.template sync<DevExeSpace>();
+}
+
+//----------------------------------------------------------------------------------------
+//! \fn bool FastFlow::StartScan()
+//! \brief start radius from a scan of round spheres about the centre (start_scan_<n>).
+//! The flow function of the default (`flow = standard`, rho = H |grad F|) moves the
+//! surface by a step that is not invariant under the unit of length: near a horizon of
+//! mass m it removes the fraction of about 1/(8 m^2) of the distance per iteration, so
+//! a search from far outside a hole of several units of mass (a box in comoving
+//! coordinates) needs thousands of iterations, and where no horizon exists the flow
+//! wanders for as long as it is allowed.  The scan costs start_scan evaluations of the
+//! surface integrals: the radii are spaced by a constant factor from scan_rmin to
+//! scan_rmax, the outermost sphere whose integral of the expansion is negative is
+//! taken, and the start is put where the mean expansion changes sign between it and the
+//! next sphere outwards (linear in the logarithm of the radius).  Returns false, with
+//! the record of a search that was not found (reason 8), if no sphere has a negative
+//! integral: a horizon that contains no trapped round sphere about the centre is then
+//! missed, which the caller accepts with the option.
+bool FastFlow::StartScan() {
+  const int ns = start_scan;
+  Real *rs = new Real[ns];
+  Real *hs = new Real[ns];     // mean expansion (integral over area), +inf if unusable
+  Real *ar = new Real[ns];     // area
+  auto &indcs = pmbp->pmesh->mb_indcs;
+  const Real big = std::numeric_limits<Real>::max();
+
+  for (int s = 0; s < ns; ++s) {
+    rs[s] = scan_rmin*std::pow(scan_rmax/scan_rmin,
+                               static_cast<Real>(s)/static_cast<Real>(ns - 1));
+    a0.h_view(0) = Kokkos::sqrt(4.0*M_PI)*rs[s];
+    a0.template modify<HostMemSpace>();
+    a0.template sync<DevExeSpace>();
+    RadiiFromSphericalHarmonics();
+    switch (indcs.ng) {
+      case 2: MetricInterp<2>(); break;
+      case 3: MetricInterp<3>(); break;
+      case 4: MetricInterp<4>(); break;
+    }
+    SurfaceIntegrals();
+    const Real area = integrals[iarea];
+    const Real hint = integrals[ihmean];
+    int nout = 0;
+    for (int p = 0; p < nangles; ++p) {
+      if (!havepoint.h_view(p)) { ++nout; }
+    }
+    ar[s] = area;
+    hs[s] = (Kokkos::isfinite(area) && area > 0.0 && Kokkos::isfinite(hint) && nout == 0)
+            ? hint/area : big;
+  }
+
+  // the outermost sphere with a negative integral, and the least expanding one
+  int kt = -1, kmin = 0;
+  scan_trapped = 0;
+  for (int s = 0; s < ns; ++s) {
+    if (hs[s] < 0.0) { kt = s; ++scan_trapped; }
+    if (hs[s] < hs[kmin]) { kmin = s; }
+  }
+  if (verbose && ioproc) {
+    fprintf(pofile_verbose, "\nStart scan of horizon %d: radius, area, mean expansion\n",
+            nh);
+    for (int s = 0; s < ns; ++s) {
+      fprintf(pofile_verbose, "scan %3d %15.7e %15.7e %15.7e\n", s, rs[s], ar[s], hs[s]);
+    }
+    fflush(pofile_verbose);
+  }
+
+  bool have = (kt >= 0);
+  if (have) {
+    Real r0 = rs[kt];
+    if (kt < ns - 1 && hs[kt+1] > 0.0 && hs[kt+1] < big) {
+      const Real w = hs[kt]/(hs[kt] - hs[kt+1]);            // in [0, 1)
+      r0 = rs[kt]*std::pow(rs[kt+1]/rs[kt], w);
+    }
+    scan_start = r0;
+    a0.h_view(0) = Kokkos::sqrt(4.0*M_PI)*r0;
+    a0.template modify<HostMemSpace>();
+    a0.template sync<DevExeSpace>();
+  } else {
+    // the record of a search that did not take place: the least expanding sphere
+    ah_found = false;
+    fail_reason = 8;
+    iter_done = 0;
+    n_outside = 0;
+    last_area = (hs[kmin] < big) ? ar[kmin] : 0.0;
+    last_mass = (last_area > 0.0) ? Kokkos::sqrt(last_area/(16.0*M_PI)) : 0.0;
+    last_hmean = (hs[kmin] < big) ? hs[kmin]*ar[kmin] : 0.0;
+    min_abs_hmean = Kokkos::fabs(last_hmean);
+    last_meanradius = rs[kmin];
+    rr_min = rs[kmin];
+    last_res = 0.0;
+  }
+  delete[] rs;
+  delete[] hs;
+  delete[] ar;
+  return have;
 }
 
 //----------------------------------------------------------------------------------------
@@ -806,6 +957,8 @@ void FastFlow::FastFlowLoop() {
   Real S = 0;
   bool failed = false;
   int polish_left = -1;         // -1 until the mass rule is met, then iterations to go
+  bool rule_not_trapped = false;  // the mass rule held on a surface trapped_tol refused
+  last_res = 0.0;
 
   if (verbose && ioproc) {
     fprintf(pofile_verbose, "\nSearching for horizon %d\n", nh);
@@ -931,16 +1084,28 @@ void FastFlow::FastFlowLoop() {
     if (polish_left < 0 && mass_rule) {
       polish_left = polish_iterations;
     }
+    last_res = Kokkos::sqrt(Kokkos::fabs(hrms))*mass;
     if (polish_left == 0 && mass_rule) {
-      ah_found = true;
-      fail_reason = 0;
-      break;
+      // trapped_tol: the surface the mass rule would accept must be star-shaped about
+      // the centre and marginally trapped, its rms expansion below trapped_tol/mass
+      // (a flow that creeps, or one that diverges, can meet the mass rule on a surface
+      // that is neither); if not, the flow goes on
+      const bool trapped_ok = !(trapped_tol > 0.0) ||
+          (rr_min > 0.0 && Kokkos::isfinite(last_res) && last_res < trapped_tol);
+      if (trapped_ok) {
+        ah_found = true;
+        fail_reason = 0;
+        break;
+      }
+      rule_not_trapped = true;
     }
     if (polish_left > 0) { --polish_left; }
 
     // Step 5: Find new spectral components.
     UpdateFlowSpectralComponents();
   }
+
+  if (!ah_found && !failed && rule_not_trapped) { fail_reason = 7; }
 
   if (ah_found) {
     last_a0 = a0.h_view(0);

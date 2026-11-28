@@ -1,0 +1,49 @@
+{
+ "name": "40 (2026-11-27 night)",
+ "what": "Track B reads its particle-number member, then the second review of its held G2; core judges the card check and makes release core-v0.9 final, then the release clerk; Track D reads its guard and timing tests; Track A reads its triaxial run to a horizon and tests the outer faces",
+ "note": "Release core-v0.8 is on main; the candidate for core-v0.9 is merged on core/nrpic and its card check has run. Rulings: coord/DECISIONS/0039 to 0050. The shared queue calls an entry done only when its jobs completed (`nrpic-queue status` shows entries that ended without completing; a preempted batch is dispatched again by itself at most twice). The cards are preempted often tonight. After git merge main: nrpic-run finish closes runs continued in place; finish and verify keep a checksum cache. The week's usage is budgeted: keep to the time given. Close a finished run before you analyse it; every number with its run id; prediction before every new run or analysis; figures made by registered scripts and looked at; at most 6 cores. For the gate review of Track B (stage 2): this is the SECOND review of G2, limited to the item on three-way convergence that decision 0050 held (the first review: stage/G2/GATE_REVIEW.md; conditions (a) and (b) of decision 0050; condition (a) was measured and not met). Judge from the artefacts of the lead's readings of today whether the item is met over the whole range the track's science uses, with what limits; recommend to sign or not, and under which conditions for G3. Append a dated second part to stage/G2/GATE_REVIEW.md.",
+ "stages": [
+  [
+   0,
+   1,
+   2,
+   3
+  ],
+  [
+   4,
+   5
+  ]
+ ],
+ "items": [
+  {
+   "type": "lead",
+   "owner": "B-emd-gw",
+   "extra": "Extra for this session: about forty-five minutes. Gate G2 is held (decision 0050); condition (a) was measured and not met; condition (b) has run: queue entry q0107 (128 cells, eight particles per cell, Gamma-driver shift; run B-20261128-034731-640f4f4). (1) Check that its jobs completed, close it, and judge predictions G8a to G8c with a registered analysis and a figure you look at: the band strain at eight against one particle per cell in the shifted gauge at a = 64, 100, 132; the guard; the constraints; then the Weyl statistics at eight per cell in both gauges (does the part of the gauge difference that is not a coordinate effect fall with the sampling?); W5 if it has ended. (2) State item C2 as measured, over the whole range: where the three legs agree and to what, and where they do not; do not soften. (3) Stage collect, verify, report; one line to the orchestrator (outbox) for the second review, which follows this session at once."
+  },
+  {
+   "type": "core-task",
+   "key": "release-v09",
+   "fable": false,
+   "task": "Round for core without writing new source (about an hour). The release clerk follows this session. (1) The card check of the candidate for core-v0.9 has run (queue entry q0094, core-ff-card2; the first attempt q0086 was preempted): check with sacct that its job COMPLETED, close it, judge it with tracks/core/analysis/faces_finder/card_check.py as a registered analysis (journal entry 6 of JOURNAL-faces-finder.md has the commands and the predictions), figure looked at. If it passes: make tracks/core/RELEASE-v0.9.md final in the form of RELEASE-v0.8.md (first line: release, source commit, REGRESSION PASS, CARD CHECK PASS; the words NOT RELEASED removed), the changelog section core-v0.9 complete (options; the three changes without an option and which runs they change; not done: level faces between ranks, the cost of the compensated deposit, the false acceptance of Track A's chain not retested), the interface documents ready for the clerk to copy (level_faces.md, restart_parameters.md, finder_box.md; add to the finder text that nrpic_cf decks must set start_time_<n> and stop_time_<n>), the executables published under scratch/core/exe/core_nrpic_v09/ with COMMIT, SHA256SUMS and READY; commit and push core/nrpic. If it fails: leave NOT RELEASED, write what failed, and say so first in your report. (2) Tell Tracks A, D and F (outbox) which executable serves their retests and what changes without an option for their decks. (3) The byte comparison of the release builds of core-v0.8 if it is still owed. Records, commit, push."
+  },
+  {
+   "type": "lead",
+   "owner": "D-bh-dress",
+   "extra": "Extra for this session (about an hour). Ended since your last session: queue entries q0085 D-EG8 (the excision-guard test) and q0095 D-T12u16u (the timing test of the uniform mesh members); q0100 D-G3-G8 is in Slurm. (1) Check that their jobs completed, close them, and judge them against their predictions with registered analyses and figures you look at (E1 to E8: do removals by the horizon rule continue past 219.5 M with the guard at 8? the mass against the exact solution; the timing against amendment A1). (2) With the timing read: the cost of the mesh leg and whether it stays within 60 card-hours; if the leg to the time the scope needs costs more, say how much and what is lost at the cap (the orchestrator decides the allotment on that). (3) Queue what the amended scope allows next (four entries at most; priority 2 for what the gate waits for; each run with the converged finder and its diagnostics, and start and stop times of the finder set)."
+  },
+  {
+   "type": "lead",
+   "owner": "A-emd-pbh",
+   "extra": "Extra for this session (about seventy-five minutes). Ended: queue entry q0090 a-s1l-finder (the triaxial run of phase 1 with the new finder settings, for condition (d)); q0089 (the run for condition (c)) is pending in Slurm. (1) Check that q0090's jobs completed, close it, and judge it against its prediction: a found horizon (status file, with the residual), and the bound of scope section 3 read at detection; registered analysis, figure looked at. (2) Condition (a): you named the outer outflow faces as the place where the non-converging part of the constraint ratio enters. Confirm or refute it by runs on processors that could refute it: the faces moved out, and the outer-face options of core-v0.6 (<z4c> ghost_falloff, sbc_variant = nonwave: core's answer in your inbox says which apply), predictions first; if confirmed, the member of the bracket rerun with the remedy to its horizon on two meshes is the retest of decision 0047 item 2(a): queue it (priority 2) on the release build, or on the candidate of core-v0.9 once core has released it (its deposit fixes change every refined run with compensation). (3) OPEN.md with the state of conditions (a) to (d); say when the second review can be asked for."
+  },
+  {
+   "type": "gate",
+   "owner": "B-emd-gw",
+   "gate": "G2"
+  },
+  {
+   "type": "clerk",
+   "version": "v0.9"
+  }
+ ]
+}

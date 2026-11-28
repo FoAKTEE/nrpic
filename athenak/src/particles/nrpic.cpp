@@ -1042,6 +1042,15 @@ void Particles::NrpicDepositSources() {
               floor((yf - 0.5*h[1] - sz(mb).x2min)/sz(mb).dx2 + 0.5));
           const int k0 = ks + static_cast<int>(
               floor((zf - 0.5*h[2] - sz(mb).x3min)/sz(mb).dx3 + 0.5));
+          // A lattice cell beside a linear cloud gets a share that sums to zero, one
+          // half of a scheme whose other half is the share of the clouds that own the
+          // cell on the SAME lattice.  That is so only when this lattice is the one
+          // of the level cap, on which the clouds of every finer block are held.  A
+          // cloud on a coarser lattice than the cap meets a finer block whose own
+          // clouds lie on the finer lattice: nothing would cancel the share there
+          // (a dipole of +-1/8 in the two fine cells next to a level face that is not
+          // capped), so the cell beside the cloud is left alone.
+          if (!own && ldep != lcap) continue;
           if (fine_shape && nsub <= 32) {
             // <particles> deposit_fine_shape: inside a lattice cell of the cloud the
             // weight follows the assignment function instead of being the same in every
@@ -1142,9 +1151,13 @@ void Particles::NrpicDepositSources() {
   // into, and not on the sources: the division by sqrt(gamma) that follows is local, so
   // a pass after it would leave the part of the density that follows sqrt(gamma)
   // smoothed.
+  // On a mesh with refinement the pass is always taken in flux form, also the plain
+  // one (no fourth-order term, no limiter), which the product form serves on a uniform
+  // mesh: only the flux form can be made conservative across the faces between levels
+  // (NrpicCompensateLevelFaces).
   if (nropt.deposit_comp_c > 0.0) {
-    if ((nropt.deposit_comp_limit > 0.0 || nropt.deposit_comp_c2 != 0.0) &&
-        pmy_pack->pmesh->three_d) {
+    if ((nropt.deposit_comp_limit > 0.0 || nropt.deposit_comp_c2 != 0.0 ||
+         pmy_pack->pmesh->multilevel) && pmy_pack->pmesh->three_d) {
       NrpicCompensateLimited(nropt.deposit_comp_c, nropt.deposit_comp_c2,
                              nropt.deposit_comp_limit);
     } else {
@@ -1312,7 +1325,9 @@ void Particles::NrpicFilterPass(const Real w0, const Real w1) {
 //! source component at that face.  In smooth flow theta = 1 and the result is the plain
 //! pass (the three directions applied in turn equal the product stencil); with
 //! lim <= 1/6 the energy density stays positive.  The sums over the mesh are conserved.
-//! One ghost exchange serves the three directions (two ghost layers are used).
+//! One ghost exchange serves the three directions (two ghost layers are used) on a
+//! uniform mesh; with refinement there is one exchange per direction, and the flux
+//! through a face between levels is that of the fine side for both sides.
 
 void Particles::NrpicCompensateLimited(const Real c, const Real c2, const Real lim) {
   Mesh *pm = pmy_pack->pmesh;
@@ -1328,23 +1343,34 @@ void Particles::NrpicCompensateLimited(const Real c, const Real c2, const Real l
   const Real q = c2/16.0;
   const bool limit = (lim > 0.0);
 
-  if (pm->multilevel) {
-    pm->pmr->RestrictCC(tmu, coarse_tm);
-  }
-  (void) pbval_tm->InitRecv(Tmunu::N_Tmunu);
-  (void) pbval_tm->PackAndSendCC(tmu, coarse_tm);
-  (void) pbval_tm->ClearSend();
-  (void) pbval_tm->ClearRecv();
-  (void) pbval_tm->RecvAndUnpackCC(tmu, coarse_tm);
-  if (pm->multilevel) {
-    pbval_tm->FillCoarseInBndryCC(tmu, coarse_tm);
-    pbval_tm->ProlongateCC(tmu, coarse_tm);
-  }
+  auto exchange = [&]() {
+    if (pm->multilevel) {
+      pm->pmr->RestrictCC(tmu, coarse_tm);
+    }
+    (void) pbval_tm->InitRecv(Tmunu::N_Tmunu);
+    (void) pbval_tm->PackAndSendCC(tmu, coarse_tm);
+    (void) pbval_tm->ClearSend();
+    (void) pbval_tm->ClearRecv();
+    (void) pbval_tm->RecvAndUnpackCC(tmu, coarse_tm);
+    if (pm->multilevel) {
+      pbval_tm->FillCoarseInBndryCC(tmu, coarse_tm);
+      pbval_tm->ProlongateCC(tmu, coarse_tm);
+    }
+  };
+  exchange();
 
-  // directions in turn; the ranges shrink so that every pass finds its neighbours
+  // Directions in turn.  On a uniform mesh one exchange serves the three: the ranges
+  // shrink so that every pass finds its neighbours, the earlier passes having acted in
+  // the ghost cells too.  On a mesh with refinement the ghost cells are filled again
+  // before the passes along x2 and x3: the pass of a block in its ghost cells is not the
+  // pass of its neighbour where the neighbour's cell lies at a level face (corrected
+  // there, NrpicCompensateLevelFaces) or where the ghost cells were prolongated, and
+  // two blocks of one level would then disagree on the flux through their common face.
+  const bool ml = pm->multilevel;
   for (int dir=0; dir<3; ++dir) {
-    const int kl = (dir < 2) ? ks - 2 : ks, ku = (dir < 2) ? ke + 2 : ke;
-    const int jl = (dir < 1) ? js - 2 : js, ju = (dir < 1) ? je + 2 : je;
+    if (ml && dir > 0) { exchange(); }
+    const int kl = (dir < 2 && !ml) ? ks - 2 : ks, ku = (dir < 2 && !ml) ? ke + 2 : ke;
+    const int jl = (dir < 1 && !ml) ? js - 2 : js, ju = (dir < 1 && !ml) ? je + 2 : je;
     const int di = (dir == 0) ? 1 : 0, dj = (dir == 1) ? 1 : 0, dk = (dir == 2) ? 1 : 0;
     par_for("nrpic_complim", DevExeSpace(), 0, nmb1, 0, nv1, kl, ku, jl, ju, is, ie,
     KOKKOS_LAMBDA(const int m, const int n, const int k, const int j, const int i) {
@@ -1369,6 +1395,8 @@ void Particles::NrpicCompensateLimited(const Real c, const Real c2, const Real l
       }
       wk(m,n,k,j,i) = u0 - thp*fp + thm*fm;
     });
+    // faces between refinement levels: one flux for both sides (nrpic_levelface.cpp)
+    if (ml) { NrpicCompensateLevelFaces(dir, c, q, lim); }
     par_for("nrpic_complim_copy", DevExeSpace(), 0, nmb1, 0, nv1, kl, ku, jl, ju, is, ie,
     KOKKOS_LAMBDA(const int m, const int n, const int k, const int j, const int i) {
       tm(m,n,k,j,i) = wk(m,n,k,j,i);
