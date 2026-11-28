@@ -76,3 +76,26 @@ docs/FORMATS.md line 123).
   reference is then wrong by more than D1's band). Refuted if below 0.5 per cent everywhere.
 
 Figures: one per calculation (B and C), looked at before any number is used.
+
+## Entry 2 (2026-11-27 16:46 PST): outcome of A (block counts)
+
+Runs: D-20261128-004218-80cf6ab (first; its per-level labels counted from the coarsest level holding
+leaves, wrong for G-16, whose root holds none; the counts themselves are right) and
+D-20261128-004344-1119b6f (rerun with physical levels and the x1 extent of each level; the numbers below).
+Release core-v0.8 processor build, `athena -m`, exit 0 for all four decks; outputs `block_counts.json`
+and each deck's `mesh_structure.dat`.
+- A1 HOLDS: G-8 456 blocks (56 on levels 0-6, 64 on level 7), level 7 (M/8) over +-6 M.
+- A2 HOLDS (the scope's estimate is refuted): G-16 as described has 3648 blocks, 8.0 times G-8 (448 on
+  each of levels 1-7, 512 on level 8 over +-6 M, none on the root): the 2:1 rule cascades a refined shell
+  out to the root. With twice the steps that is about 16 times G-8's mesh work, not "2.5 times the blocks".
+- A3 REFUTED as written, and worse than predicted: G-12 as described has 2176 blocks (4.8 times) and its
+  finest level (M/12) covers only +-4 M, not +-6 M. With the root at 144 cells the refined regions of the
+  ES-FL deck no longer fall on block boundaries: level extents +-512, 256, 128, 64, 16, 8, 4 M against
+  G-8's +-384, ..., 12, 6 M. Per radius G-12 is FINER than G-8 in 0-4, 6-8, 12-16, 24-96 M and COARSER
+  in 4-6 M (dx 0.167 against 0.125 M), 8-12 M (0.333 against 0.25) and 16-24 M (0.667 against 0.5). The
+  late horizon (smallest radius 4.53 M at 399.5 M in FK, g2long entry 19) lies in the 4-6 M shell where
+  G-12 is the coarser member. G-12 as written is not a refinement of G-8 and breaks the scope's own
+  condition "the finest level must cover a cube of +-6 M".
+- A4 HOLDS: G-16b (blocks of 12) has 8296 blocks (4096 on level 8 over +-6 M, 1216 on level 7 over
+  +-9 M, 296 on level 6, 448 on levels 0-5): 2.27 times G-8's cells, 4.44 times its cells with ghosts.
+No figure: block counts are integers read from the code's own mesh file.
