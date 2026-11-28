@@ -1,0 +1,112 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "D-20261128-074210-aa0a37a",
+  "track": "D-bh-dress",
+  "gate": "G3",
+  "kind": "scouting",
+  "purpose": "excguard entry 3: read EG8 (D-20261127-233719-db5be88) against E1-E8 of entry 1: finder filtered by its status file, esf_criteria (iii) D2 D3 against V-1L, d4_timing beside FK, removal reasons after 219.5 M, polished minus FK, card time",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "python3",
+    "tracks/D-bh-dress/excguard/tools/eg8_read.py",
+    "--eg8",
+    "/data/haiyangw/nrpic/scratch/D-bh-dress/D-20261127-233719-db5be88",
+    "--fk",
+    "/data/haiyangw/nrpic/scratch/D-bh-dress/D-20261123-022725-a553496",
+    "--esfl",
+    "/data/haiyangw/nrpic/scratch/D-bh-dress/D-20261121-203150-15f2bad",
+    "--data",
+    "/data/haiyangw/nrpic/scratch/D-bh-dress/D-20261121-203042-82deeec",
+    "--control",
+    "/data/haiyangw/nrpic/scratch/D-bh-dress/D-20261121-203124-a34cf1f/v1l.horizon_summary_0.txt"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "aa0a37a12a0bb67ac02cdc3b08f5a40d61b46056",
+    "branch": "track/D-bh-dress",
+    "dirty": false,
+    "package": [
+      "tracks/D-bh-dress/excguard"
+    ],
+    "outside_package": {
+      "count": 0,
+      "first": []
+    },
+    "merge_base_main": "76c33dc066b21983824de8a7567af7bc6f636135",
+    "worktree": "wt/D-bh-dress"
+  },
+  "code": {
+    "core_tag": "core-v0.8",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "c7e770b3e0be132ee7c21860fd4541200b8c7248ed832b31a0ce80d1b3c6bbf3",
+    "machine_file_sha256": "0b480f5c2078e1d9fef1d97a0babb27b14009b045b4021ee578d6fc3cd243dd1",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/D-bh-dress/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "tracks/D-bh-dress/excguard/tools/eg8_read.py",
+      "role": "argv",
+      "sha256": "de733d897e7bdb211c5c15cfe33ecad96b2d9ecac92891d50369211b2b89e883",
+      "bytes": 12680,
+      "tracked": true
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/D-bh-dress/D-20261121-203124-a34cf1f/v1l.horizon_summary_0.txt",
+      "role": "argv",
+      "sha256": "2892217d02837d8b445b496a78443528a0a34aa7ada3733bf71a37afd03da157",
+      "bytes": 229033,
+      "tracked": false,
+      "location": "main checkout data root"
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 1,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/D-bh-dress/D-20261128-074210-aa0a37a",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-28T07:42:10Z",
+  "started": null,
+  "ended": null,
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 60.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 1.5227,
+    "gpu_hours_reserved": 3.55,
+    "gpu_hours_without_gate": 0.0,
+    "cores_busy": 0,
+    "runs": 349,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md + 0026-cards-loaded-allotment-cost.md + 0031-level2-branch-and-ablation.md + 0032-new-account-preemption-allotments.md + 0038-track-e-g2-signed-g3-scope.md + 0039-rulings-after-batch-17.md + 0045-track-d-g2-signed-release-v08.md + 0048-rulings-after-batch-34.md"
+  }
+}
