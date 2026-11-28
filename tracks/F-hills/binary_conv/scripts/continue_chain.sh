@@ -6,6 +6,14 @@
 #   harness/bin/nrpic-queue add --label L --priority 2 \
 #       --cmd 'tracks/F-hills/binary_conv/scripts/continue_chain.sh <run_id> <max_segments> [--extra-input <file>]'
 #   tracks/F-hills/binary_conv/scripts/continue_chain.sh --dry-run <run_id> <max_segments> [--extra-input <file>]
+#   ... continue_chain.sh [--dry-run] --reopen <run_id> <max_segments> [--extra-input <file>]
+#
+# --reopen (batch 35, decision 0048 item 2(a)): continue a chain whose manifest `nrpic-run finish`
+#   already closed with status `stopped` (A2 ended at 186.0 M by a Slurm submission I/O error and
+#   was closed in batch 34). Only `stopped` is reopened, never `completed` or `failed`. The record
+#   appended to "continuations" carries status_before = stopped; its `at` is later than the
+#   manifest's `finished`, so the run is open again (harness/RULES.md, "Runs continued in place")
+#   and `nrpic-run finish <run_id>` closes it again from the chain's STATUS.
 #
 # Adapted from tracks/D-bh-dress/g2long/tools/continue_chain.sh (branch track/D-bh-dress), with:
 #  - `harness/bin/nrpic-queue check-dispatch || exit 1` first (not in a dry run);
@@ -37,13 +45,15 @@ SCR=/data/haiyangw/nrpic/scratch/$OWNER
 PY=/usr/bin/python3
 
 dry=0
+reopen=0
 if [[ ${1:-} == --dry-run ]]; then dry=1; shift; fi
+if [[ ${1:-} == --reopen ]]; then reopen=1; shift; fi
 run=${1:-}
 maxseg=${2:-}
 shift 2 2>/dev/null || true
 extra_in=""
 if [[ ${1:-} == --extra-input ]]; then extra_in=${2:-}; [[ -n $extra_in ]] || die "--extra-input needs a file"; fi
-[[ -n $run && -n $maxseg ]] || die "usage: continue_chain.sh [--dry-run] <run_id> <max_segments> [--extra-input <file>]"
+[[ -n $run && -n $maxseg ]] || die "usage: continue_chain.sh [--dry-run] [--reopen] <run_id> <max_segments> [--extra-input <file>]"
 [[ $run =~ ^F-[0-9]{8}-[0-9]{6}-[0-9a-f]{7}$ ]] || die "run id '$run' is not of the form F-YYYYMMDD-HHMMSS-<commit7>"
 [[ $maxseg =~ ^[1-9][0-9]*$ ]] || die "max_segments '$maxseg' is not a positive integer"
 
@@ -70,7 +80,10 @@ EOF
 mstatus=${mf[0]:-}; mlauncher=${mf[1]:-}; mrun=${mf[2]:-}; deck=${mf[3]:-}
 [[ $mrun == "$run" ]] || die "manifest run_id '$mrun' differs from '$run'"
 [[ $mlauncher == chain ]] || die "$run has launcher '$mlauncher', not chain"
-case $mstatus in completed|failed|stopped) die "$run is already closed ($mstatus) in the run tool";; esac
+case $mstatus in
+  stopped) (( reopen )) || die "$run is already closed ($mstatus) in the run tool (use --reopen to continue a stopped chain)";;
+  completed|failed) die "$run is already closed ($mstatus) in the run tool";;
+esac
 [[ -n $deck && -f $deck ]] || die "deck '$deck' of the manifest's command not found"
 
 # shellcheck source=/dev/null
@@ -133,15 +146,20 @@ fi
 now=$(date '+%Y-%m-%dT%H:%M:%S%z')
 echo "$now job $jid from $rst max_segments $maxseg extra_input ${extra_in:-none} (continue_chain.sh, shared queue)" >> "$C/continuations.log" \
   || echo "continue_chain: warning: could not write $C/continuations.log" >&2
-if "$PY" -I - "$MAN" "$now" "$jid" "$rst" "$maxseg" "$used" "$seg" "${extra_in:-}" <<'EOF'
+if "$PY" -I - "$MAN" "$now" "$jid" "$rst" "$maxseg" "$used" "$seg" "${extra_in:-}" "$reopen" "$mstatus" <<'EOF'
 import json, os, sys
-p, now, jid, rst, ms, used, seg, xin = sys.argv[1:9]
+p, now, jid, rst, ms, used, seg, xin, reopen, mstatus = sys.argv[1:11]
 m = json.load(open(p))
-m.setdefault("continuations", []).append({
+rec = {
     "at": now, "job_id": jid, "from_restart": rst, "segments_used_before": int(used),
     "attempts_before": int(seg), "max_segments": int(ms), "extra_input": xin or None,
     "via": "harness/bin/nrpic-queue --cmd tracks/F-hills/binary_conv/scripts/continue_chain.sh",
-    "reason": "continued in place after its segment cap (ruling 0042 item 2; batch 25)"})
+    "reason": "continued in place after its segment cap (ruling 0042 item 2; batch 25)"}
+if reopen == "1":
+    rec["status_before"] = mstatus
+    rec["reason"] = ("reopened and continued in place to tlim 200 M after a Slurm submission I/O "
+                     "error ended the chain at 186.0 M (decision 0048 item 2(a); batch 35)")
+m.setdefault("continuations", []).append(rec)
 with open(p + ".tmp", "w") as f:
     json.dump(m, f, indent=2)
     f.write("\n")

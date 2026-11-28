@@ -1419,3 +1419,55 @@ of restart files, the Slurm I/O failure), request to core (finder-found-flag-and
 in this session: 0 (processors only: four reader runs, one core each, one of them failed). Card
 time of the runs that ended since batch 25 (sacct): A2's continuation 8.55 (A2 in all 19.70), C2
 9.37, B2 3.52.
+
+## 2026-11-28T02:05Z lead, batch 35 (A2 to 200 M; verifier's part-2 corrections; decision 0048 item 2)
+
+State at start (17:56 PST 2026-11-27): main merged (0048, batch-35 spec). The gate review
+(stage/G1/GATE_REVIEW.md, b85a9a540, e9d2a844a) recommends PASS WITH RESERVATIONS; decision 0048
+item 2 leaves two things before the tag: (a) the passage to t = 200 M (scope criterion (iv); the
+chain stopped at 186.002 M when Slurm refused a submission, `chain/slurm-5492.out`), (b) the
+corrections of the verifier's part 2. A2 (F-20261124-210400-902c650) is closed `stopped`; chain
+STATUS FAILED, 46 attempts, 19 not counted (27 counted of the cap 28); newest restart
+`rst/hills.00166.rst` (186.002 M). Shared queue full (5 of 5, all pending, none of F).
+
+### Continuation of A2 to 200 M: tool change
+
+`binary_conv/scripts/continue_chain.sh` refused a closed manifest. New option `--reopen` (only a
+manifest closed as `stopped`; its continuation record carries `status_before`), per
+harness/RULES.md "Runs continued in place" (a run closed before its last record is open again and
+`nrpic-run finish` closes it from the chain's STATUS). Dry run with `--reopen ... 31 --extra-input
+binary_conv/inputs/fastflow_diag.athinput`: deck and executable byte-equal to the chain's, the
+diagnostics input already in EXTRA_ARGS (not added twice), 27 used of the new cap 31; without
+`--reopen` it still refuses (exit 2).
+
+### Predictions D35 for the continuation from 186.002 M to tlim 200 M (before it is queued)
+
+Basis: the batch-34 readers (F-20261127-232657-163727d `b34_horizons.json`: d1 13.84, 16.09,
+17.53 M at 170, 180, 186 M, slope 0.236 over the last 10 M) and the last rows of A2's own files at
+186.0 M (tracker 1 at (-9.711, 12.650), v = (-0.3387, 0.0155); tracker 2 (M) at (0.824, -1.361),
+v = (0.0343, -0.0100); so the relative speed is 0.374 with radial part 0.244 at 17.53 M; summary 2:
+Christodoulou mass 1.12291, S = 0.31887, S/M^2 = 0.2529, hrms 3.4e-4, mean expansion -0.040;
+status 2 area mass 1.11375; summary 2 over 150-186 M: M_chr 1.12250-1.12298, S/M^2
+0.25286-0.25322). All positions and speeds are coordinate quantities in the evolved gauge (R6).
+
+- D35-1 chain: reaches tlim 200 with chain STATUS DONE in 3 counted segments (at most 4 under the
+  cap 31); every Slurm job of it COMPLETED or cut by a signal and resubmitted (sacct); card time
+  2.4-3.2 card-hours (14 M at 5.19-5.33 M per 50-min segment = 2.6-2.7 segments of up to 59 min).
+  Decision 0048 item 2(a) says "about one card-hour": I expect about 2.7. Refuted if the chain
+  ends other than DONE, needs a fifth counted segment, or uses more than 3.5 card-hours.
+- D35-2 record: A + A2 trackers joined to 200.0 M (last time in [199.95, 200.05]), no step above
+  2 x 2^-9 M in 186-200 M, restart overlaps <= 1e-8 M.
+- D35-3 m2's distance to M (trackers 1, 2) at 200 M in [20.5, 21.5] M (central 21.0, radial speed
+  near 0.245), increasing monotonically over 186-200 M.
+- D35-4 m2's speed at 200 M: relative to M in [0.33, 0.37] (0.374 at 186 M, decelerating), its
+  radial part in [0.22, 0.27]; m2's own coordinate speed in [0.30, 0.345] (0.339 at 186 M).
+- D35-5 merged black hole (finder 2): found at every search 186-200 M; area mass (status col 7) in
+  [1.1128, 1.1146]; Christodoulou mass (summary col 3) in [1.1220, 1.1235]; S/M_chr^2 in
+  [0.2520, 0.2540]; summary hrms in [1e-4, 1e-3] at every search (that is: NOT converged in the
+  sense of the verifier's F5; the surface is quoted with its residual).
+- D35-6 m2's horizon (finder 1): found at every search; area mass in [0.1285, 0.1300].
+- D35-7 constraint: rms H below 1e-4 at every history record 186-200 M, at most 2.0e-5.
+- D35-8 mesh: MeshBlocks <= 2584 and card memory peak <= 80 GB in every new segment.
+- D35-9 outcome: unchanged at 200 M (m1 inside the common horizon, no separate horizon of m1
+  found by finder 2; m2 receding). Refuted if m2's distance falls or finder 0 finds a surface of
+  mass near 0.13 with hrms below 1e-3.
