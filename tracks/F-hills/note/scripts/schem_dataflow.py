@@ -1,4 +1,6 @@
-"""Schematic: data flow of one full-relativity passage (note v1, gate G1).
+"""Schematic: data flow of one full-relativity passage (note v1, gate G1; batch 35: as of release
+core-v0.8, the tracker file kept on a continued run, the resubmission after a preemption
+(core-v0.6/v0.7 chain script) and the status file with the found flag of each search exist).
 
 From the input of the passage through AthenaK on one card in chained segments, the output
 streams (trackers, horizon summaries, wave modes on the extraction spheres, history, restart
@@ -78,8 +80,8 @@ def main():
             size=6.6, italic=True)
     blocks(ax, x + 1.2, w - 2.4, y - 1.85, [
         ("evolution, refinement, finders, extraction", EXISTS),
-        ("wrapper keeps the tracker files of each segment", PORT),
-        ("resubmission after a preemption", NEW),
+        ("tracker file kept on a continued run", EXISTS),
+        ("resubmission after a preemption", EXISTS),
     ])
     y = stage(ax, xa[2], r1y, wa[2], r1h, "Output streams", "appended by every segment")
     blocks(ax, xa[2], wa[2], y, [
@@ -88,7 +90,7 @@ def main():
         ("waves: $r\\psi_4$ modes on the spheres", EXISTS),
         ("history: constraint norms", EXISTS),
         ("restart files: the mesh tree", EXISTS),
-        ("found flag of each horizon search", NEW),
+        ("status: found flag and residual per search", EXISTS),
     ])
     ym1 = r1y + r1h / 2 + 0.3
     for k in range(2):

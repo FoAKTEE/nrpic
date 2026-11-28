@@ -1,4 +1,9 @@
-"""Schematic: architecture of the F-hills calculation as of release core-v0.6 (note v2, G1 close-out).
+"""Schematic: architecture of the F-hills calculation as of release core-v0.8 (batch 35, G1).
+
+Batch 35 (gate review of G1, GATE_REVIEW.md section 6 item 7): two items now exist in a release:
+the tracker file kept and appended on a continued run (core-v0.8; before it, the track's wrapper
+that keeps the tracker copies) and the status file of each horizon search with its found flag,
+reason and mean expansion (`<fastflow> diagnostics`, core-v0.5; read in the passage from 133 M).
 
 Note v2 (wave 3 batch 6): released in core-v0.4 to v0.6 and so marked "exists": the
 constraint solve inside the code (`<particles> id_solve`, punctures in the solve in v0.6), clumps
@@ -76,12 +81,12 @@ def main():
         ("a horizon finder per black hole", EXISTS),
         ("waves on four extraction spheres", EXISTS),
         ("chain of segments with restart files", EXISTS),
-        ("wrapper that keeps the tracker files", PORT),
+        ("tracker file kept on a continued run", EXISTS),
         ("shift damping scaled by the mass", EXISTS),
         ("common horizon of one pair", EXISTS),
         ("two cards for the finest resolution", PORT),
         ("resubmission after a kill from outside", EXISTS),
-        ("found flag of a horizon search", NEW),
+        ("status file and found flag of each search", EXISTS),
     ])
     column(ax, xs[2], "Readers", "the code's output, outside the code", [
         ("trackers merged across segments", EXISTS),
