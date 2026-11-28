@@ -1,12 +1,12 @@
 # Re-verification: C-sidm G2
 
-`harness/bin/nrpic-stage verify C-sidm G2` on 2026-11-27T08:52:52Z, clean export of commit `ead04d28b161` in `scratch/C-sidm/tmp/stage-verify/C-sidm-G2-ead04d2-20261127T085127Z`. Result: **PASS**.
+`harness/bin/nrpic-stage verify C-sidm G2` on 2026-11-27T10:40:35Z, clean export of commit `6764898fa3f4` in `scratch/C-sidm/tmp/stage-verify/C-sidm-G2-6764898-20261127T085337Z`. Result: **FAIL**.
 
 | Check | Result | Message |
 |---|---|---|
 | clean | PASS | worktree clean (outside the stage directory being assembled) |
 | sync | PASS | main is merged into the branch |
-| export | PASS | clean export of ead04d28b161 (HEAD) in /data/haiyangw/nrpic/scratch/C-sidm/tmp/stage-verify/C-sidm-G2-ead04d2-20261127T085127Z/tree |
+| export | PASS | clean export of 6764898fa3f4 (HEAD) in /data/haiyangw/nrpic/scratch/C-sidm/tmp/stage-verify/C-sidm-G2-6764898-20261127T085337Z/tree |
 | size | PASS | no committed file of the track above 5 MB |
 | note | PASS | tracks/<ID>/note/main.tex present |
 | package | PASS | EVIDENCE.md, OPEN.md, CHECKLIST.md present (decision 0012); scoping text: scope/SCOPE.md; no verifier's report yet (VERIFIER.md, decision 0016) |
@@ -14,13 +14,92 @@
 | style | PASS | 2 style copies equal harness/style/SHA256SUMS (czstyle.py, paperfig.py) |
 | fig-script | PASS | 14 figures, each with its script |
 | min-figs | PASS | 4 schematics and 10 data figures (brief 13.4 asks at least 1 and 5 at G2) |
-| runs | PASS | 263 run manifests finished (25 hand-written, read as decision 0012 allows) |
+| runs | FAIL | 2 of 263 runs have problems |
 | run-notes | WARN | 25 runs read with defaults or not fully re-verifiable (nrpic-run lint) |
-| checksums | WARN | output checksums not re-verified (--no-checksums) |
-| status | PASS | STATUS.md has 35 lines |
+| checksums | PASS | 9199 output files: 9199 hashed again (bytes read, 1184.70 GB), 0 taken from the cache (0.0 MB) (--full); every byte read again (none taken from the cache, where a checksum taken from the cache proves unchanged size and modification time since it was hashed, not bytes read again) |
+| status | PASS | STATUS.md has 32 lines |
 | rerun | PASS | 14 of 14 scripts and commands ran cleanly in the export |
 | compare | PASS | 28 regenerated files compared with the committed ones; 0 differ beyond tolerance (rtol 1e-06, atol 1e-12, PNG rms 0.005) |
 | regenerate | PASS | all 28 committed figure files regenerated |
+
+## runs
+
+```
+{
+ "C-20261121-210524-36a658e": [
+  "missing output TC_th0.003_kl0.2_e0.2_s6_dt0.05_p0.1_dx0.125/heat.part.00001.bin",
+  "missing output TC_th0.003_kl0.2_e0.2_s6_dt0.05_p0.1_dx0.125/heat.part.00002.bin",
+  "missing output TC_th0.003_kl0.2_e0.2_s6_dt0.05_p0.1_dx0.125/heat.part.00003.bin",
+  "missing output TC_th0.003_kl0.2_e0.2_s6_dt0.05_p0.1_dx0.125/heat.part.00004.bin",
+  "missing output TC_th0.003_kl0.2_e0.2_s6_dt0.05_p0.1_dx0.125/heat.part.00005.bin",
+  "missing output TC_th0.003_kl0.2_e0.2_s6_dt0.05_p0.1_dx0.125/heat.part.00006.bin",
+  "missing output TC_th0.003_kl0.2_e0.2_s6_dt0.05_p0.1_dx0.125/heat.part.00007.bin",
+  "missing output TC_th0.003_kl0.2_e0.2_s6_dt0.05_p0.1_dx0.125/heat.part.00008.bin",
+  "missing output TC_th0.003_kl0.2_e0.2_s6_dt0.05_p0.1_dx0.125/heat.part.00009.bin",
+  "missing output TC_th0.003_kl0.2_e0.2_s6_dt0.05_p0.1_dx0.125/heat.part.00010.bin",
+  "missing output TC_th0.003_kl0.2_e0.2_s6_dt0.05_p0.1_dx0.125/heat.part.00011.bin",
+  "missing output TC_th0.003_kl0.2_e0.2_s6_dt0.05_p0.1_dx0.125/heat.part.00012.bin",
+  "missing output TC_th0.003_kl0.2_e0.2_s6_dt0.05_p0.1_dx0.125/heat.part.00013.bin",
+  "missing output TC_th0.003_kl0.2_e0.2_s6_dt0.05_p0.1_dx0.125/heat.part.00014.bin",
+  "missing output TC_th0.003_kl0.2_e0.2_s6_dt0.05_p0.1_dx0.125/heat.part.00015.bin",
+  "missing output TC_th0.003_kl0.2_e0.2_s6_dt0.1_p0.1_dx0.125/heat.part.00001.bin",
+  "missing output TC_th0.003_kl0.2_e0.2_s6_dt0.1_p0.1_dx0.125/heat.part.00002.bin",
+  "missing output TC_th0.003_kl0.2_e0.2_s6_dt0.1_p0.1_dx0.125/heat.part.00003.bin",
+  "missing output TC_th0.003_kl0.2_e0.2_s6_dt0.1_p0.1_dx0.125/heat.part.00004.bin",
+  "missing output TC_th0.003_kl0.2_e0.2_s6_dt0.1_p0.1_dx0.125/heat.part.00005.bin",
+  "missing output TC_th0.003_kl0.2_e0.2_s6_dt0.1_p0.1_dx0.125/heat.part.00006.bin",
+  "missing output TC_th0.003_kl0.2_e0.2_s6_dt0.1_p0.1_dx0.125/heat.part.00007.bin",
+  "missing output TC_th0.003_kl0.2_e0.2_s6_dt0.1_p0.1_dx0.125/heat.part.00008.bin",
+  "missing output TC_th0.003_kl0.2_e0.2_s6_dt0.1_p0.1_dx0.125/heat.part.00009.bin",
+  "missing output TC_th0.003_kl0.2_e0.2_s6_dt0.1_p0.1_dx0.125/heat.part.00010.bin",
+  "missing output TC_th0.003_kl0.2_e0.2_s6_dt0.1_p0.1_dx0.125/heat.part.00011.bin",
+  "missing output TC_th0.003_kl0.2_e0.2_s6_dt0.1_p0.1_dx0.125/heat.part.00012.bin",
+  "missing output TC_th0.003_kl0.2_e0.2_s6_dt0.1_p0.1_dx0.125/heat.part.00013.bin",
+  "missing output TC_th0.003_kl0.2_e0.2_s6_dt0.1_p0.1_dx0.125/heat.part.00014.bin",
+  "missing output TC_th0.003_kl0.2_e0.2_s6_dt0.1_p0.1_dx0.125/heat.part.00015.bin",
+  "missing output TC_th0.003_kl0.2_e0.2_s6_dt0.1_p0.1_dx0.25/heat.part.00001.bin",
+  "missing output TC_th0.003_kl0.2_e0.2_s6_dt0.1_p0.1_dx0.25/heat.part.00002.bin",
+  "missing output TC_th0.003_kl0.2_e0.2_s6_dt0.1_p0.1_dx0.25/heat.part.00003.bin",
+  "missing output TC_th0.003_kl0.2_e0.2_s6_dt0.1_p0.1_dx0.25/heat.part.00004.bin",
+  "missing output TC_th0.003_kl0.2_e0.2_s6_dt0.1_p0.1_dx0.25/heat.part.00005.bin",
+  "missing output TC_th0.003_kl0.2_e0.2_s6_dt0.1_p0.1_dx0.25/heat.part.00006.bin",
+  "missing output TC_th0.003_kl0.2_e0.2_s6_dt0.1_p0.1_dx0.25/heat.part.00007.bin",
+  "missing output TC_th0.003_kl0.2_e0.2_s6_dt0.1_p0.1_dx0.25/heat.part.00008.bin",
+  "missing output TC_th0.003_kl0.2_e0.2_s6_dt0.1_p0.1_dx0.25/heat.part.00009.bin",
+  "missing output TC_th0.003_kl0.2_e0.2_s6_dt0.1_p0.1_dx0.25/heat.part.00010.bin",
+  "missing output TC_th0.003_kl0.2_e0.2_s6_dt0.1_p0.1_dx0.25/heat.part.00011.bin",
+  "missing output TC_th0.003_kl0.2_e0.2_s6_dt0.1_p0.1_dx0.25/heat.part.00012.bin",
+  "missing output TC_th0.003_kl0.2_e0.2_s6_dt0.1_p0.1_dx0.25/heat.part.00013.bin",
+  "missing output TC_th0.003_kl0.2_e0.2_s6_dt0.1_p0.1_dx0.25/heat.part.00014.bin",
+  "missing output TC_th0.003_kl0.2_e0.2_s6_dt0.1_p0.1_dx0.25/heat.part.00015.bin",
+  "missing output TC_th0.003_kl0.2_e0.2_s6_dt0.1_p0.1_dx0.5/heat.part.00001.bin",
+  "missing output TC_th0.003_kl0.2_e0.2_s6_dt0.1_p0.1_dx0.5/heat.part.00002.bin",
+  "missing output TC_th0.003_kl0.2_e0.2_s6_dt0.1_p0.1_dx0.5/heat.part.00003.bin",
+  "missing output TC_th0.003_kl0.2_e0.2_s6_dt0.1_p0.1_dx0.5/heat.part.00004.bin",
+  "missing output TC_th0.003_kl0.2_e0.2_s6_dt0.1_p0.1_dx0.5/heat.part.00005.bin",
+  "missing output TC_th0.003_kl0.2_e0.2_s6_dt0.1_p0.1_dx0.5/heat.part.00006.bin",
+  "missing output TC_th0.003_kl0.2_e0.2_s6_dt0.1_p0.1_dx0.5/heat.part.00007.bin",
+  "missing output TC_th0.003_kl0.2_e0.2_s6_dt0.1_p0.1_dx0.5/heat.part.00008.bin",
+  "missing output TC_th0.003_kl0.2_e0.2_s6_dt0.1_p0.1_dx0.5/heat.part.00009.bin",
+  "missing output TC_th0.003_kl0.2_e0.2_s6_dt0.1_p0.1_dx0.5/heat.part.00010.bin",
+  "missing output TC_th0.003_kl0.2_e0.2_s6_dt0.1_p0.1_dx0.5/heat.part.00011.bin",
+  "missing output TC_th0.003_kl0.2_e0.2_s6_dt0.1_p0.1_dx0.5/heat.part.00012.bin",
+  "missing output TC_th0.003_kl0.2_e0.2_s6_dt0.1_p0.1_dx0.5/heat.part.00013.bin",
+  "missing output TC_th0.003_kl0.2_e0.2_s6_dt0.1_p0.1_dx0.5/heat.part.00014.bin",
+  "missing output TC_th0.003_kl0.2_e0.2_s6_dt0.1_p0.1_dx0.5/heat.part.00015.bin",
+  "missing output TC_th0.003_kl0.2_e0.2_s7_dt0.05_p0.1_dx0.125/heat.part.00001.bin",
+  "missing output TC_th0.003_kl0.2_e0.2_s7_dt0.05_p0.1_dx0.125/heat.part.00002.bin",
+  "missing output TC_th0.003_kl0.2_e0.2_s7_dt0.05_p0.1_dx0.125/heat.part.00003.bin",
+  "missing output TC_th0.003_kl0.2_e0.2_s7_dt0.05_p0.1_dx0.125/heat.part.00004.bin",
+  "missing output TC_th0.003_kl0.2_e0.2_s7_dt0.05_p0.1_dx0.125/heat.part.00005.bin",
+  "missing output TC_th0.003_kl0.2_e0.2_s7_dt0.05_p0.1_dx0.125/heat.part.00006.bin",
+  "missing output TC_th0.003_kl0.2_e0.2_s7_dt0.05_p0.1_dx0.125/heat.part.00007.bin",
+  "missing output TC_th0.003_kl0.2_e0.2_s7_dt0.05_p0.1_dx0.125/heat.part.00008.bin",
+  "missing output TC_th0.003_kl0.2_e0.2_s7_dt0.05_p0.1_dx0.125/heat.part.00009.bin",
+  "missing output TC_th0.003_kl0.2_e0.2_s7_dt0.05_p0.1_dx0.125/heat.part.00010.bin",
+  "missing output TC_th0.003_kl0.2_e0.2_s7_dt0.05_p0.1_dx0.125/heat.part.00011.bin",
+  "missing output TC_
+```
 
 ## run-notes
 
@@ -29,16 +108,19 @@
  "C-sidm-20261115-115344-eb8b752": [
   "output directory read from a field other than outputs.dir",
   "no gate",
+  "no scratch/C-sidm/C-sidm-20261115-115344-eb8b752/sha256sums.txt (hand-written manifest; outputs not re-verifiable)",
   "input python/nrpic/figstyle.py changed since the run (sha256 differs)"
  ],
  "C-sidm-20261115-115348-eb8b752": [
   "output directory read from a field other than outputs.dir",
   "no gate",
+  "no scratch/C-sidm/C-sidm-20261115-115348-eb8b752/sha256sums.txt (hand-written manifest; outputs not re-verifiable)",
   "input python/nrpic/figstyle.py changed since the run (sha256 differs)"
  ],
  "C-sidm-20261115-115400-eb8b752": [
   "output directory read from a field other than outputs.dir",
   "no gate",
+  "no scratch/C-sidm/C-sidm-20261115-115400-eb8b752/sha256sums.txt (hand-written manifest; outputs not re-verifiable)",
   "input python/nrpic/figstyle.py changed since the run (sha256 differs)"
  ],
  "C-sidm-20261115-120610-b4592be": [
@@ -52,7 +134,8 @@
  ],
  "C-sidm-20261115-120703-9b3e868": [
   "output directory read from a field other than outputs.dir",
-  "no gate"
+  "no gate",
+  "no scratch/C-sidm/C-sidm-20261115-120703-9b3e868/sha256sums.txt (hand-written manifest; outputs not re-verifiable)"
  ],
  "C-sidm-20261115-120715-38ab057": [
   "hand-written (launcher 'local (tracks/C-sidm/gravothermal/register.py)')",
@@ -77,7 +160,8 @@
  ],
  "C-sidm-20261115-121302-313d399": [
   "output directory read from a field other than outputs.dir",
-  "no gate"
+  "no gate",
+  "no scratch/C-sidm/C-sidm-20261115-121302-313d399/sha256sums.txt (hand-written manifest; outputs not re-verifiable)"
  ],
  "C-sidm-20261115-121400-d463e1a": [
   "hand-written (launcher 'local (tracks/C-sidm/gravothermal/register.py)')",
@@ -131,21 +215,21 @@
  ],
  "C-sidm-20261115-125308-54870b9": [
   "status 'done' read as completed",
-  "output directory read from a field other than outputs.dir",
-  "no gate",
-  "status 'done' read as completed",
-  "input python/nrpic/io.py changed since the run (sha256 differs)",
-  "input python/nrpic/figstyle.py changed since the run (sha256 differs)"
- ],
- "C-sidm-20261115-130010-69e27db": [
-  "status 'done' read as completed",
-  "output directory read from a field other than outputs.dir",
-  "no gate",
-  "status 'done' read as completed",
-  "input python/nrpic/io.py changed since the run (sha256 differs)",
-  "input python/nrpic/figstyle.py changed since the run (sha256 differs)"
- ],
- "C-sidm-20261115-131130-3077
+  "output directory rea
+```
+
+## checksums
+
+```
+{
+ "rehashed_files": 9199,
+ "rehashed_bytes": 1184696052959,
+ "cached_files": 0,
+ "cached_bytes": 0,
+ "full": true,
+ "meaning_of_a_cached_entry": "a checksum taken from the cache proves unchanged size and modification time since it was hashed, not bytes read again",
+ "notes": []
+}
 ```
 
 ## compare
