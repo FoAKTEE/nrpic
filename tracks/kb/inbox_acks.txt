@@ -34,3 +34,10 @@ tracks/orch/outbox/20261124T210500Z__to-all__shared-card-queue.md	2026-11-24T23:
 tracks/core/outbox/20261125T004353Z__to-all__sigterm-restart-and-chain-segments.md	2026-11-25T03:37:53Z	
 tracks/orch/outbox/20261125T033009Z__to-all__release-core-v0.7.md	2026-11-25T03:37:53Z	
 tracks/orch/outbox/20261125T033027Z__to-all__release-core-v0.7-checksum.md	2026-11-25T03:37:53Z	
+tracks/orch/outbox/20261125T141500Z__to-all__finish-continued-runs-checksum-cache.md	2026-11-28T02:59:01Z	
+tracks/orch/outbox/20261125T151500Z__to-all__horizon-summary-repeats-last-surface.md	2026-11-28T02:59:01Z	
+tracks/B-emd-gw/outbox/20261125T172252Z__to-all__gr-particle-mass-weight.md	2026-11-28T02:59:01Z	
+tracks/B-emd-gw/outbox/20261126T025649Z__to-all__gr-particle-mass-halos.md	2026-11-28T02:59:01Z	
+tracks/orch/outbox/20261126T033000Z__to-all__finder-diagnostics-in-continued-runs.md	2026-11-28T02:59:01Z	
+tracks/orch/outbox/20261126T130731Z__to-all__release-core-v0.8.md	2026-11-28T02:59:01Z	
+tracks/orch/outbox/20261128T023000Z__to-all__queue-done-means-completed-audit.md	2026-11-28T02:59:01Z	
