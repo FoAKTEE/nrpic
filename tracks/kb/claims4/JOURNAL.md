@@ -65,3 +65,60 @@ VERIFIER2.md section 2; claims3 WA 18/22, verifier2 M 10/13):
   430 is cut at both ends: both superseded by whole sentences. 864: 'Jena' is an affiliation, not
   an author (supersede). 877: a paper statement and F's run result in one fulltext claim: split
   into a fulltext claim and a judgement claim. Refuted per claim if the source says otherwise.
+
+## Entry 2, 2026-11-27 ~16:55 PST: reading, writes, rates (outcomes)
+
+Order run kb-20261128-003945-e1d65ba (seed 20261127, classes C 34, T 144, R 211). Read: all 34 of C
+(census) and the first 13 of T and of R in their seeded orders, 60 claims, each at every stored
+locator in the raw TeX (plus a whole-file grep where a word or number was not in the cited lines).
+Verdicts: work/verdicts_C.tsv, work/verdicts_TR.tsv; LEDGER.tsv.
+
+| Class | Read | Right (incl. right_locator) | Not right | CP 95 % of the right rate |
+|---|---|---|---|---|
+| C cut | 34 of 34 | 18 | 16 (10 fragment, 3 part_unsupported, 2 wrong_label, 1 wrong) | 35.1-70.2 % |
+| T cited | 13 of 144 | 10 | 3 (2 wrong_label, 1 fragment) | 46.2-95.0 % |
+| R rest | 13 of 211 | 8 | 5 (4 fragment, 1 wrong_label) | 31.6-86.1 % |
+| T+R (random within class) | 26 | 18 = 69.2 % | 8 | 48.2-85.7 % |
+
+Borderline: 10 counted right (cut start, table debris, noun phrase, gloss), 2 counted not right
+(564, 301). With all borderline cases flipped the C rate runs 35.3-58.8 %, T 53.8-76.9 %, R 53.8-61.5 %.
+Stratified estimate for the 389 unread (C census + T, R samples, finite-population s.e.):
+right as worded 66.5 % (s.e. 8.5 %), about 130 not right (s.e. 33) [JUDGEMENT: extrapolation from
+26 sampled claims in T and R]; 24 of them are corrected here. Pooled with the earlier random
+machine-located samples (claims3 WA 18/22, verifier2 M 10/13): 46/61 = 75.4 % (CP 62.7-85.5 %).
+Run kb-20261128-005107-c2d924a (rates.json, figure).
+
+Predictions:
+- P1 HELD in its refutation clause (8 of 26 not right; refuted only beyond 10), but on the high
+  side: expected about 5. The T+R rate 69 % is below the pooled 80 %, inside its interval.
+- P2 HELD: 16 of 34 cut texts not right (predicted 10-20).
+- P3 HELD on few claims: T+R texts starting lower-case 5/9 right (56 %) against 13/17 (76 %).
+- P4 FAILED: the stratified rate 66.5 % is below the predicted 72-82 %, and 130 not right is above
+  the predicted 70-110. Cause, as far as the reading shows: R carries many note fragments (heading
+  rows, locator-only rows, noun phrases) that the cut flag does not catch; the earlier samples
+  counted cut-but-readable texts right, and so do I, so the difference is not a stricter rule.
+- P5 HELD: dry run kb-20261128-004850-7a66cfe and real run kb-20261128-004951-4e8871c give the same
+  new claims (896-922; 862 reused) and identical before/after tables; others hash unchanged in both.
+- P6: 741 relocated to Spin_PBH.tex L1205-1209 (held: L64-67 has no spin statement); 428 author
+  order Ciarfella, Ficarra, Lousto (TBH.tex L37-47, held) -> 916; 804 superseded by a to_verify
+  claim 917 with the same eight locators, 805 annotated with the rule (one rule held); 313 -> 918
+  (I did not re-read 'citing 2108.11967' and 'dispersion approaches c': not carried); 430 -> 919
+  (also its '~10^3 scatterings' understates the paper's 'hundreds of thousands or millions', L108);
+  864 -> 920 ('Jena' is the affiliation, L80; held); 877 -> 921 (paper) + 922 (F's run, judgement).
+
+Writes (plan plans/P1_claims4.json, 72 actions): 36 verify (5 with an extended locator), 32
+supersede (26 new successor texts 896-921, 5 to a sibling's successor, 339 -> 862), 1 withdraw (583,
+a table heading), 1 relocate (741), 1 annotate (805), 1 add (922). Successors are read at the
+source: every new text states only what its locator lines say; track judgements kept are labelled
+judgement (909, 911, 922). One wrinkle: the added judgement 922 has status unlocated although its
+locator row resolves (apply.py's add path; claims3's 'add' did the same).
+
+## Entry 3, 2026-11-27 ~17:15 PST: snapshot and QA
+
+Run kb-20261128-005138-5cef2a2 (as lead b17's kb-20261125-124304-2790a38): verify-downloads exit 1
+(the known gr-qc/9412071 row); `kb qa run --hybrid`: C1 counts agree, C3 not ok 25, C8 equations
+40/41, C7 hybrid paper hits 28/32 (locator 23), rerank 28/32 (25); `kb snapshot`: db/current ->
+kb-20261128-fcd969d (sha256 fcd969d6...); 762 papers, 922 claims. Copy of the QA report:
+work/QA_REPORT_after_P1.md (kb/QA_REPORT.md is the lead's to commit). Not compared line by line
+with the QA report of snapshot 56c4b53: no QA check was predicted to change except the claim
+counts (C9), so I state the numbers without a verdict on the retrieval rows.

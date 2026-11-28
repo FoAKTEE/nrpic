@@ -1,0 +1,73 @@
+k	cls	claim_id	verdict	right	borderline	action	successor	note
+1	C	476	fragment	0	0	supersede(475+476)	896	'from its new DGREM-Boris (L62)': the second half of 475's sentence
+2	C	558	fragment	0	0	supersede(557+558)	898	'and for the two moving clumps': third part of 556's 'Not stated' row
+3	C	564	wrong	0	1	supersede	899	'searched ... only L34': 'available' also occurs at L1362; the absence statement itself is right
+4	C	539	right	1	1	verify		'B-spline' and 'cloud in cell' are glosses of the first-order shape B_1 (L641-660); every number supported
+5	C	351	right	1	0	verify		L235: radial orbits after turn-around keep the shape, raise the density by ~50 %
+6	C	471	right	1	0	verify		L746-750
+7	C	93	right	1	0	verify		L242 ('suggests' rendered as 'is')
+8	C	531	part_unsupported	0	0	supersede	900	the paper never calls the +- of the OS table a seed scatter (caption L1419; no 'seed' in main.tex)
+9	C	493	right	1	0	verify		table-row format; L1430-1432
+10	C	513	right	1	0	verify		table-row format; L1358
+11	C	514	right	1	0	verify		table-row format; L1360
+12	C	24	right_locator	1	0	relocate+verify		e = 0.2 is at L1083
+13	C	422	wrong_label	0	0	supersede	901	'The closest work' is F's judgement under fulltext; code details outside the locator; ends cut 'Initial data ('
+14	C	384	right	1	0	verify		footnote L170-171
+15	C	478	fragment	0	0	supersede(477+478)	897	'and 2e-14 in the Kerr tests': subject cut
+16	C	463	right	1	1	verify		noun phrase starting 'and'; L388-397 support it
+17	C	562	fragment	0	0	supersede	902	'and executable on both CPUs and GPUs': subject (AthenaK with Kokkos) cut
+18	C	133	fragment	0	0	supersede(133+134)	903	'comoving equations with the background removed (L206-340': no predicate
+19	C	477	part_unsupported	0	0	supersede(477+478)	897	1e-7 is stated for the implicit-midpoint iteration (L459), not for both pushers; 'in production' not in the paper
+20	C	47	fragment	0	0	supersede	904	'used with shock-avoiding f': subject cut
+21	C	459	right	1	1	verify		locator debris '-397. Precision:' at the start; L674 supports the rest
+22	C	528	fragment	0	0	supersede(527+528)	905	second mechanism of 527's row plus core's 'does not separate them'
+23	C	571	fragment	0	0	supersede	906	cut list of L1393 without predicate
+24	C	301	part_unsupported	0	1	supersede	907	the brief's wording (brief row 384) has no locator; the paper part (L62-66) is right
+25	C	274	wrong_label	0	0	supersede	908	C's judgement ('not a reference', 'excluded by decision 0010') under fulltext
+26	C	395	right	1	0	verify		L370-381
+27	C	339	fragment	0	0	supersede->862	862	subject (the Gondolo-Silk distribution) cut; 862 carries L443
+28	C	129	right	1	1	verify		starts 'with'; L273-277
+29	C	111	right	1	0	verify		L657-659, L682-684; Harada:2016mhb = 1609.01588 (ref.bib L376-379)
+30	C	516	right	1	0	verify		table-row format; L1362
+31	C	470	right	1	1	verify		starts 'i.e.'; L740
+32	C	475	fragment	0	0	supersede(475+476)	896	'-840. Precision: ... distinguishes the GR-Boris ...' without the 'from' half
+33	C	469	right	1	1	verify		debris 'and the caption L734. Precisely:'; quote at L738 right
+34	C	86	right_locator	1	0	relocate+verify		'log-normal' at L100
+35	T	3	right	1	0	verify		MDPBH.tex L839
+36	T	309	wrong_label	0	0	supersede(judgement)	909	C's computed misprints under fulltext; C entry rechecked (M/R = 1.14105e-2 vs printed 1.41053e-2)
+37	T	638	right	1	1	verify		noun phrase; TBH3.tex L708-711
+38	T	69	right	1	0	verify		Spin_PBH.tex L369-735
+39	T	245	right_locator	1	1	relocate+verify		'According to current observations' at L155
+40	T	194	right	1	0	verify		main_v3.tex L2275-2281
+41	T	94	right	1	0	verify		Main.tex L310
+42	T	369	fragment	0	0	supersede	910	'Conflict [...]: 1805.09034 (:195)', statement on the next note line
+43	T	427	wrong_label	0	0	supersede(judgement)	911	F's judgement 'most likely to publish it first' under fulltext; cut start
+44	T	295	right_locator	1	0	relocate+verify		k ~ 32 at L553, L613
+45	T	385	right	1	0	verify		L103, L129-133
+46	T	237	right	1	1	verify		noun phrase; L324
+47	T	37	right	1	0	verify		L76
+48	R	125	right	1	0	verify		caption L179
+49	R	341	right	1	0	verify		Kerr set up L243-356, no Kerr results (grep)
+50	R	337	fragment	0	0	supersede	912	'lower energy limit E_min(r)', no predicate
+51	R	583	fragment	0	0	withdraw		table heading; statements carried by 469-471, 868
+52	R	498	right	1	0	verify		L975
+53	R	185	fragment	0	0	supersede	913	'observable peak amplitude and frequencies'
+54	R	302	fragment	0	0	supersede	914	a locator only
+55	R	298	wrong_label	0	0	supersede	915	C's readings 'No relativistic dynamics', 'Background only' under fulltext
+56	R	136	right	1	0	verify		L1172-1187
+57	R	151	right_locator	1	0	relocate+verify		BSSN at L208
+58	R	497	right	1	0	verify		caption L950
+59	R	162	right	1	0	verify		L229-234, L442
+60	R	594	right	1	1	verify		table debris '| diagnostics.md'
+-	named	557	-	-	-	supersede	898	sibling or VERIFIER2 leftover (plan P1)
+-	named	134	-	-	-	supersede	903	sibling or VERIFIER2 leftover (plan P1)
+-	named	527	-	-	-	supersede	905	sibling or VERIFIER2 leftover (plan P1)
+-	named	741	-	-	-	relocate		sibling or VERIFIER2 leftover (plan P1)
+-	named	428	-	-	-	supersede	916	sibling or VERIFIER2 leftover (plan P1)
+-	named	804	-	-	-	supersede	917	sibling or VERIFIER2 leftover (plan P1)
+-	named	805	-	-	-	annotate		sibling or VERIFIER2 leftover (plan P1)
+-	named	313	-	-	-	supersede	918	sibling or VERIFIER2 leftover (plan P1)
+-	named	430	-	-	-	supersede	919	sibling or VERIFIER2 leftover (plan P1)
+-	named	864	-	-	-	supersede	920	sibling or VERIFIER2 leftover (plan P1)
+-	named	877	-	-	-	supersede	921	sibling or VERIFIER2 leftover (plan P1)
+-	named	922	-	-	-	add		judgement split off from 877

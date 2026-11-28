@@ -1,0 +1,146 @@
+{
+ "run_inputs": {
+  "order": "/data/haiyangw/nrpic/scratch/kb/kb-20261128-003945-e1d65ba",
+  "apply": "/data/haiyangw/nrpic/scratch/kb/kb-20261128-004951-4e8871c"
+ },
+ "classes": {
+  "C": {
+   "n": 34,
+   "right": 18,
+   "rate": 0.5294117647058824,
+   "cp95": [
+    0.351292837051412,
+    0.7022133335818037
+   ],
+   "borderline_counted_right": 6,
+   "borderline_counted_not_right": 2,
+   "rate_all_borderline_right": 0.5882352941176471,
+   "rate_all_borderline_not_right": 0.35294117647058826,
+   "verdicts": {
+    "fragment": 10,
+    "part_unsupported": 3,
+    "right": 16,
+    "right_locator": 2,
+    "wrong": 1,
+    "wrong_label": 2
+   }
+  },
+  "T": {
+   "n": 13,
+   "right": 10,
+   "rate": 0.7692307692307693,
+   "cp95": [
+    0.461868460765959,
+    0.9496189265088484
+   ],
+   "borderline_counted_right": 3,
+   "borderline_counted_not_right": 0,
+   "rate_all_borderline_right": 0.7692307692307693,
+   "rate_all_borderline_not_right": 0.5384615384615384,
+   "verdicts": {
+    "fragment": 1,
+    "right": 8,
+    "right_locator": 2,
+    "wrong_label": 2
+   }
+  },
+  "R": {
+   "n": 13,
+   "right": 8,
+   "rate": 0.6153846153846154,
+   "cp95": [
+    0.315777602914063,
+    0.8614206611098394
+   ],
+   "borderline_counted_right": 1,
+   "borderline_counted_not_right": 0,
+   "rate_all_borderline_right": 0.6153846153846154,
+   "rate_all_borderline_not_right": 0.5384615384615384,
+   "verdicts": {
+    "fragment": 4,
+    "right": 7,
+    "right_locator": 1,
+    "wrong_label": 1
+   }
+  }
+ },
+ "sizes": {
+  "C": 34,
+  "T": 144,
+  "R": 211
+ },
+ "TR_pooled": {
+  "n": 26,
+  "right": 18,
+  "rate": 0.6923076923076923,
+  "cp95": [
+   0.48210356355425843,
+   0.8567400020722964
+  ]
+ },
+ "TR_lower0": {
+  "n": 17,
+  "right": 13,
+  "rate": 0.7647058823529411
+ },
+ "TR_lower1": {
+  "n": 9,
+  "right": 5,
+  "rate": 0.5555555555555556
+ },
+ "stratified_389": {
+  "N": 389,
+  "not_right_est": 130.38461538461536,
+  "not_right_se": 33.212601871532485,
+  "right_rate_est": 0.664821040142377,
+  "right_rate_se": 0.08537943925843826,
+  "already_corrected_here": 24
+ },
+ "earlier": {
+  "claims3 WA (auto) 18/22": {
+   "right": 18,
+   "n": 22,
+   "rate": 0.8181818181818182,
+   "cp95": [
+    0.5971542169221282,
+    0.9481327006875631
+   ]
+  },
+  "verifier2 M 10/13": {
+   "right": 10,
+   "n": 13,
+   "rate": 0.7692307692307693,
+   "cp95": [
+    0.461868460765959,
+    0.9496189265088484
+   ]
+  },
+  "pooled machine-located 28/35": {
+   "right": 28,
+   "n": 35,
+   "rate": 0.8,
+   "cp95": [
+    0.6306211554775547,
+    0.9155939838394356
+   ]
+  },
+  "claims3 weak class 26/30": {
+   "right": 26,
+   "n": 30,
+   "rate": 0.8666666666666667,
+   "cp95": [
+    0.6927816497238732,
+    0.9624465036616368
+   ]
+  }
+ },
+ "pooled_random_machine_located": {
+  "right": 46,
+  "n": 61,
+  "rate": 0.7540983606557377,
+  "cp95": [
+   0.627059296501856,
+   0.8553572787635269
+  ]
+ }
+}
