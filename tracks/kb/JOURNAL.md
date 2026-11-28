@@ -947,3 +947,28 @@ right, so both directions of a verdict are tested):
 - L2: the census recount from the two verdict files gives 124 of 144 right as worded, Clopper-
   Pearson 95 % 0.794-0.913, and claims5's part 114/131 (0.800-0.923), as in rates.json of run
   kb-20261128-024452-cfc4954. Refuted by any other count or interval.
+
+Outcome of the check run kb-20261128-025758-95806ac (drawn: 71, 195, 5 counted right; 329, 352
+not right; show.txt read, fig_census.png read):
+- L1 held: all five verdicts hold at their lines. 71 (Spin_PBH.tex L894, t_m = t_H
+  delta^(-3/2)): right, though the text opens with heading debris ("Spin and threshold statements
+  [VERIFIED]:") that I would have flagged borderline; the helper did not. 195 (main_v3.tex
+  L2395-2405): right; the paper says "of order 0.4-0.5" and for one representative configuration,
+  which the text leaves out (not a change of sense). 5 (MDPBH.tex L549): right verbatim.
+  329: wrong_label holds: the text is C's statement about the brief, not the paper's; successor 926
+  is labelled judgement and its two locators (results.tex L18, methods.tex L196) say what it
+  quotes. 352: a fragment ("53 percent in appendix A"); successor 931 is right as worded about the
+  integral but leaves out the hedge on the same line L468 (truncated at equality, the correction is
+  in reality smaller). Not a wrong verdict; a reservation on a successor text: D is told in its
+  note, 931 gets an annotation in the next pass.
+- L2 held exactly: 124/144 (CP 0.794-0.913), claims5 part 114/131 (0.800-0.923); by verdict
+  right 118, right_locator 6, wrong_label 8, fragment 7, wrong 3, part_unsupported 2.
+
+Prediction for the provenance diff (run of tracks/kb/lead_b37/scripts/provdiff.py, snapshots
+kb-20261128-fcd969d -> kb-20261128-bd57a33; RISKS row "a tool step rewrites provenance"):
+- L3: 921 -> 936 claims... correction before the run: claims4 ended at 922 claims (936 - 14 new),
+  so: 14 new ids 923-936; nothing gone; every changed existing claim is one of the 131 read ids
+  (all 131 changed: status or label or locator); the supersede-to targets 910 and 638 unchanged in
+  claims, claim_meta and locator rows (the batch-15 defect fixed); claim_links up by 17 (13 + 4
+  supersedes). Refuted by a changed id outside the ledger, a read id unchanged, 910 or 638 changed,
+  or other counts.

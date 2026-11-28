@@ -1,6 +1,6 @@
 # Quality report of the knowledge base (brief 12.9)
 
-Written by `kb qa run` (kbtool/qa_report.py) at 2026-11-25T12:43:53Z from `/data/haiyangw/nrpic/kb-data/db/kb.sqlite` (db/current: `kb-20261125-2f97258.sqlite`). Ids, counts and our own wording only; no paper text.
+Written by `kb qa run` (kbtool/qa_report.py) at 2026-11-28T02:46:27Z from `/data/haiyangw/nrpic/kb-data/db/kb.sqlite` (db/current: `kb-20261128-fcd969d.sqlite`). Ids, counts and our own wording only; no paper text.
 
 ## C1. Counts against the manifests
 
@@ -209,12 +209,12 @@ Written by `kb qa run` (kbtool/qa_report.py) at 2026-11-25T12:43:53Z from `/data
 
 ## C9. The claims layer (K8)
 
-- 895 claims on 122 papers; labels: abstract 10, background 7, fulltext 688, judgement 78, refuted 77, to_verify 35; statuses: checked 273, located 469, partial 12, refuted 35, superseded 36, unlocated 64, withdrawn 6.
-- Locators 1141, resolved 1141; claims with a chunk 653; labels set by a person 423.
-- By track (status counts): A-emd-pbh: checked 42, located 126, superseded 7, unlocated 1; B-emd-gw: checked 28, located 32, partial 1, superseded 10, unlocated 9, withdrawn 2; C-sidm: checked 20, located 87, partial 4, superseded 3; D-bh-dress: checked 25, located 62, partial 4, superseded 1, unlocated 9; E-stoch-inf: located 6, partial 1; F-hills: checked 58, located 27, partial 1, superseded 2, unlocated 2; brief: checked 50, located 11, partial 1, refuted 11, superseded 8, unlocated 38, withdrawn 3; core: checked 42, located 103, superseded 5, unlocated 4, withdrawn 1; kb: checked 8, located 15, refuted 24, unlocated 1.
+- 936 claims on 122 papers; labels: abstract 10, background 7, fulltext 672, judgement 84, refuted 127, to_verify 36; statuses: checked 452, located 279, partial 12, refuted 35, superseded 85, unlocated 66, withdrawn 7.
+- Locators 1223, resolved 1223; claims with a chunk 689; labels set by a person 659.
+- By track (status counts): A-emd-pbh: checked 96, located 71, superseded 13, unlocated 1; B-emd-gw: checked 42, located 18, partial 1, superseded 13, unlocated 9, withdrawn 2; C-sidm: checked 71, located 35, partial 4, superseded 16, unlocated 1; D-bh-dress: checked 43, located 41, partial 4, superseded 7, unlocated 9; E-stoch-inf: located 6, partial 1; F-hills: checked 76, located 8, partial 1, superseded 9, unlocated 3; brief: checked 49, located 12, partial 1, refuted 11, superseded 9, unlocated 38, withdrawn 3; core: checked 67, located 73, superseded 18, unlocated 4, withdrawn 2; kb: checked 8, located 15, refuted 24, unlocated 1.
 
 ## C10. References of the verification suite (CHARTER section 10)
 
 - 27 arXiv ids in the section; ingested 27; missing: none.
 
-Run time 296.7 s.
+Run time 314.8 s.
