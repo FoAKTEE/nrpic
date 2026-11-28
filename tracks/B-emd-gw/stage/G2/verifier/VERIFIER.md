@@ -20,6 +20,9 @@ Sections 1 to 5 were written before I read any verdict of the lead; section 6 co
   turned out to be the same textbook construction as theirs (KD-tree pairs, connected
   components); FoF groups are unique for given positions and link length, so this shares no
   free choice.
+- Seen before my predictions were written (18:02): the key structure of the lead's analysis
+  files, which printed the first 256^3 halo catalogue (242 groups, 8 above the common limit)
+  and the first dumps' rms; no ratio or verdict.
 - Not read before this report: journal outcome entries, `stage/REVIEW-wave3.md`, the verdict
   column of `stage/G2/CHECKLIST.md` (I extracted the item texts with a filter),
   `STAGE_REPORT.md`, `VERIFY_RESULTS.md`.
