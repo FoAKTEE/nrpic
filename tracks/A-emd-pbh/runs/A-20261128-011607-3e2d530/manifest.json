@@ -117,30 +117,72 @@
     "nodes": 1,
     "gpus": 1,
     "cores": 1,
-    "walltime_s": null,
+    "walltime_s": 8154.0,
     "wall_limit": null,
     "segments_max": 2,
     "gpu_hours_requested": 1.9667,
-    "gpu_hours": null,
-    "particles": null
+    "gpu_hours": 2.2517,
+    "particles": null,
+    "gpu_hours_basis": "sum over 19 jobs of the chain: sacct ElapsedRaw for 19",
+    "gpu_seconds_by_job": {
+      "5545": 5.0,
+      "5551": 23.0,
+      "5557": 165.0,
+      "5563": 125.0,
+      "5569": 52.0,
+      "5575": 41.0,
+      "5582": 13.0,
+      "5591": 9.0,
+      "5600": 8.0,
+      "5607": 519.0,
+      "5612": 814.0,
+      "5619": 15.0,
+      "5625": 757.0,
+      "5633": 8.0,
+      "5643": 13.0,
+      "5654": 56.0,
+      "5666": 10.0,
+      "5675": 3004.0,
+      "5683": 2469.0
+    }
   },
   "slurm": {
     "partition": "preempt",
     "job_name": "A-20261128-011607-3e2d530",
-    "job_ids": []
+    "job_ids": [
+      "5545",
+      "5551",
+      "5557",
+      "5563",
+      "5569",
+      "5575",
+      "5582",
+      "5591",
+      "5600",
+      "5607",
+      "5612",
+      "5619",
+      "5625",
+      "5633",
+      "5643",
+      "5654",
+      "5666",
+      "5675",
+      "5683"
+    ]
   },
   "outputs": {
     "dir": "scratch/A-emd-pbh/A-20261128-011607-3e2d530",
     "sha256sums": "sha256sums.txt",
-    "sha256sums_sha256": null,
-    "bytes": null,
-    "files": null
+    "sha256sums_sha256": "28d94e85bc0adf09d04495bdc8b575db472b07d07ff27f7af45bdbc9526b6412",
+    "bytes": 36134917936,
+    "files": 1674
   },
-  "status": "submitted",
-  "exit_code": null,
+  "status": "completed",
+  "exit_code": 0,
   "registered": "2026-11-28T01:16:08Z",
-  "started": null,
-  "ended": null,
+  "started": "2026-11-27T17:24:04-08:00",
+  "ended": "2026-11-28T05:30:39-08:00",
   "parents": [
     "A-20261128-003940-60a3521",
     "A-20261128-004246-89d4d0b",
@@ -156,5 +198,6 @@
     "cores_busy": 2,
     "runs": 348,
     "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md + 0026-cards-loaded-allotment-cost.md + 0031-level2-branch-and-ablation.md + 0032-new-account-preemption-allotments.md + 0038-track-e-g2-signed-g3-scope.md + 0039-rulings-after-batch-17.md + 0045-track-d-g2-signed-release-v08.md"
-  }
+  },
+  "finished": "2026-11-28T16:03:49Z"
 }
