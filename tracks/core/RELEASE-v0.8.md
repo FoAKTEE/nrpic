@@ -68,3 +68,19 @@ relative to the last accepted horizon radius (not implemented); the conservation
 across a restart on several ranks (only the record due two cycles later is recovered,
 untested on several ranks); Track D's long card test of the guard (a horizon growing
 through the guard radius, their ES-FL deck to 240 M) is Track D's run, not made by core.
+
+## Release builds against core's published executables (batch 35, 2026-11-28)
+
+Asked by the release clerk (orch outbox 20261126T130731Z: "core's byte regression of the
+release builds against them is requested, as for v0.7"). The clerk built
+`.work/build_cpu_v08` and `.work/build_gpu_v08` from main after the merge 73178619; `git
+diff 01d4aeeb 73178619 -- athenak/src python problems scripts docs` is empty [VERIFIED
+2026-11-28]. Checksums differ from core's published files, as builds in other directories
+do (processors 1da3267e... against `core_nrpic_v08/athena_cpu` 7599042f...; card a95fcaf6...
+against `core_nrpic_v08/athena_gpu` e566fcf7...). Prediction V8: `tracks/core/JOURNAL.md`,
+entry 2026-11-28T02:02Z.
+
+| Check | Run | Result |
+|---|---|---|
+| `.work/build_cpu_v08/src/athena` against `scratch/core/exe/core_nrpic_v08/athena_cpu`, `regress_v04.py`, twelve set-ups, 3 cores | core-20261128-020855-e27868f (figure core-20261128-021505-7852e7f) | 75 of 75 items identical, classes a, b, a+b, other empty: REGRESSION PASS (V8 held). Figure looked at: twelve bars, one colour |
+| `.work/build_gpu_v08/src/athena` | none | NOT DONE: a CUDA build does not run on processors, and card runs with deposition are not byte-reproducible from run to run, so a byte comparison on a card could cover only the cases without deposition. Same source tree as `core_nrpic_v08/athena_gpu` (above). If wanted, the list of the v0.8 card check, `analysis/restart_finder/card/card_rf.list`, can be run with this executable and judged by `analysis/restart_finder/card_check.py` (0.15 card-hours); not queued in this batch |
