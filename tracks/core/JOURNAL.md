@@ -2664,3 +2664,25 @@ clips its tick labels, as in batch 27): **M9a and M9b HOLD**. The MPI build
 `.work/build_cpu_mpi_v09rc` (185 s on 6 jobs) on one rank writes the 17 files of the serial
 merged build byte for byte; on two ranks `cons.hst`, tracker file and mesh history equal one
 rank (relative difference 0.0). Ready to be published with the others once q0094 passes.
+
+## 2026-11-28T07:27Z: batch 40, session core-lead-40; prediction before judging q0094
+
+State at start: `git merge main` clean; pause flag absent. q0094 (core-ff-card2) was
+dispatched at 05:21Z as run core-20261128-052151-e5a2d55, Slurm job 5601; `sacct -j 5601`:
+COMPLETED, exit 0:0, 00:00:24 (21:39:47 to 21:40:11 PST), so not a preempted job listed as
+done. `batch.list.status` has rc=0 for all eight cases. A 24-s job for eight cases is short
+but the cases are small (the branch session's processor twins took seconds each); the
+S1L case restarts at cycle 22795 and runs to the cycle limit.
+
+Prediction (the analysis `card_check.py`, no new run on a card): K of
+`JOURNAL-faces-finder.md` entry 5, unchanged. K1 the three planar deposit lines equal the
+processor run (dep run core-20261127-234848-7d666df, `new/`) to 1e-12 in every cell,
+`cic_fs` = `cic` to 1e-13, line sum of `pcs_comp` 32 to 1e-10; K2 the three compensated
+cases conserve the E integral against sum m W to 1e-12 at every record; K3 every S1L
+member found on processors (run core-20261127-235215-27c6606) is found on the card, masses
+within 1e-6 relative, column 16 within 1e-4, scan start within 1e-6; K4 `rst_add` exit 0,
+a status file with a record, and the log line "Parameter added on restart from the command
+line". Refuted by any of these failing. What I expect beyond K: card and processor agree
+in the deposit to round-off (1e-15 to 1e-14, the deposit is a sum whose order differs on
+the device), and the finder masses to 1e-9 or better with polishing (core-v0.8 card check:
+masses of card and processor agree with polishing; RELEASE-v0.8.md).
