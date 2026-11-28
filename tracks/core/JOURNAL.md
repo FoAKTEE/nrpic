@@ -2686,3 +2686,23 @@ line". Refuted by any of these failing. What I expect beyond K: card and process
 in the deposit to round-off (1e-15 to 1e-14, the deposit is a sum whose order differs on
 the device), and the finder masses to 1e-9 or better with polishing (core-v0.8 card check:
 masses of card and processor agree with polishing; RELEASE-v0.8.md).
+
+Outcome (07:31Z), analysis run core-20261128-072820-d5fa2ca (`card_check.py`, figure
+`fig_card_check.png` looked at): **CARD CHECK PASS, K1 to K4 HOLD**. Card run
+core-20261128-052151-e5a2d55 closed (job 5601, 24 s, 0.0067 card-hours, executable
+`core_faces-finder/athena_gpu` sha256 20172cae...).
+- K1: `cic` and `cic_fs` lines equal the processor run in every cell (0.0); `pcs_comp`
+  differs by at most 2.0e-15 (figure (a): scatter of +-2e-15 only in the coarse cells
+  beyond |x1| = 8); `cic_fs` - `cic` = 0.0; line sum of `pcs_comp` 32.0.
+- K2: all three compensated cases at 12 records each (as on processors) have a largest
+  relative error of the E integral of 9.92e-16, which is one unit in the 16th digit that
+  the history file prints (1.119529746732075 against ...074 at t = 0), or exactly 0. The
+  processors' 2.1e-14 to 2.7e-14 (run core-20261128-020250-1981d90) are larger than the
+  card's: the order of the sums differs; both are round-off.
+- K3: all six S1L members found as on processors (iterations as there), masses equal to
+  1e-15 relative (members 4, 5: 10.75124200842111 against ...110), column 16 within 3e-16,
+  scan start 0.1615097240063816 identical.
+- K4: `rst_add` exit 0, a status file with one record, the log line of the added
+  parameter.
+My expectation beyond K (deposit to 1e-14, masses to 1e-9) held with room. The candidate
+core-v0.9 passes its card check; the release records follow.
