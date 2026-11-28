@@ -94,13 +94,23 @@ def analytic(n=64, Lb=1.0, A=1e-3, nwave=2, eps=0.0, order=4, kind="single"):
         J[0, 1] = eps * np.cos(q * Y)
         J[1, 2] = eps * np.cos(q * Z)
         J[2, 0] = eps * np.cos(q * X)
-    else:
-        # "mixed": xi^x = s sin(q (y + z)), xi^y = s sin(q (z + x)), xi^z = s sin(q (x + y)),
-        # whose products of first derivatives have a TT part (W0b)
+    elif kind == "mixed":
+        # xi^x = s sin(q (y + z)), xi^y = s sin(q (z + x)), xi^z = s sin(q (x + y)): one plane
+        # wave per component again, so (d xi)^2 is again longitudinal (W0b outcome)
         zx = Z + s * np.sin(q * (X + Y))
         J[0, 1] = J[0, 2] = eps * np.cos(q * (Y + Z))
         J[1, 2] = J[1, 0] = eps * np.cos(q * (Z + X))
         J[2, 0] = J[2, 1] = eps * np.cos(q * (X + Y))
+    else:
+        # "product": xi^x = s sin(q y) sin(q z), and cyclic; products of two modes per
+        # component give (d xi)^2 a transverse-traceless part (W0c)
+        zx = Z + s * np.sin(q * X) * np.sin(q * Y)
+        J[0, 1] = eps * np.cos(q * Y) * np.sin(q * Z)
+        J[0, 2] = eps * np.sin(q * Y) * np.cos(q * Z)
+        J[1, 2] = eps * np.cos(q * Z) * np.sin(q * X)
+        J[1, 0] = eps * np.sin(q * Z) * np.cos(q * X)
+        J[2, 0] = eps * np.cos(q * X) * np.sin(q * Y)
+        J[2, 1] = eps * np.sin(q * X) * np.cos(q * Y)
     g0 = np.zeros((3, 3) + X.shape)
     K0 = np.zeros((3, 3) + X.shape)
     for i in range(3):
@@ -125,7 +135,7 @@ def analytic(n=64, Lb=1.0, A=1e-3, nwave=2, eps=0.0, order=4, kind="single"):
 
 def cmd_test(args):
     rows = []
-    for kind in ("single", "mixed"):
+    for kind in ("single", "mixed", "product"):
       for n in (32, 64):
         for eps in (0.0, 0.03, 0.3):
             t0 = time.time()
@@ -136,7 +146,7 @@ def cmd_test(args):
                   f"V={r['V']:.9f} h_band={r['h_band']:.4e} B_band={r['B_band']:.4e} "
                   f"({r['wall_s']:.1f} s)", flush=True)
     ref = {(kd, n): next(r for r in rows if r["n"] == n and r["eps"] == 0.0 and r["kind"] == kd)
-           for kd in ("single", "mixed") for n in (32, 64)}
+           for kd in ("single", "mixed", "product") for n in (32, 64)}
     for r in rows:
         b = ref[(r["kind"], r["n"])]
         r["dI_B_rel"] = r["I_B"] / b["I_B"] - 1.0
@@ -227,7 +237,7 @@ def cmd_fig(args):
     fig, ax = plt.subplots(2, 2, figsize=(9.0, 7.0))
     # (a) analytic test
     a0 = ax[0, 0]
-    for kd, mk in (("single", "o"), ("mixed", "s")):
+    for kd, mk in (("single", "o"), ("mixed", "s"), ("product", "^")):
         rr = [r for r in test if r["n"] == 64 and r["eps"] > 0 and r.get("kind", "single") == kd]
         e = [r["eps"] for r in rr]
         a0.plot(e, [abs(r["dI_B_rel"]) + 1e-17 for r in rr], mk + "-", label=f"$I_B$, map {kd}")
@@ -237,7 +247,7 @@ def cmd_fig(args):
     a0.set_xscale("log"); a0.set_yscale("log")
     a0.set_xlabel(r"map amplitude $\max|\partial\xi|$")
     a0.set_ylabel("relative change under the map")
-    a0.set_title("(a) W0, W0b: analytic wave on $64^3$, coordinates mapped", fontsize=9)
+    a0.set_title("(a) W0-W0c: analytic wave on $64^3$, coordinates mapped", fontsize=9)
     a0.legend(fontsize=6.5, ncol=2)
     # (b) gauge ratios against a
     a1 = ax[0, 1]

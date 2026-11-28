@@ -1400,3 +1400,18 @@ Run B-20261128-033822-a9f17e5 (the first, B-20261128-033804-a68e9a1, failed: inv
   eps^2 against A = 1e-3, the band power changes by more than 10 per cent at eps = 0.03 and by more
   than a factor 10 at eps = 0.3, while I_B and V move by less than 1e-3 at 64^3. Refuted if the
   invariant moves by more than 1e-3, or the band moves by less than 10 per cent at eps = 0.03.
+
+## 2026-11-27 19:42 PST (lead of batch 39): outcome W0b; prediction W0c
+
+Run B-20261128-033937-4b23e2f. [VERIFIED by this run]
+- W0b invariance HOLDS (mixed map, 64^3: I_B moves by 1.6e-7 at eps = 0.03 and 2.3e-5 at 0.3; V
+  by less than 1e-15); W0b discrimination FAILS again (band power -3.7e-2 at eps = 0.3, -4e-4 at
+  0.03). Cause, by algebra, not measured: with one plane wave per component, xi^i = s sin(q n_i.y),
+  (d xi)^2 = eps^2 sum_i cos^2(q n_i.y) n_i n_i has its Fourier modes at 2 q n_i with polarization
+  n_i n_i, longitudinal again. My two maps were of the one kind the TT projection removes to
+  second order.
+- W0c (written now): the product map xi^x = s sin(q y) sin(q z) and cyclic, whose (d xi)^2 has
+  modes such as sin(2qy) sin(2qz) in the yz component, with a TT part of size eps^2/4 against
+  A = 1e-3: band power changes by more than 1 per cent at eps = 0.03 and by more than a factor 10
+  at eps = 0.3, while I_B and V move by less than 1e-3 at 64^3. Refuted if the invariant moves by
+  more than 1e-3, or the band by less than 1 per cent at eps = 0.03.
