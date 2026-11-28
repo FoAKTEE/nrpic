@@ -49,3 +49,53 @@ reviewer's, from ES-FL and FN4) and 2.54 (mine: FK 2.70 minus one particle part 
 pair FK/FN4, EVIDENCE.md lines 59-61). The cost of a deck is G-8's mesh cost times its cells (lower) or
 cells with ghost zones (upper) over G-8's, times the step ratio, plus the particle part times the step
 ratio. Expected: G-16 as written 25-45 card-hours; G-12u 6-14; G-16u 18-42; G-16b 8-25.
+
+## Entry 2 (2026-11-27 18:25 PST): outcome of C1-C6 (run D-20261128-020346-c4079e9, figure looked at)
+
+`check_review.json` and `check_review.png` in `scratch/D-bh-dress/D-20261128-020346-c4079e9/`.
+- C1 held for every deck I predicted except one: g8 456, g16c 3648 (finest +-6 M), g16r 512 (+-3 M), g16b
+  8296 (+-6 M), g12u 456 (dx 1/12, +-6 M), g16u 456 (dx 1/16, +-6 M), g12c 2176 (dx 1/12, +-4 M, the
+  reviewer's G-12) [VERIFIED by athena -m]. FAILED prediction: g12s (root 144, blocks of 18) gives 2472
+  blocks with the finest level over +-3 M, not 3648 over +-6 M: level 7 over +-1.5 M is aligned to level-6
+  blocks of 3 M, so it covers +-3 M; I carried G-8's +-6 M over without the alignment. Not a candidate.
+- C2 held: t = 0 masses FK 0.9915207, ES-FL 0.9915211, EG8 (polished) 0.9915147, FL16 0.9998147; offsets
+  from 1 of -8.48e-3 (M/8) and -1.85e-4 (M/16). The written smoke rule rejects any M/16 deck.
+- C3 held in its second part and in part in its first: FK at 200 M has dust only from R0 = 24 M out (inner
+  labels swallowed); the 5-95 per cent spread of the particles' own proper times is 6.2 M (R0 25-26 M), 2.4 M
+  (26-27 M) and 0.4-1.1 M at 27-30 M, so ">2 M in every bin inside 30 M" FAILED for 27-30 M; the
+  nearest-tracer-label clock is off from the bin median by up to 12.5 M (R0 24-25 M, nearest label 28 M) and
+  by 0.5-2 M across 27-52 M. The reviewer's "up to 15.4 M" is at other snapshots; same size.
+- C4 held: the written G3-G3 passes a converging signal of A = 5.8e-4 with 0.14 (p = 2, white noise), 0.12
+  (p = 2, 10 M correlation time), 0.10 and 0.09 (p = 1); the reviewer's 0.11-0.15 and 0.08-0.10 are
+  reproduced by an independent model. The amended form has power 0.62 at A = 5.8e-4 and 0.997 at 1.2e-3 in
+  white noise, but NONE (0.0 at 1.2e-3, 0.41 at 2.4e-3) with a 10 M correlation time: the anchor's noise
+  (mean over 20-40 M) then dominates. The power of any G3-G3 form depends on the noise's correlation time,
+  which must be measured before the criterion is fixed (amendment A3).
+- C5: the high-pass residuals of M_AH (20 M running median removed) of FK and FL16 have sd 1.02e-3 and
+  1.01e-3 with correlation 0.997; the high-pass sd of their difference is 2.24e-4, the model of C4 gives
+  3.9e-4 x sqrt(2 x 0.17) = 2.27e-4. Prediction held. FL16 - FK is -1.1e-3 to -2.0e-3 over 50-295 M (panel d;
+  FK starts the finder at 1.6 M, FL16 at 0.8 M; both unpolished), mean over 250-295 M -1.37e-3: the size of
+  the reviewer's e_8 - e_16 = +1.48e-3 (B3).
+- C6 (estimates): G-8 1.9-3.0 card-hours to 400 M; G-16 as written 25-37; G-12u 8.8-10.4; G-16u 26-27;
+  G-16b 7.7-21; FL16's form 3.5-5.8 (+-3 M only). The particle part from the matched pair FK/FN4 is 0.163
+  card-hours per N to 400 M (EVIDENCE.md: FK 2.70, FN4 3.19), not the reviewer's 0.37 (ES-FL at 500 M scaled
+  against FN4): G-8-16N then costs 2.70 + 15 x 0.163 = 5.2 card-hours (reviewer 7.6, scope 5.5).
+
+## Entry 3 (2026-11-27 18:28 PST, before the runs): predictions for the smoke test of G-8 and the card timing runs of G-12u and G-16u
+
+Decks `decks/g3g8*.athinput`, `g3g12u*`, `g3g16u*` (tools/make_g3_decks.py; diff against EG8: tlim 400 M,
+initial_radius_0 1.6 with ah_exc_max_growth 4 (FK's guard radius 6.4 M), z4c slices every 5 M; G-12u root 144
+and blocks of 36, G-16u root 192 and blocks of 48).
+S-G8 (processors, `.work/build_cpu_v08/src/athena`, two cycles, one core): the input starts; the parameter
+dump holds initial_radius_0 = 1.6, ah_exc_max_growth = 4, polish_iterations_0 = 100, diagnostics = true; the
+status file has the search at t = 0 found; its mass equals EG8's polished t = 0 mass 0.9915147 within 1e-6
+(polishing makes the start radius irrelevant). Refuted, and G-8 not queued, if the input fails, the search
+is not found, or the mass differs by more than 1e-5.
+T-12u, T-16u (cards, scouting, 2 M each, one job each, cap 0.3 card-hours each; they replace a processor smoke
+test, which would take hours for these decks): the run starts and fits one card; the finder is found at t = 0
+with masses 0.9990 +- 0.0007 (G-12u: offset -8.5e-3 (2/3)^5.5 from the M/8 and M/16 offsets) and 0.99981 +-
+1e-4 (G-16u: FL16's resolution at the puncture); the measured wall seconds per M of evolution over G-8's (read
+from EG8's segment logs) in [2.7, 6.6] for G-12u and [7.5, 21] for G-16u (C6's bounds widened by 30 per cent).
+Refuted if a run does not fit a card, the search is not found, a mass falls outside its band, or a cost ratio
+leaves its band; a cost above the band ends the full-time mesh leg as designed (amendment A1 then restricts it
+in time).
