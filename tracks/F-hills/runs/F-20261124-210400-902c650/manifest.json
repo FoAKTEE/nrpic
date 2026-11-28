@@ -89,13 +89,13 @@
     "nodes": 1,
     "gpus": 1,
     "cores": 1,
-    "walltime_s": 59759.0,
+    "walltime_s": 69422.0,
     "wall_limit": null,
     "segments_max": 19,
     "gpu_hours_requested": 18.6833,
-    "gpu_hours": 19.7033,
+    "gpu_hours": 22.3892,
     "particles": null,
-    "gpu_hours_basis": "sum over 46 jobs of the chain, 1 continuation(s) in place included: sacct ElapsedRaw for 46",
+    "gpu_hours_basis": "sum over 59 jobs of the chain, 2 continuation(s) in place included: sacct ElapsedRaw for 59",
     "gpu_seconds_by_job": {
       "5207": 1048.0,
       "5213": 195.0,
@@ -142,7 +142,20 @@
       "5486": 3011.0,
       "5488": 3011.0,
       "5490": 3010.0,
-      "5492": 3009.0
+      "5492": 3009.0,
+      "5570": 2446.0,
+      "5579": 2036.0,
+      "5588": 14.0,
+      "5597": 625.0,
+      "5604": 1268.0,
+      "5613": 636.0,
+      "5620": 117.0,
+      "5628": 17.0,
+      "5635": 8.0,
+      "5642": 154.0,
+      "5651": 3.0,
+      "5664": 10.0,
+      "5676": 2335.0
     }
   },
   "slurm": {
@@ -194,21 +207,34 @@
       "5486",
       "5488",
       "5490",
-      "5492"
+      "5492",
+      "5570",
+      "5579",
+      "5588",
+      "5597",
+      "5604",
+      "5613",
+      "5620",
+      "5628",
+      "5635",
+      "5642",
+      "5651",
+      "5664",
+      "5676"
     ]
   },
   "outputs": {
     "dir": "scratch/F-hills/F-20261124-210400-902c650",
     "sha256sums": "sha256sums.txt",
-    "sha256sums_sha256": "e286bd75afc3795833acdcf2a1aa30be435514f20e4f7d55eb6ad09cd5addd3a",
-    "bytes": 776545313797,
-    "files": 543
+    "sha256sums_sha256": "1f35d6008938476cca7369406d3c6ba9d1e774a3263ee0ce9b558050d6bedc32",
+    "bytes": 854523433117,
+    "files": 641
   },
-  "status": "stopped",
-  "exit_code": 1,
+  "status": "completed",
+  "exit_code": 0,
   "registered": "2026-11-24T21:04:00Z",
   "started": "2026-11-24T23:59:31-08:00",
-  "ended": "2026-11-27T04:17:30-08:00",
+  "ended": "2026-11-28T03:59:26-08:00",
   "parents": [
     "F-20261121-203144-b2cf16b",
     "F-20261124-130009-33bef4d"
@@ -249,5 +275,5 @@
       "status_before": "stopped"
     }
   ],
-  "finished": "2026-11-28T01:02:41Z"
+  "finished": "2026-11-28T16:06:41Z"
 }
