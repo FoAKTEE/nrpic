@@ -1551,3 +1551,19 @@ A-20261128-160446-6c171f3; fig_a2x.png, fig_a2_crossing.png, fig_a2_probe.png lo
   true): the nonlinear zeta-delta relation of the data from a relativistic (aH/k)^2 correction of the same order, and
   from a numerical error that is itself first order in zeta. The Newtonian quarter control (N-z128 at mu = 0.075,
   processors, ~2 h on one core) would turn the scaled Newtonian premise into a measurement; not run this session.
+
+## 2026-11-28 08:22 PST (lead of batch 41): DR, does the box violation of condition (d) fall with the mesh? Prediction before any reading
+
+Pair on existing files (no new run): P0L (A-20261122-235305-4ea0aa5, four static levels, finest dx 0.0195) and P0L6
+(A-20261125-044641-7d5bd16, six levels, finest dx 0.0049): the same spherical data (mu = 0.3), the same particles,
+deck and build (v0.6, cfl 0.5), region norms every 32 cycles (spheres 0.6 and 2.449). Only rows written before
+either run's finder held a horizon are compared; repeated time ranges of continued chains resolved (later rows win).
+Note written now: the pair is at FIXED PARTICLE NUMBER, not at fixed particles per cell (the finer levels hold 16 and
+64 times fewer particles per cell), so a deposit-noise floor would grow, not fall, from P0L to P0L6.
+Reader: new registered script scripts/box_region_pair.py (whole-box ratio ||H||/||16 pi E|| and its parts r < 0.6,
+0.6-2.449, outside 2.449, each normalised by the whole-box E, at common times).
+- DR [JUDGEMENT]: at t = 50, 100 and 130 the whole-box ratio and the part r < 0.6 of P0L6 are within a factor 1.5 of
+  P0L's (the violation in the collapsing matter is not the truncation error of the mesh at the peak; with the same
+  particles, two more levels do not lower it). Refuted toward a mesh cause if P0L6's part r < 0.6 is at least 2 times
+  lower than P0L's at t = 100 and 130 (then a member of S1L with more levels is the route to (d)); refuted toward a
+  sampling cause if it is at least 2 times HIGHER (deposit noise per cell; then more particles, not more levels).
