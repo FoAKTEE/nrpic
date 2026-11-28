@@ -126,3 +126,15 @@ prediction: within 1e-6). Two cycles, exit 0. No figure: the test checks integer
 Core's message restart-parameters-and-finder-check item 3: no G3 deck sets `deposit_comp_c` or
 `deposit_fine_shape` (grep of decks/*.athinput), so the candidate's deposit fixes do not touch these runs.
 G-8 is queued next (priority 2, production, chain, cap 3.5 card-hours).
+
+## Entry 6 (2026-11-27 23:40 PST, lead of batch 40, before the timing reader is run): what was seen, the reader
+
+Seen before this entry (to close run D-20261128-055309-41ea07a): `batch.list.status` gives rc 0 for t12u and
+rc 134 for t16u; sacct of job 5610 COMPLETED; t16u's log ends with "Kokkos ERROR: Cuda memory space failed to
+allocate 10.74 GiB (label="dg")" after 456 blocks were set up (peak 76223 MiB); t12u's log, its peak (69043 MiB)
+and the first line of its status file (found, mass 0.99975). The run was closed with `nrpic-run finish`
+(status failed, exit 134 of the second member). Reader `tools/timing_read.py` (one registered processor run):
+G-8's seconds per M from EG8's long segments, T-12u's from its log, the memory of the three decks with a line
+through the two measured peaks, the cost to 400 M by A1's rule (seconds per M x 400 M x 1.15), and the checks
+of entry 3 and P-A1 as written; one figure `timing_read.png`. What the reader cannot change is already plain:
+T-16u does not fit one card, so entry 3's "fits a card" and P-A1 are refuted for G-16u before the reader runs.
