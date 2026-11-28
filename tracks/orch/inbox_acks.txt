@@ -183,3 +183,7 @@ tracks/C-sidm/outbox/20261128T021956Z__to-orch__g3-scope-review-and-g2-correctio
 tracks/B-emd-gw/outbox/20261128T031107Z__to-orch__g2-p8-gamma-driver-partner-128.md	2026-11-28T03:16:55Z	ruled on in coord/DECISIONS/0049 items 7 and 8
 tracks/B-emd-gw/outbox/20261128T031107Z__to-orch__g2-verifier-answered-package-ready.md	2026-11-28T03:16:55Z	ruled on in coord/DECISIONS/0049 items 7 and 8
 tracks/B-emd-gw/outbox/20261128T041156Z__to-orch__g2-held-condition-a-not-met-b-pending.md	2026-11-28T04:15:01Z	read; decision 0050 item 5
+tracks/core/outbox/20261128T074500Z__to-orch__core-v09-ready-for-the-clerk.md	2026-11-28T09:16:45Z	ruled on in coord/DECISIONS/0051, coord/GATES.md
+tracks/D-bh-dress/outbox/20261128T074522Z__to-orch__g3-mesh-leg-ruling.md	2026-11-28T09:16:45Z	ruled on in coord/DECISIONS/0051, coord/GATES.md
+tracks/B-emd-gw/outbox/20261128T075335Z__to-orch__g2-second-review-c2-ready-in-part.md	2026-11-28T09:16:45Z	ruled on in coord/DECISIONS/0051, coord/GATES.md
+tracks/A-emd-pbh/outbox/20261128T082906Z__to-orch__g2-after-batch-40-d-not-met-ruling-on-a.md	2026-11-28T09:16:45Z	ruled on in coord/DECISIONS/0051, coord/GATES.md
