@@ -777,3 +777,40 @@ outcomes entry 13.
   queued pairs 74-127 (108 runs) 3.8; level 2, 16 pairs at 1.7 times about 1.9 (0.7 of it in G3L00) plus the two
   kdriver records 0.1: about 10.6 card-hours in some 14 jobs of up to 47 minutes. Used on G3 so far 0.96 (budget).
 - G0, G1, G2 are signed (coord/GATES.md). G3 is not ready for review: stage/G3/OPEN.md.
+
+## L. Batch 34 (2026-11-27 15:21-16:50 PST, lead of E, no helpers): the G3 baseline read on 71 pairs
+
+No helper package finished since batch 27; this part reviews the card runs and the lead's own reading, from the artefacts.
+
+### L.1 State found (from batch status files and Slurm, before any read)
+- The task text said every baseline and level-2 entry had run. Not so: G3B00-G3B05 completed (114 runs, every rc = 0);
+  G3B06 (q0065, job 5419) was CANCELLED DUE TO PREEMPTION after 17 of 22 members; G3L00 (q0066, job 5420) was preempted
+  with no member finished. The queue lists preempted batch jobs as "done" and does not resubmit them (request to orch).
+- Re-queued this session at priority 2 (g3 entries 14, 16, 18): six of eight entries were preempted within seconds by the
+  partition "priority" of another user, queued again; at the end of the session G3B07b runs (job 5537), G3B08b-G3B10b pend
+  in Slurm, G3B11b, G3L00b, G3L01b, G3L02b wait in the shared queue (q0079-q0084, q0087, q0088).
+
+### L.2 Checked from the artefacts
+- Every card run closed with `nrpic-run finish` (checksums; G3B06 and G3L00 and the eight re-queue runs that were cut as
+  stopped). Every finished member read with the cleared table map (entry 12); the reader change of this session only adds
+  `--save-fields` (diff: 5 lines), and the pilot was re-read with it: its per-member records are identical to those of
+  batch 27's reading E-20261126-120434-5dda273 in all 47 numeric fields of the ten members (difference 0, checked this session).
+- Health of all 143 boxes, cost per run and the table spot check from the per-member records (entry 17).
+- The pair script was smoke-tested on the reference alone (variance gate, skewness 0.0199, sampler values equal to
+  amend entries 10 and 12) before its registered run E-20261128-000627-00ed437; its reference numbers reproduce the batch
+  20 values (pooled 8e6: var/lattice 0.99855, skewness 0.01985; sampler F(4) own 3.911e-5, 2.556e-5).
+- Figures looked at: fig_g3_onepoint, fig_g3_tails, fig_g3_pairs (pair run), fig_g3_mosaic and schem_ladder_g3 (note runs
+  E-20261128-000901-9c289e9 and E-20261128-001644-500a097), and the rendered note pages 12-15.
+
+### L.3 Outcomes against the predictions (entries 4, 14-17)
+- Confirmed: P15-1 to P15-4, (T) on every item, the bands of entry 4 for zeta and R^NR, C6-1, C6-3.
+- FAILED as written: (V) of entry 4, first clause (+0.28 +- 0.07 per cent, 4.1 combined s.e.). Cause not named.
+- Not judged: level 2 (C6-2, C6-4, A8), A4 (not computed on the baseline), the sigma = 0.1 bound (R39).
+- Not confirmed by a second agent: everything of this part; the fresh verifier comes after the remaining pairs.
+
+### L.4 Gate
+- G0, G1, G2 signed (coord/GATES.md). G3 is NOT complete for review: 57 pairs and all of level 2 have not run (A13 asks
+  for 128 pairs), A4 is not computed, and the fresh verifier has not been sent. OPEN.md lists the order.
+- Card-hours of this session: the six baseline jobs of batch 26-27 that ran now (G3B00-G3B06, 143 runs at 0.0349 card-h,
+  about 5.0 card-hours) were queued before this batch; new this session: preempted jobs only (seconds each) and G3B07b
+  running (about 0.75 card-hours when it ends).
