@@ -1567,3 +1567,21 @@ Reader: new registered script scripts/box_region_pair.py (whole-box ratio ||H||/
   particles, two more levels do not lower it). Refuted toward a mesh cause if P0L6's part r < 0.6 is at least 2 times
   lower than P0L's at t = 100 and 130 (then a member of S1L with more levels is the route to (d)); refuted toward a
   sampling cause if it is at least 2 times HIGHER (deposit noise per cell; then more particles, not more levels).
+
+### Outcome DR (reader A-20261128-161728-cabd2c5, box_region_pair.py; fig_box_region_pair.png looked at) - 08:26 PST
+
+Whole-box ratio and parts (normalised by the whole-box E), P0L (four levels) / P0L6 (six levels), rows without a held
+horizon, nearest rows to the named times:
+- t = 50: total 0.038 / 0.053 (ratio 0.71), r < 0.6 0.033 / 0.036 (0.93), 0.6-2.45 0.016 / 0.038, outside 2.45 0.007 / 0.007.
+- t = 100: total 0.144 / 0.156 (0.92), r < 0.6 0.143 / 0.152 (0.94), middle 0.021 / 0.037, outside 0.005 / 0.008.
+- t = 130: total 0.592 / 0.338 (1.75), r < 0.6 0.590 / 0.336 (1.75), middle 0.045 / 0.033, outside 0.008 / 0.005.
+DR HOLDS at t = 50 and 100 (within 1.5 in total and in r < 0.6) and FAILS its 1.5 clause at t = 130 (P0L6 1.75 times
+lower), without reaching either refutation written (2 times lower at 100 AND 130; 2 times higher). In both runs the
+whole-box ratio passes 0.1 at t ~ 75-80, long before the horizon (P0L6: t = 140), and the violation sits in r < 0.6.
+The P0L6 history carries spikes to ~2 at t = 118-133 (whole box, rows without a held horizon), so the value at a
+single time near 130 depends on the row picked [seen in the figure; not predicted].
+Reading [JUDGEMENT]: two more levels at the same particles do not remove the box violation; up to t = 100 it does not
+move at all, near collapse it falls by less than 2. The violation of condition (d) is therefore not mainly the
+truncation error of the mesh at the peak; what the pair cannot separate is the sampling (fixed particle number: the
+finer cells hold fewer particles) and the gauge. Next test of (d), written for the next session: the sampling leg
+at fixed mesh (P0L's deck with 8 times the particles, processors to t ~ 50 or a card member to 100), prediction first.
