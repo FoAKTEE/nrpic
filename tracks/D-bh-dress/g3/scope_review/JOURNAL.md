@@ -202,4 +202,5 @@ minor labels overlap, cosmetic).
 
 Note (16:56): the times in the headers of entries 1-7 were corrected to the commit times (git log); the
 first versions carried times written ahead of the clock. Each prediction was committed before its run
-(commits 5686fde, 80cf6ab, 6ddc1c8-era reader commits, and the run manifests' commit fields).
+(A1-A3, B1-B5, C0-C3 in 5686fde65; A4 in 80cf6ab4a; B2b in 65b4dde5b; B2c in 0705a410e; each run's
+manifest names the commit it ran on).
