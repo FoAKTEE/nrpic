@@ -1,12 +1,12 @@
 # Re-verification: B-emd-gw G2
 
-`harness/bin/nrpic-stage verify B-emd-gw G2` on 2026-11-28T04:13:59Z, clean export of commit `7da01b9cc36e` in `scratch/B-emd-gw/tmp/stage-verify/B-emd-gw-G2-7da01b9-20261128T041109Z`. Result: **FAIL**.
+`harness/bin/nrpic-stage verify B-emd-gw G2` on 2026-11-28T07:58:04Z, clean export of commit `049e43b8db2a` in `scratch/B-emd-gw/tmp/stage-verify/B-emd-gw-G2-049e43b-20261128T075510Z`. Result: **FAIL**.
 
 | Check | Result | Message |
 |---|---|---|
 | clean | PASS | worktree clean (outside the stage directory being assembled) |
 | sync | PASS | main is merged into the branch |
-| export | PASS | clean export of 7da01b9cc36e (HEAD) in /data/haiyangw/nrpic/scratch/B-emd-gw/tmp/stage-verify/B-emd-gw-G2-7da01b9-20261128T041109Z/tree |
+| export | PASS | clean export of 049e43b8db2a (HEAD) in /data/haiyangw/nrpic/scratch/B-emd-gw/tmp/stage-verify/B-emd-gw-G2-049e43b-20261128T075510Z/tree |
 | size | PASS | no committed file of the track above 5 MB |
 | note | PASS | tracks/<ID>/note/main.tex present |
 | package | PASS | EVIDENCE.md, OPEN.md, CHECKLIST.md present (decision 0012); scoping text: scope/SCOPE.md; verifier's report VERIFIER.md |
@@ -14,11 +14,11 @@
 | style | PASS | 2 style copies equal harness/style/SHA256SUMS (czstyle.py, paperfig.py) |
 | fig-script | PASS | 15 figures, each with its script |
 | min-figs | PASS | 6 schematics and 9 data figures (brief 13.4 asks at least 1 and 5 at G2) |
-| runs | FAIL | 3 of 416 runs have problems; 1 waived |
+| runs | FAIL | 3 of 418 runs have problems; 1 waived |
 | runs-waived | WARN | failures of the manifest check waived: 1 runs named in main's coord/WAIVERS.md (decision 0019 item 6): B-20261115-164157-40b9f6d: outputs moved into the run directory after the run finished; data unchanged |
 | run-notes | WARN | 78 runs read with defaults or not fully re-verifiable (nrpic-run lint) |
-| checksums | WARN | 14069 output files: 27 hashed again (bytes read, 1.0 MB), 14042 taken from the cache (1166.93 GB); a checksum taken from the cache proves unchanged size and modification time since it was hashed, not bytes read again; --full reads every byte |
-| status | PASS | STATUS.md has 38 lines |
+| checksums | WARN | 14235 output files: 0 hashed again (bytes read, 0.0 MB), 14235 taken from the cache (1255.15 GB); a checksum taken from the cache proves unchanged size and modification time since it was hashed, not bytes read again; --full reads every byte |
+| status | PASS | STATUS.md has 37 lines |
 | rerun | PASS | 15 of 15 scripts and commands ran cleanly in the export |
 | compare | PASS | 30 regenerated files compared with the committed ones; 0 differ beyond tolerance (rtol 1e-06, atol 1e-12, PNG rms 0.005) |
 | regenerate | PASS | all 30 committed figure files regenerated |
@@ -31,13 +31,13 @@
   "status is running: not finished (nrpic-run finish)",
   "missing /data/haiyangw/nrpic/scratch/B-emd-gw/B-20261128-030420-33ccdca/sha256sums.txt"
  ],
- "B-20261128-034731-640f4f4": [
-  "status is submitted: not finished (nrpic-run finish)",
-  "missing /data/haiyangw/nrpic/scratch/B-emd-gw/B-20261128-034731-640f4f4/sha256sums.txt"
- ],
- "B-20261128-040950-1404d91": [
+ "B-20261128-074111-e2fcd72": [
   "status is running: not finished (nrpic-run finish)",
-  "missing /data/haiyangw/nrpic/scratch/B-emd-gw/B-20261128-040950-1404d91/sha256sums.txt"
+  "missing /data/haiyangw/nrpic/scratch/B-emd-gw/B-20261128-074111-e2fcd72/sha256sums.txt"
+ ],
+ "B-20261128-074116-363f95f": [
+  "status is running: not finished (nrpic-run finish)",
+  "missing /data/haiyangw/nrpic/scratch/B-emd-gw/B-20261128-074116-363f95f/sha256sums.txt"
  ]
 }
 ```
@@ -203,10 +203,10 @@
 
 ```
 {
- "rehashed_files": 27,
- "rehashed_bytes": 962629,
- "cached_files": 14042,
- "cached_bytes": 1166927439192,
+ "rehashed_files": 0,
+ "rehashed_bytes": 0,
+ "cached_files": 14235,
+ "cached_bytes": 1255146944245,
  "full": false,
  "meaning_of_a_cached_entry": "a checksum taken from the cache proves unchanged size and modification time since it was hashed, not bytes read again",
  "notes": []
