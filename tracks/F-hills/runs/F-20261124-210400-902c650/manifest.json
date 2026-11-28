@@ -235,6 +235,18 @@
       "extra_input": "/data/haiyangw/nrpic/wt/F-hills/tracks/F-hills/binary_conv/inputs/fastflow_diag.athinput",
       "via": "harness/bin/nrpic-queue --cmd tracks/F-hills/binary_conv/scripts/continue_chain.sh",
       "reason": "continued in place after its segment cap (ruling 0042 item 2; batch 25)"
+    },
+    {
+      "at": "2026-11-27T18:27:24-0800",
+      "job_id": "5570",
+      "from_restart": "/data/haiyangw/nrpic/scratch/F-hills/F-20261124-210400-902c650/rst/hills.00166.rst",
+      "segments_used_before": 27,
+      "attempts_before": 46,
+      "max_segments": 31,
+      "extra_input": "/data/haiyangw/nrpic/wt/F-hills/tracks/F-hills/binary_conv/inputs/fastflow_diag.athinput",
+      "via": "harness/bin/nrpic-queue --cmd tracks/F-hills/binary_conv/scripts/continue_chain.sh",
+      "reason": "reopened and continued in place to tlim 200 M after a Slurm submission I/O error ended the chain at 186.0 M (decision 0048 item 2(a); batch 35)",
+      "status_before": "stopped"
     }
   ],
   "finished": "2026-11-28T01:02:41Z"
