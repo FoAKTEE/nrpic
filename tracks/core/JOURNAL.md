@@ -2706,3 +2706,42 @@ core-20261128-052151-e5a2d55 closed (job 5601, 24 s, 0.0067 card-hours, executab
   parameter.
 My expectation beyond K (deposit to 1e-14, masses to 1e-9) held with room. The candidate
 core-v0.9 passes its card check; the release records follow.
+
+## 2026-11-28T07:52Z: batch 40 closed: core-v0.9 final and published
+
+- Release record `RELEASE-v0.9.md` rewritten in the form of `RELEASE-v0.8.md`: first line
+  `RELEASE core-v0.9 ad54460e... REGRESSION PASS, CARD CHECK PASS`; NOT RELEASED removed;
+  card-check table K1-K4; executables; a section for the clerk.
+- Published `scratch/core/exe/core_nrpic_v09/` (new directory, nothing replaced):
+  athena_cpu (R9 build, b7a48e9a), athena_cpu_mpi (M9 build, a44b7c85), athena_cpu_omp
+  (2e31b69e) and athena_gpu (20172cae, the card-checked one); checksums equal those
+  recorded at the builds and in q0094's manifest. COMMIT, SHA256SUMS, READY. `git diff
+  ad54460e 2b741dee -- athenak/src python problems scripts docs` empty. The branch's READY
+  (`core_faces-finder`) says the card check ran and points to the release directory.
+- Changelog section core-v0.9 complete (options table; the three changes without an option
+  and the runs they change; start/stop times of the finder; not done: level faces between
+  ranks, the cost of the compensated deposit, the false acceptance of Track A's chain not
+  retested; card-check paragraph).
+- Interface texts made ready for the clerk: `level_faces.md`, `restart_parameters.md`,
+  `finder_box.md` (new section 0: without `puncture_setup` a finder deck must name
+  `start_time_<n>` and `stop_time_<n>`; source lines read at ad54460e and core-v0.8;
+  decision 0049 item 3; Track C's request and its two runs), `finder_stop.md` (that
+  paragraph, and "a continued run may add options on the command line"). One claim I had
+  written into `restart_parameters.md` (restart files of core-v0.8 and core-v0.9
+  byte-identical in `restart_test.py`) was withdrawn before commit: that script skips
+  `rst/`; the format statement now rests on the source diff only [by reading], and a
+  continuation across the two executables is [TO VERIFY].
+- Decks of the tracks read on their worktrees (grep, no run): 17 of Track A's decks have
+  refinement with `deposit_comp_c > 0` (nested balls of threshold_ball, conv_ball,
+  runs_ball) and change from their first deposit; A's periodic boxes are refined with
+  `deposit_comp_c = 0` and do not change; no deck under `tracks/D-bh-dress/` or
+  `tracks/F-hills/` has refinement with either deposit setting; every finder deck of A, D,
+  F names the times or uses `puncture_setup`.
+- Outbox: A, D, F (which executable serves their retests, what changes without an
+  option), orch (clerk request, proposed CLAUDE.md row; the v0.8 release-build comparison:
+  processor build done in batch 35, card build not, as for v0.7: not owed beyond that by
+  my reading of the clerk's request), C (start/stop answered). Inbox items 32 (C) and 33
+  (orch queue audit) acknowledged; `nrpic-queue audit`: q0028 NOT COMPLETED (old, handled
+  in batch 17), q0086 superseded.
+- Not done this session: the row-4 note section; G2 package items. Card time used: none
+  queued (q0094's 0.0067 card-hours were queued in batch 35). Processors: one analysis.
