@@ -1,0 +1,17 @@
+{
+ "name": "37 (2026-11-27 evening)",
+ "what": "Track B after its fresh verifier: corrections, the member at eight particles per cell, the package; knowledge base: the notes of the claims pass posted",
+ "note": "Release core-v0.8 is on main. Rulings: coord/DECISIONS/0039 to 0049. The shared queue now calls an entry done only when its jobs completed (decision 0048 item 9; `nrpic-queue status`, `audit`). After git merge main: nrpic-run finish closes runs continued in place; finish and verify keep a checksum cache. Keep to the time given; every number with its run id; prediction before every new run; figures made by registered scripts and looked at; at most 6 cores.",
+ "items": [
+  {
+   "type": "lead",
+   "owner": "B-emd-gw",
+   "extra": "Extra for this session (about an hour). The fresh verifier of G2 has reported (stage/G2/verifier/VERIFIER.md; rulings coord/DECISIONS/0048 item 3 and 0049 item 1). (1) Copy its report to stage/G2/VERIFIER.md where the stage tool finds it; judge C18; apply or answer its corrections (a) to (e) with registered analyses where a number changes (the momentum ratio 'from a >= 49'; the pairing behind the zero-shift ratio at one particle per cell, which it reads as 1.39 to 1.41 against your 1.36; the high-k ratio 'about 950' depends by ten per cent on the shell cut of the spectrum: say so; the shearing-dust case as run: no snapshot shows the crossing, the Zel'dovich estimate is not conservative: say what is known). Record item C2's gauge leg as an identified dependence on the gauge, not a convergence, and the halo catalogue at one particle per cell as failed. (2) The member of 256 cells at eight particles per cell: does it fit one card (memory from the 128-cell member at eight per cell and the 256-cell member at one)? If it fits: prediction first, initial data, one entry at priority 2 on the release build; if not, say so with the numbers. (3) nrpic-stage collect, verify and report; commit the VERIFY_RESULTS of the full pass. List G2 in gates_complete if what remains open is only failures on record with their rulings and, if queued, the member of item (2) named as pending."
+  },
+  {
+   "type": "lead",
+   "owner": "kb",
+   "extra": "Extra for this session: a SHORT one, about thirty minutes. Package claims5 has finished (tracks/kb/claims5/: all 144 machine-located claims that a track cites are read; decision 0049 item 6). (1) Check from its artefacts five of its verdicts drawn with a seed of your own, at their source lines; say if one does not hold. (2) Post its six notes to the owners (tracks/kb/claims5/notes/ to your outbox, one per owner, type info). (3) kb/QA_REPORT.md from the package's report if it holds; stage/KB-G3/OPEN.md item O7 with the census of the cited class (124 of 144 right as worded) and what remains (198 unread claims that no track cites; 33 borderline rows). (4) STATUS, HANDOFF with the next pass named (the uncited class, and a second-agent sample of claims5's verdicts); commit, push."
+  }
+ ]
+}

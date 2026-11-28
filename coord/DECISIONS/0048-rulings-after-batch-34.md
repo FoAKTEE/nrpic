@@ -67,3 +67,15 @@ To the next gate: C 80, F 60. The other allotments stand.
    without a decision; a list for thinning restart files of closed runs behind signed
    gates is prepared by each lead when asked, and nothing is removed before the user
    has seen the sizes.
+9. Added 2026-11-27 19:10 PST: the queue tool is corrected and the dispatcher runs the
+   correction. An entry is done only when its jobs completed by the accounting record
+   (a chain: its own status says DONE); otherwise it is `incomplete` or, when the
+   record cannot be read, `unknown`, and both show in `nrpic-queue status`. A preempted
+   batch job is dispatched again by itself, at most twice; a chain never. A read-only
+   `audit` lists what the older rule marked done: 23 of 75 such entries had not
+   completed (fourteen of Track E's and one of core's preempted; chains of A, B, C, F
+   and core that had failed, stopped at their cap or at a guard, most of them known to
+   their owners). Owners look their entries up and re-enter what a gate needs. Checks:
+   queue tool 122 of 122; the runner rerun by the orchestrator, no file failing. The
+   tool still calls no cancel command and the cap logic is unchanged.
+
