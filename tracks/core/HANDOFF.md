@@ -64,16 +64,13 @@ SHA256SUMS, READY), and write the request to the clerk in `tracks/core/outbox/` 
 tag on ad54460e, release builds, interface texts `level_faces.md`,
 `restart_parameters.md`, `finder_box.md`, updated `finder_stop.md`, CLAUDE.md row).
 
-Not closed from batch 27: q0059 (row 4, 0.755 member 300-600 M) ran: job 5378 COMPLETED
-on 2026-11-26 (sacct), its run core-20261126-110234-a72e07c is still "submitted". Close it
-(`nrpic-run finish` hashes about 17 GB: start it in the background, and do not commit by
-hand while it runs), then the row-4 fates:
-
-    S=/data/haiyangw/nrpic/scratch/core
-    harness/bin/nrpic-run submit --kind scouting --gate G2 --launcher local --cores 1 --purpose "row 4 M/8 level 3 complete: fates, P13" -- python3 tracks/core/verify/row4/row4_fate.py --out '$NRPIC_RUN_DIR' 0.605=$S/core-20261121-204230-3bcb118,$S/core-20261121-204235-0b25077 0.680=$S/core-20261121-204234-d010783,$S/core-20261121-204239-2be5ac2 0.69875=$S/core-20261123-020454-8fec6b2,$S/core-20261123-020456-884f550 0.7175=$S/core-20261123-020450-7e42037,$S/core-20261123-020452-e635a8e 0.726875=$S/core-20261124-130310-597d9ca,$S/core-20261125-180320-3dad12c 0.73625=$S/core-20261123-020458-dfc38d7+$S/core-20261125-225600-d2db1ed,$S/core-20261123-020500-9b192cd+$S/core-20261125-080049-dcc9ea1 0.755=$S/core-20261121-204232-f74c942+$S/core-20261126-110234-a72e07c,$S/core-20261121-204237-ae00ca2+$S/core-20261126-021633-50968b9
-
-Then the member half of P13 (journal 2026-11-24, `JOURNAL.md` line ~1700), the LADDER
-table, the note (section III D of `note/main.tex`, `note/scripts/fig_row4_m8.py`).
+Row 4 (from batch 27), done this session: q0059's run core-20261126-110234-a72e07c closed
+(job 5378 COMPLETED on 2026-11-26; 0.6547 card-hours); fates run
+core-20261128-021941-61b61a1: the 0.755 member does not collapse by 600 M, P13 holds for
+both runs (member 400-450 M mean 0.9262 against 0.9638 at 250-300 M), bracket (0.7175,
+0.726875) unchanged (`verify/LADDER.md` row 4, fourth reading; journal 02:22Z). Left: the
+note (section III D of `note/main.tex`, `note/scripts/fig_row4_m8.py`, ledger, compile,
+checker, read pages); P14 (joins) is not computed by `row4_fate.py`.
 
 ## What G2 still lacks (plain statement, unchanged)
 

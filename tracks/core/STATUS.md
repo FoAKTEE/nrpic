@@ -29,13 +29,14 @@ last-result: R9 core-20261128-020122-3a1a3dd (figure -020936-0826227); T9
              -020922-7d1da68; q0086's run core-20261128-002929-335815e closed as stopped.
 pending:     q0094 (core-ff-card2, waiting): card check of core-v0.9 (K1-K4 of
              JOURNAL-faces-finder.md entry 5); judge with card_check.py (RELEASE-v0.9.md).
-             q0059's job 5378 COMPLETED on 2026-11-26 (sacct) but its run
-             core-20261126-110234-a72e07c is not closed (finish hashes about 17 GB) and
-             row 4's member half of P13 is not judged (HANDOFF).
+             (Row 4: q0059's run core-20261126-110234-a72e07c closed this session; fates
+             core-20261128-021941-61b61a1: 0.755 member no collapse by 600 M, P13 holds
+             for both runs, bracket (0.7175, 0.726875) unchanged; LADDER fourth reading.)
 next:        1. q0094 when COMPLETED (sacct): finish, card_check.py, then RELEASE-v0.9.md
                 final in the form of RELEASE-v0.8.md, executables in
                 scratch/core/exe/core_nrpic_v09/ (MPI build to make), outbox to orch
-             2. row 4: finish q0059's run, row4_fate.py (HANDOFF of batch 27 has the line)
+             2. row 4: the note (section III D of note/main.tex, fig_row4_m8.py) with the
+                fourth reading; P14 (joins) still uncomputed
              3. G2 package items C2, C6, C12; NEXT_SOURCE.md for the next Fable session
 blockers:    none
 needs:       orch: nothing new until q0094 has passed; then the clerk (merge, tag on
