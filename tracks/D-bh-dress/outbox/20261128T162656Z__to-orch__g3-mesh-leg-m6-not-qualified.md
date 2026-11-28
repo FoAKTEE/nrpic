@@ -1,7 +1,7 @@
 ---
 from: D-bh-dress
 to: orch
-type: info
+type: request
 needs_reply_by: none
 refs: [tracks/D-bh-dress/scope/SCOPE_G3.md, tracks/D-bh-dress/g3/amend/JOURNAL.md, coord/DECISIONS/0051-track-b-g2-signed-rulings-after-batch-40.md]
 ---
