@@ -610,3 +610,28 @@ B-20261128-035439-399549b, looked at); EVIDENCE.md title and batch 37-39 runs; R
 the pancake row under C1. Note v6: run_all B-20261128-035351-296cf80, compiled, checker without
 undefined references or overfull boxes, page 16 read. Scope: two dated amendments (2026-11-27) in
 scope/SCOPE.md section 6 (decision 0050 item 3).
+
+## Batch 40 (2026-11-27 23:26 PST on, lead): condition (b) closed in part; W5 void; C2 over the whole range
+
+No helper packages this batch; the items are the lead's own readings, checked from the artefacts.
+
+- q0107 (B-20261128-034731-640f4f4): CONFIRMED complete from chain/events.log (segments 1 and 2
+  cut by SIGTERM after 1371 s and 796 s, each continued from its restart file; segment 3 ended at
+  tlim, t = 21.916) and from sacct (5585, 5594 PREEMPTED, 5603 COMPLETED). Closed with nrpic-run
+  finish (164 files). G8c holds (0.774 card-h), G8b guard part holds.
+- W5 (B-20261128-040950-1404d91, batch 39): WRONG. Its rows file records the header time of each
+  dump: the 256^3 rows are t = 12, 15, 18, not 14, 18, 21 (the script mapped index to time; chain
+  segment ends add dumps). Every M_* ratio of that run is void; nothing was concluded from it in
+  batch 39 (W5 was pending), so no statement has to be withdrawn. Fix: weyl_gauge.py splitx picks
+  each dump by its header time and refuses a mismatch above 0.02 in t; rerun inside
+  B-20261128-074116-363f95f (files 16, 21, 25 at t = 14, 18, 21, printed at the top of its log).
+- W6, first rows (a = 49): CONFIRMED from the run log of B-20261128-074116-363f95f: I_B and its
+  median at eight per cell equal those at one per cell to 1e-4 and 2e-3 in each gauge, so the
+  gauge ratio at a = 49 does not move with the sampling. NOT CONFIRMED yet: a = 64-132 (running).
+- G8a and its corollary: NOT JUDGED (B-20261128-074111-e2fcd72 running). What the track does: the
+  next reader runs judge_g8.py on its output (HANDOFF.md gives the command and the bounds).
+- C2 over the whole range (CHECKLIST.md, batch-40 paragraph): mesh in the driven gauge met to
+  2.8 per cent over a = 2.3-132 (B-20261127-232236-7ab7aa2); zero-shift mesh not met after a = 50;
+  particle number with zero shift met to 2e-3 (Q1, reviewer's RC1); gauge within 1.6 per cent only
+  to a = 49; invariant not met. C2 stays FAIL; I recommend nothing about the signature: that is
+  the second review's.
