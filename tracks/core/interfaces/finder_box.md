@@ -141,13 +141,17 @@ the left. After reason 8, columns 6 to 10 describe the least expanding sphere of
 | S1L, shear | `trapped_tol 0.05` | found after 127, the surface of section 2, column 16 = 1.565e-3 |
 | S1L, shear | scan and check | found after 114 (100 of them polishing), the same surface |
 | S1L, shear | scan and check, no polishing | found after 14: mass 10.739569 (1.2e-5 below) |
-| P0L6 t = 140, shear | scan and check | found after 113, mass 6.30324213; without polishing 13, 6.303213 |
-| S1L and P0L6, shear | `mass_tol 1e-2`, no polishing, `trapped_tol 0.01` | found after 12 and 13 with masses 1.1e-3 and 4.2e-3 too high, column 16 = 1.9e-3: the check does not replace a tight mass rule |
+| P0L6 t = 140, either flow | `start_scan 24` (0.0047 to 0.15) | 10 spheres trapped, start 0.103970 (the horizon: 0.103986) |
+| P0L6 t = 140, shear | scan and check | found after 113, mass 6.30324213, column 16 = 1.55e-3; without polishing 13, 6.303213 |
+| P0L6 t = 140, standard | scan, `trapped_tol 0.05` | found after 102: mass 6.30262 (1e-4 below), column 16 = 6.8e-3; without the scan the search from 0.15 ends at its cap at radius 0.1295 |
+| S1L and P0L6, shear | `mass_tol 1e-2`, no polishing, `trapped_tol 0.01` | found after 12 and 13 with masses 1.1e-3 and 4.2e-3 (relative) too high, column 16 = 1.9e-3 and 3.1e-3: the check does not replace a tight mass rule |
+| P0L6 t = 130, both flows | searches without scan, `trapped_tol 0.05` | none found; column 16 of the last surface 0.11 to 1.0 |
 
 Runs core-20261127-235152-d46d2d2 (S1L, standard), core-20261127-235215-27c6606 (S1L,
 shear), core-20261127-235652-ac88116 and core-20261127-235631-a5e5818 (P0L6 t = 130),
 core-20261127-235657-57b524a (P0L6 t = 140, shear), core-20261128-000217-460058c (P0L6
-t = 140, standard); table and figure by `fig_finder.py` (journal entry 6).
+t = 140, standard); table `finder_table.json` and figure `fig_finder.png` of run
+core-20261128-000846-a3722c7 (`fig_finder.py`; journal entry 6).
 
 Without the options the finder writes the bytes of core-v0.8: `finder_bytes.py` on
 `problems/tests/by_horizon_coarse.athinput` and `finder_polish.athinput` with

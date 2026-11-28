@@ -311,3 +311,69 @@ column 16 within 1e-4, scan start within 1e-6. K4 a continued run takes
 `fastflow/diagnostics=true` on the command line: status file and log line. Refuted by
 any of these failing; a card-only failure of K2 would mean the level-face kernel is
 wrong on the device.
+
+## Entry 6, 2026-11-27 16:15: last outcomes, regression, publication, what is pending
+
+S (P0L6 t = 140, standard flow with the scan), run core-20261128-000217-460058c: the scan
+(0.0047 to 0.15) finds 10 trapped spheres and starts at 0.103970 (horizon 0.103986);
+found after 102 iterations, mass 6.30262 (1e-4 below the converged 6.30324), column 16 =
+6.8e-3; the control without the scan ends at its cap at radius 0.1295 (reason 6). P0L6 is
+close to spherical, so the round start sphere is almost the horizon; on the triaxial S1L
+the same recipe leaves a shape error (column 16 = 0.042, entry 5).
+
+Table and figure of all finder members: run core-20261128-000846-a3722c7
+(`finder_table.json`, `fig_finder.png`; the first form of the figure, run
+core-20261128-000822-500bc84, had one scan curve per run instead of per file). Figure
+looked at: (a) from 0.6 the standard flow reaches 0.53 in 400 iterations, the weighted
+flow the surface at 0.162 in about ten, and the three starts of the weighted flow meet;
+(b) the mean expansion times mass of the round spheres crosses zero where the dashed
+start radii are for S1L and P0L6 t = 140 and stays above 0.08 at t = 130; (c) column 16
+is 1.6e-3 to 3e-3 for the surfaces of the weighted flow, 7e-3 and 0.042 for the standard
+flow after a scan, 0.1 to 1 for every member that was refused. The title of panel (c) is
+cut at the right edge (cosmetic, left as it is).
+
+S4 HOLDS, run core-20261128-000807-e413b5e: without the new options every output file of
+`by_horizon_coarse` (6 files) and of `finder_polish` (8 files, 8 cycles, with polishing
+and the status file) equals release core-v0.8 byte for byte. The first run of that
+script, core-20261128-000242-6d6117a, is on record as failed: both builds stopped on the
+polishing deck's missing particle file (my script, not the code); the six files of the
+first deck were already identical there. With `trapped_tol_0 = 0.2` on the coarse
+puncture deck: found, 18 columns, column 16 = 0.0155; `start_scan` is not applied to a
+horizon tied to a puncture (column 18 = -1), as documented.
+
+Byte regression against release core-v0.8, run core-20261128-000404-015d78b: REGRESSION
+PASS, 75 of 75 items identical (geo 2, boris 2, dep 1, east 12, os 16, jeans 5, binary 1,
+c1 5, c2 3, c3 14, c4 4, c5 10), as predicted in entry 1 (no set-up of the regression
+sets `deposit_comp_c` or `deposit_fine_shape` on a refined mesh).
+
+Published: `/data/haiyangw/nrpic/scratch/core/exe/core_faces-finder/` (athena_gpu,
+athena_cpu, COMMIT = ad54460e, SHA256SUMS, READY). Card build: 1119 s with three jobs,
+no error; NOT run on a card yet.
+
+Pending at the end of the session: the card check, shared-queue entry **q0086** (label
+core-ff-card, priority 2, `tracks/core/analysis/faces_finder/card.list`, 0.2 card-hours
+asked). Five jobs of other owners were in the Slurm queue when it was added. To judge it:
+
+    harness/bin/nrpic-run finish <run id of q0086>
+    python3 tracks/core/analysis/faces_finder/card_check.py --card <its output dir> \
+      --dep scratch/core/core-20261127-234848-7d666df --cons scratch/core/core-20261127-234843-fa6c2e9 \
+      --s1l scratch/core/core-20261127-235215-27c6606 --out <new run dir>
+
+(registered with nrpic-run), against prediction K of entry 5; then the READY's "STATE OF
+THE TESTS" block gets the outcome.
+
+What is not done, plainly: no card run; no timing; several ranks untested and level faces
+across ranks not corrected; Track A's set-up not run by core; the false acceptance at
+t = 118.12 not retested (no restart file); the weighted flow not tested on punctures; the
+added command-line parameters not tested inside a chain.
+
+Lines of shared files touched (for the merge): `particles/nrpic.cpp`: one statement
+before the fine-shape branch of `NrpicDepositSources`, the condition that chooses the
+compensation pass, and in `NrpicCompensateLimited` the exchange (now a local lambda), the
+ranges of the three passes and one call; `particles/particles.hpp`: one declaration;
+`CMakeLists.txt`: one line; new file `particles/nrpic_levelface.cpp`;
+`parameter_input.{hpp,cpp}`: `ModifyFromCmdline` (one more argument), `AddParameter` (two
+log lines), one public flag; `main.cpp`: three lines where the input is loaded;
+`z4c/fastflow.{hpp,cpp}`: reading of four options at the end of the constructor, the
+status block of `Write`, five lines in `Find`, the acceptance in `FastFlowLoop`, new
+`StartScan` before `MetricDerivatives`.
