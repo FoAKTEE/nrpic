@@ -1192,3 +1192,57 @@ of the larger ratio can be the coarser pair's larger truncation error; no one-pe
 exists to separate the two (not run). The early failure (a < 31) is where both members' Hr_mean is
 below 2e-4 and still dominated by the initial data and the first collapse. M4 and GM4 stay failed on
 record.
+
+## 2026-11-27 19:02 PST (lead of batch 37): the member 256^3 at eight per cell; does it fit one card; predictions
+
+Decision 0048 item 3 and 0049 item 1: run the member of 256 cells at eight particles per cell if
+it fits one card. Inputs read so far (before any script): the peaks the job wrapper logged
+(`gpu_mem_peak_MiB` in the segment logs): 1695 MiB (64^3, 8 per cell, q0070), 6653 MiB (128^3,
+8 per cell, q0006), 31593 MiB (256^3, 1 per cell, q0060); the card is an A100 80GB PCIe with
+81920 MiB (nvidia-smi header of the same logs). Hand arithmetic on these three numbers, done
+before the registered script `mem_fit.py` (so the script checks it, it does not predict it):
+the 256^3 member keeps q0060's blocks and adds seven times 2^24 particles; with the particle
+cost from a linear fit (constant + mesh + particles) the peak is 41-46 GiB; charging all of the
+128^3 member's 6653 MiB to its particles gives the bound 31593 + 7 x 6653 = 78164 MiB, below
+81920. Expectations for the registered fit:
+- E1. Both models give the 256^3/8 ppc peak between 40 and 48 GiB; the bound stays below the
+  card's 81920 MiB. Refuted if a model gives a negative constant or particle cost (then the three
+  peaks do not follow the model and the estimate is not used), or a prediction above 70 GiB.
+- E2. Card time: 4-7 card-h for 2806 cycles (q0060 took 3.75 card-h at one per cell; particles
+  add 7 x 2^24 at the cost per particle-cycle of 128^3 eight against one per cell).
+
+Initial data (step 1, processor, one core, detached): `run_gr_ic.sh 256 8 "--nc 3.2 --sigma1
+0.014 --seed 1 --ppc 2 --outer 36"`, the arguments of the 128^3 and 64^3 eight-per-cell data and
+of the 256^3 one-per-cell data except --ppc. Predictions:
+- I1. mesh_modes_kept 146; sigma1_realized equal to 0.012343020531983813 within 1e-12 relative
+  (the same modes: one realization with q0060 and with the 128^3 member).
+- I2. max_hamiltonian_residual below 1e-10, max_momentum_residual 6.69e-7 (the modes' value).
+- I3. N_particles = 2^27 = 134217728; mass_min/max_over_mean within 2e-3 of one.
+- I4. Wall time 30-55 h on one core: the solve scales with the particle number (64^3/8 ppc
+  3664 s with 2^21 particles, 128^3/8 ppc 19820 s and 256^3/1 ppc 21985 s with 2^24), about
+  1.1e-3 s per particle over the 36 outer iterations, so about 41 h for 2^27. Host memory below
+  100 GB. Refuted if it ends in less than 20 h or fails for memory.
+Refutation of I1 means the pair is not one realization: the member is not queued.
+
+Card member (step 2, queued by the session that checks step 1; one entry, priority 2, release
+core-v0.8 card build `.work/build_gpu_v08`, a chain): q0060's deck and options exactly (Gamma
+driver: shift_Gamma 0.75, shift_eta 1.0, advection of shift and lapse; output2/dt = 1.0,
+output3/dt = 1.0, mesh 256^3, blocks 128^3), only the two files of step 1 changed. Gauge chosen
+[JUDGEMENT]: the Gamma driver, because the zero-shift 256^3 box stops at a = 101 (q0007) and the
+track's strain is a Gamma-driver quantity, so the member answers the particle-number leg at
+fixed mesh against q0060 cleanly. Its mesh partner at eight per cell in the same gauge does not
+exist (the 128^3 eight-per-cell member q0006 is zero shift; the halo counts differ by about 10
+per cent between the gauges at 128^3, 108 against 98 at a = 121): a 128^3/8 ppc Gamma-driver
+member (data B-20261124-135029-3fe13f6 exist, about 0.85 card-h) is asked of the orchestrator
+(outbox) and is not queued by this session. Predictions for the card member, written now:
+- K1. Peak card memory 40-48 GiB (E1); the run reaches a = 143 without a guard stop; K_max after
+  t = 9 stays below zero.
+- K2. Particle number at fixed mesh (against q0060, same gauge): the band strain |k| <= 8 k_f
+  within 2 per cent at every common dump to a = 132 (at 128^3, 8 against 1 per cell, Q1 gave
+  2e-3).
+- K3. Halo counts above the common limit 100 m_N, 256^3 at 8 per cell against 256^3 at 1 per
+  cell: within 2 sqrt(N) + 2 at a = 64, 81, 100, 121, 132 [JUDGEMENT: if the 1 ppc mesh failure
+  (GM3: 15 against 31 at a = 121) is a sampling effect, the 8 ppc count rises toward the 128^3
+  counts; if it is the mesh, it stays]. This prediction is deliberately the null; its refutation
+  (counts rising by more than the band toward the 128^3 counts) names sampling as the cause of
+  GM3's failure.
