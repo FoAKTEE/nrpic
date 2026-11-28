@@ -1,29 +1,27 @@
-# G3 of Track E: what is open (batch 27, 2026-11-26 early morning)
+# G3 of Track E: what is open (batch 34, 2026-11-27 afternoon)
 
-G3 is not ready for review. Scope: spec/scope/SCOPE.md 4d with 4d.9 A1-A14 (A12 carries the measured pilot cost).
-Definition of "G3 met": A13.
+G3 is not ready for its fresh verifier. Scope: spec/scope/SCOPE.md 4d with 4d.9 A1-A14. Definition of "G3 met": A13
+("the statistic of 4d.1 measured on 128 mirrored pairs ..."). Reading of this batch: g3/JOURNAL.md entries 14-17;
+stage/REVIEW-wave3.md part L.
 
-Done (each with its registered run; g3/JOURNAL.md entries 9 and 13; stage/REVIEW-wave3.md parts J and K):
-- Reference proper (A1, A9, A10 except the sigma = 0.1 bound), zeta reader cleared (Z0, Z1 variational, Z2(i), Z2(iii');
-  decision 0042 item 1).
-- G3-C (4d.4 with A6): PASSES as written (E-20261126-115943-32970f2): every judged factor within 8.4e-4 of 4, model test
-  at all ten dumps of the range, each factor and constraint judged at five or more dumps.
-- G3-R (4d.5 with A7): PASSES as written (E-20261126-120438-9d48377): factor 3.12, median ratio 2.63, sign 100 per cent.
-- Zeta at 128^3 is now cheap (R41 closed): the table map on 4000-step nodes (g3/zeta_table.py) under the rule of entry 12,
-  about 20 s a member (E-20261126-115112-43da266, E-20261126-115925-a2c6da5, E-20261126-120434-5dda273). TB-1 and P5-3
-  stay FAILED as written (bars below the round-off of the double-precision map, about 1e-9).
-- Pilot (E-20261126-002413-65295f3): G3P-1, G3P-2 hold; G3P-3 holds except its sd clause (1.403 against 1.4); P5-5 holds.
+Done (each with its registered run):
+- Reference (A1, A9, A10 except the sigma = 0.1 bound), zeta reader cleared (Z0, Z1 variational, Z2(i), Z2(iii');
+  decision 0042 item 1); table map of the reader (entry 12).
+- G3-C (4d.4 + A6) PASSES (E-20261126-115943-32970f2); G3-R (4d.5 + A7) PASSES (E-20261126-120438-9d48377).
+- Baseline read on 71 complete mirrored pairs (0-70) of 128: see entry 17 for (V), (T), A5 and the mirroring.
 
-Open:
-1. Baseline: 246 of the 256 runs (128 mirrored pairs) are not yet run. Queued at low priority and not moved since batch
-   23: q0053, q0054 (G3B00/01, 28 runs), q0061-q0065 (G3B02-06, 110 runs). Not yet queued: pairs 74-127 (108 runs, about
-   five jobs). About 8.6 card-hours in all at 0.0351 card-h a run.
-2. Level 2 (4d.7 with A11, reported): 16 mirrored pairs; G3L00 (q0066, pairs 0-4 plus the kdriver records of A8) waits;
-   pairs 5-15 after G3L00 measures the level-2 cost. About 2.0 card-hours.
-3. Reading of the baseline: R^NR and zeta per member (read_pilot.py --map table --msteps 4000; about 1.5 minutes a member on
-   one core, 6 core-hours for 256), then the pair statistics of A5 and the comparison (V), (T), A4 of A2/A4.
-4. sigma = 0.1 coarse-graining bound of A10 not reached (R39).
-5. Reservations carried: geodesic slicing only (A8); U-A4'(a) of G2 stays FAILED as written (answered by G3-C, which passes).
-6. Package items (C5, C6, C9-C17): result figures, ledger, schematic, working-note section, and a fresh verifier who
-   recomputes the statistic, G3-C and G3-R from the dumps and repeats the table check against the long-double map on a
-   second member.
+Open, in the order they close:
+1. Baseline pairs 71-127 (m071 and 112 runs): the first re-queue (q0071-q0075) was preempted within seconds by another
+   user's partition (entry 16); queued again as q0079-q0083 (G3B07b-G3B11b, priority 2). When they end: close, read with
+   `read_pilot.py --map table --msteps 4000 --save-fields` (one registered run per card run), rerun `g3/pairs_g3.py
+   --pairs 0-127` with every reading run (command in g3/README.md and entry 17). A13 asks for 128 pairs; the statement
+   on 71 pairs is interim.
+2. Level 2 (4d.7 + A11, reported, not judged): nothing has run yet. G3L00 (q0066) and its re-queue (q0076) were
+   preempted before any member finished; G3L01 (q0077), G3L02 (q0078, with baseline pairs 126-127) wait in Slurm;
+   G3L00b (q0084) queued. The kdriver records of A8 come with G3L00b.
+3. sigma = 0.1 coarse-graining bound of A10 (R39): not reached; paired-noise reference runs at sigma = 0.01, 0.05, 0.1.
+4. A4 (the box's d phi, d Pi at N_f against the reference's state): not computed on the baseline (the per-member reader
+   does not record it); a small script over the saved fields or the dumps.
+5. Package: the fresh verifier (decision 0016) once 1-2 have closed; it recomputes (V), (T) and A5 from the dumps with
+   its own reader, G3-C and G3-R, and repeats the table check against the long-double map on a second member.
+6. Reservations carried: geodesic slicing only (A8); U-A4'(a) of G2 stays FAILED as written (answered by G3-C).

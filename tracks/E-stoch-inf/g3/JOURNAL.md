@@ -402,3 +402,36 @@ q0071-q0076 (jobs 5525-5529, 5532) started at 15:27-15:30 PST and were CANCELLED
 runs E-20261127-232703-090c8ee, -232704-ea5f466, -232706-adde60b, -232707-e5d2e68, -232708-8451c1e, -232910-4cf6b15 are
 closed as stopped and stay on record. By entry 14's rule the same lists are queued again unchanged (labels G3B07b-G3B11b,
 G3L00b); q0077, q0078 (G3L01, G3L02) still wait in Slurm. Predictions of entry 14 stand.
+
+## entry-17 (2026-11-27 16:10 PST, lead of E, batch 34): outcomes of entry 15 (71 pairs read); the G3 statement so far
+
+Runs (all registered and closed; figures looked at): card runs closed by `nrpic-run finish` (G3B00-G3B05 completed,
+G3B06 E-20261127-011021-d486e1b and G3L00 E-20261127-011026-3ddef60 stopped by preemption); readings, one per card run,
+E-20261127-232843-3bf1357 (pilot b000-b009), -233216-4f58e3d, -233404-20d88a2, -234211-b43ef71, -235124-a47a503,
+-235851-e1205c6, E-20261128-000141-77a990e, -000310-cd9ad64 (143 boxes: pairs 0-70 and p071); pair statistics
+E-20261128-000627-00ed437 (`pairs.json`, `fig_g3_onepoint.png`, `fig_g3_tails.png`, `fig_g3_pairs.png`).
+- P15-1 HOLDS: 143 of 143 boxes reach tlim with finite records; max <|H-<H>|/[H]> 7.15e-12, max <|M|/[M]> 0.0324; no cell
+  with v <= 0; table spot check max 6.67e-9 (rule 1e-8); no pair dropped. C6-1 HOLDS: 125.7 s a run (124-136 s), 0.0349
+  card-h. C6-3 holds (= P15-1). P5-3 as written would fail again on every box (max 4.1e-9 against 1e-9; the round-off of
+  entry 12), recorded, not judged here.
+- (V) of entry 4 FAILED as written (first clause): sigma^2_NR/var_ref - 1 = +0.00279 +- 0.00067, 4.1 combined standard
+  errors (second clause, below 0.01, holds). Split against the lattice sum: NR 1.00134 +- 0.00045, reference 0.99855
+  +- 0.00050 (each about 2.9 of its own errors, on opposite sides); R^NR gives the same NR excess (var 0.244293 against the
+  lattice sum 0.244008). By A2 the result reads "NR differs from one-patch delta N in the variance by 0.28 +- 0.07 per
+  cent". My expectation of entry 15 (about +0.004, outside three errors) holds in kind; no cause is named [JUDGEMENT:
+  candidates are the finite-band second-order variance of the lattice field and the reference's own deficit at sigma =
+  0.01, R39; a run that could tell them apart is the sigma-paired reference and a 160^3 baseline subset].
+- (T) of entry 4 HOLDS on every item ("agrees within"): skewness 0.019721 +- 0.000010 against 0.01985 +- 0.00088 (-0.15
+  combined s.e.); excess kurtosis 0.0014 +- 0.0009 against 0.0015 +- 0.0015 (-0.03); at the own width F_+(3)/Q 1.0889 vs
+  1.1043 (-1.5), F_-(3)/Q 0.9164 vs 0.9043 (+1.35), F_+(4)/Q 1.2546 vs 1.2349 (+1.1, sampler), F_-(4)/Q 0.8327 vs 0.8071
+  (+1.8), A(3) 0.0860 +- 0.0003 vs 0.0996 +- 0.0064 (-2.1), A(4) 0.202 +- 0.003 vs 0.2095 +- 0.0007 (-2.1). Entry 4's bands:
+  skewness in [0.015, 0.032], A(3) in [0.05, 0.16], F_+(4)/Q in [1.1, 1.8], F_-(4)/Q in [0.5, 1.0], R^NR skewness 0.00089 in
+  [0, 0.002], R^NR F_pm(4)/Q 1.047, 1.025 in [0.85, 1.2]: all hold. Reported, not judged: r at fixed nu sigma_lin
+  (F_+(3) -0.1 %, F_-(3) +2.8 %, F_+(4) +3.9 %, F_-(4) +5.5 %, 0-3 s.e.), the trace of the variance excess (A2).
+- P15-2 HOLDS: a_zeta = 6.647e-3 (pair-to-pair sd 7.9e-8), a_R = 3.0e-4, F_+(+) - F_-(-) at 3 sigma = 0.172 +- 0.001 Q(3)
+  (at 4: 0.42 +- 0.01 Q(4)). P15-3 HOLDS: the pair mean of the skewness has a standard error 40 times below the single boxes'.
+- P15-4 HOLDS.
+- Level 2 (4d.7, reported) and kdriver records (A8): none ran (entries 14, 16); the sensitivity cannot be stated yet.
+- A13 status: 71 of 128 pairs; (V) failed, (T) agrees, A1 gate passes on the pooled reference (2.9 s.e., barely), Z0-Z2
+  passed, 4d.4 and 4d.5 pass, A4 not yet computed on the baseline, level 2 not run, the slicing limitation stated, no fresh
+  verifier yet. G3 is NOT complete for review.
