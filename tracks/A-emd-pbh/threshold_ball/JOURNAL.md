@@ -732,3 +732,61 @@ exterior with its outer boundary, and the ball's edge. The next test that could 
 third: a member without level faces in the matter (frozen gauge keeps it cheap on processors), prediction first.
 Figure defect noted: the four-panel layout crowds the titles and legends (readable; not a data defect).
 C3 stays FAILED as written.
+
+## Entry 18, 2026-11-27 16:50 PST (lead of batch 34): what C3-G could not separate, which tests can, and OH before it runs
+
+Re-reading C3-G (entry 17) before any new run. With the lapse frozen at its table value and the shift zero, the
+particles stayed at rest on the grid (deposited S_x at round-off), so the deposited source per coordinate volume did
+not change, while the geometry (gamma_ij, K_ij) kept evolving under it. That is a consistent Einstein-dust state only
+if the table lapse is geodesic and the code divides the fixed coordinate density by the current sqrt(gamma) at every
+step; any inconsistency between the frozen matter and the evolving metric (for example the lapse of the table not
+being exactly geodesic for the dust, or the source taken against a metric of another time) makes the Bianchi identity
+fail, and the constraints then grow by construction. So C3-G's floor (0.21 at t = 1) is what the test makes whatever
+the cause, and it could not exonerate the gauge, the motion across cells or anything else: its "neither ... makes
+the floor" (entry 17 reading, decision 0047 item 6) is WITHDRAWN as a reading [JUDGEMENT; the outcome numbers stand].
+Tests that can separate causes:
+1. OH, offline H on the x line from the run's own adm (gamma_ij, K_ij) and tmunu (E) tables under spherical
+   symmetry (the ball is spherical; the line runs at y = z = h/2 of each level): separates "the fields violate the
+   constraint" from "the diagnostic (con_H from the Z4c variables, Theta, the timing of E) reports a violation the
+   fields do not have". No new run: existing tables of S2c-A (M/16) and S2c-B (M/32), A-20261125-161154-62ce3dc.
+2. A member with the matter inside one refinement level, with live gauge and moving particles (the real dynamics),
+   against its nested twin at the same finest spacing: separates the level faces (core's two deposit defects, and
+   the ripple core says stays) from everything else. Cheap only at a coarse finest spacing (the matter reaches
+   r = 4.9, so one level over |x| < 8 at M/4 is 64^3 cells); not run this session (time), specified here.
+3. Core's faces-finder build (deposit fixes at level faces, branch core/faces-finder, scouting) on S2c-A/S2c-B:
+   separates the two fixed defects from the rest; processors, prediction first, next session.
+4. Geodesic slicing with LIVE particles (lapse 1, shift 0, particles pushed): a consistent gauge in which the dust
+   stays comoving if the data are comoving; exonerates or convicts the 1+log/Gamma-driver gauge.
+Prediction OH [JUDGEMENT]: on the x line, in the matter away from level faces (0.15 < r < 4.5, two cells off each
+face), H_off = 3R + K^2 - K_ij K^ij - 16 pi E recomputed from the tables (fourth-order local fits within each level)
+agrees with the code's con_H: at t = 0.5, 0.75 and 1.0 the rms of (H_off - con_H) is below 0.3 x the rms of con_H on
+both meshes, and the reader's own error (read from t = 0, where con_H is ~1e-10 inside the ball) is below 0.1 x the
+rms of con_H at t = 1. Then the floor is in the fields. Refuted if H_off is below 0.3 x con_H (rms) at t >= 0.5 on
+both meshes while the reader check at t = 0 passes: then the diagnostic is implicated (the history norm and the
+line ratio report a violation the ADM fields do not carry). Undecided if the reader error at t = 0 exceeds 0.1 x
+con_H(t = 1).
+
+### Entry 18, a reading made while testing the OH reader (17:05 PST), and prediction OB before its run
+
+While testing offline_h_line.py (first attempt, unregistered, scratch/A-emd-pbh/tmp/oh_test: mesh A NaN at the first
+row, mesh B reader error 6.5e-4 at t = 0, i.e. about half of con_H at t = 1, so OH as specified is UNDECIDED on B and
+the reader needs a fix before it is registered) I split the section-3 line ratio (edge_compare.py's weight x^2 dx over
+0 < x < 16) into r < 4.5 (matter), 4.5-6.5 (edge, taper) and > 6.5 (vacuum). Read from the registered tables of
+A-20261125-161154-62ce3dc (to be re-run as a registered analysis, R-split): at t = 1 the matter part is 0.059 (M/16)
+and 0.016 (M/32), falling at order 1.9; the vacuum part is 0.092 and 0.099, not falling; on M/32 at t = 1 the vacuum
+part is 0.099 of the 0.101 total, almost all of it at 13 < x < 16, next to the outflow faces at |x| = 16; on M/16 at
+t = 5 the vacuum part is 0.57 of the 0.60 total, spread over 10 < x < 16. The vacuum part is 1e-17 at t = 0 and
+present at 13-17 by t = 0.25, before anything from the ball (r = 4.9) could reach it at the gauge speeds: it enters
+at the outer faces. Candidate named for the floor of the line ratio [JUDGEMENT until OB runs]: the outflow (copy)
+outer boundary of the Z4c fields at |x| = 16 in the vacuum exterior of the expanding ball, weighted by x^2 in the ratio;
+inside the matter the residual converges.
+Prediction OB [JUDGEMENT]: S2c-A rerun on the deck nest16_L32 (outer faces at |x| = 32; levels inside |x| < 16 equal
+to nest16_L16's, so the same table and particle file; release v0.6 threaded build as S2c-A, four threads, live gauge,
+to t = 2) gives, on 0 < x < 16 with the same weight and normalization: the part 13 < x < 16 below 0.1 x S2c-A's at
+t = 1 and 2 (S2c-A: 0.083 + 0.038 at t = 1); the matter part (x < 4.5) within 25 per cent of S2c-A's (0.059 at t = 1,
+0.076 at t = 2); and the total over 0 < x < 16 below 0.5 x S2c-A's (0.129, 0.245). Refuted if the 13-16 part at
+t = 1 is above 0.5 x S2c-A's: then the vacuum violation is made in the exterior mesh itself (coarse levels, the face
+at 7.8, the gauge), not at the outer faces. If OB holds, the SCOPE section-3 ratio as computed so far measures mainly
+a boundary artefact far from the matter, and the remedy to test next is the outer faces (L32 or core-v0.6's
+`ghost_falloff`/`sbc_variant = nonwave`), not the deposit; the matter part still has to be shown below 0.1 at
+detection in the bracket members.
