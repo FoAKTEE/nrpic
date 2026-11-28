@@ -170,3 +170,56 @@ the G3 total is about 51 card-hours (G-8 2.5, G-12u 9.4, G-16u 25.9, particle le
 obstacle is memory, not card-hours: no executable runs G-16u on this machine (one card per job; no card build on
 two ranks is published). What is lost if the leg stays on one card: the M/16 member, and with it the third mesh
 member that A3's G3-G2 order and G3-G3 ratio need; G-8 and G-12u alone give one difference and no order.
+
+## Entry 8 (2026-11-28 08:10 PST, lead of batch 41, before the runs it predicts): ruling 0051 item 3; predictions for the M/6 checks, the build identity and the read of G-8
+
+Ruling (coord/DECISIONS/0051 item 3): no run on two cards; the mesh leg is G-8 and G-12u and, if it qualifies,
+a coarser uniform member G-6u (its timing run finds the horizon at t = 0 and a null test at M/6 stays within
+the bound of criterion N); three members then give an order, otherwise the difference of the two finer members
+is quoted with no order and FL16 (refined M/16, G2) stands beside them. Decks of A6 (tools/make_g3_decks.py,
+function write_m6): g3g6u (root 72, blocks of 18; G-8's deck otherwise), g3g6u_t2 (tlim 2 M), n6es and n6v
+(g2long's ES-1L and V-1L at root 72, blocks of 18, tlim 300 M, polished finder with diagnostics). The existing
+decks are unchanged (git diff empty).
+
+Seen before this entry: chain status DONE of q0100 (job 5691 COMPLETED, 400 M), sacct of its ten jobs (seven
+PREEMPTED, three COMPLETED), and the last three lines of g3g8.horizon_status_0.txt and two of the summary (found;
+area mass 1.4918 and smallest radius 4.528 M at 399.5 M). Nothing else of G-8's outputs. The radius at 399.5 M is
+therefore not a prediction below.
+
+Processor checks (tools/m6_smoke.py, one registered run, four cores, release core-v0.9 processor build):
+- K1 (athena -m): g3g6u, n6es and n6v each 456 blocks in eight physical levels, finest dx 1/6 M over +-6 M (the
+  uniform family's structure with blocks of 18; check_review's C1 rule). Refuted if any count or extent differs.
+- K2 (two cycles each): every input starts, exit 0, 456 MeshBlocks. The search at t = 0 [JUDGEMENT; the horizon
+  of the data is at coordinate radius 0.5 M, three cells of M/6]: found in g3g6u with area mass M_0 in
+  [0.95, 0.9915] (further from 1 than G-8's 0.99151, since the offset falls with h: 8.5e-3 at M/8, 2.5e-4 at M/12);
+  n6es and n6v found with masses equal to each other within 1e-6 (same puncture, the vacuum bubble out to 36 M).
+  Refuted if a search at t = 0 is not found or a mass leaves its band. A not-found search at t = 0 on processors
+  means the card timing run will not qualify G-6u either (processor and card finder agree to 2.2e-16 with
+  polishing, finder_stop.md): G-6u is then not run, and the leg is the two finer members with no order.
+- K3 (build identity): g3g8.athinput for two cycles with core-v0.9 gives every output of S-G8 (core-v0.8, run
+  D-20261128-020622-50e2cb6, same command) byte for byte, the restart files included; at most the parameter
+  block differs, if v0.9 records options with defaults. Reason: the deck sets neither deposit_comp_c (default
+  0.0, athenak/src/particles/nrpic.cpp:99) nor deposit_fine_shape, and the three changes of v0.9 without an
+  option act only with those or on a restart. Refuted if any output differs after its parameter block. If K3
+  holds, the mesh family is one build in effect: G-8 (v0.8) beside G-12u and G-6u (v0.9). If K3 fails, G-12u and
+  G-6u run on core-v0.8, the build of G-8 (one build per family).
+
+Read of G-8 (run D-20261128-062142-c5666c4; reader tools/g8_read.py, one registered processor run, one figure):
+- G3-G1 (scope section 4, fixed): every counted bin (10 M of tau_rem with at least 20 dust removals, tau_rem from
+  50 M to the end) within +-0.5 per cent. Refuted if any bin lies outside.
+- P-G1 (scope section 9): bins in [+0.05, +0.30] per cent before the lead correction, [-0.10, +0.25] after it.
+- Sharper, from FK (the same deck without polishing: bins in [+0.162, +0.249] per cent, g2long entry 19) and EG8
+  (polished, 0.18-0.25 per cent to 260 M, decision 0051 item 3): every bin in [+0.12, +0.30] per cent before the
+  lead correction. Refuted if a bin lies below +0.10 or above +0.35 per cent.
+- Lead carried as a bias (scope section 6): Delta tau_lead(R0) at M/8, N from the verifier's tracers (VERIFIER
+  section 4.1: below 0.01, 0.17, 0.78 M at R0 = 10, 20, 28 M), linear between those points and two brackets
+  beyond 28 M (held at 0.78 M; extrapolated with the 20-28 M slope). The shift of the bin medians from the lead
+  correction, after tau_rem = 100 M, in [2e-4, 1.2e-3] (the verifier's 6e-4 at R0 = 28 M) for the held bracket.
+  Not a criterion: the lead is measured per particle by A2's reader on G2's snapshots, which is not yet run.
+- Excision (A1, section 2 flag rule): no dust removal by reason 2 after the first 2 M of a segment.
+- Finder: at least 99 per cent of the searches after 2 M found (EG8's E4); G-8 minus FK at common search times
+  20-399.5 M with median in [2e-5, 1.2e-4] (EG8's E3: polished minus unpolished).
+- Slope s_8(a) = d ln M_AH / d ln a in windows of 0.1 in ln a from tau = 50 M (A4 S3) within 0.03 of s_LTB in every
+  window. Information only: G3-G5 is read at the finest member.
+- Cost: the sum of the elapsed times of the ten jobs in [1.9, 3.0] card-hours (entry 7: 2.48).
+Claim D is not read from G-8: D1* is not yet fixed (A2).
