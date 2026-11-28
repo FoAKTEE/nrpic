@@ -1,0 +1,27 @@
+k	cls	claim_id	verdict	right	borderline	action	note
+35	T	3	right	1	0	verify	MDPBH.tex L839
+36	T	309	wrong_label	0	0	supersede(judgement)	C's computed misprints under fulltext; C entry rechecked (M/R = 1.14105e-2 vs printed 1.41053e-2)
+37	T	638	right	1	1	verify	noun phrase; TBH3.tex L708-711
+38	T	69	right	1	0	verify	Spin_PBH.tex L369-735
+39	T	245	right_locator	1	1	relocate+verify	'According to current observations' at L155
+40	T	194	right	1	0	verify	main_v3.tex L2275-2281
+41	T	94	right	1	0	verify	Main.tex L310
+42	T	369	fragment	0	0	supersede	'Conflict [...]: 1805.09034 (:195)', statement on the next note line
+43	T	427	wrong_label	0	0	supersede(judgement)	F's judgement 'most likely to publish it first' under fulltext; cut start
+44	T	295	right_locator	1	0	relocate+verify	k ~ 32 at L553, L613
+45	T	385	right	1	0	verify	L103, L129-133
+46	T	237	right	1	1	verify	noun phrase; L324
+47	T	37	right	1	0	verify	L76
+48	R	125	right	1	0	verify	caption L179
+49	R	341	right	1	0	verify	Kerr set up L243-356, no Kerr results (grep)
+50	R	337	fragment	0	0	supersede	'lower energy limit E_min(r)', no predicate
+51	R	583	fragment	0	0	withdraw	table heading; statements carried by 469-471, 868
+52	R	498	right	1	0	verify	L975
+53	R	185	fragment	0	0	supersede	'observable peak amplitude and frequencies'
+54	R	302	fragment	0	0	supersede	a locator only
+55	R	298	wrong_label	0	0	supersede	C's readings 'No relativistic dynamics', 'Background only' under fulltext
+56	R	136	right	1	0	verify	L1172-1187
+57	R	151	right_locator	1	0	relocate+verify	BSSN at L208
+58	R	497	right	1	0	verify	caption L950
+59	R	162	right	1	0	verify	L229-234, L442
+60	R	594	right	1	1	verify	table debris '| diagnostics.md'

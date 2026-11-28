@@ -1,0 +1,35 @@
+k	cls	claim_id	verdict	right	borderline	action	note
+1	C	476	fragment	0	0	supersede(475+476)	'from its new DGREM-Boris (L62)': the second half of 475's sentence
+2	C	558	fragment	0	0	supersede(557+558)	'and for the two moving clumps': third part of 556's 'Not stated' row
+3	C	564	wrong	0	1	supersede	'searched ... only L34': 'available' also occurs at L1362; the absence statement itself is right
+4	C	539	right	1	1	verify	'B-spline' and 'cloud in cell' are glosses of the first-order shape B_1 (L641-660); every number supported
+5	C	351	right	1	0	verify	L235: radial orbits after turn-around keep the shape, raise the density by ~50 %
+6	C	471	right	1	0	verify	L746-750
+7	C	93	right	1	0	verify	L242 ('suggests' rendered as 'is')
+8	C	531	part_unsupported	0	0	supersede	the paper never calls the +- of the OS table a seed scatter (caption L1419; no 'seed' in main.tex)
+9	C	493	right	1	0	verify	table-row format; L1430-1432
+10	C	513	right	1	0	verify	table-row format; L1358
+11	C	514	right	1	0	verify	table-row format; L1360
+12	C	24	right_locator	1	0	relocate+verify	e = 0.2 is at L1083
+13	C	422	wrong_label	0	0	supersede	'The closest work' is F's judgement under fulltext; code details outside the locator; ends cut 'Initial data ('
+14	C	384	right	1	0	verify	footnote L170-171
+15	C	478	fragment	0	0	supersede(477+478)	'and 2e-14 in the Kerr tests': subject cut
+16	C	463	right	1	1	verify	noun phrase starting 'and'; L388-397 support it
+17	C	562	fragment	0	0	supersede	'and executable on both CPUs and GPUs': subject (AthenaK with Kokkos) cut
+18	C	133	fragment	0	0	supersede(133+134)	'comoving equations with the background removed (L206-340': no predicate
+19	C	477	part_unsupported	0	0	supersede(477+478)	1e-7 is stated for the implicit-midpoint iteration (L459), not for both pushers; 'in production' not in the paper
+20	C	47	fragment	0	0	supersede	'used with shock-avoiding f': subject cut
+21	C	459	right	1	1	verify	locator debris '-397. Precision:' at the start; L674 supports the rest
+22	C	528	fragment	0	0	supersede(527+528)	second mechanism of 527's row plus core's 'does not separate them'
+23	C	571	fragment	0	0	supersede	cut list of L1393 without predicate
+24	C	301	part_unsupported	0	1	supersede	the brief's wording (brief row 384) has no locator; the paper part (L62-66) is right
+25	C	274	wrong_label	0	0	supersede	C's judgement ('not a reference', 'excluded by decision 0010') under fulltext
+26	C	395	right	1	0	verify	L370-381
+27	C	339	fragment	0	0	supersede->862	subject (the Gondolo-Silk distribution) cut; 862 carries L443
+28	C	129	right	1	1	verify	starts 'with'; L273-277
+29	C	111	right	1	0	verify	L657-659, L682-684; Harada:2016mhb = 1609.01588 (ref.bib L376-379)
+30	C	516	right	1	0	verify	table-row format; L1362
+31	C	470	right	1	1	verify	starts 'i.e.'; L740
+32	C	475	fragment	0	0	supersede(475+476)	'-840. Precision: ... distinguishes the GR-Boris ...' without the 'from' half
+33	C	469	right	1	1	verify	debris 'and the caption L734. Precisely:'; quote at L738 right
+34	C	86	right_locator	1	0	relocate+verify	'log-normal' at L100

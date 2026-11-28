@@ -1,0 +1,518 @@
+{
+ "by": "kb-claims4",
+ "note": "claims4: verdicts of 60 sampled machine-located claims (C 34, T 13, R 13) and the VERIFIER2 leftovers; JOURNAL.md entry 2, work/verdicts_*.tsv",
+ "actions": [
+  {
+   "do": "verify",
+   "id": 539,
+   "evidence": "claims4 C: right as worded at 2611.12831 L641-660 (first-order shape B_1 = 1-|xi|, at most eight cell centres, 'unless otherwise stated'); 'B-spline' and 'cloud in cell' are glosses [borderline]"
+  },
+  {
+   "do": "verify",
+   "id": 351,
+   "evidence": "claims4 C: right, 1901.08528 L235 (radial orbits after turn-around keep the shape, density up ~50 %)"
+  },
+  {
+   "do": "verify",
+   "id": 471,
+   "evidence": "claims4 C: right, 2611.12831 L746-750"
+  },
+  {
+   "do": "verify",
+   "id": 93,
+   "evidence": "claims4 C: right, 2507.18312 L242"
+  },
+  {
+   "do": "verify",
+   "id": 493,
+   "evidence": "claims4 C: right, 2611.12831 L1430-1432 (table-row format)"
+  },
+  {
+   "do": "verify",
+   "id": 513,
+   "evidence": "claims4 C: right, 2611.12831 L1358 (table-row format)"
+  },
+  {
+   "do": "verify",
+   "id": 514,
+   "evidence": "claims4 C: right, 2611.12831 L1360 (table-row format)"
+  },
+  {
+   "do": "verify",
+   "id": 384,
+   "evidence": "claims4 C: right, 2302.07878 footnote L170-171"
+  },
+  {
+   "do": "verify",
+   "id": 463,
+   "evidence": "claims4 C: right, 2611.12831 L388-397 [borderline: noun phrase starting 'and']"
+  },
+  {
+   "do": "verify",
+   "id": 459,
+   "evidence": "claims4 C: right, 2611.12831 L674 [borderline: locator debris '-397. Precision:' at the start]"
+  },
+  {
+   "do": "verify",
+   "id": 395,
+   "evidence": "claims4 C: right, 2308.07374 L370-381"
+  },
+  {
+   "do": "verify",
+   "id": 129,
+   "evidence": "claims4 C: right, 2306.11810 L273-277 [borderline: starts 'with']"
+  },
+  {
+   "do": "verify",
+   "id": 111,
+   "evidence": "claims4 C: right, 2508.10070 L657-659, L682-684; Harada:2016mhb = 1609.01588 (ref.bib L376-379)"
+  },
+  {
+   "do": "verify",
+   "id": 516,
+   "evidence": "claims4 C: right, 2611.12831 L1362 (table-row format)"
+  },
+  {
+   "do": "verify",
+   "id": 470,
+   "evidence": "claims4 C: right, 2611.12831 L740 [borderline: starts 'i.e.']"
+  },
+  {
+   "do": "verify",
+   "id": 469,
+   "evidence": "claims4 C: right, quote at 2611.12831 L738 [borderline: debris 'and the caption L734. Precisely:']"
+  },
+  {
+   "do": "verify",
+   "id": 3,
+   "evidence": "claims4 T: right, 2609.14218 L839"
+  },
+  {
+   "do": "verify",
+   "id": 638,
+   "evidence": "claims4 T: right, 2406.11985 L708-711 [borderline: noun phrase]"
+  },
+  {
+   "do": "verify",
+   "id": 69,
+   "evidence": "claims4 T: right, 1707.03595 L369-735"
+  },
+  {
+   "do": "verify",
+   "id": 194,
+   "evidence": "claims4 T: right, 2605.04487 L2275-2281 (22.536, 29.097, 34.271, 45.024)"
+  },
+  {
+   "do": "verify",
+   "id": 94,
+   "evidence": "claims4 T: right, 2507.18312 L310"
+  },
+  {
+   "do": "verify",
+   "id": 385,
+   "evidence": "claims4 T: right, 2302.07878 L103, L129-133"
+  },
+  {
+   "do": "verify",
+   "id": 237,
+   "evidence": "claims4 T: right, 2108.11967 L324 (seed of Feng:2020kxv's benchmark) [borderline: noun phrase]"
+  },
+  {
+   "do": "verify",
+   "id": 37,
+   "evidence": "claims4 T: right, 2610.23218 L76"
+  },
+  {
+   "do": "verify",
+   "id": 125,
+   "evidence": "claims4 R: right, 2109.04896 caption L179"
+  },
+  {
+   "do": "verify",
+   "id": 341,
+   "evidence": "claims4 R: right, 1305.2619 L243-356; my grep finds Kerr after L356 only at L377 ('Unlike the Kerr case')"
+  },
+  {
+   "do": "verify",
+   "id": 498,
+   "evidence": "claims4 R: right, 2611.12831 L975"
+  },
+  {
+   "do": "verify",
+   "id": 136,
+   "evidence": "claims4 R: right, 2605.04487 L1172-1187"
+  },
+  {
+   "do": "verify",
+   "id": 497,
+   "evidence": "claims4 R: right, 2611.12831 caption L950"
+  },
+  {
+   "do": "verify",
+   "id": 162,
+   "evidence": "claims4 R: right, 1901.04498 L229-234, L442"
+  },
+  {
+   "do": "verify",
+   "id": 594,
+   "evidence": "claims4 R: right, 2611.12831 L1497-1508 [borderline: table debris '| diagnostics.md']"
+  },
+  {
+   "do": "verify",
+   "id": 24,
+   "evidence": "claims4 C: right, locator incomplete: e = 0.2 is at MDPBH.tex L1083",
+   "locator": "2609.14218v1:MDPBH.tex:L1083-1086"
+  },
+  {
+   "do": "verify",
+   "id": 86,
+   "evidence": "claims4 C: right, locator incomplete: 'log-normal power spectrum' at L100",
+   "locator": "2211.13950v3:MD_threshold10.tex:L100-103; 2211.13950v3:MD_threshold10.tex:L606-607"
+  },
+  {
+   "do": "verify",
+   "id": 245,
+   "evidence": "claims4 T: right, locator incomplete: 'According to current observations, the cross section per unit particle mass is constrained to' at L155 [borderline: noun phrase]",
+   "locator": "2601.17117v2:SIDM_MS.tex:L155-156"
+  },
+  {
+   "do": "verify",
+   "id": 295,
+   "evidence": "claims4 T: right, locator incomplete: k ~ 32 neighbours at L553, L613",
+   "locator": "1101.3097v2:sidm1.tex:L553; 1101.3097v2:sidm1.tex:L613; 1101.3097v2:sidm1.tex:L667-697"
+  },
+  {
+   "do": "verify",
+   "id": 151,
+   "evidence": "claims4 R: right, locator incomplete: BSSN at L208",
+   "locator": "1611.07906v2:asymflat.tex:L208; 1611.07906v2:asymflat.tex:L368-389"
+  },
+  {
+   "do": "supersede",
+   "id": 475,
+   "evidence": "claims4 C: fragment, the first half of a sentence of SECTION2_CORRECTIONS.md:40 with locator debris '-840. Precision:'; 476 is its second half. Read at L62, L430-440.",
+   "text": "arXiv:2611.12831 distinguishes the GR-Boris schemes of GRPIC codes, a Strang composition of an electromagnetic Boris push and an implicit-midpoint geodesic step (main.tex L432-440), from its new DGREM-Boris pusher (L62).",
+   "label": "fulltext",
+   "locator": "2611.12831v1:main.tex:L62; 2611.12831v1:main.tex:L432-440",
+   "origin": "tracks/kb/claims4",
+   "kind": "method"
+  },
+  {
+   "do": "supersede",
+   "id": 476,
+   "evidence": "claims4 C: fragment 'from its new DGREM-Boris (L62)', the second half of 475's sentence; carried by the successor of 475",
+   "to": "@36"
+  },
+  {
+   "do": "supersede",
+   "id": 477,
+   "evidence": "claims4 C: part unsupported: L459 gives the 1e-7 stop for the implicit-midpoint iteration, not for both pushers, and the paper does not say 'in production'; 478 ('and 2e-14 in the Kerr tests') is its cut second half.",
+   "text": "arXiv:2611.12831 uses two implicit particle updates, a midpoint discretization of the coordinate equations and a spacetime Boris scheme (main.tex L401); its implicit-midpoint pusher is solved by fixed-point iteration that stops when the largest change of any endpoint component falls below 1e-7 in code units (L459), and in the Kerr tests a convergence threshold of 2e-14 is enforced on the nonlinear iterations (L775).",
+   "label": "fulltext",
+   "locator": "2611.12831v1:main.tex:L401; 2611.12831v1:main.tex:L459; 2611.12831v1:main.tex:L775",
+   "origin": "tracks/kb/claims4",
+   "kind": "method"
+  },
+  {
+   "do": "supersede",
+   "id": 478,
+   "evidence": "claims4 C: fragment 'and 2e-14 in the Kerr tests (L775)', subject cut; carried by the successor of 477",
+   "to": "@38"
+  },
+  {
+   "do": "supersede",
+   "id": 557,
+   "evidence": "claims4 (sibling of 558): fragment '10 % density, L1217)', the middle of the 'Not stated' row of SECTION2_CORRECTIONS.md:161 (556, 557, 558). My grep finds no mention of a constraint solve near L1134-1143, L1211-1250 or L1324-1340.",
+   "text": "arXiv:2611.12831 does not say whether the constraint equations are solved again after it perturbs its equilibrium clusters, by a coherent inward radial velocity of at most 1 % of the local velocity (main.tex L1138) or by a 10 % density perturbation (L1217), nor after it places two Gaussian clumps with bulk velocities inside a cluster (L1335-1336).",
+   "label": "fulltext",
+   "locator": "2611.12831v1:main.tex:L1138; 2611.12831v1:main.tex:L1217; 2611.12831v1:main.tex:L1335-1336",
+   "origin": "tracks/kb/claims4",
+   "kind": "limitation"
+  },
+  {
+   "do": "supersede",
+   "id": 558,
+   "evidence": "claims4 C: fragment 'and for the two moving clumps (L1335-1336)'; carried by the successor of its sibling 557. Core's addition 'whose momentum density violates the momentum constraint of a K_ij = 0 slice' is an inference, not carried",
+   "to": "@40"
+  },
+  {
+   "do": "supersede",
+   "id": 564,
+   "evidence": "claims4 C: wrong in a detail: the search note says 'available' occurs only at L34, but it also occurs at L1362 (modes 'available'); the absence statement itself is right (my grep: no github, zenodo, repository, public).",
+   "text": "arXiv:2611.12831 v1 has no data- or code-availability statement and gives no repository address: main.tex contains none of the words github, zenodo, repository or public, and 'available' occurs only at L34 and L1362, neither about data or code.",
+   "label": "fulltext",
+   "locator": "2611.12831v1:main.tex:L34; 2611.12831v1:main.tex:L1362",
+   "origin": "tracks/kb/claims4",
+   "kind": "limitation"
+  },
+  {
+   "do": "supersede",
+   "id": 531,
+   "evidence": "claims4 C: part unsupported: the paper never calls the +- of its OS table a seed scatter (caption L1419; no 'seed' in main.tex); the text also starts with a cut 'and'.",
+   "text": "In the Oppenheimer-Snyder convergence table of arXiv:2611.12831, the AMR runs A2 (N = 10^6) and A3 (N = 8 x 10^6) give apparent-horizon masses M_irr/M = 0.999663 +- 0.000976 and 0.999535 +- 0.000636 at t = 60 M (main.tex L1427-1428); the caption does not say what the +- denotes (L1419).",
+   "label": "fulltext",
+   "locator": "2611.12831v1:main.tex:L1419; 2611.12831v1:main.tex:L1427-1428",
+   "origin": "tracks/kb/claims4",
+   "kind": "number"
+  },
+  {
+   "do": "supersede",
+   "id": 422,
+   "evidence": "claims4 C: wrong label: 'The closest work' is F's judgement under fulltext; the code details (LazEv, TwoPunctures) are not at the locator; the text ends cut 'Initial data ('. The successor states what L582-626 say.",
+   "text": "arXiv:2406.11985 (Ficarra, Lousto), in its section on high-mass-ratio three-black-hole configurations (TBH3.tex L582-626), evolves an equal-mass nonspinning binary with a heavier third hole at mass ratios 8:1:1 and 18:1:1 on coplanar prograde and retrograde orbits; in the 3BH2q8 case the binary merges after about one orbit around the larger hole, the merger time grows with the mass ratio, and retrograde cases merge later than prograde ones.",
+   "label": "fulltext",
+   "locator": "2406.11985v1:TBH3.tex:L582-626",
+   "origin": "tracks/kb/claims4",
+   "paper": "2406.11985"
+  },
+  {
+   "do": "supersede",
+   "id": 562,
+   "evidence": "claims4 C: fragment 'and executable on both CPUs and GPUs (L674)': its subject (AthenaK with Kokkos) is cut.",
+   "text": "arXiv:2611.12831 states that AthenaK uses the Kokkos library, which makes the code portable and executable on both CPUs and GPUs (main.tex L674).",
+   "label": "fulltext",
+   "locator": "2611.12831v1:main.tex:L674",
+   "origin": "tracks/kb/claims4",
+   "kind": "method"
+  },
+  {
+   "do": "supersede",
+   "id": 133,
+   "evidence": "claims4 C: fragment 'comoving equations with the background removed (L206-340', no predicate; 134 ('background term cancels, L297)') is its cut second half.",
+   "text": "arXiv:2605.04487 evolves its N particles with Newtonian forces and semirelativistic kinematics in comoving coordinates x_n = r_n/a of an Einstein-de Sitter background, where the background term of the acceleration cancels and the comoving equation of motion is x_n'' + 2H x_n' = -(1/a^2) grad_x phi (main_v3.tex L208-221, L289-297).",
+   "label": "fulltext",
+   "locator": "2605.04487v2:main_v3.tex:L208-221; 2605.04487v2:main_v3.tex:L289-297",
+   "origin": "tracks/kb/claims4",
+   "paper": "2605.04487",
+   "kind": "method"
+  },
+  {
+   "do": "supersede",
+   "id": 134,
+   "evidence": "claims4 (sibling of 133): fragment 'background term cancels, L297)'; carried by the successor of 133",
+   "to": "@46"
+  },
+  {
+   "do": "supersede",
+   "id": 47,
+   "evidence": "claims4 C: fragment 'used with shock-avoiding f = ...': subject cut.",
+   "text": "arXiv:2610.23218 continues its work with the shock-avoiding slicing f_BM(alpha) = 1 + 1/alpha^2 (main.tex L199-202), and from its tuning of the shift damping on evolves the lapse with d_t alpha = -(1 + alpha^2) g_s+, the softplus slicing that performed best (L270).",
+   "label": "fulltext",
+   "locator": "2610.23218v1:main.tex:L199-202; 2610.23218v1:main.tex:L270",
+   "origin": "tracks/kb/claims4",
+   "paper": "2610.23218",
+   "kind": "method"
+  },
+  {
+   "do": "supersede",
+   "id": 527,
+   "evidence": "claims4 (sibling of 528): table row with debris ('| correct [VERIFIED for the text, JUDGEMENT for not uniquely] |'); 528 is its cut second half with core's reading 'does not separate them'. Read at L1356, L1358.",
+   "text": "arXiv:2611.12831 names two effects behind the rapid orbital shrinkage of the black-hole binary formed in the cluster: accretion of envelope material with zero net angular momentum (main.tex L1356) and a drag force from envelope matter that transfers angular momentum from the binary to the envelope, whose angular momentum grows by an amount comparable to the 27.3 % loss of the binary's between 20 M and 60 M (L1358).",
+   "label": "fulltext",
+   "locator": "2611.12831v1:main.tex:L1356; 2611.12831v1:main.tex:L1358",
+   "origin": "tracks/kb/claims4"
+  },
+  {
+   "do": "supersede",
+   "id": 528,
+   "evidence": "claims4 C: fragment 'and a drag that moves angular momentum into the envelope (L1358), and does not separate them'; carried by the successor of 527 (core's 'does not separate them' is a reading, not carried)",
+   "to": "@49"
+  },
+  {
+   "do": "supersede",
+   "id": 571,
+   "evidence": "claims4 C: fragment: a cut citation list of L1393 without its predicate (its sibling 572 was superseded by 868, which carries L763 only). The eprint mapping of the keys is not carried.",
+   "text": "arXiv:2611.12831 says that future work should be devoted to higher-order methods, extremal black-hole formation and cosmic censorship, as well as gravitational instability and collapse more generally (main.tex L1393).",
+   "label": "fulltext",
+   "locator": "2611.12831v1:main.tex:L1393",
+   "origin": "tracks/kb/claims4",
+   "kind": "open_question"
+  },
+  {
+   "do": "supersede",
+   "id": 301,
+   "evidence": "claims4 C: part without locator: the wording attributed to the brief (row 384) has no locator; the paper part (L62-66) is right. The brief is checked by claims_brief, not here.",
+   "text": "arXiv:2601.17117 describes the gravothermal evolution of its SIDM halo as an early long-mean-free-path (LMFP) regime followed by a late short-mean-free-path (SMFP) regime, in which an outward heat flux expands the outer envelope and slows the collapse (SIDM_MS.tex L62-66).",
+   "label": "fulltext",
+   "locator": "2601.17117v2:SIDM_MS.tex:L62-66",
+   "origin": "tracks/kb/claims4",
+   "paper": "2601.17117"
+  },
+  {
+   "do": "supersede",
+   "id": 274,
+   "evidence": "claims4 C: wrong label: 'Not a reference for collisional relaxation (brief row 852)' and 'as an outside code, excluded by decision 0010' are Track C's judgements under fulltext; the text starts cut 'its'.",
+   "text": "arXiv:2602.17487 validates its relativistic Vlasov solver on counter-streaming instabilities in collisionless plasmas (methods.tex L196) and writes its Vlasov equation in the absence of collisions or sources (results.tex L18).",
+   "label": "fulltext",
+   "locator": "2602.17487v1:methods.tex:L196; 2602.17487v1:results.tex:L18",
+   "origin": "tracks/kb/claims4",
+   "paper": "2602.17487"
+  },
+  {
+   "do": "supersede",
+   "id": 339,
+   "evidence": "claims4 C: fragment, subject (the Gondolo-Silk distribution) cut; claim 862 carries the statement of 1305.2619 L443",
+   "to": 862
+  },
+  {
+   "do": "supersede",
+   "id": 309,
+   "evidence": "claims4 T: wrong label: the misprints are Track C's computed finding, not a statement of the paper. My arithmetic: row w(0) = 0.3 of the b = 0.1 table (L491) has M = 3.29993e-2, R = 2.89200, so M/R = 1.14105e-2 against the printed C = 1.41053e-2; row 1.1 (L493) has M/R = 3.41908e-2 as printed. The p(0) claim I did not recompute.",
+   "text": "Track C finds two misprints in the equilibrium table (b = 0.1) of arXiv:2108.11967: at w(0) = 0.3 the printed compactness C = 1.41053e-2 differs from M/R = 1.14105e-2 of the same row (main.tex L491), and at w(0) = 1.1 the printed central pressure p(0) is off by a factor of ten (L493) [JUDGEMENT: C's recomputation, REPORT.md section 6; the C entry rechecked by kb-claims4, the p(0) entry not].",
+   "label": "judgement",
+   "locator": "2108.11967v2:main.tex:L491; 2108.11967v2:main.tex:L493",
+   "origin": "tracks/kb/claims4",
+   "paper": "2108.11967",
+   "kind": "number"
+  },
+  {
+   "do": "supersede",
+   "id": 369,
+   "evidence": "claims4 T: fragment 'Conflict [...]: 1805.09034 (:195)', no statement; the row of D's REFERENCES.md:78 continues on the next line. Read 1805.09034 L195-199 and 1901.08528 L235.",
+   "text": "arXiv:1805.09034 cites Bertschinger 1985 for a secondary-infall halo profile rho ~ r^(-3/2) (main.tex L195-199), while arXiv:1901.08528 cites the same work (with Fillmore-Goldreich 1984) for the steeper r^(-9/4) profile of spherical collapse in an Einstein-de Sitter universe (PBH-UCMH-ArXiv-v2.tex L235).",
+   "label": "fulltext",
+   "locator": "1805.09034v3:main.tex:L195-199; 1901.08528v2:PBH-UCMH-ArXiv-v2.tex:L235",
+   "origin": "tracks/kb/claims4",
+   "paper": "1805.09034"
+  },
+  {
+   "do": "supersede",
+   "id": 427,
+   "evidence": "claims4 T: wrong label: 'can reach the Hills regime and is the most likely to publish it first' is F's judgement (NOVELTY.md) under fulltext; the text starts cut 'lines 708-712):'.",
+   "text": "The authors of arXiv:2406.11985 say that their sequence of mass ratios 8:1:1 and 18:1:1 could be continued for at least until 128:1:1 (TBH3.tex L708-712); Track F judges that this group can reach the Hills regime and is the most likely to publish it first [JUDGEMENT: F-hills, NOVELTY.md].",
+   "label": "judgement",
+   "locator": "2406.11985v1:TBH3.tex:L708-712",
+   "origin": "tracks/kb/claims4",
+   "paper": "2406.11985"
+  },
+  {
+   "do": "supersede",
+   "id": 337,
+   "evidence": "claims4 R: fragment 'lower energy limit E_min(r)', no predicate.",
+   "text": "arXiv:1305.2619 integrates the energy per unit mass of bound orbits in Schwarzschild from a minimum, found from V(r) = 0 with the capture angular momentum L_c, up to unity: E_min = (1 + 2Gm/r)/(1 + 6Gm/r)^(1/2) for r >= 6Gm and (1 - 2Gm/r)/(1 - 3Gm/r)^(1/2) for 4Gm <= r <= 6Gm (SFWpaper.tex L398-405).",
+   "label": "fulltext",
+   "locator": "1305.2619v1:SFWpaper.tex:L398-405",
+   "origin": "tracks/kb/claims4",
+   "paper": "1305.2619",
+   "kind": "method"
+  },
+  {
+   "do": "withdraw",
+   "id": 583,
+   "evidence": "claims4 R: a heading of core's table ('Single-level clouds across refinement boundaries, conservation identity | L727-763') with no statement; the statements of L727-763 are carried by 469, 470, 471 (verified here) and 868"
+  },
+  {
+   "do": "supersede",
+   "id": 185,
+   "evidence": "claims4 R: fragment 'observable peak amplitude and frequencies', no statement. Note: L1501 prints sigma^(7/2); B's verifier (B RISKS R9, verifier C8) finds sigma^(5/2) from the paper's own eq. result_OmZ: the successor states what L1501 prints.",
+   "text": "arXiv:2403.15126 estimates the peak of today's gravitational-wave spectrum as Omega_GW(t_0)|peak ~ 1e-6 sigma^(7/2) (M/M_sun)^(2/3) (T_rh/GeV)^(4/3), with a broad peak at f_peak ~ 4e-9 (M/M_sun)^(-1/3) (T_rh/GeV)^(1/3) Hz and a ruffled peak near 5 f_peak (pII_GW_Vir_C2_Arx.tex L1501-1510).",
+   "label": "fulltext",
+   "locator": "2403.15126v1:pII_GW_Vir_C2_Arx.tex:L1501-1510",
+   "origin": "tracks/kb/claims4",
+   "paper": "2403.15126",
+   "kind": "number"
+  },
+  {
+   "do": "supersede",
+   "id": 302,
+   "evidence": "claims4 R: fragment, a locator only ('astro-ph/0110561 abstract, SIDMGT_Xiv2.tex:56-62)'), the second source of 301's row.",
+   "text": "astro-ph/0110561 finds that halos formed in the long-mean-free-path regime relax to a quasistationary gravothermal profile with a nearly homogeneous core and a rho ~ r^(-2.19) halo, and that the contracting core reaches densities at which the mean free path becomes smaller than the gravitational scale height in the innermost region (SIDMGT_Xiv2.tex L56-62).",
+   "label": "fulltext",
+   "locator": "astro-ph/0110561v2:SIDMGT_Xiv2.tex:L56-62",
+   "origin": "tracks/kb/claims4",
+   "paper": "astro-ph/0110561"
+  },
+  {
+   "do": "supersede",
+   "id": 298,
+   "evidence": "claims4 R: wrong label: 'No relativistic dynamics' and 'Background only for Track C' are Track C's readings and judgements under fulltext.",
+   "text": "arXiv:2504.00075 predicts the population of supermassive black holes seeded by gravothermal collapse in dissipative self-interacting dark matter with a semi-analytical model built on merger trees (SMBH_GW.tex L117-119, L162), taking the collapsed mass fraction f_col ~ 3e-3 of the halo from earlier simulations (L283).",
+   "label": "fulltext",
+   "locator": "2504.00075v2:SMBH_GW.tex:L117-119; 2504.00075v2:SMBH_GW.tex:L162; 2504.00075v2:SMBH_GW.tex:L283",
+   "origin": "tracks/kb/claims4",
+   "paper": "2504.00075"
+  },
+  {
+   "do": "relocate",
+   "id": 741,
+   "locator": "1707.03595v4:Spin_PBH.tex:L1205-1209",
+   "evidence": "claims4 leftover (VERIFIER2): the near-extremal spin is at Spin_PBH.tex L1205-1209 ('very dense near a* = 1', 'tendency towards the extreme rotation'), not at L64-67"
+  },
+  {
+   "do": "supersede",
+   "id": 428,
+   "evidence": "claims4 leftover (VERIFIER2): author order wrong: TBH.tex L37-47 lists Ciarfella, Ficarra, Lousto; the trailing fragment 'Equal masses, bound.' is dropped. The rest as verified by claims_tracks and VERIFIER2.",
+   "text": "arXiv:2308.07365 (Ciarfella, Ficarra, Lousto 2023) evolves equal-mass, non-spinning hierarchical triples with an inner binary at d = 8 M and the third hole at D = 30 M; the merger delay scales about as 1/D^2.5, and a third hole closer than about 30 M breaks the binary up promptly (TBH.tex L66, L1040-1047).",
+   "label": "fulltext",
+   "locator": "2308.07365v1:TBH.tex:L37-47; 2308.07365v1:TBH.tex:L66; 2308.07365v1:TBH.tex:L1040-1047",
+   "origin": "tracks/kb/claims4",
+   "paper": "2308.07365"
+  },
+  {
+   "do": "supersede",
+   "id": 804,
+   "evidence": "claims4 leftover (VERIFIER2): 804 is an instruction of the brief (a list of topics marked [BACKGROUND] to check), like 805; one rule for both: an instruction is not a statement and keeps label to_verify, with the claims that answer it named in events. The eight locators where the topics were found are kept on the successor.",
+   "text": "Brief instruction: check the quantitative statements marked [BACKGROUND], in particular the Type I nature of collisionless critical collapse; the spin prediction of arXiv:1707.03595; the tracelessness conclusion of Green-Wald; horizon mass and energy fraction at neutrino decoupling; the r^(-9/4) profile; the scaling laws of the Hills mechanism.",
+   "label": "to_verify",
+   "locator": "gr-qc/0107076v1:paper.tex:L61; gr-qc/9804040v1:rrs98.tex:L55-56; 1707.03595v4:Spin_PBH.tex:L64-67; 1011.4920v2:inhomogeneities-paper.tex:L38-46; 2002.12778v2:CKSY2021.tex:L276-291; 1901.08528v2:PBH-UCMH-ArXiv-v2.tex:L235; 0911.1136v1:prp.tex:L86-88; astro-ph/0309084v1:ms.tex:L59",
+   "origin": "tracks/kb/claims4",
+   "paper": "1707.03595"
+  },
+  {
+   "do": "annotate",
+   "id": 805,
+   "evidence": "claims4 leftover (VERIFIER2): one rule with 804: a brief instruction keeps label to_verify; 804 was superseded by a to_verify claim of the same kind in this plan"
+  },
+  {
+   "do": "supersede",
+   "id": 313,
+   "evidence": "claims4 leftover (VERIFIER2): locator debris '| 2601.17117 `SIDM_MS.tex:476`' in the text. The successor states what I read at L476 and L481; the attribution 'citing 2108.11967' and 'dispersion approaches c' I did not re-read and do not carry.",
+   "text": "arXiv:2601.17117 finds with its general-relativistic Misner-Sharp simulations that the fiducial SIDM halo departs from the self-similar evolution as its compactness 2m/R grows toward 1 (SIDM_MS.tex L476) and collapses into a black hole of about 200 M_sun at t = 580 t_0, a collapse fraction of 3e-8 (L481).",
+   "label": "fulltext",
+   "locator": "2601.17117v2:SIDM_MS.tex:L476; 2601.17117v2:SIDM_MS.tex:L481",
+   "origin": "tracks/kb/claims4",
+   "paper": "2601.17117"
+  },
+  {
+   "do": "supersede",
+   "id": 430,
+   "evidence": "claims4 leftover (VERIFIER2): cut at both ends ('lines 110, 246): ...' and a trailing '('); its '~10^3 or more scatterings' understates the paper's 'more than hundreds of thousands or millions' (L108), and 'broken up ... not by tidal separation' is F's reading. The successor carries what L108, L110 and L246 say.",
+   "text": "arXiv:2505.03934 notes that the main results on N-body scattering come from very many simulations, often more than hundreds of thousands or millions, a major challenge for expensive numerical-relativity simulations (apssamp.tex L108), and therefore runs a few selected binary-single and binary-binary case studies with the code BAM (L110), with all black-hole masses equal, so that the single hole has half the mass of the binary (L246).",
+   "label": "fulltext",
+   "locator": "2505.03934v2:apssamp.tex:L108; 2505.03934v2:apssamp.tex:L110; 2505.03934v2:apssamp.tex:L246",
+   "origin": "tracks/kb/claims4",
+   "paper": "2505.03934"
+  },
+  {
+   "do": "supersede",
+   "id": 864,
+   "evidence": "claims4 leftover (VERIFIER2): 'Jena' is the affiliation (apssamp.tex L80), not an author; the authors of 2602.06961 are Heinze, Schaefer, Bruegmann (L77-79). The rest of the text is kept.",
+   "text": "arXiv:2602.06961 (Heinze, Schaefer, Bruegmann) gives the general N-body 2PN Hamiltonian in ADM gauge and integrates its equations of motion (pn-nbody code); arXiv:2610.20594 (Heinze, Cao) constrains the outer orbit of a hierarchical black-hole triple from two merger events with Peters equations and integrates with the same pn-nbody code (L1469); it is not itself a PN N-body dynamics paper. Both share an author with the BAM binary-single study arXiv:2505.03934.",
+   "label": "fulltext",
+   "locator": "2602.06961v1:apssamp.tex:L77-85; 2610.20594v1:apssamp.tex:L79-88; 2610.20594v1:apssamp.tex:L1469",
+   "origin": "tracks/kb/claims4",
+   "paper": "2602.06961"
+  },
+  {
+   "do": "supersede",
+   "id": 877,
+   "evidence": "claims4 leftover (VERIFIER2): a paper statement and F's run result under one fulltext label: split; the paper part is the successor, F's numbers go into a judgement claim added next.",
+   "text": "arXiv:1804.02911 finds in its scattering experiments that the largest penetration factor D with binary disruption is D = 2.1, for coplanar prograde orbits and for all sampled orbits (mnras.tex L359-361).",
+   "label": "fulltext",
+   "locator": "1804.02911v1:mnras.tex:L359-361",
+   "origin": "tracks/kb/claims4",
+   "paper": "1804.02911"
+  },
+  {
+   "do": "add",
+   "text": "Track F places the 8:1:1 and 18:1:1 configurations of arXiv:2406.11985 at D/r_t = 4.1 and 5.8 (run F-hills-20261115-045435-f62d553), outside the range D <= 2.1 in which arXiv:1804.02911 finds binary disruption (mnras.tex L359-361) [JUDGEMENT: F's computation].",
+   "label": "judgement",
+   "kind": "result",
+   "paper": "1804.02911",
+   "locator": "1804.02911v1:mnras.tex:L359-361",
+   "track": "F-hills",
+   "origin": "tracks/kb/claims4",
+   "evidence": "claims4: run part of claim 877, split off (VERIFIER2 leftover); numbers from 877's text and VERIFIER2 item1 (stdout D_over_rt 4.116, 5.810)"
+  }
+ ]
+}
