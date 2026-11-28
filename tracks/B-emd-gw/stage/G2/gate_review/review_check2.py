@@ -132,8 +132,15 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("out")
     ap.add_argument("--np", type=int, default=3)
+    ap.add_argument("--from-json", default=None,
+                    help="review_check2.json of an earlier run: only the table and the figure")
     args = ap.parse_args()
     os.makedirs(args.out, exist_ok=True)
+    if args.from_json:
+        res = json.load(open(args.from_json))
+        res["from_json"] = args.from_json
+        report(res, args.out)
+        return
     res = {"RE0": analytic_check()}
     print("RE0", res["RE0"], flush=True)
     if not res["RE0"]["holds"]:
@@ -177,11 +184,40 @@ def main():
                              "R1_raw_mine": e["R1_raw_form"], "R1_raw_part1": p1[j]["rms_raw_ratio"]})
         res["RE3_cmp"] = cmp_
     json.dump(res, open(os.path.join(args.out, "review_check2.json"), "w"), indent=1)
+    report(res, args.out)
+
+
+def report(res, out):
+    """Table, the judgements RE1-RE4 as worded in GATE_REVIEW.md part 2, and the figure."""
+    nan = float("nan")
+    ratios = res["ratios"]
     for e in ratios:
-        print(f"a={e['a']:7.2f} P_gd {e['P_gd_cor_form']:.4f}/{e['P_gd_raw_form']:.4f} "
-              f"P_zs {e['P_zs_cor_form']:.4f} R1 {e['R1_cor_form']:.4f} R8 {e['R8_cor_form']:.4f} "
-              f"dt {e['dt_max']:.1e}")
-    figure(res, args.out)
+        g = lambda k: e.get(k, nan)  # noqa: E731
+        print(f"a={e['a']:7.2f} P_gd cor {g('P_gd_cor_form'):.5f} raw {g('P_gd_raw_form'):.5f} | "
+              f"P_zs cor {g('P_zs_cor_form'):.5f} raw {g('P_zs_raw_form'):.5f} | "
+              f"R1 cor {g('R1_cor_form'):.5f} R8 cor {g('R8_cor_form'):.5f} | "
+              f"R1 raw {g('R1_raw_form'):.5f} R8 raw {g('R8_raw_form'):.5f} | dt {e['dt_max']:.1e}")
+    cor = [e for e in ratios if "P_gd_cor_form" in e]
+    late = {round(e["a"]): e for e in cor}
+    j = {}
+    j["RE1_maxdev_P_gd_cor_a_le_64"] = max(abs(e["P_gd_cor_form"] - 1) for e in cor if e["a"] < 65)
+    j["RE1_maxdev_P_gd_cor_all"] = max(abs(e["P_gd_cor_form"] - 1) for e in cor)
+    j["RE1_maxdev_P_gd_raw_all"] = max(abs(e["P_gd_raw_form"] - 1) for e in ratios)
+    j["RE1_holds"] = j["RE1_maxdev_P_gd_cor_a_le_64"] <= 5e-3 and j["RE1_maxdev_P_gd_cor_all"] <= 1e-2
+    j["condition_b_refuted"] = any(not 0.95 <= late[a]["P_gd_cor_form"] <= 1.05 for a in (64, 100, 132))
+    j["RE2_R8_minus_R1"] = {a: late[a]["R8_cor_form"] - late[a]["R1_cor_form"] for a in (64, 100, 132)}
+    j["RE2_fall"] = {a: abs(late[a]["R8_cor_form"] - 1)/abs(late[a]["R1_cor_form"] - 1) for a in (64, 100, 132)}
+    j["RE2_holds"] = all(abs(v) <= 0.02 for v in j["RE2_R8_minus_R1"].values())
+    j["RE2_refuted"] = all(j["RE2_fall"][a] <= 0.5 for a in (100, 132))
+    if "RE3_cmp" in res:
+        j["RE3_maxdiff"] = max(abs(c["diff"]) for c in res["RE3_cmp"])
+        j["RE3_holds"] = j["RE3_maxdiff"] <= 2e-3
+    j["RE4_maxdiff_raw_cor"] = max(abs(e["P_gd_raw_form"] - e["P_gd_cor_form"]) for e in cor)
+    j["RE4_holds"] = j["RE4_maxdiff_raw_cor"] <= 3e-3
+    res["judgement"] = j
+    print(json.dumps(j, indent=1))
+    json.dump(res, open(os.path.join(out, "review_check2_report.json"), "w"), indent=1)
+    figure(res, out)
 
 
 def figure(res, out):
@@ -203,10 +239,10 @@ def figure(res, out):
     ax.plot(a, [e["P_zs_cor_form"] for e in rr], "^", color=fs.PAL["blue"], label="zero shift, corrected")
     ax.plot(a, [e["P_zs_raw_form"] for e in rr], "v:", color=fs.PAL["blue"], mfc="none", label="zero shift, raw")
     ax.set_xscale("log")
-    ax.set_ylim(0.93, 1.07)
+    ax.set_ylim(0.985, 1.005)
     ax.set_xlabel(r"$a$")
     ax.set_ylabel(r"band rms $|k|\leq 8k_f$: 8 / 1 per cell")
-    ax.set_title(r"(a) particle number, $128^3$ (bands: 1 and 5 per cent)", fontsize=9)
+    ax.set_title(r"(a) particle number, $128^3$ (shaded: 1 per cent)", fontsize=9)
     ax.legend(frameon=False, fontsize=7, loc="lower left")
     ax = axs[1]
     ax.axhline(1.0, color="k", lw=0.8)
