@@ -1294,3 +1294,35 @@ tag within 1e-5 and |sum m W/psi / M - 1| below 1e-3 (the 1e5 builds: models REA
 P1a.2 mean radial velocity of the _kin file negative, of order -0.01 times the mean speed, net
 momentum below 1e-6; P1a.3 wall time 2 to 6 minutes each on one core (the King 1e6 build took
 186 s, C-20261125-120426-f261c3e).
+
+## 2026-11-28T02:12Z  batch 35: predictions before G3 step 1a (scope/SCOPE_G3.md section 2a, committed 74e08a5d6)
+
+Four card chains on the release card build of core-v0.8 (`.work/build_gpu_v08/src/athena`),
+decks `longruns/inputs/G3A_tmb01_Z0p<z>_N1e6_s1_<kind>.athinput` (make_decks_g3a.py: the G2
+deck of N6b324 with the b = 0.1 model and the finder: num_horizons 1, flow = shear, mass_tol
+1e-5, 100 polishing iterations, diagnostics, a search every 1 M), N = 1e6, seed 1, mesh M/8,
+tlim 600 M, 4 card-hours reserved each. Labels G3A-C (Z(0) = 0.5404, unkicked), G3A-52, G3A-56,
+G3A-60 (kicked one percent inward). Readers: nseries.py for the lapse and the 20 M block means
+(as in G2) and the finder's status and summary files (H1 of the scope).
+
+- G3A.1 (F2) G3A-C holds 600 M: no found horizon, alpha_min above 0.3 throughout, 20 M block
+  means of alpha_c - alpha_c(0) within +-0.03 [JUDGEMENT, about 70 per cent: the King b = 1
+  control held at N = 1e6 on this mesh, and the b = 0.1 core has a similar number of particles
+  per core cell]. Refuted by a found horizon or a marker crossing before 600 M.
+- G3A.2 G3A-52 holds 600 M with an interior maximum of the block means after the kick (the
+  kicked contraction turns back), like N6b324. Refuted by a found horizon before 600 M.
+- G3A.3 G3A-56 collapses: a found horizon (H1: five consecutive found searches, polished)
+  before 600 M, first found between 150 and 450 M. Refuted by no found horizon by 600 M (then
+  the b = 0.1 threshold lies beyond 0.56: the core-halo shift of arXiv:2105.05556).
+- G3A.4 G3A-60 collapses before G3A-56: t_H(0.60) < t_H(0.56). Refuted otherwise (or if
+  G3A-60 does not collapse).
+- G3A.5 the finder: in each collapsing member the first found search lies within 30 M after the
+  first crossing of alpha_min = 0.3; no search of the two stable members ends found (no false
+  acceptance); M_irr non-decreasing within 1e-3 after the first found search. Refuted by any
+  false acceptance, a marker crossing without a found horizon within 50 M, or a falling M_irr.
+- G3A.6 the horizon mass at t_H + 50 M of each collapsing member is at least 0.8 of M_ADM (the
+  core takes most of the cluster, as the collisionless King and monoenergetic collapses do,
+  SCOPE.md:96-100) [JUDGEMENT, low confidence for a core-halo model]. Refuted below 0.8.
+- G3A.7 cost 2.0 to 3.5 card-hours per member (G2 M/8 members: 2.63-2.71 for 600 M). Refuted
+  outside.
+So the bracket I expect is (0.52, 0.56), containing the binding-energy maximum 0.5404 (F3).
