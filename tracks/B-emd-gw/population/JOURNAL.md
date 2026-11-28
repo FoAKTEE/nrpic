@@ -1544,3 +1544,25 @@ changed to pick each file by the time in its header (mode splitx), for every mem
   sampling) if |R_8 - 1| is at least 0.8 |R_1 - 1| for both statistics at a = 132. Between: it
   falls, but not as fast as the noise.
 - W6b (slices): V, <K>_V, <alpha>_V agree between the 8 ppc gauges within 1e-3 (as W1).
+
+## 2026-11-27 23:55 PST (lead of batch 40): outcomes so far (G8b in part, G8c, W5, first rows of W6); what is still running
+
+[VERIFIED by the records named]
+- q0107 closed: nrpic-run finish B-20261128-034731-640f4f4, completed (exit 0), 164 output files
+  hashed (88.2 GB). The two analyses were registered at 07:41:11 and 07:41:16 UTC, seconds after
+  the finish ended (their purpose text says "while finish was hashing": it had just ended).
+- G8c HOLDS: 0.7736 card-h (manifest gpu_hours, sacct ElapsedRaw over jobs 5585, 5594, 5603:
+  22:51 and 13:16 preempted, 10:18 completed), inside 0.6-1.2.
+- G8b, guard part HOLDS: the chain reached t = 21.916 (a = 141.7) with STATUS DONE (tlim), two
+  SIGTERM cuts continued from restart files, no exit status 3 (chain/events.log). Its momentum
+  constraint part waits for B-20261128-074111-e2fcd72 (analyze_gr on q0107, running).
+- W5 NOT JUDGED (wrong epochs, entry 23:35); W5b runs inside B-20261128-074116-363f95f.
+- W6, first rows (B-20261128-074116-363f95f run.log, a = 49.06 only, before it ended): eight per
+  cell does not move the invariant at a = 49: I_B 3.1261e-12 (8 ppc) against 3.1260e-12 (1 ppc)
+  with zero shift, 2.8202e-12 against 2.8200e-12 with the Gamma driver; so the gauge ratio of I_B
+  is 0.9022 at eight per cell and 0.9021 at one; median 0.9973 against 0.9976. At a = 49 the
+  part of the invariant's gauge difference that the mean carries (the halo cores, batch 39) does
+  not fall with the sampling at all. W6 is judged at a = 100 and 132, not yet reached.
+  [JUDGEMENT] A difference that is the same to 1e-4 at one and eight particles per cell is not
+  particle noise; truncation that differs between the two coordinate systems in the cores is the
+  candidate left at a = 49, and only W5b (256^3) can test it.
