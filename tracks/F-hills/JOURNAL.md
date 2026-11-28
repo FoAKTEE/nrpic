@@ -1481,3 +1481,30 @@ status 2 area mass 1.11375; summary 2 over 150-186 M: M_chr 1.12250-1.12298, S/M
   flag in both; resubmission after a preemption in the data flow); every data figure's numbers
   JSON and `tables/ledger.tex` equal to v2's committed files (no input changed). Refuted if any
   numbers JSON or the ledger differs.
+
+### Outcomes of batch 35 (18:10 PST)
+
+- Reader b21_a2_state.py corrected and rerun on the record to 186.0 M, F-20261128-020208-d7c6f1c
+  (one core, 15 s; fig_b21_a2_state read): label and title from the chain's state ("ENDED at
+  186.000 M, chain FAILED"); S1 max step 2^-9 M, S2 overlaps <= 1.248e-9 M (MET as before); S6
+  with hrms <= 1e-2: member drifts 65-95 M 2.21e-5 and -3.4e-7 per M (3.09e-5 and -8.1e-6 with
+  the unconverged searches), dropped 245 (finder 0) and 421 (finder 1) accepted searches; m2's
+  converged range 0.12939-0.12964; heavy hole on hrms < 1e-6 over 86.6-131 M: 618 searches,
+  median 1.004216, range 6.42e-5, hrms <= 3.6e-8; 1.00444 at 133 M, 1.00531 at 135 M, at most
+  1.0161 (hrms 1.1e-2) before 137.4 M; MeshBlocks A 2374-2584 (jobs 4866, 4875), A2 1968-2514
+  (Total at the start of job 5230; largest end count 2444); card peak 78789 MiB; rms H at most
+  6.19e-5 (135.5 M), 1.51e-5 at the end. S7 at 186.0 M: m2 17.5297 M from M, v_rel 0.3739
+  (radial 0.2445), m2's speed 0.3390, M's tracker 0.0358; remnant (summary) 1.122912, S/M^2
+  0.25288, hrms 3.37e-4, mean expansion -0.0402; m2 0.129639, hrms 1.4e-6. These confirm the
+  verifier's part-2 numbers where both exist (v_rel, chi, MeshBlocks 2514, the overlap at 104 M)
+  and correct three of my batch-34 statements (1.55e-3 by 133 M; MeshBlocks 1968-2584; m2 within
+  6.4e-4 including an unconverged branch).
+- D35-N MET: run_all F-20261128-020409-a3edb04; all twelve numbers JSON, ledger.tex and
+  parameters.tex byte-equal to v2's; both schematics read (four items green). Note v2.1
+  compiled: 24 pages, 0 undefined references, 0 overfull boxes; checker candidates only the run
+  ids of the appendix and script docstrings, as in v2. `note/main.pdf` is 1.37 MB, above the
+  1-MB guideline of the session (v2's was the same size and already tracked).
+- A2's continuation: q0091 waiting (5 of 5 jobs of the account in Slurm at 18:09 PST: two of A
+  running, three pending). Nothing of D35-1..9 can be judged in this session.
+- Restart files (decision 0048 items 2, 8; nothing deleted): sizes per run in HANDOFF.md.
+- Card-hours used in this session: 0 (processors only: two registered runs, one core each).
