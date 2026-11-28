@@ -1502,3 +1502,8 @@ Compare nrpic.hst and z4c.user.hst rows of cycles 13-24 (alpha_min, int_E, H-nor
   are exact for periodic set-ups, CLAUDE.md). Refuted if any column of a row after the restart differs beyond 1e-14
   relative: then a state is not restored, the S1L step at t = 50 has a candidate cause in the code, and core is asked.
   A hold leaves the card deposit after a restart (atomics) as the candidate, which this test cannot reach.
+
+### RX, first attempt stopped (23:50 PST): A-20261128-074045-15a6f1e killed by me after 2 cycles (60 s per cycle on one
+core: 24 + 12 cycles on two builds would take 70 min). Closed as failed (exit -15), kept on record. RX is rerun with
+8 cycles straight against 4 cycles continued from the restart file of cycle 4; the prediction stands unchanged for
+rows 5-8.
