@@ -6,13 +6,35 @@ decision 0019 item 4). Tags that exist: core-v0.1 = 7daed19 (asymptotically flat
 core-v0.2 = 52c44eb (periodic particles and cosmological gauge; source of main a1c2237),
 core-v0.3 = 609a875 (below).
 
-## core-v0.9 (release candidate, 2026-11-28; NOT RELEASED until its card check has passed): branch core/faces-finder (merged into core/nrpic at 8139c969)
+## core-v0.9 (release, 2026-11-28): branch core/faces-finder (merged into core/nrpic at 8139c969)
+
+Record: `tracks/core/RELEASE-v0.9.md` (first line: source commit ad54460e, REGRESSION PASS,
+CARD CHECK PASS). Executables with READY, COMMIT and SHA256SUMS:
+`/data/haiyangw/nrpic/scratch/core/exe/core_nrpic_v09/` (`athena_cpu` serial, `athena_gpu`
+one A100, `athena_cpu_omp` threaded, `athena_cpu_mpi` several ranks). Interface documents
+for `coord/INTERFACES/`: new `tracks/core/interfaces/level_faces.md`,
+`restart_parameters.md`, `finder_box.md`; changed `finder_stop.md`.
 
 In short: four options of the horizon finder (`<fastflow> start_scan_<n>,
-start_scan_rmin_<n>, start_scan_rmax_<n>, trapped_tol_<n>`, all off when absent), two
-reasons and three optional columns of its status file, and three changes without an
-option (below, with the runs they change). Release record `tracks/core/RELEASE-v0.9.md`
-(byte regression of the merged tree, branch tests repeated, card check q0094 pending).
+start_scan_rmin_<n>, start_scan_rmax_<n>, trapped_tol_<n>`, all off when absent, read at
+every start), two reasons (7, 8) and three optional columns (16 to 18) of its status
+file, and three changes without an option (below, with the runs they change). No file
+format changes; restart files are written as by core-v0.8 (a parameter added on restart
+adds a line to the stored input).
+
+Options (details: "Options" below and `finder_box.md` section 3):
+
+| Option | Type, when absent | What it does |
+|---|---|---|
+| `<fastflow> start_scan_<n>` | integer 0 or >= 2; off | start radius from N round spheres (outermost with a negative expansion integral); none trapped: no flow, reason 8 |
+| `<fastflow> start_scan_rmax_<n>` | real; `initial_radius_<n>` | largest radius of the scan |
+| `<fastflow> start_scan_rmin_<n>` | real; rmax/32 | smallest radius of the scan |
+| `<fastflow> trapped_tol_<n>` | real >= 0; off | accept only a surface with smallest radius > 0 and rms(H) times area mass below the value; reason 7 at the cap |
+
+For every deck that uses the finder, in every release (decision 0049 item 3): without
+`<problem> puncture_setup = true` the finder searches only if the deck names
+`<fastflow> start_time_<n>` and `stop_time_<n>` (the defaults, the largest double and
+-1, never search; `finder_box.md` section 0). The defaults are not changed.
 
 Which runs change without an option:
 
@@ -34,10 +56,20 @@ Not done in this release (each stated in the interface texts):
   timed on a card; the share in a run with the spacetime solver is not measured.
 - The ripple of the deposit at a level face for a lattice of particles (0.19 to 0.34 of
   the density in the cells at the face) is not removed; conservation is.
-- The false acceptance of Track A's P0L6 at t = 118.12 is not retested (no restart
-  file); the weighted flow is not tested on punctures; `start_scan` is not applied to a
+- The weighted flow is not tested on punctures; `start_scan` is not applied to a
   horizon tied to a puncture; parameters added on restart are tested on a single
-  continued run, not inside a chain on a card.
+  continued run (processors and card), not inside a chain.
+- **The false acceptance of Track A's chain** (P0L6 at t = 118.12, mass 562, smallest
+  radius -3.59) is not retested: no restart file lies between t = 110 and 120. The same
+  class of event is reproduced and refused on two other files (`finder_box.md` section 4).
+
+Card check (q0094): run core-20261128-052151-e5a2d55 (job 5601, eight cases, 0.0067
+card-hours), judged by core-20261128-072820-d5fa2ca (`analysis/faces_finder/card_check.py`,
+`JOURNAL.md` after entry 2026-11-28T07:27Z): K1 to K4 held. The planar deposit lines equal
+the processors to 2.0e-15, the three compensated cases on three levels conserve to
+9.9e-16 at each of 12 records, the six S1L finder members are found with masses equal to
+1e-15, and a continued run takes `fastflow/diagnostics=true` from the command line. The
+first attempt q0086 (job 5544) was preempted after 5 s.
 
 The branch's own entries follow (written by its session for the maintainer's merge).
 

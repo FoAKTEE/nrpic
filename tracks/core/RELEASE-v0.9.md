@@ -1,15 +1,16 @@
-RELEASE core-v0.9 ad54460ed0675330e82f9813419b89284f06ecfa REGRESSION PASS, CARD CHECK PENDING: NOT RELEASED
+RELEASE core-v0.9 ad54460ed0675330e82f9813419b89284f06ecfa REGRESSION PASS, CARD CHECK PASS
 
-NOT RELEASED. The release clerk does not merge or tag this candidate until the card check
-of its card executable has run and been judged (shared-queue entry q0094, label
-core-ff-card2, priority 2; the first attempt q0086, Slurm job 5544, was preempted after
-5 s although the queue listed it as done). When it has passed, this file is rewritten in
-the form of `RELEASE-v0.8.md` (first line "CARD CHECK PASS") and the executables are
-published under `scratch/core/exe/core_nrpic_v09/`; not before.
+Card check of the card executable of this source: PASS, every prediction held, run
+core-20261128-052151-e5a2d55 (shared-queue entry q0094, label core-ff-card2, Slurm job
+5601, COMPLETED 2026-11-28 05:39Z, eight cases in 24 s, 0.0067 card-hours), judged by the
+registered analysis core-20261128-072820-d5fa2ca (`analysis/faces_finder/card_check.py`,
+figure `fig_card_check.png` looked at). The first attempt q0086 (job 5544) was preempted
+after 5 s and its run core-20261128-002929-335815e is closed as stopped.
 
-# Release candidate core-v0.9: branch core/faces-finder on top of core-v0.8
+# Release core-v0.9: branch core/faces-finder on top of core-v0.8
 
-Prepared by the lead of core on 2026-11-28 UTC (2026-11-27 PST; batch 35). The commit of
+Prepared by the lead of core on 2026-11-28 UTC (2026-11-27 PST; batch 35), made final
+after the card check in batch 40 (2026-11-28T07:40Z). The commit of
 the first line is the source commit (last change of `athenak/`); `core/nrpic` holds it
 through the merge 8139c969, and `git diff ad54460e 8139c969 -- athenak/src` is empty
 [VERIFIED at 8139c969]; `python/`, `problems/`, `scripts/`, `docs/` are those of release
@@ -18,7 +19,8 @@ they change, what is not done: `tracks/core/CHANGELOG.md`, section core-v0.9. In
 texts (to be copied to `coord/INTERFACES/` by the clerk): `tracks/core/interfaces/
 level_faces.md`, `restart_parameters.md`, `finder_box.md`. Predictions and outcomes:
 `tracks/core/JOURNAL.md`, entry 2026-11-28T02:02Z (R9, T9, Q9, V8), and
-`JOURNAL-faces-finder.md` (D, C0, C1, R, S1-S4, CM, T, K).
+`JOURNAL-faces-finder.md` (D, C0, C1, R, S1-S4, CM, T, K); the card check: `JOURNAL.md`,
+entry 2026-11-28T07:27Z and its outcome.
 
 ## What it adds, in one paragraph
 
@@ -33,6 +35,11 @@ a run continued with `-r` takes parameters its restart file does not hold from t
 command line. And a finding that needs no new source: in periodic boxes the finder's
 default flow function is the reason for the cap of iterations; `<fastflow> flow = shear`
 cures it in every release.
+
+A fact for every deck that uses the finder, in every release (decision 0049 item 3; Track
+C `finder-start-stop-defaults`): without `<problem> puncture_setup = true` the finder
+searches only if the deck names `<fastflow> start_time_<n>` and `stop_time_<n>`; the
+defaults (the largest double, -1) never search (`finder_box.md` section 0).
 
 ## Processor evidence (merged tree, serial build `wt/core/.work/build_cpu_v09rc`, 180 s on 6 jobs, sha256 b7a48e9a...)
 
@@ -55,37 +62,37 @@ cures it in every release.
 | `finder_box.py` on Track A's S1L restart file (t = 220), weighted flow, scan, `trapped_tol` | core-20261128-020447-28dbb9f | exit 0; every horizon file byte-identical to the branch run | core-20261127-235215-27c6606 |
 | `cap_mid.py`, cap between the levels | core-20261128-020922-7d1da68 | CAP MID PASS | core-20261128-002502-76a25c3 |
 
-## Card check (PENDING)
-
-Shared-queue entry q0094 (core-ff-card2, priority 2, 0.2 card-hours asked), list
-`tracks/core/analysis/faces_finder/card.list`, executable
-`/data/haiyangw/nrpic/scratch/core/exe/core_faces-finder/athena_gpu` (built from
-ad54460e; untested on a card). Prediction K of `JOURNAL-faces-finder.md` entry 5,
-unchanged: K1 the three planar deposit cases equal the processor run in every cell of the
-line to 1e-12, `cic_fs` equals `cic` to 1e-13, line sum of `pcs_comp` 32 to 1e-10; K2 the
-three compensated cases on the refined mesh conserve to 1e-12 at every record (a
-card-only failure would mean the level-face kernel is wrong on the device); K3 the S1L
-probe with the weighted flow: every member found, masses within 1e-6 relative of the
-processor run, column 16 within 1e-4, scan start within 1e-6; K4 a continued run takes
-`fastflow/diagnostics=true` on the command line. To judge it, from `wt/core`:
-
-    sacct -j <job> --format=JobID,State,ExitCode,Elapsed   # COMPLETED, not PREEMPTED
-    harness/bin/nrpic-run finish <run id of q0094>
-    harness/bin/nrpic-run submit --kind scouting --gate G2 --launcher local --cores 1 \
-      --purpose "judge the card check of core-v0.9 (K1-K4)" -- \
-      python3 tracks/core/analysis/faces_finder/card_check.py --card <its output dir> \
-      --dep /data/haiyangw/nrpic/scratch/core/core-20261127-234848-7d666df \
-      --cons /data/haiyangw/nrpic/scratch/core/core-20261127-234843-fa6c2e9 \
-      --s1l /data/haiyangw/nrpic/scratch/core/core-20261127-235215-27c6606 --out '$NRPIC_RUN_DIR'
-
 ## Executables
 
-None published for the release yet. For scouting, the branch's executables of the same
-source stay at `/data/haiyangw/nrpic/scratch/core/exe/core_faces-finder/` (athena_cpu,
-athena_cpu_omp, athena_gpu; COMMIT ad54460e; READY). After the card check passes:
-`scratch/core/exe/core_nrpic_v09/` with athena_cpu (the R9 build), athena_cpu_mpi (`wt/core/.work/build_cpu_mpi_v09rc`,
-tested by M9), athena_cpu_omp and athena_gpu (copies of `core_faces-finder`, same tree),
-COMMIT, SHA256SUMS, READY.
+Published 2026-11-28T07:37Z by the lead of core in a new directory,
+`/data/haiyangw/nrpic/scratch/core/exe/core_nrpic_v09/` (COMMIT, SHA256SUMS, READY there):
+`athena_cpu` (serial; the build of R9, T9 and Q9, sha256 b7a48e9a...), `athena_cpu_mpi`
+(Open MPI; the build of M9, a44b7c85...), `athena_cpu_omp` (threaded; copy of the branch's,
+2e31b69e...) and `athena_gpu` (one A100; the executable that q0094 ran, 20172cae...), all
+of the source tree ad54460e (`git diff ad54460e 2b741dee -- athenak/src python problems
+scripts docs` empty at the time of publication). The branch's directory
+`scratch/core/exe/core_faces-finder/` stays (its READY points here). The release builds
+`.work/build_{cpu,gpu}_v09` in the main checkout are the clerk's.
+
+## Card check
+
+Run core-20261128-052151-e5a2d55: eight runs of the card build in one job (list
+`analysis/faces_finder/card.list`), all with status 0. Judged against the processor runs
+core-20261127-234848-7d666df (deposit across a level face), core-20261127-234843-fa6c2e9
+(conservation on three levels) and core-20261127-235215-27c6606 (finder on Track A's S1L
+file) by `card_check.py`; prediction K in `JOURNAL-faces-finder.md` entry 5, unchanged;
+outcome in `JOURNAL.md` after the entry 2026-11-28T07:27Z.
+
+| Prediction | Outcome |
+|---|---|
+| K1 the planar lines of `cic`, `cic_fs`, `pcs_comp` equal the processor run to 1e-12; `cic_fs` = `cic` to 1e-13; line sum of `pcs_comp` 32 to 1e-10 | held: `cic` and `cic_fs` 0.0 in every cell, `pcs_comp` 2.0e-15 (in the coarse cells beyond the face only); `cic_fs` - `cic` = 0.0; line sum 32.0 |
+| K2 the three compensated cases on the refined mesh conserve the E integral against the sum of m W to 1e-12 at every record (a card-only failure would mean the level-face kernel is wrong on the device) | held: 9.92e-16 or 0 at each of 12 records in all three cases (one unit in the 16th digit the history prints); the processors gave 2.1e-14 to 2.7e-14 |
+| K3 S1L with the weighted flow: every member found, masses within 1e-6 relative of the processors, column 16 within 1e-4, scan start within 1e-6 | held: six of six found with the processors' iteration counts; masses equal to 1e-15, column 16 to 3e-16, scan start 0.1615097240063816 identical |
+| K4 a continued run takes `fastflow/diagnostics=true` on the command line | held: status 0, a status file with one record, the log line "Parameter added on restart from the command line" |
+
+Verdict of the lead [VERIFIED for K1 to K4; JUDGEMENT that this suffices]: the release
+passes its card check. The card check does not time the extra ghost exchanges, does not
+test a chain, and runs the finder on one file.
 
 ## Not done in this release
 
@@ -95,5 +102,28 @@ test without the spacetime solver (cubic cloud with c2 11.9 s before, 12.1 s now
 pass with the linear cloud 5.3 s and 10.7 s; run core-20261127-234843-fa6c2e9), not on a
 card and not inside a coupled run; the ripple of the deposit at a level face for a
 lattice of particles stays; the weighted flow on punctures, the scan for a horizon tied
-to a puncture and parameters added inside a chain on a card are untested; Track A's
-false acceptance at t = 118.12 cannot be retested. CHANGELOG, section core-v0.9.
+to a puncture and parameters added inside a chain are untested; the false acceptance of
+Track A's chain (P0L6 at t = 118.12) is not retested (no restart file between t = 110 and
+120). CHANGELOG, section core-v0.9.
+
+## For the release clerk
+
+Merge `core/nrpic` into main; tag `core-v0.9` on the source commit of the first line
+(ad54460e), or on the merge on main after comparing the source trees (`git diff ad54460e
+<merge> -- athenak/src python problems scripts docs` empty); build `.work/build_gpu_v09`
+and `.work/build_cpu_v09` from that source. Copy to `coord/INTERFACES/`: new
+`tracks/core/interfaces/level_faces.md`, `restart_parameters.md`, `finder_box.md`;
+changed `finder_stop.md` (two paragraphs: start and stop times; options added to a
+continued run). CLAUDE.md row: the three changes without an option (item 2 changes every
+refined run with `deposit_comp_c > 0`, Track A's nested meshes among them), the four
+finder options, `flow = shear` for boxes, the start and stop times, executables
+`scratch/core/exe/core_nrpic_v09/`. Compare a release build with core's `athena_cpu` by
+`regress_v04.py` (75 items), not by checksums; a release card build can be checked with
+`analysis/faces_finder/card.list` and `card_check.py` (0.01 card-hours by q0094).
+
+How to repeat the checks:
+```
+cd /data/haiyangw/nrpic/wt/core
+harness/bin/nrpic-run submit --kind scouting --gate G2 --launcher local --cores 3 --purpose "..." -- python3 tracks/core/analysis/release/regress_v04.py --base /data/haiyangw/nrpic/.work/build_cpu_v08/src/athena --new <athena_cpu> --out '$NRPIC_RUN_DIR' --cores 3
+harness/bin/nrpic-run submit --kind scouting --gate G2 --launcher local --cores 1 --purpose "..." -- python3 tracks/core/analysis/faces_finder/card_check.py --card <card run dir> --dep /data/haiyangw/nrpic/scratch/core/core-20261127-234848-7d666df --cons /data/haiyangw/nrpic/scratch/core/core-20261127-234843-fa6c2e9 --s1l /data/haiyangw/nrpic/scratch/core/core-20261127-235215-27c6606 --out '$NRPIC_RUN_DIR'
+```
