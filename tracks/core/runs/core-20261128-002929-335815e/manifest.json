@@ -1,0 +1,231 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "core-20261128-002929-335815e",
+  "track": "core",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "Card check of core/faces-finder: deposit across level faces (K1, K2), finder options on Track A's S1L file (K3), parameter added on restart (K4)",
+  "preregistered_in": null,
+  "launcher": "batch",
+  "command": [
+    "scripts/gpu_batch.sh",
+    "/data/haiyangw/nrpic/scratch/core/core-20261128-002929-335815e/batch.list"
+  ],
+  "cwd": "scratch/core/core-20261128-002929-335815e",
+  "git": {
+    "sha": "335815e4c0d7031d16d0be233c944cbe874fcb50",
+    "branch": "core/faces-finder",
+    "dirty": false,
+    "merge_base_main": "f65fafd2df0aba4e71dab454a60fc4d03f940d0f",
+    "worktree": "wt/core-s5"
+  },
+  "code": {
+    "core_tag": "core-v0.8",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": [
+      "nrpic_cf",
+      "nrpic_cosmo",
+      "nrpic_geodesic"
+    ],
+    "exe": "/data/haiyangw/nrpic/scratch/core/exe/core_faces-finder/athena_gpu",
+    "exe_sha256": "20172cae7f463571126211618da14d8c468c2795ac43b73a99319d201667010f",
+    "cmake_flags": null,
+    "toolchain": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "c7e770b3e0be132ee7c21860fd4541200b8c7248ed832b31a0ce80d1b3c6bbf3",
+    "machine_file_sha256": "0b480f5c2078e1d9fef1d97a0babb27b14009b045b4021ee578d6fc3cd243dd1",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": "NVIDIA A100 80GB (Slurm partition preempt)",
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/core-s5/.venv"
+  },
+  "input": {
+    "file": "/data/haiyangw/nrpic/scratch/core/core-20261127-234848-7d666df/new/cic/dl.athinput",
+    "sha256": "b0032e16ef47302670bfd466b98a310474a566058c6e2e2057270d6d872876c4",
+    "overrides": {}
+  },
+  "inputs": [
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/exe/core_faces-finder/athena_gpu",
+      "role": "exe",
+      "sha256": "20172cae7f463571126211618da14d8c468c2795ac43b73a99319d201667010f",
+      "bytes": 111227928,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "tracks/core/analysis/faces_finder/card.list",
+      "role": "list",
+      "sha256": "0f8a14772f91758af9b0ba515b13e45319eebf03001bf8c3dcc59b1230907722",
+      "bytes": 1627,
+      "tracked": true
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/core-20261127-234848-7d666df/new/cic/dl.athinput",
+      "role": "athinput:dl_cic",
+      "sha256": "b0032e16ef47302670bfd466b98a310474a566058c6e2e2057270d6d872876c4",
+      "bytes": 1192,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/core-20261127-234848-7d666df/new/cic_fs/dl.athinput",
+      "role": "athinput:dl_cic_fs",
+      "sha256": "e21db1bd98b7382075d188099bbb137f9a99254174f27f6ffdfe8585eee1909a",
+      "bytes": 1223,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/core-20261127-234848-7d666df/new/pcs_comp/dl.athinput",
+      "role": "athinput:dl_pcs_comp",
+      "sha256": "db460dca04ef03e4c1c5f93892669756c47ffccd6b5c3c92606a21ac64a272bb",
+      "bytes": 1274,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/core-20261127-234843-fa6c2e9/pcs_c2/new/dep.athinput",
+      "role": "athinput:cons_pcs_c2",
+      "sha256": "8c33abdd5068a50fbf9350c21c533d36c9dd89c6993465a5c994e0467c5cf9d0",
+      "bytes": 1965,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/core-20261127-234843-fa6c2e9/pcs_c2_lim/new/dep.athinput",
+      "role": "athinput:cons_pcs_c2_lim",
+      "sha256": "f6ecd4c313b77e03a5552e0d60c3080867be9aaed598832ba2544e073a38c272",
+      "bytes": 2005,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/core-20261127-234843-fa6c2e9/cic_plain/new/dep.athinput",
+      "role": "athinput:cons_cic_plain",
+      "sha256": "2ce3c80f7c1ce0bec6f797728f7acd21a1e2fbfc4febb7d01bc2f7db599b5af6",
+      "bytes": 1928,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/core-20261127-234458-4baaaa4/first/rst/hc.00000.rst",
+      "role": "athinput:rst_add",
+      "sha256": "1887f64c5a3ee81c7bb1a3fb77aee58458938c18c16dbee33f63d53a4116cda6",
+      "bytes": 428227368,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261123-025907-97bab8d/rst/peak.00019.rst",
+      "role": "athinput:s1l_shear",
+      "sha256": "69c2045054c372852130e5a234ef8538d57c76d790fa174c2ccff0af99d76be2",
+      "bytes": 700736937,
+      "tracked": false,
+      "location": "main checkout data root"
+    }
+  ],
+  "batch_entries": [
+    {
+      "name": "dl_cic",
+      "input": "/data/haiyangw/nrpic/scratch/core/core-20261127-234848-7d666df/new/cic/dl.athinput",
+      "args": []
+    },
+    {
+      "name": "dl_cic_fs",
+      "input": "/data/haiyangw/nrpic/scratch/core/core-20261127-234848-7d666df/new/cic_fs/dl.athinput",
+      "args": []
+    },
+    {
+      "name": "dl_pcs_comp",
+      "input": "/data/haiyangw/nrpic/scratch/core/core-20261127-234848-7d666df/new/pcs_comp/dl.athinput",
+      "args": []
+    },
+    {
+      "name": "cons_pcs_c2",
+      "input": "/data/haiyangw/nrpic/scratch/core/core-20261127-234843-fa6c2e9/pcs_c2/new/dep.athinput",
+      "args": [
+        "particles/particle_file=/data/haiyangw/nrpic/scratch/core/regress/ic/random.nrp"
+      ]
+    },
+    {
+      "name": "cons_pcs_c2_lim",
+      "input": "/data/haiyangw/nrpic/scratch/core/core-20261127-234843-fa6c2e9/pcs_c2_lim/new/dep.athinput",
+      "args": [
+        "particles/particle_file=/data/haiyangw/nrpic/scratch/core/regress/ic/random.nrp"
+      ]
+    },
+    {
+      "name": "cons_cic_plain",
+      "input": "/data/haiyangw/nrpic/scratch/core/core-20261127-234843-fa6c2e9/cic_plain/new/dep.athinput",
+      "args": [
+        "particles/particle_file=/data/haiyangw/nrpic/scratch/core/regress/ic/random.nrp"
+      ]
+    },
+    {
+      "name": "rst_add",
+      "input": "/data/haiyangw/nrpic/scratch/core/core-20261127-234458-4baaaa4/first/rst/hc.00000.rst",
+      "args": [
+        "fastflow/diagnostics=true",
+        "time/nlim=2"
+      ]
+    },
+    {
+      "name": "s1l_shear",
+      "input": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261123-025907-97bab8d/rst/peak.00019.rst",
+      "args": [
+        "-i",
+        "/data/haiyangw/nrpic/scratch/core/core-20261127-235215-27c6606/probe.athinput",
+        "time/nlim=22795",
+        "time/tlim=230.0",
+        "fastflow/flow=shear"
+      ]
+    }
+  ],
+  "resources": {
+    "nodes": 1,
+    "gpus": 1,
+    "cores": 1,
+    "walltime_s": null,
+    "wall_limit": "00:45:00",
+    "segments_max": null,
+    "gpu_hours_requested": 0.2,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": {
+    "partition": "preempt",
+    "job_name": "core-20261128-002929-335815e",
+    "job_ids": []
+  },
+  "outputs": {
+    "dir": "scratch/core/core-20261128-002929-335815e",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "submitted",
+  "exit_code": null,
+  "registered": "2026-11-28T00:30:06Z",
+  "started": null,
+  "ended": null,
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 40.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 20.059,
+    "gpu_hours_reserved": 2.0667,
+    "gpu_hours_without_gate": 5.8713,
+    "cores_busy": 0,
+    "runs": 1657,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md + 0026-cards-loaded-allotment-cost.md + 0031-level2-branch-and-ablation.md + 0032-new-account-preemption-allotments.md + 0038-track-e-g2-signed-g3-scope.md + 0039-rulings-after-batch-17.md + 0045-track-d-g2-signed-release-v08.md"
+  }
+}
