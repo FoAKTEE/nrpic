@@ -27,7 +27,10 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.join(HERE, "..", "..", "..", "..", "python"))
 
 SKIP_DIRS = {".nrpic"}
-SKIP_NAMES = {"sha256sums.txt", "run.log"}
+# summary.json: the test scripts' own records (wall times, executable path and checksum),
+# not AthenaK output; their verdict lines are compared separately (first pass of T9,
+# run core-20261128-021119-fb199ef, compared them byte for byte and failed on wall times)
+SKIP_NAMES = {"sha256sums.txt", "run.log", "summary.json"}
 SKIP_SUFFIX = (".log", ".gpumem.csv")
 SKIP_PREFIX = ("fig_",)
 
@@ -89,8 +92,13 @@ def verdicts(run_dir):
     except (OSError, ValueError):
         return "unreadable"
     if isinstance(s, dict):
-        return {k: v for k, v in s.items()
-                if isinstance(v, (str, bool, int)) or k in ("checks", "verdict", "pass")}
+        keep = {}
+        for k, v in s.items():
+            if k in ("exe", "exe_sha256", "base", "new", "wall_s", "log_lines", "out"):
+                continue
+            if isinstance(v, (str, bool)) or k in ("checks", "verdict", "pass"):
+                keep[k] = v
+        return keep
     return None
 
 
@@ -109,11 +117,14 @@ def main():
         r["old"], r["new"] = old, new
         r["verdict_old"], r["verdict_new"] = verdicts(old), verdicts(new)
         report[name] = r
-        bad = r["differs"] or r["missing_new"] or r["missing_old"]
+        r["verdicts_equal"] = (r["verdict_old"] == r["verdict_new"])
+        bad = (r["differs"] or r["missing_new"] or r["missing_old"]
+               or not r["verdicts_equal"])
         ok = ok and not bad
         print(f"{name}: {len(r['identical'])} identical, {len(r['same_up_to_paths'])} "
               f"same up to paths, {len(r['differs'])} differ, {len(r['missing_new'])} "
-              f"missing in new, {len(r['missing_old'])} only in new")
+              f"missing in new, {len(r['missing_old'])} only in new; verdict lines "
+              f"{'equal' if r['verdicts_equal'] else 'DIFFER'}: {r['verdict_new']}")
         for k in ("differs", "missing_new", "missing_old", "same_up_to_paths"):
             for rel in r[k][:12]:
                 print(f"   {k}: {rel}")
