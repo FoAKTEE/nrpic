@@ -55,6 +55,10 @@ every cycle; continuations to cycle 2), expectations of prediction R:
 | c | `-r rst` | exit 0, no status file, no such line |
 | d | fresh start, `fastflow/no_such_option=1` | exit 1 with the old message |
 | e | `-r rst fast-flow/x=1` | exit 1 with the old message |
+| R2 | `-r rst zz_block/x=1` (a block the input does not hold) | exit 0, log line `<zz_block> x = 1` (run core-20261128-001433-ddd0f14) |
+
+The restart files that case a wrote hold `diagnostics = true # added from the command
+line on restart` in their stored input.
 
 ## 3. For chains
 

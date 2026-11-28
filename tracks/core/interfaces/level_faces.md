@@ -130,7 +130,11 @@ Figures: `fig_dep_compare.png`, `fig_comp_cons.png` in the two run directories.
   (`nfilter`, `filter_compensate`) is not touched: it acts on the sources themselves and
   was never conservative across levels (history columns 24 to 27 record it).
 - Cost: two more ghost exchanges of the ten source components per deposit on a refined
-  mesh with compensation. Not timed on a card in this session.
+  mesh with compensation, and for the plain pass three directional passes in place of
+  one product. On processors, in a test that evolves no metric (the deposit is all of
+  its time; serial build, indicative): cubic cloud with c2 11.9 s before and 12.1 s now;
+  linear cloud with the plain pass 5.3 s and 10.7 s (run core-20261127-234843-fa6c2e9).
+  Not timed on a card in this session.
 
 ## 4. Which runs change, and the byte regression
 

@@ -385,3 +385,24 @@ core-20261127-234458-4baaaa4, at cycle 1, so no cycle is taken): exit 0, the log
 "Parameter added on restart from the command line: <zz_block> x = 1", and no fatal error
 from a check of block names (which runs only for input files). Refuted by a non-zero
 exit or a missing line.
+
+Outcome R2, run core-20261128-001433-ddd0f14: HOLDS (exit 0, the log line for `<zz_block>
+x = 1`, "Terminating on cycle limit"). Also checked by reading the files of run
+core-20261127-234458-4baaaa4: the three restart files that case a wrote hold the line
+`diagnostics = true # added from the command line on restart` in their stored input.
+
+Cost on processors (serial build, the ten steps of `comp_cons.py`, the two builds side by
+side, so indicative only; run core-20261127-234843-fa6c2e9): cubic cloud with c2, 11.9 s
+with core-v0.8 and 12.1 s now; no compensation 2.6 s in both; linear cloud with the plain
+pass 5.3 s and 10.7 s: the plain pass in flux form with three exchanges costs about three
+times the product pass. These runs evolve no metric, so the deposit is all of their
+time; in a run with the spacetime solver the share is smaller. Not timed on a card.
+
+### Prediction T (threaded build of this branch, three threads)
+
+`scripts/build_cpu_omp.sh`, then `comp_cons.py` with the threaded build as "new" and
+OMP_NUM_THREADS = 3: the four compensated cases conserve to 1e-12 as with the serial
+build (the level-face kernel writes one coarse cell per index, so threads cannot
+collide); histories of the untouched cases need not be byte-identical to the serial
+release (the threaded build is not a byte reference), so check C1c may fail there and is
+not judged. Refuted by a conservation error above 1e-12.
