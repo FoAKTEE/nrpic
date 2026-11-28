@@ -1,0 +1,153 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "D-20261128-024925-1e62a4c",
+  "track": "D-bh-dress",
+  "gate": "G3",
+  "kind": "scouting",
+  "purpose": "G3 amendment A1: card timing runs to 2 M of G-12u (root 144, blocks of 36) and G-16u (root 192, blocks of 48), the uniform mesh family; memory, wall seconds per M, finder at t = 0; replace processor smoke tests (g3/amend JOURNAL entry 3)",
+  "preregistered_in": null,
+  "launcher": "batch",
+  "command": [
+    "scripts/gpu_batch.sh",
+    "/data/haiyangw/nrpic/scratch/D-bh-dress/D-20261128-024925-1e62a4c/batch.list"
+  ],
+  "cwd": "scratch/D-bh-dress/D-20261128-024925-1e62a4c",
+  "git": {
+    "sha": "1e62a4c572cd1c085575b560e0581a1c4710866c",
+    "branch": "track/D-bh-dress",
+    "dirty": false,
+    "package": [
+      "tracks/D-bh-dress/g3/amend"
+    ],
+    "outside_package": {
+      "count": 0,
+      "first": []
+    },
+    "merge_base_main": "9d5cb255f101fee2827180ebacdbeba18268bd75",
+    "worktree": "wt/D-bh-dress"
+  },
+  "code": {
+    "core_tag": "core-v0.8",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": "nrpic_cf",
+    "exe": "/data/haiyangw/nrpic/.work/build_gpu_v08/src/athena",
+    "exe_sha256": "a95fcaf61f55e6c4ff739c7317b41c8bc836cd1686f7e4a905cebb6e59d5a189",
+    "cmake_flags": [
+      "-DPROBLEM=built_in_pgens",
+      "-DAthena_ENABLE_MPI=OFF",
+      "-DAthena_ENABLE_OPENMP=OFF",
+      "-DKokkos_ARCH_ICX=ON",
+      "-DKokkos_ENABLE_DEBUG=OFF",
+      "-DKokkos_ENABLE_DEBUG_BOUNDS_CHECK=OFF",
+      "-DCMAKE_CXX_COMPILER=/data/haiyangw/nrpic/.work/build_gpu_v08/nvcc_wrapper_pinned",
+      "-DCUDAToolkit_ROOT=/usr/local/cuda-12.6",
+      "-DKokkos_ENABLE_SERIAL=ON",
+      "-DKokkos_ENABLE_CUDA=ON",
+      "-DKokkos_ARCH_AMPERE80=ON",
+      "-DCMAKE_BUILD_TYPE=Release",
+      "-DCMAKE_CXX_FLAGS_RELEASE=-O3 -DNDEBUG"
+    ],
+    "toolchain": "nvcc 12.6 (host g++ 11.4.0)"
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "c7e770b3e0be132ee7c21860fd4541200b8c7248ed832b31a0ce80d1b3c6bbf3",
+    "machine_file_sha256": "0b480f5c2078e1d9fef1d97a0babb27b14009b045b4021ee578d6fc3cd243dd1",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": "NVIDIA A100 80GB (Slurm partition preempt)",
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/D-bh-dress/.venv"
+  },
+  "input": {
+    "file": "tracks/D-bh-dress/g3/amend/decks/g3g12u_t2.athinput",
+    "sha256": "9222d7135844f32ebd4311f0a2ee71c254537ce369cbf179dd1868ed34d6075e",
+    "overrides": {}
+  },
+  "inputs": [
+    {
+      "path": "/data/haiyangw/nrpic/.work/build_gpu_v08/src/athena",
+      "role": "exe",
+      "sha256": "a95fcaf61f55e6c4ff739c7317b41c8bc836cd1686f7e4a905cebb6e59d5a189",
+      "bytes": 111064080,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "tracks/D-bh-dress/g3/amend/decks/timing.list",
+      "role": "list",
+      "sha256": "ec7121824f2646fe9a91516a0ba92a9c415361580f6f0a156c7503c347149fab",
+      "bytes": 565,
+      "tracked": true
+    },
+    {
+      "path": "tracks/D-bh-dress/g3/amend/decks/g3g12u_t2.athinput",
+      "role": "athinput:t12u",
+      "sha256": "9222d7135844f32ebd4311f0a2ee71c254537ce369cbf179dd1868ed34d6075e",
+      "bytes": 6376,
+      "tracked": true
+    },
+    {
+      "path": "tracks/D-bh-dress/g3/amend/decks/g3g16u_t2.athinput",
+      "role": "athinput:t16u",
+      "sha256": "613feaf55ef7beba3f6069449a51273b80d864dc64cffc2978bc34f78f16301e",
+      "bytes": 6376,
+      "tracked": true
+    }
+  ],
+  "batch_entries": [
+    {
+      "name": "t12u",
+      "input": "tracks/D-bh-dress/g3/amend/decks/g3g12u_t2.athinput",
+      "args": []
+    },
+    {
+      "name": "t16u",
+      "input": "tracks/D-bh-dress/g3/amend/decks/g3g16u_t2.athinput",
+      "args": []
+    }
+  ],
+  "resources": {
+    "nodes": 1,
+    "gpus": 1,
+    "cores": 1,
+    "walltime_s": null,
+    "wall_limit": "00:45:00",
+    "segments_max": null,
+    "gpu_hours_requested": 0.6,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": {
+    "partition": "preempt",
+    "job_name": "D-20261128-024925-1e62a4c",
+    "job_ids": []
+  },
+  "outputs": {
+    "dir": "scratch/D-bh-dress/D-20261128-024925-1e62a4c",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "submitted",
+  "exit_code": null,
+  "registered": "2026-11-28T02:49:26Z",
+  "started": null,
+  "ended": null,
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 60.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 0.0,
+    "gpu_hours_reserved": 1.9667,
+    "gpu_hours_without_gate": 0.0,
+    "cores_busy": 0,
+    "runs": 344,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md + 0026-cards-loaded-allotment-cost.md + 0031-level2-branch-and-ablation.md + 0032-new-account-preemption-allotments.md + 0038-track-e-g2-signed-g3-scope.md + 0039-rulings-after-batch-17.md + 0045-track-d-g2-signed-release-v08.md + 0048-rulings-after-batch-34.md"
+  }
+}
