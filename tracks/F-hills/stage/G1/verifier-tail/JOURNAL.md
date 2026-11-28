@@ -115,3 +115,65 @@ time column written as an integer), not of the reader; it passes after the fix.
 - PT15 (waves). The (2,2) amplitude at r = 40 M rises above three times its 60-130 M median
   after t_jump + r* - 10 M; at 70 and 90 M nothing of the capture arrives before 186 M.
   Refuted: no rise at 40 M before 186 M.
+
+## Entry 3, 2026-11-27 17:12 PST: outcomes of vtail (run F-20261128-004301-ce51e1f), figures looked at
+
+Figures read: `fig_t_fates.png`, `fig_t_horizons.png`, `fig_t_waves_overlaps.png` of the run.
+
+- PT4 MET. Tracker 0 (m1) comes within 1 M of M's tracker at 138.334 M and stays (largest
+  distance after 140 M: 0.604 M at 140 M), within 0.1 M at 144.53 M, 1.3e-9 M at 186 M (the two
+  trackers converge exponentially, fig_t_fates b). Tracker 1 (m2): one minimum of its distance to
+  M, 8.7333 M at 134.31 M; 13.84 M at 170 M, 17.53 M at 186 M, receding at 0.241 M per M. So
+  A2-3 fails as written (no member beyond 30 M at 170 M; the captured member is not bound with a
+  pericentre of 4-8 M). Newton from the same deck: m1 leaves (45 M at 200 M), m2 stays bound
+  (fig_t_fates a): the opposite assignment, as decision 0044 says.
+- PT5 MET. Finder 2: first mass above 1.06 at 137.5 M (1.12015; the search before, 137.469 M,
+  1.01121), status found there; after 138.5 M median 1.12284 (1.12122 to 1.12358), drift
+  +1.0e-6 per M; at 186 M mass 1.122912, S = 0.31887, chi = 0.2529, area (irreducible) mass
+  1.113750. Finder 1: found at all 1697 searches 133-186 M. Finder 0: found at 357, not found at
+  1340 (1302 iteration limit, 31 mean expansion above tolerance, 6 negative mean radius, 1 area
+  mass below 1e-10); last found 147.656 M.
+- PT6: only the upper branch exists where the status file covers the heavy hole (all 144
+  searches 133-137.47 M on the upper branch, all found, 4-61 flow iterations); the lower
+  branches end before 133 M (fig_t_horizons c, about 130 M). So the status files cannot mark a
+  lower-branch row at all; PT6 is neither met nor refuted as written. The summary's own hrms
+  column separates the branches: upper median 1.5e-8, lower median 4.2e-4 (86.6-137.5 M).
+- PT11 REFUTED: the largest A2-A2 overlap, 1.248e-9 M (tracker 0), is at 104.0-104.43 M, between
+  the copies kept at 2026-11-25 21:15 and 22:54 UTC, before 133 M; the second, 1.1e-10 M
+  (tracker 1), at 165.0 M; all other overlaps <= 1.2e-12 M (fig_t_waves_overlaps b).
+- PT12 MET for finders 1 and 2 (no not-found search; signature agrees at all 1697 times).
+  REFUTED for finder 0: after one row per search time, the status file's 1340 not-found searches
+  are exactly the signature's 1340 failures (agreement at all 1697 times); my count 1414 came from
+  raw rows with restart repeats. The first verifier's signature reader is confirmed on 3 x 1697
+  searches of this run.
+- PT13 REFUTED: finder 0 keeps finding a surface of mass 0.1298-0.1300 after finder 2's jump
+  (137.5 M) until about 139.5 M (fig_t_horizons a); then found surfaces of 0.119-0.125
+  (140-141 M), 0.97-1.06 (141-144 M) and about 0.80 (144-147.7 M), none of them a member horizon.
+  [JUDGEMENT: the member's own marginally trapped surface inside the common horizon for about
+  2 M is the ordinary picture; the later "found" surfaces are not horizons of m1.]
+- PT14 MET: m2's coordinate two-body energy with the remnant mass at M's tracker: -0.036 units at
+  186 M (-0.196 at 170 M; -0.051 with the centre of mass of M and m1); the first reader's +0.121
+  uses M = 1.00422. v_rel 0.3739 against v_esc 0.3780 at 17.53 M. The "energy" rises almost
+  linearly from -0.50 at 145 M to -0.04 at 186 M (fig_t_fates d), so it is not conserved: m2's
+  fate is not decided by coordinates [JUDGEMENT].
+- PT15 MET as written (r = 40 M: 8.36e-3 at 186 M, 52 times the 60-130 M median 1.60e-4), but
+  my mechanism was wrong: |r Psi4 (2,2)| rises from about 140 M at r = 40, 145-148 M at 48 and
+  168-170 M at 70 M, i.e. at the same retarded time u = t - r* of about 90-94 M at each radius,
+  and keeps rising to the end (fig_t_waves_overlaps a). [JUDGEMENT: the plunge chirp of m1 into M
+  from about 94 M; the capture itself (137.5 M) reaches r = 40 M at about 184 M, so the record
+  ends at the peak at r = 40 M and before it at the other radii; no ring-down is recorded.]
+- PT9 seen in the figure: rms H rises from 1.3e-5 to 6.2e-5 at 135.5 M, drops at the capture and
+  falls to 1.5e-5 at 186 M.
+
+New observation, not predicted: finder 1 (m2) alternates between two branches from about 160 M
+to 179 M (upper about 0.12962, lower 0.12889 rising to 0.12918), every search marked found
+(fig_t_horizons b): the same kind of behaviour as F1, now on the member and with the status file.
+
+Predictions for `scripts/vbranch.py` (branches by the summary's hrms and the status columns):
+- PT16. On finder 1's alternating stretch both branches are found and the upper branch has hrms
+  at least 100 times smaller than the lower one, as for the heavy hole. Refuted: the lower branch
+  has the smaller hrms, or the ratio is below 10.
+- PT17. In F1's window (86.6 M to the jump) every lower-branch row has hrms above 1e-5 and every
+  upper-branch row below 1e-6 (no overlap of the two hrms ranges). Refuted: overlapping ranges.
+- PT18. On finder 1's alternating stretch the lower-branch searches take fewer flow iterations
+  than the upper ones (they stop on the mass rule early). Refuted: equal or more.
