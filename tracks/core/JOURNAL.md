@@ -2532,3 +2532,216 @@ are judged: q0049 PASS with K3 in part refuted (release v0.8 final), q0039 K7 CA
 P4a/P4c held and P4b held in its test, q0035 R5 held. Card time of this session: none
 submitted. Processor time: MPI build 2.5 min on 4 jobs; analyses on 1 to 2 cores, about 25
 core-minutes. Where I stopped: nothing half-done; q0059 (row 4, 0.755 member) pending in Slurm.
+
+## 2026-11-28T02:02Z (18:02 PST), session core-lead-35 (batch 35): merge of core/faces-finder for core-v0.9
+
+State at start: `core/nrpic` was an ancestor of main (fast-forward to 9d5cb255). Merge
+8139c969 of `origin/core/faces-finder` (no conflict): `git diff ad54460e HEAD --
+athenak/src` is empty [VERIFIED], so the merged source is the branch's source commit
+ad54460e, the one the published `scratch/core/exe/core_faces-finder/` was built from.
+Card check q0086: the queue lists it as done, but `sacct -j 5544` says PREEMPTED after 5 s
+(2026-11-27T17:24, four of eight cases started); run core-20261128-002929-335815e closed as
+stopped (55771e22). It is added again at priority 2 (below), judged against prediction K
+of `JOURNAL-faces-finder.md` entry 5 unchanged.
+
+Serial build of the merged tree: `.work/build_cpu_v09rc/src/athena` (JOBS=6).
+
+### Predictions B35 (before the runs)
+
+- **R9** byte regression (`regress_v04.py`, twelve set-ups, 75 items) of the merged build
+  against release `.work/build_cpu_v08/src/athena`: 75 of 75 identical (no item sets
+  `deposit_comp_c` or `deposit_fine_shape` on a refined mesh, none is continued with new
+  parameters, none uses the new finder options). Refuted by any item not identical.
+- **T9** the branch's processor tests with the merged build (`dep_compare.py`,
+  `comp_cons.py`, `cap_mid.py`, `diag_restart.py`, `finder_bytes.py`, `finder_box.py` with
+  `case_new_s1l_shear.json` on Track A's S1L restart file): every output file AthenaK
+  writes equals the branch session's run of the same script byte for byte (same source,
+  compiler and flags; only the build directory differs), and each script's own verdict is
+  the branch's: dep_compare closes failed only by the split check of C0 (entry 4), the
+  others pass; in `diag_restart.py` case a (`-r rst fastflow/diagnostics=true`) starts
+  and logs "Parameter added on restart from the command line". Compared by a registered
+  script `analysis/faces_finder/rerun_compare.py`. Refuted by any differing output file
+  or a changed verdict.
+- **Q9** quick test of the restart path (`parameter_input.cpp` and `main.cpp` changed):
+  `restart_test.py` with the merged build against release core-v0.8: ALL OK, 19 checks, as
+  Q8 (run core-20261126-024518-e1e16dc). Refuted by any failed check.
+- **V8** (clerk's request, orch outbox 20261126T130731Z) `.work/build_cpu_v08/src/athena`
+  against core's published `core_nrpic_v08/athena_cpu`, `regress_v04.py`: 75 of 75
+  identical (same tree 01d4aeeb; other build directory). The card build
+  `.work/build_gpu_v08` does not run on processors: not compared by a run here.
+
+### Addition to Q9 before its run (02:12Z)
+
+`restart_test.py` takes core-v0.8 as `--ref-exe` this time (Q8 took core-v0.7). Its
+reference cuts are not part of the verdict; for the record I expect them to lose no
+tracker record and no `cons.hst` record and to write two header lines (the fix of
+core-v0.8), unlike the v0.7 cuts of Q8. The figure labels those cuts "v0.7" (the script's
+text, not changed). Outcomes so far: dep_compare (run core-20261128-020214-a173064)
+closed failed only by the split check C0_change, with the branch's numbers (-0.00755,
+-0.03377); comp_cons (core-20261128-020250-1981d90) COMP CONS PASS; finder_bytes
+(core-20261128-020317-73134bb) PASS; finder_box S1L (core-20261128-020447-28dbb9f) exit 0;
+R9 (core-20261128-020122-3a1a3dd) REGRESSION PASS. Byte comparison with the branch's runs
+follows in one registered run (T9).
+
+### Outcomes R9, T9, Q9 (02:16Z)
+
+- **R9 HOLDS**, run core-20261128-020122-3a1a3dd (figure core-20261128-020936-0826227
+  looked at: twelve bars, one colour): 75 of 75 items identical with release core-v0.8
+  (geo 2, boris 2, dep 1, east 12, os 16, jeans 5, binary 1, c1 5, c2 3, c3 14, c4 4,
+  c5 10), REGRESSION PASS. Wall time about 5 min on 3 cores.
+- **T9 HOLDS** (second pass), run core-20261128-021251-d4575ac (figure looked at): of 416
+  files of the six branch runs, 371 byte-identical and 45 identical once the run
+  directory's name is replaced (input decks and the restart files, which store the input
+  with its paths); none differs, none is missing; the scripts' verdicts are the branch's
+  (dep_compare closes failed by its split check C0_change, -0.00755 and -0.03377 as in
+  entry 4 of the branch journal; comp_cons, diag_restart F1a-F1e, finder_bytes, cap_mid
+  PASS; finder_box exit 0 with every horizon file identical). The first pass,
+  core-20261128-021119-fb199ef, is on record as failed: my script compared the test
+  scripts' own `summary.json` files, which differ only by wall times and the executable's
+  path; the prediction was about the files AthenaK writes. The script now skips them
+  and compares the verdict lines instead (committed before the second pass).
+  The six runs of the merged build: dep_compare core-20261128-020214-a173064 (figure
+  looked at: the dipole of core-v0.8 at 7.25/7.75 gone, only the point at 8.5 moves),
+  comp_cons -020250-1981d90 (largest E error 2.7e-14 against 9.9e-4), diag_restart
+  -020255-72e53c6 (case a starts, "Parameter added on restart from the command line"),
+  finder_bytes -020317-73134bb, finder_box S1L -020447-28dbb9f (154.7 s), cap_mid
+  -020922-7d1da68.
+- **Q9 HOLDS**, run core-20261128-020910-9292e5d (figure looked at): ALL OK; the script
+  prints 20 "ok" lines (I wrote 19, the count I took from Q8's text; the checks are the
+  same). The core-v0.8 reference cuts lose nothing (tracker continuous, cons records
+  complete, two header lines), as added before the run.
+- So the merged tree is on processors what the branch was: candidate core-v0.9 prepared,
+  `RELEASE-v0.9.md` written NOT RELEASED (card check q0094 waiting, priority 2).
+
+### Outcome V8 (02:15Z) and close of the session (02:25Z)
+
+- **V8 HOLDS**, run core-20261128-020855-e27868f (figure core-20261128-021505-7852e7f
+  looked at): the release build `.work/build_cpu_v08/src/athena` (sha256 1da3267e...)
+  writes the bytes of core's `core_nrpic_v08/athena_cpu` (7599042f...) on 75 of 75
+  items. `git diff 01d4aeeb 73178619 -- athenak/src python problems scripts docs` empty.
+  The card build `.work/build_gpu_v08` is not compared by a run (no card run queued:
+  card runs with deposition are not byte-reproducible run to run). Recorded in
+  `RELEASE-v0.8.md`.
+- Inbox: answers to A (outer faces, outbox 20261128T021000Z) and F (found flag, hmean_tol,
+  v0.5 restarts; outbox 20261128T021500Z); the reading of `fastflow.cpp` behind the F
+  answer: column 10 is sum dA H (lines 994, 1690-1691), `hmean_tol` defaults to 100
+  (line 84) and aborts a search at any iteration (lines 1050-1057), identical in the
+  core-v0.5 tag. `interfaces/finder_stop.md` section 2 gained a paragraph on it.
+- Not done: q0094 has not run (nothing to judge); no v0.9 executables published (by the
+  rule); q0059's run (row 4) left unclosed though its job COMPLETED on 2026-11-26.
+  Card time of this session: none used (q0094 queued, 0.2 asked). Processor time: build
+  180 s on 6 jobs; R9 and V8 about 5 min each on 3 cores; six tests and three analyses
+  on 1 core each, about 20 core-minutes.
+
+## 2026-11-28T02:22Z: row 4, the 0.755 member (q0059) closed and P13 judged in full
+
+q0059's job 5378 COMPLETED on 2026-11-26T04:52 PST (sacct; chain STATUS DONE, last record
+t = 600). Its run core-20261126-110234-a72e07c closed (0.6547 card-hours for 300 M). Fates
+run core-20261128-021941-61b61a1 with the line of the batch-27 handoff (figure
+`fig_row4_m8.png` looked at: the solid yellow 0.755 member stays above 0.8 to 600 M).
+- **P13 HOLDS for the member** (the control half held on 2026-11-26): no collapse before
+  450 M (none by 600 M); 50-M means of alpha_c / alpha_c^eq 0.9638 (250-300 M) and 0.9262
+  (400-450 M), 0.0375 below (at least 0.01 predicted). 550-600 M mean 0.8577 (minimum
+  0.820); the control's 0.8022 (minimum 0.736).
+- P15 for the member: 0.6547 card-hours for 300 M = 7.86 s per M (bound 9 s): held.
+- P14 (joins) is still not computed by the script.
+- Fates and bracket unchanged, (0.7175, 0.726875) by the 300-M rule; next midpoint by the
+  script 0.7221875. `verify/LADDER.md` row 4, fourth reading.
+
+## 2026-11-28T02:23Z: MPI build of the merged tree (for publication after q0094), prediction M9
+
+MPI build `.work/build_cpu_mpi_v09rc` (CMAKE_EXTRA=-DAthena_ENABLE_MPI=ON, as the v0.8 MPI
+build). Prediction before `analysis/release/mpi_smoke_v08.py` with `--serial` the R9 build:
+**M9a** the MPI build started without mpirun writes every output file of the serial build of
+the merged tree byte for byte (logs and restart files excluded); **M9b** on two ranks status
+0 and `cons.hst`, the tracker file and the mesh history as on one rank, every column within
+1e-6 relative (v0.8 gave 0.0). The deck has a uniform mesh, so the level-face kernel of
+change 2, which is not corrected between ranks, is not exercised. Refuted by any differing
+file in M9a or a column above 1e-6 in M9b. Not a publication: the executables wait for q0094.
+
+Outcome M9 (02:26Z), run core-20261128-022409-4720043 (figure looked at; the left panel
+clips its tick labels, as in batch 27): **M9a and M9b HOLD**. The MPI build
+`.work/build_cpu_mpi_v09rc` (185 s on 6 jobs) on one rank writes the 17 files of the serial
+merged build byte for byte; on two ranks `cons.hst`, tracker file and mesh history equal one
+rank (relative difference 0.0). Ready to be published with the others once q0094 passes.
+
+## 2026-11-28T07:27Z: batch 40, session core-lead-40; prediction before judging q0094
+
+State at start: `git merge main` clean; pause flag absent. q0094 (core-ff-card2) was
+dispatched at 05:21Z as run core-20261128-052151-e5a2d55, Slurm job 5601; `sacct -j 5601`:
+COMPLETED, exit 0:0, 00:00:24 (21:39:47 to 21:40:11 PST), so not a preempted job listed as
+done. `batch.list.status` has rc=0 for all eight cases. A 24-s job for eight cases is short
+but the cases are small (the branch session's processor twins took seconds each); the
+S1L case restarts at cycle 22795 and runs to the cycle limit.
+
+Prediction (the analysis `card_check.py`, no new run on a card): K of
+`JOURNAL-faces-finder.md` entry 5, unchanged. K1 the three planar deposit lines equal the
+processor run (dep run core-20261127-234848-7d666df, `new/`) to 1e-12 in every cell,
+`cic_fs` = `cic` to 1e-13, line sum of `pcs_comp` 32 to 1e-10; K2 the three compensated
+cases conserve the E integral against sum m W to 1e-12 at every record; K3 every S1L
+member found on processors (run core-20261127-235215-27c6606) is found on the card, masses
+within 1e-6 relative, column 16 within 1e-4, scan start within 1e-6; K4 `rst_add` exit 0,
+a status file with a record, and the log line "Parameter added on restart from the command
+line". Refuted by any of these failing. What I expect beyond K: card and processor agree
+in the deposit to round-off (1e-15 to 1e-14, the deposit is a sum whose order differs on
+the device), and the finder masses to 1e-9 or better with polishing (core-v0.8 card check:
+masses of card and processor agree with polishing; RELEASE-v0.8.md).
+
+Outcome (07:31Z), analysis run core-20261128-072820-d5fa2ca (`card_check.py`, figure
+`fig_card_check.png` looked at): **CARD CHECK PASS, K1 to K4 HOLD**. Card run
+core-20261128-052151-e5a2d55 closed (job 5601, 24 s, 0.0067 card-hours, executable
+`core_faces-finder/athena_gpu` sha256 20172cae...).
+- K1: `cic` and `cic_fs` lines equal the processor run in every cell (0.0); `pcs_comp`
+  differs by at most 2.0e-15 (figure (a): scatter of +-2e-15 only in the coarse cells
+  beyond |x1| = 8); `cic_fs` - `cic` = 0.0; line sum of `pcs_comp` 32.0.
+- K2: all three compensated cases at 12 records each (as on processors) have a largest
+  relative error of the E integral of 9.92e-16, which is one unit in the 16th digit that
+  the history file prints (1.119529746732075 against ...074 at t = 0), or exactly 0. The
+  processors' 2.1e-14 to 2.7e-14 (run core-20261128-020250-1981d90) are larger than the
+  card's: the order of the sums differs; both are round-off.
+- K3: all six S1L members found as on processors (iterations as there), masses equal to
+  1e-15 relative (members 4, 5: 10.75124200842111 against ...110), column 16 within 3e-16,
+  scan start 0.1615097240063816 identical.
+- K4: `rst_add` exit 0, a status file with one record, the log line of the added
+  parameter.
+My expectation beyond K (deposit to 1e-14, masses to 1e-9) held with room. The candidate
+core-v0.9 passes its card check; the release records follow.
+
+## 2026-11-28T07:52Z: batch 40 closed: core-v0.9 final and published
+
+- Release record `RELEASE-v0.9.md` rewritten in the form of `RELEASE-v0.8.md`: first line
+  `RELEASE core-v0.9 ad54460e... REGRESSION PASS, CARD CHECK PASS`; NOT RELEASED removed;
+  card-check table K1-K4; executables; a section for the clerk.
+- Published `scratch/core/exe/core_nrpic_v09/` (new directory, nothing replaced):
+  athena_cpu (R9 build, b7a48e9a), athena_cpu_mpi (M9 build, a44b7c85), athena_cpu_omp
+  (2e31b69e) and athena_gpu (20172cae, the card-checked one); checksums equal those
+  recorded at the builds and in q0094's manifest. COMMIT, SHA256SUMS, READY. `git diff
+  ad54460e 2b741dee -- athenak/src python problems scripts docs` empty. The branch's READY
+  (`core_faces-finder`) says the card check ran and points to the release directory.
+- Changelog section core-v0.9 complete (options table; the three changes without an option
+  and the runs they change; start/stop times of the finder; not done: level faces between
+  ranks, the cost of the compensated deposit, the false acceptance of Track A's chain not
+  retested; card-check paragraph).
+- Interface texts made ready for the clerk: `level_faces.md`, `restart_parameters.md`,
+  `finder_box.md` (new section 0: without `puncture_setup` a finder deck must name
+  `start_time_<n>` and `stop_time_<n>`; source lines read at ad54460e and core-v0.8;
+  decision 0049 item 3; Track C's request and its two runs), `finder_stop.md` (that
+  paragraph, and "a continued run may add options on the command line"). One claim I had
+  written into `restart_parameters.md` (restart files of core-v0.8 and core-v0.9
+  byte-identical in `restart_test.py`) was withdrawn before commit: that script skips
+  `rst/`; the format statement now rests on the source diff only [by reading], and a
+  continuation across the two executables is [TO VERIFY].
+- Decks of the tracks read on their worktrees (grep, no run): 17 of Track A's decks have
+  refinement with `deposit_comp_c > 0` (nested balls of threshold_ball, conv_ball,
+  runs_ball) and change from their first deposit; A's periodic boxes are refined with
+  `deposit_comp_c = 0` and do not change; no deck under `tracks/D-bh-dress/` or
+  `tracks/F-hills/` has refinement with either deposit setting; every finder deck of A, D,
+  F names the times or uses `puncture_setup`.
+- Outbox: A, D, F (which executable serves their retests, what changes without an
+  option), orch (clerk request, proposed CLAUDE.md row; the v0.8 release-build comparison:
+  processor build done in batch 35, card build not, as for v0.7: not owed beyond that by
+  my reading of the clerk's request), C (start/stop answered). Inbox items 32 (C) and 33
+  (orch queue audit) acknowledged; `nrpic-queue audit`: q0028 NOT COMPLETED (old, handled
+  in batch 17), q0086 superseded.
+- Not done this session: the row-4 note section; G2 package items. Card time used: none
+  queued (q0094's 0.0067 card-hours were queued in batch 35). Processors: one analysis.

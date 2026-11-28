@@ -107,11 +107,31 @@ class FastFlow {
   // <basename>.horizon_status_<n>.txt with the reason why the search ended
   bool diagnostics = false;
   std::string ofname_status;
-  int fail_reason = 0;         // 0 found, 1..6 see FastFlow::Write
+  int fail_reason = 0;         // 0 found, 1..8 see FastFlow::Write
   int n_outside = 0;           // surface points outside the mesh (last iteration)
   int iter_done = 0;           // flow iterations of the last search
   Real last_area = 0.0, last_mass = 0.0, last_hmean = 0.0, last_meanradius = 0.0;
   Real min_abs_hmean = 0.0;    // smallest |mean expansion| reached during the flow
+  // ---- start radius from a scan of round spheres, and the check of the accepted
+  // surface (both off when absent; fastflow.cpp, StartScan and FastFlowLoop) ----
+  // <fastflow> start_scan_<n> = N: a search that would start from initial_radius_<n>
+  // first evaluates N round spheres with radii spaced by a constant factor between
+  // start_scan_rmin_<n> and start_scan_rmax_<n> and starts where the surface integral
+  // of the expansion changes sign outside the outermost sphere on which it is negative;
+  // if it is negative on none, the search ends there, not found (reason 8), without a
+  // flow
+  int start_scan = 0;
+  Real scan_rmin = 0.0, scan_rmax = 0.0;
+  int scan_trapped = -1;       // spheres of the last scan with a negative integral
+  Real scan_start = 0.0;       // start radius the last scan gave (0: none)
+  bool StartScan();
+  // <fastflow> trapped_tol_<n> = x: a surface that meets the mass rule is accepted only
+  // if its smallest radius is positive and the rms of its expansion times its area mass
+  // is below x (1/m is the expansion of a round sphere of that area in flat space);
+  // otherwise the flow goes on, and a search that ends at the cap after the mass rule
+  // was met is reported with reason 7
+  Real trapped_tol = 0.0;
+  Real last_res = 0.0;         // rms expansion times area mass, last surface evaluated
   int npunct; // Number of punctures
   int lmax1; // lmax + 1
   int lmpoints; // lmax * lmax

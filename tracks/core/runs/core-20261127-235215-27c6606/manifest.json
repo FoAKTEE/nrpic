@@ -1,0 +1,122 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "core-20261127-235215-27c6606",
+  "track": "core",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "S: finder start scan and trapped check on Track A's S1L t=220 restart file (s1l_shear), processor build of core/faces-finder",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "python3",
+    "tracks/core/analysis/faces_finder/finder_box.py",
+    "--exe",
+    "/data/haiyangw/nrpic/wt/core-s5/.work/build_cpu_ff/src/athena",
+    "--rst",
+    "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261123-025907-97bab8d/rst/peak.00019.rst",
+    "--case",
+    "tracks/core/analysis/faces_finder/case_new_s1l_shear.json",
+    "--out",
+    "$NRPIC_RUN_DIR",
+    "--threads",
+    "1",
+    "--extra",
+    "fastflow/flow=shear"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "27c66069d27a2a0c17bc1c6a72eada743494310c",
+    "branch": "core/faces-finder",
+    "dirty": false,
+    "merge_base_main": "f65fafd2df0aba4e71dab454a60fc4d03f940d0f",
+    "worktree": "wt/core-s5"
+  },
+  "code": {
+    "core_tag": "core-v0.8",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "c7e770b3e0be132ee7c21860fd4541200b8c7248ed832b31a0ce80d1b3c6bbf3",
+    "machine_file_sha256": "0b480f5c2078e1d9fef1d97a0babb27b14009b045b4021ee578d6fc3cd243dd1",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/core-s5/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "tracks/core/analysis/faces_finder/finder_box.py",
+      "role": "argv",
+      "sha256": "eb6f111e8dd26b41d190171fb05b922d5d8aa2a8da0bdfe5deaf2d460f163587",
+      "bytes": 6359,
+      "tracked": true
+    },
+    {
+      "path": ".work/build_cpu_ff/src/athena",
+      "role": "argv",
+      "sha256": "832c05fb4ea9b51bf6cb524e51b9c500104e79c7c173e7dc90ad295415bd15f9",
+      "bytes": 270810112,
+      "tracked": false
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261123-025907-97bab8d/rst/peak.00019.rst",
+      "role": "argv",
+      "sha256": "69c2045054c372852130e5a234ef8538d57c76d790fa174c2ccff0af99d76be2",
+      "bytes": 700736937,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "tracks/core/analysis/faces_finder/case_new_s1l_shear.json",
+      "role": "argv",
+      "sha256": "41f91ca8ee07b9bbcec6401687dceae8427c2da2b70a1c35874c05e478d4812a",
+      "bytes": 1085,
+      "tracked": true
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 1,
+    "walltime_s": 179.686,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/core/core-20261127-235215-27c6606",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": "4bef1e7b94c0d6a799479a770a6906048014c3e03e781c2a8c0f3cc0079afda2",
+    "bytes": 225971,
+    "files": 38
+  },
+  "status": "completed",
+  "exit_code": 0,
+  "registered": "2026-11-27T23:52:18Z",
+  "started": "2026-11-27T23:52:18Z",
+  "ended": "2026-11-27T23:55:18Z",
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 40.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 20.059,
+    "gpu_hours_reserved": 2.0667,
+    "gpu_hours_without_gate": 5.8713,
+    "cores_busy": 2,
+    "runs": 1643,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md + 0026-cards-loaded-allotment-cost.md + 0031-level2-branch-and-ablation.md + 0032-new-account-preemption-allotments.md + 0038-track-e-g2-signed-g3-scope.md + 0039-rulings-after-batch-17.md + 0045-track-d-g2-signed-release-v08.md"
+  },
+  "finished": "2026-11-27T23:56:31Z"
+}

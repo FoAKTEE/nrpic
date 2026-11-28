@@ -363,6 +363,17 @@ alpha_c / alpha_c^eq 0.9640 (250-300 M), 0.9345 (400-450 M), 0.8022 (550-600 M; 
 250-300 M mean, at least 0.01 predicted). The member's continuation (q0059, job 5378) has not
 run.
 
+Level 3, fourth reading 2026-11-28 (batch 35, journal entry 2026-11-28T02:22Z): q0059's job
+5378 had COMPLETED on 2026-11-26 (sacct); its run core-20261126-110234-a72e07c (0.755 member
+continued at 300 M to 600 M, 0.6547 card-hours, one job) closed now; fates run
+core-20261128-021941-61b61a1 (figure looked at). Fates and bracket unchanged: **(0.7175,
+0.726875)**. The 0.755 member does not collapse by 600 M either; 50-M means of alpha_c /
+alpha_c^eq 0.9638 (250-300 M), 0.9262 (400-450 M, 0.0375 below), 0.8577 (550-600 M;
+minimum 0.820). **P13 holds for both runs.** P15 holds for the member (7.86 s of card time
+per M). So at y_c = 0.755 neither run collapses within 600 M and both drift downward, the
+control faster at the end (0.8022 against 0.8577 over 550-600 M); whether 0.755 is stable
+or collapses later is open [VERIFIED to 600 M; nothing beyond].
+
 ## Supporting checks of the C2 steps (earlier, not re-run today)
 
 | Step | Number | Source |
