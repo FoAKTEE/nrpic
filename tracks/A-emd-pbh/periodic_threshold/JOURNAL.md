@@ -1520,3 +1520,33 @@ at its restart point t = 50 is NOT explained by this test; what it leaves: the c
 the card build) or a state that matters only later in the collapse. The test that can decide it, written now: the same
 comparison on processors from S1L's own restart file at t = 50 (rst/peak.00001.rst of A-20261123-025907-97bab8d),
 8 straight against 4 + 4 cycles (about 15 min on one core); and the card question goes to core.
+
+## 2026-11-28 08:14 PST (lead of batch 41): outcome A2Q (q0089, run A-20261128-011607-3e2d530)
+
+Queue entry q0089 done with its jobs completed: chain STATUS DONE at tlim 410 (cycle 42335) after 19 jobs; closed with
+nrpic-run finish (1674 files, 2.25 card-hours against the 2.2 estimated, cap 2.6). Readers (registered):
+a2_invariant.py A-20261128-160444-e6c646e, a2_crossing.py A-20261128-160447-c41d66a, a2_probe_check.py
+A-20261128-160446-6c171f3; fig_a2x.png, fig_a2_crossing.png, fig_a2_probe.png looked at.
+- Shift-invariant measure: min det(dx/dq) > 0 at t = 340.008 (34.77 t_H; min J 8.2e-4) and <= 0 at t = 345.008
+  (35.28 t_H; -1.05e-3), first-crossing cell at the origin. Axis: z crosses first, bracket (34.77, 35.28] t_H,
+  interpolated 34.99; x and y do not cross by t = 410. The central particle stays at rest at the probe (|u| <= 1.7e-12,
+  offset 1.7e-3); proper time of the probe at the crossing 34.78 t_H. Finder: 592 searches, none found. alpha_min at
+  the crossing 0.964.
+- A2Q HOLDS on every clause: first crossing along z at the centre, bracket inside [32.0, 35.5], no horizon, lapse above
+  0.85. The refutations written before the run: amplitude-independent lag (bracket above 37.5) did not occur; a lag
+  falling faster than first order (below 30.5) did not occur; the gradient-expansion version c = 2 (36.2 t_H) is
+  REFUTED (the bracket lies entirely below 35.5).
+- Coefficient [arithmetic on judged outcomes; the Newtonian quarter-amplitude crossing is the scaled 28.7-29.8 t_H, a
+  premise (BACKGROUND, EdS self-similarity), not a run]: lag_t = 34.99/29.0 = 1.21 (1.17-1.23 over the bracket and
+  the Newtonian range), lag_a = 1.13 (1.11-1.15), c = ln(lag_a)/zeta_max = 1.69 (1.45-1.78; zeta_max 0.0741, D-q).
+  Across a factor 4 in amplitude: c = 1.06-1.57 (S1L, zeta 0.296), 1.45 (S1L-h, 0.148), 1.45-1.78 (S1L-q, 0.074). A
+  linear fit of ln(lag_a) through the half and quarter members leaves an amplitude-independent part of ~0.02-0.03 in
+  ln a, inside the spread of the Newtonian reference. The lag is first order in the amplitude with c ~ 1.5 at small
+  zeta; the e^(-2 zeta) version is excluded; the data's psi^4 version (c ~ 1.15 at small zeta) is low by ~25-50 per
+  cent but not excluded at the quarter amplitude alone.
+- What it names (condition (c) of decision 0047: the cause named within the first-order class): the lag of the triaxial
+  crossing is an effect first order in the curvature perturbation, by a run that could have failed toward an
+  amplitude-independent delay and toward a faster fall, and did not. NOT separated (written before the run and still
+  true): the nonlinear zeta-delta relation of the data from a relativistic (aH/k)^2 correction of the same order, and
+  from a numerical error that is itself first order in zeta. The Newtonian quarter control (N-z128 at mu = 0.075,
+  processors, ~2 h on one core) would turn the scaled Newtonian premise into a measurement; not run this session.

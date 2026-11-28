@@ -1021,3 +1021,38 @@ Predictions [JUDGEMENT], before the reader runs:
   guard at t = 48.140625 +- 0.0157 (one cycle) with the first non-finite cell in MeshBlock 31 at (-0.4375, -0.4375,
   -1.4375). Refuted if it reaches 48.5 or stops at another cell: then the card stop was not deterministic in the
   fields. A hold makes a 9-cycle processor reproducer for core.
+
+### Entry 21, outcomes (reader A-20261128-160831-6fd1da1, rt2a_read.py, fig_rt2a.png looked at; reproducer A-20261128-160727-0d75d4e) - 08:12 PST
+
+- GA HOLDS [VERIFIED]: the v0.9 threaded processor build (4 threads) continued from RT2a-A's restart file at t = 48.0
+  stops at the guard at t = 48.140625, cycle 3081, first non-finite cell MeshBlock 31 (level 4) at (-0.4375, -0.4375,
+  -1.4375), 317832 non-finite values: the card stop to the cycle, the cell and the count, in 9 cycles and ~48 s of
+  wall time. The blow-up is deterministic in the fields on the release build with faces at 32 and the face set; it
+  is the mesh-A blow-up of entry 5 (v0.6, stock faces: t = 47.92, same cell), 0.22 M later. It sits at r = 1.56 inside
+  the collapsing matter on a level-4 block (dx 0.125), 0.08 M before 16632 particles are left of 77704 - not at the
+  outer faces. The candidate named in entry 5 (G3: excising the particles while the lapse is 0.3 removed the stop to
+  48.5 on v0.6) stands untested on v0.9. Reproducer for core: `scripts/ga_repro.sh` (input rst/ball.00015.rst of
+  A-20261128-081045-1e001cd). The queue entry q0108 is marked done: its chain cannot pass the guard, and its reading
+  time (45.875) was reached.
+- RA1 HOLDS: the x-line part 13-32 of A-F is 0.086 / 0.097 at t = 45.75 / 46.0 against A-d0.42's 0.549 / 0.703 (v0.6,
+  stock faces at 32): 6.4 and 7.3 times smaller. The face set keeps working over 45 M on mesh A (core measured 8x at
+  t = 16 in its own ball; FR 70-100x at t <= 2).
+- RA2 REFUTED at t = 45.75, holds at 46.0: the part x < 4.25 is 0.286 against 0.454 (factor 1.59 > 1.5) and 0.474
+  against 0.546 (1.15). The v0.9 member's interior part is lower than v0.6's at 45.75; whether that is the deposit fix
+  at level faces or the run-to-run spread of card deposits is not separated (one member each).
+- RA3 HOLDS (no pass on the coarse mesh): region norms of A-F. Rows where the finder holds no horizon (45.5, 45.75,
+  46.25: whole box) give 0.10, 0.175, 0.174. The row at t = 46.0 holds the found horizon (radius 0.170, finds at
+  45.75, 45.875, 46.0; then 46.25 and 46.875 only: no persistent detection on mesh A, as on v0.6): the ratio over the
+  exterior is 0.907, parts inner (horizon to 4.25) 0.890, middle (4.25-13) 0.085, outer (13-32) 0.150.
+  What sets it [VERIFIED as arithmetic on the region columns]: at that row 95.3 per cent of ||16 pi E|| lies inside
+  the found horizon (exterior ||E|| / whole-box ||E|| = 0.047), so the exterior ratio divides the H outside by the
+  E of the few particles still outside. The outer part in units of the whole-box E is 0.0071, the same as at 45.75
+  (0.0076): the faces did not change at detection; the normalisation did. At t = 47.0 (horizon 0.147) the exterior
+  ratio is 1.25.
+Bearing on decision 0051 item 4 (read as written: the whole exterior at detection): on mesh A the bound is missed by
+a factor 9 at the first row that holds a horizon. The outer-face part alone (0.150) is above 0.1 at that row, because
+of the normalisation: faces at 32 with the set give 0.0071 of the whole-box E, and the bound asks it to be below 0.1
+x 0.047 = 0.0047 of it. So the outer part must fall by a further factor ~1.5-2 (distance of the faces: a member with
+faces at 64, or a coarser outer level) and the inner part (0.89) by a factor ~9 with the mesh: mesh B (q0109)
+measures the first factor of that. If the inner part falls at second order, mesh B gives ~0.22 and mesh C ~0.06.
+R1-R3 of entry 20 wait for q0109 (B-F, waiting in the shared queue).
