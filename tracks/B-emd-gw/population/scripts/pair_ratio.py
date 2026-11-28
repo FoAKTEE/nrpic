@@ -100,7 +100,7 @@ def main():
     ax.plot(*c["C"], "-", color="C1", lw=0.9, label="C: every $128^3$ record")
     ax.plot(*c["N"], ".", color="0.5", ms=2, label="N: nearest record")
     ax.plot(*c["E"], "o", color="k", ms=4, mfc="none", label="E: catalogue epochs")
-    ax.axhspan(1.11, 1.36, color="C2", alpha=0.15, label="Table VII band (E)")
+    ax.axhspan(1.11, 1.36, color="C2", alpha=0.15, label="Table VII band (1.11-1.36)")
     ax.axvline(36, color="0.6", ls=":", lw=0.8)
     ax.set_xscale("log")
     ax.set_xlabel("$a$")
