@@ -442,3 +442,11 @@ cells. With `deposit_fine_shape`:
 Without the option: uniform, and the same bytes on the line in both builds.
 Refuted for my rule if this branch is not uniform at the face 1/2 (then the share I keep
 is wrong) or at 0/1 (then the share I drop was needed).
+
+Outcome CM, run core-20261128-002502-76a25c3: HOLDS in every part. With the option this
+branch has E/rho0 - 1 = 0 in all 64 cells of the line; core-v0.8 has +-0.015625 (1/64) in
+the level-1 cells at x1 = +-7.25, +-7.75 and nothing at the face between levels 1 and 2;
+without the option both builds are uniform with the same values. Figure fig_cap_mid.png
+looked at: panel (b) shows the dipole of core-v0.8 at 7.25/7.75 only. That the flag
+"this cloud was capped" would fail at the face 1/2 remains a statement by reading: the
+flag was not built.

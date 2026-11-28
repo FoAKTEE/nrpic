@@ -52,7 +52,13 @@ fine-shape branch). Consequences:
 The lead's proposal was a flag "this cloud was capped". It would have skipped the share
 of a cloud whose own cells are leaves of the cap level while its neighbours, capped, own
 the finer cell beside it, and a regular lattice would have lost uniformity there
-[by reading; not run].
+[by reading; the flag was not built]. The rule chosen is tested in that geometry
+(`cap_mid.py`: levels 2, 1, 0 along x1, cap at level 1, one lattice of particles at the
+level-1 cell centres, linear cloud with fine shape): this branch gives E/rho0 = 1 exactly
+in every cell of the line, at the face between levels 1 and 2 (where the share beside the
+cloud is kept) and at the face between 0 and 1 (where it is dropped); core-v0.8 is
+uniform at the first and has -+1/64 in the two level-1 cells at the second (run
+core-20261128-002502-76a25c3, figure `fig_cap_mid.png`).
 
 ## 2. Compensation of the cloud: one flux through a face between levels [VERIFIED]
 
