@@ -13,7 +13,7 @@ headline:    G-8 (M/8, N, 400 M, run D-20261128-062142-c5666c4): the horizon mas
              M/6 does not qualify on processors: the search at t = 0 is not found (reason 6) in G-6u's deck
              and in the null pair at M/6 (run D-20261128-160418-b618bff). core-v0.9 = core-v0.8 byte for byte
              on the G-8 deck (same run, K3): new members on v0.9.
-last-result: g3/amend/JOURNAL.md entries 8-12; REVIEW-wave3 section 28; outbox g3-mesh-leg-m6-not-qualified.
+last-result: g3/amend/JOURNAL.md entries 8-13; REVIEW-wave3 section 28; outbox g3-mesh-leg-m6-not-qualified.
 failed:      this session: lead-bias size band (shift 1.05e-4 at its low end against 2e-4); K2 "found at
              t = 0" at M/6 (all three decks); S-4N count (140 tracers left out); S-e1 "identical row"
              (expansion columns at round-off); the first G-8 reader run D-20261128-160544-089d6f8 (syntax).
