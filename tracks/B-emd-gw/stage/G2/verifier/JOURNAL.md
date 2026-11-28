@@ -92,3 +92,12 @@ crossing check must find. Refuted if the distance shrinks, or no crossing before
 
 V8 (what G2 can claim): judged after V1-V7 against the scope text and decisions 0013, 0046,
 0048, written into VERIFIER.md before reading the lead's verdicts.
+
+## Entry 2 (18:25 PST): prediction for one more check, before it runs
+
+V7c (series 7 constraint floor, Table VIII rows 278): claims, mean relative Hamiltonian
+constraint over 1 <= t <= t_A at N_y = 64, 128, 256: 3.62e-6, 2.73e-6, 2.55e-6; momentum
+2.33e-4, 1.66e-4, 1.64e-4 (OPEN: Mr 1.6e-4 not falling between 128 and 256). Prediction: a
+time average of the cstat columns Hr_mean and Mr_mean (trapezoid in t, my choice; the lead's
+averaging is unknown to me) gives these to two digits; refuted if any differs by more than
+5 per cent. If they reproduce, the 128-to-256 step lowers Mr by less than 2 per cent.
