@@ -1,13 +1,14 @@
 # Stage report: A-emd-pbh G2
 
-Date: 2026-11-26 · branch `track/A-emd-pbh` at `ff78cb3762f0` · checklist
+Date: 2026-11-28 · branch `track/A-emd-pbh` at `2c735b532a37` · checklist
 `tracks/A-emd-pbh/stage/G2/CHECKLIST.md` (from `nrpic-stage collect`)
 
 ## Verdict
 
-**FAIL**. Tag: `stage/A-emd-pbh/G2-fail-20261126` (created and pushed by the orchestrator after review, decision 0003).
+**FAIL**. Tag: `stage/A-emd-pbh/G2-fail-20261128` (created and pushed by the orchestrator after review, decision 0003).
 
 - 5 checklist items not PASS or NA: C1 FAIL, C3 FAIL, C21 OPEN, C22 OPEN, C23 OPEN
+- verify reported FAIL: clean
 
 ## Package documents (decision 0012)
 
@@ -35,7 +36,7 @@ Date: 2026-11-26 · branch `track/A-emd-pbh` at `ff78cb3762f0` · checklist
 | C8 | The horizon-mass error is of the same order as in the Oppenheimer–Snyder test of Wu and Most | Horizon-mass error (median over detections) 7.4e-3, 2.1e-3, 2.1e-4 on M/16, M/32, M/64 (conv_ball A-20261121-120257-a2eb839), against the source's fiducial Oppenheimer-Snyder level 1e-3 (main.tex:945) and best AMR particle RMS 7.3e-4 (main.tex:1484); threshold scan on M/32: /dmmed/ 3.2e-4 to 9.4e-3 for delta_c 0.35-1.0 (A-20261124-131120-5c974ce). First-detection excess (up to 4-7 per cent at threshold) is carried by the slice, not the finder (threshold_ball entry 4). Corrected in batch 19 (A-20261125-151126-7f79a83, fig_c18_mass_bracket.png): the exact mass on the code's slice is bounded by the tracked particles, and the median error lies in [5.1e-3, 7.2e-3] (M/16), [-2.7e-3, -1.6e-3] (M/32), [-1.0e-3, +0.5e-3] (M/64): of the order of the source's 1e-3. Near threshold on M/32 the brackets are B-d0.42 [-5.6e-3, -0.5e-3], B-d0.40 [-9.6e-3, -3.7e-3], B-d0.35 [-7.7e-3, +0.5e-3]; C-d0.42 [-4.2e-3, +5.9e-3]; the former medians +2.8e-3, +3.2e-4, +2.4e-3, +2.4e-2 lie outside them and are withdrawn, as are the A medians (built on repeated summary rows). The first-detection excess is relative to the shell at the finder's coordinate radius; 'carried by the slice' stands on M/64 only (verifier). | PASS |
 | C21 | "A1 and A3 pass with three-way convergence" (SCOPE section 7, G2) | Gate review (batch 30): FAIL as written. A1 (the expanding ball): three-way convergence of the time errors in mesh, particle number and boundary (C2, C7). A3 (LTB in the periodic box: "R(l) within the convergence error; horizon outcome as LTB until the first crossing"): no convergence series in the box (P0L/P0L6 is a mesh pair, inner shells worse on six levels than on four, D4 refuted); shells r0 > 1.5 within 3.3 per cent to turnaround only, up to 42 per cent during collapse (VERIFIER.md 2.3); horizon outcome failed in the card runs (false acceptance at t = 118.1, no horizon found from 121.4). Batch 31 (FP, A-20261126-233542-fd9f9f0): on the restart file at t = 140 the core-v0.8 finder with 4000 flow iterations finds a horizon of area mass 6.30 at mean radius 0.104 (the line's marginally trapped sphere: 6.28 at 0.103), and at t = 130 accepts nothing (no round sphere trapped); the finder part of A3 can be met by a deck rule, the convergence part is not shown. FAIL as written (gate review section 3). | OPEN |
 | C22 | "horizon mass error in A1 of the same order as the source paper's Oppenheimer-Snyder test" (SCOPE section 7, G2) | Gate review (batch 30): PASS WITH RESERVATION. As C8 (with its reservations: a different quantity than the source's; mesh C below the tracked set's resolution). Locators main.tex:945 and main.tex:1484 checked by the gate reviewer. | OPEN |
-| C23 | "one triaxial particle run of phase 1 to horizon formation with the constraint bound of section 3" (SCOPE section 7, G2) | Gate review (batch 30): FAIL as written. S1L (mu = 0.3, e = 0.2, A-20261123-025907-97bab8d) ran to t = 220 with no horizon in 314 searches (gate review G1); the bound of section 3 is met in no run (C3). Batch 31 (FP, A-20261126-233542-fd9f9f0): the core-v0.8 finder on S1L's restart files at t = 210 and 220 (see periodic_threshold JOURNAL, outcome FP). FAIL as written. | OPEN |
+| C23 | "one triaxial particle run of phase 1 to horizon formation with the constraint bound of section 3" (SCOPE section 7, G2) | Gate review (batch 30): FAIL as written. S1L (mu = 0.3, e = 0.2, A-20261123-025907-97bab8d) ran to t = 220 with no horizon in 314 searches (gate review G1); the bound of section 3 is met in no run (C3). Batch 31 (FP, A-20261126-233542-fd9f9f0): the core-v0.8 finder on S1L's restart files at t = 210 and 220 (see periodic_threshold JOURNAL, outcome FP). FAIL as written. Batch 40 (condition (d) of 0047): S1L-F (q0090, A-20261128-012211-c9cedc1, reader A-20261128-073831-fce5805) reaches a found horizon from t = 169.28 (51 of 57 later searches found), but the section-3 ratio outside the found horizon is 0.514 at detection and 0.5-0.6 to t = 205: horizon formation shown, the bound NOT met. FAIL as written. | OPEN |
 | C9 | Track A. The threshold line is built in the periodic box (the expanding ball holds only amplitudes below the comparison amplitudes of arXiv:2609.14218; lead's evidence in `scope/SCOPE.md`); the expanding ball stays the spherical verification case and the set-up for isolated collapses. The G1 scan-design criterion is met on the reference-based design; the Newtonian-mode runs are G2 work. (0013) | The expanding ball is the spherical verification case (conv_ball, threshold_ball); the threshold line is built in the periodic box (periodic_threshold): P0L/S1L on the refined periodic mesh run stably at cfl 0.5 (job 2, A-20261124-130507-10510ac); the box's horizon was not found in any card run (P3 refuted on four levels; P0L6 = peak_leak6 ran to t = 140, A-20261125-044641-7d5bd16: one false acceptance at t = 118.1, every search from t = 121.4 fails with reason 6). Batch 31 (FP, periodic_threshold JOURNAL 2026-11-26 15:35): the core-v0.8 finder searching again on P0L6's restart files (A-20261126-233542-fd9f9f0) finds the trapped surface at t = 140 with 4000 flow iterations (see C1). Newtonian-mode runs were made at G1 (newton/). | PASS |
 | C10 | Schematic: Verification ladder | Verification-ladder schematic not drawn yet (note/ has the G1 architecture and timeline schematics). Batch 28: note/figures/schem_ladder.png (schem_ladder.py, paperfig; run A-20261126-214059-b32377a), looked at; Fig. 6 of the note. | PASS |
 | C11 | Data figure: Convergence figures (one each for particle number, mesh, gauge) | fig_convergence.png of conv_ball A-20261121-120257-a2eb839 (mesh, particle number, ball radius, boundary legs) and fig_threshold_outcome.png (A-20261124-131120-5c974ce) exist and were looked at; no gauge-leg figure (boundary leg chosen) and not yet drawn into the note with zoom-figure style. Batch 28: note/figures/fig_g2_convergence.png (fig_g2_convergence.py from conv_ball convergence.json; run A-20261126-214059-b32377a), looked at: mesh, particle-number, radius and boundary legs (boundary chosen as the third leg, charter 9.2 'gauge or boundary'); Fig. 7 of the note. | PASS |
@@ -51,13 +52,13 @@ Date: 2026-11-26 · branch `track/A-emd-pbh` at `ff78cb3762f0` · checklist
 
 ## Re-verification on a clean checkout (`nrpic-stage verify`)
 
-`nrpic-stage verify` on 2026-11-26T23:56:29Z, clean export of `ff78cb3762f0`: **PASS**. Details: `VERIFY_RESULTS.md`.
+`nrpic-stage verify` on 2026-11-28T16:15:20Z, clean export of `2c735b532a37`: **FAIL**. Details: `VERIFY_RESULTS.md`.
 
 | Check | Result | Message |
 |---|---|---|
-| clean | PASS | worktree clean (outside the stage directory being assembled) |
+| clean | FAIL | 2 uncommitted paths: commit them first (tracks/A-emd-pbh/periodic_threshold/JOURNAL.md, tracks/A-emd-pbh/threshold_ball/JOURNAL.md) |
 | sync | PASS | main is merged into the branch |
-| export | PASS | clean export of ff78cb3762f0 (HEAD) in /data/haiyangw/nrpic/scratch/A-emd-pbh/tmp/stage-verify/A-emd-pbh-G2-ff78cb3-20261126T235541Z/tree |
+| export | PASS | clean export of 2c735b532a37 (HEAD) in /data/haiyangw/nrpic/scratch/A-emd-pbh/tmp/stage-verify/A-emd-pbh-G2-2c735b5-20261128T161052Z/tree |
 | size | PASS | no committed file of the track above 5 MB |
 | note | PASS | tracks/<ID>/note/main.tex present |
 | package | PASS | EVIDENCE.md, OPEN.md, CHECKLIST.md present (decision 0012); scoping text: scope/SCOPE.md; verifier's report VERIFIER.md |
@@ -65,14 +66,12 @@ Date: 2026-11-26 · branch `track/A-emd-pbh` at `ff78cb3762f0` · checklist
 | style | PASS | 3 style copies equal harness/style/SHA256SUMS (czstyle.py, paperfig.py, figstyle.py) |
 | fig-script | PASS | 10 figures, each with its script |
 | min-figs | PASS | 4 schematics and 6 data figures (brief 13.4 asks at least 1 and 5 at G2) |
-| runs | PASS | 339 run manifests finished (102 hand-written, read as decision 0012 allows); failures of 1 runs waived by coord/WAIVERS.md (decision 0019), output checksums verified where recorded |
+| runs | PASS | 369 run manifests finished (102 hand-written, read as decision 0012 allows); failures of 1 runs waived by coord/WAIVERS.md (decision 0019), output checksums verified where recorded |
 | runs-waived | WARN | failures of the manifest check waived: 1 runs named in main's coord/WAIVERS.md (decision 0019 item 6): A-20261121-064515-aa13c8f: the gate reviewer's failed first attempt; its scratch script was edited for the rerun A-20261121-064537-2bcf310 |
 | run-notes | WARN | 80 runs read with defaults or not fully re-verifiable (nrpic-run lint) |
-| checksums | WARN | 32034 output files: 74 hashed again (bytes read, 0.62 GB), 31960 taken from the cache (810.24 GB); a checksum taken from the cache proves unchanged size and modification time since it was hashed, not bytes read again; --full reads every byte |
-| status | PASS | STATUS.md has 38 lines |
-| rerun | PASS | 11 of 11 scripts and commands ran cleanly in the export |
-| compare | PASS | 21 regenerated files compared with the committed ones; 0 differ beyond tolerance (rtol 1e-06, atol 1e-12, PNG rms 0.005) |
-| regenerate | PASS | all 20 committed figure files regenerated |
+| checksums | WARN | 36136 output files: 119 hashed again (bytes read, 7.85 GB), 36017 taken from the cache (894.73 GB); a checksum taken from the cache proves unchanged size and modification time since it was hashed, not bytes read again; --full reads every byte |
+| status | PASS | STATUS.md has 34 lines |
+| rerun | WARN | re-run skipped (--no-rerun) |
 
 ## Figures
 
@@ -131,6 +130,10 @@ Date: 2026-11-26 · branch `track/A-emd-pbh` at `ff78cb3762f0` · checklist
 - `A-20261126-023242-f3f0578`: stopped (exit -15), szekeres P17-P21 (entry 8), members N64 and N128 (A-20261125-213939-0ad9f29); the three-member run A-20261126-022804-0bc68c2 was stopped by hand: N256 needs ~1 h per dump in this reader
 - `A-20261126-223902-c94b32f`: failed (exit 1), G2 verifier V5: every Table V row against its run's manifest and registered output; spot check of conv_ball member C
 - `A-20261126-234811-9e42dae`: failed (exit 2), FP/FPb figures redrawn with one colour per dump (the first FPb figure drew four dumps in black)
+- `A-20261128-011658-019b3f8`: failed (exit 1), LF reading (threshold_ball JOURNAL entry 18): ratio_split.py with band edges 3.5, 4.5, 6.5, 13 on U4 (matter inside one level) and N4 (level face at 4 in the matter), t <= 2
+- `A-20261128-011804-365c88b`: failed (exit 1), FR (threshold_ball JOURNAL entry 18): S2c-A on nest16_L16 with the core-v0.6 outer-face set (extrap_order 4, ghost_falloff, sbc_variant nonwave, sbc_speed metric), live gauge, to t = 2, v0.6 threaded build on four threads; remedy test for the outer-face part of the constraint ratio, condition (a) of decision 0047
+- `A-20261128-074045-15a6f1e`: failed (exit -15), RX (periodic_threshold JOURNAL 2026-11-27 23:47 PST): box deck peak_leak with S1L's data, 24 cycles straight against a run continued from the restart file of cycle ~11, processor builds of core-v0.6 and core-v0.8, one core; does a continued run repeat the straight one (cause candidate of S1L's step at t = 50)
+- `A-20261128-081045-1e001cd`: failed (exit 1), threshold_ball RT2a-A (entry 20, predictions R1-R3): bracket member delta_c = 0.42 (top hat, PCS with compensation) on mesh A with outer faces at 32 plus core-v0.6's outer-face set and region norms, release core-v0.9 card build (deposit fixes at level faces), to t = 51; retest of decision 0047 item 2(a)
 - `A-emd-pbh-20261115-112500-61acbec`: failed (exit None), G0 scoping: semi-analytic tests T1-T5 of tracks/A-emd-pbh/scope/JOURNAL.md (hoop criterion of 2609.14218, collapse times against top-hat shells, ball geometry, velocity-dispersion axis and particle floor, compute estimate from measured costs)
 - `A-emd-pbh-20261115-115339-044312f`: stopped (exit None), G1 of A-pre-1: FD constraint residuals vs resolution (orders (2, 4), N = [32, 64, 128, 256]) and table interpolation error vs spacing
 - `A-emd-pbh-20261115-115559-c4a583e`: stopped (exit None), A-pre-1: Hamiltonian-constraint noise of CIC-deposited particles vs N (N = [10000, 30000, 100000, 300000, 1000000], mesh 64^3)
@@ -148,7 +151,7 @@ Date: 2026-11-26 · branch `track/A-emd-pbh` at `ff78cb3762f0` · checklist
 ## Open risks
 
 
-State 2026-11-26 (lead, batch 31; rows 45-47 new, row 31 superseded by 45; earlier: batch 28 rows 32, 39, 43, 44; first written 2026-11-15). Likelihood and effect:
+State 2026-11-28 (lead, batch 40; rows 52-54 new; batch 34 rows 48-51; batch 31 rows 45-47, row 31 superseded by 45; earlier: batch 28 rows 32, 39, 43, 44; first written 2026-11-15). Likelihood and effect:
 H high, M medium, L low [JUDGEMENT]. Sources: `scope/SCOPE.md` sections 8 and 10.9,
 `gauge/GAUGE.md`, `stage/REVIEW-wave2.md`, `stage/REVIEW-wave3.md`, `stage/G1/GATE_REVIEW.md`,
 core's messages of 2026-11-20/21, the helpers' journals. "Realized" means a run showed it;

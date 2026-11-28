@@ -1,15 +1,15 @@
 {
   "track": "A-emd-pbh",
   "gate": "G2",
-  "commit": "ff78cb3762f0105061c66fcb353c414243ab3e20",
-  "verified_utc": "2026-11-26T23:56:29Z",
-  "export": "/data/haiyangw/nrpic/scratch/A-emd-pbh/tmp/stage-verify/A-emd-pbh-G2-ff78cb3-20261126T235541Z",
-  "result": "PASS",
+  "commit": "2c735b532a37c322d9b040525b826b7d6025d92a",
+  "verified_utc": "2026-11-28T16:15:20Z",
+  "export": "/data/haiyangw/nrpic/scratch/A-emd-pbh/tmp/stage-verify/A-emd-pbh-G2-2c735b5-20261128T161052Z",
+  "result": "FAIL",
   "checks": [
     {
       "check": "clean",
-      "status": "PASS",
-      "message": "worktree clean (outside the stage directory being assembled)",
+      "status": "FAIL",
+      "message": "2 uncommitted paths: commit them first (tracks/A-emd-pbh/periodic_threshold/JOURNAL.md, tracks/A-emd-pbh/threshold_ball/JOURNAL.md)",
       "detail": null
     },
     {
@@ -21,7 +21,7 @@
     {
       "check": "export",
       "status": "PASS",
-      "message": "clean export of ff78cb3762f0 (HEAD) in /data/haiyangw/nrpic/scratch/A-emd-pbh/tmp/stage-verify/A-emd-pbh-G2-ff78cb3-20261126T235541Z/tree",
+      "message": "clean export of 2c735b532a37 (HEAD) in /data/haiyangw/nrpic/scratch/A-emd-pbh/tmp/stage-verify/A-emd-pbh-G2-2c735b5-20261128T161052Z/tree",
       "detail": null
     },
     {
@@ -69,7 +69,7 @@
     {
       "check": "runs",
       "status": "PASS",
-      "message": "339 run manifests finished (102 hand-written, read as decision 0012 allows); failures of 1 runs waived by coord/WAIVERS.md (decision 0019), output checksums verified where recorded",
+      "message": "369 run manifests finished (102 hand-written, read as decision 0012 allows); failures of 1 runs waived by coord/WAIVERS.md (decision 0019), output checksums verified where recorded",
       "detail": null
     },
     {
@@ -260,12 +260,12 @@
     {
       "check": "checksums",
       "status": "WARN",
-      "message": "32034 output files: 74 hashed again (bytes read, 0.62 GB), 31960 taken from the cache (810.24 GB); a checksum taken from the cache proves unchanged size and modification time since it was hashed, not bytes read again; --full reads every byte",
+      "message": "36136 output files: 119 hashed again (bytes read, 7.85 GB), 36017 taken from the cache (894.73 GB); a checksum taken from the cache proves unchanged size and modification time since it was hashed, not bytes read again; --full reads every byte",
       "detail": {
-        "rehashed_files": 74,
-        "rehashed_bytes": 622833402,
-        "cached_files": 31960,
-        "cached_bytes": 810239631851,
+        "rehashed_files": 119,
+        "rehashed_bytes": 7852861765,
+        "cached_files": 36017,
+        "cached_bytes": 894728587492,
         "full": false,
         "meaning_of_a_cached_entry": "a checksum taken from the cache proves unchanged size and modification time since it was hashed, not bytes read again",
         "notes": []
@@ -274,131 +274,13 @@
     {
       "check": "status",
       "status": "PASS",
-      "message": "STATUS.md has 38 lines",
+      "message": "STATUS.md has 34 lines",
       "detail": null
     },
     {
       "check": "rerun",
-      "status": "PASS",
-      "message": "11 of 11 scripts and commands ran cleanly in the export",
-      "detail": null
-    },
-    {
-      "check": "compare",
-      "status": "PASS",
-      "message": "21 regenerated files compared with the committed ones; 0 differ beyond tolerance (rtol 1e-06, atol 1e-12, PNG rms 0.005)",
-      "detail": [
-        [
-          "note/tables/ledger_g2.tex",
-          "PASS",
-          "identical"
-        ],
-        [
-          "note/figures/fig_landscape.pdf",
-          "PASS",
-          "regenerated (vector files carry dates; the PNG preview is compared)"
-        ],
-        [
-          "note/figures/fig_criteria.pdf",
-          "PASS",
-          "regenerated (vector files carry dates; the PNG preview is compared)"
-        ],
-        [
-          "note/figures/schem_timeline.png",
-          "PASS",
-          "identical"
-        ],
-        [
-          "note/figures/fig_constraints.pdf",
-          "PASS",
-          "regenerated (vector files carry dates; the PNG preview is compared)"
-        ],
-        [
-          "note/figures/fig_g2_convergence.pdf",
-          "PASS",
-          "identical"
-        ],
-        [
-          "note/figures/fig_ball_exact.pdf",
-          "PASS",
-          "regenerated (vector files carry dates; the PNG preview is compared)"
-        ],
-        [
-          "note/figures/fig_slice_mosaic.pdf",
-          "PASS",
-          "identical"
-        ],
-        [
-          "note/figures/schem_dataflow.png",
-          "PASS",
-          "identical"
-        ],
-        [
-          "note/figures/schem_dataflow.svg",
-          "PASS",
-          "regenerated (vector files carry dates; the PNG preview is compared)"
-        ],
-        [
-          "note/figures/fig_landscape.png",
-          "PASS",
-          "identical"
-        ],
-        [
-          "note/figures/fig_constraints.png",
-          "PASS",
-          "identical"
-        ],
-        [
-          "note/figures/schem_ladder.png",
-          "PASS",
-          "identical"
-        ],
-        [
-          "note/figures/fig_ball_exact.png",
-          "PASS",
-          "identical"
-        ],
-        [
-          "note/figures/fig_g2_convergence.png",
-          "PASS",
-          "identical"
-        ],
-        [
-          "note/figures/fig_criteria.png",
-          "PASS",
-          "identical"
-        ],
-        [
-          "note/figures/fig_slice_mosaic.png",
-          "PASS",
-          "identical"
-        ],
-        [
-          "note/figures/schem_architecture.svg",
-          "PASS",
-          "regenerated (vector files carry dates; the PNG preview is compared)"
-        ],
-        [
-          "note/figures/schem_architecture.png",
-          "PASS",
-          "identical"
-        ],
-        [
-          "note/figures/schem_timeline.svg",
-          "PASS",
-          "regenerated (vector files carry dates; the PNG preview is compared)"
-        ],
-        [
-          "note/figures/schem_ladder.svg",
-          "PASS",
-          "regenerated (vector files carry dates; the PNG preview is compared)"
-        ]
-      ]
-    },
-    {
-      "check": "regenerate",
-      "status": "PASS",
-      "message": "all 20 committed figure files regenerated",
+      "status": "WARN",
+      "message": "re-run skipped (--no-rerun)",
       "detail": null
     }
   ]
