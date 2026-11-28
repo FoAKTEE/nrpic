@@ -594,3 +594,23 @@ A-20261126-234358-f761d8d, compiled clean; READMEs; S1-S3 of S1L judged (A-20261
 corrected (dust clock from the snapshots, verifier's numbers); EVIDENCE, OPEN, REVIEW-wave3 section 13, STATUS,
 HANDOFF, RISKS 45-47; outbox to core finder-slow-convergence-box, to orch g2-after-batch-31. The full checksum pass of
 the stage check left by the gate reviewer (3fcd428, PASS, every byte read) kept beside the cached result.
+
+## 2026-11-27 16:32-17:35 PST, lead of batch 34 (first round of the new usage week; processors, cards queued)
+
+Gate G2 NOT passed (0047); this session worked conditions (a)-(d), predictions first in the package journals.
+(b) FD (A-20261128-004123-bc1fcf8): with core's `flow = shear` and the new deck lines the finder finds S1L's horizon at
+t = 190.0/198.7/220.0 and P0L6's at 140 from every start, nothing at P0L6 t = 130: met on the existing restart files
+except the t = 118.1 event (no file). New deck periodic_threshold/inputs/peak_leak_f.athinput.
+(c) A2Q designed (quarter amplitude: refutes the first-order class and the gradient-expansion coefficient; cannot
+separate the zeta-delta relation from (aH/k)^2), data D-q held (A-20261128-003940-60a3521), smoke SM-q (step clause
+refuted, queued anyway), queued q0089 (submitted 17:16, run A-20261128-011607-3e2d530).
+(d) F1-F3 written, smoke SM-F held (A-20261128-004246-1c854c6), queued q0090 (waiting at 17:17).
+(a) C3-G's reading withdrawn (frozen matter); R-split (A-20261128-004947-8fc6ba9): the failing ratio is dominated by
+the outermost cells next to the outflow faces; OB (A-20261128-004659-f512816; reader A-20261128-010702-44edae6) holds:
+faces at 32 cut that part 300-fold (its total clause refuted at t = 1); LF (A-20261128-005331-874ec88; readers
+A-20261128-011658-019b3f8 failed on a figure colour, A-20261128-011717-7db1434) refuted: a level face in the matter keeps
+the interior residual 2.4x higher at t = 2; OH (A-20261128-005454-eb7b26b) undecided; FR (v0.6 outer-face set) started
+17:18. Failed predictions: SM-q step clause, OB total clause at t = 1, LF null, OH agreement clause; FD1's t = 180
+clause untested (file mapping wrong in the prediction).
+Records: OPEN.md, REVIEW-wave3 section 14, STATUS, HANDOFF, RISKS 48-51; outbox to core (b34-finder-confirmed-outer-
+faces) and orch (g2-conditions-after-batch-34); core's answer acknowledged. Card-hours used: 0 (4.2 capped in queue).
