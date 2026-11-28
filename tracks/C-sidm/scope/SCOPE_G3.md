@@ -77,6 +77,8 @@ flow_iterations_0   = 400
 polish_iterations_0 = 100
 flow                = shear      # one key for all horizons (z4c/fastflow.cpp:68)
 initial_radius_0    = 1.0
+start_time_0        = 0.0       # default never (z4c/fastflow.cpp:177)
+stop_time_0         = 1.0e4     # default -1, i.e. never (z4c/fastflow.cpp:179)
 diagnostics         = true       # <basename>.horizon_status_0.txt
 ```
 

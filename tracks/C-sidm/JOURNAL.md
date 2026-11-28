@@ -1326,3 +1326,16 @@ G3A-60 (kicked one percent inward). Readers: nseries.py for the lapse and the 20
 - G3A.7 cost 2.0 to 3.5 card-hours per member (G2 M/8 members: 2.63-2.71 for 600 M). Refuted
   outside.
 So the bracket I expect is (0.52, 0.56), containing the binding-energy maximum 0.5404 (F3).
+
+## 2026-11-28T02:20Z  batch 35: smoke test of the G3A decks (C-20261128-021146-0f3b8f2), and what it caught
+
+Both decks (control 0.5404, kicked 0.60) load 1e6 particles and the table and run three cycles at
+dt = M/32 on the threaded processor build of core-v0.8 (exit 0; about 40 s per cycle on four
+threads). But the finder wrote only the header of its summary file and no status file: in
+z4c/fastflow.cpp:177-179 `start_time_<n>` defaults to the largest double and `stop_time_<n>` to
+-1, so a deck without them never searches (the condition at :445, :529, :620 returns at once).
+`problems/puncture/horizon_calib.athinput:109-110` sets both; the core-v0.8 READY and the scope's
+first block did not. Without the smoke test all four card runs would have had no finder, the
+very defect decision 0048 corrects. Decks and scope now set start_time_0 = 0, stop_time_0 = 1e4;
+the smoke test is repeated before anything is queued. To core (outbox): name both keys in the
+READY of the finder.

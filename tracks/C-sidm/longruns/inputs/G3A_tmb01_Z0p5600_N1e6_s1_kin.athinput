@@ -120,6 +120,8 @@ mass_tol_0          = 1.0e-5    # the mass rule (core-v0.8 READY)
 flow_iterations_0   = 400
 polish_iterations_0 = 100
 initial_radius_0    = 1.0
+start_time_0        = 0.0       # default: never (z4c/fastflow.cpp:177; smoke test C-20261128-021146-0f3b8f2)
+stop_time_0         = 1.0e4     # default -1: never (z4c/fastflow.cpp:179)
 diagnostics         = true      # cc.horizon_status_0.txt: found or not, reason, iterations
 
 <output1>
