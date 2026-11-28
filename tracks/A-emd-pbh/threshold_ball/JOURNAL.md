@@ -867,3 +867,20 @@ section 3 at detection (t ~ 44-46 in the bracket members) the outer faces need a
 a larger box only delays and dilutes it (L32 already: 0.5-1.4 in the bracket members), so the remedy to test is the
 outer-face options of core-v0.6 (question to core in the b34 outbox), then smooth CIC bracket members on two meshes.
 C3 stays FAILED as written for the members on record.
+
+### Entry 18, outcome LF (run A-20261128-005331-874ec88 completed: N4 276 s, U4 1280 s on one thread each; reader A-20261128-011717-7db1434 after A-20261128-011658-019b3f8 failed on a fifth band colour, kept; fig_ratio_split.png looked at) - 17:19 PST
+
+Line-ratio parts, U4 (matter inside one level of M/4) against N4 (level face at |x| = 4 in the taper), same weight:
+- x < 3.5 (identical cells in both): t = 0.5: 0.0400 / 0.0387 (N4/U4 0.97); t = 1: 0.0240 / 0.0367 (1.53); t = 2:
+  0.0145 / 0.0353 (2.43). LF is REFUTED at t = 2 (factor >= 2) and outside its 30 per cent band at t = 1: with the face
+  in the matter the interior residual stays at 0.035-0.04, without it it falls from 0.042 to 0.015 between t = 0.25 and 2.
+- 4.5-6.5 (M/2 cells in N4, M/4 in U4): N4 0.069 / 0.084 at t = 1 / 2, U4 0.009 / 0.027. N4's numbers equal S2c-A's edge
+  part to two digits (0.0689 / 0.0809; nestA has the same levels outside |x| > 2), so the edge part of the M/16 members
+  is the taper on the M/2 level, not a property of the finest level.
+- outermost cells (13-16): U4 0.100 / 0.199, N4 0.091 / 0.222: the outer-face part, as in every member with faces at 16.
+Named, by a run that could have failed [VERIFIED for M/4, one data set, t <= 2]: a level face inside the matter (with
+the coarser cells beyond it) keeps the interior residual from decaying, by a factor 2.4 at t = 2; the face cannot be
+told apart from the coarse cells beyond it by this pair. Together with OB: the ball's failing ratio is made of (i) the
+outer-face part (does not converge; dominant from t ~ 1), (ii) the taper on the coarse level (converges; 0.07-0.08 on
+M/16, 0.012 on M/32), (iii) a matter part that a level face in the matter keeps up (core's two deposit fixes at faces
+are the next retest; the ripple core says stays is a candidate for (iii)). C3 stays FAILED as written.
