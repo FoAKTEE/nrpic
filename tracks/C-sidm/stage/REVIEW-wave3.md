@@ -482,3 +482,35 @@ against the prediction of JOURNAL 2026-11-25T16:02Z.
 What could not be confirmed in this session: nothing beyond the fresh verifier's items (OPEN.md).
 Small defects fixed: tick labels of adjacent panels collided and the smallest mosaic window was
 shot-noise dominated at 96 cells (now 32); both fixed before the registered run that the note uses.
+
+## 19. Batch 35 (2026-11-28 UTC, after the gate was signed): what the lead checked
+
+Packages finished since batch 32: the fresh G2 verifier (batch 33, `stage/G2/verifier/`) and the
+independent gate review (batch 34, `stage/G2/GATE_REVIEW.md`). G2 is signed, pass with
+reservations (coord/GATES.md 2026-11-27; decision 0048 item 1).
+
+Checked from the artefacts, not from the conclusions:
+- The literature locator (kb-data/raw/arxiv/2009.08163/v1/src/paper.tex:948-972, 1056-1066):
+  Table "First binding energy maximizer and zero", King y_max = 0.334; "According to the so-called
+  turning point principle ... we find that this is not true"; the binding energy maximum
+  hypothesis holds. [VERIFIED, read by me] The note's "turning point" was the wrong name for the
+  right number; corrected (commit 3dbfa5d1f).
+- The deleted conductivity snapshots: heat_C2 case `..._dx0.25` holds heat.part.00000 and 00016
+  only, while its sha256sums.txt lists 51 heat.part files (3 cases x 17); the case directory holds
+  case.json, reduced.npz, summary.json that the card run did not write; heatlib.SnapReducer
+  removes every snapshot but the first and last (`os.remove`). [VERIFIED] The reduction now
+  writes into its own run directory and deletes nothing (run_mode.py reduce --out); both runs
+  queued again on core-v0.8 (q0092, q0093; predictions HR.0-HR.5).
+- The reviewer's figure `scratch/C-sidm/C-20261127-232854-8859b86/fig_review_check.png`, looked
+  at: the two unstable members cross 0.3 near 218 M (M/16) and 252 M (M/8), the eta1 member on
+  the M/8 curve; the stable members' 20 M block means stay inside +-0.03 and turn back after the
+  kick (A324s1i at N = 1e5 dips to about -0.025 near 600 M, still inside); the integrated H^2 of
+  the M/16 member is about six times the M/8 members' and flat from 50 to 600 M. This matches
+  R1-R3 as stated.
+- The verifier's count-test table (VERIFIER.md section 4) is copied per member into CHECKLIST C8;
+  I did not rerun its reader (collrate.py, run C-20261127-090913-97ee992).
+
+Not confirmed by me: the verifier's own equilibrium solver value 0.3340322 and its per-run
+crossings (I rely on the reviewer, who reproduced them with a third reader). Not wrong: nothing
+found. What the track does with each WRONG or NOT CONFIRMED item of the verifier and reviewer:
+`stage/G2/OPEN.md` (requests a-e applied; reservations mapped to scope/SCOPE_G3.md sections).

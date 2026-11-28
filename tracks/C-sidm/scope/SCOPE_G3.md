@@ -109,7 +109,12 @@ finds M_AH/M = 1.0000 and 1.0001 at the end of its two unstable monoenergetic ru
 (SCOPE.md:96-100, 2611.12831 tab_outcomes.tex:120-121) [VERIFIED by the G0 reading], so the
 collisionless reference is expected near 1. At the fluid end the reference is stability only:
 the Juttner onset 0.53306 lies on the stable side of the maximum, so a fluid at Z(0) = 0.52 is
-stable and one at 0.56 unstable [VERIFIED, models README].
+stable and one at 0.56 unstable [VERIFIED, models README]. Literature comparison (brief gate G3): the
+spherical Misner-Sharp fluid with heat flux of arXiv:2601.17117 gives the seed as a fraction of
+the whole halo (SCOPE.md:30-36), not of a truncated core, so the comparison is of the trend with
+the mean free path and of the sign of the change, not of the number [JUDGEMENT]; the
+collisionless end is compared with arXiv:2009.08163 (every particle falls in) and the first
+paper.
 
 ## 5. Criteria, with numbers fixed now, and what refutes each
 

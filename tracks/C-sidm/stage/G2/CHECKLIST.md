@@ -63,7 +63,7 @@ in VERIFY_RESULTS.md (`nrpic-stage verify`), not here.
 
 - [x] **C14** Package documents of decision 0012: STAGE_REPORT.md (nrpic-stage report), EVIDENCE.md, OPEN.md and this CHECKLIST.md in the stage directory; REVIEW.md where the lead rechecked helpers; the scoping text in SCOPE.md or SCOPING.md beside them or in the scope directory, named in the report (no REPORT.md needed)
   - status: PASS
-  - evidence: STAGE_REPORT.md, EVIDENCE.md, OPEN.md, CHECKLIST.md, VERIFIER.md (byte copy of verifier/VERIFIER.md, where the stage tool reads it), GATE_REVIEW.md in stage/G2/; REVIEW is stage/REVIEW-wave3.md sections 14 and 15; scoping text tracks/C-sidm/scope/SCOPE.md (G2 clause amended 2026-11-27, decision 0048 item 1) and scope/SCOPE_G3.md.
+  - evidence: STAGE_REPORT.md, EVIDENCE.md, OPEN.md, CHECKLIST.md, VERIFIER.md (byte copy of verifier/VERIFIER.md, where the stage tool reads it), GATE_REVIEW.md in stage/G2/; REVIEW is stage/REVIEW-wave3.md sections 14 to 19; scoping text tracks/C-sidm/scope/SCOPE.md (G2 clause amended 2026-11-27, decision 0048 item 1) and scope/SCOPE_G3.md.
 - [x] **C15** Data figures drawn with /zoom-figure-style from registered run outputs, one script per figure, every PNG looked at
   - status: PASS
   - evidence: All note figures drawn by one script each from registered run outputs with sha256 checks (run_all.py, run C-20261127-084828-b6ca5ce); every PNG looked at (G2 figures this session; the others byte-equal to run C-20261121-130335-d0cfe2e).
