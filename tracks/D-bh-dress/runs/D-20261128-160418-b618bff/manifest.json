@@ -1,0 +1,124 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "D-20261128-160418-b618bff",
+  "track": "D-bh-dress",
+  "gate": "G3",
+  "kind": "scouting",
+  "purpose": "A6 processor checks (g3/amend entry 8): K1 block counts of the M/6 decks, K2 two-cycle smoke tests of G-6u and the null pair at M/6 (finder at t = 0), K3 identity of core-v0.9 and core-v0.8 on the G-8 deck against S-G8",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "python3",
+    "tracks/D-bh-dress/g3/amend/tools/m6_smoke.py",
+    "--out",
+    "$NRPIC_RUN_DIR"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "b618bff98a8ff2150207ea3e2e106d5bc1bd3ebc",
+    "branch": "track/D-bh-dress",
+    "dirty": false,
+    "package": [
+      "tracks/D-bh-dress/g3/amend"
+    ],
+    "outside_package": {
+      "count": 0,
+      "first": []
+    },
+    "merge_base_main": "008712a713c179fc0f50df46ac68e069d5551aca",
+    "worktree": "wt/D-bh-dress"
+  },
+  "code": {
+    "core_tag": "core-v0.9",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "7757edd28ab45f72d45b1eb3102963c4861dbde67ea407e2adc102d8b3653500",
+    "machine_file_sha256": "aaddef7596beac4923fa5ca549514169cc663e2bac8ec8cf222735ed07f2fd09",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/D-bh-dress/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "tracks/D-bh-dress/g3/amend/decks/g3g6u.athinput",
+      "role": "input",
+      "sha256": "ec56dca1446b0cfafcdace51821684a06995759b9c475c9eb1072088e9e3e7c5",
+      "bytes": 6380,
+      "tracked": true
+    },
+    {
+      "path": "tracks/D-bh-dress/g3/amend/decks/n6es.athinput",
+      "role": "input",
+      "sha256": "2e2b7de69fb589b7b931d926bf610537c392892b6aaf495a8c3720d02e9b8026",
+      "bytes": 6005,
+      "tracked": true
+    },
+    {
+      "path": "tracks/D-bh-dress/g3/amend/decks/n6v.athinput",
+      "role": "input",
+      "sha256": "3cb818dd7b606094bedcb7b7203b38e8bc39617a1d8495bee60852144091ac73",
+      "bytes": 6244,
+      "tracked": true
+    },
+    {
+      "path": "tracks/D-bh-dress/g3/amend/decks/g3g8.athinput",
+      "role": "input",
+      "sha256": "4b43ca5e0663704508ec5dabe7b5038046b97ca8b6c11932d85e95034fa89649",
+      "bytes": 6334,
+      "tracked": true
+    },
+    {
+      "path": "tracks/D-bh-dress/g3/amend/tools/m6_smoke.py",
+      "role": "argv",
+      "sha256": "df1d32a43409d3ef8a649d1b39d95ccaa19e55cc66ee6376eff3df7dfdfa9ed1",
+      "bytes": 6099,
+      "tracked": true
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 4,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/D-bh-dress/D-20261128-160418-b618bff",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-28T16:04:18Z",
+  "started": null,
+  "ended": null,
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 60.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 1.5227,
+    "gpu_hours_reserved": 3.55,
+    "gpu_hours_without_gate": 0.0,
+    "cores_busy": 0,
+    "runs": 350,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md + 0026-cards-loaded-allotment-cost.md + 0031-level2-branch-and-ablation.md + 0032-new-account-preemption-allotments.md + 0038-track-e-g2-signed-g3-scope.md + 0039-rulings-after-batch-17.md + 0045-track-d-g2-signed-release-v08.md + 0048-rulings-after-batch-34.md + 0051-track-b-g2-signed-rulings-after-batch-40.md"
+  }
+}
