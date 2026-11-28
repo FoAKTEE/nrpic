@@ -518,3 +518,49 @@ C3 card member, and rechecked batch 29's series-7 judgement from its outputs.
   check needs the fresh verifier (C18); OPEN.md says what it should recompute first.
 - Note v4 (B-20261127-232833-5891f77): prediction for the rebuild held (PNGs byte-equal, one new
   table); checker and compile clean apart from earlier sections' candidates.
+
+## Batch 37 (2026-11-27 18:56-19:40 PST, lead): the fresh G2 verifier; the 256^3 member at eight per cell
+
+Package reviewed: the G2 verifier of batch 35 (stage/G2/verifier/: VERIFIER.md, JOURNAL.md,
+scripts, figs; runs B-20261128-021054-577fc9d to -022420-5d1f804). Its report is copied to
+stage/G2/VERIFIER.md. Checked from the artefacts, not its conclusions:
+- Confirmed: its figures v2_strain, v5_halos, v3_constraints, v4_shear_crossing read against the
+  claims; its high-k numbers from its run file v7_highk.json (1864.09 with the files' shell cut,
+  1699.86 with every mode off the Nyquist planes, corner share 0.0896 of the shifted run's measure),
+  now ledger row g2_hikcut; its constraint extremes recomputed by my own pairing script
+  (pair_ratio.py, B-20261128-030556-5ef9294): interpolated pairings give 1.405 and 1.405, its 1.39-1.41.
+- Its predictions that failed (V3, V5, V7b) are on record in its journal; none was recorded as held.
+- What the verifier did not cover is stated in its section "Coverage": C18 PASS with that limit.
+
+Answers to its findings (section 5):
+- (a) momentum ratio "from a ~ 36": WRONG in the note; corrected (1.45-1.99 for 36 <= a < 49, 1.71-2.16
+  from a = 49; pair_ratio run). Note v5 (run_all B-20261128-030805-78634c0).
+- (b) one-per-cell zero-shift Hamiltonian extremes: NOT REPRODUCED by the verifier, now explained:
+  Table VIII's 1.05-1.37 is the ratio at the catalogue epochs (judge_c3.py; reproduced by pairing E);
+  Table VII's 1.11-1.36 is six epochs with another interpolation (not reproduced by E: 1.13-1.37);
+  every record gives up to 1.41. Rows renamed, new row g2_pair; the conclusion stands.
+- (c) the high-k ratio "about 950": depends on the shell cut by about ten per cent; said in the note
+  text and in ledger rows g2_hik, g2_hikcut.
+- (d) L2's crossing before the rays: NOT CHECKABLE (no snapshot after t = 0); now worded as an
+  inference in the note (abstract item xiii, section VI), with the Zel'dovich estimate's record for
+  series 7 (10.7-14.9 against 9.0-9.25 seen: not conservative). No run can now add the snapshots
+  except a rerun of L2 with snapshots (not done; L2 stays FAILED, its cause inferred).
+- (e) SPEC item 5 should ask for convergence first: agreed; dated amendment in shear/SPEC.md section 7;
+  no verdict changes.
+- C2: the gauge leg is recorded as an identified dependence on the gauge (20 per cent in the band
+  strain at a = 100), not a convergence; the halo catalogue at one particle per cell as FAILED in the
+  mesh (decision 0049 item 1).
+
+The member 256^3 at eight particles per cell (decision 0048 item 3): it fits one card. Registered fit
+B-20261128-030350-19295a4 (mem_fit.png looked at): 42-46 GiB by two linear models of the logged peaks
+of q0070, q0006 and q0060, 76 GiB as a bound, on an 80 GiB A100 (E1 holds). Card time 12.2 card-h
+(8.0-16.4), against 4-7 expected (E2 refuted; the first fit run B-20261128-030214-20f2961 got 4.35
+from a wrong division and is superseded). Initial data started detached, one core
+(B-20261128-030420-33ccdca, run_gr_ic.sh 256 8 --ppc 2, expected 30-55 h); predictions I1-I4, K1-K3
+in population/JOURNAL 2026-11-27 19:02. Queue entry (priority 2, release build, chain, q0060's deck
+with the new files) by the session that checks the data. Its same-gauge partner at 128^3 (eight per
+cell, Gamma driver) is asked of the orchestrator.
+
+Stage: the full checksum pass of batch 34's commit (PASS, 0 failed checks, 13883 files, 1166.91 GB)
+is committed (397511402) and kept in scratch/B-emd-gw/tmp/VERIFY_RESULTS_full_631acef.*; collect,
+verify and report rerun on this batch's commit.

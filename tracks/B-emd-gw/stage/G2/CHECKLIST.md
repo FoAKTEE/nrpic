@@ -1,6 +1,6 @@
 # Checklist: B-emd-gw G2
 
-Collected by `harness/bin/nrpic-stage collect B-emd-gw G2` on 2026-11-27T23:32:41Z from `coord/CHARTER.md` (last changed in a61186835) and the brief (sections 13.3 and 13.4).
+Collected by `harness/bin/nrpic-stage collect B-emd-gw G2` on 2026-11-28T03:10:04Z from `coord/CHARTER.md` (last changed in a61186835) and the brief (sections 13.3 and 13.4).
 For each item set `status:` to PASS, FAIL or NA (OPEN until judged) and give the evidence: run ids,
 figure files, KB locators, commits. `nrpic-stage report` reads this file; the automated checks are
 in VERIFY_RESULTS.md (`nrpic-stage verify`), not here.
@@ -74,7 +74,7 @@ in VERIFY_RESULTS.md (`nrpic-stage verify`), not here.
   - status: PASS
   - evidence: Batch 28 (paper-writing skill loaded, WRITING_GUIDE.md and NOTATION.md of the track followed): note v3 (title, date), section VI 'What the legs decided, and what is open' rewritten with GM1, GM4, M2, M3, Q1, S2, S3, intro results (xi)-(xii), abstract and summary for G2; ledger Table VIII rows g2_gm1, g2_gm4, g2_m2, g2_m3, g2_q1hk, g2_s2, g2_s3 (run B-20261126-213742-dcee645, outputs copied, PNGs unchanged); check_manuscript.py --compile: 0 undefined references, 0 undefined citations, 0 overfull boxes; candidates left are earlier sections' (scenario amplitudes as decimals, three contrastive negations of batches 17-21, run ids in the ledger, the dictionary's 'run' false positive); pages 1, 15, 16 read (25 pages). G2 schematics refreshed (timeline: what G2 waits for; architecture: both 256^3 legs, the equal-mass estimator verified), run B-20261126-215051-2a5e90d, both looked at, compiled again. Left: the GM2/GM3 paragraph (mesh convergence in the shifted gauge, analysis B-20261126-212212-c54d979 running). Batch 34: note v4: section VI gains GM2/GM3, C3 at eight per cell and the shearing dust without stream crossing; results (xii)-(xiii), abstract and summary follow; ledger Table VIII (rows g2_gm2, g2_gm3, g2_c3a, g2_c3b, g2_n7, g2_n7c, g2_n7x); registered run_all, compile and checker as in the note journal 2026-11-27.
 - [x] **C18** Verifier subagent (fresh context) wrote VERIFIER.md (decision 0016; VERIFIER_REPORT.md accepted too); every number of the Supplemental Material recomputed from the manifests
-  - status: PASS (coverage limited as the verifier states)
+  - status: PASS
   - evidence: Fresh-context verifier, batch 35 (stage/G2/VERIFIER.md, copied from stage/G2/verifier/; its runs B-20261128-021054-577fc9d to -022420-5d1f804). It reproduces to every printed digit Table V's wave errors, the GM2 band strain, the equal-mass halo counts 108/98/106, the zero-shift stop, the C3 eight-per-cell ratios and the series-7 numbers; NOT REPRODUCED: the one-per-cell zero-shift Hamiltonian extremes (pairing; answered in C3, ledger row g2_pair); NOT CHECKABLE: L2's crossing (answered in C1). Coverage: Table VIII and the strain, halo, stop and constraint rows of Table VII, Table V's F and X rows; not the Weyl rows, the 0.028 box, the zero-shift 256^3 halo counts, C7 (FLRW) or the particle leg's strain. 'Every number of the Supplemental Material' is therefore not met as worded; the numbers the gate rests on are. Judged by the lead, batch 37; corrections a-e answered (REVIEW-wave3.md, batch 37).
 - [x] **C19** Null results and failed runs are on record (manifests and JOURNAL)
   - status: PASS
