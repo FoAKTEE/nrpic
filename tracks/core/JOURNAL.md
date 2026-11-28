@@ -2632,3 +2632,18 @@ follows in one registered run (T9).
   Card time of this session: none used (q0094 queued, 0.2 asked). Processor time: build
   180 s on 6 jobs; R9 and V8 about 5 min each on 3 cores; six tests and three analyses
   on 1 core each, about 20 core-minutes.
+
+## 2026-11-28T02:22Z: row 4, the 0.755 member (q0059) closed and P13 judged in full
+
+q0059's job 5378 COMPLETED on 2026-11-26T04:52 PST (sacct; chain STATUS DONE, last record
+t = 600). Its run core-20261126-110234-a72e07c closed (0.6547 card-hours for 300 M). Fates
+run core-20261128-021941-61b61a1 with the line of the batch-27 handoff (figure
+`fig_row4_m8.png` looked at: the solid yellow 0.755 member stays above 0.8 to 600 M).
+- **P13 HOLDS for the member** (the control half held on 2026-11-26): no collapse before
+  450 M (none by 600 M); 50-M means of alpha_c / alpha_c^eq 0.9638 (250-300 M) and 0.9262
+  (400-450 M), 0.0375 below (at least 0.01 predicted). 550-600 M mean 0.8577 (minimum
+  0.820); the control's 0.8022 (minimum 0.736).
+- P15 for the member: 0.6547 card-hours for 300 M = 7.86 s per M (bound 9 s): held.
+- P14 (joins) is still not computed by the script.
+- Fates and bracket unchanged, (0.7175, 0.726875) by the 300-M rule; next midpoint by the
+  script 0.7221875. `verify/LADDER.md` row 4, fourth reading.
