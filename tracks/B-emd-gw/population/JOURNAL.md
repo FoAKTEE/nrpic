@@ -1460,3 +1460,40 @@ and over the tenth with the smallest lapse ("cores").
   expanding-half mean or the median differs by more than 5 per cent at a = 100 or 132: then the
   gauges differ where both resolve the field, and the gauge difference is not a truncation effect
   of the cores.
+
+## 2026-11-27 20:10 PST (lead of batch 39): outcomes W1, W2 (in part), W3 (not run), W4; prediction W5
+
+The data run B-20261128-034914-1e7a68f was stopped by hand at 20:08 (numeric process ids): its
+rows at a = 25-81 came at 35 s per dump until the 256^3 dumps and the track's band reader ran
+together, then at 422 s per dump; at that pace it would not end inside the session. Its rows file
+(a = 25, 49, 64, 81; checksummed by the run) stays on record. The same invariant, with the split
+of W4 and without the band reader, ran as B-20261128-040834-8e1587d (13 s per dump, 128^3 pair at
+a = 49, 64, 100, 132). [VERIFIED by these runs]
+- W1 HOLDS: proper volume and <K>_V agree between the gauges to 1e-4 at a <= 100 and 3e-4 / 2e-4 at
+  a = 132; <alpha>_V and the proper-volume quantiles of the lapse agree to 1e-4. The slices are the
+  same to that level.
+- W2 FAILS in its first part: R_B = I_B(Gamma driver)/I_B(zero shift) = 0.902, 0.913, 0.837, 0.841
+  at a = 49, 64, 100, 132, not within 5 per cent; at a = 100 and 132 it is 16 per cent off. Its
+  refutation clause needs the mesh scale of I_B (256^3), which was not computed; so W2 is
+  NOT JUDGED as a refutation. Note: at a = 49, where the band strain agrees within 1.6 per cent,
+  I_B already differs by 10 per cent, and the core tenth carries it (0.901).
+- W3 NOT RUN (the band reader was the slow part; the band ratios stay the reviewer's,
+  B-20261128-032405-7c4aa64: 0.984, 0.950, 0.803, 0.643 at a = 49, 64, 100, 132).
+- W4 REFUTED: the expanding-half mean ratio is 0.996, 0.986, 0.957, 0.883 and the median ratio
+  0.998, 0.985, 0.936, 0.821 at a = 49, 64, 100, 132 (90th percentile 0.996, 0.996, 0.972, 0.969).
+  Within 3 per cent to a = 64 as predicted, but 4-7 per cent at a = 100 and 12-18 per cent at
+  a = 132: the two gauges differ late where both resolve the field, not only in the cores.
+Reading [JUDGEMENT]: on the same slices the two runs do not carry the same magnetic Weyl field after
+a ~ 100, by 4-18 per cent in the bulk statistics; condition (a) of decision 0050 is NOT met by this
+measure. Candidate causes, none tested: truncation that differs between the coordinate systems in
+the underdense half (zero-shift cells stretch with the voids), and the constraint violation, which
+at one particle per cell reaches a mean relative momentum constraint of 0.18-0.20 late in both
+gauges and propagates differently in each: two gauges of a solution that violates the constraints
+at that level need not agree on its invariants to better than that. Each is testable: the mesh scale
+of the same statistics (256^3, Gamma driver) and the same statistics at eight particles per cell in
+both gauges (q0006's zero-shift member exists; q0107 is the Gamma-driver partner).
+- W5 (written now, before the 256^3 statistics run): if the late gauge difference is truncation,
+  the 256^3/128^3 ratio in the Gamma-driver gauge differs from one by at least as much as the gauge
+  ratio for each statistic at a = 100 and 132 (I_B: 16 per cent; expanding half: 4 and 12; median:
+  6 and 18). Refuted (truncation not the cause) if every mesh difference is below half the gauge
+  difference at a = 132.
