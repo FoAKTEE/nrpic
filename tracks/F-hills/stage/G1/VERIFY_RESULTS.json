@@ -1,9 +1,9 @@
 {
   "track": "F-hills",
   "gate": "G1",
-  "commit": "ec55f2a882d4553dd6d400686b422669efabd5a4",
-  "verified_utc": "2026-11-28T01:45:50Z",
-  "export": "/data/haiyangw/nrpic/scratch/F-hills/tmp/stage-verify/F-hills-G1-ec55f2a-20261128T013108Z",
+  "commit": "f01b5bfec24c6513dae63a60ee43f0bf5ed79e3f",
+  "verified_utc": "2026-11-28T02:11:14Z",
+  "export": "/data/haiyangw/nrpic/scratch/F-hills/tmp/stage-verify/F-hills-G1-f01b5bf-20261128T020925Z",
   "result": "PASS",
   "checks": [
     {
@@ -21,7 +21,7 @@
     {
       "check": "export",
       "status": "PASS",
-      "message": "clean export of ec55f2a882d4 (HEAD) in /data/haiyangw/nrpic/scratch/F-hills/tmp/stage-verify/F-hills-G1-ec55f2a-20261128T013108Z/tree",
+      "message": "clean export of f01b5bfec24c (HEAD) in /data/haiyangw/nrpic/scratch/F-hills/tmp/stage-verify/F-hills-G1-f01b5bf-20261128T020925Z/tree",
       "detail": null
     },
     {
@@ -69,7 +69,7 @@
     {
       "check": "runs",
       "status": "PASS",
-      "message": "280 run manifests finished (78 hand-written, read as decision 0012 allows); failures of 3 runs waived by coord/WAIVERS.md (decision 0019), output checksums verified where recorded",
+      "message": "283 run manifests finished (78 hand-written, read as decision 0012 allows); failures of 3 runs waived by coord/WAIVERS.md (decision 0019), output checksums verified where recorded",
       "detail": null
     },
     {
@@ -381,12 +381,12 @@
     {
       "check": "checksums",
       "status": "WARN",
-      "message": "3761 output files: 1509 hashed again (bytes read, 110.28 GB), 2252 taken from the cache (1850.89 GB); a checksum taken from the cache proves unchanged size and modification time since it was hashed, not bytes read again; --full reads every byte",
+      "message": "3817 output files: 15 hashed again (bytes read, 1.1 MB), 3802 taken from the cache (1961.17 GB); a checksum taken from the cache proves unchanged size and modification time since it was hashed, not bytes read again; --full reads every byte",
       "detail": {
-        "rehashed_files": 1509,
-        "rehashed_bytes": 110282582070,
-        "cached_files": 2252,
-        "cached_bytes": 1850887438652,
+        "rehashed_files": 15,
+        "rehashed_bytes": 1071418,
+        "cached_files": 3802,
+        "cached_bytes": 1961173078740,
         "full": false,
         "meaning_of_a_cached_entry": "a checksum taken from the cache proves unchanged size and modification time since it was hashed, not bytes read again",
         "notes": []

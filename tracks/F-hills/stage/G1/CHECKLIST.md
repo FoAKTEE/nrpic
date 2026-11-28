@@ -48,10 +48,10 @@ in VERIFY_RESULTS.md (`nrpic-stage verify`), not here.
 
 - [x] **C10** Schematic: Updated architecture
   - status: PASS
-  - evidence: note/figures/schem_architecture.png updated to the state of core-v0.3 (exists / to be ported / new; multi-puncture data, trackers, finders, chain wrapper, readers, three references), script note/scripts/schem_architecture.py, run F-20261120-222908-4ffcfba (note package); PNG read by the note helper and by the lead on 2026-11-21. Drawn as of core-v0.3: two items it marks 'to be ported' (common horizon of one pair, mass-scaled shift damping) are in release core-v0.4 (`punc_pair_a_<n>`, `shift_eta_profile`); to update on the note's resume
+  - evidence: note/figures/schem_architecture.png updated to the state of core-v0.3 (exists / to be ported / new; multi-puncture data, trackers, finders, chain wrapper, readers, three references), script note/scripts/schem_architecture.py, run F-20261120-222908-4ffcfba (note package); PNG read by the note helper and by the lead on 2026-11-21. Redrawn in batch 35 to the release core-v0.8 (gate review C10, section 6 item 7): the tracker file kept on a continued run and the status file with the found flag of each search are now 'exists'; run F-20261128-020409-a3edb04 (numbers and ledger of the note unchanged), PNG read by the lead; note v2.1
 - [x] **C11** Schematic: Data-flow diagram
   - status: PASS
-  - evidence: note/figures/schem_dataflow.png (input, chained card segments, output streams, readers, analyses with the references, note), script note/scripts/schem_dataflow.py, run F-20261120-222908-4ffcfba; PNG read by the note helper and by the lead on 2026-11-21
+  - evidence: note/figures/schem_dataflow.png (input, chained card segments, output streams, readers, analyses with the references, note), script note/scripts/schem_dataflow.py, run F-20261120-222908-4ffcfba; PNG read by the note helper and by the lead on 2026-11-21. Redrawn in batch 35 to core-v0.8 (tracker file kept on a continued run, resubmission after a preemption, status file with found flag and residual: all 'exists'), run F-20261128-020409-a3edb04, PNG read by the lead
 - [x] **C12** Data figure: Baseline results
   - status: PASS
   - evidence: note/figures/fig_newton.png, fig_geodesic.png, fig_rp_scan.png, fig_passage.png (scripts note/scripts/fig_*.py, run F-20261115-180609-abc9f6e); nr_first/figures/fig_baselines_p1.png (F-20261115-174102-ffa764f); all looked at (note/JOURNAL.md; lead review)

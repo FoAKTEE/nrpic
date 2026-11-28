@@ -1,41 +1,40 @@
 # STATUS of F-hills
 
-gate:        G0 signed (coord/GATES.md, 2026-11-20). G1: package complete for an independent
-             review in the lead's judgement (batch 34; not passed by the lead): C8 met; C18
-             PARTIAL until the fresh verifier reruns its readers on the completed passage
-headline:    The m/16 Hills passage P1b (A + A2) is complete to 186.0 M: the binary is disrupted
-             between 120 and 133 M, m1 is captured by the heavy hole (common horizon from 137.5 M,
-             area mass 1.0053 -> 1.1137), m2 keeps its horizon and recedes after an 8.73-M
-             pericentre on a marginal orbit. Newton from the same deck ejects m1 and binds m2.
-last-result: - horizons from the status files 133-186 M (F-20261127-232657-163727d,
-               fig_b34_horizons, fig_b34_f1 read): finder 2 found at every search; m1's own
-               horizon to about 141 M; finder 0's later "found" surfaces are not horizons
-               (|mean expansion| up to 24: question to core); m2's mass 0.12954 within 6.4e-4
-             - A2 state to 186.0 M (F-20261127-232849-14345be): no gap, overlaps <= 1.25e-9 M,
-               waveforms to 186 M, rms H <= 6.19e-5, MeshBlocks <= 2584, memory peak 78789 MiB
-             - passage vs Newton (F-20261127-232940-3f652bf): Newton m1 out (39.4 M at 186 M),
-               m2 bound (5.78-M pericentre); NR m2 at 17.5 M, energy +0.12 (pre-merger M) or
-               about -0.04 units (remnant): fate undecided; coordinate energies (R6)
-             - F1 decided in part: the status file cannot separate the heavy hole's branches (both
-               found, equal mean expansion; median 6 flow iterations); test = polished searches on
-               A2's restart files (G2 list)
-             - failed predictions: A2-3, A2-4, D34-1; parts of C25-1, C25-3, D34-2 (JOURNAL b34)
-             - A2 and C2 ended by a Slurm submission I/O error (04:17 PST 2026-11-27); B2 DONE
-decision:    judge C8 met; G1 package handed to orch for the verifier rerun and review
-card jobs:   none queued or running. Closed this session (nrpic-run finish, checksum passes
-             started in the background): A2 F-20261124-210400-902c650 (stopped, 186.0 M),
-             B2 F-20261126-052133-10f9a5f (DONE, 140 M), C2 F-20261126-131751-89eaff8
-             (stopped, 106.69 M; G2; continue from rst/hills.00072.rst)
-next:        1. G1 verifier rerun on the completed passage (stage/G1/OPEN.md item 2), then the
-                independent review; answer its findings
-             2. F1 test: polished finder searches on 2-3 of A2's restart files (87-133 M), after
-                core's answer on reading core-v0.5 restarts with core-v0.8 (outbox b34)
-             3. Note v3: the passage to 186 M (horizons vs coordinates, reverse fates), HRNA and
-                EIH overlays of P1b, the junk at P1b's spheres; then G2: C2's continuation, B2
-readers:     `stage/review_wave3/b34_horizons.py` reads the status files (rows end with "# words")
-blockers:    none for G1; the cards are shared (R20); Slurm submission I/O errors (once)
-needs:       orch: retention of A2's 724 GB of restart files (outbox b34); core: finder
-             found flag and v0.5 restarts (outbox b34)
-offers:      continue_chain.sh, nrread.py, b21_a2_state.py, b11_passage.py, b34_horizons.py
-budget:      A2 19.70 card-hours in all (11.15 + 8.55 of the continuation; A2's 19.5 plus 0.2
-             within G1's 19.8); B2 3.52, C2 9.37 (G2); this session 0 card-hours (processors only)
+gate:        G0 signed (coord/GATES.md, 2026-11-20). G1: independent review recommends PASS WITH
+             RESERVATIONS (stage/G1/GATE_REVIEW.md). Decision 0048 item 2: signed once (a) the
+             passage reaches t = 200 M and a registered reading shows it with its health checks,
+             and (b) the verifier's part-2 corrections are applied. (b) DONE in batch 35;
+             (a) QUEUED as q0091. Not passed by the lead.
+headline:    The m/16 Hills passage P1b (A + A2) is recorded to 186.0 M: the binary is disrupted
+             between 120 and 133 M, m1 is captured by the heavy hole (common horizon from 137.5 M;
+             remnant 1.12291 Christodoulou, S/M^2 0.2529 at 186 M with hrms 3.4e-4), m2 keeps its
+             horizon (converged searches 0.12939-0.12964) and recedes after an 8.73-M pericentre,
+             fate undecided in coordinates. Newton from the same deck ejects m1 and binds m2.
+last-result: - batch 35 corrections (VERIFIER.md 16-17, GATE_REVIEW 5): C8/C18/T4/OPEN rewritten;
+               F1 decided for 86.6-131 M by hrms (heavy hole 1.00422, constant to 6.4e-5); 'found'
+               is not converged, masses quoted with hrms; MeshBlocks 2584 was run A's (A2:
+               1968-2514); 1.00444 at 133 M, 1.00531 at 135 M during m1's approach
+               (F-20261128-020208-d7c6f1c, fig_b21_a2_state read, title no longer PARTIAL)
+             - schematics redrawn to core-v0.8, note v2.1 (F-20261128-020409-a3edb04; numbers and
+               ledger unchanged, D35-N met; 24 pages compiled)
+             - continue_chain.sh --reopen: continues a chain closed `stopped` (dry run passed)
+             - failed predictions this session: none judged; D35-1..9 wait for q0091
+decision:    continue A2 to 200 M in place (q0091); write note v3 once, after the 200-M reading
+card jobs:   q0091 (label F-A2-to200, priority 2): A2 F-20261124-210400-902c650 from
+             rst/hills.00166.rst (186.002 M) to tlim 200, cap 31 counted segments (27 used),
+             expected 3 segments, about 2.7 card-hours; WAITING at 18:10 PST (5 of 5 account jobs
+             in Slurm). Output appends to scratch/F-hills/F-20261124-210400-902c650/.
+next:        1. when q0091 has ended: sacct (every job COMPLETED or cut and resubmitted), nrpic-run
+                finish, registered b21_a2_state.py + b34_horizons.py, judge D35-1..9, C8 and
+                EVIDENCE.md, one line to orch with the run ids (the gate is signed on it)
+             2. note v3: the passage to 200 M (figure, ledger rows, hrms beside each horizon number)
+             3. G2: C2's continuation past 145 M (m/12), F1's polished-search test on A2's restart
+                files, the first clump passage (decision 0013)
+readers:     stage/review_wave3/b21_a2_state.py (S1-S3 record, S6 health, S7 end state),
+             b34_horizons.py (status files; rows end with "# words")
+blockers:    shared queue full (R27); Slurm submission I/O error once (R26)
+needs:       orch: whether a --full checksum pass is needed before the tag (outbox b35); the
+             retention of the passage's restart files (sizes in HANDOFF.md)
+offers:      continue_chain.sh --reopen, nrread.py, b21_a2_state.py, b11_passage.py, b34_horizons.py
+budget:      G1 49.89 of 60 card-hours used before q0091 (gate review, nrpic-run budget); q0091
+             about 2.7 more. This session 0 card-hours (two processor runs, one core each)
