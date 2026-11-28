@@ -847,3 +847,23 @@ residual near 0.1. Not done: the gate review's 3D version (dump of gamma_ij, K_i
 stencil offline). Since con_H is computed from the ADM variables with K = Khat + 2 Theta (athenak/src/z4c/z4c_adm.cpp
 lines 230-233 and 484-487), the same formula as the tables, a disagreement in 3D would have to be a stencil or a
 timing difference; after R-split this test bears only on the matter part, which converges.
+
+### Entry 18, outcome OB (run A-20261128-004659-f512816 completed, 128 cycles, 1182 s on two threads; reader A-20261128-010702-44edae6; fig_ratio_split.png looked at) - 17:08 PST
+
+S2c-A on nest16_L32 (outer faces at 32) against S2c-A (faces at 16), the same weight and normalization over 0 < x < 16:
+- part from 13 < x < 16: 0.0003 / 0.0005 at t = 1 / 2 against 0.091 / 0.214: below 0.1 x S2c-A's. HOLDS (a factor 300-400).
+- matter (x < 4.5) 0.0590 / 0.0759 and edge (4.5-6.5) 0.0689 / 0.0809: equal to S2c-A's to the printed digits (the faces
+  at 16 cannot reach x < 13 by t = 2). HOLDS.
+- total over 0 < x < 16: 0.092 / 0.117 against 0.129 / 0.245: below 0.5 x at t = 2, NOT at t = 1 (0.71 x). REFUTED at
+  t = 1 as written: at t = 1 on M/16 the matter and edge parts alone give 0.091.
+- over L32's whole line (to 32) the outer part comes back, smaller: 0.017 / 0.052 at t = 1 / 2 (cells 13-32, from the
+  faces at 32), total 0.093 / 0.128.
+Named [VERIFIED by a run that could have failed: the refutation clause, 13-16 part above 0.5 x S2c-A's, did not
+occur]: the component of the line ratio that does not converge with the mesh enters at the outflow outer faces of the
+Z4c fields and grows inward from them; moving the faces moves it. What remains at M/16 is the matter (0.06-0.08) and
+the edge/taper (0.07-0.08) parts, both of which fall with the mesh (S2c-B at t = 1: 0.016 and 0.012). So on M/32 at
+t = 1, without the outer-face part, the ratio would be ~0.02 (from S2c-B's parts; not a run). For the bound of SCOPE
+section 3 at detection (t ~ 44-46 in the bracket members) the outer faces need a remedy that does not grow over 45 M:
+a larger box only delays and dilutes it (L32 already: 0.5-1.4 in the bracket members), so the remedy to test is the
+outer-face options of core-v0.6 (question to core in the b34 outbox), then smooth CIC bracket members on two meshes.
+C3 stays FAILED as written for the members on record.
