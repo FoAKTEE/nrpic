@@ -781,7 +781,7 @@ at the outer faces. Candidate named for the floor of the line ratio [JUDGEMENT u
 outer boundary of the Z4c fields at |x| = 16 in the vacuum exterior of the expanding ball, weighted by x^2 in the ratio;
 inside the matter the residual converges.
 Prediction OB [JUDGEMENT]: S2c-A rerun on the deck nest16_L32 (outer faces at |x| = 32; levels inside |x| < 16 equal
-to nest16_L16's, so the same table and particle file; release v0.6 threaded build as S2c-A, four threads, live gauge,
+to nest16_L16's, so the same table and particle file; release v0.6 threaded build as S2c-A, two threads (byte-identical to four is not required), live gauge,
 to t = 2) gives, on 0 < x < 16 with the same weight and normalization: the part 13 < x < 16 below 0.1 x S2c-A's at
 t = 1 and 2 (S2c-A: 0.083 + 0.038 at t = 1); the matter part (x < 4.5) within 25 per cent of S2c-A's (0.059 at t = 1,
 0.076 at t = 2); and the total over 0 < x < 16 below 0.5 x S2c-A's (0.129, 0.245). Refuted if the 13-16 part at
