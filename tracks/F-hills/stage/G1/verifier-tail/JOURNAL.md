@@ -62,3 +62,56 @@ Predictions for the unchanged rerun of `../verifier/scripts/run_all.sh` on the c
 - PT10 (waveforms). A2's waveform files hold every 0.25-M sample from 62 to 186 M at all four
   radii and both parts; joined with A: 745 samples 0-186 M at each radius, none missing; A-A2
   common samples agree to 1e-11. Refuted: a missing sample, or a last time other than 186 M.
+
+## Entry 2, 2026-11-27 16:55 PST: outcomes of the unchanged rerun (run F-20261128-003721-95f3c15)
+
+`../verifier/scripts/run_all.sh`, unchanged, 1 core, about 1 minute; outputs in
+`scratch/F-hills/F-20261128-003721-95f3c15/`. Correction to entry 1: the file of finder 0 last
+written on 2026-11-26 14:00 is `hills.horizon_shape_0.txt`, not its summary or status file (both
+written to 186 M); I misread the listing.
+
+- PT1 REFUTED in one class. 77 files per tracker, joined 0-186.0 M, 95233 times, every step
+  2^-9 M, no gap (MET); overlaps A-A <= 1.13e-12 M, A-A2 <= 4.8e-14 M (MET), but A2-A2 up to
+  1.25e-9 M (tracker 0), 1.1e-10 M (tracker 1), 1.5e-16 M (tracker 2): above my 1e-11 bound.
+  Where they come from is read in entry 3 (vtail).
+- PT2 MET. Pair minima: only the start-up wiggles below 1 M and 76.3727 M, s = 2.109626 M; s at
+  186 M is 17.53 M.
+- PT3 MET for the A2-2 box, REFUTED on my own window: the reader's single minimum of d_cm is
+  4.5251 M at 140.585 M (not in 95-115 M, not in 8-11 M; my window 115-140 M missed by 0.6 M).
+- PT4 in part (from the reader's end state): tracker 0 ends 1.3e-9 M from M's tracker (the two
+  punctures' trackers coincide), tracker 1 ends 17.53 M from M. Timing and minimum: entry 3.
+- PT7 MET: the `newton` block equals the first part's to every digit (dict equality), and
+  `vtest.json`, `vjunk.json` are byte-identical; `vmesh.json` differs only in the A + A2 horizon
+  blocks.
+- PT8 in part: medians 0.129487 (finder 0), 0.129508 (finder 1), 1.004220 (finder 2); finder 2's
+  max - min is 0.1207 (MET). But finder 0 now has 1340 failures by the signature (from 139.56 M)
+  and a largest "accepted" mass of 1.0602: the signature reader counts as accepted rows that are
+  not physical member horizons (entry 3 with the status file). The reader's `heavy_A2_branches`
+  now splits at 1.063 (before/after the capture), so it no longer measures F1: F1 is redone in
+  entry 3 on 86.6 M to the jump only.
+- PT9 MET: rms H of A2 at most 6.19e-5, at 135.5 M; 1.51e-5 at 186 M.
+- PT10 MET: every 0.25-M sample 62-186 M in A2 at all radii and parts (542 raw rows, 497 times);
+  joined A + A2 745 samples 0-186 M, none missing; A-A2 common samples agree to 1.4e-12.
+
+Predictions for my own reader `scripts/vtail.py` (status files, overlaps by time, fates with the
+remnant mass, (2,2) amplitude). Its self-test failed once on a bug of the synthetic writer (the
+time column written as an integer), not of the reader; it passes after the fix.
+
+- PT11 (overlaps). The A2-A2 overlaps above 1e-11 M all belong to segment pairs that start at or
+  after 133 M (the restart with the diagnostics input and the capture). Refuted: one before 133 M.
+- PT12 (status vs signature). Finders 1 and 2: found at every search from 133 M, signature
+  agrees everywhere. Finder 0: the status file's not-found searches outnumber the signature's
+  failures (some failures write a row that is not a repeat), so the signature undercounts.
+  Refuted: equal counts for finder 0, or a not-found search of finder 1 or 2.
+- PT5/PT6 as in entry 1 (jump of finder 2 at 136-139 M to 1.11-1.13; finder 0's last found
+  search at the capture; both F1 branches found where the status file covers them).
+- PT13 (finder 0 after the capture). Any "found" surface of finder 0 after the jump of finder 2
+  has a mass far from 0.129 (the finder centred on m1's tracker, now at M, finds the common or
+  M's horizon or a spurious one); none has 0.129 +- 1e-3. Refuted: a found 0.129 surface of
+  finder 0 after the jump.
+- PT14 (m2's energy). With the remnant mass at M's tracker, m2's coordinate two-body energy at
+  186 M lies within +-0.3 units of zero and below the reader's +0.12 units (heavier central mass);
+  m2 is marginal in coordinates, neither clearly ejected nor clearly bound. Refuted: |E| > 0.3.
+- PT15 (waves). The (2,2) amplitude at r = 40 M rises above three times its 60-130 M median
+  after t_jump + r* - 10 M; at 70 and 90 M nothing of the capture arrives before 186 M.
+  Refuted: no rise at 40 M before 186 M.
