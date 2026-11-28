@@ -686,7 +686,7 @@ open: T-12u/T-16u and G-8 results; Claim D reader, vacuum offsets and G3-G3 powe
 open: the ruling; the three processor items of A5; G-8 at 400 M. Card-hours used this session: 0 new jobs (EG8's
   last segments, 0.79, and the timing job, 0.05, ran between sessions).
 
-## 2026-11-28 07:58-08:44 PST, lead of batch 41 (Opus; G-8 read, the mesh leg by decision 0051 item 3)  commits f176e6fbe..(this)  runs D-20261128-160553-b500509, D-20261128-160544-089d6f8, D-20261128-160418-b618bff, D-20261128-162112-e80048d
+## 2026-11-28 07:58-08:43 PST, lead of batch 41 (Opus; G-8 read, the mesh leg by decision 0051 item 3)  commits f176e6fbe..(this)  runs D-20261128-160553-b500509, D-20261128-160544-089d6f8, D-20261128-160418-b618bff, D-20261128-162112-e80048d
 - q0100 G-8 (D-20261128-062142-c5666c4): ten jobs (seven PREEMPTED and resumed, 5673/5684/5691 COMPLETED), chain
   DONE at 400 M; closed with nrpic-run finish (242 files, 2.1986 card-hours). Predictions (g3/amend entry 8)
   committed before the reader g8_read.py was written and run; figure looked at. G3-G1 HOLDS (45 bins +0.172 to

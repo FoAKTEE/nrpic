@@ -2,7 +2,7 @@
 
 Written for a reader with no memory of the last session. Rewritten at the end of every session.
 
-State (2026-11-28 08:43 PST, lead of batch 41): G0, G1 and G2 SIGNED (G1 and G2 with reservations;
+State (2026-11-28 08:42 PST, lead of batch 41): G0, G1 and G2 SIGNED (G1 and G2 with reservations;
 coord/GATES.md). Toward G3 (60 card-hours, 3.72 used): the scope `scope/SCOPE_G3.md` carries amendments A1-A6
 (section 11). A6 (this session) carries out decision 0051 item 3: the mesh leg is G-8 and G-12u; a coarser G-6u
 only if its search at t = 0 is found, and on processors it is not (reason 6), so G-6u is not run and the mesh
@@ -17,7 +17,7 @@ Files to read first: `STATUS.md`; `scope/SCOPE_G3.md` section 11, amendment A6 (
 entries 8-13 (predictions and outcomes of this session); `stage/REVIEW-wave3.md` section 28; the orchestrator's
 answer to `outbox/20261128T162656Z__to-orch__g3-mesh-leg-m6-not-qualified.md` (inbox).
 
-## Card entries in the shared queue (none in Slurm at 08:43 PST; check sacct of every job before reading)
+## Card entries in the shared queue (none in Slurm at 08:42 PST; check sacct of every job before reading)
 
 - q0110 D-T6u (batch, one job, cap 0.2, core-v0.9 card build): `g3/amend/decks/timing6.list` (member t6u, deck
   `g3g6u_t2`, G-6u to 2 M). The ruling's literal test of Q1. Read: the first row of `t6u/g3g6u.horizon_status_0.txt`
