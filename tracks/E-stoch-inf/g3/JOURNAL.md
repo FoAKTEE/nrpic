@@ -435,3 +435,9 @@ E-20261128-000627-00ed437 (`pairs.json`, `fig_g3_onepoint.png`, `fig_g3_tails.pn
 - A13 status: 71 of 128 pairs; (V) failed, (T) agrees, A1 gate passes on the pooled reference (2.9 s.e., barely), Z0-Z2
   passed, 4d.4 and 4d.5 pass, A4 not yet computed on the baseline, level 2 not run, the slicing limitation stated, no fresh
   verifier yet. G3 is NOT complete for review.
+
+## entry-18 (2026-11-27 16:21 PST, lead of E, batch 34): level-2 jobs preempted again; queued once more
+
+G3L01 (q0077, job 5533, E-20261127-232915-206b9ba) and G3L02 (q0078, job 5534, E-20261127-232917-76e1e18) were PREEMPTED
+after 68 s at 15:58 PST; no member finished; both closed as stopped. Queued again unchanged as G3L01b, G3L02b (entry 14's
+rule). G3B07b (q0079, job 5537) is running since 16:02; q0080-q0082 pend in Slurm; q0083, q0084 wait in the shared queue.
