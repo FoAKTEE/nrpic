@@ -242,3 +242,141 @@ Re-searches of Claim N and the angular-grid measurement run on processors (at mo
 and V-8 first (cheap, the base of every comparison); G-16 before G-12 (if G-16 fails G3-G1, the mesh leg is
 redesigned before the costlier half is spent); the particle leg after the mesh leg; the gauge leg last. Two
 D jobs at most in the queue at once; priority 2 for the members, 5 for the reserve.
+
+## 11. Amendments (dated; the text above is kept as written)
+
+### Amendments of 2026-11-27 (lead of batch 35), before any G3 production run was queued or read
+
+Reason: the independent review `g3/scope_review/SCOPE_REVIEW.md` (decision 0048 item 4: do not queue the
+production set as written). The lead checked its three blocking findings with numbers of its own (package
+`g3/amend`, JOURNAL entries 1-2, run D-20261128-020346-c4079e9, figure `check_review.png` looked at): B1
+confirmed (G-16 as written 3648 blocks, 8.0 times G-8; G-12 2176 blocks with its finest level over +-4 M;
+t = 0 finder masses 0.99152 at M/8 and 0.99981 at M/16); B2 confirmed (in FK's snapshot at 200 M the clock of
+the nearest tracer label is off from the particles' own median by up to 12.5 M, and the particles of one
+1 M label bin spread over 6.2 M of proper time); B3 confirmed for the written G3-G3 (pass probability 0.14
+for a converging signal of 5.8e-4, independent Monte Carlo) and extended (the reviewer's amended form loses
+all power if the difference noise has a 10 M correlation time). No G3 output had been read when this was
+written; the only G3 card run in flight is the scouting test EG8.
+
+**A1 (B1, S8, N4: members, decks, smoke test, excision, costs; replaces the rows G-12 and G-16 of the table
+of section 3, the smoke-test paragraph of section 3, the excision item of section 2 and the cost lines of
+section 10).**
+- The mesh members are one family with G-8's block structure: 456 MeshBlocks, the same level extents
+  (+-384, 192, ..., 12, 6 M), the finest level 7 over +-6 M, with blocks of 24, 36 and 48 cells on roots of
+  96, 144 and 192 cells: cell size 1, 2/3 and 1/2 of G-8's at every radius (G-8, G-12u, G-16u; decks
+  `g3/amend/decks/g3g8.athinput`, `g3g12u.athinput`, `g3g16u.athinput`, written by
+  `g3/amend/tools/make_g3_decks.py`) [VERIFIED by `athena -m`, run D-20261128-020346-c4079e9]. Because the
+  family is uniform, an observed order p is defined whenever both differences have one sign. G-12 and G-16
+  as written are withdrawn (G-16: 3648 blocks; G-12: not a refinement of G-8, finest level +-4 M).
+- FL16's level 8 covered +-3 M (512 blocks [VERIFIED, same run, deck g16r]) and the smallest horizon radius
+  crossed 3 M at 191.25 M in FL16 and at 190.5 M in FK [VERIFIED, their horizon summaries]: section 2's
+  [TO VERIFY] is settled; G2's late M/16 - M/8 comparisons after about 190 M mix the horizon's leaving of the
+  finest level into the mesh difference.
+- Smoke test (replaces section 3's paragraph): a deck with at most twice G-8's cells with ghost zones gets
+  the processor smoke test of two cycles; a larger deck (G-12u: 2.6 times, G-16u: 5.4 times) gets instead a
+  card timing run to 2 M (one job, cap 0.3 card-hours) with the same checks: the input starts and fits one
+  card; the block count by level equals the `athena -m` count; the finder's search at t = 0 is found in the
+  status file and its mass M_0 satisfies -1e-4 <= 1 - M_0 <= 1 - M_0(coarser member) (the exact horizon of
+  the data is that of Schwarzschild of M = 1; G-8's offset is 8.5e-3, FL16's 1.9e-4); and the wall seconds
+  per M of evolution are measured. The cost of the production member is the measured seconds per M times
+  400 M (preemption overhead 15 per cent added).
+- Excision in every G3 member: FK's remedy, `initial_radius_0 = 1.6` with `ah_exc_max_growth = 4` (guard
+  radius 6.4 M), verified to 399.5 M (g2long entry 19: all 119848 dust removals by reason 3; the smallest
+  horizon radius 4.53 M at 399.5 M). The option "factor 10 if EG8's E1 holds" is withdrawn: it would rest on
+  an extrapolation from EG8's factor 8 (review S8), and it would hold the production base behind EG8, which
+  stood at 120 M of 260 M at 17:52 PST with its chain preempted four times. EG8 continues as core's test of
+  the guard and is judged by its own entry. The reason-2 flag rule of section 2 stays.
+- z4c slices every 5 M in every G3 deck (review N4), so that every snapshot (every 25 M) has a slice at its
+  time for Claim D's areal radius.
+- Costs, estimated from the counts [JUDGEMENT, `check_review.json` key C1_blocks]: G-12u 8.8-10.4 and G-16u
+  26-27 card-hours to 400 M; G-8 1.9-3.0. The full-time mesh leg (about 36) does not fit the allotment beside
+  the particle and gauge legs. Rule: after the timing run T-16u, G-16u runs to t_16 = min(400 M, the time its
+  measured cost reaches 20 card-hours); if t_16 < 400 M every criterion of the mesh leg is read on
+  [50 M, t_16] for all three members and the result says so; t_16 below 200 M ends the full mesh leg as
+  designed, and the lead asks the orchestrator for a ruling (more card-hours, or a leg to t_16) before G-16u
+  is queued.
+
+**A2 (B2, S7: Claim D; replaces section 5's heading, statistic, estimator and criteria D1-D3; the map test
+stays).** Claim D is "the infalling matter in the strong field" (in cold spherical infall no bound dress
+forms, section 1 and 8; the brief's spike question stays open at G3). Statistic: for every dust particle of
+a snapshot, its areal radius R_p (coordinate radius mapped with the tangential metric of the z4c slice at the
+same time) and its own proper time tau_p (snapshot format, docs/FORMATS.md, the last array); the timing
+residual dtau_p = tau_p - tau_LTB(R_p; R0_p), the proper time at which the exact shell of its label has that
+areal radius on the way in. No tracer clock is used. Estimator: the median of dtau_p in cells of R0 (2 M
+bins) x R (1.2 R_AH-3 M, 3-6, 6-10, 10-20, 20-40 M), with bootstrap standard errors; cells with fewer than
+200 particles are not read. D1: |median dtau| at the finest mesh member and at 16N below a bound D1* in every
+read cell; D1* is fixed before any G3 card hour is read, by the same reader on G2's snapshots (FK, FN4, FNQ,
+FL16 to 190 M), as twice the largest |median dtau| of FN4 (M/8, 4N) [processor work, section 4 of the review];
+until then Claim D has no accuracy criterion. D2: in each read cell the medians fall from M/8 to M/16 and from
+N to 16N by more than twice their combined standard error (this replaces G3-L1's orderings, A4). D3: the
+density profile and its inner slope beside the exact ones with bootstrap errors, as a figure; not a pass/fail
+number. Refuted: D1 if a read cell exceeds D1*; D2 if a cell's median grows with resolution by more than
+twice its standard error.
+
+**A3 (B3, S5: Claim G mesh criteria; replaces G3-G2 and G3-G3 of section 4).**
+- G3-G2 (mesh, against the exact solution). Window means e-bar_h over 50 M of tau_rem with standard errors
+  from the bin scatter, after subtracting the finder's converged vacuum offset at the same horizon
+  resolution: the polished re-searches (processors) of the restart files of V-1L4, V-1L and V-1L16 give the
+  offset of a hole of mass 1 at 4, 8 and 16 cells per M; the offset of a hole of mass M_AH on mesh h is read at
+  M_AH/h cells per M, interpolated in log of cells per M [JUDGEMENT: the finder's error depends on the cells
+  across the horizon]; the offset is quoted beside every e-bar_h. Converging if |e-bar_12 - e-bar_16| <
+  |e-bar_8 - e-bar_12| and |e-bar_8 - e-bar_12| exceeds three standard errors in at least four of the six
+  windows after 100 M (or of the windows up to t_16, A1); an order p quoted only if both differences have
+  one sign in those windows. The mesh error of the growth law is max |e-bar_8 - e-bar_16|. Refuted if
+  |e-bar_12 - e-bar_16| exceeds |e-bar_8 - e-bar_12| by three standard errors in any window.
+- G3-G3 (mesh, free of the exact solution). Delta M_h(t) = M_AH(t) minus its mean over 20-40 M; the means over
+  100 M to t_16 of D_8,12 and D_12,16; their ratio with a 90 per cent interval from surrogates of the measured
+  difference noise. Before any mesh member is read, the power of "the interval lies in [1.2, 8]" for a
+  converging signal of 1.2e-3 is computed on phase-randomised surrogates of the measured noise of G2's FK - FL16
+  difference (50-190 M; its high-pass sd is 2.24e-4, `check_review.json` C5) and of G-8's own noise; if that power
+  is at least 0.8 the statement is a criterion (refuted if the interval excludes [1.2, 8] and contains no value
+  above 1), otherwise G3-G3 is reported as a measured ratio with its interval and is not a criterion, and the
+  mesh convergence of the growth rests on G3-G2. My Monte Carlo gives 0.997 for white noise and 0.0 for a 10 M
+  correlation time (run D-20261128-020346-c4079e9): the noise's spectrum decides, not the wording. Running the
+  mesh members at 4N (review B3) is not adopted: it does not fit A1's budget [JUDGEMENT].
+- V-8 is withdrawn (review S5: it feeds no criterion; P-V1 lapses). The vacuum offsets come from processor
+  re-searches of existing restart files.
+
+**A4 (S1-S4, S6: should-change items).**
+- S1: G-8-16N costs 5.2 card-hours to 400 M from the matched pair FK/FN4 (2.70 + 15 x 0.163; EVIDENCE.md) and
+  7.6 by the review's pairing (ES-FL scaled against FN4); cap 8; its smoke test checks the memory of the
+  particle file and of the card.
+- S2: G3-N1 becomes a reproduction check: "the release finder with polishing reproduces G2's tight re-search
+  FP. The bound is k_max(h) = max over the re-searched times 100-300 M of |D_ES(t) - D_V(t)| / ln[a(t)/a(100 M)],
+  a deterministic bound and not a 95 per cent limit, at M/8 and M/16; the quoted bound is the larger. It can
+  fail only if the release finder differs from the tight one (refuted if a re-searched difference exceeds
+  2.0e-4)". The words k_95 and "upper limit at 95 per cent" are not used at G3.
+- S3: G3-G5's windows are fixed: consecutive windows of 0.1 in ln a starting at ln a(tau = 50 M); the clause
+  "the three mesh members' slopes are ordered toward it" is removed.
+- S4: the lead of the shells (section 6) is measured with every dust particle's own clock (A2's estimator) at
+  R = R_max(R0)/2 and at 1.2 R_AH, with bootstrap standard errors; "scatter" in G3-L1 means two combined
+  standard errors; G3-L1's prediction band for G-12u is kept ([0.40, 0.78] M at R0 = 28 M). The split of the
+  lead into a step-size and a cell-size part (a G-8 at cfl 0.125) is not run at G3 [JUDGEMENT: budget]; with a
+  uniform family both shrink together and the lead is called convergent in (h, dt) jointly.
+- S6: G3-E1's bar is the particle-noise level: G-8-e1's window means of e_h within 3e-4 of G-8's in every 50 M
+  window, and Delta tau_lead at R0 = 28 M within two combined standard errors; the leg is called "shift
+  damping (slicing unchanged)".
+- S7: Claim G's summary line reads "the code reproduces the exact LTB growth law"; the growth law is LTB's,
+  and the Newtonian and Zel'dovich-Novikov curves are comparisons.
+
+**A5 (order and budget; replaces the table of section 10).** Card-hours [JUDGEMENT; measured before each
+production entry]:
+
+| Order | Run | Estimate | Cap |
+|---|---|---|---|
+| 0 | EG8 (scouting, q0085, in flight; about 0.7 used to 120 M) | 1.4 | 2.5 |
+| 1 | G-8 (400 M), after its processor smoke test | 2.7 | 3.5 |
+| 1 | T-12u, T-16u (2 M timing runs) | 0.2 + 0.3 | 0.3 + 0.3 |
+| 2 | G-16u (to t_16, A1) | 20 | 20 |
+| 3 | G-12u (to t_16) | 9.5 | 11 |
+| 4 | G-8-4N, G-8-16N (400 M) | 3.2 + 5.2 | 4 + 8 |
+| 5 | G-8-e1 (400 M) | 2.7 | 3.5 |
+| - | reserve: preemption repeats, one rerun | - | 6.9 |
+| | total | 45.2 | 60 |
+
+Two D chains at most in the queue at once; the single-job timing runs (cap 0.3 card-hours) are not counted.
+Priority 2 for G-8 and the timing runs; the later members are queued only after the processor work of the
+review's section 4 (reader of A2 on G2's snapshots, polished vacuum offsets, power of A3 on measured noise)
+is committed.
+
+Predictions for the amended criteria: `g3/amend/JOURNAL.md` entry 4 (written before any of them is read).

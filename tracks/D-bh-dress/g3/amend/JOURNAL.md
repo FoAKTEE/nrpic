@@ -99,3 +99,19 @@ from EG8's segment logs) in [2.7, 6.6] for G-12u and [7.5, 21] for G-16u (C6's b
 Refuted if a run does not fit a card, the search is not found, a mass falls outside its band, or a cost ratio
 leaves its band; a cost above the band ends the full-time mesh leg as designed (amendment A1 then restricts it
 in time).
+
+## Entry 4 (2026-11-27 18:40 PST, before any amended criterion is read): predictions for SCOPE_G3 amendments A1-A4
+
+- P-A1 (family): G-12u's and G-16u's timing runs fit one card; t = 0 masses as entry 3; T-16u's cost puts
+  G-16u to 400 M at 18-30 card-hours, so t_16 lies in [270, 400] M [JUDGEMENT]. Refuted if t_16 < 200 M.
+- P-A2 (Claim D): on G2's snapshots FN4's |median dtau| per read cell lies in [0.05, 1.0] M (the tracers' lead
+  at R0 = 28 M is 0.55 M at 4N, VERIFIER 4.1), so D1* lands in [0.1, 2] M; D2 holds from M/8 to M/16 in at least
+  four of five R cells (the lead fell from 0.78 to 0.40 M in G2). Refuted if FN4's medians exceed 2 M (the
+  statistic then measures something other than the lead) or D2 fails in two cells or more.
+- P-A3 (G3-G2): after the vacuum offset, e-bar_8 - e-bar_16 in [+2e-4, +8e-4] (the lead's part, review B3: about
+  3e-4, plus the unpolished rule's 6e-5) and the three members ordered in at least four windows. Refuted if
+  the offset-corrected difference changes sign between windows after 100 M.
+- P-A3 (G3-G3 power): the phase-randomised surrogates of FK - FL16 noise give a power below 0.8 at 1.2e-3 (the
+  difference has visible structure on 10-20 M scales in check_review.png panel d), so G3-G3 becomes a
+  reported ratio. Refuted if the power is at least 0.8.
+- P-A4 (S1): G-8-16N's measured cost within [4.5, 8] card-hours to 400 M.
