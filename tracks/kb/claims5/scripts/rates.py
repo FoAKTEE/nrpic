@@ -151,7 +151,7 @@ def main():
     ax1.text(0.1, s["right_rate_est"] - 0.06, f"stratified, 389: {s['right_rate_est']:.2f}", fontsize=7.5,
              color=fs.PAL["green"])
     ax1.axhline(0.75, color="k", ls=":", lw=0.8)
-    ax1.text(len(items) - 0.5, 0.715, "predicted 0.75", ha="right", fontsize=7.5)
+    ax1.text(1.5, 0.765, "predicted 0.75 (Q1)", ha="center", fontsize=7.5)
     ax1.axvline(len(items) - 2.5, **fs.MASK_LINE)
     ax1.set_xticks(range(len(items)))
     ax1.set_xticklabels([f"{n}\n{k}/{m}" for n, k, m, _ in items], fontsize=7)
@@ -170,7 +170,7 @@ def main():
     ax2.set_xticklabels([t.split("-")[0] for t in tracks])
     ax2.minorticks_off()
     ax2.set_ylabel("claims read")
-    ax2.set_title("(b) verdicts by citing track (131 read)", fontsize=9)
+    ax2.set_title("(b) verdicts by track of the claim (131 read)", fontsize=9)
     ax2.legend(fontsize=7, loc="upper right")
     fig.tight_layout()
     fs.save(fig, os.path.join(a.out, "fig_claims5_rates"))
