@@ -245,3 +245,69 @@ the single exchange and stays byte-identical), and the test runs in a periodic b
 outflow deck stays as case `out_pcs_c2`, expected NOT to conserve if matter reaches the
 faces of the mesh, with either build). Prediction C1 stands as written for the periodic
 cases, now for ten steps; if an error above 1e-12 remains, (a) was not the only cause.
+
+## Entry 5, 2026-11-27 16:06: outcomes C1 (second form), R, S1 to S3; prediction K (card)
+
+C1 (second form: one ghost exchange per direction; periodic box; ten steps), run
+core-20261127-234843-fa6c2e9, PASS. Largest error of the integral of E against the sum of
+m W, core-v0.8 and this branch: `pcs_c2` 9.94e-4 and 2.7e-14; `pcs_c2_lim` 3.65e-4 and
+2.1e-14; `tsc_plain` 6.45e-4 and 3.3e-14; `cic_plain` 2.43e-4 and 2.1e-14; momenta
+5.9e-5 to 1.5e-4 and below 1e-15. `out_pcs_c2` (outflow faces) gives the same numbers as
+the periodic case, so matter does not reach the faces of the mesh in this deck and cause
+(b) of entry 4 played no part: the residual of the first form was removed by the
+exchange per direction (stale ghost copies of corrected cells, and prolongated ghost
+values, are not separated from each other by a run). Histories byte-identical between
+the builds for `none_pcs`, `uni_pcs_c2`, `uni_cic_plain`. Largest energy density: changed
+by 5.0e-3 relative (`pcs_c2`), 1.0e-5 (`cic_plain`), 3e-16 (`tsc_plain`), 0 with the
+limiter. `cic_fs` in three dimensions: smallest energy density -1.46e-3 with core-v0.8,
+0 now. Figure fig_comp_cons.png looked at: left panel 2e-5 to 1e-3 for the four
+compensated cases, right panel all below 1e-13.
+
+D rerun (corrected check), run core-20261127-234848-7d666df: `cic_fs` byte-identical to
+`cic` with this branch and not with core-v0.8 HOLDS; others as in entry 4. Figure
+fig_dep_compare.png looked at: (a) the dipole of core-v0.8 at 7.25, 7.75 is gone; (b)
+only the point at 8.5 moves (0.373 to 0.339).
+
+R, run core-20261127-234458-4baaaa4: F1a to F1e HOLD. Log lines: "Parameter added on
+restart from the command line: <fastflow> diagnostics = true" (a) and "... from the
+input file ..." (b); status lines of a and b equal; c none; d and e exit 1.
+
+S1 HOLDS (runs core-20261127-235152-d46d2d2, core-20261127-235215-27c6606): the default
+`mass_tol 1e-2` with the standard flow from 0.6 on S1L is "found" at iteration 2 (radius
+0.5998, mass 21.82); with `trapped_tol 0.05` it is not found, reason 7, column 16 =
+0.4999 (predicted about 0.5). Weighted flow with the check: the surface of F1, column 16
+= 1.565e-3 (predicted 1.6e-3).
+
+S2 HOLDS in part: the scan (24 spheres, 0.01875 to 0.6) finds 12 trapped spheres, 0.0295
+to 0.1546, and starts at 0.16151, 0.3 per cent inside the horizon radius 0.16196 (within
+3 per cent: held). Weighted flow with the scan: found after 114 iterations (14 without
+polishing), the surface of F1 (held). Standard flow with the scan: FOUND after 241
+iterations with cap 400 and cap 4000 alike, mass 10.7274: my prediction "not found within
+400" FAILED (the start is closer than I assumed), and the mass lies 0.0122 below the
+converged 10.7396, outside the +-0.01 I gave for the long search. The surface is not
+converged in shape: smallest radius 0.1596 against 0.1565, column 16 = 0.042, 27 times
+the converged value; `trapped_tol 0.05` lets it pass, 0.01 would refuse it. So the mass
+rule with polishing does not make a converged surface with the standard flow here, and
+the tolerance to recommend is 0.01, not 0.05. P0L6 t = 140 with the weighted flow and the
+scan: found after 113, mass 6.30324213 (held).
+
+S3 HOLDS (runs core-20261127-235631-a5e5818, core-20261127-235652-ac88116; P0L6 t = 130):
+with the scan reason 8 and no iteration, both flows. Without it: weighted flow not found
+by "mean radius negative" after 16 and 18 iterations; standard flow at its cap (reason
+6), having crept from 0.15 to 0.107 and from 0.6 to 0.452. An unplanned member confirms
+the false-acceptance class where nothing is trapped: standard flow, `mass_tol 1e-2`,
+from 0.6: "found" at iteration 2 (radius 0.5996, mass 15.33); with `trapped_tol 0.05`
+not found, reason 7.
+
+### Prediction K (one card job, `card.list`, executable of the published directory)
+
+K1 the three planar deposit cases equal the processor run in every cell of the line to
+1e-12; `cic_fs` equals `cic` to 1e-13; line sum of `pcs_comp` 32 to 1e-10. K2 the three
+compensated cases on the refined mesh conserve to 1e-12 at every record on the card too
+(the correction reads the fine block's array inside a kernel: if the neighbour table on
+the device were not what I read on the host, this fails). K3 the S1L probe with the
+weighted flow: every member found, masses within 1e-6 relative of the processor run,
+column 16 within 1e-4, scan start within 1e-6. K4 a continued run takes
+`fastflow/diagnostics=true` on the command line: status file and log line. Refuted by
+any of these failing; a card-only failure of K2 would mean the level-face kernel is
+wrong on the device.

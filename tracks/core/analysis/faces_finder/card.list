@@ -1,0 +1,12 @@
+# Card check of branch core/faces-finder (prediction K of tracks/core/JOURNAL-faces-finder.md,
+# entry 5).  Decks written by the processor tests of this session; judged by card_check.py.
+#   harness/bin/nrpic-queue add --label core-ff-card --priority 2 -- --kind scouting --gate G2 \
+#     --launcher batch --list <this file> --exe /data/haiyangw/nrpic/scratch/core/exe/core_faces-finder/athena_gpu --gpu-hours 0.2 --purpose "..."
+dl_cic /data/haiyangw/nrpic/scratch/core/core-20261127-234848-7d666df/new/cic/dl.athinput
+dl_cic_fs /data/haiyangw/nrpic/scratch/core/core-20261127-234848-7d666df/new/cic_fs/dl.athinput
+dl_pcs_comp /data/haiyangw/nrpic/scratch/core/core-20261127-234848-7d666df/new/pcs_comp/dl.athinput
+cons_pcs_c2 /data/haiyangw/nrpic/scratch/core/core-20261127-234843-fa6c2e9/pcs_c2/new/dep.athinput particles/particle_file=/data/haiyangw/nrpic/scratch/core/regress/ic/random.nrp
+cons_pcs_c2_lim /data/haiyangw/nrpic/scratch/core/core-20261127-234843-fa6c2e9/pcs_c2_lim/new/dep.athinput particles/particle_file=/data/haiyangw/nrpic/scratch/core/regress/ic/random.nrp
+cons_cic_plain /data/haiyangw/nrpic/scratch/core/core-20261127-234843-fa6c2e9/cic_plain/new/dep.athinput particles/particle_file=/data/haiyangw/nrpic/scratch/core/regress/ic/random.nrp
+rst_add /data/haiyangw/nrpic/scratch/core/core-20261127-234458-4baaaa4/first/rst/hc.00000.rst fastflow/diagnostics=true time/nlim=2
+s1l_shear /data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261123-025907-97bab8d/rst/peak.00019.rst -i /data/haiyangw/nrpic/scratch/core/core-20261127-235215-27c6606/probe.athinput time/nlim=22795 time/tlim=230.0 fastflow/flow=shear
