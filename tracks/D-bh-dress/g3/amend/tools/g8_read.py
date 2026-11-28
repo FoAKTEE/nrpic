@@ -144,7 +144,7 @@ def main():
     sh_e = med_raw[late] - med_extr[late]
     J["lead_bias"] = dict(shift_held_range=[float(sh_h.min()), float(sh_h.max())], shift_held_mean=float(sh_h.mean()),
                           shift_extrapolated_range=[float(sh_e.min()), float(sh_e.max())],
-                          prediction_held_in_2e-4_1.2e-3=bool(np.all((sh_h >= 2e-4) & (sh_h <= 1.2e-3))))
+                          prediction_held_in_band=bool(np.all((sh_h >= 2e-4) & (sh_h <= 1.2e-3))))
 
     # finder status and G-8 - FK
     s2 = st["time"] > 2.0
