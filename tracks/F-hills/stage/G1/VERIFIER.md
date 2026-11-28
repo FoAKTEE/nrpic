@@ -233,3 +233,174 @@ Where the lead's text should change (my requests a-f of section 8): F1 (heavy-ho
 judging A2-5), F2 (no order of convergence; quote the m/12-m/16 agreement instead), F3 (fractional
 "per M"; the conic 9.81 M; p1_280's d_at_112), the baseline of "+0.32 percent" and the method of
 "own residual 4.9e-7".
+
+---
+
+# Part 2, 2026-11-27 (batch 34): the completed passage to 186.0 M
+
+Second fresh verifier (not the author of part 1), helper package `verifier-tail/` (README,
+JOURNAL with predictions PT1-PT20 and outcomes, scripts, results, figures), processors only,
+0 card-hours. Runs (all registered, local, 1 core):
+**F-20261128-003721-95f3c15** (part 1's `verifier/scripts/run_all.sh`, unchanged),
+**F-20261128-004301-ce51e1f** (`vtail.py`: status files, fates, overlaps, waves),
+**F-20261128-004549-2a094fb** (`vbranch.py`: finder branches), **F-20261128-004718-796bd33**
+(`vlogs.py`: chain logs), **F-20261128-004800-5f93427** (`vhrms.py`: residual classes). Every
+number below is from one of them. A2's outputs were last written 2026-11-27 04:17 PST (chain STATUS
+FAILED after an sbatch I/O error, no job queued); A2's manifest still said "submitted" while the
+lead's `nrpic-run finish` pass ran, so I read a run that was not yet closed but no longer changing.
+
+## 10. What was done, and how independent it is
+
+- Before writing predictions I had seen: the subjects of the lead's commits da850964a and
+  3c43374a0 (capture of m1 at 137.5 M, m2 to 186 M, "C8 met", "F1 decided in part"), decision
+  0044 item 2, the last rows of A2's heavy-hole summary and status files, criterion (iv) and
+  A2-1..A2-5 as written. I did not read the lead's batch-34 journal entries, `REVIEW-wave3.md`,
+  the current CHECKLIST or STAGE_REPORT before section 16 was committed.
+- Part 1's readers ran unchanged. New readers (in `verifier-tail/scripts/`) read what part 1's do
+  not: the status files (`hills.horizon_status_<n>.txt`, with a self-test on synthetic files with
+  restart repeats and two kinds of failure; the self-test first failed on a bug of its synthetic
+  writer, not of the reader), the hrms column of the summaries, the chain's segment logs, and the
+  (2,2) amplitude against retarded time.
+
+## 11. Part 1's readers on the completed passage (run F-20261128-003721-95f3c15)
+
+| Quantity | Value | Remark |
+|---|---|---|
+| tracker join | 77 files per tracker (A + A2), 0-186.0 M, 95233 times, every step 2^-9 M, no gap | |
+| overlaps of recomputed stretches | A-A <= 1.13e-12 M, A-A2 <= 4.8e-14 M, A2-A2 <= 1.25e-9 M | the 1.25e-9 M is tracker 0 at 104.0-104.4 M (two cut segments); 1.1e-10 M tracker 1 at 165.0 M; all others <= 1.2e-12 M (fig_t_waves_overlaps b). Restart round-off of an asymptotically flat refined run, harmless at this size |
+| pair closest approach | 2.109626 M at 76.3727 M; no later minimum; s = 17.53 M at 186 M | unchanged from part 1 |
+| centre of mass of the pair to M | one minimum, 4.5251 M at 140.585 M | after m1 is inside M this point is not the c.o.m. of a bound pair |
+| end state | tracker 0 1.3e-9 M from M's tracker; tracker 1 17.53 M from M | the reader's E_0M (-2e10 units) is 1/r of coinciding trackers, meaningless |
+| Newtonian reference (same deck) | identical to part 1 in every digit (m1 = comp0 ejected, m2 bound; pair 3.67475 M at 87.6 M) | `vtest.json`, `vjunk.json` byte-identical too |
+| horizon medians in A2 | 0.129487 (m1), 0.129508 (m2), 1.004220 (M) | M's median is still a pre-capture value |
+| failures by the signature | finder 0: 1340 from 139.56 M; finders 1, 2: none | confirmed by the status files, section 12 |
+| rms H = sqrt(H-norm2/Volume), A2 | at most 6.19e-5 at 135.5 M; 1.51e-5 at 186 M | below 1e-4 throughout (A: at most 2.6e-5) |
+| waveforms | every 0.25-M sample 0-186 M at 40, 48, 70, 90 M, both parts (745 joined); A-A2 common samples agree to 1.4e-12 | |
+| `heavy_A2_branches` | splits at 1.063, i.e. before/after the capture | no longer the F1 reading; F1 is redone in section 12 |
+
+Figures read: `verifier-tail/figures/fig_v_passage.png`, `fig_v_horizons.png` (part 1's
+figures, redrawn to 186 M).
+
+## 12. Checked by eye and with the new readers
+
+**Fates from positions** (fig_t_fates). m1 (tracker 0) comes within 1 M of M's tracker at
+138.334 M and stays (0.604 M at 140 M, 0.1 M at 144.53 M; the two trackers then converge
+exponentially to 1.3e-9 M). m2 (tracker 1) passes M once, 8.7333 M at 134.31 M, and recedes:
+13.84 M at 170 M, 17.53 M at 186 M, 0.241 M per M at the end. Newton from the same deck assigns
+the fates the other way (m1 to 45 M at 200 M, m2 bound near 6-10 M).
+
+**Fates from the horizons.** Status files exist from 133.0 M (1697 search times each after one
+row per time; 1771 raw rows with restart repeats). Finder 2 (M): found at all 1697; its mass jumps
+from 1.01121 (137.469 M) to 1.12015 at 137.5 M (found), then median 1.12284 (1.12122-1.12358)
+from 138.5 M, drift +1.0e-6 per M; at 186 M mass 1.122912, S = 0.31887, chi = 0.2529, irreducible
+(area) mass 1.113750. Finder 1 (m2): found at all 1697. Finder 0 (m1): found at 357, not found at
+1340 (1302 iteration limit, 31 mean expansion above tolerance, 6 negative mean radius, 1 area
+mass below 1e-10); it keeps finding a 0.1298-0.1300 surface until about 139.5 M, i.e. for about
+2 M after the common horizon appeared, then "found" surfaces of 0.12, 0.97-1.06 and 0.80 that are
+no member horizon (last found 147.656 M) (fig_t_horizons a). So: m1 is captured (common horizon
+of M and m1 from 137.5 M); m2's horizon persists to 186 M.
+
+**The signature of part 1 against the status files.** On the 3 x 1697 searches where both exist
+the status file's found flag and the signature (a row identical to the previous one, or a
+non-positive or non-finite mass) agree at every search. Part 1's horizon statements made without
+the diagnostics (before 133 M) rest on a method that this run confirms where it can be checked.
+
+**m2's energy, with the remnant.** With the remnant mass (1.12284) at M's tracker m2's coordinate
+two-body energy is -0.036 units at 186 M (-0.051 against the centre of mass of M and m1; the
+reader's +0.121 uses M = 1.00422). v_rel = 0.3739 against v_esc = 0.3780 at 17.53 M. The quantity
+rises almost linearly from -0.50 at 145 M to -0.04 at 186 M (fig_t_fates d): it is not conserved,
+so whether m2 escapes is not decided by coordinates [JUDGEMENT].
+
+**Masses, finding F1** (fig_t_branches a, fig_t_horizons c). From 86.6 M the heavy hole's
+accepted searches fall in two classes that the summary's own column 9 (hrms, the area mean of the
+squared expansion; zero on a marginally trapped surface) separates by four orders of magnitude:
+the upper branch (825 searches, median 1.004222, 1.004189 to about 1.00425 up to about 131 M)
+has hrms 9.4e-9 to 3e-8; the lower branches (803 searches, 1.00289-1.00394, last at 129.41 M)
+have 1.4e-4 to 6.5e-4, and so has the smooth decline of 62-86.6 M (1.6e-4 to 3.7e-4) that part 1
+fitted at -1.72e-5 per M. Which branch do the status files support? None directly: they begin at
+133 M, after the last lower-branch search, and hold only upper-branch searches (144 up to the jump,
+all found, 4-61 flow iterations). The hrms column decides it: **the converged heavy horizon is
+the upper branch, 1.00422, constant to about 3e-5 from 86.6 to about 131 M; the decline and the
+lower branches are unconverged surfaces** [JUDGEMENT on the meaning of hrms]. From about 131 M
+the upper branch grows (1.0161 and hrms 1.1e-2 at 137.47 M) as m1 closes in, then the jump.
+
+**New finding F5: "found" does not mean converged** (fig_t_branches b, c; fig_t_hrms). Finder 1
+alternates from 160.56 to 179.22 M between an upper branch (300 searches, 0.12956-0.12963, hrms
+1.2e-6 to 2.8e-6, 43-47 flow iterations) and a lower branch (298 searches, 0.12890-0.12918, hrms
+0.154 to 0.231, exactly 6 flow iterations, mean expansion -0.043); the status file marks all 598
+found. Before the capture every member finder accepts, in episodes, surfaces of hrms 0.011 to 0.50:
+29.0 percent of A's finder-0 searches (A's file, 0-64 M), 16.7 percent of A's finder 1, 3.8 and
+5.1 percent of A2's finders 0 and 1, with masses below their low-hrms neighbours by medians of
+6e-5 to 3.2e-4 (at most 1.35e-3). The heavy finder accepts no search above 1e-2 before 136.9 M, but
+its two classes (about 1e-8 and 1e-4) run side by side in A as well. The drift fits of part 1 and
+of the owner (H2, S6) include these rows.
+
+**Chain logs (A2-5's mesh clause).** 46 segments: 1968 to 2514 MeshBlocks (below 2864); card
+memory peak 78789 MiB (96 percent of an 80 GB card); exits 0 and 143 only; no error line.
+
+**Waves** (fig_t_waves_overlaps a, fig_t_branches d). |r Psi4 (2,2)| at 40, 48 and 70 M coincide
+against u = t - r* and rise above three times their 60-130 M level from u = 97.2, 95.2, 95.6 M to
+the end (8.4e-3 at r = 40 M at 186 M, 52 times that level); at 90 M the record ends before that
+u. [JUDGEMENT: the chirp of m1's plunge into M.] The capture (137.5 M) reaches only the 40-M
+sphere before the record ends (u = 139.7 at 186 M): no ring-down is recorded at any radius.
+
+## 13. Judged as written
+
+| Item | Text (where) | Verdict | Evidence |
+|---|---|---|---|
+| A2-1 | minimum 2.0-2.7 M at 63-75 M, s > 1 M throughout (JOURNAL l. 829-831) | REFUTED on timing (stays): 2.1096 M at 76.37 M; the band and s > 1 M hold | section 11 |
+| A2-2 | c.o.m. closest approach at 95-115 M and 8-11 M (l. 831-833) | REFUTED (stays): one minimum, 4.525 M at 140.6 M | section 11 |
+| A2-3 | by 170 M one member > 30 M from M with positive energy, the other bound with pericentre 4-8 M (l. 833-836) | REFUTED. At 170 M m2 is 13.84 M from M (17.53 M at 186 M); m1 is captured, not bound on a 4-8 M pericentre; m2's energy is marginal and not conserved in coordinates. The binary is separated (it holds that it broke up) | section 12 |
+| A2-4 | no common horizon of a member with M (l. 836) | REFUTED: common horizon of M and m1 from 137.5 M (found, 1.12015 rising to 1.1228) | section 12 |
+| A2-5, members | drift below 1e-4 per M outside the encounter | MET on the low-hrms searches (part 1: 3.1e-5, -8.1e-6 per M as fractions, 65-95 M); m2 after the capture +2.7e-5 per M [from the upper branch 147-186 M, read from fig_t_horizons b, not fitted]. The high-hrms rows (F5) are not drift | sections 11, 12 |
+| A2-5, heavy hole | changes by less than 1e-3 to 200 M | REFUTED (stays): +0.12 at the capture; on the converged branch constant to about 3e-5 from 86.6 to about 131 M, which is what the clause meant to test [JUDGEMENT]; the record ends at 186 M | section 12 |
+| A2-5, mesh and memory | below 2864 MeshBlocks, inside the card's memory | MET: at most 2514; peak 78789 MiB | section 12 |
+| A2-5, constraints | rms H below 1e-4 | MET: at most 6.19e-5 (135.5 M) | section 11 |
+| C8 / criterion (iv) | one complete vacuum passage: all horizons found in every search until a merger, trackers until t = 200 M, outcome stated with the constraint norm (`../G0/SCOPING.md` l. 139-141) | MET IN SUBSTANCE, NOT AS WRITTEN on one clause [JUDGEMENT]: (a) every search of all three finders accepted until m1's merger with M (signature, 0-139.5 M; status 133-137.5 M; the two agree wherever both exist), but "found" includes unconverged surfaces (F5); (b) trackers end at 186.0 M, not 200 M (14 M short; decision 0042 item 2 says "at least 170 M", which is not an amendment of the criterion's text that I can find); (c) the outcome can be stated: the binary is disrupted, m1 plunges into M (common horizon 137.5 M), m2 survives its 8.73-M passage on a marginal orbit whose binding is not decided by the record; rms H at most 6.2e-5 | sections 11, 12 |
+
+On the gate question (a baseline without new core work: one complete vacuum passage with its
+checks): the passage is complete in the sense that matters for G1 (pericentre, break-up, capture
+and the survivor's recession are all in the record, with horizons, constraints and waves), and
+the failed predictions (A2-1 on timing, A2-2, A2-3, A2-4, the heavy-hole clause of A2-5) are
+failures of what was expected, not of the run. I see no reason in the data to withhold G1 on
+them if they are stated as refuted [JUDGEMENT]. Two things should be stated with the verdict: the
+end at 186 M against the criterion's 200 M (or an amendment by the orchestrator), and m2's fate
+as undecided.
+
+## 14. Predictions that failed (mine, part 2)
+
+PT1 in one class (A2-A2 overlaps up to 1.25e-9 M, bound 1e-11); PT3 on my own window (140.6 M,
+window 115-140 M); PT11 (the large overlap is at 104 M, not after 133 M); PT12 for finder 0 (I
+expected the signature to undercount; it agrees at every search: my count came from raw rows);
+PT13 (finder 0 still finds a 0.130 surface for 2 M after the common horizon); PT15's mechanism
+(the rise starts at u = 95-97 M, long before the capture's signal); PT17 as written (the heavy
+upper branch's hrms rises near the capture, so the ranges overlap); PT20 in its numbers
+(fractions 3.8-29 percent, mass offsets 6e-5 to 3.2e-4). Details in `verifier-tail/JOURNAL.md`
+entries 2-6. The header times of entries 2-6 there were estimated, not read from the clock (the
+commits, 16:42-16:48 PST, are the record).
+
+## 15. From part 1's "not checked" (section 6), and what remains
+
+Done here: the tail of the passage (sections 11-13), the status files, A2-5's mesh clause, the
+residual classes of all accepted searches of A and A2. Still not checked by a verifier: criterion
+(i) F-pre-1 against 0911.1136 and 1804.02911, and KHSR beyond the four points of section 3.5;
+criterion (ii) F-pre-2 against 2404.16270 and the Kerr part (2402.02178); the EIH package; P1's
+remnant spin (ledger row 204), radiated energy (row 208) and recoil; the N1/N1m tide; the single-
+member junk (S2g); the junk at P1b's spheres; the energy radiated in P1b (the record ends before
+the capture's signal passes r >= 48 M).
+
+## 16. Requests
+
+- To the lead (F-hills): (a) state the passage's end as 186.0 M and ask the orchestrator whether
+  criterion (iv)'s "trackers until t = 200 M" is met by it or amended; (b) state m2's outcome as
+  undecided in coordinates (two-body energy -0.04 to +0.12 units by mass convention, v/v_esc =
+  0.989 at 186 M, not conserved); (c) quote the heavy hole on the upper branch, 1.00422, and say
+  that part 1's decline (-1.72e-5 per M) and the lower branches are unconverged surfaces by the
+  summary's hrms; (d) do not read "found" as "converged": exclude or flag accepted searches with
+  hrms above 1e-2 in the member drifts (H2, S6), and say that finder 1 alternates at 160-179 M
+  with a found branch of hrms 0.2; (e) state that the capture's wave is recorded only at 40 M and
+  without ring-down; (f) note the A2-A2 overlap of 1.25e-9 M at 104 M (restart round-off).
+- To core: the status file marks as found a surface accepted after 6 flow iterations with an
+  expansion residual of 0.15-0.23 (A2, finder 1, 160.6-179.2 M, `mass_tol` rule without
+  polishing on the core-v0.5 card build). Please say whether `polish_iterations_<n>` of core-v0.8
+  removes such a branch on this case, or record the case in `finder_stop.md`.
