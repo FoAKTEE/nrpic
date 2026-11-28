@@ -164,3 +164,13 @@ slope about -1.9 to -2.8 and lumpy where the lattice labels bunch; (b) q from th
   labels (6, 10, 20) are already swallowed and the nearest label left is 28 M; inside a 1 M label bin the
   particles' own proper times spread by 5.4-7.1 M and differ from the label's tracer time by up to 6.1,
   12.2, 15.4 M. The snapshots carry every particle's proper time (docs/FORMATS.md line 123).
+
+## Entry 5 (2026-11-27 16:56 PST, before the run): power of a whole-run form of G3-G3
+
+To give the lead a wording for G3-G3 that has power, the same surrogate model as B2 (noise of one N
+member from FK - FN4, mesh correlation 0.83, deterministic part of order p normalised to G2's +5.78e-4)
+is applied to a whole-run statistic: the means over 100-400 M of D_8,12 and D_12,16, passing if
+|mean D_8,12| > |mean D_12,16| with ratio in [1.5, 8] (ratios: 2.86 for p = 2, 2.0 for p = 1).
+- B2b: at G2's amplitude this passes with probability above 0.8 for p = 2 and above 0.6 for p = 1; with
+  no convergence (deterministic parts equal, ratio 1) it passes with probability below 0.1. Refuted if
+  the p = 2 power is below 0.5 or the false-pass rate above 0.2.
