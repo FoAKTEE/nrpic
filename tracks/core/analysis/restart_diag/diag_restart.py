@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 """Can <fastflow> diagnostics be switched on in a run continued from a restart file?
 (decision 0042 item 4; Tracks D and F.)  Prediction F1 of tracks/core/JOURNAL.md
-(2026-11-26T02:36Z).
+(2026-11-26T02:36Z); from branch core/faces-finder (2026-11-27) case a is expected to
+start (--expect new, the default; --expect v08 keeps the expectation of release
+core-v0.8, where the command line refuses a parameter the restart file does not hold).
 
     diag_restart.py --exe ATHENA --out DIR
 
@@ -10,7 +12,9 @@ with a restart output every cycle.  Then three continuations to cycle 2:
   a  -r rst fastflow/diagnostics=true          (command line)
   b  -r rst -i add.athinput                     (add.athinput: <fastflow> diagnostics = true)
   c  -r rst                                     (control)
-Writes DIR/summary.json and DIR/fig_diag_restart.{pdf,png}; exit 0 if F1a-F1c hold.
+  d  fresh start, fastflow/no_such_option=1    (must still be refused: misspelt names)
+  e  -r rst fast-flow/x=1                       (a name that is no parameter name: refused)
+Writes DIR/summary.json and DIR/fig_diag_restart.{pdf,png}; exit 0 if F1a-F1e hold.
 """
 import argparse
 import glob
@@ -33,6 +37,7 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--exe", required=True)
     ap.add_argument("--out", required=True)
+    ap.add_argument("--expect", default="new", choices=["new", "v08"])
     a = ap.parse_args()
     out = os.path.abspath(a.out)
     os.makedirs(out, exist_ok=True)
@@ -62,12 +67,39 @@ def main():
         log = open(os.path.join(d, "athena.log")).read()
         res[c] = {"status": st, "status_files": [os.path.relpath(s, out) for s in sf],
                   "status_lines": lines[:6], "n_records": sum(1 for l in lines if not l.startswith("#")),
-                  "not_found_message": "on command line not found" in log}
+                  "not_found_message": "on command line not found" in log,
+                  "added_lines": [l for l in log.splitlines() if "added on restart" in l]}
         print(c, json.dumps(res[c]))
+    # d: a fresh start with a parameter the input does not hold; e: a restart with a
+    # name that cannot be a parameter name
+    for c, cmd in (("d", [a.exe, "-i", os.path.join(d0, "hc.athinput"),
+                          "fastflow/no_such_option=1", "time/nlim=0"]),
+                   ("e", [a.exe, "-r", r, "fast-flow/x=1", "time/nlim=2"])):
+        d = os.path.join(out, c)
+        os.makedirs(d, exist_ok=True)
+        st = run(cmd, d, "athena")
+        log = open(os.path.join(d, "athena.log")).read()
+        res[c] = {"status": st, "not_found_message": "on command line not found" in log}
+        print(c, json.dumps(res[c]))
+    same_ab = (len(res["a"]["status_lines"]) > 0 and
+               res["a"]["status_lines"] == res["b"]["status_lines"])
+    res["a_equals_b"] = same_ab
+    if a.expect == "v08":
+        f1a = (res["a"]["status"] != 0 and res["a"]["not_found_message"]
+               and not res["a"]["status_files"])
+    else:
+        f1a = (res["a"]["status"] == 0 and res["a"]["n_records"] >= 1 and same_ab and
+               any("from the command line: <fastflow> diagnostics = true" in l
+                   for l in res["a"]["added_lines"]))
     chk = {
-        "F1a": res["a"]["status"] != 0 and res["a"]["not_found_message"] and not res["a"]["status_files"],
-        "F1b": res["b"]["status"] == 0 and res["b"]["n_records"] >= 1,
-        "F1c": res["c"]["status"] == 0 and not res["c"]["status_files"],
+        "F1a": f1a,
+        "F1b": res["b"]["status"] == 0 and res["b"]["n_records"] >= 1 and
+               (a.expect == "v08" or any("from the input file: <fastflow> diagnostics" in l
+                                          for l in res["b"]["added_lines"])),
+        "F1c": res["c"]["status"] == 0 and not res["c"]["status_files"] and
+               not res["c"]["added_lines"],
+        "F1d": res["d"]["status"] != 0 and res["d"]["not_found_message"],
+        "F1e": res["e"]["status"] != 0 and res["e"]["not_found_message"],
     }
     res["checks"] = chk
     res["verdict"] = "PASS" if all(chk.values()) else "FAIL"

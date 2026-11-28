@@ -78,7 +78,12 @@ class ParameterInput {
   void CheckBlockNames();
   void LoadFromStream(std::istream &is);
   void LoadFromFile(IOWrapper &input, bool single_file_per_rank=false);
-  void ModifyFromCmdline(int argc, char *argv[]);
+  // add_missing (a run continued from a restart file): a parameter that the stored
+  // input does not hold is added, with a line in the log, instead of ending the run
+  void ModifyFromCmdline(int argc, char *argv[], bool add_missing = false);
+  // while set, every parameter that LoadFromFile adds (not one it replaces) is named in
+  // the log (an input file given with -i next to -r)
+  bool log_additions = false;
   void ParameterDump(std::ostream& os);
   void CheckUnusedParameters(std::ostream& os, bool skip_refinement = false);
   bool DoesBlockExist(std::string name);

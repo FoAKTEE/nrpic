@@ -1,0 +1,57 @@
+{
+ "rst_output": 7,
+ "verbose": true,
+ "horizons": [
+  {
+   "name": "shear from 0.6",
+   "initial_radius": 0.6,
+   "flow_iterations": 400,
+   "polish_iterations": 100
+  },
+  {
+   "name": "shear from 0.2",
+   "initial_radius": 0.2,
+   "flow_iterations": 400,
+   "polish_iterations": 100
+  },
+  {
+   "name": "shear from 0.1",
+   "initial_radius": 0.1,
+   "flow_iterations": 400,
+   "polish_iterations": 100
+  },
+  {
+   "name": "shear from 0.03",
+   "initial_radius": 0.03,
+   "flow_iterations": 400,
+   "polish_iterations": 100
+  },
+  {
+   "name": "shear from 1.5",
+   "initial_radius": 1.5,
+   "flow_iterations": 400,
+   "polish_iterations": 100
+  },
+  {
+   "name": "shear alpha 0.5 from 0.6",
+   "initial_radius": 0.6,
+   "flow_iterations": 400,
+   "polish_iterations": 100,
+   "flow_alpha_beta_const": 0.5
+  },
+  {
+   "name": "shear alpha 0.5 from 0.1",
+   "initial_radius": 0.1,
+   "flow_iterations": 400,
+   "polish_iterations": 100,
+   "flow_alpha_beta_const": 0.5
+  },
+  {
+   "name": "shear tight 1e-9 from 0.6",
+   "initial_radius": 0.6,
+   "flow_iterations": 400,
+   "polish_iterations": 0,
+   "mass_tol": "1.0e-9"
+  }
+ ]
+}
