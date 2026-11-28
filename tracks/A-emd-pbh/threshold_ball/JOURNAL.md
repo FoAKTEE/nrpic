@@ -942,3 +942,35 @@ Predictions [JUDGEMENT]:
   refuted toward no gain from refinement if F < 1.0. Undecided in (2.5, 3).
 What FC does not show: anything after t = 1 (core measured the set's gain shrinking with time in its own ball); the
 matter and taper parts (coarse here by design, not read); faces at 32 with the set.
+
+## Entry 20, 2026-11-27 23:55 PST (lead of batch 40): RT2a, the retest of decision 0047 item 2(a) on core-v0.9, prediction before it is queued
+
+State: OB named the outer outflow faces as the place where the non-converging part of the line ratio enters
+(entry 18, VERIFIED by a run that could have failed); FC (entry 19) is still running. core-v0.9 is released
+(scratch/core/exe/core_nrpic_v09, REGRESSION and CARD CHECK PASS; core's outbox 2026-11-28 to A): its deposit fixes
+change every refined run with compensation from the first deposit, i.e. every bracket member of this scan.
+Members: the bracket member d0.42 (top hat, PCS with compensation, data A-20261121-202812-cae4436/dc0p42, the lattices
+nestA and nestB at one particle per local cell, so fixed sampling) on mesh A (nest16_L32_fr, M/16) and mesh B
+(nest32_L32_fr, M/32): the decks of the scan with outer faces at 32 PLUS core-v0.6's outer-face set (extrap_order 4,
+ghost_falloff, sbc_variant nonwave, sbc_speed metric) and region norms (outside r = 4.25, outside 13, outside the
+found horizon, every 16 cycles); overrides as B-d0.42 (A-20261121-204149-c48bd33); card build of core-v0.9; to
+t = 51. Old values (v0.6, stock faces at 32): B-d0.42 exact tau_AH 43.656, first find 43.686, first persistent
+detection 45.875, line ratio outside the finder radius at detection 1.11 (GATE_REVIEW line 63); A-d0.42 no
+persistent detection before its guard stop at 47.92 (first find 43.442). Mesh C (8.6 card-hours on v0.6) is not
+queued now: A at t = 45.875 and B at its detection give the mesh pair at fixed sampling at the time that counts.
+Readers: threshold_ball/scripts/analyse.py (detection rule, ratio outside the finder radius) and ratio_split.py
+(--xmax 32, bands 4.25, 6.5, 13) at B's detection time, on both members, plus the region.hst columns.
+Predictions RT2a [JUDGEMENT]:
+- R1: B-F reaches t = 51 without a guard stop; its first finder find lies within 0.2 of 43.686 and its persistent
+  detection within 0.5 of 45.875 (the faces cannot reach the collapse; the deposit fix changes the source by a few
+  1e-4 of the mass at level faces). Refuted otherwise.
+- R2: at B-F's detection the line ratio outside the finder radius is between 0.1 and 0.5: cut at least threefold
+  from 1.11 (the outer part), but above the bound, because core measured the face set's gain shrinking with time (8x
+  at t = 16 in its ball) and the top-hat PCS members carry a matter part of 0.05-0.33 (entry 18, R-split). Refuted
+  toward a PASS of 0047 2(a) on mesh B if below 0.1; refuted toward "the face set does not help over 45 M" if above
+  0.5.
+- R3: at t = 45.875 the matter part (x < 4.25) of A-F is at least 1.5 times B-F's (it converges), while the part
+  13-32 is within a factor 1.5 between A-F and B-F (it does not). Refuted otherwise.
+Condition (a) is met by this pair only if R2 is refuted toward a pass on B-F AND A-F's ratio at the same time is
+higher than B-F's. Cost [JUDGEMENT from A-20261121-204149-c48bd33, 0.59 card-hours to t = 51, and A-d0.42's share of
+0.16]: about 0.2 + 0.7 card-hours with the extra ghost exchanges; chain caps 0.5 and 1.2.
