@@ -57,6 +57,7 @@ Committed copy: the file of the helper package that the run output should equal 
 | B-20261127-232628-1361e3b | c3.json | sha256 ok | - | - |
 | B-20261128-022328-1a9d681 | v7_highk.json | sha256 ok | - | - |
 | B-20261128-030556-5ef9294 | pair_ratio.json | sha256 ok | - | - |
+| B-20261128-032405-7c4aa64 | review_check.json | sha256 ok | - | - |
 | B-emd-gw-20261115-113102-bc5e082 | check_item3.json | sha256 ok | scope/results/check_item3.json | yes |
 | B-emd-gw-20261115-113148-4e5c33b | crossed_waves_tt.json | sha256 ok | scope/results/crossed_waves_tt.json | yes |
 | B-emd-gw-20261115-113632-2960145 | regime_estimates.json | sha256 ok | scope/results/regime_estimates.json | yes |
