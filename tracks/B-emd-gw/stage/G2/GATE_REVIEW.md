@@ -244,3 +244,75 @@ gauge it is read in (K2, or the 128^3 partner), whichever the ruling names.
    section 6 clause unmet, unassigned to a gate).
 8. The scope's G3 gauge leg is the lapse condition; no lapse variation of the population exists.
 9. Corrections of text and figures owed (section 6).
+
+---
+
+# Part 2. Second review, limited to C2 (2026-11-28, batch 40)
+
+Reviewer session of batch 40, 2026-11-28 00:29 PST on (decision 0050 item 3; decision 0019 item
+3). I am not the reviewer of part 1 and produced none of this work. Tag check at 00:29 PST:
+`git tag -l 'stage/B-emd-gw/*'` lists G0-pass-20261119 and G1-pass-20261121 only. Branch reviewed
+at ccc16f85e (main merged, "Already up to date"). Written in two commits like part 1: section P1
+(state found and predictions) before my check ran, the rest afterwards.
+
+Read before judging: CLAUDE.md; `coord/CHARTER.md` to "Owners" and sheet 9.5; brief lines 674-686;
+decision 0050 whole; part 1 above whole; STAGE_REPORT.md (C2 row whole); `population/JOURNAL.md`
+entries 2026-11-27 19:36 to 2026-11-28 00:01; HANDOFF.md; the manifests and run logs of
+B-20261128-034731-640f4f4 (q0107), B-20261128-074111-e2fcd72, B-20261128-074116-363f95f.
+
+## P1. What the lead's readings of today left, and my predictions
+
+State found [VERIFIED from the manifests and run logs]:
+
+- q0107 (B-20261128-034731-640f4f4, 128^3, eight per cell, Gamma driver) is complete and closed
+  (exit 0, chain DONE at t = 21.916); its Z4c dumps are at t = i/4 + 0.008 like its one-per-cell
+  partner's (header times read by me; files 48, 56, 72, 84 are t = 12, 14, 18, 21).
+- **Both analyses that were to read it ended with exit -15 at 08:00:35Z (00:00:35 PST)**, although
+  HANDOFF.md says "none to be killed": B-20261128-074111-e2fcd72 (the band strain, G8a) wrote no
+  row (its directory holds run.log only), and B-20261128-074116-363f95f (Weyl statistics, W5b, W6)
+  printed rows for a = 49 and 64 of the four 128^3 members and one row at a = 100, then stopped;
+  no table, no 256^3 row. The finish of e2fcd72 is in the worktree but not committed (its manifest
+  is modified, status failed); I leave it to the lead.
+- So, of condition (b) of decision 0050, **the band strain of q0107 has not been read at all**
+  (G8a not judged); G8b's guard part and G8c hold (journal 23:55). Of item 5's question, the
+  invariant at eight per cell exists for a = 49 and 64 only (gauge ratio of I_B 0.9022 and 0.9175
+  at eight per cell against 0.9021 and 0.9132 at one; median 0.9973, 0.9849 against 0.9976,
+  0.9848; run log of 363f95f). Condition (a) is measured and not met (decision 0050 item 5).
+
+Judging only from those artefacts, condition (b) is unread and the item cannot be met. Its reading
+is cheap (processor analysis of existing dumps), so I make it myself, with readers that are not
+the lead's: the mesh reader and flat TT projector of the fresh verifier
+(`stage/G2/verifier/scripts/vlib.py`, tested on analytic fields in its v0_tests.py, reproduced the
+lead's spectra to 1e-15, VERIFIER.md), and of the lead's code only the gauge piece that defines
+the "corrected" strain (`gw_diag/gwdiag/gauge.py` tt_strain_from_conformal), so that my number is
+the quantity the criterion names. Script `stage/G2/gate_review/review_check2.py`. Members, all
+128^3, L = 8, sigma1 = 0.014: zs1 = B-20261123-014847-f295ab4 (zero shift, 1 per cell), gd1 =
+B-20261124-210431-6bf48af (Gamma driver, 1 per cell), zs8 = B-20261124-223926-33194d9 with its
+continuation B-20261125-221742-5100a22/p8_cont (zero shift, 8 per cell), gd8 = q0107. Epochs
+t = 8, 10, 12, 14, 16, 18, 20, 21 (a = 25, 36, 49, 64, 81, 100, 121, 132), each dump chosen by its
+header time. Band rms over |k| <= 8 k_f in two forms (exact per-mode shells, and the files' form
+sum_n S_n/n^2), raw and corrected. Then, to finish item 5's reading, the lead's Weyl statistics
+(`population/scripts/weyl_gauge.py splitx`, reader tested by the lead on analytic fields, W0 to
+W0c) rerun for the four 128^3 members only, as the lead's command without `--t256`.
+
+Seen before writing these predictions: part 1's numbers (RC1, RD1, the gauge ratios against a);
+the Weyl rows above; nothing of the band strain of q0107.
+
+- RE0 (reader). Plane TT wave h_xx = -h_yy = A cos(4 pi z / L), A = 1e-3, 32^3: raw band equals
+  A^2 within 1e-10; corrected band equals raw within 1e-6. Refuted otherwise (the script stops).
+- RE1 (G8a, condition (b): particle number in the gauge the strain is read in). P_gd =
+  band rms(gd8)/band rms(gd1), corrected, files' form: within 5e-3 of one at a <= 64 and within
+  1 per cent at every epoch to a = 132. My prediction fails between that and 5 per cent;
+  **condition (b) is REFUTED if P_gd leaves 0.95-1.05 at any of a = 64, 100, 132** (the lead's
+  bound of 19:36, unchanged).
+- RE2 (item 5: does the gauge difference of the band strain fall with the sampling?). R8 =
+  gd8/zs8 within 0.02 of R1 = gd1/zs1 at a = 64, 100, 132 (it does not fall). Refuted, i.e. the
+  gauge difference falls with the sampling, if |R8 - 1| <= 0.5 |R1 - 1| at both a = 100 and 132.
+- RE3 (agreement with the files). My R1 (corrected, files' form) equals part 1's gauge-leg ratios
+  (from the lead's analysis files, run B-20261128-032405-7c4aa64) within 2e-3 at the common epochs.
+  Refuted outside 1e-2.
+- RE4 (raw against corrected). P_gd raw and corrected agree within 3e-3 at every epoch.
+- RE5 (W6 of the lead, 23:35, as written: refuted if |R8 - 1| >= 0.8 |R1 - 1| for both the median
+  and the larger-lapse-half mean at a = 132). I predict W6 refuted: the invariant's gauge ratio at
+  eight per cell within 0.02 of the one-per-cell ratio for the median and the larger-lapse half at
+  a = 100 and 132 (as at a = 49 and 64).
