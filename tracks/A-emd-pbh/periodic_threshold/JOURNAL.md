@@ -1391,3 +1391,21 @@ SCOPE section-3 ratio inside/outside the found horizon in `peak.region.hst`); to
   relative of S1L's): v0.8 changes nothing on this set without new options. Refuted otherwise.
   Cost: ~1.1 card-hours (S1L-h's rate), cap 1.6.
 Together 2.2 + 1.1 = 3.3 card-hours expected, caps 4.2, within the six of this session.
+
+### (b) FD: the new deck's finder lines on the batch-31 restart files, prediction before the run (16:55 PST)
+
+Deck lines under test (`inputs/peak_leak_f.athinput`): flow_iterations 4000, polish 100, mass_tol 1e-5, diagnostics,
+start radius from the round-sphere scan, plus `flow = shear` (core's answer). Probe: finder_probe_box.py sets FD_S1L
+and FD_P0L6 with `--flow shear` (new option; one cycle from each restart file, v0.8 threaded processor build),
+starts at the scan radius and at far radii (S1L 0.16, 0.6, 0.1; P0L6 0.103, 0.15, 0.6), plus three round spheres.
+Files: S1L rst 15, 16, 19 (t = 180, 190, 220); P0L6 rst 16, 17 (t = 130, 140).
+- FD1: S1L t = 220 found from all three starts, each in < 400 flow iterations, area masses equal within 1e-6 and
+  within 1e-4 of core's 10.73958, mean radius 0.162 +- 0.001. t = 190 (first trapped round sphere in (180, 190],
+  FPb): found from all three, mass below 10.74. t = 180: not found from any start [JUDGEMENT: no round sphere is
+  trapped there; a non-round trapped surface is not excluded by FPb, so a find at 180 with mean radius < 0.2 would
+  not by itself be false: it is read against the sphere probes].
+- FD2: P0L6 t = 140 found from all three, mass 6.3032 +- 1e-4, mean radius 0.104 +- 0.001; t = 130 not found
+  from any start, and no acceptance with mean radius > 0.3 (the class of the t = 118.1 false acceptance).
+Refuted by any "not found" where found is predicted, a found row at P0L6 t = 130, masses of one dump differing
+by more than 1e-6 between starts, or more than 400 iterations. The false acceptance at t = 118.1 stays untested
+(no restart file; core's trapped_tol needs the faces-finder build).

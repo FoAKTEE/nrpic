@@ -60,7 +60,21 @@ SETS = {
     # FPb: P0L6 just before the first tracked shell is 'trapped in the code' (t = 122.2, verifier)
     "P0L6scan": dict(rst_output=7, searches=[],
                      spheres=[0.01, 0.02, 0.03, 0.05, 0.07, 0.09, 0.11, 0.13]),
+    # FD (JOURNAL 2026-11-27, batch 34): the finder lines of the new decks (peak_leak_f: 4000 flow
+    # iterations, 100 polishing, mass_tol 1e-5, start radius from the round-sphere scan), run with
+    # --flow shear (core's answer finder-box-and-level-faces), from the scan radius and from far starts.
+    "FD_S1L": dict(rst_output=7, searches=[
+        ("new deck rule from 0.16", dict(mass_tol="1.0e-5", flow_iterations="4000", polish_iterations="100"), 0.16),
+        ("new deck rule from 0.6", dict(mass_tol="1.0e-5", flow_iterations="4000", polish_iterations="100"), 0.6),
+        ("new deck rule from 0.1", dict(mass_tol="1.0e-5", flow_iterations="4000", polish_iterations="100"), 0.1),
+    ], spheres=[0.12, 0.16, 0.2]),
+    "FD_P0L6": dict(rst_output=7, searches=[
+        ("new deck rule from 0.103", dict(mass_tol="1.0e-5", flow_iterations="4000", polish_iterations="100"), 0.103),
+        ("new deck rule from 0.15", dict(mass_tol="1.0e-5", flow_iterations="4000", polish_iterations="100"), 0.15),
+        ("new deck rule from 0.6", dict(mass_tol="1.0e-5", flow_iterations="4000", polish_iterations="100"), 0.6),
+    ], spheres=[0.09, 0.103, 0.12]),
 }
+FLOW = None  # --flow: the global <fastflow> flow function (standard when absent)
 SCOLS = ["cycle", "time", "found", "reason", "flow_iterations", "area", "area_mass", "meanradius",
          "minradius", "mean_expansion", "min_abs_mean_expansion", "points_outside_mesh"]
 
@@ -92,6 +106,8 @@ def horizons(setname):
 def probe_input(setname):
     hz = horizons(setname)
     p = {"find_every": "1", "num_horizons": str(len(hz)), "verbose": "false", "diagnostics": "true"}
+    if FLOW:
+        p["flow"] = FLOW
     for n, h in enumerate(hz):
         q = dict(h["rule"])
         q.update({"initial_radius": "%.6g" % h["r0"], "ah_found_a0": "false", "last_a0": "-1.0",
@@ -189,10 +205,13 @@ def main():
     ap.add_argument("--out", required=True)
     ap.add_argument("--set", action="append", default=[],
                     help="one per rst, in order, or one for all")
+    ap.add_argument("--flow", default=None, help="global <fastflow> flow (e.g. shear); standard when absent")
     ap.add_argument("--threads", type=int, default=3)
     ap.add_argument("--jobs", type=int, default=2)
     ap.add_argument("--replot", help="redraw the figure from an existing probes.json (no runs)")
     a = ap.parse_args()
+    global FLOW
+    FLOW = a.flow
     if a.replot:
         os.makedirs(a.out, exist_ok=True)
         recs = json.load(open(a.replot))
