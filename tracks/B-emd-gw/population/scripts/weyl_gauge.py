@@ -301,69 +301,64 @@ def cmd_data(args):
 
 # ------------------------------------------------------------------------------- figure
 def cmd_fig(args):
+    """Figure of W0-W4: (a) the analytic test; (b) gauge ratios against a of the band strain
+    (gate reviewer's run, --band-json) and of the invariant statistics (split run);
+    (c) slice checks; (d) the statistics themselves."""
     import matplotlib
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
     from nrpic import figstyle as fs
     fs.use_style()
     test = json.load(open(os.path.join(args.test_dir, "weyl_test.json")))
-    data = json.load(open(os.path.join(args.data_dir, "weyl_gauge.json")))
-    split = None
-    if args.split_dir and os.path.exists(os.path.join(args.split_dir, "weyl_split.json")):
-        split = json.load(open(os.path.join(args.split_dir, "weyl_split.json")))
-    tab = data["table"]
+    split = json.load(open(os.path.join(args.split_dir, "weyl_split.json")))
+    st = split["table"]
     fig, ax = plt.subplots(2, 2, figsize=(9.0, 7.0))
-    # (a) analytic test
     a0 = ax[0, 0]
     for kd, mk in (("single", "o"), ("mixed", "s"), ("product", "^")):
         rr = [r for r in test if r["n"] == 64 and r["eps"] > 0 and r.get("kind", "single") == kd]
         e = [r["eps"] for r in rr]
         a0.plot(e, [abs(r["dI_B_rel"]) + 1e-17 for r in rr], mk + "-", label=f"$I_B$, map {kd}")
-        a0.plot(e, [abs(r["dV_rel"]) + 1e-17 for r in rr], mk + ":", label=f"$V$, map {kd}")
         a0.plot(e, [abs(r["dh_band_rel"]) for r in rr], mk + "--", label=f"TT band, map {kd}")
     a0.axhline(1e-3, color="0.5", lw=0.8)
     a0.set_xscale("log"); a0.set_yscale("log")
     a0.set_xlabel(r"map amplitude $\max|\partial\xi|$")
     a0.set_ylabel("relative change under the map")
-    a0.set_title("(a) W0-W0c: analytic wave on $64^3$, coordinates mapped", fontsize=9)
+    a0.set_title("(a) analytic wave on $64^3$, coordinates mapped", fontsize=9)
     a0.legend(fontsize=6.5, ncol=2)
-    # (b) gauge ratios against a
     a1 = ax[0, 1]
-    A = [e["a"] for e in tab]
-    a1.plot(A, [e["R_band_cor"] for e in tab], "o-", label="band strain, coordinate (W3)")
-    a1.plot(A, [e["R_B"] for e in tab], "s-", label=r"$I_B=\langle B_{ij}B^{ij}\rangle_V$ (W2)")
-    a1.plot(A, [np.sqrt(e["R_Bband"]) for e in tab], "^--", label=r"$B_{ij}$ band $|n|\le 8$, rms")
-    am = [e["a"] for e in tab if "M_B" in e]
-    a1.plot(am, [e["M_B"] for e in tab if "M_B" in e], "kd:", label=r"$I_B$: $256^3/128^3$, Gamma driver")
-    if split is not None:
-        st = split["table"]
-        a1.plot([e["a"] for e in st], [e["R_I_B_void"] for e in st], "v-",
-                label=r"$I_B$ over the larger-lapse half (W4)")
-        a1.plot([e["a"] for e in st], [e["R_B2_q50"] for e in st], "x-",
-                label=r"median of $B_{ij}B^{ij}$ (W4)")
+    A = [e["a"] for e in st]
+    if args.band_json:
+        rv = json.load(open(args.band_json))["gauge_leg"]
+        a1.plot([r["a"] for r in rv], [r["rms_cor_ratio"] for r in rv], "k-",
+                label="band strain rms (reviewer)")
+    a1.plot(A, [e["R_I_B"] for e in st], "s-", label=r"$I_B=\langle B_{ij}B^{ij}\rangle_V$")
+    a1.plot(A, [e["R_I_B_core"] for e in st], "d:", label=r"$I_B$, smallest-lapse tenth")
+    a1.plot(A, [e["R_I_B_void"] for e in st], "v-", label=r"$I_B$, larger-lapse half")
+    a1.plot(A, [e["R_B2_q50"] for e in st], "x-", label=r"median of $B_{ij}B^{ij}$")
+    a1.plot(A, [e["R_B2_q90"] for e in st], "+-", label="90th percentile")
     a1.axhspan(0.95, 1.05, color="0.9", zorder=0)
     a1.axhline(1.0, color="0.5", lw=0.8)
     a1.set_xlabel("$a$"); a1.set_ylabel("Gamma driver / zero shift ($128^3$)")
     a1.set_title("(b) gauge ratio of each measure", fontsize=9)
     a1.legend(fontsize=6.5)
-    # (c) slice checks
     a2 = ax[1, 0]
-    a2.plot(A, [abs(e["R_V"] - 1) for e in tab], "o-", label="proper volume $V$")
-    a2.plot(A, [abs(e["R_K"] - 1) for e in tab], "s-", label=r"$\langle K\rangle_V$")
-    a2.plot(A, [abs(e["R_alpha"] - 1) for e in tab], "^-", label=r"$\langle\alpha\rangle_V$")
-    a2.plot(am, [abs(e["M_K"] - 1) for e in tab if "M_K" in e], "kd:", label=r"$\langle K\rangle_V$ mesh, Gamma driver")
+    for k, mk, lab in (("R_V", "o-", "proper volume $V$"), ("R_K_V", "s-", r"$\langle K\rangle_V$"),
+                       ("R_alpha_V", "^-", r"$\langle\alpha\rangle_V$")):
+        a2.plot(A, [abs(e[k] - 1) + 1e-12 for e in st], mk, label=lab)
     a2.axhline(1e-3, color="0.5", lw=0.8)
     a2.set_yscale("log"); a2.set_xlabel("$a$"); a2.set_ylabel("|gauge ratio - 1|")
-    a2.set_title("(c) W1: are the slices the same?", fontsize=9)
+    a2.set_title("(c) are the slices the same?", fontsize=9)
     a2.legend(fontsize=6.5)
-    # (d) I_B itself
     a3 = ax[1, 1]
     for run, mk in (("zs128", "o-"), ("gd128", "s-"), ("gd256", "kd:")):
-        rr = sorted([r for r in data["rows"] if r["run"] == run], key=lambda r: r["a"])
-        a3.plot([r["a"] for r in rr], [r["I_B"] for r in rr], mk, label=run)
-    a3.set_yscale("log"); a3.set_xlabel("$a$"); a3.set_ylabel(r"$I_B$ (code units)")
-    a3.set_title(r"(d) $\langle B_{ij}B^{ij}\rangle_V$ of the three members", fontsize=9)
-    a3.legend(fontsize=7)
+        rr = sorted([r for r in split["rows"] if r["run"] == run], key=lambda r: r["a"])
+        if rr:
+            a3.plot([r["a"] for r in rr], [r["I_B"] for r in rr], mk, label=f"$I_B$ {run}")
+            a3.plot([r["a"] for r in rr], [r["B2_q50"] for r in rr], mk.replace("-", "--"),
+                    alpha=0.6, label=f"median {run}")
+    a3.set_yscale("log"); a3.set_xlabel("$a$"); a3.set_ylabel(r"$B_{ij}B^{ij}$ (code units)")
+    a3.set_title("(d) mean and median of the invariant", fontsize=9)
+    a3.legend(fontsize=6.5)
     fig.tight_layout()
     fn = os.path.join(args.out, "weyl_gauge.png")
     fig.savefig(fn, dpi=150)
@@ -377,6 +372,7 @@ def main():
     ap.add_argument("--test-dir", default=None)
     ap.add_argument("--data-dir", default=None)
     ap.add_argument("--split-dir", default=None)
+    ap.add_argument("--band-json", default=None)
     ap.add_argument("--out", required=True)
     ap.add_argument("--np", type=int, default=3)
     ap.add_argument("--np-big", type=int, default=2)
