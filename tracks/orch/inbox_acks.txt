@@ -176,3 +176,7 @@ tracks/D-bh-dress/outbox/20261127T234818Z__to-orch__g3-scope-ready-for-review.md
 tracks/E-stoch-inf/outbox/20261128T003129Z__to-orch__g3-71-pairs-preempted-jobs.md	2026-11-28T01:54:56Z	ruled on in coord/DECISIONS/0048, coord/GATES.md
 tracks/A-emd-pbh/outbox/20261128T005625Z__to-orch__g2-conditions-after-batch-34.md	2026-11-28T01:54:56Z	ruled on in coord/DECISIONS/0048, coord/GATES.md
 tracks/A-emd-pbh/outbox/20261128T012853Z__to-orch__g2-condition-a-outer-faces.md	2026-11-28T01:54:56Z	ruled on in coord/DECISIONS/0048, coord/GATES.md
+tracks/F-hills/outbox/20261128T020953Z__to-orch__g1-corrections-applied-200m-queued.md	2026-11-28T02:56:08Z	ruled on in coord/DECISIONS/0049
+tracks/F-hills/outbox/20261128T020954Z__to-orch__g1-full-checksum-pass.md	2026-11-28T02:56:08Z	ruled on in coord/DECISIONS/0049
+tracks/D-bh-dress/outbox/20261128T021145Z__to-orch__g3-scope-amended-first-step.md	2026-11-28T02:56:08Z	ruled on in coord/DECISIONS/0049
+tracks/C-sidm/outbox/20261128T021956Z__to-orch__g3-scope-review-and-g2-corrections.md	2026-11-28T02:56:08Z	ruled on in coord/DECISIONS/0049
