@@ -59,8 +59,8 @@ python tracks/kb/claims5/scripts/rates.py --order /data/haiyangw/nrpic/scratch/k
 python3 -I tracks/kb/claims5/scripts/notes.py --order /data/haiyangw/nrpic/scratch/kb/kb-20261128-003945-e1d65ba \
     --apply /data/haiyangw/nrpic/scratch/kb/kb-20261128-024327-81f35d6 --out DIR
 ```
-Do not apply P1 again: the supersedes are done and apply.py refuses a second supersede (a dry run
-now fails for the same reason; the dry run above reproduces only before the writes).
+Do not apply P1 again: the supersedes are done, and `claims_db.supersede` refuses a claim already
+superseded, so even a dry run of P1 now stops at its first supersede (read in the code, not run).
 
 ## Open
 
