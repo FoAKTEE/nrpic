@@ -76,21 +76,31 @@ def invariants(gamma, Ktf, trK, alpha, grid, order=4):
 
 
 # ------------------------------------------------------------------------------- test W0
-def analytic(n=64, Lb=1.0, A=1e-3, nwave=2, eps=0.0, order=4):
+def analytic(n=64, Lb=1.0, A=1e-3, nwave=2, eps=0.0, order=4, kind="single"):
     grid = Grid((n, n, n), (Lb, Lb, Lb), (0.0, 0.0, 0.0))
     c = (np.arange(n) + 0.5) * Lb / n
     Z, Y, X = np.meshgrid(c, c, c, indexing="ij")
     k = 2 * np.pi * nwave / Lb
     q = 2 * np.pi / Lb
     s = eps / q
-    # x = y + xi(y): xi^x = s sin(q y), xi^y = s sin(q z), xi^z = s sin(q x)
-    zx = Z + s * np.sin(q * X)          # x^z as a function of the new coordinates
     J = np.zeros((3, 3) + X.shape)       # J[i, a] = d x^i / d y^a
     for i in range(3):
         J[i, i] = 1.0
-    J[0, 1] = eps * np.cos(q * Y)
-    J[1, 2] = eps * np.cos(q * Z)
-    J[2, 0] = eps * np.cos(q * X)
+    if kind == "single":
+        # x = y + xi(y): xi^x = s sin(q y), xi^y = s sin(q z), xi^z = s sin(q x). Every
+        # second-order term of this map is longitudinal (one coordinate, one component):
+        # the TT projection removes it (outcome of the first test run, W0 entry).
+        zx = Z + s * np.sin(q * X)      # x^z as a function of the new coordinates
+        J[0, 1] = eps * np.cos(q * Y)
+        J[1, 2] = eps * np.cos(q * Z)
+        J[2, 0] = eps * np.cos(q * X)
+    else:
+        # "mixed": xi^x = s sin(q (y + z)), xi^y = s sin(q (z + x)), xi^z = s sin(q (x + y)),
+        # whose products of first derivatives have a TT part (W0b)
+        zx = Z + s * np.sin(q * (X + Y))
+        J[0, 1] = J[0, 2] = eps * np.cos(q * (Y + Z))
+        J[1, 2] = J[1, 0] = eps * np.cos(q * (Z + X))
+        J[2, 0] = J[2, 1] = eps * np.cos(q * (X + Y))
     g0 = np.zeros((3, 3) + X.shape)
     K0 = np.zeros((3, 3) + X.shape)
     for i in range(3):
@@ -108,24 +118,27 @@ def analytic(n=64, Lb=1.0, A=1e-3, nwave=2, eps=0.0, order=4):
     h = gamma - np.eye(3)[:, :, None, None, None]
     out["h_band"] = band_power(tt.tt_project_fourier(h, grid), grid)
     out["I_B_exact"] = A ** 2 * k ** 4 / 4.0
-    out.update({"n": n, "eps": eps, "A": A, "k": k})
+    out.update({"n": n, "eps": eps, "A": A, "k": k, "kind": kind,
+                "detJ_min": float(tt.det3(J).min())})
     return out
 
 
 def cmd_test(args):
     rows = []
-    for n in (32, 64):
+    for kind in ("single", "mixed"):
+      for n in (32, 64):
         for eps in (0.0, 0.03, 0.3):
             t0 = time.time()
-            r = analytic(n=n, eps=eps)
+            r = analytic(n=n, eps=eps, kind=kind)
             r["wall_s"] = time.time() - t0
             rows.append(r)
             print(f"n={n} eps={eps}: I_B={r['I_B']:.6e} (exact {r['I_B_exact']:.6e}) "
                   f"V={r['V']:.9f} h_band={r['h_band']:.4e} B_band={r['B_band']:.4e} "
                   f"({r['wall_s']:.1f} s)", flush=True)
-    ref = {n: next(r for r in rows if r["n"] == n and r["eps"] == 0.0) for n in (32, 64)}
+    ref = {(kd, n): next(r for r in rows if r["n"] == n and r["eps"] == 0.0 and r["kind"] == kd)
+           for kd in ("single", "mixed") for n in (32, 64)}
     for r in rows:
-        b = ref[r["n"]]
+        b = ref[(r["kind"], r["n"])]
         r["dI_B_rel"] = r["I_B"] / b["I_B"] - 1.0
         r["dV_rel"] = r["V"] / b["V"] - 1.0
         r["dh_band_rel"] = r["h_band"] / b["h_band"] - 1.0
@@ -134,7 +147,7 @@ def cmd_test(args):
     with open(os.path.join(args.out, "weyl_test.json"), "w") as f:
         json.dump(rows, f, indent=1)
     for r in rows:
-        print(f"n={r['n']} eps={r['eps']}: I_B/exact-1={r['I_B_vs_exact']:+.2e} "
+        print(f"{r['kind']} n={r['n']} eps={r['eps']} detJmin={r['detJ_min']:.3f}: I_B/exact-1={r['I_B_vs_exact']:+.2e} "
               f"dI_B={r['dI_B_rel']:+.2e} dV={r['dV_rel']:+.2e} dh_band={r['dh_band_rel']:+.3e}")
 
 
@@ -214,17 +227,17 @@ def cmd_fig(args):
     fig, ax = plt.subplots(2, 2, figsize=(9.0, 7.0))
     # (a) analytic test
     a0 = ax[0, 0]
-    for n, mk in ((32, "o"), (64, "s")):
-        rr = [r for r in test if r["n"] == n and r["eps"] > 0]
+    for kd, mk in (("single", "o"), ("mixed", "s")):
+        rr = [r for r in test if r["n"] == 64 and r["eps"] > 0 and r.get("kind", "single") == kd]
         e = [r["eps"] for r in rr]
-        a0.plot(e, [abs(r["dI_B_rel"]) for r in rr], mk + "-", label=f"$I_B$, $N={n}$")
-        a0.plot(e, [abs(r["dV_rel"]) + 1e-17 for r in rr], mk + ":", label=f"$V$, $N={n}$")
-        a0.plot(e, [abs(r["dh_band_rel"]) for r in rr], mk + "--", label=f"TT band, $N={n}$")
+        a0.plot(e, [abs(r["dI_B_rel"]) + 1e-17 for r in rr], mk + "-", label=f"$I_B$, map {kd}")
+        a0.plot(e, [abs(r["dV_rel"]) + 1e-17 for r in rr], mk + ":", label=f"$V$, map {kd}")
+        a0.plot(e, [abs(r["dh_band_rel"]) for r in rr], mk + "--", label=f"TT band, map {kd}")
     a0.axhline(1e-3, color="0.5", lw=0.8)
     a0.set_xscale("log"); a0.set_yscale("log")
     a0.set_xlabel(r"map amplitude $\max|\partial\xi|$")
     a0.set_ylabel("relative change under the map")
-    a0.set_title("(a) W0: analytic wave, coordinates mapped", fontsize=9)
+    a0.set_title("(a) W0, W0b: analytic wave on $64^3$, coordinates mapped", fontsize=9)
     a0.legend(fontsize=6.5, ncol=2)
     # (b) gauge ratios against a
     a1 = ax[0, 1]

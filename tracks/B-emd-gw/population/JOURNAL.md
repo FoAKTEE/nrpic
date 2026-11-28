@@ -1381,3 +1381,22 @@ B-20261123-014847-f295ab4 (zero shift) and B-20261124-210431-6bf48af (Gamma driv
   the difference is quoted as an error of the late strain.
 - W3 (secondary, not a criterion). The band strain ratio of the same dumps by the track's reader
   (analyze_gr._dump_job, corrected spectra) reproduces 0.950, 0.803, 0.643 within 1 per cent.
+
+## 2026-11-27 19:40 PST (lead of batch 39): outcome W0; prediction W0b
+
+Run B-20261128-033822-a9f17e5 (the first, B-20261128-033804-a68e9a1, failed: inv3 returns a pair).
+[VERIFIED by this run]
+- W0, exactness HOLDS: I_B/exact - 1 = -9.8e-5 at 64^3 (-1.6e-3 at 32^3).
+- W0, invariance HOLDS: under both maps I_B moves by at most 1.4e-8 (64^3) and 3.6e-7 (32^3), the
+  proper volume by at most 4e-16.
+- W0, discrimination FAILS (refuted as worded): the TT band power moved by -4.3e-4 and -4.0e-2,
+  not by more than 10 per cent. Cause, by inspection of the map, not measured: every second-order
+  term of xi^x(y), xi^y(z), xi^z(x) sits in one component and depends on one coordinate (for
+  example gamma'_yy gets (d_y xi^x)^2(y)), so it is longitudinal and the TT projection removes it;
+  what remains is the pull-back of the wave itself. The map was too special to tell the measures
+  apart.
+- W0b (written now, before the rerun): with the mixed map xi^x = s sin(q(y+z)), xi^y =
+  s sin(q(z+x)), xi^z = s sin(q(x+y)), whose products of first derivatives have a TT part of size
+  eps^2 against A = 1e-3, the band power changes by more than 10 per cent at eps = 0.03 and by more
+  than a factor 10 at eps = 0.3, while I_B and V move by less than 1e-3 at 64^3. Refuted if the
+  invariant moves by more than 1e-3, or the band moves by less than 10 per cent at eps = 0.03.
