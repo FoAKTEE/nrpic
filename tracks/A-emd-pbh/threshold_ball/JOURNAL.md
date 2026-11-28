@@ -790,3 +790,24 @@ at 7.8, the gauge), not at the outer faces. If OB holds, the SCOPE section-3 rat
 a boundary artefact far from the matter, and the remedy to test next is the outer faces (L32 or core-v0.6's
 `ghost_falloff`/`sbc_variant = nonwave`), not the deposit; the matter part still has to be shown below 0.1 at
 detection in the bracket members.
+
+### Entry 18, outcome R-split (run A-20261128-004947-8fc6ba9, completed; fig_ratio_split.png looked at) - 16:52 PST
+
+The reading above, now registered and extended to the bracket members (whole-line weight x^2 dx, E over the same line;
+the squares of the four parts add to the square of the total; the gate review's ratio "outside the finder radius" at
+detection is a different normalization and is not recomputed here):
+- S2c-A (M/16, outer faces 16): total 0.129 / 0.245 / 0.601 at t = 1 / 2 / 5, of which the outermost cells (13-16)
+  0.091 / 0.214 / 0.486 and the vacuum 6.5-13 0.014 / 0.040 / 0.306; matter (x < 4.5) 0.059 / 0.076 / 0.171.
+- S2c-B (M/32): total 0.101 at t = 1, outermost cells 0.099, matter 0.016, edge 0.012. The matter part falls from M/16
+  to M/32 by 3.7 at t = 1 (order 1.9); the outer part does not fall (0.091 -> 0.099).
+- C3-G (frozen gauge): matter 0.174 at t = 1 (three times S2c-A's 0.059): the frozen test raises the residual in the
+  matter, as entry 18 argued it must.
+- B-d0.42, B-d0.40 (top hat, PCS, mesh B, outer faces 32, the bracket members): matter 0.13 at t = 0 (the top hat and
+  the PCS seam, entry 13), then 0.05-0.33; the outermost cells (13-32) dominate from t ~ 3 to ~42 with 0.5-1.4 of the
+  whole-line E norm (yellow curves), and fall to 0.07-0.14 at t = 45 only because E rises in the collapsing core.
+Reading [JUDGEMENT; OB is the run that can refute it]: the line ratio that fails SCOPE section 3 in every member is
+dominated during the evolution by a constraint violation in the outermost cells next to the outflow faces, which does
+not converge with the mesh; inside the matter the smooth CIC member converges (0.059 -> 0.016 at t = 1) and stays far
+below 0.1 on M/32, while the top-hat PCS bracket members carry their own matter residual of 0.1-0.3. Two separate
+failures, then: the outer faces (all members) and the data/deposit of the top-hat PCS members (known since entry 13).
+Figure note: the y-axis label is clipped at the left edge (cosmetic).

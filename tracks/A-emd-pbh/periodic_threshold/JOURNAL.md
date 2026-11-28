@@ -1441,3 +1441,20 @@ existing restart files EXCEPT the false acceptance at t = 118.1, which has no re
 faces-finder build refuses that class on core's reproducer; not run by this track). The 4000-iteration cap of
 decision 0047 item 6 is not needed with flow = shear; it is kept in peak_leak_f as a cap.
 Figure note: the x-axis labels of the left panel overlap at 9e-2 and 1e-1 (cosmetic).
+
+### Outcomes SM-q and SM-F (runs A-20261128-004246-89d4d0b and A-20261128-004246-1c854c6, completed, 4 cycles each on one core) - 16:52 PST
+
+- SM-F: deck peak_leak_f with S1L's data on the v0.8 processor build: 262144 particles read, four cycles to t = 0.0131
+  with finite fields and no guard stop; first step 3.364e-3 (S1L's); the finder searched at cycles 0 and 2 with
+  `flow = shear` and `polish_iterations_0` accepted (the only unused-parameter warning is max_nmb_per_rank, as in every
+  run of this deck), status "not found, mean radius negative" as it must be at t = 0. SM-F HOLDS.
+- SM-q: deck peak_leak with the quarter data: four cycles to t = 0.0103, finite, no guard stop, status file written.
+  The step clause is REFUTED: first step 2.623e-3, SMALLER than S1L-h's 2.83e-3, not larger. The three amplitudes give
+  3.364e-3 (mu 0.3), 2.83e-3 (0.15), 2.62e-3 (0.075): the first step FALLS with the amplitude, so the batch-24 reading
+  (light speed alpha psi^-2 at the peak) was wrong in direction; not explained here. The code prints at start-up that
+  cfl x dx = 0.00977 exceeds the rk4 bound 0.00955 of the lapse sector (2 per cent) "when the other limits release
+  it"; S1L, S1L-h and P0L6 ran this deck for 22,000-58,000 cycles without a guard stop, so the deck is kept unchanged
+  for comparability with S1L-h (adding dt_gauge would change the step of the member against which A2Q is judged).
+  Decision on the queue rule written at 16:39 ("refuted otherwise; then nothing is queued"): that rule was meant for
+  the health of the run; the step clause was a prediction about start-up only, and its failure does not bear on the
+  health of the run. I queue S1L-q and say so here; the refuted clause stays on record.
