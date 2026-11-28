@@ -499,4 +499,4 @@ at B's detection time answers "falling with the mesh at fixed sampling" for the 
 
 ### 15.5 S1L's restart step and RX
 
-RX_REVIEW
+F3 failed because S1L's history jumps by ~1e-3 in alpha_min at t = 50, S1L's restart point, while S1L-F agrees with S1L's superseded uninterrupted segment to 1e-11 up to t = 66. RX (A-20261128-074500-daf8285, reader A-20261128-082812-53d2583, figure looked at; prediction first) shows that on processors (v0.6 and v0.8) a continued run of the box deck repeats the straight one within 2.5e-15 at t ~ 0.02. Confirmed: restart exactness at round-off on processors at an early state. Not confirmed: the cause of the card step at t = 50 (card path or a late state); next test written in the periodic_threshold journal (processors from S1L's rst at t = 50); question to core. Track action: every horizon time or mass from a continued card chain carries this ~1e-3 spread until it is explained (risk 54).

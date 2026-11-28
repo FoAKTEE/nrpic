@@ -19,7 +19,7 @@ Files to read first: `STATUS.md`; `stage/G2/OPEN.md`; `threshold_ball/JOURNAL.md
 | queue id | label | run | what it is | read with | prediction |
 |---|---|---|---|---|---|
 | q0089 | a-s1l-quarter | A-20261128-011607-3e2d530 (chain; job 5633 pending at 00:00; t = 133 of 410 done) | S1L at mu = 0.075, deck peak_leak, release v0.8 card build, cap 2.6 | `a2_invariant.py --run <dir> --reference 34.8 --band 32.0 35.5 --label S1L-q`, `a2_crossing.py`, `a2_probe_check.py` (as for S1L-h, periodic_threshold JOURNAL 2026-11-26 13:36) | A2Q (2026-11-27 16:39 PST): crossing bracket inside [32.0, 35.5] t_H |
-| q0108 | a-rt2a-A | (registered at dispatch) | bracket member d0.42 on mesh A, deck threshold_ball/decks/nest16_L32_fr (faces at 32 + core-v0.6 face set + region norms), core-v0.9 card build, to t = 51, cap 0.5 | `threshold_ball/scripts/analyse.py` (detection rule, ratio outside the finder radius), `ratio_split.py --xmax 32 --edges 4.25,6.5,13`, `ball.region.hst` (outside 4.25, outside 13, outside the horizon) | R1-R3 of threshold_ball entry 20 (A may stop at the guard ~48 as before: read it at B's detection time) |
+| q0108 | a-rt2a-A | A-20261128-081045-1e001cd (job 5648, submitted 00:10) | bracket member d0.42 on mesh A, deck threshold_ball/decks/nest16_L32_fr (faces at 32 + core-v0.6 face set + region norms), core-v0.9 card build, to t = 51, cap 0.5 | `threshold_ball/scripts/analyse.py` (detection rule, ratio outside the finder radius), `ratio_split.py --xmax 32 --edges 4.25,6.5,13`, `ball.region.hst` (outside 4.25, outside 13, outside the horizon) | R1-R3 of threshold_ball entry 20 (A may stop at the guard ~48 as before: read it at B's detection time) |
 | q0109 | a-rt2a-B | (registered at dispatch) | the same on mesh B (nest32_L32_fr), cap 1.2 | as q0108 | R1: detection within 0.5 of 45.875; R2: ratio at detection in (0.1, 0.5); R3: matter part falls A -> B by >= 1.5, part 13-32 does not |
 
 Close each with `harness/bin/nrpic-run finish <run_id>` before reading; check its jobs completed
@@ -29,7 +29,9 @@ is continued with its wrapper (`threshold_ball/scripts/continue_chain.sh <run_id
 
 ## Processor runs
 
-None running at hand-off. RX (A-20261128-074500-daf8285) and its reader: see periodic_threshold JOURNAL.
+None running at hand-off. RX (A-20261128-074500-daf8285, reader A-20261128-082812-53d2583) held: restart exact at
+round-off on processors at t ~ 0.02. Next processor test written in periodic_threshold JOURNAL (outcome RX): the same
+comparison from S1L's restart file at t = 50.
 
 ## What batch 40 established (0 card-hours ran; 1.063 closed with q0090; 1.7 newly capped)
 

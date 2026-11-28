@@ -15,19 +15,19 @@ last-result: batch 40 (23:26-00:40 PST):
                (178, 195]; 6 of 57 later searches at the iteration cap), F2 HELD (0.514 > 0.1), F3 REFUTED (history
                off S1L's by ~1e-3 from t = 50, S1L's own restart point).
              - FC: FC0 held (proxy = full meshes in the face band), FC1 held, FC2 REFUTED (no convergence with set).
-             - RX (restart exactness of the box deck on processors, A-20261128-074500-daf8285): RX_RESULT
+             - RX (restart exactness of the box deck on processors, A-20261128-074500-daf8285): HOLDS as a bound: the continued run repeats the straight one within 2.5e-15 on v0.6 and v0.8 at t ~ 0.02 (reader A-20261128-082812-53d2583); S1L's restart step stays unexplained.
              - RT2a smoke (A-20261128-075804-b2908e4): v0.9 decks with the face set and region norms run.
 cards:       shared queue, priority 2: q0089 a-s1l-quarter SUBMITTED (A-20261128-011607-3e2d530, chain at t = 133 of
-             410, job 5633 pending); q0108 a-rt2a-A and q0109 a-rt2a-B WAITING (core-v0.9 card build, caps 0.5 and
-             1.2 card-hours). 0 card-hours ran in this session; 1.063 closed (q0090).
-processors:  8 registered runs this session (1 failed: RX first attempt, stopped by me on cost); at most 6 cores.
+             410, job 5633 pending); q0108 a-rt2a-A SUBMITTED (A-20261128-081045-1e001cd, job 5648) and q0109 a-rt2a-B
+             WAITING (core-v0.9 card build, caps 0.5 and 1.2 card-hours). 0 card-hours ran in this session; 1.063 closed (q0090).
+processors:  9 registered runs this session (1 failed: RX first attempt, stopped by me on cost); at most 6 cores.
 next:        1. Read q0108/q0109 (RT2a, predictions R1-R3, threshold_ball entry 20) and q0089 (A2Q) when they end.
              2. (d): the cause of the box violation - resolution pair of region ratios (P0L four vs P0L6 six levels).
              3. (a): with orch's ruling on what the bound covers, faces farther out or a coarser outer level for the
                 face part; the top-hat matter part separately.
 blockers:    G2 not passed; (a) face part does not converge by construction; (d) the box violation in the matter.
 needs:       orch: a ruling on 0047 2(a) - is the bound read over the whole line to the outflow face, or over the
-             matter/inside a radius, given FC; core: RX_CORE_NEED.
+             matter/inside a radius, given FC; core: whether a card run continued from a restart file can differ by ~1e-3 (S1L at t = 50).
 offers:      threshold_ball/scripts/face_conv.py (band norms, coarse/fine factors), decks nest*_L32_fr (face set +
              region norms); periodic_threshold/scripts/f_read.py (status, region at detection, history vs a
              reference with chain segments resolved), rx_run.sh/rx_compare.py (restart exactness).

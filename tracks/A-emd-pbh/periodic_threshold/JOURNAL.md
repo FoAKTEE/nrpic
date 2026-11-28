@@ -1507,3 +1507,16 @@ Compare nrpic.hst and z4c.user.hst rows of cycles 13-24 (alpha_min, int_E, H-nor
 core: 24 + 12 cycles on two builds would take 70 min). Closed as failed (exit -15), kept on record. RX is rerun with
 8 cycles straight against 4 cycles continued from the restart file of cycle 4; the prediction stands unchanged for
 rows 5-8.
+
+### Outcome RX (run A-20261128-074500-daf8285 completed, one core, 8 + 4 cycles on each of v0.6 and v0.8; reader A-20261128-082812-53d2583; fig_rx.png looked at) - 00:29 PST
+
+Continued run (from the restart file written after cycle 4) against the straight run, nrpic.hst rows of cycles 6-8:
+largest relative difference 2.5e-15 (E_max; time 5.4e-16, alpha_min <= 2.3e-16, int_E 0), on both builds alike; the 14
+columns that are themselves round-off (momentum sums |x| < 1e-12, judged by absolute difference after the v0.6 data
+were seen: their relative differences are O(1) by construction) differ by <= 1e-15. Not bit-identical (the "last
+digit" wording fails), within the 1e-14 refutation threshold: RX HOLDS as a bound. So on processors a continued run
+of the box deck repeats the straight one at round-off, at an early state (t ~ 0.02). The step of ~1e-3 in S1L's history
+at its restart point t = 50 is NOT explained by this test; what it leaves: the card path (deposit order, restart on
+the card build) or a state that matters only later in the collapse. The test that can decide it, written now: the same
+comparison on processors from S1L's own restart file at t = 50 (rst/peak.00001.rst of A-20261123-025907-97bab8d),
+8 straight against 4 + 4 cycles (about 15 min on one core); and the card question goes to core.

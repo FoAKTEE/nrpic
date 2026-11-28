@@ -629,6 +629,6 @@ does not converge with the mesh with or without core-v0.6's face set (~100x lowe
 what the bound of 0047 2(a) covers. RT2a decks (faces at 32 + set + region norms) smoke-tested on core-v0.9
 (A-20261128-075804-b2908e4) and queued q0108/q0109 (priority 2, caps 0.5/1.2) with predictions R1-R3.
 RX (restart exactness of the box deck on processors): first attempt A-20261128-074045-15a6f1e stopped by me on cost
-(failed, kept); second A-20261128-074500-daf8285, RX_JOURNAL.
+(failed, kept); second A-20261128-074500-daf8285, HOLDS as a bound (A-20261128-082812-53d2583): continued run = straight run within 2.5e-15 on v0.6 and v0.8 at t ~ 0.02; S1L's restart step at t = 50 stays unexplained (card path or late state).
 Records: OPEN.md, REVIEW-wave3 section 15, CHECKLIST C23, STATUS, HANDOFF, RISKS 52-54; acks of four messages; outbox
 to orch (b40 state, ruling on (a)) and core (FC answer to item 4, restart observation). Card-hours ran: 0.
