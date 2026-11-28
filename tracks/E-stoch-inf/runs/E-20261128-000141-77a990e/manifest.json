@@ -96,7 +96,7 @@
     "nodes": 1,
     "gpus": 0,
     "cores": 3,
-    "walltime_s": null,
+    "walltime_s": 238.109,
     "wall_limit": null,
     "segments_max": null,
     "gpu_hours_requested": 0.0,
@@ -107,15 +107,15 @@
   "outputs": {
     "dir": "scratch/E-stoch-inf/E-20261128-000141-77a990e",
     "sha256sums": "sha256sums.txt",
-    "sha256sums_sha256": null,
-    "bytes": null,
-    "files": null
+    "sha256sums_sha256": "77931f78a067c4b304d7efb0b3cba915e10233ad6b395f484fcaa26479b10c13",
+    "bytes": 369507035,
+    "files": 92
   },
-  "status": "running",
-  "exit_code": null,
+  "status": "completed",
+  "exit_code": 0,
   "registered": "2026-11-28T00:01:41Z",
-  "started": null,
-  "ended": null,
+  "started": "2026-11-28T00:01:41Z",
+  "ended": "2026-11-28T00:05:39Z",
   "parents": [],
   "notes": "",
   "budget_at_submit": {
@@ -127,5 +127,6 @@
     "cores_busy": 3,
     "runs": 363,
     "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md + 0026-cards-loaded-allotment-cost.md + 0031-level2-branch-and-ablation.md + 0032-new-account-preemption-allotments.md + 0038-track-e-g2-signed-g3-scope.md + 0039-rulings-after-batch-17.md + 0045-track-d-g2-signed-release-v08.md"
-  }
+  },
+  "finished": "2026-11-28T00:05:39Z"
 }
