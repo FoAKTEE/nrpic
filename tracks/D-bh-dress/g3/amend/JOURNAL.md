@@ -115,3 +115,14 @@ in time).
   difference has visible structure on 10-20 M scales in check_review.png panel d), so G3-G3 becomes a
   reported ratio. Refuted if the power is at least 0.8.
 - P-A4 (S1): G-8-16N's measured cost within [4.5, 8] card-hours to 400 M.
+
+## Entry 5 (2026-11-27 18:27 PST): outcome of S-G8 (run D-20261128-020622-50e2cb6, processors, one core, 1047 s)
+
+HELD. The input starts; the parameters held by the restart file of cycle 0 are tlim 400, initial_radius_0 1.6,
+ah_exc_max_growth 4.0, polish_iterations_0 100, diagnostics true; MeshBlock-cycles 912 = 456 x 2 (the count of
+`athena -m`); the status file has the search at t = 0 found after 136 flow iterations (EG8's S1: 126 from
+0.8 M), area mass 0.991514686070498, EG8's polished t = 0 mass 0.9915146860705 (difference about 1e-15,
+prediction: within 1e-6). Two cycles, exit 0. No figure: the test checks integers, flags and one mass.
+Core's message restart-parameters-and-finder-check item 3: no G3 deck sets `deposit_comp_c` or
+`deposit_fine_shape` (grep of decks/*.athinput), so the candidate's deposit fixes do not touch these runs.
+G-8 is queued next (priority 2, production, chain, cap 3.5 card-hours).
