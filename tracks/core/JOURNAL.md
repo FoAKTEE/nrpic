@@ -2612,3 +2612,23 @@ follows in one registered run (T9).
   complete, two header lines), as added before the run.
 - So the merged tree is on processors what the branch was: candidate core-v0.9 prepared,
   `RELEASE-v0.9.md` written NOT RELEASED (card check q0094 waiting, priority 2).
+
+### Outcome V8 (02:15Z) and close of the session (02:25Z)
+
+- **V8 HOLDS**, run core-20261128-020855-e27868f (figure core-20261128-021505-7852e7f
+  looked at): the release build `.work/build_cpu_v08/src/athena` (sha256 1da3267e...)
+  writes the bytes of core's `core_nrpic_v08/athena_cpu` (7599042f...) on 75 of 75
+  items. `git diff 01d4aeeb 73178619 -- athenak/src python problems scripts docs` empty.
+  The card build `.work/build_gpu_v08` is not compared by a run (no card run queued:
+  card runs with deposition are not byte-reproducible run to run). Recorded in
+  `RELEASE-v0.8.md`.
+- Inbox: answers to A (outer faces, outbox 20261128T021000Z) and F (found flag, hmean_tol,
+  v0.5 restarts; outbox 20261128T021500Z); the reading of `fastflow.cpp` behind the F
+  answer: column 10 is sum dA H (lines 994, 1690-1691), `hmean_tol` defaults to 100
+  (line 84) and aborts a search at any iteration (lines 1050-1057), identical in the
+  core-v0.5 tag. `interfaces/finder_stop.md` section 2 gained a paragraph on it.
+- Not done: q0094 has not run (nothing to judge); no v0.9 executables published (by the
+  rule); q0059's run (row 4) left unclosed though its job COMPLETED on 2026-11-26.
+  Card time of this session: none used (q0094 queued, 0.2 asked). Processor time: build
+  180 s on 6 jobs; R9 and V8 about 5 min each on 3 cores; six tests and three analyses
+  on 1 core each, about 20 core-minutes.
