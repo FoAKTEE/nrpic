@@ -1,70 +1,48 @@
 # HANDOFF of B-emd-gw
 
-Written for a reader with no memory of the last session (lead of batch 37, wave 3, 2026-11-27
-18:56-19:40 PST: the fresh G2 verifier answered; the 256^3 member at eight particles per cell).
-Rewritten at the end of every session.
+Written for a reader with no memory of the last session (lead of batch 39, wave 3, 2026-11-27
+19:31-20:45 PST: G2 held by decision 0050; its two conditions started). Rewritten every session.
 
-State in three lines: G0 and G1 are signed (coord/GATES.md). The G2 package is complete for the
-independent gate review in the lead's judgement (stage/G2/OPEN.md): 20 of 20 items PASS or NA,
-failures on record. One processor run of B is going (initial data, about two days); no card job.
+State in three lines: G0 and G1 are signed. G2 is HELD, NOT SIGNED (coord/GATES.md; decision
+0050): C2 (three-way convergence) is met for the band strain only to a = 49 and reads FAIL in
+stage/G2/CHECKLIST.md. Condition (a) was measured this session and is NOT met by the magnetic Weyl
+invariant; condition (b) is a card run waiting in Slurm. A second review limited to C2 follows.
 Owner: B-emd-gw, branch `track/B-emd-gw`, worktree `/data/haiyangw/nrpic/wt/B-emd-gw`.
-Run next: `cd /data/haiyangw/nrpic/wt/B-emd-gw && git merge --no-edit main && harness/bin/nrpic-ctx inbox && git status --short && harness/bin/nrpic-run status | grep -E "submitted|running"`
+Run next: `cd /data/haiyangw/nrpic/wt/B-emd-gw && git merge --no-edit main && harness/bin/nrpic-ctx inbox && git status --short && harness/bin/nrpic-run status | grep -E "submitted|running" && harness/bin/nrpic-queue list | grep B-emd`
 
-Files to read first: `STATUS.md`; `stage/G2/OPEN.md`; `stage/G2/VERIFIER.md` section 5 and
-`stage/REVIEW-wave3.md` section "Batch 37" (the answers); `population/JOURNAL.md` entries
-2026-11-27 19:02, 19:05, 19:12, 19:11 (predictions and outcomes of this session).
+Files to read first: `STATUS.md`; `stage/G2/OPEN.md`; `stage/G2/GATE_REVIEW.md` sections 3, 7, 8;
+`coord/DECISIONS/0050-track-b-g2-held.md`; `stage/REVIEW-wave3.md` section "Batch 39";
+`population/JOURNAL.md` entries 2026-11-27 19:36 to 20:12 (predictions G8a-G8c, W0-W5, outcomes).
 
 `$S` = `/data/haiyangw/nrpic/scratch/B-emd-gw`.
 
-## Running at the end of the session
+## Running at the end of the session (each must be read; none to be killed)
 
 | What | How it is read |
 |---|---|
-| Initial data 256^3, eight per cell: B-20261128-030420-33ccdca (`run_gr_ic.sh 256 8 "--nc 3.2 --sigma1 0.014 --seed 1 --ppc 2 --outer 36"`, one core, detached, started 2026-11-27 19:04 PST; 30-55 h expected; 26 GB host memory after 8 min) | `tail $S/B-20261128-030420-33ccdca/run.log` ends with `# exit=`; `gr_L8_n256/make_ic.log` shows the outer iterations. When it has ended: `harness/bin/nrpic-run finish B-20261128-030420-33ccdca`, then check I1-I4 (population/JOURNAL 2026-11-27 19:02) against `gr_L8_n256/meta.json` of B-20261124-135030-b54972f (mesh_modes_kept 146, sigma1_realized 0.012343020531983813, H residual below 1e-10, 2^27 particles); write the outcome into population/JOURNAL. Do not kill it (it is the member decision 0048 item 3 asks for) |
-| `harness/bin/nrpic-stage verify B-emd-gw G2` of this batch (standard pass, checksums from the cache; log `$S/tmp/verify_b37.log`, ends with `exit=`) | if it ended after the session's last commit: commit stage/G2/VERIFY_RESULTS.md/.json, run `harness/bin/nrpic-stage report B-emd-gw G2`, commit STAGE_REPORT.md |
-
-No card job of B is queued or running. q0006 and q0007 are "not completed" in `nrpic-queue
-audit`: both known (chain cap; guard stop) and judged, nothing to re-enter.
-
-## The card member to queue once the data are checked (decision 0048 item 3)
-
-Fits one card (42-46 GiB of 80; bound 76 GiB; B-20261128-030350-19295a4); about 12 card-h (8-16)
-of the 28.36 left toward G2; about 0.65 TB of disk. Predictions K1-K3 are written (population/
-JOURNAL 2026-11-27 19:02, K1 extended at 19:05). Commit first, then from the worktree root:
-
-    harness/bin/nrpic-queue add --label pop_s014_gr256_p8_gd --priority 2 -- --kind scouting --gate G2 \
-      --package tracks/B-emd-gw/population --purpose "population: 256^3 at eight particles per cell, sigma1 = 0.014, Gamma driver as q0060, to a = 143; predictions K1-K3 (JOURNAL 2026-11-27 19:02); decision 0048 item 3; initial data B-20261128-030420-33ccdca" \
-      --launcher chain --exe /data/haiyangw/nrpic/.work/build_gpu_v08/src/athena --gpu-hours 16 -- \
-      tracks/B-emd-gw/population/inputs/pop_gr_run.athinput mesh/nx1=256 mesh/nx2=256 mesh/nx3=256 \
-      meshblock/nx1=128 meshblock/nx2=128 meshblock/nx3=128 mesh/x1max=8.0 mesh/x2max=8.0 mesh/x3max=8.0 \
-      output2/dt=1.0 output3/dt=1.0 z4c/shift_Gamma=0.75 z4c/shift_eta=1.0 z4c/shift_advect=1.0 z4c/lapse_advect=1.0 \
-      particles/particle_file=$S/B-20261128-030420-33ccdca/gr_L8_n256/particles.nrp \
-      problem/id_file=$S/B-20261128-030420-33ccdca/gr_L8_n256/fields.bin
-
-(q0060's arguments with the two files changed and the v0.8 release build; check `nrpic-queue add
---dry-run` first; use the newest release build named in CLAUDE.md if core-v0.9 is out by then and
-say so in the journal.) If the orchestrator grants the 128^3/8 ppc Gamma-driver partner (outbox
-request g2-p8-gamma-driver-partner-128), queue it beside it: q0006's 128^3 arguments (data
-B-20261124-135029-3fe13f6) plus the four Gamma-driver options, about 1 card-h, prediction first.
+| q0107 `pop_s014_gr_p8_gd`: 128^3, eight per cell, Gamma driver (decision 0050 item 2b); run B-20261128-034731-640f4f4, Slurm job 5585 (pending, priority); release build v0.8; about 0.85 card-h; chain | `harness/bin/nrpic-queue show q0107`; `$S/B-20261128-034731-640f4f4/chain/events.log`. When DONE: `harness/bin/nrpic-run finish B-20261128-034731-640f4f4`; analyse with `population/scripts/analyze_gr.py` as for B-20261124-210431-6bf48af (the one-per-cell partner, same options) and compare band rms with `compare_legs.py` (band_rms2, |k| <= 8 k_f, corrected spectra) at a = 64, 100, 132: judge G8a (within 1 per cent at 64, 100; 2 at 132; refuted outside 0.95-1.05), its corollary (8 ppc gauge ratio against q0006's zero-shift member reproduces 0.950, 0.803, 0.643 within 2 per cent), G8b (no guard stop; momentum constraint at a = 141 at or below the 1 ppc Gamma-driver member's 0.18-0.20), G8c (0.6-1.2 card-h; refuted above 2). Then `weyl_gauge.py split`-style statistics on it and on q0006 (B-20261124-223926-33194d9 + continuation -20261125-221742-5100a22): does the gauge difference of the invariant shrink at eight per cell? (write that prediction first) |
+| W5: 256^3 mesh scale of the invariant, background run B-20261128-040950-1404d91 (`weyl_gauge.py split --t256 14 18 21`, 3 cores, started 20:09 PST, perhaps an hour) | `tail $S/B-20261128-040950-1404d91/run.log`; when ended: `harness/bin/nrpic-run finish B-20261128-040950-1404d91`; read `weyl_split.json` table entries `M_*` (256/128, Gamma driver) against `R_*` (gauge ratio) at a = 100, 132: W5 (population/JOURNAL 20:10) is refuted if every mesh difference is below half the gauge difference at a = 132; regenerate the figure with `weyl_gauge.py fig --split-dir` of this run |
+| Initial data 256^3, eight per cell: B-20261128-030420-33ccdca (one core, since 19:04 PST, 30-55 h) | as before: `tail $S/B-20261128-030420-33ccdca/run.log`; finish; check I1-I4 (population/JOURNAL 2026-11-27 19:02); then the 256^3/8 ppc card member (command in the batch-37 HANDOFF, git show a92d32519:tracks/B-emd-gw/HANDOFF.md, section 'The card member to queue'; decision 0050 says it is not waited for) |
+| Stage verify of this batch (log `$S/tmp/verify_b39.log`, ends with `exit=`) | if it ended after the last commit: commit stage/G2/VERIFY_RESULTS.*, run `harness/bin/nrpic-stage report B-emd-gw G2`, commit STAGE_REPORT.md. Expected FAIL only on `runs` (the running runs above) |
 
 ## What G2 waits for
 
-- The gate review by the orchestrator (outbox info g2-verifier-answered-package-ready).
-- Nothing else by any criterion as worded; the 256^3/8 ppc member is pending and may be weighed.
+The second review limited to C2 (decision 0050 item 3), after (b) q0107 is read, and W5. Send the
+orchestrator one line (outbox) when both are judged. Condition (a) as measured this session is not
+met (W2 failed, W4 refuted): see population/JOURNAL 20:10 and 20:12. Do not reword that.
 
-## Results of this session (all registered, closed, figures looked at)
+## Results of this session (registered, figures looked at)
 
-- Verifier's corrections a-e: pair_ratio B-20261128-030556-5ef9294 (first run -030537-0172236,
-  same numbers); note v5 from run_all B-20261128-030805-78634c0 (first -030728-a5b1b32);
-  SPEC item 5 amended; CHECKLIST C1, C2, C3, C18; OPEN.md.
-- Member decision: mem_fit B-20261128-030350-19295a4 (first run -030214-20f2961: card time wrong,
-  superseded).
-- Full checksum pass of batch 34's commit committed (397511402).
+- Invariant reader on analytic waves: B-20261128-034232-f589717 (earlier -033822-a9f17e5,
+  -033937-4b23e2f; first -033804-a68e9a1 failed). Gauge pair statistics: B-20261128-040834-8e1587d.
+  Figure: B-20261128-041012-0e5b3f2 (population/figs/weyl_gauge.png). Stopped by hand, on record:
+  B-20261128-033853-e516942, -034914-1e7a68f.
+- Note v6 (B-20261128-035351-296cf80), ladder (B-20261128-035439-399549b), gate review corrections,
+  scope amendments (scope/SCOPE.md section 6, 2026-11-27).
 
 Traps:
-- Analyses longer than a session: `nrpic-run submit --background`.
+- `weyl_gauge.py data` runs the track's band reader (analyze_gr._dump_job) and is slow after a = 64
+  (7 min per 128^3 dump with 256^3 dumps beside it); use `split` for the invariant (13 s per dump).
+- 256^3 Weyl statistics need about 25-30 GB per worker; at most 3 workers at once.
 - GR particle files carry the rest-mass weight (R25): use `--equal-mass`.
-- Wall times of preempted segments have no end line in their logs: time a run from the
-  restart-file intervals (mem_fit.py), not from the logs.
-- The note's `main.pdf` is 1.44 MB (above the 1 MB guideline, below the 5 MB hook limit).
 - Card runs only via `harness/bin/nrpic-queue add`; commit before adding; at most 6 cores.

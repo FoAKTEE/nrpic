@@ -550,3 +550,22 @@ failed: E2 (card time 4-7 card-h expected, 12.2 estimated); P1 for Table VII (1.
 P2 for the nearest-record pairing (1.50); the first mem_fit run's card time (wrong division,
 superseded). No failed simulation.
 Card-hours: none. Processor: one core from 19:04 PST for the initial data (about two days).
+
+## 2026-11-27 19:31-20:45 PST, lead of batch 39 (wave 3): G2 held; conditions (a) and (b) of decision 0050
+
+Gate G2 is HELD, not signed (decision 0050): C2 met for the band strain only to a = 49. This
+session: (1) queued the 128^3 eight-per-cell Gamma-driver member first (q0107; predictions G8a-G8c
+committed before; pending in Slurm at the end, job 5585); (2) condition (a) on processors: magnetic
+Weyl invariant, reader tested on analytic waves under three coordinate-map families
+(B-20261128-034232-f589717), measured on the 128^3 pair (B-20261128-040834-8e1587d), figure
+population/figs/weyl_gauge.png (B-20261128-041012-0e5b3f2) looked at. Outcomes: W0 exactness and
+invariance hold, its discrimination clause refuted three times (my algebra was wrong); W1 holds
+(same slices to 3e-4); W2 fails (I_B ratio 0.84 at a = 100, 132); W4 refuted (bulk statistics differ
+4-18 per cent at a = 100, 132); W3 not run. Condition (a) NOT met by this measure; most of the
+band strain's gauge dependence is coordinate, a few to 9 per cent in amplitude is not. W5 (mesh
+scale) running in the background (B-20261128-040950-1404d91). (3) Corrections of the gate review
+made; scope amended with dates; note v6 (B-20261128-035351-296cf80, ladder -035439-399549b).
+(4) Stage collect, verify (log scratch/B-emd-gw/tmp/verify_b39.log), report; outbox one line to orch
+(second review after q0107 and W5). Stopped by hand, on record: data runs -033853-e516942 (row keys)
+and -034914-1e7a68f (too slow). Card-hours used: none (q0107 not started). Prediction-first kept:
+G8a-G8c, W0-W5 each committed before its run.

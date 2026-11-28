@@ -564,3 +564,49 @@ cell, Gamma driver) is asked of the orchestrator.
 Stage: the full checksum pass of batch 34's commit (PASS, 0 failed checks, 13883 files, 1166.91 GB)
 is committed (397511402) and kept in scratch/B-emd-gw/tmp/VERIFY_RESULTS_full_631acef.*; collect,
 verify and report rerun on this batch's commit.
+
+## Batch 39 (2026-11-27 19:31-20:45 PST, lead): G2 HELD (decision 0050); the two conditions of item 2; the review's corrections
+
+State recorded without softening: gate G2 is HELD, not signed (coord/GATES.md; decision 0050;
+stage/G2/GATE_REVIEW.md). The convergence item C2 is met for the band strain only up to a = 49;
+after that the two gauges differ by 5, 20 and 36 per cent at a = 64, 100, 132 (reviewer's run
+B-20261128-032405-7c4aa64), and the particle-number leg existed only with zero shift. C2 now
+reads FAIL in CHECKLIST.md, with the a <= 49 part stated as met.
+
+Condition (b), particle number in the Gamma-driver gauge: q0107 (label pop_s014_gr_p8_gd; run
+B-20261128-034731-640f4f4; Slurm job 5585, pending on priority at the end of the session; release
+build core-v0.8; about 0.85 card-h). Predictions G8a-G8c written first (population/JOURNAL
+2026-11-27 19:36). Not judged: the job had not started.
+
+Condition (a), a gauge-invariant measure from the dumps that exist (predictions W0-W5 in
+population/JOURNAL, each written before its run; outcomes there):
+- Reader tested on an analytic field first (B-20261128-034232-f589717): the proper-volume magnetic
+  Weyl invariant I_B of a plane TT wave is exact to 1e-4 at 64^3 and moves by at most 2e-5 under
+  three families of finite coordinate maps. Failed prediction on record: W0's claim that the maps
+  would move the TT band by more than 10 per cent (they moved it by 2e-4 to 4e-2; my reasoning that
+  (d xi)^2 carries a TT part was wrong for these maps; a probe with A = 0, unregistered, gave 1e-32).
+- Same slices (W1 HOLDS): proper volume, <K>_V, <alpha>_V agree to 3e-4 or better at a = 49-132.
+- The invariant (B-20261128-040834-8e1587d; figure population/figs/weyl_gauge.png,
+  B-20261128-041012-0e5b3f2, looked at): I_B ratio 0.902, 0.913, 0.837, 0.841 at a = 49, 64, 100,
+  132 (W2's 5 per cent FAILS); median 0.998, 0.985, 0.936, 0.821 and larger-lapse half 0.996,
+  0.986, 0.957, 0.883 (W4 REFUTED: the gauges differ where both resolve the field). In amplitude
+  (square roots) the invariant differs far less than the band strain (median 0.97 and 0.91 against
+  0.80 and 0.64 at a = 100, 132): most of the band strain's gauge dependence is coordinate, but the
+  computed fields themselves differ by a few to 9 per cent late. **Condition (a) is not met by
+  this measure.** Two candidate causes, both untested: truncation that differs between the
+  coordinate systems, and the constraint violation (mean relative momentum constraint 0.18-0.20
+  late at one particle per cell in both gauges). Under way: W5, the mesh scale of the same
+  statistics (256^3 Gamma driver; background run B-20261128-040950-1404d91, about an hour).
+- Failed or stopped runs on record: B-20261128-033804-a68e9a1 (inv3), B-20261128-033853-e516942
+  and B-20261128-034914-1e7a68f (data runs stopped by hand: row keys; then too slow with the band
+  reader and three 256^3 dumps together; the second's rows at a = 25-81 are kept).
+
+Corrections the gate review listed (section 6), all made: C2 evidence and note Sec. VI F and summary
+say the particle-number leg is zero shift; the gauge dependence quoted as a function of a (ledger row
+g2_gauge_a from the reviewer's run); main.tex's stream-crossing sentence replaced (the reference codes
+at H L = 4 are particle codes, draft.tex:360, read this session): the cause of the shearing-dust L2
+failure is open again; note Section VII rewritten for G2; the ladder schematic's stale rungs (run
+B-20261128-035439-399549b, looked at); EVIDENCE.md title and batch 37-39 runs; REPRODUCE.md rows;
+the pancake row under C1. Note v6: run_all B-20261128-035351-296cf80, compiled, checker without
+undefined references or overfull boxes, page 16 read. Scope: two dated amendments (2026-11-27) in
+scope/SCOPE.md section 6 (decision 0050 item 3).
