@@ -97,7 +97,8 @@ def main():
         t = [r["t"] for r in rows]
         ax[k].plot(t, [r["total"] for r in rows], color="k", lw=1.4, label="total")
         for j, (b, _, _) in enumerate(BANDS):
-            ax[k].plot(t, [r[b] for r in rows], color=cols[j], lw=1.0, marker="o", ms=2.5, label=b)
+            ax[k].plot(t, [r[b] for r in rows], color=cols[j % len(cols)], lw=1.0, marker="o", ms=2.5, label=b,
+                       ls=("-" if j < len(cols) else "--"))
         ax[k].axhline(0.1, color="0.6", lw=0.8, ls="--")
         ax[k].set_title(name, fontsize=8)
         ax[k].set_xlabel(r"$t/M$")
