@@ -451,3 +451,29 @@ interior residual 2.4x higher at t = 2; A-20261128-005331-874ec88, reader A-2026
 A-20261128-011658-019b3f8); FR (core-v0.6 face set, A-20261128-011908-0e41713 after the failed start
 A-20261128-011804-365c88b, reader A-20261128-012759-577c95b) cuts the outer part 70-100-fold to t = 2. Figures of all
 three readers looked at. Not confirmed: that the face set holds over ~45 M (core's own ball says it weakens with time).
+
+## 15. Batch 40 (2026-11-27 night, lead; q0090 read, condition (a) on processors, core-v0.9 released)
+
+No helper package finished since batch 34; the worktree was clean at the start (merge of main only). Messages
+received and acknowledged: core `outer-faces-of-the-ball-and-finder-answered` (02:10Z) and
+`core-v09-released-executable-for-retests` (07:40Z), orch `queue-done-means-completed-audit`, kb
+`claims5-cited-claims-read`. What I checked from artefacts, not from conclusions:
+
+### 15.1 q0090 (S1L-F, condition (d)): jobs, closing, outcome against F1-F3
+
+The entry is done with its jobs completed (chain STATUS DONE at tlim 205 after nine segments, eight cut by SIGTERM and
+continued; `nrpic-queue audit` lists it completed). Closed with `nrpic-run finish` (827 files, 1.063 card-hours).
+Read with a new registered reader (f_read.py; A-20261128-073831-fce5805 after a first pass A-20261128-073739-d0bfd67
+that compared rows of a superseded chain segment of S1L, kept): the finder finds S1L's horizon from t = 169.28 (area
+mass 5.83, mean radius 0.067), earlier than F1's window (178, 195]; six of the 57 later searches stop at the
+iteration cap. The section-3 ratio outside the found horizon at detection is 0.514: condition (d) is NOT met (F2 held
+as predicted). F3 refuted: the history departs from S1L's by ~1e-3 in alpha_min in one step at t = 50, S1L's own
+restart point (RX below). The find at 169.3 is consistent with S1L's restart-file probes (FD) at 190.0 within 1.1e-3
+in mass; it has no second check of its own (no restart file probed between 169 and 178).
+
+### 15.2 kb's claims5 note
+
+Four superseded claims are cited, by the classifier, at lines that quote paper locators, not claim ids
+(periodic_threshold/DESIGN.md:180, conv_ball/DESIGN.md:153, scope/SCOPE.md:285, criteria/JOURNAL.md:10-11, G0 stage
+files): read; each line states the paper at its locator and none states the one-particle-per-cell reading as the
+paper's. No edit; journals and the signed G0 package stay as written.
