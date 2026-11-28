@@ -2,66 +2,77 @@
 
 Written for a reader with no memory of the last session. Rewritten at the end of every session.
 
-State (2026-11-27 16:05 PST, lead of batch 34): G0, G1 and G2 SIGNED (G1 and G2 with reservations;
-coord/GATES.md; G2 by decision 0045 on 2026-11-26). Toward G3 (60 card-hours allotted): the scope text
-`scope/SCOPE_G3.md` is written and committed BEFORE any production run and waits for its independent
-review (decision 0045 item 2; outbox `20261127T234818Z__to-orch__g3-scope-ready-for-review.md`). Queue NO
-production run until that review is answered. The only card job of this owner: the excision-guard test
-EG8 (scouting). Owner D-bh-dress, branch `track/D-bh-dress`, worktree `wt/D-bh-dress`.
+State (2026-11-27 18:30 PST, lead of batch 35): G0, G1 and G2 SIGNED (G1 and G2 with reservations;
+coord/GATES.md). Toward G3 (60 card-hours): the scope `scope/SCOPE_G3.md` was reviewed independently
+(`g3/scope_review/SCOPE_REVIEW.md`: do not queue as written) and is now amended by dated amendments A1-A5
+(its section 11; the earlier text is kept). The first step allowed by the amended scope is queued: the
+card timing runs of the finer mesh members (q0095) and the production base G-8 (q0100). Owner D-bh-dress,
+branch `track/D-bh-dress`, worktree `wt/D-bh-dress`.
 
 Run next: `cd /data/haiyangw/nrpic/wt/D-bh-dress && git merge --no-edit main && harness/bin/nrpic-ctx inbox &&
   git status --short && harness/bin/nrpic-queue list --owner D-bh-dress && squeue -u $USER`
-  then look for the scope review (orchestrator's agent; likely `scope/SCOPE_G3_REVIEW.md` or a decision).
 
-Files to read first: `STATUS.md`; `scope/SCOPE_G3.md` (all of it); `excguard/JOURNAL.md` entries 1-2;
-`stage/REVIEW-wave3.md` section 25; `stage/G2/GATE_REVIEW.md` section 5 (the reservations that are G3's
-conditions); `coord/INTERFACES/finder_stop.md` (polishing, status file, guard).
+Files to read first: `STATUS.md`; `scope/SCOPE_G3.md` section 11 (A1-A5) and the sections it replaces;
+`g3/amend/JOURNAL.md` entries 1-5 (my check of the review, predictions for the queued runs and the amended
+criteria); `g3/scope_review/SCOPE_REVIEW.md` sections 1 and 4; `stage/REVIEW-wave3.md` section 26.
 
-## Card job in flight
+## Card jobs in flight (check sacct for every job of a finished entry: the queue lists preempted jobs as done)
 
-- EG8 = ES-FL with the guard of core-v0.8: queue entry q0085 (label D-EG8, priority 2), run
-  D-20261127-233719-db5be88, job 5536 (pending at 15:48 PST), chain, cap 2.5 card-hours, executable
-  `.work/build_gpu_v08/src/athena`, input `excguard/inputs/esflg8.athinput`, output
-  `scratch/D-bh-dress/D-20261127-233719-db5be88/` (basename esflg8, finder status file
-  esflg8.horizon_status_0.txt). When it ends: `harness/bin/nrpic-run finish D-20261127-233719-db5be88`,
-  then judge E1-E8 of excguard entry 1 with registered readers: `g2runs/tools/esf_criteria.py --base esflg8`
-  (control V-1L summary, as for FK), `g2long/tools/d4_timing.py` (split 219), `g2long/tools/fk_compare.py`
-  or an equivalent comparison against FK D-20261123-022725-a553496 and ES-FL D-20261121-203150-15f2bad,
-  the removal reasons from esflg8.removed.bin (fluxio), the status file for every horizon number; figures
-  looked at; outcome in excguard entry 3, post it to core (core asked; outbox excguard-eg8-queued).
-- If EG8 is cut by preemption: the chain resubmits itself; if it ends FAILED, continue it with
-  `g2long/tools/continue_chain.sh`-style wrapper through `nrpic-queue add --cmd` (harness/RULES.md).
+- q0085 EG8 (scouting, excguard), run D-20261127-233719-db5be88, chain; preempted four times (jobs 5536,
+  5543, 5548, 5554), at 120 M of 260 M at 17:52 PST, next job 5560 pending. Output
+  `scratch/D-bh-dress/D-20261127-233719-db5be88/` (base esflg8). When it ends: `harness/bin/nrpic-run finish
+  D-20261127-233719-db5be88`, then judge E1-E8 of `excguard/JOURNAL.md` entry 1 with registered readers
+  (`g2runs/tools/esf_criteria.py --base esflg8`, `g2long/tools/d4_timing.py`, an FK/ES-FL comparison, removal
+  reasons from esflg8.removed.bin, the status file for every horizon number), figures looked at; outcome in
+  excguard entry 3; post to core. G3 no longer depends on it (A1: FK's guard in every member).
+- q0095 D-T12u16u (scouting, batch, one card job, cap 0.6): G-12u and G-16u to 2 M
+  (`g3/amend/decks/timing.list`). Output under `scratch/D-bh-dress/<run_id>/t12u/` and `/t16u/`. Read
+  against entry 3: fits a card, block counts 456, t = 0 found with masses 0.9990 +- 0.0007 and 0.99981 +-
+  1e-4, seconds per M over G-8's in [2.7, 6.6] and [7.5, 21] (G-8's rate from EG8's segment logs). Then fix
+  t_16 by A1 (G-16u capped at 20 card-hours) and write it as a dated note under A1 before G-16u is queued;
+  t_16 < 200 M -> ask orch for a ruling first.
+- q0100 D-G3-G8 (production, chain, cap 3.5): deck `g3/amend/decks/g3g8.athinput`, to 400 M. Read at its
+  end with the amended Claim G criteria (needs the processor work below first for G3-G2's offsets).
 
-## After the scope review
+## Processor work the amended scope puts before the later members (A5)
 
-Answer each finding as a dated amendment below SCOPE_G3's text (never rewrite a criterion after a run was
-read). Then, in the order of SCOPE_G3 section 10: processor smoke tests of new decks with block counts and
-cost (G-12: root 144 cells; G-16: level 8 over +-5.9 M; G-8-16N: data by flux_tools/esf_data.py at lattice
-h/2.52), check FL16's block list against its horizon radius (risk R29), then queue G-8 and V-8 first.
-Guard factor 10 (8 M) for the 400 M members if EG8's E1 holds; otherwise initial_radius_0 = 1.6 (FK).
+1. Claim D reader (A2): per-particle dtau_p = tau_p - tau_LTB(R_p; R0_p) on G2's snapshots (FK, FN4, FNQ,
+   FL16 to 190 M), areal radius from the z4c slice at the snapshot time (ES-FL decks: slices every 10 M,
+   snapshots every 25 M: use the 50 M multiples); D1* = twice FN4's largest |median dtau|. Prediction P-A2
+   in g3/amend entry 4.
+2. Polished re-searches of the restart files of V-1L4, V-1L, V-1L16 (vacuum offsets at 4, 8, 16 cells per M;
+   A3), processors, at most 6 cores.
+3. G3-G3 power on phase-randomised surrogates of FK - FL16 noise (50-190 M) at a signal of 1.2e-3 (A3; P-A3).
+Then queue G-16u (to t_16), G-12u, G-8-4N, G-8-16N (data by flux_tools/esf_data.py at lattice h/2.52; smoke
+test checks memory), G-8-e1 (shift_eta 1.0) in that order; two D chains at most at once.
 
-## What this session did (batch 34)
+## What this session did (batch 35)
 
-- G2's eight corrections of wording applied (REVIEW-wave3 section 25); note v3.1 (build
-  D-20261127-234333-5720e3c, checker clean); ladder schematic D-20261127-234652-5b9af43; stage G2 collect,
-  verify, report rerun (STAGE_REPORT.md).
-- G3 scope written; EG8 designed, predicted, smoke-tested (S1 D-20261127-232517-6111945 held), queued.
+- Checked SCOPE_REVIEW B1-B3 with my own tool (run D-20261128-020346-c4079e9): all three confirmed; S1 in part
+  (16N costs 5.2 by the matched FK/FN4 pair, 7.6 by the review's pairing). Two predictions of mine failed
+  (g12s alignment; C3 spread at 27-30 M).
+- Amended SCOPE_G3 (A1-A5), predictions for the amended criteria (g3/amend entry 4), committed and pushed
+  before any production entry. Decks and S-G8 smoke test (held). Queued q0095 and q0100.
+- Outbox: orch g3-scope-amended-first-step; core g3-decks-memory-question. Acked core's
+  restart-parameters-and-finder-check (no G3 deck uses deposit_comp_c).
 
 ## Traps (kept; new ones marked)
 
 (1) every input sets `fastflow/metric_drvts = interpolant` and `particles/ah_exc_factor = 0.8`. (2) ES data:
 puncture bare mass m_p = 1.0239688282062387 (ES-F: 1.0). (3) psi = 1 outside the ES ball. (4) A non-finite run
 exits 3 with `<base>.guard.txt`. (5) Tracers carry m = 1e-30. (6) trajmet records have 17 doubles; proper time
-is index 12. (7) The finder writes into `-d`. (8) The finder summary repeats times across restarts: take the LAST
-record (fluxio.read_horizon does); with diagnostics, read the status file and drop searches not found.
-(9) Never kill by pattern; never remove files through a path built from a shell variable. (10) `nrpic-ctx ack`
-renumbers the inbox: ack by file name. (12) Restart numbers are not times. (13) `nrpic-run submit` refuses an
-unclean package: commit first. (16) Horizon excision stops once the smallest horizon radius exceeds
-ah_exc_max_growth (4 when absent) x initial_radius_0. (17) The unpolished finder sits up to ~6e-5 off the
-converged mass; compare masses across builds only with polishing. (18) Removal records of preempted segments:
-fluxio.drop_overlaps. (20) Judge each mesh against its own-mesh vacuum control. (21) Closes of 40-90 GB chains
-take 2-10 min each. (25) FL16 and V-1L16 end at 299-299.75 M. (26) Background local runs must be closed with
-`nrpic-run finish <id>` before note/scripts read them. (27) note/main.pdf is 1.1 MB (above the 1 MB guideline;
-pre-commit allows 5 MB). (28) NEW: a serial processor smoke test of the ES-FL decks takes ~20 min for two cycles
-(157 s set-up, ~9 min per cycle with the finder). (29) NEW: G2's M/16 decks refine only +-3 M at M/16 (horizon
-leaves near 200 M); G3 decks must cover +-6 M at the finest level.
+is index 12; snapshots carry every particle's proper time after the species array. (7) The finder writes into
+`-d`. (8) The finder summary repeats times across restarts: take the LAST record; with diagnostics read the
+status file and drop searches not found. (9) Never kill by pattern; never remove files through a path built
+from a shell variable. (10) `nrpic-ctx ack` renumbers the inbox: ack by file name. (12) Restart numbers are
+not times. (13) `nrpic-run submit` refuses an unclean package: commit first. (16) Horizon excision stops once
+the smallest horizon radius exceeds ah_exc_max_growth (4 when absent) x initial_radius_0; G3 uses 4 x 1.6.
+(17) The unpolished finder sits up to ~6e-5 off the converged mass. (18) Removal records of preempted
+segments: fluxio.drop_overlaps. (20) Judge each mesh against its own-mesh vacuum control. (21) Closes of
+40-90 GB chains take 2-10 min. (25) FL16 and V-1L16 end at 299-299.75 M. (26) Close local background runs with
+`nrpic-run finish` before reading them. (27) note/main.pdf is 1.1 MB. (28) A serial processor smoke test of an
+M/8 ES-FL deck takes ~17 min for two cycles. (30) NEW: AthenaK aligns a refined region to the blocks of the
+next coarser level and keeps one block of buffer per level: always count blocks with `athena -m` (g3/amend
+tools/check_review.py) before trusting a hierarchy; t = 0 horizon mass of these data is 1 (Schwarzschild),
+so the M/8 finder offset is -8.5e-3, M/16 -1.9e-4. (31) NEW: use `date` for journal times (this session first
+wrote times 15-30 minutes ahead and corrected them to the commit times).

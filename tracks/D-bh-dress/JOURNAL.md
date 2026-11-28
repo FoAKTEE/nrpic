@@ -641,3 +641,26 @@ open: C17 (fresh verifier) and the gate review; full-checksum verify; G3 design 
 - Predictions this session: S1 held; the sign of the polishing offset at t = 0 was not predicted (entry 2).
 open: EG8 (q0085) pending; the independent review of SCOPE_G3; no production run before it. Card-hours
   used this session: 0 (EG8 had not started at 15:48 PST).
+
+## 2026-11-27 17:56-18:32 PST, lead of batch 35 (Opus; G3 scope review checked, scope amended, first step queued)  commits c4079e991..(this)  runs D-20261128-020346-c4079e9, D-20261128-020622-50e2cb6
+- The independent review of the G3 scope (g3/scope_review, decision 0048 item 4) checked from its artefacts
+  with my own code (g3/amend/tools/check_review.py; predictions C1-C6 committed first in c4079e991):
+  B1 confirmed (athena -m: G-16 3648 blocks, G-12 2176 with finest +-4 M; t = 0 masses 0.99152 / 0.99981);
+  B2 confirmed (FK at 200 M: nearest-tracer-label clock off by up to 12.5 M; own proper times of one label
+  bin spread 6.2 M); B3 confirmed (written G3-G3 passes a true signal of 5.8e-4 with 0.14) and extended (the
+  review's amended form has power 0.0 at 1.2e-3 if the noise has a 10 M correlation time). Figure looked at.
+- Failed predictions: g12s block count (2472 over +-3 M, not 3648 over +-6 M); C3's spread > 2 M at 27-30 M.
+- SCOPE_G3 amended (section 11, A1-A5, acee85249): uniform mesh family G-8/G-12u/G-16u (456 blocks of
+  24/36/48 cells, finest +-6 M, VERIFIED); FK's excision guard in every member (factor 10 withdrawn); smoke
+  rule rewritten; Claim D on per-particle clocks with D1* fixed on G2 snapshots first; G3-G2 with the vacuum
+  offset; G3-G3 a criterion only at power >= 0.8 on measured noise; V-8 withdrawn; budget with G-16u capped
+  at 20 card-hours (t_16 rule). Predictions for the amended criteria: g3/amend entry 4.
+- S-G8 smoke test D-20261128-020622-50e2cb6 HELD (456 blocks; t = 0 mass equals EG8's polished one).
+- Queued (priority 2): q0095 D-T12u16u (timing runs, cap 0.6), q0100 D-G3-G8 (production, cap 3.5).
+- EG8 (q0085): chain preempted four times, at 120 M of 260 M, job 5560 pending; not judged (not ended).
+- Outbox: orch g3-scope-amended-first-step; core g3-decks-memory-question. Inbox: core
+  restart-parameters-and-finder-check acknowledged (no G3 deck uses deposit_comp_c).
+- Journal times of g3/amend entries 1-4 were first written ahead of the clock and corrected to the commit
+  times before push.
+open: T-12u/T-16u and G-8 results; Claim D reader, vacuum offsets and G3-G3 power on processors before the
+  later members; EG8. Card-hours submitted this session: 0 run yet (two entries waiting).
