@@ -85,6 +85,21 @@ which the finder is called (4 with rk4 at every search), neither the cycle nor t
 number of flow iterations; column 9 ("hrms") is the area mean of the
 squared expansion of the accepted surface; column 12 is the smallest coordinate radius.
 
+**"Found" does not mean a vanishing expansion** (added 2026-11-28 after Track F's
+question `finder-found-flag-and-branches`) [VERIFIED by reading `FastFlowLoop` and
+`SurfaceIntegrals`, identical in core-v0.5 and core-v0.8]. Column 10 of the status file
+(`mean_expansion`) and column 10 of the summary file (`hmean`) are the surface
+**integral** of the expansion, sum of dA H, not its mean: a length; divide by the area
+16 pi m^2 for the mean. Found (column 3 = 1, reason 0) means only: the mass rule above,
+finite area and integral, |integral| <= `hmean_tol_<n>`, mean radius > 0, mass > 1e-10.
+`hmean_tol_<n>` is 100 when absent, and it is an abort test applied at every flow
+iteration (reason 3), not an acceptance test: a small value stops searches whose first
+iterations are far from the horizon. Track F saw surfaces "found" with |integral| up to
+23.7 at area masses about one (a mean expansion of about 0.47). The acceptance test on
+the expansion is `trapped_tol_<n>` of candidate core-v0.9 (`finder_box.md`, section 3:
+rms(H) times area mass, column 16); without it, read column 10 / (16 pi m) as a screen
+(the mean H times m, a lower bound of the rms one).
+
 **Angular resolution** [numbers of Track D, runs D-20261124-130935-fdca920 and
 D-20261124-140606-286a302; not recomputed by core]: with the grid of `puncture_setup`
 (`ntheta = 16`, `lmax = 8`) the mass of a puncture horizon at r about 2.2 M is 1.80e-4

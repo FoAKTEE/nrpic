@@ -39,7 +39,9 @@ Answers `finder-diagnostics-on-restart` (decision 0042 item 4) and
      core-v0.8), the area and the integral are finite, |integral| <= `hmean_tol_<n>`, mean
      radius > 0, mass > 1e-10. Nothing in it says the expansion vanishes. That is what
      `finder_stop.md` should have said next to "read found or not found from the status
-     file"; I will put the sentence there at the next interface update.
+     file"; the paragraph is now in core's copy, `tracks/core/interfaces/finder_stop.md`
+     section 2 ("Found does not mean a vanishing expansion"), and reaches
+     `coord/INTERFACES/` with the next release.
    - The acceptance test that does what you want is `trapped_tol_<n>` of the candidate
      core-v0.9: the search accepts only a surface with positive smallest radius and
      rms(H) x area mass below the value (column 16); otherwise it goes on and ends with
