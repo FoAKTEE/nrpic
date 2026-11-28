@@ -1,0 +1,697 @@
+{
+ "n_segments": 46,
+ "max_meshblocks": 2514,
+ "min_meshblocks": 1968,
+ "max_gpu_mem_peak_MiB": 78789,
+ "exits": [
+  "0",
+  "143"
+ ],
+ "segments_with_error_lines": [],
+ "segments": [
+  {
+   "log": "seg001.job5207.a1.log",
+   "total_at_start": [
+    2402
+   ],
+   "current_at_end": [],
+   "gpu_mem_peak_MiB": [],
+   "exit": [],
+   "t_last_cycle_line": null,
+   "error_lines": []
+  },
+  {
+   "log": "seg002.job5213.a1.log",
+   "total_at_start": [
+    2514
+   ],
+   "current_at_end": [],
+   "gpu_mem_peak_MiB": [],
+   "exit": [],
+   "t_last_cycle_line": null,
+   "error_lines": []
+  },
+  {
+   "log": "seg003.job5219.a1.log",
+   "total_at_start": [
+    2514
+   ],
+   "current_at_end": [],
+   "gpu_mem_peak_MiB": [],
+   "exit": [],
+   "t_last_cycle_line": null,
+   "error_lines": []
+  },
+  {
+   "log": "seg004.job5224.a1.log",
+   "total_at_start": [
+    2514
+   ],
+   "current_at_end": [],
+   "gpu_mem_peak_MiB": [],
+   "exit": [],
+   "t_last_cycle_line": null,
+   "error_lines": []
+  },
+  {
+   "log": "seg005.job5230.a1.log",
+   "total_at_start": [
+    2514
+   ],
+   "current_at_end": [],
+   "gpu_mem_peak_MiB": [],
+   "exit": [],
+   "t_last_cycle_line": null,
+   "error_lines": []
+  },
+  {
+   "log": "seg006.job5237.a1.log",
+   "total_at_start": [
+    2472
+   ],
+   "current_at_end": [],
+   "gpu_mem_peak_MiB": [],
+   "exit": [],
+   "t_last_cycle_line": null,
+   "error_lines": []
+  },
+  {
+   "log": "seg007.job5244.a1.log",
+   "total_at_start": [
+    2500
+   ],
+   "current_at_end": [],
+   "gpu_mem_peak_MiB": [],
+   "exit": [],
+   "t_last_cycle_line": null,
+   "error_lines": []
+  },
+  {
+   "log": "seg008.job5252.a1.log",
+   "total_at_start": [
+    2374
+   ],
+   "current_at_end": [],
+   "gpu_mem_peak_MiB": [],
+   "exit": [],
+   "t_last_cycle_line": null,
+   "error_lines": []
+  },
+  {
+   "log": "seg009.job5258.a1.log",
+   "total_at_start": [
+    2374
+   ],
+   "current_at_end": [],
+   "gpu_mem_peak_MiB": [],
+   "exit": [],
+   "t_last_cycle_line": null,
+   "error_lines": []
+  },
+  {
+   "log": "seg010.job5266.a1.log",
+   "total_at_start": [
+    1982
+   ],
+   "current_at_end": [
+    1968
+   ],
+   "gpu_mem_peak_MiB": [
+    78787
+   ],
+   "exit": [
+    "0"
+   ],
+   "t_last_cycle_line": 78.31055,
+   "error_lines": []
+  },
+  {
+   "log": "seg011.job5276.a1.log",
+   "total_at_start": [
+    1968
+   ],
+   "current_at_end": [
+    1996
+   ],
+   "gpu_mem_peak_MiB": [
+    78785
+   ],
+   "exit": [
+    "0"
+   ],
+   "t_last_cycle_line": 84.91602,
+   "error_lines": []
+  },
+  {
+   "log": "seg012.job5281.a1.log",
+   "total_at_start": [
+    1996
+   ],
+   "current_at_end": [
+    2290
+   ],
+   "gpu_mem_peak_MiB": [
+    78789
+   ],
+   "exit": [
+    "0"
+   ],
+   "t_last_cycle_line": 90.51172,
+   "error_lines": []
+  },
+  {
+   "log": "seg013.job5287.a1.log",
+   "total_at_start": [
+    2290
+   ],
+   "current_at_end": [
+    2332
+   ],
+   "gpu_mem_peak_MiB": [
+    78787
+   ],
+   "exit": [
+    "0"
+   ],
+   "t_last_cycle_line": 96.23047,
+   "error_lines": []
+  },
+  {
+   "log": "seg014.job5294.a1.log",
+   "total_at_start": [
+    2332
+   ],
+   "current_at_end": [],
+   "gpu_mem_peak_MiB": [],
+   "exit": [],
+   "t_last_cycle_line": null,
+   "error_lines": []
+  },
+  {
+   "log": "seg015.job5304.a1.log",
+   "total_at_start": [
+    2374
+   ],
+   "current_at_end": [],
+   "gpu_mem_peak_MiB": [
+    78785
+   ],
+   "exit": [
+    "143"
+   ],
+   "t_last_cycle_line": null,
+   "error_lines": []
+  },
+  {
+   "log": "seg016.job5313.a1.log",
+   "total_at_start": [
+    2402
+   ],
+   "current_at_end": [],
+   "gpu_mem_peak_MiB": [
+    78785
+   ],
+   "exit": [
+    "143"
+   ],
+   "t_last_cycle_line": null,
+   "error_lines": []
+  },
+  {
+   "log": "seg017.job5323.a1.log",
+   "total_at_start": [
+    2402
+   ],
+   "current_at_end": [
+    2206
+   ],
+   "gpu_mem_peak_MiB": [
+    78787
+   ],
+   "exit": [
+    "0"
+   ],
+   "t_last_cycle_line": 109.7754,
+   "error_lines": []
+  },
+  {
+   "log": "seg018.job5332.a1.log",
+   "total_at_start": [
+    2206
+   ],
+   "current_at_end": [
+    2234
+   ],
+   "gpu_mem_peak_MiB": [
+    78787
+   ],
+   "exit": [
+    "0"
+   ],
+   "t_last_cycle_line": 115.5469,
+   "error_lines": []
+  },
+  {
+   "log": "seg019.job5338.a1.log",
+   "total_at_start": [
+    2234
+   ],
+   "current_at_end": [
+    2444
+   ],
+   "gpu_mem_peak_MiB": [
+    78787
+   ],
+   "exit": [
+    "0"
+   ],
+   "t_last_cycle_line": 121.3008,
+   "error_lines": []
+  },
+  {
+   "log": "seg020.job5343.a1.log",
+   "total_at_start": [
+    2444
+   ],
+   "current_at_end": [
+    2164
+   ],
+   "gpu_mem_peak_MiB": [
+    78787
+   ],
+   "exit": [
+    "0"
+   ],
+   "t_last_cycle_line": 126.7559,
+   "error_lines": []
+  },
+  {
+   "log": "seg021.job5349.a1.log",
+   "total_at_start": [
+    2164
+   ],
+   "current_at_end": [
+    2024
+   ],
+   "gpu_mem_peak_MiB": [
+    78785
+   ],
+   "exit": [
+    "0"
+   ],
+   "t_last_cycle_line": 133.0,
+   "error_lines": []
+  },
+  {
+   "log": "seg022.job5393.a1.log",
+   "total_at_start": [
+    2024
+   ],
+   "current_at_end": [
+    2066
+   ],
+   "gpu_mem_peak_MiB": [
+    78785
+   ],
+   "exit": [
+    "0"
+   ],
+   "t_last_cycle_line": 139.2461,
+   "error_lines": []
+  },
+  {
+   "log": "seg023.job5398.a1.log",
+   "total_at_start": [
+    2066
+   ],
+   "current_at_end": [
+    2234
+   ],
+   "gpu_mem_peak_MiB": [
+    78787
+   ],
+   "exit": [
+    "0"
+   ],
+   "t_last_cycle_line": 145.0508,
+   "error_lines": []
+  },
+  {
+   "log": "seg024.job5405.a1.log",
+   "total_at_start": [
+    2234
+   ],
+   "current_at_end": [
+    2192
+   ],
+   "gpu_mem_peak_MiB": [
+    78787
+   ],
+   "exit": [
+    "0"
+   ],
+   "t_last_cycle_line": 150.2402,
+   "error_lines": []
+  },
+  {
+   "log": "seg025.job5410.a1.log",
+   "total_at_start": [
+    2192
+   ],
+   "current_at_end": [
+    2262
+   ],
+   "gpu_mem_peak_MiB": [
+    78787
+   ],
+   "exit": [
+    "0"
+   ],
+   "t_last_cycle_line": 155.4609,
+   "error_lines": []
+  },
+  {
+   "log": "seg026.job5415.a1.log",
+   "total_at_start": [
+    2262
+   ],
+   "current_at_end": [],
+   "gpu_mem_peak_MiB": [
+    78787
+   ],
+   "exit": [
+    "143"
+   ],
+   "t_last_cycle_line": null,
+   "error_lines": []
+  },
+  {
+   "log": "seg027.job5423.a1.log",
+   "total_at_start": [
+    2220
+   ],
+   "current_at_end": [],
+   "gpu_mem_peak_MiB": [
+    78783
+   ],
+   "exit": [
+    "143"
+   ],
+   "t_last_cycle_line": null,
+   "error_lines": []
+  },
+  {
+   "log": "seg028.job5429.a1.log",
+   "total_at_start": [
+    2220
+   ],
+   "current_at_end": [],
+   "gpu_mem_peak_MiB": [
+    78783
+   ],
+   "exit": [
+    "143"
+   ],
+   "t_last_cycle_line": null,
+   "error_lines": []
+  },
+  {
+   "log": "seg029.job5432.a1.log",
+   "total_at_start": [
+    2220
+   ],
+   "current_at_end": [],
+   "gpu_mem_peak_MiB": [
+    78783
+   ],
+   "exit": [
+    "143"
+   ],
+   "t_last_cycle_line": null,
+   "error_lines": []
+  },
+  {
+   "log": "seg030.job5435.a1.log",
+   "total_at_start": [
+    2220
+   ],
+   "current_at_end": [],
+   "gpu_mem_peak_MiB": [
+    78783
+   ],
+   "exit": [
+    "143"
+   ],
+   "t_last_cycle_line": null,
+   "error_lines": []
+  },
+  {
+   "log": "seg031.job5439.a1.log",
+   "total_at_start": [
+    2220
+   ],
+   "current_at_end": [],
+   "gpu_mem_peak_MiB": [
+    78787
+   ],
+   "exit": [
+    "143"
+   ],
+   "t_last_cycle_line": null,
+   "error_lines": []
+  },
+  {
+   "log": "seg032.job5446.a1.log",
+   "total_at_start": [
+    2122
+   ],
+   "current_at_end": [],
+   "gpu_mem_peak_MiB": [
+    78695
+   ],
+   "exit": [
+    "143"
+   ],
+   "t_last_cycle_line": null,
+   "error_lines": []
+  },
+  {
+   "log": "seg033.job5453.a1.log",
+   "total_at_start": [
+    2122
+   ],
+   "current_at_end": [],
+   "gpu_mem_peak_MiB": [
+    78613
+   ],
+   "exit": [
+    "143"
+   ],
+   "t_last_cycle_line": null,
+   "error_lines": []
+  },
+  {
+   "log": "seg034.job5458.a1.log",
+   "total_at_start": [
+    2122
+   ],
+   "current_at_end": [],
+   "gpu_mem_peak_MiB": [
+    78785
+   ],
+   "exit": [
+    "143"
+   ],
+   "t_last_cycle_line": null,
+   "error_lines": []
+  },
+  {
+   "log": "seg035.job5461.a1.log",
+   "total_at_start": [
+    2178
+   ],
+   "current_at_end": [],
+   "gpu_mem_peak_MiB": [
+    78783
+   ],
+   "exit": [
+    "143"
+   ],
+   "t_last_cycle_line": null,
+   "error_lines": []
+  },
+  {
+   "log": "seg036.job5465.a1.log",
+   "total_at_start": [
+    2178
+   ],
+   "current_at_end": [],
+   "gpu_mem_peak_MiB": [
+    78785
+   ],
+   "exit": [
+    "143"
+   ],
+   "t_last_cycle_line": null,
+   "error_lines": []
+  },
+  {
+   "log": "seg037.job5467.a1.log",
+   "total_at_start": [
+    2178
+   ],
+   "current_at_end": [],
+   "gpu_mem_peak_MiB": [
+    78785
+   ],
+   "exit": [
+    "143"
+   ],
+   "t_last_cycle_line": null,
+   "error_lines": []
+  },
+  {
+   "log": "seg038.job5471.a1.log",
+   "total_at_start": [
+    2178
+   ],
+   "current_at_end": [],
+   "gpu_mem_peak_MiB": [
+    78613
+   ],
+   "exit": [
+    "143"
+   ],
+   "t_last_cycle_line": null,
+   "error_lines": []
+  },
+  {
+   "log": "seg039.job5474.a1.log",
+   "total_at_start": [
+    2178
+   ],
+   "current_at_end": [],
+   "gpu_mem_peak_MiB": [
+    78695
+   ],
+   "exit": [
+    "143"
+   ],
+   "t_last_cycle_line": null,
+   "error_lines": []
+  },
+  {
+   "log": "seg040.job5477.a1.log",
+   "total_at_start": [
+    2178
+   ],
+   "current_at_end": [],
+   "gpu_mem_peak_MiB": [
+    78783
+   ],
+   "exit": [
+    "143"
+   ],
+   "t_last_cycle_line": null,
+   "error_lines": []
+  },
+  {
+   "log": "seg041.job5479.a1.log",
+   "total_at_start": [
+    2178
+   ],
+   "current_at_end": [],
+   "gpu_mem_peak_MiB": [
+    78785
+   ],
+   "exit": [
+    "143"
+   ],
+   "t_last_cycle_line": null,
+   "error_lines": []
+  },
+  {
+   "log": "seg042.job5482.a1.log",
+   "total_at_start": [
+    2178
+   ],
+   "current_at_end": [],
+   "gpu_mem_peak_MiB": [
+    78695
+   ],
+   "exit": [
+    "143"
+   ],
+   "t_last_cycle_line": null,
+   "error_lines": []
+  },
+  {
+   "log": "seg043.job5486.a1.log",
+   "total_at_start": [
+    2178
+   ],
+   "current_at_end": [
+    2094
+   ],
+   "gpu_mem_peak_MiB": [
+    78787
+   ],
+   "exit": [
+    "0"
+   ],
+   "t_last_cycle_line": 170.248,
+   "error_lines": []
+  },
+  {
+   "log": "seg044.job5488.a1.log",
+   "total_at_start": [
+    2094
+   ],
+   "current_at_end": [
+    2276
+   ],
+   "gpu_mem_peak_MiB": [
+    78785
+   ],
+   "exit": [
+    "0"
+   ],
+   "t_last_cycle_line": 175.4863,
+   "error_lines": []
+  },
+  {
+   "log": "seg045.job5490.a1.log",
+   "total_at_start": [
+    2276
+   ],
+   "current_at_end": [
+    2276
+   ],
+   "gpu_mem_peak_MiB": [
+    78787
+   ],
+   "exit": [
+    "0"
+   ],
+   "t_last_cycle_line": 180.8145,
+   "error_lines": []
+  },
+  {
+   "log": "seg046.job5492.a1.log",
+   "total_at_start": [
+    2276
+   ],
+   "current_at_end": [
+    2318
+   ],
+   "gpu_mem_peak_MiB": [
+    78787
+   ],
+   "exit": [
+    "0"
+   ],
+   "t_last_cycle_line": 186.002,
+   "error_lines": []
+  }
+ ]
+}

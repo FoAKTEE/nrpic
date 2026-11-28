@@ -225,3 +225,20 @@ two residual classes: most below 1e-4 in hrms, and episodes with hrms above 1e-2
 in A and in A2. The heavy finder has no accepted search with hrms above 1e-2 before 131 M.
 Refuted: no high-hrms class among the member searches, or a fraction outside 5-25 percent, or a
 heavy search above 1e-2 before 131 M.
+
+## Entry 6, 2026-11-27 17:38 PST: PT20 outcome (run F-20261128-004800-5f93427), figure looked at
+
+Figure read: `fig_t_hrms.png` of the run (copied to `figures/`).
+
+- PT20 MET in kind, REFUTED in its numbers. Every member finder accepts searches of two residual
+  classes before the capture: hrms 1e-6 to 2e-4, and episodes with hrms 0.011 to 0.50. Fractions
+  of the searches before 137.5 M: A finder 0 29.0 percent (594 of 2049; A's file holds 0-64 M),
+  A finder 1 16.7 percent (342), A2 finder 0 3.8 percent (93 of 2422), A2 finder 1 5.1 percent
+  (123): two of four outside my 5-25 percent. Their masses lie below the low-hrms neighbours
+  within 1 M by medians of 6.3e-5 (A, 0), 9.1e-5 (A, 1), 3.2e-4 (A2, 0), 1.1e-4 (A2, 1), at most
+  1.35e-3: smaller than my 2e-4 to 6e-4 in A. The heavy finder: no accepted search above 1e-2
+  before 136.9 M (one at 136.94 M, during m1's approach): MET. Its own two classes (about 1e-8
+  and 1e-4 to 6e-4) run side by side in A as well (fig_t_hrms c).
+- Copied the JSON outputs of the five runs to `results/` and the seven figures I read to
+  `figures/`. Next: the second part of `../VERIFIER.md`, then (only after it is committed) the
+  lead's verdicts.
