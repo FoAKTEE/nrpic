@@ -27,6 +27,11 @@ root to 144 cells over +-768 M with blocks of 24 (scope section 3 table). Execut
   = 4096). Refuted (the scope's 2.5 holds) if at most 1500.
 - A3: G-12 as described has 1539 blocks (189 leaves on each of levels 0-6 and 216 on level 7; scope's
   "about 3.4 times"). Refuted if outside [1400, 1700].
+- A4 (added 16:50, before any run): a cheaper form of G-16, the same deck with blocks of 12 cells
+  (G-16b): the cascade stops after two levels; I expect about 8000 blocks of 12^3 (2.3 times G-8's
+  cells). Refuted outside [5000, 12000]. Informational: it tells the lead whether a +-6 M level 8 exists
+  at the scope's cost at all (with 4 ghost cells a 12^3 block costs about twice a 24^3 block per cell
+  [JUDGEMENT]).
 
 ### B. What the G3 criteria of Claim G can see, read on G2's registered outputs (one factor coarser)
 
