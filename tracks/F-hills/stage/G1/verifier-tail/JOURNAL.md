@@ -242,3 +242,20 @@ Figure read: `fig_t_hrms.png` of the run (copied to `figures/`).
 - Copied the JSON outputs of the five runs to `results/` and the seven figures I read to
   `figures/`. Next: the second part of `../VERIFIER.md`, then (only after it is committed) the
   lead's verdicts.
+
+## Entry 7, 2026-11-27 (after the second part of VERIFIER.md was committed, 88fa5d04a)
+
+Correction of the record: the header times of entries 2-6 were my estimates, not the clock; the
+commit times (16:42-16:48 PST) are the record. VERIFIER.md part 2 (sections 10-16) was committed
+before I read the lead's batch-34 journal entries (read now, `../../../JOURNAL.md` l. 1280-1421).
+
+Two differences with the lead that a reading can settle:
+- PT21. The lead counts finder 0's found surfaces up to about 141 M as m1's own horizon (area mass
+  0.13, |mean expansion| below 2e-3); my part 2 called the 140-141 M surfaces (summary mass
+  0.119-0.125) "no member horizon" without having looked at their expansion. Prediction: the
+  found rows of finder 0 with area mass 0.10-0.16 after 137.5 M reach to 141 M and have |mean
+  expansion| below 2e-3 (then the lead is right and my sentence is wrong); the found rows with
+  area mass above 0.16 have |mean expansion| above 1. Refuted: a 0.10-0.16 row with |mean
+  expansion| above 2e-3, or none after 140 M.
+- The lead's MeshBlocks range 1968-2584 (C25-4) against my 1968-2514 (vlogs): a text search of
+  every file in A2's chain directory finds no 2584 (search, not a registered run).
