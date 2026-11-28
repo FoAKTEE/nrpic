@@ -190,9 +190,29 @@ For the first source, numbers I propose for G1 to G3 [JUDGEMENT]:
   1); at delta = 0.01 it holds to 0.5 percent for 2 <= a <= 10 and departs by 1-2 percent
   at a = 20 (first_source P2): the quantitative comparison window is a <= 10 at this
   amplitude, wider at smaller delta.
+  Amended 2026-11-27 (decision 0050 item 3; stage/G2/GATE_REVIEW.md section 4) [JUDGEMENT]:
+  the clause "within a truncation error that falls at second order between 64, 128 and 256
+  cells" was never assigned to a gate and is NOT MET: before a ~ 60 the first-source mesh
+  differences sit near 1e-4 of the strain and do not fall with the mesh (first_source/README.md
+  round 3, item 2), and no 256-cell member of the first source exists. Placed now: it is an
+  entry condition of G3 for any claim on the pre-crossing strain of the first source below that
+  floor. Until a 128/256 pair shows the second-order fall, or the floor is explained by a run
+  that could have failed, the pre-crossing agreement is quoted at the measured floor (about 1e-4
+  of the strain), not as converging at second order.
 - After shell crossing (G3): rho_K and the TT spectrum at the box modes converge to 10
   percent in particle number, mesh spacing and lapse condition (the three legs of the
   gate); GR minus weak field resolved above that error for at least one amplitude.
+  Amended 2026-11-27 (decision 0050 item 3) [JUDGEMENT]: which gauge leg G3 means. The G2
+  package varied the SHIFT (zero shift against the Gamma driver, same lapse condition advected
+  along the normal), not the lapse condition; for the population box no lapse variation exists.
+  For G3 the gauge leg has two parts: (i) the shift, where the zero shift runs (it fails in
+  resolved cores: 256^3, a = 102), and (ii) a variation of the lapse condition with the Gamma
+  driver (the conformal-time lapse against a second slicing), specified with its prediction in
+  the G3 scope before any production run. The late strain (a > 50) is quoted either in a measure
+  that does not depend on the spatial coordinates, compared between the gauges, or in the
+  Gamma-driver gauge with the measured gauge dependence as part of its error (band strain:
+  within 1.6 per cent to a = 49; 5, 20, 36 per cent at a = 64, 100, 132; gate review run
+  B-20261128-032405-7c4aa64). Which of the two applies follows from decision 0050 item 2.
 - Stop rules: if the black-hole end cannot be passed (as at delta = 0.05 today), the
   amplitude range ends at 0.02 until the gauge work with Track A (2610.23218, 2608.13206)
   gives a stable slicing; if the TT noise floor exceeds the eps = 1 signal after shell

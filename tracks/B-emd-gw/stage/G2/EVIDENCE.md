@@ -1,7 +1,35 @@
-# Evidence: B-emd-gw G2 (state of batch 11, 2026-11-24)
+# Evidence: B-emd-gw G2 (state of batch 39, 2026-11-27; first written in batch 11, 2026-11-24)
 
 Runs this package rests on so far (manifests under `tracks/B-emd-gw/runs/<run id>/`; outputs
 under `scratch/B-emd-gw/<run id>/`). Judgements in the package journals named per row.
+
+
+## Batch 39 (2026-11-27 evening): G2 HELD (decision 0050); what this batch added
+
+Gate G2 is held, not signed (coord/GATES.md, 2026-11-27): the convergence item C2 is met for the
+band strain only up to a = 49; after that the gauges differ by 5, 20 and 36 per cent at a = 64,
+100, 132, and the particle-number leg exists only with zero shift.
+
+| Run id | What | Kind |
+|---|---|---|
+| B-20261128-032405-7c4aa64 | gate reviewer's own check (C7, particle leg zero shift, gauge ratio against a) | processors |
+| q0107 (label pop_s014_gr_p8_gd), run id when dispatched | 128^3, eight per cell, Gamma driver (decision 0050 item 2b); predictions G8a-G8c | card, queued |
+| B-20261128-033804-a68e9a1 | W0 reader test, failed (inv3 pair), on record | processors |
+| B-20261128-033822-a9f17e5 | W0: magnetic Weyl invariant on an analytic wave and one map family | processors |
+| B-20261128-033937-4b23e2f | W0b: second map family | processors |
+| B-20261128-034232-f589717 | W0c: third map family (all three in one run) | processors |
+| B-20261128-033853-e516942 | W1-W3 data run, stopped by hand (row keys), on record | processors |
+| B-20261128-034914-1e7a68f | W1-W3: invariant, slice checks, band strain, 128^3 pair and 256^3 Gamma driver (decision 0050 item 2a) | processors |
+
+## Batch 38 (gate review) and batch 37
+
+| Run id | What | Kind |
+|---|---|---|
+| B-20261128-030556-5ef9294 | pair_ratio.py: constraint ratios under four pairings (verifier a, b); first run -030537-0172236, same numbers | processors |
+| B-20261128-030805-78634c0 | note v5 (run_all); first -030728-a5b1b32 | processors |
+| B-20261128-030350-19295a4 | memory and card-time fit of the 256^3 member at eight per cell (first run -030214-20f2961 superseded: card time wrong) | processors |
+| B-20261128-030420-33ccdca | initial data 256^3, eight per cell (running, about two days; decision 0048 item 3) | processors |
+| B-20261128-021054-577fc9d to -022420-5d1f804 | the fresh G2 verifier's runs (VERIFIER.md) | processors |
 
 ## G2 criterion (a), FLRW particle run (`flrw_conv/`, JOURNAL entries 1-13)
 

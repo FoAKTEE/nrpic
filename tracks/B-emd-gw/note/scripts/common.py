@@ -103,6 +103,8 @@ RUNS = {
     # batch 37: answers to the G2 verifier (stage/G2/VERIFIER.md section 5)
     "pop_pair37": "B-20261128-030556-5ef9294",     # pair_ratio.py: constraint ratios under four pairings (a, b)
     "ver_hik": "B-20261128-022328-1a9d681",        # the verifier's v7: high-k ratio with and without the corner modes (c)
+    # batch 39 (decision 0050): the gate reviewer's own check (gauge ratio of the band strain against a)
+    "rev_g2": "B-20261128-032405-7c4aa64",
 }
 
 # the registered runs of this note package that produced the committed figures/ and tables/

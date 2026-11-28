@@ -57,6 +57,15 @@ repeat byte for byte; card runs with deposition do not, CLAUDE.md).
 | 64^3 member at eight per cell (q0070) | `B-20261127-232258-37c6773` | 37c6773 | chain | `pop_gr_run.athinput` with mesh 64^3, meshblock 32^3, the files of B-20261126-222552-2e44186 | `.work/build_gpu_v08/src/athena` |
 | C3 judged | `B-20261127-232628-1361e3b` | 1361e3b | local | `python3 tracks/B-emd-gw/population/scripts/judge_c3.py $S B-20261127-232258-37c6773 $NRPIC_RUN_DIR` | - |
 | note v4 | `B-20261127-232833-5891f77` | 5891f77 | local | `.venv/bin/python tracks/B-emd-gw/note/scripts/run_all.py` | - |
+| constraint ratios under four pairings (batch 37, verifier a, b) | `B-20261128-030556-5ef9294` | 5ef9294 | local | `python3 tracks/B-emd-gw/population/scripts/pair_ratio.py $S B-20261127-232258-37c6773 $NRPIC_RUN_DIR` | - |
+| memory and card-time fit of the 256^3/8 ppc member (batch 37) | `B-20261128-030350-19295a4` | 19295a4 | local | `python3 tracks/B-emd-gw/population/scripts/mem_fit.py ...` (manifest) | - |
+| initial data 256^3, eight per cell (batch 37; running) | `B-20261128-030420-33ccdca` | 33ccdca | local | `tracks/B-emd-gw/population/scripts/run_gr_ic.sh 256 8 "--nc 3.2 --sigma1 0.014 --seed 1 --ppc 2 --outer 36"` | - |
+| note v5 (batch 37) | `B-20261128-030805-78634c0` | 78634c0 | local | `.venv/bin/python tracks/B-emd-gw/note/scripts/run_all.py` | - |
+| gate reviewer's own check (batch 38) | `B-20261128-032405-7c4aa64` | 7c4aa64 | local | `stage/G2/gate_review/review_check.py` (manifest) | - |
+| W0-W0c: magnetic Weyl reader on analytic waves under three map families (batch 39) | `B-20261128-034232-f589717` | f589717 | local | `python3 tracks/B-emd-gw/population/scripts/weyl_gauge.py test --out $NRPIC_RUN_DIR` | - |
+| W1-W3: invariant and slice checks between the gauges (batch 39) | `B-20261128-034914-1e7a68f` | 1e7a68f | local | `python3 tracks/B-emd-gw/population/scripts/weyl_gauge.py data --out $NRPIC_RUN_DIR --np 3 --np-big 3` | - |
+| figure of W0-W3 (batch 39) | see population/JOURNAL batch 39 | | local | `python3 tracks/B-emd-gw/population/scripts/weyl_gauge.py fig --out <run dir of the data run>` | - |
+| 128^3, eight per cell, Gamma driver (batch 39, queued as q0107) | run id when dispatched | | chain | `pop_gr_run.athinput` with mesh 128^3, meshblock 64^3, z4c/shift_Gamma=0.75 shift_eta=1.0 shift_advect=1.0 lapse_advect=1.0, the files of B-20261124-135029-3fe13f6 | `.work/build_gpu_v08/src/athena` |
 
 `$S` = `/data/haiyangw/nrpic/scratch/B-emd-gw/`. Decks: `tracks/B-emd-gw/population/inputs/`,
 `tracks/B-emd-gw/flrw_conv/inputs/`, `tracks/B-emd-gw/shear/inputs/`; scripts: the `scripts/` directory of each

@@ -13,7 +13,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import paperfig as pf  # noqa: E402
 
 STEM = "schem_ladder"
-W, H = 29.0, 17.6
+W, H = 29.0, 19.3
 PASS, PART, OPEN = pf.GREEN_DARK, pf.OLIVE, pf.GREY_LINE
 # bottom to top: (test, reference, state, note)
 RUNGS = [
@@ -27,12 +27,14 @@ RUNGS = [
      "the scaling laws of the literature"),
     ("Shearing dust, small amplitude", "linear ray tracing", PASS,
      "within 1e-5 after extrapolation"),
+    ("Plane pancake in full GR", "symmetry: no TT part", PASS,
+     "null at rounding through shell crossing"),
     ("Shearing dust, large amplitude", "three other codes", PART,
-     "beside the relativistic code, not converged"),
-    ("Population: full GR against Newtonian", "same field, rescaled", PART,
-     "halos, near field agree; stop at 2x amplitude"),
-    ("Population: mesh, particle and gauge legs", "the run above", OPEN,
-     "queued"),
+     "not converged in the mesh; cause open"),
+    ("Population: full GR against Newtonian", "same particles, equal masses", PASS,
+     "ten largest halos: median within 3 per cent"),
+    ("Population: mesh, particle and gauge legs", "the run above", PART,
+     "agree to 1.6 per cent to a = 49; gauges part after"),
 ]
 
 

@@ -300,6 +300,13 @@ def values_g2(v):
     vk = common.load_json("ver_hik", "v7_highk.json")
     v["g2_hikcut"] = ([vk["ratio_zs_over_gd_gt16_shells_le64"], vk["ratio_zs_over_gd_gt16_all_modes"],
                        vk["gd128"]["corner_share"]], "ver_hik")
+    # batch 39: the gauge dependence of the band strain as a function of a (gate review, decision 0050)
+    rv = common.load_json("rev_g2", "review_check.json")
+    def near(rows, a0):
+        return min(rows, key=lambda r: abs(r["a"] - a0))
+    v["g2_gauge_a"] = ([near(rv["gauge_leg"], a0)["rms_cor_ratio"] for a0 in (49.0, 64.0, 100.0, 132.0)]
+                       + [max(abs(r["rms_cor_ratio"] - 1.0) for r in rv["gauge_leg"] if r["a"] <= 50.0)],
+                       "rev_g2")
     v["g2_n7x"] = ([s7["rows"][0]["t_A"], min(r["s_min_to_tA"] for r in s7["rows"])]
                    + [r["t_first_crossing"] for r in s7["rows"]], "shear_s7")
 
@@ -700,6 +707,7 @@ LEDGER_G2B = [
         ("g2_c3a", "eight particles per cell, zero shift, $64^3$ member: last $a$ of its history; mean Hamiltonian constraint, $64^3$ over $128^3$: smallest and largest for $25\\le a\\le141$, smallest for $a\\ge49$"),
         ("g2_c3b", "the same pair: mean momentum constraint ratio for $a\\ge49$, smallest, largest; one particle per cell, $128^3$ over $256^3$, mean Hamiltonian constraint ratio at the epochs $a=25,36,49,64,81,100$, smallest, largest"),
         ("g2_pair", "one particle per cell, zero shift, $128^3$ over $256^3$, mean Hamiltonian constraint, $36\\le a\\le100$: at the catalogue epochs, smallest, largest; over every record (either history interpolated in $\\log a$), smallest, largest; largest for $25\\le a\\le100$; eight per cell, $64^3$ over $128^3$, mean momentum constraint for $36\\le a<49$, smallest"),
+        ("g2_gauge_a", "band strain $|\\mathbf k|\\le8k_f$, Gamma driver over zero shift, $128^3$, one particle per cell (gate review's check): at $a=49,64,100,132$; largest $|$ratio$-1|$ for $a\\le50$"),
         ("g2_n7", "shearing dust, $\\beta=0.125$, $HL=4$, four particles per cell along $y$: $\\Delta$ at $N_y=64,128,256$; ratio of successive differences; finest minus Richardson value"),
         ("g2_n7c", "the same: mean relative Hamiltonian constraint over $1\\le t\\le t_A$ at $N_y=64,128,256$; momentum, the same"),
         ("g2_n7x", "the same: $t_A$; smallest neighbour spacing up to $t_A$ over the lattice spacing; first stream crossing at $N_y=64,128,256$"),
