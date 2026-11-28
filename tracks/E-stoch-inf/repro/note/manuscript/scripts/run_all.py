@@ -33,7 +33,7 @@ TRACK = os.path.abspath(os.path.join(HERE, *[".."] * 4))
 S = "/data/haiyangw/nrpic/scratch/E-stoch-inf/"
 SIM = S + "E-20261123-021043-d00a314"
 G3READ = S + "E-20261127-232843-3bf1357"   # reading of the pilot boxes with their zeta fields
-G3PAIRS = S + "PENDING"                    # pair reading of the G3 baseline (g3/pairs_g3.py)
+G3PAIRS = S + "E-20261128-000627-00ed437"                    # pair reading of the G3 baseline (g3/pairs_g3.py)
 LATTICE_ARGS = [
     "--usr256", S + "E-20261124-130628-6790851",
     "--usr256kt", S + "E-20261124-141807-8352509",

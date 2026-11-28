@@ -24,7 +24,7 @@
 
 \author{Track E of the numerical-relativity particle-in-cell cosmology program}
 
-\date{Working note, state of 24 November 2026}
+\date{Working note, state of 27 November 2026}
 
 \begin{abstract}
 Stochastic inflation adds the quantum noise of modes that cross a coarse-graining scale to the evolution of long-wavelength fields. Launay, Rigopoulos and Shellard wrote this noise as sources for every Einstein equation, integrated a one-patch Langevin system for the lapse and the local number of e-folds, and evolved the sources on a numerical-relativity lattice for a slow-roll and an ultra-slow-roll potential. We reproduce both papers in their own set-up: the lattice part with an independent numerical-relativity code, the one-patch part with a reference integrator. Computer algebra confirms that the sources are independent of the gauge and leave the constraints unsourced at linear order. On the lattice, the background, the spectra of the curvature perturbation and of the extrinsic curvature, the freezing of super-Hubble modes, the order of the constraint violation and the convergence with resolution agree with the published runs and with linear theory. The spread of the fields over the lattice is three to four times narrower in our runs than in the published figures, in both scenarios, while the published spectra agree with ours, and the spectra fix the spread. The published bound on the stochastic backreaction holds at large scales and fails at the shortest scales of ultra-slow roll, as the published figure itself shows. The one-patch figures follow only from a background integrated with a coarse Euler step, which carries the field off a plateau where the converged background stops, and from the It\^o reading of the printed equation. The It\^o correction carries the fifth power of the lapse, and the ultra-slow-roll noise amplitude is smaller than printed. A second agent that produced none of the runs recomputed, from the raw outputs and with its own code, the background, the spectra, the constraint records, the amplitude factor, the plateau stop, the It\^o reading, the It\^o term and the ultra-slow-roll amplitude, and confirmed them; it did not recompute the extrinsic-curvature spectra or the gauge families. On the finest lattice the spectra stop converging at the longest scales, at a floor that does not depend on the spacing or the step and has the size of the second-order terms of the field. In slow roll the Hamiltonian violation of single cells reaches the published level at the last crossings and then decays. Judged against nine criteria fixed before the runs, the ultra-slow-roll lattice meets every criterion but one: at one record time the momentum constraint misses the second-order scaling with the noise amplitude that the criterion demands. Runs at three amplitudes show, after the data, that the miss comes from the estimator of the noise level fixed in advance, and the failure stays on record.
@@ -40,11 +40,12 @@ Launay, Rigopoulos and Shellard removed that restriction. In the first paper (\P
 
 A reproduction tests what the two papers print: equations, set-up, figures and quantitative statements. Neither the authors' code nor their random numbers are public, so the comparison is statistical, against the linear (Mukhanov--Sasaki) solution of each realization, and against the numbers the papers print. Values read off the published figures enter only as single comparison values, with the figure named, in the ledger at the end of the note. Figure~\ref{fig:pipeline} shows the two reproductions side by side. The work was carried out by large-language-model agents under human direction, who wrote the specification, ran the simulations, checked the equations and wrote this note. A further agent, which had produced none of the runs and was given the raw outputs and the list of claims but not our conclusions, recomputed the claims with its own readers, references and integrators. Its verdict on each statement stands in Appendix~\ref{app:verdicts} and on each number in the ledger.
 
-This note reports four results:
+This note reports five results:
 (i) the equations of both papers hold under computer algebra; the misprints we found do not enter a code (Sec.~\ref{sec:equations});
 (ii) on the lattice, every observable that linear theory fixes is reproduced, the one-point spread of the fields is not, and the constraint levels and the bound on the backreaction follow from it and from the published figures (Sec.~\ref{sec:lattice});
 (iii) in one patch, the published figures require a background integrated with a coarse Euler step and the It\^o reading of the printed equation, whose It\^o term and ultra-slow-roll amplitude differ from the printed forms (Sec.~\ref{sec:onepatch});
-(iv) judged against criteria fixed before the runs, the ultra-slow-roll lattice meets every criterion but one, the second-order scaling of the momentum constraint at one record time (Sec.~\ref{sec:criteria}).
+(iv) judged against criteria fixed before the runs, the ultra-slow-roll lattice meets every criterion but one, the second-order scaling of the momentum constraint at one record time (Sec.~\ref{sec:criteria})
+(v) at the end of USR the tail of the delta-N curvature perturbation on the lattice agrees in shape with one-patch $\delta N$ for the same band, while its variance is larger by a few parts in a thousand (Sec.~\ref{sec:tails}).
 Section~\ref{sec:discussion} sorts the findings into reproduced, reproduced in part, not reproduced and open.
 
 \begin{figure*}
@@ -285,6 +286,76 @@ The constraint records hold their thresholds in every run with the proper source
 \subsection{Independent check of the criteria}\label{sec:g2check}
 
 A further agent, given the run outputs, the criteria and the predictions but not our verdicts, recomputed every criterion. It wrote its own reader of the dumps and its own extraction of the curvature perturbation, integrated its own background and Mukhanov--Sasaki reference, and drew the random numbers with an independent implementation of the generator. It tested each tool on planted data first. Its values agree with ours to the printed digits for every criterion and for the one failure, and it found no claim wrong. It named three weak points, which this section states: the estimator of the noise level, the resolution clause that measures the flat third-order part, and two clauses whose reading the judge chose (the control counted out of the records criterion, and two readings of the control ratio, both of which pass).
+
+\section{Tail statistics of the ultra-slow-roll lattice}\label{sec:tails}
+
+The abundance of primordial black holes depends on the far tail of the curvature perturbation. One-patch stochastic $\delta N$ predicts that tail from the separate-universe picture: once every mode of the band has left the Hubble radius, each region evolves as a homogeneous universe from its own field and field velocity. The lattice keeps what that picture drops, the gradients, the shear and the constraints. Comparing its tail with one-patch $\delta N$ for the same band of modes therefore tests the picture where the abundance is decided. The comparison runs at the end of the USR phase on $128^3$ boxes, with the statistic, its estimator and every threshold fixed before the production runs (Fig.~\ref{fig:ladder_g3}).
+
+\begin{figure*}
+\includegraphics[width=\textwidth]{fig_g3_ladder}
+\caption{Verification ladder of the tail statistics, read from the bottom. The statistic, the reference, the tests of the $\delta N$ reader and a pilot are fixed before the production runs; the release runs feed two readers; the top row gives the outcome as read so far. Colors as in Fig.~\ref{fig:ladder}; slate in the top row marks a leg still running.}
+\label{fig:ladder_g3}
+\end{figure*}
+
+\subsection{The delta-N curvature perturbation and its reference}\label{sec:tails_setup}
+
+The linear extraction $\mathcal{R}^\mathrm{NR}$ of Sec.~\ref{sec:criteria} is Gaussian to the precision of one box. The non-Gaussian part of the curvature perturbation enters through the map from the local field to the local number of e-folds. In every cell at $N_f$ we therefore read
+\begin{equation}
+\zeta = -\tfrac{1}{2}\ln\frac{\chi}{\langle\chi\rangle} + \Delta N_\mathrm{bg}\!\left(\phi, \frac{\dd\phi}{\dd N}\right) - \Bigl\langle \Delta N_\mathrm{bg} \Bigr\rangle ,
+\label{eq:zeta}
+\end{equation}
+where $\Delta N_\mathrm{bg}$ is the number of e-folds a homogeneous Friedmann universe takes from the cell's field and field velocity to the uniform-field surface at which the reference stops. At first order $\zeta = -\mathcal{R}^\mathrm{NR}$. The map is tabulated along the relation between field and velocity that a box obeys at $N_f$; on every box a sample of cells, the largest among them, is checked against the direct integration and agrees at the round-off of that integration. Fig.~\ref{fig:g3mosaic} shows one box: the nonlinear part $\zeta + \mathcal{R}^\mathrm{NR}$ is positive and sits on the peaks of $\zeta$, the signature of a positive quadratic term.
+
+\begin{figure*}
+\includegraphics[width=\textwidth]{fig_g3_mosaic}
+\caption{Delta-N curvature perturbation of one $128^3$ box at the end of the run (top) and its nonlinear part (bottom), on a slice through the largest value of $\zeta$, in units of the box's own width. Left to right: the box, a quarter of its side, and eight cells; the black squares mark the next panel.}
+\label{fig:g3mosaic}
+\end{figure*}
+
+The reference is the one-patch Langevin system of Sec.~\ref{sec:onepatch} driven by the noise of the same band of modes, with the lattice's density of states and a narrow coarse-graining window, integrated to the same end surface. Direct sampling fixes its width and its tail at three standard deviations; at four, importance sampling shifts the noise toward the tail and weights each path back.
+
+Five statistics compare the two: the width $\sigma_\zeta$, the skewness, the excess kurtosis, the tail fractions at the box's own width and their asymmetry,
+\begin{equation}
+F_\pm(\nu) = P\bigl(\pm\zeta > \nu\,\sigma_\zeta\bigr), \qquad \mathcal{A}(\nu) = \frac{F_+(\nu) - F_-(\nu)}{F_+(\nu) + F_-(\nu)} .
+\label{eq:tails}
+\end{equation}
+Judging the tails at the own width separates their shape from the width, which is compared on its own: at a fixed threshold, a small error of the width moves a tail fraction by a large multiple of itself. Every seed runs at $\lambda = +1$ and $-1$ with the same random numbers. Between the two boxes of such a mirrored pair the Gaussian part of every odd moment changes sign, so the pair mean keeps the non-Gaussian part and drops most of the sampling noise. The pair is the unit of the estimate, and a difference counts when it exceeds three combined standard errors.
+
+\subsection{Constraints and resolution}\label{sec:tails_checks}
+
+Two criteria guard the runs before any tail is read. With three amplitudes the even part of both constraints falls by the factor four at every judged record time; the estimator of Sec.~\ref{sec:halving} that missed once at $256^3$ is not needed. From $128^3$ to $160^3$ cells the first-order part of the curvature perturbation converges at high order and keeps its sign mode by mode. Both criteria hold as written.
+
+\subsection{Width and tail shape}\label{sec:tails_results}
+
+The first 71 of the 128 mirrored pairs fixed in advance have been read; the rest wait for the cards. In every box the delta-N curvature perturbation leans toward positive values: more e-folds in the regions that lag on the roll (Fig.~\ref{fig:g3onepoint}). Its density at the own width follows the one-patch density down to four standard deviations on both sides, and both rise above the Gaussian on the positive side and fall below it on the negative one.
+
+\begin{figure*}
+\includegraphics[width=\textwidth]{fig_g3_onepoint}
+\caption{One-point density of the delta-N curvature perturbation at the end of the run, in units of each sample's own width. Left: the lattice (dots, all boxes read) and one-patch $\delta N$ for the same band (squares) with the Gaussian (dashed). Right: both densities divided by the Gaussian, with Poisson errors.}
+\label{fig:g3onepoint}
+\end{figure*}
+
+The tail shape agrees with one-patch $\delta N$ on every item judged (Fig.~\ref{fig:g3tails}). The skewness of the lattice lies well inside the error of the reference, and the excess kurtosis of both is consistent with zero. The tail fractions at three and four standard deviations and the asymmetry at both thresholds differ by less than three combined standard errors. At four standard deviations the reference error comes from importance sampling and is small, so there the comparison is set by the lattice boxes.
+
+\begin{figure*}
+\includegraphics[width=\textwidth]{fig_g3_tails}
+\caption{Tail fractions against the threshold at the own width. Left: $F_+$ (solid) and $F_-$ (dashed) of the lattice and of one-patch $\delta N$, with the Gaussian. Right: the same over the Gaussian tail; points with three-standard-error bars mark the judged values at three and four standard deviations, offset sideways for legibility.}
+\label{fig:g3tails}
+\end{figure*}
+
+The width does not agree. The variance of the lattice exceeds that of the reference by about three parts in a thousand, four combined standard errors. The two samples sit on opposite sides of the lattice sum of the linear power: the boxes slightly above it, in the linear extraction as well as in $\zeta$, the one-patch paths slightly below it. The comparison of the tails at a fixed threshold in units of the linear width carries this excess as a rise of a few per cent, which is why the tail shape is judged at the own width. The difference stands as a failure of the variance criterion as written; its cause is not yet identified.
+
+Mirroring makes the skewness comparison sharp (Fig.~\ref{fig:g3pairs}). The skewness of single boxes scatters by a quarter of its value, while the pair means scatter by a few parts in a thousand of it. The even part of each pair, regressed on the square of its odd part, gives one quadratic coefficient for every pair, the coefficient that makes $\zeta$ skewed. The same regression on $\mathcal{R}^\mathrm{NR}$ gives a coefficient twenty times smaller, the field's own second-order part.
+
+\begin{figure*}
+\includegraphics[width=\textwidth]{fig_g3_pairs}
+\caption{Mirrored pairs. Left: skewness of $\zeta$ of the box at $\lambda = +1$ and $-1$ (small dots) and their mean (large dots), against the one-patch value with its three-standard-error band. Right: quadratic coefficient of the even part on the square of the odd part, for $\zeta$ and $\mathcal{R}^\mathrm{NR}$, per pair.}
+\label{fig:g3pairs}
+\end{figure*}
+
+\subsection{What the comparison does not yet cover}\label{sec:tails_open}
+
+The statement covers 71 pairs, geodesic slicing and level 0 of the backreaction. The remaining pairs and level 2 wait for the cards. On the geodesic slice of this model the mean curvature stays uniform, so a lapse driven by it coincides with the geodesic slicing and tests nothing about slicing; a slicing test needs a lapse condition that depends on the field. The dependence of the reference on its coarse-graining window is not yet bounded at the level of the skewness comparison, and the box's field and momentum at the end of the run have not yet been compared with the one-patch state. An independent check of the reading follows once the full set exists.
 
 \section{The one-patch reproduction}\label{sec:onepatch}
 

@@ -145,7 +145,7 @@ G2JUDGE = "E-20261123-024359-5dc3213"   # judge of the release ladder (judge_g2.
 G2Q = "E-20261125-033450-4c4a31c"       # quarter-amplitude pair (judge_q.json)
 G2FL3 = "E-20261125-023427-6fb6400"     # the verifier's three-amplitude reading (floor3.json)
 SCR = "/data/haiyangw/nrpic/scratch/E-stoch-inf"
-G3PAIRS = "PENDING"                      # pair reading of the G3 baseline (pairs.json)
+G3PAIRS = "E-20261128-000627-00ed437"                      # pair reading of the G3 baseline (pairs.json)
 G3C = "E-20261126-115943-32970f2"        # G3-C reading (g3c.json)
 G3R = "E-20261126-120438-9d48377"        # G3-R reading (g3r.json)
 

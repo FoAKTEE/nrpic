@@ -5,7 +5,7 @@ one-patch reference of the same band with its variance gate, the three tests of 
 pilot), the runs on the release build (mirrored pairs of the baseline, three amplitudes, a finer lattice,
 level 2 of the backreaction), the two readers (the tabulated delta-N map checked on every box, the pair
 statistics), and the outcome as read so far. The outcome texts are set in OUTCOME below from the pair
-reading of the baseline (g3/JOURNAL.md entry 17); no data are read here.
+reading of 71 baseline pairs, run E-20261128-000627-00ed437 (g3/JOURNAL.md entry 17); no data are read here.
 """
 import os
 import sys

@@ -85,8 +85,9 @@ from its plateau.
 - Section on the tail statistics (G3, batch 34): 128^3 and 160^3 lattices; mirrored pairs; thresholds of three and four
   standard deviations (the figure parameters nu = 3, 4); "three combined standard errors" (the threshold of a
   difference); "the factor four" (constraints); "71 of the 128 pairs" (the pairs read so far) and "two hundred and fifty-six
-  boxes" (the full set); "one part in a few hundred" (the width excess, if it stands); "about five times" (mirroring gain,
-  if it stands).
+  boxes" (the full set); "about three parts in a thousand" and "four combined standard errors" (the width excess); "a quarter of its
+  value" and "a few parts in a thousand of it" (scatter of the skewness, single boxes and pairs); "twenty times smaller"
+  (a_R against a_zeta); "a few per cent" (tails at a fixed threshold in linear widths); 71 pairs.
 - Everything else (residuals, ratios, moments, widths) is in the ledger appendix.
 
 ## Expert dictionary (Sec. 6)
