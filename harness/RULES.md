@@ -234,7 +234,8 @@ sequencers of their own. `harness/bin/nrpic-queue --help` has the whole usage.
 ```text
 add --label L [--after LABEL] [--priority N] [--note T] [--no-check] -- <arguments of nrpic-run submit>
 add --label L [--after LABEL] [--priority N] [--note T] --cmd 'LINE'    (a line that submits at most one job)
-list [--all] [--owner ID] · show ID · status · remove ID · retry ID · mark-done ID · check-dispatch
+list [--all] [--owner ID] · show ID · status · audit [--all] [--owner ID] · check-dispatch
+remove ID · retry ID [--from-zero] · mark-done ID
 run [--poll S] [--cmd-timeout S] [--keeper S] [--keeper-confirm S] · stop [--wait S] · clear-alert   (orch)
 ```
 
@@ -243,8 +244,8 @@ run [--poll S] [--cmd-timeout S] [--keeper S] [--keeper-confirm S] · stop [--wa
   standing in the main checkout, names another one (`-C wt/<ID> add ...` queues a run for that owner, recorded
   as added by orch; the entry is the owner's and runs in the owner's worktree). From a data root (`scratch/`,
   ...) or outside a worktree these commands refuse; run, stop and clear-alert need the caller in the main
-  checkout. list, show and status read from anywhere. remove, retry, mark-done: an owner its own entries,
-  orch any. Any copy of the command works; the state belongs to the machine.
+  checkout. list, show, status and audit read from anywhere. remove, retry, mark-done: an owner its own
+  entries, orch any. Any copy of the command works; the state belongs to the machine.
 - Submitting a card run: commit first, then from your worktree, with the arguments you would have given
   `nrpic-run submit` (launcher batch or chain; `nrpic-run submit --dry-run` checks them at once):
   `harness/bin/nrpic-queue add --label ball-m2 -- --kind scouting --gate G2 --purpose "..." --launcher chain
@@ -258,18 +259,24 @@ run [--poll S] [--cmd-timeout S] [--keeper S] [--keeper-confirm S] · stop [--wa
   worktree not clean since <time>" in `list`; tried again every fifth look), and while a merge, rebase,
   cherry-pick or revert is in progress there it waits too ("waits: worktree in the middle of a merge"). The
   queue never finishes runs: close them with `nrpic-run finish <run_id>` as before (`show ID` names the run).
-- One after another: `--after LABEL` waits until that entry of yours is done, that is until none of its jobs
-  is in squeue. A job is an entry's by its job id (printed by the entry's command and new at that dispatch,
-  array tasks included), or by name only when the name is the entry's own run id: nrpic-run names a job after
-  its run id and a chain resubmits itself under that name, so a chain is done only after its last segment. A
-  generic name (`batch`, `athena`, `chain-<dir>`) is never used: another job, the user's own too, may carry it,
-  and two entries never claim one job. An entry after one that failed or was removed stays blocked (`status`
-  says so) until that one is retried or this one removed.
+- One after another: `--after LABEL` waits until that entry of yours is done: none of its jobs in squeue and
+  its outcome read as completed (States below). A job is an entry's by its job id (printed by the entry's
+  command and new at that dispatch, array tasks included), or by name only when the name is the entry's own
+  run id: nrpic-run names a job after its run id and a chain resubmits itself under that name, so a chain
+  ends only after its last segment. A generic name (`batch`, `athena`, `chain-<dir>`) is never used: another
+  job, the user's own too, may carry it, and two entries never claim one job. An entry after one that failed,
+  ended without completing (`incomplete`), ended with its outcome unknown (`unknown`) or was removed stays
+  blocked (`status` says so) until that one is retried or marked done, or this one removed.
 - Continuing a cut chain from its restart file: `--cmd` with your wrapper (the line runs with bash in your
   worktree root, inherits the marker, so it may call `nrpic-run submit` inside, and must submit at most one
-  job), after the entry of the chain it continues:
-  `harness/bin/nrpic-queue add --label m2-cont --after ball-m2 --cmd 'tracks/<ID>/.../continue_chain.sh
-  <run_id> 4'`. The wrapper first runs `harness/bin/nrpic-queue check-dispatch || exit 1` (valid only inside
+  job), once the entry of the chain has ended without completing (`incomplete`: its chain/STATUS is not
+  DONE; a chain that reached its end is `done` and needs no continuation). Not with `--after` that entry: an
+  entry after one that ended without completing is blocked. Queue the wrapper, then mark the chain's entry
+  done (the continuation's entry carries the run on):
+  `harness/bin/nrpic-queue add --label m2-cont --cmd 'tracks/<ID>/.../continue_chain.sh <run_id> 4'`, then
+  `harness/bin/nrpic-queue mark-done <id of ball-m2>`. The queue never continues or restarts a chain by
+  itself (`retry` of such an entry is refused without `--from-zero`: it would start the run again from
+  zero). The wrapper first runs `harness/bin/nrpic-queue check-dispatch || exit 1` (valid only inside
   the dispatch; the variable alone proves nothing, see the nrpic-run section), then resumes
   `scripts/submit_chain.sh <run dir> <deck>` in place with `JOB_NAME=<run_id>` (so the queue recognises its
   jobs), `MAX_SEGMENTS` set (the script's default is 100), the same executable and process name, and records
@@ -285,13 +292,46 @@ run [--poll S] [--cmd-timeout S] [--keeper S] [--keeper-confirm S] · stop [--wa
   when they differ). Within a priority the owner served longest ago goes first (round robin); within an owner
   the order of adding. `status` lists the next entries in that order.
 - States: waiting, submitting (its command runs), submitted (it exited 0; run id, job ids and job name kept),
-  done (none of its jobs in squeue at two looks in a row), failed (non-zero exit for another reason than the
-  waits above or the cap, a timeout, or the dispatcher ended during its command; `list` shows the first line
-  of its stderr, `show ID` and `locks/queue/out/<id>.<n>.log` all of it, e.g. "refused: beyond the allotment
-  ..." of a budget that queued entries used up; fix, commit, `retry ID`), removed. What a command submitted
-  is recorded on every outcome: `retry` and `mark-done` refuse while such a job is still queued. An entry that
-  nrpic-run refuses with "queue cap" (a job came in between the two counts, such as a chain's next segment)
-  goes back to waiting.
+  failed (non-zero exit for another reason than the waits above or the cap, a timeout, or the dispatcher
+  ended during its command; `list` shows the first line of its stderr, `show ID` and
+  `locks/queue/out/<id>.<n>.log` all of it, e.g. "refused: beyond the allotment ..." of a budget that queued
+  entries used up; fix, commit, `retry ID`), removed. What a command submitted is recorded on every outcome:
+  `retry` and `mark-done` refuse while such a job is still queued. An entry that nrpic-run refuses with
+  "queue cap" (a job came in between the two counts, such as a chain's next segment) goes back to waiting.
+- How a submitted entry ends (decision 0048 item 6; before it, an entry was marked done whatever had
+  happened to its jobs, and preempted gate runs dropped out silently). When none of its jobs has been in
+  squeue at two looks in a row, the dispatcher reads the outcome: for a chain from the chain's own
+  `chain/STATUS` (scripts/submit_chain.sh), for every other entry from the accounting record (`sacct -n -P
+  -X -j <ids> -o JobID,State,ExitCode,Elapsed`); job states, reason and chain status are recorded in the
+  entry (`acct`, `end_reason`, `chain_status`).
+  - `done`: every job COMPLETED; a chain: `chain/STATUS` DONE (it reached its end; a segment preempted on
+    the way was continued by the chain itself). For a batch, done says the Slurm job completed; whether each
+    member succeeded is in its `batch.list.status` and in `nrpic-run finish`.
+  - `incomplete`, "ended without completing": a job PREEMPTED, CANCELLED, FAILED, TIMEOUT, NODE_FAIL or
+    OUT_OF_MEMORY (also BOOT_FAIL, DEADLINE, REVOKED), or a chain whose `chain/STATUS` is not DONE (FAILED,
+    STOPPED, or QUEUED/RUNNING with no job queued: left between segments, e.g. when Slurm refused its own
+    resubmission). `list`, `show` and `status` show it (`ended without completing: <id> <owner>/<label>:
+    <reason with the job ids>`); the log says it loudly.
+  - Automatic retry: a batch entry (launcher batch, one job, no chain) whose job was PREEMPTED goes back to
+    waiting by itself and is dispatched again, at most twice per entry (`auto_retries`; the earlier attempts
+    in `earlier_runs`, with their run ids; a retry by hand does not renew the count); the third preemption
+    leaves it `incomplete`. A preempted batch starts again from its beginning without harm; each attempt is a
+    new run, and the run of a preempted attempt stays registered (it reserves its requested card-hours until
+    you close it: `show ID` names it). A chain, and a `--cmd` entry, is never retried by itself.
+  - `unknown`, "left the queue, outcome unknown": sacct did not answer, did not know a job, or still listed
+    it as running at each of five looks after the jobs left squeue (sacct can lag by a look or two: the entry
+    stays submitted meanwhile, "waits for the accounting record"), or no job of the entry was ever
+    identified. Logged loudly.
+- What you do with an entry that is not done (`status` lists every one; `show ID` says what to do): a batch
+  that ended without completing: look at its outputs (`nrpic-run status <run_id>`), close its run (`nrpic-run
+  finish <run_id>`, also those of the earlier attempts), then `retry ID` (the submission runs again from its
+  start: a new run) or `mark-done ID` (accept it as it is). A chain that did not reach its end: continue it
+  with your wrapper (above) and `mark-done ID`. An unknown one: read `sacct -j <ids>` and the outputs, then
+  `mark-done ID` or `retry ID`. Entries after it (`--after`) wait until you do. Entries marked done by the old
+  rule: `audit` (read-only) lists, for every done entry with recorded jobs, the accounting state of its jobs
+  and a chain's `chain/STATUS` ("NOT COMPLETED" for a preempted, cancelled, failed or timed-out job or a chain
+  that did not reach its end; `--all` also the other ended entries, `--owner ID` yours); such a run is not
+  in the record as finished: queue it again (or continue its chain). audit changes nothing.
 - The dispatcher (orchestrator, standing in the main checkout). Start it once:
   `cd /data/haiyangw/nrpic && mkdir -p locks/queue && setsid nohup /usr/bin/python3 -I
   /data/haiyangw/nrpic/harness/bin/nrpic-queue run >> /data/haiyangw/nrpic/locks/queue/nohup.out 2>&1
@@ -299,7 +339,8 @@ run [--poll S] [--cmd-timeout S] [--keeper S] [--keeper-confirm S] · stop [--wa
   `locks/queue/STOP`; it ends within a second unless an entry's command runs, and removes the file; queued
   jobs are left alone). `status` shows whether it runs, its pid (`locks/queue/dispatcher.pid`) and the age of
   its heartbeat (HUNG when older than three looks); the log is `locks/queue/queue.log`. Every 120 s
-  (`--poll`) it marks entries done, then submits while fewer than five jobs are queued. It holds
+  (`--poll`) it reads the outcome of entries whose jobs have left squeue (above), then submits while fewer
+  than five jobs are queued. It holds
   `locks/queue/submit.lock` from the count immediately before a submission, through the entry's command, to
   the count after it (nrpic-run accepts the marker only while it is held). The command's output goes to files
   (`out/<id>.<n>.stdout`, `.stderr`, then `.log`), never to pipes, so that nothing it leaves behind can hold

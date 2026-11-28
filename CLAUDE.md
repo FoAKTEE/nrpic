@@ -159,7 +159,13 @@ that the orchestrator reviews.
   the dispatcher submits nothing while the count is at or above five, and an excess is
   removed by hand by the orchestrator. Outside a dispatch, `sbatch`, `srun` and `salloc`
   on the PATH of a local run of `nrpic-run` or of `nrpic-env exec` are stubs that refuse.
-  Details: `harness/RULES.md`, section "Shared card queue".
+  An entry is `done` only when its jobs completed (a chain: its `chain/STATUS` is DONE);
+  one that was preempted, cancelled, failed or timed out, or a chain cut between
+  segments, is `incomplete` ("ended without completing" in `nrpic-queue status`; a
+  preempted batch goes back to waiting by itself at most twice, a chain never): its
+  owner retries it, continues the chain with its wrapper, or marks it done
+  (`nrpic-queue show <id>` says how); `nrpic-queue audit` lists what the older rule
+  marked done. Details: `harness/RULES.md`, section "Shared card queue".
 - The cards are shared with other users of the machine (`squeue` shows their jobs), and a
   partition of higher priority can take both cards for hours and cancel our jobs: a job
   may wait long. Never wait idle for one: work on what needs no card and say in your
