@@ -629,3 +629,29 @@ independent review of decision 0045 item 2. No production run is queued.
 Guard test EG8 (scouting): predictions committed first (excguard entry 1, 6111945a6); processor smoke test
 S1 held (D-20261127-232517-6111945); queued at priority 2 (q0085, run D-20261127-233719-db5be88, job 5536,
 pending at 15:48 PST). Card-hours used by this session so far: 0 (the job had not started).
+
+## 26. Lead session of batch 35 (2026-11-27 17:56 PST on, Opus): the G3 scope review checked, the scope amended
+
+Package reviewed: `g3/scope_review/` (helper of batch 34, fresh context; SCOPE_REVIEW.md, JOURNAL entries
+1-7, five registered processor runs). Checked from its artefacts with code of my own (`g3/amend/tools/
+check_review.py`, run D-20261128-020346-c4079e9, predictions committed first in c4079e991, figure
+`check_review.png` looked at; the reviewer's `dress_model.png` and `g3g3_power.png` looked at as well).
+
+| Finding | Confirmed | How (my numbers) | What the track does |
+|---|---|---|---|
+| B1 G-16 3648 blocks (8.0x), G-12 not a refinement (finest +-4 M), smoke rule rejects every M/16 deck | yes, all three | `athena -m` on decks written by my tool from EG8's deck: 3648, 2176 (+-4 M); my 2:1 derivation 7 x 448 + 512 = 3648 and 7 x 56 + 64 = 456; t = 0 masses 0.99152 (M/8) and 0.99981 (M/16) | A1: uniform family G-8/G-12u/G-16u (456 blocks of 24/36/48 cells, finest +-6 M at 1/8, 1/12, 1/16 [VERIFIED]); smoke rule rewritten; card timing runs before production; t_16 rule within 20 card-hours |
+| B2 tracer-label clock fails by construction | yes | FK at 200 M: nearest-label clock off by up to 12.5 M (R0 24-25 M); own proper times of a 1 M label bin spread 6.2 M | A2: per-particle clock, dtau_p statistic, D1* fixed on G2 snapshots before any G3 card hour, D3 a figure |
+| B3 G3-G3 passes a true signal with 0.11-0.15; G3-G2 ordering does not measure convergence | yes, and extended | independent Monte Carlo: 0.14 (p = 2), 0.10 (p = 1) at 5.8e-4; the reviewer's amended form 0.997 (white) but 0.0 with a 10 M noise correlation time; FL16 - FK -1.1e-3 to -2.0e-3 (size of the reviewer's e_8 - e_16 = +1.48e-3) | A3: G3-G2 with the finder's vacuum offset at matched horizon resolution; G3-G3 a criterion only if its power on measured noise is at least 0.8, otherwise a reported ratio; V-8 withdrawn |
+| S1 16N cost | in part | matched pair FK/FN4 gives 5.2 card-hours (particle part 0.163 per N), the review 7.6 | A4: both quoted, cap 8 |
+| S2-S7 | accepted on reading (not recomputed) | - | A4 wordings |
+| S8 guard factor 10 untested | accepted | - | A1: factor 10 withdrawn; FK's remedy (guard 6.4 M, verified to 399.5 M) in every member |
+
+What I could not confirm: the reviewer's split of e_8 - e_16 into lead (3e-4), vacuum offset (1.19e-3) and a
+nonzero e_inf (B3) is arithmetic on registered numbers I did not recompute; the noise numbers (sd 3.9e-4,
+correlation 0.83) are the reviewer's, and my high-pass check of them (difference sd 2.24e-4 against the
+model's 2.27e-4) tests only their short-time part. Failed predictions of mine: g12s (blocks of 18) has 2472
+blocks over +-3 M, not 3648 over +-6 M (I ignored the alignment of level 7 to level-6 blocks); C3's "spread
+above 2 M in every bin inside 30 M" fails at 27-30 M (0.4-1.1 M).
+
+Scope amended by dated amendments A1-A5 (`scope/SCOPE_G3.md` section 11, commit acee85249), predictions for
+the amended criteria in `g3/amend/JOURNAL.md` entry 4, committed and pushed before any production entry.

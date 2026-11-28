@@ -1,0 +1,7 @@
+# Track D, G3 (scope/SCOPE_G3.md amendment A1; g3/amend JOURNAL entry 3): card timing runs to 2 M of the
+# finer members of the uniform mesh family, in one card job; they replace processor smoke tests.
+# t12u: G-12u (root 144, blocks of 36, 456 blocks, dx 1/12 to +-6 M); t16u: G-16u (root 192, blocks of 48,
+# 456 blocks, dx 1/16 to +-6 M). Release core-v0.8. Read: finder status at t = 0, block counts in the log,
+# wall seconds per M, card memory.
+t12u tracks/D-bh-dress/g3/amend/decks/g3g12u_t2.athinput
+t16u tracks/D-bh-dress/g3/amend/decks/g3g16u_t2.athinput

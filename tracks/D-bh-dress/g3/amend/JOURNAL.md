@@ -5,7 +5,7 @@ Owner D-bh-dress, lead of batch 35 (2026-11-27 evening). Purpose: decision 0048 
 the three blocking findings B1-B3 with numbers of its own, from the artefacts (decks, run outputs), with
 code written here and not the reviewer's tools, and then amends `scope/SCOPE_G3.md` by dated amendments.
 
-## Entry 1 (2026-11-27 18:05 PST, before any run of this package): predictions and what refutes them
+## Entry 1 (2026-11-27 18:03 PST, committed in c4079e991 before any run of this package): predictions and what refutes them
 
 Tool: `tools/check_review.py` (one registered processor run, one core; `athena -m` of the processor build
 of core-v0.8 for the mesh structure, then readers of registered outputs; one figure `check_review.png`).
@@ -22,7 +22,7 @@ G-8 everywhere): root 144 cells with blocks of 36 (G-12u) and root 192 with bloc
 456 blocks with G-8's level extents, finest dx 1/12 and 1/16 M, finest level +-6 M; root 144 with blocks
 of 18: 3648 blocks with G-8's extents. Refuted if `athena -m` gives any other count or extent.
 C2 (B1, the smoke rule). The finder at t = 0 (first record of the summaries): FK (M/8) 0.99152, FL16 (M/16)
-0.99981 [both read at 18:01 from the summaries of D-20261123-022725-a553496 and D-20261124-172745-72472ed];
+0.99981 [both read at 18:01 PST, before entry 1 was committed, from the summaries of D-20261123-022725-a553496 and D-20261124-172745-72472ed];
 the data's horizon is that of Schwarzschild of M = 1, so the offsets are -8.5e-3 and -1.9e-4, and the rule
 "within 3e-4 of ES-F's 0.9915" rejects every finer deck. Refuted if a finer deck could land within 3e-4 of
 0.9915 while converging toward 1, i.e. if FL16's t = 0 mass were within 3e-4 of 0.9915.
@@ -50,7 +50,7 @@ pair FK/FN4, EVIDENCE.md lines 59-61). The cost of a deck is G-8's mesh cost tim
 cells with ghost zones (upper) over G-8's, times the step ratio, plus the particle part times the step
 ratio. Expected: G-16 as written 25-45 card-hours; G-12u 6-14; G-16u 18-42; G-16b 8-25.
 
-## Entry 2 (2026-11-27 18:25 PST): outcome of C1-C6 (run D-20261128-020346-c4079e9, figure looked at)
+## Entry 2 (2026-11-27 18:06 PST, committed in 50e2cb650): outcome of C1-C6 (run D-20261128-020346-c4079e9, figure looked at)
 
 `check_review.json` and `check_review.png` in `scratch/D-bh-dress/D-20261128-020346-c4079e9/`.
 - C1 held for every deck I predicted except one: g8 456, g16c 3648 (finest +-6 M), g16r 512 (+-3 M), g16b
@@ -81,7 +81,7 @@ ratio. Expected: G-16 as written 25-45 card-hours; G-12u 6-14; G-16u 18-42; G-16
   card-hours per N to 400 M (EVIDENCE.md: FK 2.70, FN4 3.19), not the reviewer's 0.37 (ES-FL at 500 M scaled
   against FN4): G-8-16N then costs 2.70 + 15 x 0.163 = 5.2 card-hours (reviewer 7.6, scope 5.5).
 
-## Entry 3 (2026-11-27 18:28 PST, before the runs): predictions for the smoke test of G-8 and the card timing runs of G-12u and G-16u
+## Entry 3 (2026-11-27 18:06 PST, committed in 50e2cb650 before the runs): predictions for the smoke test of G-8 and the card timing runs of G-12u and G-16u
 
 Decks `decks/g3g8*.athinput`, `g3g12u*`, `g3g16u*` (tools/make_g3_decks.py; diff against EG8: tlim 400 M,
 initial_radius_0 1.6 with ah_exc_max_growth 4 (FK's guard radius 6.4 M), z4c slices every 5 M; G-12u root 144
@@ -100,7 +100,7 @@ Refuted if a run does not fit a card, the search is not found, a mass falls outs
 leaves its band; a cost above the band ends the full-time mesh leg as designed (amendment A1 then restricts it
 in time).
 
-## Entry 4 (2026-11-27 18:40 PST, before any amended criterion is read): predictions for SCOPE_G3 amendments A1-A4
+## Entry 4 (2026-11-27 18:09 PST, committed in acee85249 before any amended criterion is read): predictions for SCOPE_G3 amendments A1-A4
 
 - P-A1 (family): G-12u's and G-16u's timing runs fit one card; t = 0 masses as entry 3; T-16u's cost puts
   G-16u to 400 M at 18-30 card-hours, so t_16 lies in [270, 400] M [JUDGEMENT]. Refuted if t_16 < 200 M.
