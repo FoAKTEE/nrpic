@@ -1,37 +1,34 @@
 # STATUS of E-stoch-inf
 
-gate:        G0 PASS (2026-11-20), G1 PASS with reservations (2026-11-21), G2 PASS with
-             reservations (2026-11-24; coord/GATES.md). G3 open: scope SCOPE 4d + 4d.9 A1-A14;
-             stage/G3/OPEN.md (baseline not yet run: 246 of 256 runs wait in or outside the queue).
-reproduction: complete (decision 0028); working note repro/note/manuscript/main.pdf.
-last-result: Lead batch 27 (2026-11-26 03:44-04:55 PST, processors only, at most 6 cores):
-             - G3C (q0051, E-20261126-030044-6933f21) and G3R (q0052, E-20261126-041110-0a78c93)
-               closed (completed; 15.8 and about 21 card-minutes).
-             - G3-C (4d.4 + A6) PASSES as written (E-20261126-115943-32970f2): model test at all
-               ten dumps of cN [2.0, 6.6]; every judged factor within 8.4e-4 of 4 (H 8/5, M 8/6
-               dumps); the 4c two-amplitude estimator leaves the band late (3.55-5.27): the G2 miss
-               of U-A4'(a) is the floor estimator's.
-             - G3-R (4d.5 + A7) PASSES as written (E-20261126-120438-9d48377): factor of max D^L
-               3.12, median per-mode ratio 2.63, sign 100 % of 8538 modes; T changes 5.6e-4.
-             - Zeta table map (g3/zeta_table.py): about 20 s a 128^3 member instead of 1.5 core-h
-               (R41 closed). TB-1 FAILED as written (5.4e-9 vs bar 1e-10; E-20261126-115112-43da266);
-               diagnostic (E-20261126-115925-a2c6da5) refutes both predicted causes: round-off of the
-               double-precision map, about 1e-9 per cell, worse at 16000 steps. Rule of entry 12 met
-               (verifier 3.9e-9 at b000; spot checks <= 5.9e-9 on all ten members).
-             - Pilot zeta (E-20261126-120434-5dda273): P5-5 holds on every clause (skew 0.0200;
-               skew(zeta) + skew(R) 0.0204-0.0208; A(3) 0.082; F_+(4)/Q 1.195, F_-(4)/Q 0.751);
-               P5-3 FAILED as written (3.2-4.1e-9 vs 1e-9; the same round-off).
-card plan:   waiting at low priority, not moved since batch 23: q0053/q0054 G3B00/01 (28 runs),
-             q0061-q0065 G3B02-06 (110 runs), q0066 G3L00 (level-2 pairs 0-4 + kdriver records).
-             Not yet queued: pairs 74-127 (108 runs), level-2 pairs 5-15.
-runs pending: cards as above. Processors: none.
-next:        1. When baseline jobs end: close, read R^NR and zeta per member (read_pilot.py
-               --map table --msteps 4000), then the pair statistics (A5) and (V), (T), A4.
-             2. Queue pairs 74-127 (five lists through check_lists.py) when the queue moves; level-2
-               pairs 5-15 after G3L00 measures the level-2 cost.
-             3. sigma = 0.1 coarse-graining bound of A10 (R39); package items C5-C17, fresh verifier.
-blockers:    card queue order only (G3 needs about 10.6 card-hours; requests_to_orch).
-needs:       orch: priority for the G3 baseline entries; note of TB-1/P5-3 failures (no ruling needed).
-offers:      g3/zeta_table.py (fast delta-N reader on a box); langevin/: G3 reference of the 128 band.
-budget:      G3 allotment 60 card-hours: 0.96 used (pilot 0.35, G3C 0.26, G3R 0.35); queued about
-             5.5 (G3B00-06, G3L00). This session: no card submission, no queue entry.
+gate:        G0 PASS (2026-11-20), G1 PASS with reservations (2026-11-21), G2 PASS with reservations
+             (2026-11-24; coord/GATES.md). G3 open, NOT ready for review: scope SCOPE 4d + 4d.9 A1-A14;
+             stage/G3/OPEN.md (57 of 128 baseline pairs and all 16 level-2 pairs not yet run).
+reproduction: complete (decision 0028); working note repro/note/manuscript/main.pdf (G3 section V added).
+last-result: Lead batch 34 (2026-11-27 15:21-16:50 PST, processors only, at most 6 cores):
+             - Found: G3B06 (job 5419) and G3L00 (job 5420) were cut by preemption on 2026-11-26 (17 of
+               22 and 0 members); the queue marks preempted batch jobs "done". Complete: pairs 0-70, p071.
+             - All card runs closed; 143 boxes read with the cleared table map (8 readings, g3 entry 17):
+               all healthy (max H' 7.2e-12, max M 0.032, spot check <= 6.7e-9); 0.0349 card-h a run.
+             - Pair statistics on 71 pairs (E-20261128-000627-00ed437) against the 128-band reference
+               (two direct 4e6 runs pooled, importance-sampled nu = 4):
+               (T) AGREES on every item: skewness 0.019721 +- 0.000010 vs 0.01985 +- 0.00088; kurtosis
+               0.0014 vs 0.0015; F_pm(3) -1.5/+1.35, F_pm(4) +1.1/+1.8, A(3) -2.1, A(4) -2.1 combined s.e.
+               (V) FAILED as written: variance +0.28 +- 0.07 per cent (4.1 s.e.): NR 1.0013 of the lattice
+               sum, reference 0.9985. Cause not named.
+               Mirroring cuts the skewness error 40-fold; a_zeta = 6.65e-3 per pair, a_R = 3.0e-4.
+             - Note: G3 section V, five figures (ladder, mosaic, one-point, tails, pairs), 17 ledger rows;
+               checker clean, compiled, pages read (runs E-20261128-000901-9c289e9, -001644-500a097).
+card plan:   re-queued at priority 2 after repeated preemption (g3 entries 14, 16, 18): G3B07b q0079
+             (running, job 5537), G3B08b-G3B10b q0080-q0082 (jobs 5538, 5540, 5541 pending), G3B11b
+             q0083, G3L00b q0084, G3L01b q0087, G3L02b q0088 (waiting). About 6 card-hours in all.
+runs pending: the eight entries above (their run ids: harness/bin/nrpic-queue show <qid>).
+next:        1. As jobs end: finish, read each with read_pilot.py --save-fields, rerun pairs_g3.py --pairs
+               0-127 (entry 17 lists the readings); level-2 pairs against level 0 (4d.7, reported).
+             2. A4 on the saved fields; the sigma-paired reference (R39) to bound the coarse-graining and
+               to test the variance difference.
+             3. Fresh verifier on the full set; full checksum pass (nrpic-stage verify --full).
+blockers:    cards held by another partition for long stretches (preemptions within seconds).
+needs:       orch: preempted batch jobs reported as preempted, not "done" (queue); priority for q0079-q0088.
+offers:      g3/pairs_g3.py (pair statistics against the one-patch reference); g3/zeta_table.py.
+budget:      G3 allotment 60 card-hours: about 6 used (pilot 0.35, G3C 0.26, G3R 0.35, baseline 143 runs
+             5.0, preempted fragments); about 6 queued.

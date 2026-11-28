@@ -1,14 +1,14 @@
 # Stage report: E-stoch-inf G3
 
-Date: 2026-11-26 · branch `track/E-stoch-inf` at `7d111eae8049` · checklist
+Date: 2026-11-28 · branch `track/E-stoch-inf` at `4240d6ede6ff` · checklist
 `tracks/E-stoch-inf/stage/G3/CHECKLIST.md` (from `nrpic-stage collect`)
 
 ## Verdict
 
-**FAIL**. Tag: `stage/E-stoch-inf/G3-fail-20261126` (created and pushed by the orchestrator after review, decision 0003).
+**FAIL**. Tag: `stage/E-stoch-inf/G3-fail-20261128` (created and pushed by the orchestrator after review, decision 0003).
 
-- 18 checklist items not PASS or NA: C1 OPEN, C2 OPEN, C3 OPEN, C4 OPEN, C5 OPEN, C6 OPEN, C7 OPEN, C9 OPEN, C10 OPEN, C11 OPEN, C12 OPEN, C13 OPEN
-- verify ran on c42d4e5; files changed since: coord/BOARD.md, coord/DECISIONS/0039-rulings-after-batch-17.md, coord/DECISIONS/0041-rulings-after-batch-20.md, coord/DECISIONS/0042-rulings-after-batch-21.md, coord/DECISIONS/0043-rulings-after-batch-23.md, coord/DECISIONS/0044-rulings-after-batch-25.md (run verify again)
+- 14 checklist items not PASS or NA: C1 OPEN, C2 OPEN, C3 OPEN, C5 OPEN, C6 OPEN, C7 OPEN, C9 OPEN, C10 OPEN, C11 OPEN, C12 OPEN, C13 OPEN, C15 OPEN
+- verify reported FAIL: runs
 - no VERIFIER.md (step 7: verifier subagent; decision 0016 item 1, VERIFIER_REPORT.md accepted too)
 - no stage/G3/EVIDENCE.md (decision 0012)
 
@@ -28,35 +28,35 @@ Date: 2026-11-26 · branch `track/E-stoch-inf` at `7d111eae8049` · checklist
 
 | # | Criterion | Evidence (run id, figure, KB locator) | Result |
 |---|---|---|---|
-| C1 | The pre-registered scan is complete | not complete (batch 27): pilot E-20261126-002413-65295f3 read (R^NR entry 9, zeta entry 13); G3C E-20261126-030044-6933f21 and G3R E-20261126-041110-0a78c93 done and read; baseline G3B00-G3B06 (q0053, q0054, q0061-q0065: 138 runs) and G3L00 (q0066) waiting, not moved since batch 23; pairs 74-127 (108 runs) and level-2 pairs 5-15 not yet queued; about 10.6 card-hours remain (stage/REVIEW-wave3.md K.3). The zeta reader is now cheap enough for 256 members (table map, R41 closed, entry 13) | OPEN |
-| C2 | Robustness checks | G3-C PASSES as written (E-20261126-115943-32970f2, fig_g3c.png); G3-R PASSES as written (E-20261126-120438-9d48377, fig_g3r.png); level 2 (4d.7 with A11) waits for G3L00 (q0066) and pairs 5-15; gauge leg withdrawn as a criterion, stated as a limitation (A8, decision 0040 item 1) | OPEN |
-| C3 | Comparison with the literature | reference: corrected one-patch delta N of the 128 band (A1; pilot E-20261125-151340-743c38c passes the variance gate 0.9993 +- 0.0032); 4e6 direct E-20261125-152832-c301e92 (gate 0.99865 +- 0.00058, skewness 0.0199 +- 0.0012); importance-sampled nu = 4 E-20261125-160658-855db8c (g3/amend entry 10); sigma = 0.1 lattice E-20261125-160722-a6d1f26 (gate failed, bound of A10 not reached; entry 9); model and landmarks of the reference = the deck (TO VERIFY of 4d.3 settled, E-20261125-161456-8d3f43c) | OPEN |
-| C4 | Null results and failed runs are on record | on record: batch 19-21 items as before (amend entries 4-9, zeta entries 6-7); batch 23: pilot members k/l failed at start-up (entry 5, R42); three reading runs stopped (E-20261126-022447-40a80b4, -022448-9510ee9, -024953-ed2d15f: map too slow, entries 7-8); G3P-3 sd clause failed by 0.3 per cent (entry 9); Z1 as run stays failed as written (zeta entry 9, decision 0042 item 1); Z2(iii) failed as written; batch 27: TB-1 of the table failed as written (E-20261126-115112-43da266), both alternatives of the diagnostic refuted (E-20261126-115925-a2c6da5), the 16000-node pilot reading not judged (E-20261126-115929-84cd060), P5-3 failed as written (entry 13) | OPEN |
-| C5 | Result figures and tables | — | OPEN |
-| C6 | The numerical ledger in the Supplemental Material | — | OPEN |
-| C7 | Tail statistics, compared with E-pre-3 | the criterion of the track sheet; its statistic, estimator and criteria are SCOPE 4d + 4d.9 (A2 judges variance and tail shape apart) | OPEN |
+| C1 | The pre-registered scan is complete | not complete (batch 34): 71 of 128 mirrored pairs read (pairs 0-70; runs G3B00-G3B06, readings listed in g3/JOURNAL.md entry 17); pairs 71-127 re-queued after preemptions (q0079-q0083: G3B07b running as job 5537, others pending); level 2 (16 pairs) not run, re-queued (q0084, q0087, q0088) | OPEN |
+| C2 | Robustness checks | G3-C PASSES (E-20261126-115943-32970f2); G3-R PASSES (E-20261126-120438-9d48377); level 2 (4d.7, reported) not run (preempted three times, re-queued); gauge leg withdrawn, slicing limitation stated (A8); mirroring gain 40 on the skewness error (E-20261128-000627-00ed437) | OPEN |
+| C3 | Comparison with the literature | comparison with one-patch delta N of the same band stated with errors on 71 pairs (E-20261128-000627-00ed437; g3 entry 17): tail shape (T) agrees on every item (skewness -0.15, kurtosis -0.03, F_pm(3) -1.5/+1.35, F_pm(4) +1.1/+1.8, A(3) -2.1, A(4) -2.1 combined s.e.); variance (V) differs, +0.28 +- 0.07 per cent (4.1 s.e.); reference: pooled direct E-20261125-152832-c301e92 + E-20261125-163825-ca2ebaa, sampler E-20261125-160658-855db8c; A4 not yet computed; sigma = 0.1 bound open (R39) | OPEN |
+| C4 | Null results and failed runs are on record | on record: batch 19-27 items as before; batch 34: preemption of G3B06 (17 of 22 members) and G3L00 (none), six re-queued jobs preempted within seconds and G3L01/G3L02 after 68 s (g3 entries 14, 16, 18; runs closed as stopped); (V) of entry 4 FAILED as written (entry 17); P5-3 would fail again on every box (round-off, entry 17) | PASS |
+| C5 | Result figures and tables | fig_g3_onepoint, fig_g3_tails, fig_g3_pairs (E-20261128-000627-00ed437); fig_g3_mosaic (E-20261128-001644-500a097); interim on 71 pairs | OPEN |
+| C6 | The numerical ledger in the Supplemental Material | ledger section 'Tail statistics' of the working note (17 rows, repro/note/manuscript/tables/ledger.tex, run E-20261128-001644-500a097); no independent check yet | OPEN |
+| C7 | Tail statistics, compared with E-pre-3 | SCOPE 4d + 4d.9 judged on 71 pairs (g3 entry 17): (T) agrees, (V) failed as written; the statement on 128 pairs and level 2 wait for their runs | OPEN |
 | C8 | Track E. Decision of the feasibility gate, pending the group: continue to G1 and G2 (about two card-hours); the scope of G3 is decided at G2. The lead's choices of `spec/scope/SCOPE.md` section 4 are accepted. (0013) | decision 0013 concerned G0-G2; the scope of G3 was decided by decisions 0038 item 2 and 0040 item 1 and is written in SCOPE 4d with 4d.9 | NA |
-| C9 | Schematic: Sketch of the parameter space | — | OPEN |
-| C10 | Data figure: Main results | — | OPEN |
-| C11 | Data figure: Robustness | — | OPEN |
-| C12 | Data figure: Comparison with the literature | — | OPEN |
-| C13 | Package documents of decision 0012: STAGE_REPORT.md (nrpic-stage report), EVIDENCE.md, OPEN.md and this CHECKLIST.md in the stage directory; REVIEW.md where the lead rechecked helpers; the scoping text in SCOPE.md or SCOPING.md beside them or in the scope directory, named in the report (no REPORT.md needed) | — | OPEN |
-| C14 | Data figures drawn with /zoom-figure-style from registered run outputs, one script per figure, every PNG looked at | — | OPEN |
-| C15 | Schematics drawn with /sleep-paper-figure-style: track architecture (exists / to be ported / new) and the gate timeline | — | OPEN |
-| C16 | Working note written with /paper-writing; its manuscript checker passed with --compile | — | OPEN |
-| C17 | Verifier subagent (fresh context) wrote VERIFIER.md (decision 0016; VERIFIER_REPORT.md accepted too); every number of the Supplemental Material recomputed from the manifests | — | OPEN |
-| C18 | Null results and failed runs are on record (manifests and JOURNAL) | manifests of every run above (status failed or stopped where so) and the journal entries g3 5-13, zeta 8-9 | OPEN |
-| C19 | STATUS.md, JOURNAL.md and HANDOFF.md are current | current at the end of batch 27 (STATUS.md, JOURNAL.md, HANDOFF.md) | OPEN |
+| C9 | Schematic: Sketch of the parameter space | schematic of the verification ladder at G3 (schem_ladder_g3.py; Fig. 16 of the note); parameter-space sketch not drawn (one scenario, one band) | OPEN |
+| C10 | Data figure: Main results | Figs. 18-19 of the note (one-point density with tail, tail fractions against threshold), interim | OPEN |
+| C11 | Data figure: Robustness | Fig. 20 (mirrored pairs, even-part coefficient); G3-C and G3-R figures of batch 27 (fig_g3c.png, fig_g3r.png); level 2 missing | OPEN |
+| C12 | Data figure: Comparison with the literature | Figs. 18-19 compare with one-patch delta N of the same band (the literature comparison of S11) | OPEN |
+| C13 | Package documents of decision 0012: STAGE_REPORT.md (nrpic-stage report), EVIDENCE.md, OPEN.md and this CHECKLIST.md in the stage directory; REVIEW.md where the lead rechecked helpers; the scoping text in SCOPE.md or SCOPING.md beside them or in the scope directory, named in the report (no REPORT.md needed) | STAGE_REPORT.md (nrpic-stage report), OPEN.md, CHECKLIST.md, review in stage/REVIEW-wave3.md part L; scope in spec/scope/SCOPE.md 4d; EVIDENCE.md not yet written | OPEN |
+| C14 | Data figures drawn with /zoom-figure-style from registered run outputs, one script per figure, every PNG looked at | every G3 data figure from a registered script (g3/pairs_g3.py, note scripts fig_g3_mosaic.py) in the figstyle library, each PNG looked at (REVIEW-wave3 L.2) | PASS |
+| C15 | Schematics drawn with /sleep-paper-figure-style: track architecture (exists / to be ported / new) and the gate timeline | ladder schematic at G3 drawn (paperfig); architecture and timeline schematics of the note not updated for G3 | OPEN |
+| C16 | Working note written with /paper-writing; its manuscript checker passed with --compile | G3 section V of repro/note/manuscript/main.tex written with the paper-writing guide; checker run with --compile: 0 undefined references, 0 overfull boxes, only earlier hits in scripts; pages 12-15 read; interim text on 71 pairs | OPEN |
+| C17 | Verifier subagent (fresh context) wrote VERIFIER.md (decision 0016; VERIFIER_REPORT.md accepted too); every number of the Supplemental Material recomputed from the manifests | fresh verifier not yet sent (after the remaining pairs and level 2) | OPEN |
+| C18 | Null results and failed runs are on record (manifests and JOURNAL) | manifests of every run above (status stopped where preempted) and journal entries g3 5-18, zeta 8-9 | PASS |
+| C19 | STATUS.md, JOURNAL.md and HANDOFF.md are current | STATUS.md, JOURNAL.md, HANDOFF.md current at the end of batch 34 | PASS |
 
 ## Re-verification on a clean checkout (`nrpic-stage verify`)
 
-`nrpic-stage verify` on 2026-11-25T16:50:43Z, clean export of `c42d4e521df2`: **PASS**. Details: `VERIFY_RESULTS.md`.
+`nrpic-stage verify` on 2026-11-28T00:30:20Z, clean export of `4240d6ede6ff`: **FAIL**. Details: `VERIFY_RESULTS.md`.
 
 | Check | Result | Message |
 |---|---|---|
 | clean | PASS | worktree clean (outside the stage directory being assembled) |
 | sync | PASS | main is merged into the branch |
-| export | PASS | clean export of c42d4e521df2 (HEAD) in /data/haiyangw/nrpic/scratch/E-stoch-inf/tmp/stage-verify/E-stoch-inf-G3-c42d4e5-20261125T165017Z/tree |
+| export | PASS | clean export of 4240d6ede6ff (HEAD) in /data/haiyangw/nrpic/scratch/E-stoch-inf/tmp/stage-verify/E-stoch-inf-G3-4240d6e-20261128T002045Z/tree |
 | size | PASS | no committed file of the track above 5 MB |
 | note | PASS | tracks/<ID>/note/main.tex present |
 | package | WARN | stage/G3/ lacks EVIDENCE.md (decision 0012; STAGE_REPORT.md comes from `report`); scoping text: spec/scope/SCOPE.md; no verifier's report yet (VERIFIER.md, decision 0016) |
@@ -64,12 +64,14 @@ Date: 2026-11-26 · branch `track/E-stoch-inf` at `7d111eae8049` · checklist
 | style | PASS | 2 style copies equal harness/style/SHA256SUMS (czstyle.py, paperfig.py) |
 | fig-script | PASS | 12 figures, each with its script |
 | min-figs | PASS | 3 schematics and 9 data figures (brief 13.4 asks at least 1 and 1 at G3) |
-| runs | PASS | 318 run manifests finished (30 hand-written, read as decision 0012 allows); failures of 7 runs waived by coord/WAIVERS.md (decision 0019) |
+| runs | FAIL | 4 of 368 runs have problems; 7 waived |
 | runs-waived | WARN | failures of the manifest check waived: 7 runs named in main's coord/WAIVERS.md (decision 0019 item 6): E-20261123-035724-b661081: records scratch/core/exe/core_noise-level2/athena_gpu (sha256 468109496c82...), replaced in place on 2026-11-24; the file that ran is kept unchanged as scratch/core/exe/core_noise-level2_6ca93cba/athena_gpu (tracks/core/EXE_PROVENANCE.md on core/nrpic); outputs unaffected (decision 0039 item 1); E-20261123-152119-38957ba: records scratch/core/exe/core_noise-level2/athena_gpu (sha256 468109496c82...), replaced in place on 2026-11-24; the file that ran is kept unchanged as scratch/core/exe/core_noise-level2_6ca93cba/athena_gpu (tracks/core/EXE_PROVENANCE.md on core/nrpic); outputs unaffected (decision 0039 item 1); E-20261123-153146-d965002: records scratch/core/exe/core_noise-level2/athena_gpu (sha256 468109496c82...), replaced in place on 2026-11-24; the file that ran is kept unchanged as scratch/core/exe/core_noise-level2_6ca93cba/athena_gpu (tracks/core/EXE_PROVENANCE.md on core/nrpic); outputs unaffected (decision 0039 item 1); E-20261123-153347-18e7c21: records scratch/core/exe/core_noise-level2/athena_gpu (sha256 468109496c82...), replaced in place on 2026-11-24; the file that ran is kept unchanged as scratch/core/exe/core_noise-level2_6ca93cba/athena_gpu (tracks/core/EXE_PROVENANCE.md on core/nrpic); outputs unaffected (decision 0039 item 1); E-20261123-164235-49b0945: records scratch/core/exe/core_noise-level2/athena_gpu (sha256 468109496c82...), replaced in place on 2026-11-24; the file that ran is kept unchanged as scratch/core/exe/core_noise-level2_6ca93cba/athena_gpu (tracks/core/EXE_PROVENANCE.md on core/nrpic); outputs unaffected (decision 0039 item 1) |
 | run-notes | WARN | 30 runs read with defaults or not fully re-verifiable (nrpic-run lint) |
 | checksums | WARN | output checksums not re-verified (--no-checksums) |
-| status | PASS | STATUS.md has 40 lines |
-| rerun | WARN | re-run skipped (--no-rerun) |
+| status | PASS | STATUS.md has 37 lines |
+| rerun | PASS | 12 of 12 scripts and commands ran cleanly in the export |
+| compare | PASS | 24 regenerated files compared with the committed ones; 0 differ beyond tolerance (rtol 1e-06, atol 1e-12, PNG rms 0.005) |
+| regenerate | PASS | all 24 committed figure files regenerated |
 
 ## Figures
 
@@ -134,6 +136,16 @@ MISSING: the verifier subagent has not reported (`stage/G3/VERIFIER.md`, decisio
 - `E-20261126-022447-40a80b4`: stopped (exit -15), G3 pilot read (g3/JOURNAL.md entries 2, 4, 5): R^NR and zeta (lead's reader, 4000 steps) on the ten baseline members of E-20261126-002413-65295f3; G3P-1..3, P5-1, P5-3..5
 - `E-20261126-022448-9510ee9`: stopped (exit -15), G3: the lead's and the verifier's zeta readers cell by cell on pilot member b000 at N_f (g3/JOURNAL.md entry 5, P5-2; zeta_verify README Request 3)
 - `E-20261126-024953-ed2d15f`: stopped (exit -15), G3 pilot read (g3/JOURNAL.md entries 2, 4, 5, 7): R^NR and zeta (lead's reader, 1000 steps, 4000-step check on 20000 cells) on the ten baseline members of E-20261126-002413-65295f3; G3P-1..3, P5-1, P5-3..5
+- `E-20261127-011021-d486e1b`: stopped (exit 1), G3 baseline (SCOPE 4d.9 A5), job 6: mirrored pairs 63-73, 128^3, dumps at t = 0 and tlim; predictions g3/JOURNAL.md entries 2, 4 and 6 (C6-1, C6-3)
+- `E-20261127-011026-3ddef60`: stopped (exit 1), G3 level 2 (SCOPE 4d.7 with A11), job 0: mirrored pairs 0-4 at noise_level = 2, with the pilot's kdriver members k000/k001 for the A8 record; measures the level-2 cost; predictions g3/JOURNAL.md entries 2, 4, 6
+- `E-20261127-232703-090c8ee`: stopped (exit 1), G3 baseline (SCOPE 4d.9 A5), m071 and mirrored pairs 72-81, 128^3, dumps at t = 0 and tlim; re-queued after preemption of job 5419 (g3/JOURNAL.md entry 14); predictions entries 2, 4, 6 (C6-1, C6-3)
+- `E-20261127-232704-ea5f466`: stopped (exit 1), G3 baseline (SCOPE 4d.9 A5), mirrored pairs 82-92, 128^3, dumps at t = 0 and tlim; re-queued after preemption of job 5419 (g3/JOURNAL.md entry 14); predictions entries 2, 4, 6 (C6-1, C6-3)
+- `E-20261127-232706-adde60b`: stopped (exit 1), G3 baseline (SCOPE 4d.9 A5), mirrored pairs 93-103, 128^3, dumps at t = 0 and tlim; re-queued after preemption of job 5419 (g3/JOURNAL.md entry 14); predictions entries 2, 4, 6 (C6-1, C6-3)
+- `E-20261127-232707-e5d2e68`: stopped (exit 1), G3 baseline (SCOPE 4d.9 A5), mirrored pairs 104-114, 128^3, dumps at t = 0 and tlim; re-queued after preemption of job 5419 (g3/JOURNAL.md entry 14); predictions entries 2, 4, 6 (C6-1, C6-3)
+- `E-20261127-232708-8451c1e`: stopped (exit 1), G3 baseline (SCOPE 4d.9 A5), mirrored pairs 115-125, 128^3, dumps at t = 0 and tlim; re-queued after preemption of job 5419 (g3/JOURNAL.md entry 14); predictions entries 2, 4, 6 (C6-1, C6-3)
+- `E-20261127-232910-4cf6b15`: stopped (exit 1), G3 level 2 (SCOPE 4d.7 with A11), level-2 mirrored pairs 0-4 with k000 k001, 128^3; re-queued after preemption of job 5420 (g3/JOURNAL.md entry 14); predictions entries 2 (G3-L2), 4 (A8), 6 (C6-2, C6-4)
+- `E-20261127-232915-206b9ba`: stopped (exit 1), G3 level 2 (SCOPE 4d.7 with A11), level-2 mirrored pairs 5-10, 128^3; re-queued after preemption of job 5420 (g3/JOURNAL.md entry 14); predictions entries 2 (G3-L2), 4 (A8), 6 (C6-2, C6-4)
+- `E-20261127-232917-76e1e18`: stopped (exit 1), G3 level 2 (SCOPE 4d.7 with A11), level-2 mirrored pairs 11-15 with baseline pairs 126-127, 128^3; re-queued after preemption of job 5420 (g3/JOURNAL.md entry 14); predictions entries 2 (G3-L2), 4 (A8), 6 (C6-2, C6-4)
 - `E-stoch-inf-20261115-125316-dafadc4`: failed (exit 1), V2: quadratic inflation m = M_Pl, phi_in = phi_UV = sqrt42 (2206.11234 Fig. 2): Monte Carlo (direct and importance sampling) vs closed-form characteristic function, BDF2 survival solver, moment recursion; pole structure
 - `E-stoch-inf-20261115-131526-629fed8`: failed (exit 1), T-N6 of noise/JOURNAL.md: calibration of the A3 decisions (KS of |w|^2 and arg w, fourth moment) on correct amplitudes, 2000 seeds of the base case; single-decision calibration and family-wise false-alarm rate per validation
 
@@ -182,4 +194,4 @@ Labels as in the brief.
 
 ## Decision requested from the group
 
-Not ready for review (lead batch 27): G3-C and G3-R pass as written and the zeta reader is fast enough; the baseline (246 of 256 runs, about 8.6 card-hours) and level 2 (about 2.0) have not run; stage/G3/OPEN.md
+Not ready for review: 71 of 128 pairs read; (T) agrees, (V) failed as written; level 2 not run; pairs 71-127 and level 2 queued (q0079-q0084, q0087, q0088); the one failed check of verify is the four card runs still in flight

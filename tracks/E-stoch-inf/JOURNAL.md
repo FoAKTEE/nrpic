@@ -742,3 +742,20 @@ Card-hours this session: 0.
 - Failed predictions: TB-1; both alternatives of entry 11 (and the table16000 bar); P5-3. Failed runs: none.
 - Review stage/REVIEW-wave3.md part K; stage G3 OPEN.md, CHECKLIST.md updated, verified and reported (open).
 - Card-hours this session: 0 submitted; 0.61 card-h of G3C/G3R ended since the last session.
+
+## 2026-11-27 lead batch 34 (15:21-16:50 PST, processors only, at most 6 cores; no helpers)
+
+- Found: the G3 baseline jobs G3B00-G3B05 complete; G3B06 (job 5419) and G3L00 (job 5420) cut by preemption on 2026-11-26
+  (17 of 22 members and none); the queue had marked them done. Pairs 0-70 and p071 complete; level 2 none.
+- Re-queued pairs 71-127 and level-2 pairs 0-15 at priority 2 (lists by g3/inputs/gen_lists.py, checked); most re-queued
+  jobs were preempted within seconds and were queued again (g3 entries 14, 16, 18). Closed 8 card runs (finish) and 8 cut
+  runs as stopped.
+- Prediction first (g3 entry 15, committed before any read), then 8 registered readings of 143 boxes and the registered
+  pair statistics E-20261128-000627-00ed437 (g3 entry 17): (T) agrees on every item; (V) FAILED as written (+0.28 +- 0.07
+  per cent, 4.1 s.e.); P15-1..4, C6-1, C6-3 hold. Figures looked at (one-point, tails, pairs, mosaic, ladder).
+- Working note: G3 section V with five figures and 17 ledger rows (runs E-20261128-000901-9c289e9, E-20261128-001644-
+  500a097); checker clean, compiled, pages 12-15 read; PDF recompressed with ghostscript to stay under the 5 MB hook.
+- Stage G3: review part L, CHECKLIST, OPEN, verify (one failed check: four card runs still in flight), report. G3 is not
+  complete for review.
+- Failed predictions: (V) of entry 4 (first clause). Failed runs: preemptions of jobs 5419, 5420, 5525-5529, 5532-5534.
+- Card-hours: none newly consumed beyond preempted seconds; G3B07b running (about 0.75 card-h when it ends).
