@@ -31,3 +31,14 @@ The allotments stand.
    124 right as worded (86 per cent); seventeen corrected in this pass. The 198 unread
    claims that no track cites come next, with a sample of this pass's verdicts read by
    a second agent.
+7. Added after batch 37 (2026-11-27 19:25 PST). Track B: the member of 256 cells at
+   eight particles per cell fits one card (42 to 46 GiB of 80), but it costs about
+   twelve card-hours and its initial data take thirty to fifty-five hours on one
+   processor core. It is run (decision 0048 item 3 stands), with its partner of 128
+   cells in the same gauge (0.85 card-hours, allowed). The gate review of G2 does not
+   wait for it: it judges the gate with that member named as pending and says whether
+   its outcome could change the verdict; no claim on halo masses against the mesh
+   enters G3 before it has been read.
+8. Knowledge base: a fresh agent samples about twenty of the last pass's verdicts with
+   the next pass.
+
