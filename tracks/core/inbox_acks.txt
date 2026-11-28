@@ -106,3 +106,4 @@ tracks/A-emd-pbh/outbox/20261126T234903Z__to-core__finder-slow-convergence-box.m
 tracks/F-hills/outbox/20261127T233431Z__to-core__finder-found-flag-and-branches.md	2026-11-28T02:15:31Z	
 tracks/A-emd-pbh/outbox/20261128T005620Z__to-core__b34-finder-confirmed-outer-faces.md	2026-11-28T02:15:31Z	
 tracks/A-emd-pbh/outbox/20261128T012839Z__to-core__b34-outer-faces-and-level-face.md	2026-11-28T02:15:31Z	
+tracks/orch/outbox/20261126T033000Z__to-all__finder-diagnostics-in-continued-runs.md	2026-11-28T02:15:38Z	
