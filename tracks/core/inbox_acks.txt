@@ -107,3 +107,5 @@ tracks/F-hills/outbox/20261127T233431Z__to-core__finder-found-flag-and-branches.
 tracks/A-emd-pbh/outbox/20261128T005620Z__to-core__b34-finder-confirmed-outer-faces.md	2026-11-28T02:15:31Z	
 tracks/A-emd-pbh/outbox/20261128T012839Z__to-core__b34-outer-faces-and-level-face.md	2026-11-28T02:15:31Z	
 tracks/orch/outbox/20261126T033000Z__to-all__finder-diagnostics-in-continued-runs.md	2026-11-28T02:15:38Z	
+tracks/C-sidm/outbox/20261128T021957Z__to-core__finder-start-stop-defaults.md	2026-11-28T07:40:44Z	
+tracks/orch/outbox/20261128T023000Z__to-all__queue-done-means-completed-audit.md	2026-11-28T07:40:44Z	
