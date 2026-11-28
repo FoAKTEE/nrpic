@@ -671,7 +671,7 @@ LEDGER_G2 = [
         ("g2_meanmed", "median of the ten largest averaged over $81\\le a\\le132$, equal GR masses: zero shift, Gamma driver"),
         ("g2_meanmed_w", "the same with the GR file's rest-mass weights as masses (superseded): zero shift, Gamma driver"),
         ("g2_m256", "$256^3$, zero shift: $a$ of the last record before the non-finite stop; $a$ where the largest $K$ turns positive; largest $K$ at the last record"),
-        ("g2_m4", "mean Hamiltonian constraint, $128^3$ over $256^3$, at $a=36,49,64,81,90,100$: smallest, largest; momentum: smallest, largest (the extremes depend on the pairing of the two histories: row g2\\_pair)"),
+        ("g2_m4", "mean Hamiltonian constraint, $128^3$ over $256^3$, at $a=36,49,64,81,90,100$: smallest, largest; momentum: smallest, largest (the extremes depend on the pairing of the two histories by a few hundredths: Table~\\ref{tab:ledger8})"),
         ("g2_q1", "eight particles per cell, joined runs: last $a$; momentum and Hamiltonian constraint means, one over eight per cell, there; largest relative difference of the continuation from the cut run"),
         ("g2_s1", "$\\sigma_1=0.028$, Gamma driver from $t=8$: last $a$; mean Hamiltonian constraint there and its largest value"),
         ("g2_gm1", "$256^3$, Gamma driver: last $a$; largest $K$ in the box after $t=9$; the same at $128^3$"),
