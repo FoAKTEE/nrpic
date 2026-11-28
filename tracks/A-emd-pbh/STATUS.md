@@ -22,7 +22,8 @@ last-result: batch 34 (16:32-17:35 PST):
                part 70-100-fold to t = 2 (better than predicted; matter and edge parts unchanged).
              - S1L's region ratio outside r = 0.6 is 0.43 at t = 190 (periodic: violation in the collapsing matter).
 cards:       shared queue, priority 2: q0089 a-s1l-quarter SUBMITTED 17:16 (run A-20261128-011607-3e2d530, job
-             5545, cap 2.6 card-hours); q0090 a-s1l-finder WAITING (cap 1.6). 0 card-hours used by this session.
+             5545, cap 2.6 card-hours); q0090 a-s1l-finder SUBMITTED (run A-20261128-012211-c9cedc1,
+             job 5549, cap 1.6). 0 card-hours used by this session.
 processors:  19 registered runs this session (2 failed: FR start, a figure colour), all closed; at most 6 cores.
 next:        1. Read q0090 (F1-F3) and q0089 (A2Q) when they end (periodic_threshold JOURNAL, scripts named there).
              2. Ball: deposit-fix build with the v0.6 face set (FR) and faces at 32, S2c-A/B and LF to t = 2 on

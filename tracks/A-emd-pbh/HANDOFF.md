@@ -20,7 +20,7 @@ the end (A2Q, F1-F3, FD, SM-q/SM-F); `threshold_ball/JOURNAL.md` entry 18 (C3-G 
 | queue id | label | run | what it is | read with | prediction |
 |---|---|---|---|---|---|
 | q0089 | a-s1l-quarter | A-20261128-011607-3e2d530 (job 5545, submitted 17:16 PST) | S1L at mu = 0.075 (data A-20261128-003940-60a3521), deck peak_leak.athinput, to t = 410, chain cap 2.6 card-hours | `a2_invariant.py --run <dir> --reference 34.8 --band 32.0 35.5 --label S1L-q`, `a2_crossing.py`, `a2_probe_check.py` (as for S1L-h, periodic_threshold JOURNAL 2026-11-26 13:36) | A2Q (16:39 PST): crossing bracket inside [32.0, 35.5] t_H, along z at the centre |
-| q0090 | a-s1l-finder | waiting at 17:17 PST | S1L from t = 0 on deck peak_leak_f.athinput (flow = shear, 4000 it, polish 100, start radius 0.16, finder from t = 150), to t = 205, cap 1.6 | `peak.horizon_status_0.txt` (found only there), `peak.region.hst` columns 38-42 (inside/outside the horizon, region_horizon = 0) at the first found row | F1: first found in (178, 195]; F2: bound at detection ABOVE 0.1; F3: history repeats S1L |
+| q0090 | a-s1l-finder | A-20261128-012211-c9cedc1 (job 5549, submitted 17:22 PST) | S1L from t = 0 on deck peak_leak_f.athinput (flow = shear, 4000 it, polish 100, start radius 0.16, finder from t = 150), to t = 205, cap 1.6 | `peak.horizon_status_0.txt` (found only there), `peak.region.hst` columns 38-42 (inside/outside the horizon, region_horizon = 0) at the first found row | F1: first found in (178, 195]; F2: bound at detection ABOVE 0.1; F3: history repeats S1L |
 
 Close each with `harness/bin/nrpic-run finish <run_id>` before reading. The chain continues itself; do not resubmit.
 
