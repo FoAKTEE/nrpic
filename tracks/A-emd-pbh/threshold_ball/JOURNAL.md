@@ -884,3 +884,16 @@ told apart from the coarse cells beyond it by this pair. Together with OB: the b
 outer-face part (does not converge; dominant from t ~ 1), (ii) the taper on the coarse level (converges; 0.07-0.08 on
 M/16, 0.012 on M/32), (iii) a matter part that a level face in the matter keeps up (core's two deposit fixes at faces
 are the next retest; the ripple core says stays is a candidate for (iii)). C3 stays FAILED as written.
+
+### Entry 18, prediction FR before its run (17:20 PST): the outer-face options of core-v0.6 on S2c-A
+
+OB named the outer outflow faces as the source of the non-converging part. The remedy that keeps the box: core-v0.6's
+face set (coord/INTERFACES/z4c_faces.md section 4: extrap_order 4, ghost_falloff, sbc_variant nonwave, sbc_speed
+metric; core measured, for its own ball at t = 8, the whole-box mean |H| 3.5 times below the stock faces and 1.7 times
+above faces at 32). Run FR: S2c-A on nest16_L16 with that set, v0.6 threaded build, four threads, to t = 2
+(scripts/fr_run.sh); read with ratio_split.py against S2c-A and S2c-AL32.
+Prediction FR [JUDGEMENT]: the 13-16 part falls by a factor >= 3 against S2c-A's (0.091 / 0.214 at t = 1 / 2) but stays
+more than 10 times above S2c-AL32's (0.0003 / 0.0005); the matter part (x < 4.5) within 25 per cent of S2c-A's (0.059 /
+0.076). Refuted if the 13-16 part at t = 2 is above 0.5 x S2c-A's (the options do not help this data), or if the
+matter part moves by more than 25 per cent (then the options reach the interior by t = 2, which they cannot at light
+speed from 16, and something else changed).
