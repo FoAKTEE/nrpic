@@ -278,7 +278,7 @@ core-v0.8 otherwise (A6, builds).
   e-bar_12 exceeds e-bar_8 by three standard errors in any window after 100 M. No G-12u output is read for a
   criterion before the processor work of A5 is committed (A6).
 
-## Entry 11 (2026-11-28 08:23 PST, lead of batch 41): the search at t = 0 at M/6 is not found; predictions for the smoke tests of the particle and gauge legs
+## Entry 11 (2026-11-28 08:21 PST, lead of batch 41): the search at t = 0 at M/6 is not found; predictions for the smoke tests of the particle and gauge legs
 
 Seen in the M/6 smoke tests of run D-20261128-160418-b618bff while it runs (the run is closed and its json read
 in entry 12): the search at t = 0 is NOT found in any of the three M/6 decks. g3g6u (start 1.6 M): reason 6 (flow
