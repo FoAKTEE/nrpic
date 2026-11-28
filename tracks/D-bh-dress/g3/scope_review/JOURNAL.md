@@ -204,3 +204,14 @@ Note (16:56): the times in the headers of entries 1-7 were corrected to the comm
 first versions carried times written ahead of the clock. Each prediction was committed before its run
 (A1-A3, B1-B5, C0-C3 in 5686fde65; A4 in 80cf6ab4a; B2b in 65b4dde5b; B2c in 0705a410e; each run's
 manifest names the commit it ran on).
+
+## Entry 8 (2026-11-27 17:04 PST): review written
+
+SCOPE_REVIEW.md: verdict "do not queue the production set as written; change B1 (mesh members and
+budget, from A), B2 (Claim D's statistic, from C), B3 (G3-G2 and G3-G3, from B, B2b, B2c) first, then
+S1-S8". Failed predictions of this package, kept as written: A3 (G-12 worse than predicted), B1 (the
+particle-leg ratio test passes one factor coarser), B3 (the mesh difference of e_h is five times the
+lead), C1 (no inner bin below 400 particles), B2b (whole-run means with a single-sample anchor have no
+power), B2c in its full-noise half (false-pass rate 0.25). Not done: no card run (none allowed); the
+per-particle-clock reader on G2's snapshots and the polished vacuum offsets are proposed, not built;
+card memory of the 3648-block deck not measured.
