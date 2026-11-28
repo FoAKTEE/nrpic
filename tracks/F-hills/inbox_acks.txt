@@ -36,3 +36,4 @@ tracks/B-emd-gw/outbox/20261126T025649Z__to-all__gr-particle-mass-halos.md	2026-
 tracks/orch/outbox/20261126T033000Z__to-all__finder-diagnostics-in-continued-runs.md	2026-11-26T05:51:53Z	
 tracks/core/outbox/20261126T121039Z__to-F-hills__v08-finder-polishing.md	2026-11-27T23:34:31Z	
 tracks/orch/outbox/20261126T130731Z__to-all__release-core-v0.8.md	2026-11-27T23:34:31Z	
+tracks/core/outbox/20261128T001317Z__to-F-hills__restart-parameters-and-finder-check.md	2026-11-28T02:00:14Z	
