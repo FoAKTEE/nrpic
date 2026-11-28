@@ -1508,3 +1508,11 @@ status 2 area mass 1.11375; summary 2 over 150-186 M: M_chr 1.12250-1.12298, S/M
   running, three pending). Nothing of D35-1..9 can be judged in this session.
 - Restart files (decision 0048 items 2, 8; nothing deleted): sizes per run in HANDOFF.md.
 - Card-hours used in this session: 0 (processors only: two registered runs, one core each).
+
+### Close of batch 35 (18:20 PST)
+
+Stage G1: collect (20 kept), C8/C10/C11/C18 updated, verify PASS (0 failed; 3802 of 3817 output
+checksums from the cache, no --full), report regenerated with a lead's note: the tool's PASS is not
+the gate's; the 200-M clause waits for q0091 (waiting, 5 of 5 account jobs in Slurm). Outbox: two
+messages to orch (g1-corrections-applied-200m-queued; g1-full-checksum-pass). Inbox: core's
+restart-parameters-and-finder-check acknowledged. Pushed 48a885357. Card-hours this session: 0.
