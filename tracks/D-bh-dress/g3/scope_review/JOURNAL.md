@@ -99,3 +99,43 @@ and each deck's `mesh_structure.dat`.
 - A4 HOLDS: G-16b (blocks of 12) has 8296 blocks (4096 on level 8 over +-6 M, 1216 on level 7 over
   +-9 M, 296 on level 6, 448 on levels 0-5): 2.27 times G-8's cells, 4.44 times its cells with ghosts.
 No figure: block counts are integers read from the code's own mesh file.
+
+## Entry 3 (2026-11-27 17:02 PST): outcome of B (G3 criteria of Claim G on G2's outputs)
+
+Run D-20261128-004801-cd648e5 (`tools/g2_analogs.py`, one core, exit 0; byte-identical to an
+unregistered dry run in scratch/D-bh-dress/tmp/scope_review). Figure g2_analogs.png looked at: (a) the
+N/4 - N and N - 4N differences scatter as before, the M/16 - M/8 growth difference sits on a plateau near
++5e-4 with a scatter several times smaller than N - 4N; (b) the seven rms ratios between 2.1 and 2.9;
+(c) e_h of the four M/8 members at +0.18 to +0.25 per cent before tau_rem ~ 285 M, FL16 (M/16) at +0.04 to
++0.09 per cent, the excision step of ES-FL and FL16 after it; (d) ES-FL's slope deviation reaches 0.0335 in
+one fixed window (ln a 0.73-0.83), FK's stays below 0.005.
+- B1 REFUTED (my prediction failed): all seven 50 M windows have rms(N/4 - N)/rms(N - 4N) inside
+  [1.4, 3]: 2.43, 2.91, 2.48, 2.57, 2.11, 2.83, 2.14. The G3-G4 ratio test is passable when the noise
+  scales as N^-1/2 (about mean-subtracted rms two windows would be 3.12 and 3.10: the scope's "rms" must stay
+  the raw rms). Particle window means of e_h (50 M of tau_rem) of N/4, N, 4N differ by 1.3e-4 to 3.2e-4,
+  a third of G3-G4's 0.1 per cent.
+- Noise model: one member at N has sigma 3.9e-4 in M_AH (3.65e-4 after a 50 M running mean is removed);
+  the high-pass part of Delta M_16 - Delta M_8 has sd 2.1e-4, so the particle noise of the two meshes is
+  correlated with rho = 0.83 (same particles). Mean of Delta M_16 - Delta M_8 over 250-299 M +5.78e-4,
+  envelope 9.97e-4 (gate review R5, reproduced).
+- B2 HOLDS: with G2's mesh difference as the deterministic part, G3-G3 as written passes with
+  probability 0.11-0.15 at p = 2 and 0.075-0.10 at p = 1 (1000 surrogates each, high-pass and full
+  noise), 0.38-0.42 at twice and 0.67-0.72 at four times that amplitude. Median envelope ratio 1.3 (p = 2)
+  against the band [1.5, 8]. A window-mean ordering (5 of 6 windows) passes with 0.34-0.47.
+- B3 REFUTED (the size): e_8 - e_16 per 10 M bin of tau_rem (50-280 M, 23 bins) has mean +1.48e-3 and sd
+  3.0e-4, positive in every bin; the lead alone accounts for about 3e-4 of it. The rest matches the
+  converged vacuum horizon-mass offset of each mesh at 200 M (tight finder, A16: M/8 +9.93e-4, M/16
+  -2.02e-4, M/4 -9.09e-3; fp_analyse D-20261124-172508-c847ee4, FP4 refuted as non-monotone): 1.2e-3 +
+  3e-4 = 1.5e-3 [JUDGEMENT: a decomposition, not a separate run]. So e_h is not an error that goes to
+  zero monotonically: it carries the mesh's horizon-area offset, which changes sign between M/4, M/8 and
+  M/16.
+- B4 HOLDS: G3-G1 flags ES-FL (largest bin 0.620 per cent) and passes FK (0.249), FN4 (0.237), FNQ
+  (0.290). G3-G5 flags ES-FL marginally: 0.0335 with fixed windows of 0.1 in ln a from tau = 50 M, 0.052
+  with sliding windows; FK 0.0048 (fixed), FN4 0.0013, FNQ 0.0066. A defect of the size of the excision end
+  is seen by both, by G3-G1 with the clearer margin.
+- B5 (arithmetic): the lead's bias on r, 6e-4 at M/8 and N, is 0.12 of G3-G1's band; G3-G1 cannot see it.
+- B7 (reading of a registered output, no prediction): converged null difference at M/8 at most 7.31e-5
+  (100-500 M, nine dumps), at M/16 at most 3.66e-5 (200-300 M, three dumps); ratio 1.99 over these
+  windows, 1.78 over the common 200-300 M. G3-N1's factor-2 clause holds by 0.3 per cent on the full
+  windows, and its numbers are already known: polishing equals the tight rule to 6e-9 (finder_stop.md
+  section 6), and the tight re-search of the same restart files is FP/FP-ext.
