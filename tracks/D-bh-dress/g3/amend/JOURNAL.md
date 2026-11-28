@@ -243,7 +243,7 @@ Outputs: `scratch/D-bh-dress/D-20261128-160553-b500509/g8_read.json`, `g8_read.p
 - Finder HELD: 795 of 795 searches after 2 M found; t = 0 mass 0.99151469 (S-G8's 0.991514686, entry 5).
   G-8 minus FK: median 1.09e-4 in [2e-5, 1.2e-4] as written, BUT not constant (panel d): it rises nearly linearly
   from 6.5e-5 at 20 M to 1.6e-4 at 400 M and leaves the band after about 220 M, with a dip to -7e-5 at 38-50 M
-  (FK's side; FK's finder started each segment from its last surface). Not predicted: the gap between the polished
+  (its cause not read: a step of either finder; G-8's searches there are all found). Not predicted: the gap between the polished
   and the unpolished rule grows with the hole [JUDGEMENT: with the area, as the mass rule's stopping tolerance is
   relative]. Every G3 member uses the polished finder, so it does not enter member differences; it does enter
   any comparison with G2's unpolished FK, FN4, FNQ and FL16 (FL16's cross-check of A6 carries it).

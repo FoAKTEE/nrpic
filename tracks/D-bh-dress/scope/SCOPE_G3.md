@@ -395,3 +395,79 @@ steps; a 2 M timing run first; the t = 0 horizon spans three cells, and M/4 lay 
 G2); (c) G-16u on two cards, which needs a card build on two ranks from core (about 26-30 card-hours; t_16 = 309 M at
 20); (d) M/16 by FL16's hierarchy (level 8 over +-3 M, 512 blocks, one card), read only to about 190 M, where the
 horizon leaves level 8. Nothing of A2-A5 changes until the ruling; the processor work of A5 stays first.
+
+### Amendment A6 of 2026-11-28 08:10 PST (lead of batch 41): the mesh leg by decision 0051 item 3
+
+Reason: the ruling on the note under A1 (coord/DECISIONS/0051 item 3): no run on two cards; the leg is M/8 and M/12
+and, if it qualifies, a coarser member at M/6. Written after G-8 was read for G3-G1 only (g3/amend entry 9: no
+mesh statement can come from one member) and before any M/6 or M/12 card run. Replaces the G-16u parts of A1, the
+form of G3-G2 and G3-G3 in A3 (for this ladder), the table of A5 and A5's queue rule; everything else stands.
+Predictions: g3/amend entries 8 (processor checks of the M/6 decks, build identity) and 10 (card runs of A6).
+
+**Members.** G-6u (M/6, root 72, blocks of 18; `g3/amend/decks/g3g6u.athinput`), G-8 (M/8, run
+D-20261128-062142-c5666c4, read: entry 9), G-12u (M/12, root 144, blocks of 36; `g3g12u.athinput`), one family
+of 456 blocks with G-8's level extents and cell size 4/3, 1, 2/3 of G-8's at every radius (block counts by
+`athena -m`: run D-20261128-020346-c4079e9 for G-8 and G-12u, run D-20261128-160418-b618bff for G-6u). G-16u is
+withdrawn (132.6 GiB, entry 7). Every member to 400 M; A1's t_16 lapses.
+
+**Qualification of G-6u (fixed now).** Q1: the card timing run T-6u (`g3g6u_t2`, 2 M) finds the search at t = 0
+(status file, found) and fits one card; the processor smoke test (entry 8, K2) is its twin. Q2: the null test at
+M/6, N6-ES and N6-V (`n6es`, `n6v`: G2's ES-1L and V-1L at root 72 with blocks of 18, polished finder with
+diagnostics, to 300 M), read as G2 read its pairs (g2long/tools/fp_analyse.py): D_X(t) = M_X(t) - M_X(100 M) at the
+common search times, searches not found dropped; within the bound of criterion N (A4 S2) means |D_ES(t) - D_V(t)| <=
+2.0e-4 at every common search time from 100 to 300 M; k_max(M/6) is quoted beside G2's. G-6u qualifies when Q1 and
+Q2 hold; then it is queued (cap from T-6u's measured seconds per M x 400 M x 1.15) and three members give an order.
+If Q1 or Q2 fails, G-6u is not run: the mesh error is the envelope of |e-bar_8 - e-bar_12| with no order.
+In both cases FL16 (G2's refined M/16, level 8 over +-3 M, run D-20261124-172745-72472ed, unpolished finder) is shown
+beside them on the windows with t_rem <= 190 M (its horizon leaves level 8 at 191.25 M, A1), with the
+polished-minus-unpolished gap of entry 9 (6.5e-5 to 1.1e-4 there) quoted with it; a cross-check, not a criterion.
+
+**G3-G2 for h = 1/6, 1/8, 1/12 (replaces A3's first item for this ladder; the vacuum offset rule of A3 stands, and
+N6-V's own polished masses give the offset at M/6).** Window means e-bar_h over 50 M of tau_rem with standard errors
+from the bin scatter; Delta_1 = e-bar_6 - e-bar_8, Delta_2 = e-bar_8 - e-bar_12, R = Delta_1 / Delta_2. For
+e_h = C h^p, R = ((4/3)^p - 1) / (1 - (2/3)^p): 0.84, 1.00, 1.40, 2.69 for p = 0.5, 1, 2, 4. (A3's test |e_12 - e_16|
+< |e_8 - e_12| has no counterpart here: with these steps the two differences are equal at p = 1.) Converging if
+Delta_1 and Delta_2 have one sign, |Delta_1| and |Delta_2| exceed three standard errors, and R lies in [0.84, 2.69]
+in at least four of the six windows after 100 M; p is then solved from the mean R over those windows, with the
+interval from the windows' spread, and the mesh error of G-12u is |Delta_2| / (1.5^p - 1). Refuted if Delta_1 and
+Delta_2 have opposite signs beyond three standard errors in any window after 100 M, or R leaves [0.84, 2.69] in three
+windows or more: then no order is claimed, and the mesh error is max(|e-bar_6 - e-bar_12|, |e-bar_8 - e-bar_12|).
+Without G-6u: the mesh error is max |e-bar_8 - e-bar_12| over the windows after 100 M, no order, no criterion.
+
+**G3-G3 (replaces A3's second item for this ladder).** The means over 100-400 M of D_6,8 = Delta M_6 - Delta M_8 and
+D_8,12 = Delta M_8 - Delta M_12 (Delta M_h(t) = M_AH(t) minus its mean over 20-40 M); the ratio with its 90 per cent
+interval from phase-randomised surrogates of the measured noise; the band is [0.84, 2.69] (p in [0.5, 4]); the power
+rule of A3 decides, before any of G-6u or G-12u is read, whether it is a criterion.
+
+**Finest member.** G-12u takes the place of G-16 in G3-G5 (slope within 0.03), in Claim D's D1 (finest mesh member)
+and D2 (medians fall from M/8 to M/12, and from M/6 to M/8 when G-6u runs), and in G3-L1 (lead at R0 = 28 M ordered
+M/6 > M/8 > M/12; band for G-12u [0.40, 0.78] M kept; for G-6u above 0.78 M).
+
+**Builds (one per family).** No G3 deck sets `deposit_comp_c` (default 0.0, athenak/src/particles/nrpic.cpp:99) or
+`deposit_fine_shape`, so the changes of core-v0.9 without an option do not act on them (`filter_compensate = false`
+is the source filter's compensation, not touched by v0.9). Check K3 (entry 8): the G-8 deck for two cycles with the
+v0.9 processor build against S-G8 of v0.8, byte for byte. If K3 holds, the mesh family, the particle leg and the
+gauge leg run on release core-v0.9 (`.work/build_gpu_v09/src/athena`) and G-8 (v0.8) belongs to the same family in
+effect (identical bytes on processors; card runs differ run to run in any build). If K3 fails, every member compared
+with G-8 runs on core-v0.8. The null family at M/6 (N6-ES, N6-V) runs on core-v0.9 both; it is compared with G2's
+pairs only through k_max, not as a convergence series.
+
+**Order and queue (replaces A5's table and its queue rule).** Card-hours [measured, or JUDGEMENT where marked]:
+
+| Order | Run | Estimate | Cap |
+|---|---|---|---|
+| done | EG8 1.47, T-12u/T-16u 0.05, G-8 2.20 | 3.72 used | - |
+| 1 | T-6u (2 M, one job) | 0.05 | 0.2 |
+| 1 | N6-ES, N6-V (300 M, chains) [JUDGEMENT: 8-11 s per M] | 0.8 + 0.7 | 1.2 + 1.2 |
+| 2 | G-12u (400 M, chain; measured 73.8 s per M, entry 7) | 9.4 | 11 |
+| 3 | G-6u (400 M), only if it qualifies [JUDGEMENT until T-6u] | 1.2 | 2 |
+| 4 | G-8-4N, G-8-16N (400 M) | 3.2 + 5.2 | 4 + 8 |
+| 5 | G-8-e1 (400 M) | 2.7 | 3.5 |
+| - | reserve: preemption repeats, one rerun | - | 24.9 |
+| | total | 27.0 | 60 |
+
+Three D chains at most in the queue while the null pair runs (two otherwise); single-job timing runs not counted;
+priority 2. G-12u is queued now, before the processor work of A5 (the reader of A2 on G2's snapshots, the polished
+vacuum offsets, the power of A3 on measured noise): no output of G-12u or G-6u is read for a criterion before that
+work is committed, and no criterion changes after a member has ended (A5's rule protected exactly that; the queue's
+waits of a day make holding the entry back cost the leg its time).
