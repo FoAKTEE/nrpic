@@ -90,30 +90,56 @@
     "nodes": 1,
     "gpus": 1,
     "cores": 1,
-    "walltime_s": null,
+    "walltime_s": 5365.0,
     "wall_limit": null,
     "segments_max": 2,
     "gpu_hours_requested": 1.9667,
-    "gpu_hours": null,
-    "particles": null
+    "gpu_hours": 1.4733,
+    "particles": null,
+    "gpu_hours_basis": "sum over 11 jobs of the chain: sacct ElapsedRaw for 11",
+    "gpu_seconds_by_job": {
+      "5536": 1520.0,
+      "5543": 314.0,
+      "5548": 508.0,
+      "5554": 115.0,
+      "5560": 162.0,
+      "5566": 18.0,
+      "5572": 2446.0,
+      "5578": 23.0,
+      "5584": 13.0,
+      "5590": 14.0,
+      "5596": 171.0
+    }
   },
   "slurm": {
     "partition": "preempt",
     "job_name": "D-20261127-233719-db5be88",
-    "job_ids": []
+    "job_ids": [
+      "5536",
+      "5543",
+      "5548",
+      "5554",
+      "5560",
+      "5566",
+      "5572",
+      "5578",
+      "5584",
+      "5590",
+      "5596"
+    ]
   },
   "outputs": {
     "dir": "scratch/D-bh-dress/D-20261127-233719-db5be88",
     "sha256sums": "sha256sums.txt",
-    "sha256sums_sha256": null,
-    "bytes": null,
-    "files": null
+    "sha256sums_sha256": "7be18d6a783ffc7ab5bca44904c65731fd85e05534901d2ad69131dcca06896a",
+    "bytes": 60348956716,
+    "files": 160
   },
-  "status": "submitted",
-  "exit_code": null,
+  "status": "completed",
+  "exit_code": 0,
   "registered": "2026-11-27T23:37:19Z",
-  "started": null,
-  "ended": null,
+  "started": "2026-11-27T16:02:52-08:00",
+  "ended": "2026-11-27T21:20:48-08:00",
   "parents": [],
   "notes": "",
   "budget_at_submit": {
@@ -125,5 +151,6 @@
     "cores_busy": 1,
     "runs": 333,
     "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md + 0026-cards-loaded-allotment-cost.md + 0031-level2-branch-and-ablation.md + 0032-new-account-preemption-allotments.md + 0038-track-e-g2-signed-g3-scope.md + 0039-rulings-after-batch-17.md + 0045-track-d-g2-signed-release-v08.md"
-  }
+  },
+  "finished": "2026-11-28T07:41:40Z"
 }
