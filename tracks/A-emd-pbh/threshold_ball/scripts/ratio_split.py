@@ -62,7 +62,13 @@ def main():
     ap.add_argument("--out", required=True)
     ap.add_argument("--xmax", type=float, default=16.0)
     ap.add_argument("--tmax", type=float, default=5.0)
+    ap.add_argument("--edges", default=None, help="band edges, e.g. 3.5,4.5,6.5,13 (default 4.5,6.5,13)")
     a = ap.parse_args()
+    global BANDS
+    if a.edges:
+        e = [0.0] + [float(v) for v in a.edges.split(",")] + [1e9]
+        BANDS = [("x %g-%g" % (e[i], e[i + 1]) if e[i + 1] < 1e8 else "x %g-face" % e[i], e[i], e[i + 1])
+                 for i in range(len(e) - 1)]
     os.makedirs(a.out, exist_ok=True)
     res = {}
     for m in a.members:

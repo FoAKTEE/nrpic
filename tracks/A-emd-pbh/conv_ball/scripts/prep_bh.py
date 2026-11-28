@@ -56,6 +56,9 @@ def main():
     # conv_ball: nested lattices NAME:HF:OUTER:SUB (finest cell 1/HF, outer boundary OUTER,
     # SUB^3 sites per cell of the local level; nested.py)
     ap.add_argument("--nested", nargs="*", default=[], help="conv_ball: NAME:HF:OUTER:SUB, e.g. nestA:16:16:1")
+    # threshold_ball entry 18 (batch 34): lattices on custom level lists NAME:SUB:B0xH0,B1xH1,... (root first;
+    # level l covers |x|_inf < B_l with cells H_l), e.g. uni4:1:16x1,8x0.25 (one level over the matter)
+    ap.add_argument("--custom", nargs="*", default=[], help="NAME:SUB:B0xH0,B1xH1,...")
     ap.add_argument("--per-shell", type=int, default=60)
     ap.add_argument("--sample", type=int, default=600)
     ap.add_argument("--seed", type=int, default=7)
@@ -177,6 +180,10 @@ def main():
     for spec_ in a.nested:                           # conv_ball: nested lattices
         nm_, hf_, out_, sub_ = spec_.split(":")
         jobs.append((nm_, None, (1.0 / float(hf_), float(out_), int(sub_))))
+    for spec_ in a.custom:                           # threshold_ball entry 18: custom level lists
+        nm_, sub_, lv_ = spec_.split(":")
+        lv = [tuple(float(v) for v in q.split("x")) for q in lv_.split(",")]
+        jobs.append((nm_, None, (min(h for _, h in lv), lv[0][0], int(sub_), lv)))
     for name, n, nest in jobs:
         d = os.path.join(a.out, name)
         os.makedirs(d, exist_ok=True)
@@ -185,7 +192,7 @@ def main():
             h = 2.0 * rm / n
         else:
             import nested as NS                      # conv_ball
-            levels = NS.nest_levels(nest[0], nest[1])
+            levels = nest[3] if len(nest) > 3 else NS.nest_levels(nest[0], nest[1])
             x, u, m, sp, sloc = NS.nested_lattice(ball, levels, nest[2])
             h = float(sloc.min())
         rbar = np.sqrt(np.sum(x * x, axis=1))

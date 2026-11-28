@@ -811,3 +811,19 @@ not converge with the mesh; inside the matter the smooth CIC member converges (0
 below 0.1 on M/32, while the top-hat PCS bracket members carry their own matter residual of 0.1-0.3. Two separate
 failures, then: the outer faces (all members) and the data/deposit of the top-hat PCS members (known since entry 13).
 Figure note: the y-axis label is clipped at the left edge (cosmetic).
+
+### Entry 18, prediction LF before its run (16:58 PST): the matter inside one level (U4) against a level face in it (N4)
+
+The gate review's third cheap test, made consistent (live gauge, moving particles). Data S2 (smooth top hat, R1 = 1.22,
+R2 = 3.27, taper to rm = 4.88; prep_bh.py as edge_data.sh) on two new decks with the same root and outer faces as
+nest16_L16: U4 = one level of cells M/4 over [-8, 8]^3 (the matter inside one level); N4 = M/4 over [-4, 4]^3 and M/2
+over [-8, 8]^3 (one level face at |x| = 4 in the taper). Lattices one particle per local cell (prep_bh.py --custom,
+new). CIC, no compensation, v0.6 threaded build, to t = 2 (scripts/lf_run.sh). Read with ratio_split.py (bands with an
+extra edge at 3.5: cells of the two members are identical for |x| < 4, so the band x < 3.5 compares the same
+discretization, and any difference there is made by the face at 4 or carried in from it).
+Prediction LF [JUDGEMENT]: the level face does not make the matter residual: at t = 0.5, 1 and 2 the part of the line
+ratio from x < 3.5 in N4 lies within 30 per cent of U4's; the outermost-cell part (13-16) of both lies within 30 per
+cent of each other (same root and faces). Refuted if N4's x < 3.5 part exceeds U4's by a factor 2 or more at any of the
+three times (then a face in the matter contaminates the interior, and core's deposit fixes at faces are the next
+retest). What a hold does not show: the size of the residual at M/4 against M/16; the band 4-4.5 differs in cell size
+between the members and is reported, not judged.
