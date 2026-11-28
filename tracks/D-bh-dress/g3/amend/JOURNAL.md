@@ -304,3 +304,16 @@ Next step the amended scope allows (A6 order 4-5): the particle leg G-8-4N and t
   before the first step). Refuted if the t = 0 row differs in any printed digit.
 Card runs after them (if K3 holds, core-v0.9): G-8-4N to 400 M, cap 4 (FN4 cost 3.19 card-hours to 400 M at
 release v0.6, EVIDENCE.md; prediction [2.6, 4.0]); G-8-e1 later (two D chains at most: G-12u and G-8-4N).
+
+## Entry 12 (2026-11-28 08:25 PST, lead of batch 41): outcome of the A6 processor checks (run D-20261128-160418-b618bff, closed by nrpic-run, 88 files; m6_smoke.json read; no figure: integers, flags, masses, checksums)
+
+- K1 HELD: g3g6u, n6es, n6v each 456 blocks (56 on each of levels 0-6, 64 on level 7), finest dx 1/6 M over +-6 M.
+- K2: every input starts, exit 0, 456 MeshBlocks; the searches at t = 0 NOT found (entry 11: reason 6 at 400 flow
+  iterations; g3g6u area mass 1.005330, n6es = n6v 1.000917). The "found" part is REFUTED; n6es = n6v holds.
+- K3 HELD: all 20 compared outputs of the G-8 deck after two cycles with core-v0.9 are byte for byte those of S-G8
+  with core-v0.8 (restart files of 2.63 GB, particle restart, slices, histories, finder files, removal record,
+  trajectories); not even the parameter block differs. The t = 0 search: found after 136 iterations, area mass
+  0.9915146860704984 in both.
+Consequences (A6, fixed before): the mesh family, the particle leg and the gauge leg run on release core-v0.9 and
+G-8 (v0.8) is one build with them in effect; G-6u does not qualify on processors (Q1); the null pair at M/6 is not
+queued; T-6u is queued once as the ruling's literal test (entry 11); G-12u is queued (chain, cap 11).
