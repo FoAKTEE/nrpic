@@ -10,7 +10,7 @@ headline:    (b) MET on the existing restart files: with `flow = shear` the find
              at the outflow outer faces (R-split A-20261128-004947-8fc6ba9; OB A-20261128-004659-f512816: faces moved
              to 32 cut it 300-fold on 0 < x < 16); inside the matter the smooth CIC member converges (0.059 -> 0.016).
              (c), (d) queued on cards (q0089, q0090), predictions A2Q and F1-F3 committed first.
-last-result: batch 34 (16:32-17:20 PST):
+last-result: batch 34 (16:32-17:35 PST):
              - D-q holds (quarter data, A-20261128-003940-60a3521); SM-F holds; SM-q's start-up step clause REFUTED
                (step falls with the amplitude), queued anyway with the reason on record.
              - FD holds on every tested clause (t = 180 clause untested: file mapping).
@@ -21,12 +21,12 @@ last-result: batch 34 (16:32-17:20 PST):
                higher at t = 2 (M/4). FR (A-20261128-011908-0e41713): core-v0.6's outer-face set cuts the outer
                part 70-100-fold to t = 2 (better than predicted; matter and edge parts unchanged).
              - S1L's region ratio outside r = 0.6 is 0.43 at t = 190 (periodic: violation in the collapsing matter).
-cards:       queued, waiting (shared queue, priority 2): q0089 a-s1l-quarter (cap 2.6 card-hours), q0090
-             a-s1l-finder (cap 1.6). 0 card-hours used this session.
+cards:       shared queue, priority 2: q0089 a-s1l-quarter SUBMITTED 17:16 (run A-20261128-011607-3e2d530, job
+             5545, cap 2.6 card-hours); q0090 a-s1l-finder WAITING (cap 1.6). 0 card-hours used by this session.
 processors:  19 registered runs this session (2 failed: FR start, a figure colour), all closed; at most 6 cores.
 next:        1. Read q0090 (F1-F3) and q0089 (A2Q) when they end (periodic_threshold JOURNAL, scripts named there).
-             2. Outer-face remedy for the ball (core asked which v0.6 options), with the deposit-fix build, S2c-A/B to
-                t = 2 on processors, prediction first; then smooth CIC bracket members on two meshes to the horizon.
+             2. Ball: deposit-fix build with the v0.6 face set (FR) and faces at 32, S2c-A/B and LF to t = 2 on
+                processors, prediction first; then smooth CIC bracket members on two meshes to the horizon (cards).
              3. Box violation (condition (d)): a resolution pair in the box (P0L four vs six levels' region ratios).
 blockers:    G2 not passed; (a) the outer faces of the ball; (d) the box violation in the collapsing matter.
 needs:       core: outer-face options for the expanding ball; card check q0086 of the faces-finder build.

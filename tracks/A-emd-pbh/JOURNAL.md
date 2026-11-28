@@ -609,8 +609,8 @@ refuted, queued anyway), queued q0089 (submitted 17:16, run A-20261128-011607-3e
 the outermost cells next to the outflow faces; OB (A-20261128-004659-f512816; reader A-20261128-010702-44edae6) holds:
 faces at 32 cut that part 300-fold (its total clause refuted at t = 1); LF (A-20261128-005331-874ec88; readers
 A-20261128-011658-019b3f8 failed on a figure colour, A-20261128-011717-7db1434) refuted: a level face in the matter keeps
-the interior residual 2.4x higher at t = 2; OH (A-20261128-005454-eb7b26b) undecided; FR (v0.6 outer-face set) started
-17:18. Failed predictions: SM-q step clause, OB total clause at t = 1, LF null, OH agreement clause; FD1's t = 180
+the interior residual 2.4x higher at t = 2; OH (A-20261128-005454-eb7b26b) undecided; FR (A-20261128-011908-0e41713 after a failed start A-20261128-011804-365c88b:
+overrides cannot create parameters): core-v0.6's outer-face set cuts the outer part 70-100-fold to t = 2. Failed predictions: SM-q step clause, OB total clause at t = 1, LF null, OH agreement clause; FD1's t = 180
 clause untested (file mapping wrong in the prediction).
 Records: OPEN.md, REVIEW-wave3 section 14, STATUS, HANDOFF, RISKS 48-51; outbox to core (b34-finder-confirmed-outer-
 faces) and orch (g2-conditions-after-batch-34); core's answer acknowledged. Card-hours used: 0 (4.2 capped in queue).
