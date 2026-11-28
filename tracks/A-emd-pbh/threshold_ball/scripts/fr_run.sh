@@ -13,10 +13,9 @@ tab=$(ls "$D/S2"/*.tab | head -n 1)
 nrp=$(ls "$D/S2/nestA"/*_track.nrp | head -n 1)
 nt=$(python -c "import json,sys; print(json.load(open(sys.argv[1]))['n_track'])" "$D/S2/nestA/tracked.json")
 mkdir -p "$OUT/S2c-AFR"
-ATHENA_EXE=$EXE THREADS=4 "$ROOT/scripts/cpu_run.sh" "$OUT/S2c-AFR" "$DECKS/nest16_L16.athinput" \
+ATHENA_EXE=$EXE THREADS=4 "$ROOT/scripts/cpu_run.sh" "$OUT/S2c-AFR" "$HERE/../decks/nest16_L16_fr.athinput" \
   problem/comp0_file=$tab particles/particle_file=$nrp particles/traj_ntrack=$nt \
   particles/deposit_shape=cic particles/deposit_comp_c=0.0 particles/deposit_comp_c2=0.0 \
-  z4c/extrap_order=4 z4c/ghost_falloff=true z4c/sbc_variant=nonwave z4c/sbc_speed=metric \
   time/tlim=2.0 output2/dt=4.0
 rc=$?
 tail -n 3 "$OUT/S2c-AFR/athena.log"

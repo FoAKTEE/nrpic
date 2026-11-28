@@ -897,3 +897,5 @@ more than 10 times above S2c-AL32's (0.0003 / 0.0005); the matter part (x < 4.5)
 0.076). Refuted if the 13-16 part at t = 2 is above 0.5 x S2c-A's (the options do not help this data), or if the
 matter part moves by more than 25 per cent (then the options reach the interior by t = 2, which they cannot at light
 speed from 16, and something else changed).
+FR's first run A-20261128-011804-365c88b FAILED at start (exit 1, 0 s): "Parameter 'extrap_order' in block 'z4c' on
+command line not found" - overrides cannot create parameters. Deck decks/nest16_L16_fr.athinput carries the set; rerun.
