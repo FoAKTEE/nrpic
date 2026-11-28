@@ -1339,3 +1339,30 @@ first block did not. Without the smoke test all four card runs would have had no
 very defect decision 0048 corrects. Decks and scope now set start_time_0 = 0, stop_time_0 = 1e4;
 the smoke test is repeated before anything is queued. To core (outbox): name both keys in the
 READY of the finder.
+
+## 2026-11-28T02:20Z  session C-sidm lead (batch 35)  commits 987d33c03..(this entry's commit)  runs C-20261128-020723-f3d27b8, -020724-5fb45c3, -020724-14139b1, -020724-3fb58bb, -021146-0f3b8f2, -021714-46cc308
+
+- did: merged main; recorded G2 as signed (pass with reservations, decision 0048 item 1);
+  committed the lead's full-pass VERIFY_RESULTS (987d33c03); queued the heat reruns on core-v0.8
+  (q0092, q0093) after predictions HR.0-HR.5, with a reduction that writes into its own run
+  directory and deletes nothing; applied the gate review's corrections (VERIFIER.md copied where
+  the stage tool reads it, C18 PASS, verifier requests a-e, note wording, SCOPE.md G2 clause
+  amended with the date, EVIDENCE.md rewritten, OPEN.md, STAGE_REPORT regenerated); wrote
+  scope/SCOPE_G3.md before any production run; sampled the b = 0.1 models at N = 1e6 (four
+  registered runs), wrote decks and smoke-tested them; queued step 1a (q0096-q0099) after
+  predictions G3A.1-G3A.7; REVIEW-wave3 section 19; two outbox requests (orch, core).
+- found: P1a.1-P1a.3 held (Z_c to 1e-5, sum m W/psi - 1 about -1e-5, kick -0.0034 to -0.0035,
+  214-216 s). The first smoke test showed the finder never searching: start_time_<n> and
+  stop_time_<n> default to "never" (z4c/fastflow.cpp:177-179); the scope's own deck block had
+  the same gap. Fixed in decks and scope; second smoke test writes status rows ("mean radius
+  negative" at t = 0, nothing trapped, no false acceptance). The literature value 0.334 is the
+  first binding-energy maximum and the source rejects the turning-point principle
+  (2009.08163 paper.tex:952-972), read by me.
+- changed my mind about: the note's "location is converged" and "particle noise drives the
+  control collapse" overstated what the runs show (reviewer and verifier were right).
+- failed predictions: none judged this session (HR and G3A are pending). Failed runs: none; the
+  first smoke test passed its own purpose (load) but exposed the finder defaults.
+- open: q0092 (C-20261128-021624-9c11a74, job 5567), q0093, q0096-q0099 pending; G2 owed: the
+  bracket legs' constraint histories in a package figure and two schem_ladder labels; the
+  independent review of SCOPE_G3.md; the monoenergetic deck generator.
+- card-hours: none used by this session; reserved 0.6 + 16 toward G3 (80).
