@@ -2658,3 +2658,9 @@ the merged tree byte for byte (logs and restart files excluded); **M9b** on two 
 1e-6 relative (v0.8 gave 0.0). The deck has a uniform mesh, so the level-face kernel of
 change 2, which is not corrected between ranks, is not exercised. Refuted by any differing
 file in M9a or a column above 1e-6 in M9b. Not a publication: the executables wait for q0094.
+
+Outcome M9 (02:26Z), run core-20261128-022409-4720043 (figure looked at; the left panel
+clips its tick labels, as in batch 27): **M9a and M9b HOLD**. The MPI build
+`.work/build_cpu_mpi_v09rc` (185 s on 6 jobs) on one rank writes the 17 files of the serial
+merged build byte for byte; on two ranks `cons.hst`, tracker file and mesh history equal one
+rank (relative difference 0.0). Ready to be published with the others once q0094 passes.

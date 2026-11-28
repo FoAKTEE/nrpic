@@ -41,6 +41,7 @@ cures it in every release.
 | R9 byte regression against release `.work/build_cpu_v08/src/athena`, twelve set-ups, 3 cores | core-20261128-020122-3a1a3dd (figure core-20261128-020936-0826227) | 75 of 75 items identical, classes a, b, a+b, other empty: REGRESSION PASS (R9 held). Figure looked at: twelve bars, one colour |
 | T9 the branch's tests again with the merged build, outputs against the branch session's runs byte for byte (`rerun_compare.py`) | core-20261128-021251-d4575ac (first pass -021119-fb199ef failed on the scripts' own summary files: wall times, executable path) | 416 output files (AthenaK outputs, input decks, the scripts' tables): 371 identical, 45 identical after the run directory's name is replaced (input decks and restart files store the path), none differs, none missing; the scripts' verdicts equal. T9 HOLDS. Figure looked at |
 | Q9 `restart_test.py` (restart outputs across cuts at every residue of the record interval and a chain) against release core-v0.8 | core-20261128-020910-9292e5d | ALL OK, 20 checks "ok": the uninterrupted run equals core-v0.8 byte for byte; cuts at 24, 25, 26, 27 and the chain give every output file byte-identical to the uninterrupted run, restart and `.prt` files identical. Q9 held. The reference cuts with core-v0.8 (labelled "v0.7" by the script) lose no tracker or `cons.hst` record and write two header lines, as written before the run. Figure looked at |
+| M9 MPI build of the merged tree (`.work/build_cpu_mpi_v09rc`, `mpi_smoke_v08.py`): one rank against the serial build, two ranks against one | core-20261128-022409-4720043 | held: 17 files identical; two ranks equal to one rank (0.0). Uniform mesh: level faces between ranks (not corrected) not exercised. Figure looked at |
 | Branch tests of the source session (deposit at level faces, conservation on three levels, cap between levels, parameters on restart, finder on Track A's files, threaded build) | `JOURNAL-faces-finder.md` entries 2 to 6 | held, except the split of C0 between the two faces (entry 4) and the standard flow's "not found within 400" of S2 (entry 5): both on record |
 
 ## T9 (the branch's tests with the merged build)
@@ -82,8 +83,8 @@ processor run, column 16 within 1e-4, scan start within 1e-6; K4 a continued run
 None published for the release yet. For scouting, the branch's executables of the same
 source stay at `/data/haiyangw/nrpic/scratch/core/exe/core_faces-finder/` (athena_cpu,
 athena_cpu_omp, athena_gpu; COMMIT ad54460e; READY). After the card check passes:
-`scratch/core/exe/core_nrpic_v09/` with athena_cpu (the R9 build), athena_cpu_mpi (to be
-built), athena_cpu_omp and athena_gpu (copies of `core_faces-finder`, same tree),
+`scratch/core/exe/core_nrpic_v09/` with athena_cpu (the R9 build), athena_cpu_mpi (`wt/core/.work/build_cpu_mpi_v09rc`,
+tested by M9), athena_cpu_omp and athena_gpu (copies of `core_faces-finder`, same tree),
 COMMIT, SHA256SUMS, READY.
 
 ## Not done in this release

@@ -58,8 +58,9 @@ and the registered `card_check.py` line written out in `RELEASE-v0.9.md` (sectio
 check"), against prediction K of `JOURNAL-faces-finder.md` entry 5. If it passes: rewrite
 `RELEASE-v0.9.md` in the form of `RELEASE-v0.8.md` (first line "... CARD CHECK PASS"),
 publish `scratch/core/exe/core_nrpic_v09/` (athena_cpu = `.work/build_cpu_v09rc`,
-athena_cpu_omp and athena_gpu copied from `core_faces-finder`, an MPI build of the tree:
-`.work/build_cpu_mpi_v09rc`, smoke test `analysis/release/mpi_smoke_v08.py`; COMMIT,
+athena_cpu_omp and athena_gpu copied from `core_faces-finder`, athena_cpu_mpi from
+`.work/build_cpu_mpi_v09rc` (built and smoke-tested this session, M9, run
+core-20261128-022409-4720043); COMMIT,
 SHA256SUMS, READY), and write the request to the clerk in `tracks/core/outbox/` (merge,
 tag on ad54460e, release builds, interface texts `level_faces.md`,
 `restart_parameters.md`, `finder_box.md`, updated `finder_stop.md`, CLAUDE.md row).
