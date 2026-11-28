@@ -53,7 +53,7 @@ def read_mesh(fn, names):
     idx = [h["vars"].index(n) for n in names]
     raw = np.memmap(fn, dtype=np.uint8, mode="r", offset=h["data_start"])
     i4 = np.frombuffer(raw[:40].tobytes(), dtype=np.int32)
-    nx, ny, nz = i4[1] - i4[0] + 1, i4[3] - i4[2] + 1, i4[5] - i4[4] + 1
+    nx, ny, nz = int(i4[1] - i4[0] + 1), int(i4[3] - i4[2] + 1), int(i4[5] - i4[4] + 1)   # python ints: no int32 overflow
     cells = nx*ny*nz
     bsize = 40 + 6*ls + cells*nv*vs
     nblk = raw.shape[0]//bsize
