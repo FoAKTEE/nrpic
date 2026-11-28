@@ -1471,3 +1471,13 @@ status 2 area mass 1.11375; summary 2 over 150-186 M: M_chr 1.12250-1.12298, S/M
 - D35-9 outcome: unchanged at 200 M (m1 inside the common horizon, no separate horizon of m1
   found by finder 2; m2 receding). Refuted if m2's distance falls or finder 0 finds a surface of
   mass near 0.13 with hrms below 1e-3.
+
+### Corrections run (before it runs): reader and note
+
+- Reader b21_a2_state.py with the verifier's corrections, run F-20261128-020208-d7c6f1c (made
+  and read in this session, see outcomes below).
+- D35-N (note run_all with the schematics as of core-v0.8): the two schematics change only in
+  the four items now green (tracker file kept on a continued run in both; status file and found
+  flag in both; resubmission after a preemption in the data flow); every data figure's numbers
+  JSON and `tables/ledger.tex` equal to v2's committed files (no input changed). Refuted if any
+  numbers JSON or the ledger differs.
