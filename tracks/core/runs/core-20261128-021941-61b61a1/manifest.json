@@ -1,0 +1,96 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "core-20261128-021941-61b61a1",
+  "track": "core",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "row 4 M/8 level 3 complete: fates, P13 (member half), with the 0.755 member continued to 600 M (q0059)",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "python3",
+    "tracks/core/verify/row4/row4_fate.py",
+    "--out",
+    "$NRPIC_RUN_DIR",
+    "0.605=/data/haiyangw/nrpic/scratch/core/core-20261121-204230-3bcb118,/data/haiyangw/nrpic/scratch/core/core-20261121-204235-0b25077",
+    "0.680=/data/haiyangw/nrpic/scratch/core/core-20261121-204234-d010783,/data/haiyangw/nrpic/scratch/core/core-20261121-204239-2be5ac2",
+    "0.69875=/data/haiyangw/nrpic/scratch/core/core-20261123-020454-8fec6b2,/data/haiyangw/nrpic/scratch/core/core-20261123-020456-884f550",
+    "0.7175=/data/haiyangw/nrpic/scratch/core/core-20261123-020450-7e42037,/data/haiyangw/nrpic/scratch/core/core-20261123-020452-e635a8e",
+    "0.726875=/data/haiyangw/nrpic/scratch/core/core-20261124-130310-597d9ca,/data/haiyangw/nrpic/scratch/core/core-20261125-180320-3dad12c",
+    "0.73625=/data/haiyangw/nrpic/scratch/core/core-20261123-020458-dfc38d7+/data/haiyangw/nrpic/scratch/core/core-20261125-225600-d2db1ed,/data/haiyangw/nrpic/scratch/core/core-20261123-020500-9b192cd+/data/haiyangw/nrpic/scratch/core/core-20261125-080049-dcc9ea1",
+    "0.755=/data/haiyangw/nrpic/scratch/core/core-20261121-204232-f74c942+/data/haiyangw/nrpic/scratch/core/core-20261126-110234-a72e07c,/data/haiyangw/nrpic/scratch/core/core-20261121-204237-ae00ca2+/data/haiyangw/nrpic/scratch/core/core-20261126-021633-50968b9"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "61b61a1db6d755d0ace299fc29cc702f35b0a7ee",
+    "branch": "core/nrpic",
+    "dirty": false,
+    "merge_base_main": "9d5cb255f101fee2827180ebacdbeba18268bd75",
+    "worktree": "wt/core"
+  },
+  "code": {
+    "core_tag": "core-v0.8",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "c7e770b3e0be132ee7c21860fd4541200b8c7248ed832b31a0ce80d1b3c6bbf3",
+    "machine_file_sha256": "0b480f5c2078e1d9fef1d97a0babb27b14009b045b4021ee578d6fc3cd243dd1",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/core/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "tracks/core/verify/row4/row4_fate.py",
+      "role": "argv",
+      "sha256": "03568ec443ca35acf4ced31f8b8d6362f3954a3de7a1a23bbe9ba6dba7909320",
+      "bytes": 10866,
+      "tracked": true
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 1,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/core/core-20261128-021941-61b61a1",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-28T02:19:43Z",
+  "started": null,
+  "ended": null,
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 40.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 20.7151,
+    "gpu_hours_reserved": 0.1,
+    "gpu_hours_without_gate": 5.8713,
+    "cores_busy": 0,
+    "runs": 1671,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md + 0026-cards-loaded-allotment-cost.md + 0031-level2-branch-and-ablation.md + 0032-new-account-preemption-allotments.md + 0038-track-e-g2-signed-g3-scope.md + 0039-rulings-after-batch-17.md + 0045-track-d-g2-signed-release-v08.md + 0048-rulings-after-batch-34.md"
+  }
+}
