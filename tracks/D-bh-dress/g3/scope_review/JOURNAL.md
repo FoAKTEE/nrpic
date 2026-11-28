@@ -139,3 +139,28 @@ one fixed window (ln a 0.73-0.83), FK's stays below 0.005.
   windows, 1.78 over the common 200-300 M. G3-N1's factor-2 clause holds by 0.3 per cent on the full
   windows, and its numbers are already known: polishing equals the tight rule to 6e-9 (finder_stop.md
   section 6), and the tight re-search of the same restart files is FP/FP-ext.
+
+## Entry 4 (2026-11-27 16:53 PST): outcome of C (Claim D's statistic on the exact solution)
+
+Run D-20261128-005059-e65d075 (`tools/dress_model.py`, one core, exit 0). Figure dress_model.png looked
+at: (a) the exact rest-mass density outside 1.5 R_AH on FK's own particle clocks at 100, 200, 300 M,
+slope about -1.9 to -2.8 and lumpy where the lattice labels bunch; (b) q from the measured lead, -24 to
++3 per cent, largest in the two innermost bins; (c) q from the scope's nearest-tracer-label clock, -2 to
+-73 per cent, everywhere below the band.
+- C0 HOLDS: my tau_H(R0) equals esf_growth.csv to 6.0e-9 relative over 4000 shells.
+- C1 REFUTED (my prediction failed): every inner bin (1.5 R_AH to 10 M, eight log bins to 40 M) holds
+  more than 400 particles at N: 6080, 3696, 3744 particles in the inner range at 100, 200, 300 M, 848 to
+  2568 per bin. D1's 400-particle floor excludes no bin. Poisson counting noise of the cumulative mass in
+  the innermost bin is 3.0-3.4 per cent, above D1's 2 per cent band [JUDGEMENT: Poisson; the lattice is
+  quieter, the dynamics adds scatter].
+- C2 HOLDS: with the lead measured by the verifier (M/8, N, at R = 4 M: 0.002, 0.177, 0.788, 0.92 M at
+  R0 = 10, 20, 28, 36) |q| reaches 6.2, 23.6, 18.1 per cent at 100, 200, 300 M in the inner bins; with the
+  M/16 lead (0.40 M at R0 = 28) still 6.2, 17.7, 14.0 per cent. At 300 M the innermost bin has |q| 14 per
+  cent with the M/16 lead and 9 per cent with the M/8 lead although the M/16 lead is the smaller at every
+  label: the ordering of |q| in a bin does not follow the ordering of the lead (lumpy labels). The inner
+  slope moves by +0.26, +0.30, +0.51 (M/8 lead); its Poisson bootstrap sd is 0.042, 0.062, 0.073.
+- C3 HOLDS, far beyond the prediction: the nearest-tracer-label clock gives |q| up to 44, 73, 69 per
+  cent and inner slopes of -1.2, -1.1, -0.05 against the exact -1.9, -2.4, -2.8. At 200 M the inner tracer
+  labels (6, 10, 20) are already swallowed and the nearest label left is 28 M; inside a 1 M label bin the
+  particles' own proper times spread by 5.4-7.1 M and differ from the label's tracer time by up to 6.1,
+  12.2, 15.4 M. The snapshots carry every particle's proper time (docs/FORMATS.md line 123).
