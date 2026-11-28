@@ -316,3 +316,148 @@ the Weyl rows above; nothing of the band strain of q0107.
   and the larger-lapse-half mean at a = 132). I predict W6 refuted: the invariant's gauge ratio at
   eight per cell within 0.02 of the one-per-cell ratio for the median and the larger-lapse half at
   a = 100 and 132 (as at a = 49 and 64).
+
+## P2. Outcomes (written after the runs; every figure looked at)
+
+Runs, all registered in this worktree under `stage/G2/gate_review` (processors, at most 6 cores):
+
+| Run | What | State |
+|---|---|---|
+| B-20261128-083507-772ea1c | first band run, every epoch corrected | STOPPED by me (`nrpic-run stop`) after 18 min: the gauge piece took 6-12 min per dump; 3 rows on record, unused |
+| B-20261128-085358-7d3a1b4 | band run: corrected at a = 49, 64, 100, 132, raw at all eight epochs | FAILED (exit 1) in its print loop after it had written `review_check2.json` and all 32 rows (`rows.jsonl`); the numbers are complete |
+| B-20261128-090728-b147338 | table, RE1-RE4 judgement and figure `review_check2.png` from that JSON | completed; figure looked at |
+| B-20261128-084129-a0a5947 | the lead's `weyl_gauge.py splitx` for the four 128^3 members (no 256^3) | completed |
+| B-20261128-085530-88085a3 | W6 and RE5 judgement and figure `review_w6.png` from its `weyl_splitx.json` | completed; figure looked at |
+
+Every dump was chosen by its header time; the four members' dumps agree in t to 6e-9.
+
+| Prediction | Result [VERIFIED by the runs named] | Verdict |
+|---|---|---|
+| RE0 | raw band / A^2 - 1 = -5.8e-14; corrected / raw - 1 = 0 | HOLDS |
+| RE1 (G8a, condition (b)) | P_gd = band rms 8/1 per cell, Gamma driver, corrected: 1.00000, 0.99999, 1.00000, 0.99999 at a = 49, 64, 100, 132 (largest departure 1.0e-5); raw at all eight epochs a = 25-132 within 3.6e-5 | HOLDS, by three orders of magnitude inside the bound; **condition (b) NOT refuted: met** |
+| RE2 (item 5, band strain) | gauge ratio at eight per cell R8 against one per cell R1, corrected: 0.95032/0.95032, 0.80289/0.80264, 0.64387/0.64258 at a = 64, 100, 132; \|R8-1\|/\|R1-1\| = 1.000, 0.999, 0.996 | HOLDS: the gauge dependence of the band strain does not fall with the sampling at all |
+| RE3 | my R1 equals part 1's (lead's analysis files) to 1.1e-16 at a = 49, 64, 100, 132 (0.98365, 0.95032, 0.80264, 0.64258); raw likewise | HOLDS (same quantity, different reader) |
+| RE4 | P_gd raw against corrected: largest difference 5.3e-7 | HOLDS |
+| RE5 (W6) | see below | **REFUTED** (my prediction failed) |
+
+Beside the predictions (same run): with zero shift, P_zs = 0.99969 at a = 100 and 0.99800 at a = 132
+(part 1's RC1, 2.0e-3, reproduced from the dumps); the Gamma-driver band strain is a hundred times
+less sensitive to the sampling than the zero-shift one. The raw (uncorrected) gauge ratio is 0.924,
+0.710, 0.268, 0.137 at a = 49, 64, 100, 132, the same at both samplings to 1e-3: the gauge
+correction of the lead's `gauge.py` removes most of the coordinate part, and what it leaves is the
+5-36 per cent of part 1.
+
+Weyl statistics (B-20261128-084129-a0a5947; the a = 49 and 64 rows and the zero-shift a = 100 row
+repeat the run log of the killed B-20261128-074116-363f95f to every printed digit). Ratios of
+B_ij B^ij statistics, Gamma driver over zero shift (square roots, amplitude-like, in brackets):
+
+| a | median, 1 ppc | median, 8 ppc | larger-lapse half, 1 ppc | larger-lapse half, 8 ppc | mean (cores), 1 ppc | mean, 8 ppc |
+|---|---|---|---|---|---|---|
+| 49 | 0.9976 | 0.9973 | 0.9962 | 0.9960 | 0.9021 | 0.9021 |
+| 64 | 0.9848 | 0.9848 | 0.9860 | 0.9858 | 0.9132 | 0.9175 |
+| 100 | 0.9355 (0.967) | 0.9580 (0.979) | 0.9569 (0.978) | 0.9734 (0.987) | 0.8371 (0.915) | 0.8414 (0.917) |
+| 132 | 0.8208 (0.906) | 0.9332 (0.966) | 0.8828 (0.940) | 0.9641 (0.982) | 0.8414 (0.917) | 0.8459 (0.920) |
+
+\|R8-1\|/\|R1-1\| for median and larger-lapse half: 0.65, 0.62 at a = 100; 0.37, 0.31 at a = 132.
+So the lead's W6 is NOT refuted (it falls); W6's "at most half" holds at a = 132 and fails at
+a = 100 ("falls, but not as fast as the noise"); my RE5 (does not fall) is REFUTED. At fixed gauge
+the eight-per-cell change of the median is 1.5 per cent in the Gamma driver and 13 per cent with
+zero shift at a = 132 (power): the bulk remainder was mostly the zero shift's particle noise. The
+core-weighted mean does not move with the sampling (0.837 to 0.841, 0.841 to 0.846): that part,
+8 per cent in amplitude at a = 100-132, is not particle noise; its mesh scale is untested (W5 was
+void, W5b never ran: the 256^3 rows of B-20261128-074116-363f95f were not reached).
+
+Figures looked at: `review_check2.png` (B-20261128-090728-b147338): panel (a) the eight-per-cell
+ratios of both gauges sit on one to the width of the markers except the zero-shift points at
+a = 100, 132; panel (b) the 1 and 8 per cell gauge ratios lie on each other and on part 1's crosses,
+the raw ratio far below. Cosmetic defects: the y label of (a) is cut, tick labels at 30-40 overlap.
+`review_w6.png` (B-20261128-085530-88085a3): (a) at eight per cell the median and larger-lapse-half
+curves bend back toward one after a = 64 while the mean stays at 0.92; (b) the Gamma-driver
+curves stay within 1 per cent of one, the zero-shift median and larger-lapse half drop to 0.93-0.95.
+
+## P3. The stage check, rerun
+
+`harness/bin/nrpic-stage verify B-emd-gw G2`, 2026-11-28T08:55:47Z, export of c50cf3d75 (copy kept
+in `scratch/B-emd-gw/tmp/gate_review2_g2/VERIFY_RESULTS_reviewer2_20261128T085547Z.md`; the lead's
+VERIFY_RESULTS files restored afterwards): FAIL on three checks, none of them about the C2 evidence:
+`clean` (the lead's uncommitted finish of B-20261128-074111-e2fcd72), `sync` (main moved during this
+session: release core-v0.9 merged at 00:30-00:50 PST), `runs` (three runs not finished: the 256^3
+initial data B-20261128-030420-33ccdca, running by design; e2fcd72, whose committed manifest still
+says running; my own band run, running at that moment). Every other check passes: rerun 15 of 15,
+compare 30 of 30 within tolerance, regenerate 30 of 30, figures, style, size, note PDF.
+
+## P4. C2 judged over the whole range the science uses
+
+The observable the track reads: band strain |k| <= 8 k_f of the halo box (sigma1 = 0.014, 128^3
+base), in the Gamma-driver gauge (the zero shift fails in resolved cores at 256^3, a = 102). Range
+measured by any leg: a = 2.3 to 132.3; the population runs go on to a = 141.7, and no leg has been
+read in 132 < a <= 141.7.
+
+| Leg | Over a = 2.3-132 | Evidence |
+|---|---|---|
+| Mesh, Gamma driver (256^3/128^3, 1 ppc) | within 1.1 per cent to a = 64, 2.8 per cent to 132: MET | verifier (reproduced to 3 digits), part 1; not recomputed by me |
+| Particle number, Gamma driver (8/1 ppc, 128^3) | within 1.0e-5 (corrected), 3.6e-5 (raw): MET | my RE1, this part |
+| Particle number, zero shift | within 2.0e-3: MET | part 1 RC1; reproduced here from the dumps |
+| Gauge, band strain | within 1.6 per cent to a = 49; 0.950, 0.803, 0.643 at 64, 100, 132, the same at 8 ppc: NOT a convergence after a ~ 50; a measured dependence on the coordinates that sampling does not change | part 1 RD1; my RE2 |
+| Gauge, magnetic Weyl invariant on common slices | bulk (median, larger-lapse half) at 8 ppc within 3.4 per cent in amplitude to a = 132 (1.3-3.4 at a = 100-132; at 1 ppc 2.2-9.4), so falling with sampling; core-weighted mean 8 per cent at a = 100-132, not falling with sampling, mesh scale untested: MET in the bulk, NOT in the cores | lead's batch 39; my rerun, this part |
+
+Reading [JUDGEMENT]. Decision 0050 item 2 names two conditions, "either or both", before the
+signature. (a) was measured and not met (item 5). (b) is now measured by a run that could have
+failed (zero shift moved 2e-3 at the same test, and the bound was 5 per cent) and is met by three
+orders of magnitude: in the gauge the strain is read in, the late band strain is converged in mesh
+(2.8 per cent) and in particle number (1e-5) over a = 2.3-132. Item 5 asked whether the remainder of
+the invariant's gauge difference falls with the sampling: in the bulk of the volume it does (mostly
+the zero shift's particle noise); in the halo cores it does not, and whether it is truncation is not
+known. The band strain's own gauge dependence does not fall with the sampling at all: it is not a
+numerical error but a property of the coordinate observable, fixed by the gauge choice. C2 is
+therefore met for what a gate on a capability can ask over the whole range, the numerical
+convergence of the observable in the gauge it is defined in, and not met as a gauge-independence of
+that observable after a ~ 50, which no further sampling will bring.
+
+**C2: PASS WITH RESERVATION** (under decision 0050 item 2(b)), for a <= 132.3, with the band strain
+after a ~ 50 a Gamma-driver-gauge quantity.
+
+## P5. Recommendation
+
+**SIGN G2** (pass with reservations; the other criteria as in part 1). The item held by decision
+0050 is settled by the condition the decision itself named, measured independently of the lead
+(different reader for everything except the definition of the corrected strain, which RE3 shows is
+the quantity of the package). What is signed is limited: the late strain is verified as a number of
+the Gamma-driver gauge, not as a gauge-independent amplitude.
+
+Corrections owed by the lead (none changes the verdict): commit the finish of
+B-20261128-074111-e2fcd72 (failed, exit -15) and record that both batch-40 analyses ended with
+exit -15 at 08:00:35Z although HANDOFF.md says none was to be killed; judge G8a, its corollary and
+W6 from the runs named in P2 instead of rerunning them; mark C2 in CHECKLIST.md with this reading;
+merge main (core-v0.9).
+
+### Conditions for G3 (before any production run of the population scan)
+
+1. Every late number (a > 49) of the band strain is quoted as a Gamma-driver-gauge quantity, with
+   the measured gauge dependence (5, 20, 36 per cent at a = 64, 100, 132) stated beside it as a
+   separate systematic, never folded into a convergence error; any statement meant to be
+   independent of the gauge uses an invariant measure and quotes its core discrepancy (8 per cent in
+   amplitude at a = 100-132).
+2. W5b, the 256^3 mesh scale of the Weyl statistics at t = 14, 18, 21 (files 16, 21, 25 by header
+   time; processors, 25-30 GB per worker), is read before any G3 claim about the cores or that the
+   remaining gauge difference is truncation.
+3. The legs are read at the last dumps (t <= 21.92, a <= 141.7) before any number in
+   132 < a <= 141.7 is quoted, or the science ends at a = 132.
+4. The momentum-constraint part of G8b (q0107, `pop.cstat.hst`, Mr_mean at a = 141 against 0.20 at
+   one per cell) is read before G3 production adopts eight per cell in the driven gauge; the band
+   strain does not require eight per cell (1e-5 at one per cell), the constraints and the halo
+   catalogue do.
+5. Part 1's conditions 2-4 stand; its condition 1 (particle-number leg in the driven gauge) is met
+   by this part.
+
+### Reservations carried to G3
+
+1. Band strain after a ~ 50: gauge-dependent by 5-36 per cent, unchanged by sampling; most of it
+   coordinate (raw ratio 0.14 at a = 132, corrected 0.64).
+2. Invariant core discrepancy 8 per cent in amplitude at a = 100-132, not particle noise, mesh scale
+   untested (W5b).
+3. No leg read in 132 < a <= 141.7.
+4. Part 1's reservations 3-9 unchanged; its reservations 1 and 2 are replaced by items 1 and 2 here.
+5. My prediction RE5 failed (the invariant's bulk remainder does fall with the sampling); the
+   first band run was stopped and the second failed in its print after writing its numbers; both
+   stay on record.
