@@ -289,6 +289,17 @@ def values_g2(v):
     s7 = common.load_json("shear_s7", "series7.json")
     v["g2_n7"] = ([r["Delta"] for r in s7["rows"]] + [s7["ratio"], s7["err_finest"]], "shear_s7")
     v["g2_n7c"] = ([r["Hr_mean_1_tA"] for r in s7["rows"]] + [r["Mr_mean_1_tA"] for r in s7["rows"]], "shear_s7")
+    # batch 37: the verifier's corrections a-c (population/JOURNAL 2026-11-27 19:12)
+    pr = common.load_json("pop_pair37", "pair_ratio.json")
+    h1 = pr["one_ppc_zero_shift"]["Hr_mean"]
+    v["g2_pair"] = ([h1["E_epochs"]["36-100"][0], h1["E_epochs"]["36-100"][1],
+                     min(h1[k]["36-100"][0] for k in ("F_fine_rows", "C_coarse_rows")),
+                     max(h1[k]["36-100"][1] for k in ("F_fine_rows", "C_coarse_rows")),
+                     max(h1[k]["25-100"][1] for k in ("F_fine_rows", "C_coarse_rows")),
+                     pr["eight_ppc"]["Mr_mean"]["36<=a<49"][0]], "pop_pair37")
+    vk = common.load_json("ver_hik", "v7_highk.json")
+    v["g2_hikcut"] = ([vk["ratio_zs_over_gd_gt16_shells_le64"], vk["ratio_zs_over_gd_gt16_all_modes"],
+                       vk["gd128"]["corner_share"]], "ver_hik")
     v["g2_n7x"] = ([s7["rows"][0]["t_A"], min(r["s_min_to_tA"] for r in s7["rows"])]
                    + [r["t_first_crossing"] for r in s7["rows"]], "shear_s7")
 
@@ -649,7 +660,8 @@ LEDGER_G2 = [
     ("The halo population box in full relativity ($128^3$, $L=8$)", [
         ("g2_stop", "$\\sigma_1=0.028$: scale factor of the non-finite stop, zero shift: first run, restart X0, restart X1 at half the step; largest $a$ of the Gamma-driver restart X2"),
         ("g2_kmin", "X2: largest $K$ in the box after its first two records"),
-        ("g2_hik", "$\\sigma_1=0.014$: $a$; TT measure above $16\\,k_f$, zero shift over Gamma driver"),
+        ("g2_hik", "$\\sigma_1=0.014$: $a$; TT measure above $16\\,k_f$, zero shift over Gamma driver (corrected; shells to $n/2=64$, the cube's corner modes left out)"),
+        ("g2_hikcut", "the same at $a=121$, raw: shells to $n/2=64$; every mode off the Nyquist planes; share of the corner modes in the Gamma-driver measure (the G2 verifier's run)"),
         ("g2_band", "corrected strain over $|\\mathbf k|\\le 8k_f$, Gamma driver over zero shift, at $a=100$"),
         ("g2_hr", "$a$; mean relative Hamiltonian constraint, zero shift and Gamma driver; momentum, zero shift and Gamma driver"),
         ("g2_p8", "eight particles per cell: last $a$ of the cut run; mean momentum constraint, one over eight per cell, at $a=25,49,81$: smallest, largest; largest $|$strain ratio over $|\\mathbf k|\\le8k_f-1|$"),
@@ -659,7 +671,7 @@ LEDGER_G2 = [
         ("g2_meanmed", "median of the ten largest averaged over $81\\le a\\le132$, equal GR masses: zero shift, Gamma driver"),
         ("g2_meanmed_w", "the same with the GR file's rest-mass weights as masses (superseded): zero shift, Gamma driver"),
         ("g2_m256", "$256^3$, zero shift: $a$ of the last record before the non-finite stop; $a$ where the largest $K$ turns positive; largest $K$ at the last record"),
-        ("g2_m4", "mean Hamiltonian constraint, $128^3$ over $256^3$, $36\\le a\\le100$: smallest, largest; momentum: smallest, largest"),
+        ("g2_m4", "mean Hamiltonian constraint, $128^3$ over $256^3$, at $a=36,49,64,81,90,100$: smallest, largest; momentum: smallest, largest (the extremes depend on the pairing of the two histories: row g2\\_pair)"),
         ("g2_q1", "eight particles per cell, joined runs: last $a$; momentum and Hamiltonian constraint means, one over eight per cell, there; largest relative difference of the continuation from the cut run"),
         ("g2_s1", "$\\sigma_1=0.028$, Gamma driver from $t=8$: last $a$; mean Hamiltonian constraint there and its largest value"),
         ("g2_gm1", "$256^3$, Gamma driver: last $a$; largest $K$ in the box after $t=9$; the same at $128^3$"),
@@ -686,7 +698,8 @@ LEDGER_G2B = [
         ("g2_gm2", "$256^3$ over $128^3$, Gamma driver: largest $|$band-strain ratio$-1|$ for $a\\le64$ and for $a\\le132$; TT measure over all shells and above $16\\,k_f$ at $a=121$"),
         ("g2_gm3", "the same pair, equal masses, $64\\le a\\le132$: catalogues with counts inside $2\\sqrt N+2$, catalogues; halo count over the $128^3$ count, smallest, largest; largest-halo mass ratio, smallest, largest"),
         ("g2_c3a", "eight particles per cell, zero shift, $64^3$ member: last $a$ of its history; mean Hamiltonian constraint, $64^3$ over $128^3$: smallest and largest for $25\\le a\\le141$, smallest for $a\\ge49$"),
-        ("g2_c3b", "the same pair: mean momentum constraint ratio for $a\\ge49$, smallest, largest; one particle per cell, $128^3$ over $256^3$, mean Hamiltonian constraint ratio, smallest, largest"),
+        ("g2_c3b", "the same pair: mean momentum constraint ratio for $a\\ge49$, smallest, largest; one particle per cell, $128^3$ over $256^3$, mean Hamiltonian constraint ratio at the epochs $a=25,36,49,64,81,100$, smallest, largest"),
+        ("g2_pair", "one particle per cell, zero shift, $128^3$ over $256^3$, mean Hamiltonian constraint, $36\\le a\\le100$: at the catalogue epochs, smallest, largest; over every record (either history interpolated in $\\log a$), smallest, largest; largest for $25\\le a\\le100$; eight per cell, $64^3$ over $128^3$, mean momentum constraint for $36\\le a<49$, smallest"),
         ("g2_n7", "shearing dust, $\\beta=0.125$, $HL=4$, four particles per cell along $y$: $\\Delta$ at $N_y=64,128,256$; ratio of successive differences; finest minus Richardson value"),
         ("g2_n7c", "the same: mean relative Hamiltonian constraint over $1\\le t\\le t_A$ at $N_y=64,128,256$; momentum, the same"),
         ("g2_n7x", "the same: $t_A$; smallest neighbour spacing up to $t_A$ over the lattice spacing; first stream crossing at $N_y=64,128,256$"),

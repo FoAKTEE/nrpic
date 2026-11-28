@@ -100,6 +100,9 @@ RUNS = {
     "pop_legs34": "B-20261127-232236-7ab7aa2",     # compare_legs.py, 256^3 Gamma driver against 128^3: GM2, GM3
     "pop_c3": "B-20261127-232628-1361e3b",         # judge_c3.py: 64^3 over 128^3 at eight per cell (C3a, C3b)
     "shear_s7": "B-20261126-230056-294b265",       # series7_judge.py: shearing dust without stream crossing (N7a-c)
+    # batch 37: answers to the G2 verifier (stage/G2/VERIFIER.md section 5)
+    "pop_pair37": "B-20261128-030556-5ef9294",     # pair_ratio.py: constraint ratios under four pairings (a, b)
+    "ver_hik": "B-20261128-022328-1a9d681",        # the verifier's v7: high-k ratio with and without the corner modes (c)
 }
 
 # the registered runs of this note package that produced the committed figures/ and tables/
