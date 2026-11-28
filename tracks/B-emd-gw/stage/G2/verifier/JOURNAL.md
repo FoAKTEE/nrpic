@@ -17,7 +17,7 @@ b = 0.2 of the mean spacing, at least NMIN particles; common limit 100 m_N with
 m_N = rho_c L^3/64^3); a = (1 + t/2)^2; particle snapshot format of `docs/FORMATS.md`;
 mesh dump format of `athenak/src/outputs/binary.cpp`.
 
-## Entry 1 (18:05 PST): predictions, written before any recomputation
+## Entry 1 (18:02 PST): predictions, written before any recomputation
 
 Readers first (V0): my mesh-dump reader, particle reader, TT projector and FoF are tested on
 analytic cases before any claim is touched. Prediction V0: the TT projector returns a random
@@ -93,7 +93,7 @@ crossing check must find. Refuted if the distance shrinks, or no crossing before
 V8 (what G2 can claim): judged after V1-V7 against the scope text and decisions 0013, 0046,
 0048, written into VERIFIER.md before reading the lead's verdicts.
 
-## Entry 2 (18:25 PST): prediction for one more check, before it runs
+## Entry 2 (18:24 PST): prediction for one more check, before it runs
 
 V7c (series 7 constraint floor, Table VIII rows 278): claims, mean relative Hamiltonian
 constraint over 1 <= t <= t_A at N_y = 64, 128, 256: 3.62e-6, 2.73e-6, 2.55e-6; momentum
@@ -102,7 +102,7 @@ time average of the cstat columns Hr_mean and Mr_mean (trapezoid in t, my choice
 averaging is unknown to me) gives these to two digits; refuted if any differs by more than
 5 per cent. If they reproduce, the 128-to-256 step lowers Mr by less than 2 per cent.
 
-## Entry 3 (18:30 PST): outcomes, prediction by prediction
+## Entry 3 (18:25 PST): outcomes, prediction by prediction
 
 V0 (B-20261128-021054-577fc9d): PASS on every test. Failed as written in an unregistered dry
 run before it (scratch/B-emd-gw/tmp/v0dry): the projector's round trip through a real field

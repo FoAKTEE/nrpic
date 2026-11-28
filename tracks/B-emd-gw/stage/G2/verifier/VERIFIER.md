@@ -1,7 +1,7 @@
 # Verifier's report, gate G2 of Track B (B-emd-gw)
 
 Fresh-context verifier (checklist item C18; decisions 0016 item 4, 0046 item 2, 0048 item 3),
-batch 35, 2026-11-27, 17:56 to 18:45 PST. Processors only, no card run. Package:
+batch 35, 2026-11-27, 17:56 to 18:30 PST. Processors only, no card run. Package:
 `tracks/B-emd-gw/stage/G2/verifier/` (predictions and outcomes in `JOURNAL.md`, committed
 before and after each recomputation; scripts in `scripts/`; figures in `figs/`, all looked at).
 Sections 1 to 5 were written before I read any verdict of the lead; section 6 compares.
