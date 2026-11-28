@@ -307,3 +307,40 @@ the artefacts:
 
 Verdict: verifier2 accepted; its WRONG items are corrected, its NOT CONFIRMED items are listed
 above with what the track does about each.
+
+## kb lead batch 37 (2026-11-27, short session): package claims5
+
+Package: tracks/kb/claims5/ (helper of batch 35; decision 0049 item 6). It read at their stored
+locators the 131 unread members of class T (machine-located claims that a track cites), wrote
+plan P1 (114 verify, 13 supersede by new texts, 4 supersede to existing, 1 add), made snapshot
+kb-20261128-bd57a33 and QA, and wrote one note per citing owner. Checked by me from the artefacts:
+- Five verdicts drawn with my own seed 3720261127, stratified (3 of the 114 counted right, 2 of
+  the 17 not right), read at their lines (run kb-20261128-025758-95806ac, show.txt):
+  71 right (Spin_PBH.tex L894); 195 right (main_v3.tex L2395-2405); 5 right (MDPBH.tex L549);
+  329 wrong_label (C's statement about the brief stored as fulltext; successor 926 labelled
+  judgement, its two lines say what it quotes); 352 fragment (successor 931, L462-468).
+  CONFIRMED all five. Two small reservations, not wrong verdicts: 71 opens with heading debris
+  that I would have flagged borderline (the count does not change); successor 931 omits the hedge
+  on its own line L468 (the integral should stop at equality, so the real correction is smaller):
+  D is told in its note; 931 to be annotated in the next pass.
+- Census: CONFIRMED by my own recount from claims5/work/verdicts_T.tsv and
+  claims4/work/verdicts_TR.tsv (same run, census.json, fig_census.png read): 124/144 right as
+  worded, Clopper-Pearson 95 % 0.794-0.913; claims5 part 114/131, 0.800-0.923; as rates.json of
+  run kb-20261128-024452-cfc4954.
+- Provenance (the check RISKS.md asks of every claims package): CONFIRMED with my own diff of
+  snapshots fcd969d (claims4's last) and bd57a33 (run kb-20261128-025951-075cea6, provdiff.json,
+  fig_provdiff.png read): 922 -> 936 claims, 14 new (923-936), none gone, exactly the 131 read
+  claims changed, none outside the ledger, the supersede-to targets 910 and 638 unchanged,
+  claim_links 68 -> 85.
+- QA: CONFIRMED that work/QA_REPORT_after_P1.md is byte-identical to the report of run
+  kb-20261128-024540-477cbc9 (verify PASS) and that db/current is bd57a33 with 936 claims;
+  copied to kb/QA_REPORT.md.
+- Figure fig_claims5_rates.png read: matches rates.json (panel a T census 124/144, claims4 R
+  8/13; panel b by track). The label of the prediction line touches a marker, as the README says.
+- Not re-read by me: the other 126 verdicts; the successor texts other than 926 and 931; claims4
+  (batch 34) had no lead session of its own: its T part is inside this census, its C census (34)
+  and R sample (13) were not re-checked by a lead. Decision 0049 item 6 asks for a second-agent
+  sample of claims5's verdicts: next pass.
+
+Verdict: claims5 accepted. Its notes are posted (six outbox files of 2026-11-28T02:58Z); OPEN.md
+O7 carries the census and what remains.

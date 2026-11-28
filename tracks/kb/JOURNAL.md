@@ -972,3 +972,14 @@ kb-20261128-fcd969d -> kb-20261128-bd57a33; RISKS row "a tool step rewrites prov
   claims, claim_meta and locator rows (the batch-15 defect fixed); claim_links up by 17 (13 + 4
   supersedes). Refuted by a changed id outside the ledger, a read id unchanged, 910 or 638 changed,
   or other counts.
+- L3 outcome (run kb-20261128-025951-075cea6, provdiff.json, fig_provdiff.png read): held. 922 ->
+  936 claims, new 923-936, none gone, 131 existing changed and all in the ledger, none outside,
+  910 and 638 unchanged, claim_links 68 -> 85 (+17). (My first line of L3 wrote "921 -> 936"
+  and corrected itself to 922 before the run; on record.)
+- did: REVIEW-wave3 section batch 37 (claims5 accepted); six owner notes posted (D's with the 931
+  hedge); kb/QA_REPORT.md from run kb-20261128-024540-477cbc9; KB-G3 OPEN O7 census and what
+  remains; tracks/kb/note/scripts/figstyle.py refreshed from harness/style (orch note of core-v0.8,
+  item 4); inbox 1-7 acknowledged (all info).
+- failed predictions: none this session (L1, L2, L3 held). claims5's own Q1 (75 %) was refuted
+  by its census (87 %), on its record.
+- gate: no kb gate open (KB-G0..KB-G3 signed); service mode. 0 card-hours.
