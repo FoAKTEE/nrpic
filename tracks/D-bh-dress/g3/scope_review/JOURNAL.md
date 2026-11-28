@@ -4,7 +4,7 @@ Helper of D-bh-dress, batch 34, 2026-11-27. I did not write `scope/SCOPE_G3.md` 
 commits e92904aed and acb5f7202) nor any of the G2 runs read here. No card time; processors only, one
 core per calculation.
 
-## Entry 1 (2026-11-27 16:45 PST, before any calculation): what I test and what I expect
+## Entry 1 (2026-11-27 16:40 PST, before any calculation): what I test and what I expect
 
 Read: CLAUDE.md; coord/CHARTER.md to "Owners"; brief lines 394-405, 766-783, 834-860; decision 0045;
 `scope/SCOPE_G3.md` (whole); `scope/SCOPE.md` sections 1-5; `stage/G2/GATE_REVIEW.md` (whole);
@@ -27,7 +27,7 @@ root to 144 cells over +-768 M with blocks of 24 (scope section 3 table). Execut
   = 4096). Refuted (the scope's 2.5 holds) if at most 1500.
 - A3: G-12 as described has 1539 blocks (189 leaves on each of levels 0-6 and 216 on level 7; scope's
   "about 3.4 times"). Refuted if outside [1400, 1700].
-- A4 (added 16:50, before any run): a cheaper form of G-16, the same deck with blocks of 12 cells
+- A4 (added 16:42, before any run): a cheaper form of G-16, the same deck with blocks of 12 cells
   (G-16b): the cascade stops after two levels; I expect about 8000 blocks of 12^3 (2.3 times G-8's
   cells). Refuted outside [5000, 12000]. Informational: it tells the lead whether a +-6 M level 8 exists
   at the scope's cost at all (with 4 ghost cells a 12^3 block costs about twice a 24^3 block per cell
@@ -77,7 +77,7 @@ docs/FORMATS.md line 123).
 
 Figures: one per calculation (B and C), looked at before any number is used.
 
-## Entry 2 (2026-11-27 16:46 PST): outcome of A (block counts)
+## Entry 2 (2026-11-27 16:44 PST): outcome of A (block counts)
 
 Runs: D-20261128-004218-80cf6ab (first; its per-level labels counted from the coarsest level holding
 leaves, wrong for G-16, whose root holds none; the counts themselves are right) and
@@ -140,7 +140,7 @@ one fixed window (ln a 0.73-0.83), FK's stays below 0.005.
   windows, and its numbers are already known: polishing equals the tight rule to 6e-9 (finder_stop.md
   section 6), and the tight re-search of the same restart files is FP/FP-ext.
 
-## Entry 4 (2026-11-27 16:53 PST): outcome of C (Claim D's statistic on the exact solution)
+## Entry 4 (2026-11-27 16:52 PST): outcome of C (Claim D's statistic on the exact solution)
 
 Run D-20261128-005059-e65d075 (`tools/dress_model.py`, one core, exit 0). Figure dress_model.png looked
 at: (a) the exact rest-mass density outside 1.5 R_AH on FK's own particle clocks at 100, 200, 300 M,
@@ -165,7 +165,7 @@ slope about -1.9 to -2.8 and lumpy where the lattice labels bunch; (b) q from th
   particles' own proper times spread by 5.4-7.1 M and differ from the label's tracer time by up to 6.1,
   12.2, 15.4 M. The snapshots carry every particle's proper time (docs/FORMATS.md line 123).
 
-## Entry 5 (2026-11-27 16:56 PST, before the run): power of a whole-run form of G3-G3
+## Entry 5 (2026-11-27 16:54 PST, before the run): power of a whole-run form of G3-G3
 
 To give the lead a wording for G3-G3 that has power, the same surrogate model as B2 (noise of one N
 member from FK - FN4, mesh correlation 0.83, deterministic part of order p normalised to G2's +5.78e-4)
@@ -175,7 +175,7 @@ is applied to a whole-run statistic: the means over 100-400 M of D_8,12 and D_12
   no convergence (deterministic parts equal, ratio 1) it passes with probability below 0.1. Refuted if
   the p = 2 power is below 0.5 or the false-pass rate above 0.2.
 
-## Entry 6 (2026-11-27 16:58 PST): outcome of B2b; prediction B2c before its run
+## Entry 6 (2026-11-27 16:54 PST): outcome of B2b; prediction B2c before its run
 
 Run D-20261128-005416-65b4dde (`tools/g3g3_power.py`, one core, exit 0).
 - B2b REFUTED: whole-run means pass with probability 0.30 (p = 2) and 0.29-0.30 (p = 1) at G2's
@@ -187,7 +187,7 @@ Run D-20261128-005416-65b4dde (`tools/g3g3_power.py`, one core, exit 0).
   whole-run form pass with probability above 0.7 at p = 2 and G2's amplitude, with a false-pass rate
   below 0.15. Refuted if the power is below 0.5 or the false-pass rate above 0.2.
 
-## Entry 7 (2026-11-27 17:01 PST): outcome of B2c
+## Entry 7 (2026-11-27 16:55 PST): outcome of B2c
 
 Run D-20261128-005447-0705a41 (`tools/g3g3_power.py ... window`, one core, exit 0); figures
 g3g3_power.png of this run and of D-20261128-005416-65b4dde looked at (full-noise curves; the x-axis
@@ -199,3 +199,7 @@ minor labels overlap, cosmetic).
   of the lead, so it is the pessimistic case). The window anchor is necessary; it is not sufficient for a
   pass/fail order at N: the noise must fall (the mesh leg at 4N halves it, B1) or the mesh difference must
   be quoted as a measured ratio with its surrogate interval instead of a pass/fail order.
+
+Note (16:56): the times in the headers of entries 1-7 were corrected to the commit times (git log); the
+first versions carried times written ahead of the clock. Each prediction was committed before its run
+(commits 5686fde, 80cf6ab, 6ddc1c8-era reader commits, and the run manifests' commit fields).
