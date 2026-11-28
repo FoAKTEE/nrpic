@@ -186,3 +186,16 @@ Run D-20261128-005416-65b4dde (`tools/g3g3_power.py`, one core, exit 0).
 - B2c (prediction, before the run): anchoring at the mean over 20-40 M instead (40 samples) makes the
   whole-run form pass with probability above 0.7 at p = 2 and G2's amplitude, with a false-pass rate
   below 0.15. Refuted if the power is below 0.5 or the false-pass rate above 0.2.
+
+## Entry 7 (2026-11-27 17:01 PST): outcome of B2c
+
+Run D-20261128-005447-0705a41 (`tools/g3g3_power.py ... window`, one core, exit 0); figures
+g3g3_power.png of this run and of D-20261128-005416-65b4dde looked at (full-noise curves; the x-axis
+minor labels overlap, cosmetic).
+- B2c HOLDS with the high-pass noise model and is REFUTED with the full one: anchored at the 20-40 M
+  mean, the whole-run form passes at G2's amplitude with probability 0.945 (high-pass) and 0.663 (full)
+  at p = 2, 0.82 and 0.59 at p = 1; the false-pass rate without convergence is 0.075 (high-pass) and
+  0.249 (full). The full model counts the slow wander of N - 4N as noise (part of it is the N-dependence
+  of the lead, so it is the pessimistic case). The window anchor is necessary; it is not sufficient for a
+  pass/fail order at N: the noise must fall (the mesh leg at 4N halves it, B1) or the mesh difference must
+  be quoted as a measured ratio with its surrogate interval instead of a pass/fail order.
