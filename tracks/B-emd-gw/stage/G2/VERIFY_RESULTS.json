@@ -1,9 +1,9 @@
 {
   "track": "B-emd-gw",
   "gate": "G2",
-  "commit": "a553fd89a2bf52097b7e798f3ebb3c27b8436ff6",
-  "verified_utc": "2026-11-28T03:15:55Z",
-  "export": "/data/haiyangw/nrpic/scratch/B-emd-gw/tmp/stage-verify/B-emd-gw-G2-a553fd8-20261128T031436Z",
+  "commit": "7da01b9cc36edfbcbce192a6805138275a347bf0",
+  "verified_utc": "2026-11-28T04:13:59Z",
+  "export": "/data/haiyangw/nrpic/scratch/B-emd-gw/tmp/stage-verify/B-emd-gw-G2-7da01b9-20261128T041109Z",
   "result": "FAIL",
   "checks": [
     {
@@ -21,7 +21,7 @@
     {
       "check": "export",
       "status": "PASS",
-      "message": "clean export of a553fd89a2bf (HEAD) in /data/haiyangw/nrpic/scratch/B-emd-gw/tmp/stage-verify/B-emd-gw-G2-a553fd8-20261128T031436Z/tree",
+      "message": "clean export of 7da01b9cc36e (HEAD) in /data/haiyangw/nrpic/scratch/B-emd-gw/tmp/stage-verify/B-emd-gw-G2-7da01b9-20261128T041109Z/tree",
       "detail": null
     },
     {
@@ -69,11 +69,19 @@
     {
       "check": "runs",
       "status": "FAIL",
-      "message": "1 of 403 runs have problems; 1 waived",
+      "message": "3 of 416 runs have problems; 1 waived",
       "detail": {
         "B-20261128-030420-33ccdca": [
           "status is running: not finished (nrpic-run finish)",
           "missing /data/haiyangw/nrpic/scratch/B-emd-gw/B-20261128-030420-33ccdca/sha256sums.txt"
+        ],
+        "B-20261128-034731-640f4f4": [
+          "status is submitted: not finished (nrpic-run finish)",
+          "missing /data/haiyangw/nrpic/scratch/B-emd-gw/B-20261128-034731-640f4f4/sha256sums.txt"
+        ],
+        "B-20261128-040950-1404d91": [
+          "status is running: not finished (nrpic-run finish)",
+          "missing /data/haiyangw/nrpic/scratch/B-emd-gw/B-20261128-040950-1404d91/sha256sums.txt"
         ]
       }
     },
@@ -361,12 +369,12 @@
     {
       "check": "checksums",
       "status": "WARN",
-      "message": "14013 output files: 0 hashed again (bytes read, 0.0 MB), 14013 taken from the cache (1166.92 GB); a checksum taken from the cache proves unchanged size and modification time since it was hashed, not bytes read again; --full reads every byte",
+      "message": "14069 output files: 27 hashed again (bytes read, 1.0 MB), 14042 taken from the cache (1166.93 GB); a checksum taken from the cache proves unchanged size and modification time since it was hashed, not bytes read again; --full reads every byte",
       "detail": {
-        "rehashed_files": 0,
-        "rehashed_bytes": 0,
-        "cached_files": 14013,
-        "cached_bytes": 1166923637326,
+        "rehashed_files": 27,
+        "rehashed_bytes": 962629,
+        "cached_files": 14042,
+        "cached_bytes": 1166927439192,
         "full": false,
         "meaning_of_a_cached_entry": "a checksum taken from the cache proves unchanged size and modification time since it was hashed, not bytes read again",
         "notes": []
