@@ -1,10 +1,10 @@
 {
   "track": "B-emd-gw",
   "gate": "G2",
-  "commit": "631acef88457af67e64d8470600aacd5c0cda3e9",
-  "verified_utc": "2026-11-28T02:21:53Z",
-  "export": "/data/haiyangw/nrpic/scratch/B-emd-gw/tmp/stage-verify/B-emd-gw-G2-631acef-20261128T000814Z",
-  "result": "PASS",
+  "commit": "92696fdfcb7d9fa33183482628eccf53258b35a7",
+  "verified_utc": "2026-11-28T03:13:57Z",
+  "export": "/data/haiyangw/nrpic/scratch/B-emd-gw/tmp/stage-verify/B-emd-gw-G2-92696fd-20261128T031117Z",
+  "result": "FAIL",
   "checks": [
     {
       "check": "clean",
@@ -21,7 +21,7 @@
     {
       "check": "export",
       "status": "PASS",
-      "message": "clean export of 631acef88457 (HEAD) in /data/haiyangw/nrpic/scratch/B-emd-gw/tmp/stage-verify/B-emd-gw-G2-631acef-20261128T000814Z/tree",
+      "message": "clean export of 92696fdfcb7d (HEAD) in /data/haiyangw/nrpic/scratch/B-emd-gw/tmp/stage-verify/B-emd-gw-G2-92696fd-20261128T031117Z/tree",
       "detail": null
     },
     {
@@ -39,7 +39,7 @@
     {
       "check": "package",
       "status": "PASS",
-      "message": "EVIDENCE.md, OPEN.md, CHECKLIST.md present (decision 0012); scoping text: scope/SCOPE.md; no verifier's report yet (VERIFIER.md, decision 0016)",
+      "message": "EVIDENCE.md, OPEN.md, CHECKLIST.md present (decision 0012); scoping text: scope/SCOPE.md; verifier's report VERIFIER.md",
       "detail": null
     },
     {
@@ -68,9 +68,14 @@
     },
     {
       "check": "runs",
-      "status": "PASS",
-      "message": "383 run manifests finished (78 hand-written, read as decision 0012 allows); failures of 1 runs waived by coord/WAIVERS.md (decision 0019), output checksums verified where recorded",
-      "detail": null
+      "status": "FAIL",
+      "message": "1 of 403 runs have problems; 1 waived",
+      "detail": {
+        "B-20261128-030420-33ccdca": [
+          "status is running: not finished (nrpic-run finish)",
+          "missing /data/haiyangw/nrpic/scratch/B-emd-gw/B-20261128-030420-33ccdca/sha256sums.txt"
+        ]
+      }
     },
     {
       "check": "runs-waived",
@@ -355,14 +360,14 @@
     },
     {
       "check": "checksums",
-      "status": "PASS",
-      "message": "13883 output files: 13883 hashed again (bytes read, 1166.91 GB), 0 taken from the cache (0.0 MB) (--full); every byte read again (none taken from the cache, where a checksum taken from the cache proves unchanged size and modification time since it was hashed, not bytes read again)",
+      "status": "WARN",
+      "message": "14013 output files: 76 hashed again (bytes read, 2.5 MB), 13937 taken from the cache (1166.92 GB); a checksum taken from the cache proves unchanged size and modification time since it was hashed, not bytes read again; --full reads every byte",
       "detail": {
-        "rehashed_files": 13883,
-        "rehashed_bytes": 1166913927270,
-        "cached_files": 0,
-        "cached_bytes": 0,
-        "full": true,
+        "rehashed_files": 76,
+        "rehashed_bytes": 2486154,
+        "cached_files": 13937,
+        "cached_bytes": 1166921151172,
+        "full": false,
         "meaning_of_a_cached_entry": "a checksum taken from the cache proves unchanged size and modification time since it was hashed, not bytes read again",
         "notes": []
       }
@@ -370,7 +375,7 @@
     {
       "check": "status",
       "status": "PASS",
-      "message": "STATUS.md has 40 lines",
+      "message": "STATUS.md has 42 lines",
       "detail": null
     },
     {

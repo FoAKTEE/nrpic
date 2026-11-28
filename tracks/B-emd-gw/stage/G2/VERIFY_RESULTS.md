@@ -1,27 +1,38 @@
 # Re-verification: B-emd-gw G2
 
-`harness/bin/nrpic-stage verify B-emd-gw G2` on 2026-11-28T02:21:53Z, clean export of commit `631acef88457` in `scratch/B-emd-gw/tmp/stage-verify/B-emd-gw-G2-631acef-20261128T000814Z`. Result: **PASS**.
+`harness/bin/nrpic-stage verify B-emd-gw G2` on 2026-11-28T03:13:57Z, clean export of commit `92696fdfcb7d` in `scratch/B-emd-gw/tmp/stage-verify/B-emd-gw-G2-92696fd-20261128T031117Z`. Result: **FAIL**.
 
 | Check | Result | Message |
 |---|---|---|
 | clean | PASS | worktree clean (outside the stage directory being assembled) |
 | sync | PASS | main is merged into the branch |
-| export | PASS | clean export of 631acef88457 (HEAD) in /data/haiyangw/nrpic/scratch/B-emd-gw/tmp/stage-verify/B-emd-gw-G2-631acef-20261128T000814Z/tree |
+| export | PASS | clean export of 92696fdfcb7d (HEAD) in /data/haiyangw/nrpic/scratch/B-emd-gw/tmp/stage-verify/B-emd-gw-G2-92696fd-20261128T031117Z/tree |
 | size | PASS | no committed file of the track above 5 MB |
 | note | PASS | tracks/<ID>/note/main.tex present |
-| package | PASS | EVIDENCE.md, OPEN.md, CHECKLIST.md present (decision 0012); scoping text: scope/SCOPE.md; no verifier's report yet (VERIFIER.md, decision 0016) |
+| package | PASS | EVIDENCE.md, OPEN.md, CHECKLIST.md present (decision 0012); scoping text: scope/SCOPE.md; verifier's report VERIFIER.md |
 | note-pdf | PASS | note/main.pdf committed after the last .tex change |
 | style | PASS | 2 style copies equal harness/style/SHA256SUMS (czstyle.py, paperfig.py) |
 | fig-script | PASS | 15 figures, each with its script |
 | min-figs | PASS | 6 schematics and 9 data figures (brief 13.4 asks at least 1 and 5 at G2) |
-| runs | PASS | 383 run manifests finished (78 hand-written, read as decision 0012 allows); failures of 1 runs waived by coord/WAIVERS.md (decision 0019), output checksums verified where recorded |
+| runs | FAIL | 1 of 403 runs have problems; 1 waived |
 | runs-waived | WARN | failures of the manifest check waived: 1 runs named in main's coord/WAIVERS.md (decision 0019 item 6): B-20261115-164157-40b9f6d: outputs moved into the run directory after the run finished; data unchanged |
 | run-notes | WARN | 78 runs read with defaults or not fully re-verifiable (nrpic-run lint) |
-| checksums | PASS | 13883 output files: 13883 hashed again (bytes read, 1166.91 GB), 0 taken from the cache (0.0 MB) (--full); every byte read again (none taken from the cache, where a checksum taken from the cache proves unchanged size and modification time since it was hashed, not bytes read again) |
-| status | PASS | STATUS.md has 40 lines |
+| checksums | WARN | 14013 output files: 76 hashed again (bytes read, 2.5 MB), 13937 taken from the cache (1166.92 GB); a checksum taken from the cache proves unchanged size and modification time since it was hashed, not bytes read again; --full reads every byte |
+| status | PASS | STATUS.md has 42 lines |
 | rerun | PASS | 15 of 15 scripts and commands ran cleanly in the export |
 | compare | PASS | 30 regenerated files compared with the committed ones; 0 differ beyond tolerance (rtol 1e-06, atol 1e-12, PNG rms 0.005) |
 | regenerate | PASS | all 30 committed figure files regenerated |
+
+## runs
+
+```
+{
+ "B-20261128-030420-33ccdca": [
+  "status is running: not finished (nrpic-run finish)",
+  "missing /data/haiyangw/nrpic/scratch/B-emd-gw/B-20261128-030420-33ccdca/sha256sums.txt"
+ ]
+}
+```
 
 ## runs-waived
 
@@ -184,11 +195,11 @@
 
 ```
 {
- "rehashed_files": 13883,
- "rehashed_bytes": 1166913927270,
- "cached_files": 0,
- "cached_bytes": 0,
- "full": true,
+ "rehashed_files": 76,
+ "rehashed_bytes": 2486154,
+ "cached_files": 13937,
+ "cached_bytes": 1166921151172,
+ "full": false,
  "meaning_of_a_cached_entry": "a checksum taken from the cache proves unchanged size and modification time since it was hashed, not bytes read again",
  "notes": []
 }

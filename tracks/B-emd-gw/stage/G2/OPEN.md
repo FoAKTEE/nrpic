@@ -37,4 +37,7 @@ superseded).
 G2 package complete for an independent review in the lead's judgement: what remains open is the
 failures above with rulings 0046 item 2, 0039 item 2(c), 0048 item 3 and 0049 item 1, and the
 pending 256^3 member at eight per cell. The full checksum pass of the stage check (13883 files,
-1166.91 GB, PASS) is committed; the quick pass after batch 37's changes follows it.
+1166.91 GB, PASS) is committed (397511402). The standard pass on batch 37's commit 92696fd
+(checksums from the cache, 14013 files) passes every check but `runs`, which fails on one run
+only: the initial data B-20261128-030420-33ccdca, still running by design (about two days);
+it passes again once that run is finished with `nrpic-run finish`.
