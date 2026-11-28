@@ -3,39 +3,35 @@
 gate:        G2 NOT MET (tracks/core/stage/G2/: CHECKLIST 18 items, 13 PASS, 5 FAIL:
              C1 ladder rows 3, 4 partial; C2 three-way convergence; C6 reproducibility
              package (open level-3 chains); C7 = C1; C12 no REVIEW.md/SCOPE.md).
-             Batch 14 (2026-11-25T02:12-03:12Z): release candidate core-v0.7.
-headline:    RELEASE CANDIDATE core-v0.7 at source commit 5f75e5b9, REGRESSION PASS
-             (tracks/core/RELEASE-v0.7.md). Four branches merged on top of core-v0.6, one
-             merge commit each, no conflict: core/noise-level2 (level 2 of the stochastic
-             backreaction, R on the mesh), core/step-limit (<z4c> dt_gauge; restart
-             outputs on SIGTERM; chain script), core/gauge-2 (<z4c> lapse_leak_hole, a
-             MITIGATION), core/clump-table (table clusters with momentum). core/oblate
-             left out. Executables published: scratch/core/exe/core_nrpic_v07/.
-last-result: byte regression against core-v0.6, twelve set-ups, new options absent: 75 of
-             75 items identical (core-20261125-023046-30aba6c; MPI build
-             core-20261125-023646-eca713c); no file differs because of the changes that
-             act without an option. Quick tests PASS (core-20261125-023641-7a1c47d: 65 of
-             65 files identical with the branch executables, SIGTERM S1 and S2, chain
-             script, two combinations). Threaded build not a byte reference (32 of 75,
-             rounding level; core-20261125-030151-8c0c306). clump-table's card check M2
-             judged: held (core-20261125-021225-382dbc7).
-pending:     card runs in the shared queue (none waited for):
-             q0039 core-v07-card   card check K7 of the merged card executable (22
-                                   cases, 0.3 card-hours); commands that judge it in
-                                   RELEASE-v0.7.md, section "Card checks pending"
-             q0035 nl2-review-R5   card run of the reviewed level-2 build (its package)
-             q0036 step-limit-card card smoke run of the step-limit build (its package)
-             q0029-q0033           row 4 level 3 (HANDOFF.md; q0028 done, not finished)
-next:        1. when q0039 has run: finish it, card_v07.py, card_v06.py, card_v05.py;
-                write the result into RELEASE-v0.7.md, READY and OPEN.md item i
-             2. row 4 level 3: finish the chains, row4_fate.py (HANDOFF.md)
-             3. after the tag: release builds against the candidate (regress_v04.py)
+             Batch 27 (2026-11-26T11:44-13:00Z): round without AthenaK source change.
+headline:    release core-v0.8 made final: card check q0049 PASS (K1, K2, K4, K5 held; K3
+             held for the polished and tight finder rules, card = processors within
+             3.3e-16, and FAILED for the rule 1e-5 without polishing, which differs between
+             card and processors up to 8.8e-6 and in two accepts of sixteen). Executables
+             published in scratch/core/exe/core_nrpic_v08/ (serial, MPI, threaded, card;
+             MPI smoke test M1, M2 held). Waits for the clerk (merge, tag on 01d4aeeb,
+             release builds, CLAUDE.md row: outbox 20261126T115635Z).
+             core-v0.7 card checks: K7 CARD PASS (three analyses); step-limit card run P4a,
+             P4c held, P4b held in its test; level-2 review R5 held (66 of 66 files identical,
+             level 2 as fast as level 0 on the mesh, ratio 1.0014).
+             Row 4: bracket (0.7175, 0.726875) unchanged; 0.755 control does not collapse
+             by 600 M but drifts (P13 holds for the control).
+last-result: card check core-20261126-114747-a6f2385 (of card run -070946-7971fde; first
+             pass -114526-2b1f001 failed on the reader); MPI smoke -115451-893a30e;
+             K7: -115658-8af7dd7, -115708-140bafa, -115725-9a8d381; step limit
+             -121103-1070457; row 4 -121143-aaae1b7; R5 -115933-9fb0e47.
+pending:     q0059 (job 5378, pending in Slurm): row 4, 0.755 member continued 300-600 M
+             (member half of P13). No other entry of core in the queue.
+next:        1. clerk: merge core/nrpic, tag core-v0.8 on 01d4aeeb, builds, CLAUDE.md rows
+                of v0.7 (card checks judged) and v0.8 (words in the outbox)
+             2. q0059 when it has run: finish, row4_fate.py (HANDOFF), member half of P13
+             3. Fable source session: NEXT_SOURCE.md items 0, 0b, 1
+             4. G2 package items: C2, C6, C12 (HANDOFF "What G2 still lacks")
 blockers:    none
-needs:       orch (release clerk): merge core/nrpic, tag core-v0.7, release builds,
-             interface documents, announcement (outbox 20261125T030800Z); older: outbox
-             20261121T233031Z (interface corrections), 20261121T204332Z (waiver lines)
-offers:      scratch/core/exe/core_nrpic_v07/ with READY (an example input per new
-             option); tracks/core/CHANGELOG.md section core-v0.7; OPEN.md section
-             core-v0.7 (restart defects a, b; mitigation status c; level 2 limits d)
-budget:      G2 card-hours: used 15.76, reserved 2.07, left 22.17 of 40 (nrpic-run
-             budget, 2026-11-25T03:07Z); this session used no card; q0039 asks 0.3
+needs:       orch: merge and tag core-v0.8; CLAUDE.md rows (outbox 20261126T115635Z and the
+             v0.7 row words of this session); older outbox 20261125T121047Z, 20261125T030800Z
+offers:      core_nrpic_v08 (finder polishing: 0.33 s per search on a card; excision guard
+             factor; restart outputs equal on one rank); card_check.py, mpi_smoke_v08.py
+budget:      G2 card-hours: used 20.06, reserved 2.07, left 17.87 of 40 (nrpic-run budget,
+             2026-11-26T12:13Z); this session submitted no card run; processors: one MPI
+             build (4 jobs, 2.5 min), analyses on 1-2 cores

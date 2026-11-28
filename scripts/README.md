@@ -130,6 +130,14 @@ Requirements and behaviour:
   (fake `sbatch`, a fake executable that kills its own process id or signals the job;
   runs core-20261121-080619-6a0793f and, with the scenarios of preempted attempts,
   core-20261125-000640-5c4b644).
+- The marker of the shared card queue (`NRPIC_QUEUE_DISPATCH`, every `NRPIC_QUEUE_*`
+  variable) is removed at the top of `gpu_run.sh`, `gpu_batch.sh`, `submit_chain.sh` and
+  `_athena_job.sh` (and again in the chain's sbatch call), so no job, srun step or
+  executable carries it and no job can pass for the dispatcher (decision 0037 item 4); a
+  chain still submits its own next segment. A `--cmd` wrapper of the queue tests its
+  dispatch with `harness/bin/nrpic-queue check-dispatch`, never with the variable. Test
+  with the fake Slurm of `harness/tests/rc_fixture.py`, the scripts before the change as
+  a control: `python3 scripts/tests/test_queue_marker.py --old DIR --out DIR`.
 - Z4c NaNs do not show up as `nan` in the history: `HistoryOutput` sums only cells with
   `chi >= excise_chi`, so NaN cells drop out, the norms go to 0, and `Volume` collapses.
   That is why the `Volume` check exists. Use `CHECK_CMD` for anything problem-specific.

@@ -95,3 +95,9 @@ tracks/orch/outbox/20261121T140505Z__to-all__release-core-v0.6.md	2026-11-21T15:
 tracks/A-emd-pbh/outbox/20261121T204327Z__to-core__periodic-relaxed-lapse-blowup.md	2026-11-21T23:19:06Z	read 2026-11-21 by core-lead-8 (batch 8); 11 triaged as REQUESTS_WAVE3.md W31 (core-v0.7) and stage/G2/OPEN.md item v; 9 superseded by 11 as A says
 tracks/A-emd-pbh/outbox/20261121T231546Z__to-core__periodic-gamma-driver-step.md	2026-11-21T23:19:06Z	read 2026-11-21 by core-lead-8 (batch 8); 11 triaged as REQUESTS_WAVE3.md W31 (core-v0.7) and stage/G2/OPEN.md item v; 9 superseded by 11 as A says
 tracks/kb/outbox/20261121T233243Z__to-core__paper-code-links-tests.md	2026-11-23T02:17:12Z	
+tracks/E-stoch-inf/outbox/20261125T040618Z__to-core__noise-level2-superseded-exe-provenance.md	2026-11-25T12:05:53Z	
+tracks/C-sidm/outbox/20261124T133352Z__to-core__control-drift-and-sigterm-restart.md	2026-11-25T12:10:48Z	
+tracks/F-hills/outbox/20261124T135319Z__to-core__restart-on-sigterm.md	2026-11-25T12:10:48Z	
+tracks/B-emd-gw/outbox/20261125T121932Z__to-core__restart-new-parameters.md	2026-11-26T02:46:56Z	answered batch 23: A pcs (outbox 20261126T024622Z), B/D/F restart parameters (-i workaround verified core-20261126-023323-c8fad52; source fix NEXT_SOURCE item 1)
+tracks/A-emd-pbh/outbox/20261125T161355Z__to-core__pcs-deposit-refinement-boundary.md	2026-11-26T02:46:56Z	answered batch 23: A pcs (outbox 20261126T024622Z), B/D/F restart parameters (-i workaround verified core-20261126-023323-c8fad52; source fix NEXT_SOURCE item 1)
+tracks/F-hills/outbox/20261125T171002Z__to-core__finder-diagnostics-on-restart.md	2026-11-26T02:46:56Z	answered batch 23: A pcs (outbox 20261126T024622Z), B/D/F restart parameters (-i workaround verified core-20261126-023323-c8fad52; source fix NEXT_SOURCE item 1)

@@ -1,0 +1,15 @@
+# Card check of branch core/restart-finder (predictions K1 to K5 of
+# tracks/core/JOURNAL-restart-finder.md, entry 12); judged by
+# tracks/core/analysis/restart_finder/card_check.py.  Inputs outside the repository are
+# copies under scratch/core/tmp/rf_card/ (SHA256SUMS there): the particle files of runs
+# core-20261125-133539-961dcbd and core-20261125-135110-7966158, and the restart file that
+# the processor build wrote on SIGTERM at cycle 27 in case K27 of the first of them.
+#   harness/bin/nrpic-queue add --label core-rf-card --priority 2 -- --kind scouting --gate G2 \
+#     --launcher batch --list tracks/core/analysis/restart_finder/card/card_rf.list \
+#     --exe /data/haiyangw/nrpic/scratch/core/exe/core_restart-finder/athena_gpu --gpu-hours 0.3 --purpose "..."
+rso_a problems/tests/restart_outputs.athinput particles/particle_file=/data/haiyangw/nrpic/scratch/core/tmp/rf_card/particles.nrp output3/dt=0.4375
+rso_r27 /data/haiyangw/nrpic/scratch/core/tmp/rf_card/rso.00003.rst
+fp_prod problems/tests/finder_polish.athinput particles/particle_file=/data/haiyangw/nrpic/scratch/core/tmp/rf_card/infall.nrp time/tlim=2.0
+fp_pol problems/tests/finder_polish.athinput particles/particle_file=/data/haiyangw/nrpic/scratch/core/tmp/rf_card/infall.nrp time/tlim=2.0 fastflow/polish_iterations_0=100
+fp_tight problems/tests/finder_polish.athinput particles/particle_file=/data/haiyangw/nrpic/scratch/core/tmp/rf_card/infall.nrp time/tlim=2.0 fastflow/mass_tol_0=1.0e-9 fastflow/flow_iterations_0=4000
+fp_g04 tracks/core/analysis/restart_finder/card/fp_card_g04.athinput particles/particle_file=/data/haiyangw/nrpic/scratch/core/tmp/rf_card/infall.nrp time/tlim=2.0

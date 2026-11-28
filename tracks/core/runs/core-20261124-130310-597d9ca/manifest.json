@@ -90,30 +90,35 @@
     "nodes": 1,
     "gpus": 1,
     "cores": 1,
-    "walltime_s": null,
+    "walltime_s": 0.0,
     "wall_limit": null,
     "segments_max": 2,
     "gpu_hours_requested": 1.9667,
-    "gpu_hours": null,
+    "gpu_hours": 0.8953,
     "particles": null
   },
   "slurm": {
     "partition": "preempt",
     "job_name": "core-20261124-130310-597d9ca",
-    "job_ids": []
+    "job_ids": [
+      "5154",
+      "5182",
+      "5221",
+      "5227"
+    ]
   },
   "outputs": {
     "dir": "scratch/core/core-20261124-130310-597d9ca",
     "sha256sums": "sha256sums.txt",
-    "sha256sums_sha256": null,
-    "bytes": null,
-    "files": null
+    "sha256sums_sha256": "4d3205ba6bc4e1f892285ea8beecd3785941392592925a36fc0824780983611d",
+    "bytes": 23584063469,
+    "files": 145
   },
-  "status": "submitted",
-  "exit_code": null,
+  "status": "stopped",
+  "exit_code": 1,
   "registered": "2026-11-24T13:03:12Z",
-  "started": null,
-  "ended": null,
+  "started": "2026-11-24T13:03:12Z",
+  "ended": "2026-11-25T12:27:17Z",
   "parents": [],
   "notes": "2026-11-24T21:06Z (batch 12): job 5154 ran 37:45 to t = 287.5 M and was preempted; its resubmission 5182 was cancelled unstarted by orch at 12:00 PST under the queue cap (decision 0033). Continued IN PLACE from its own rst/st.00014.rst (t = 280 M) through the shared queue (entry q0028, label row4-l3-0p726875-member-cont) with tracks/core/verify/row4/continue_chain.sh: the same start command, executable, JOB_NAME, PROC_NAME and MAX_SEGMENTS 2 (one segment left); every job id is in chain/events.log, the continuation in chain/continuations.log (JOURNAL 2026-11-24T21:05Z).",
   "budget_at_submit": {
@@ -125,5 +130,6 @@
     "cores_busy": 5,
     "runs": 1521,
     "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md + 0026-cards-loaded-allotment-cost.md + 0031-level2-branch-and-ablation.md"
-  }
+  },
+  "finished": "2026-11-25T12:27:17Z"
 }

@@ -67,4 +67,17 @@ Status: ACCEPTED · 2026-11-24 · orchestrator (decision 0017)
    absolute path or from a session's own shell (Slurm-side limit; tool-guard hook).
    Stale copies of the run tool in idle worktrees of finished branches stay as they are:
    no session is sent there; a session that starts in a worktree merges main first.
+7. Added 2026-11-25 05:45 PST: item 6 is done and deployed. The queue tool calls no
+   scancel; an excess that lasts is written as one ALERT record that does not halt the
+   queue. Outside a dispatch a local run of the run tool and the environment tool find
+   stubs for sbatch, srun and salloc first on their PATH (harness/shims/slurm), which
+   refuse; the text detector is gone, and with it its false refusals. The check for
+   more than one new job around a dispatch is strict again; a job belongs to an entry
+   by its id, by name only when the name is the entry's run id. Checks: the second
+   reviewer's file run unchanged gives 36 of 46, the ten failures being checks written
+   against the cancel that no longer exists; queue tool 108 of 108, run tool 103 of
+   103; the whole runner rerun by the orchestrator, no file failing. Core's change of
+   2026-11-25 (main 685fa17b7) removes the dispatcher's marker from every job, which
+   closes the open point of item 4. Left open, known: a call of sbatch by absolute
+   path or with a PATH of its own, and from a session's own shell.
 

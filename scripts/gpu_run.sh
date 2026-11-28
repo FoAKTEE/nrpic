@@ -20,7 +20,11 @@
 # Environment: ATHENA_EXE (default build_gpu/src/athena), TIME (Slurm limit, default
 #   00:30:00, max 01:00:00), CPUS (default 1), PARTITION (default preempt),
 #   JOB_NAME (default athena), SLURM_EXTRA (extra srun/sbatch options)
+# The marker of the shared card queue (NRPIC_QUEUE_DISPATCH, and every other variable
+# NRPIC_QUEUE_*) is removed from this script's environment before anything is submitted
+# or run, so that no job, srun step or executable carries it (decision 0037 item 4).
 set -euo pipefail
+for _v in $(compgen -e | grep -E '^NRPIC_QUEUE_' || true); do unset "$_v"; done; unset _v
 
 if [[ $# -lt 2 ]]; then
   awk 'NR>1 && /^#/ {sub(/^# ?/, ""); print; next} NR>1 {exit}' "$0"

@@ -3,7 +3,9 @@ RELEASE core-v0.7 5f75e5b9cd02fee45eead0b4c3445189d8362dde REGRESSION PASS
 Card check of the candidate's card executable `athena_gpu`: PENDING (shared-queue entry
 q0039, label `core-v07-card`, handed over 2026-11-25T03:02Z; section "Card checks
 pending" has the commands that judge it). The card executable was built without a card
-and has not run on one. The processor results below do not depend on it.
+and has not run on one. The processor results below do not depend on it. Still pending
+on 2026-11-25T12:10Z (batch 17): q0039, q0035, q0036 wait in the shared queue (state
+waiting; five jobs of other owners held the cap).
 
 # Release candidate core-v0.7: four source branches of core on top of core-v0.6
 
@@ -172,7 +174,21 @@ Figure `scratch/core/core-20261125-023641-7a1c47d/fig_quick_v07.png` (looked at:
 five blue bars with no red showing; panel b 28 expectations, all blue; the labels of
 panel b are crowded at this size).
 
-## Card checks pending
+## Card checks (judged 2026-11-26, batch 27)
+
+**K7 HELD: CARD PASS.** q0039 ran as job 5355, run core-20261126-045719-019b478 (22 cases,
+every status 0; closed 2026-11-26). Judged by three registered analyses, figures looked at:
+core-20261126-115658-8af7dd7 (`card_v07.py`, the seven new cases: level-2 histories within
+6.3e-13 of the processors, bound 1e-9; step-limit example identical, 0.0; gauge and
+table-cluster cases within 5.3e-14, bound 1e-7; constraint means of the scalar field 6.8e-4,
+reported and not bounded), core-20261126-115708-140bafa (`card_v06.py`, six cases of
+core-v0.6: Newtonian histories within 2e-11, the solves with the same outer iterations,
+the faces cases held; the normalized constraint column of g_smr1 8.8e-4, reported and not
+bounded) and core-20261126-115725-9a8d381 (`card_v05.py`, nine cases of core-v0.5: K1 to K6
+held). So the card executable of core-v0.7 (`scratch/core/exe/core_nrpic_v07/athena_gpu`)
+agrees with its processor build on every case the release record names.
+
+## Card checks pending (as written at tagging; outcomes above and in the branch table)
 
 The cards have been held by another partition for two days (decision 0035 item 4):
 nothing of this session ran on a card, and nothing was waited for.
@@ -208,10 +224,23 @@ FAIL at 8.8e-2).
 
 | Branch | Card run | State |
 |---|---|---|
-| core/noise-level2 (64f150ec) | R5, queue entry q0035 (`nl2-review-R5`): the two 64^3 level-2 decks against Track E's smoke runs of the build before the review, cost of a cycle at 256^3 | PENDING; judged by the package (`tracks/core/verify/noise_level2_close/README.md`, `tracks/core/JOURNAL-noise-level2.md` entry 17). The card build of the source before the review passed Track E's smoke check and made six ablation runs |
-| core/step-limit (5c4b644f) | queue entry q0036 (`step-limit-card`): Track A's refined periodic deck at `cfl_number` 1.0 without and with `dt_gauge`, and at 0.5 | PENDING; judged by the package (`tracks/core/analysis/step_limit/HANDOFF.md`). No card run of this source exists yet |
+| core/noise-level2 (64f150ec) | R5, queue entry q0035 (`nl2-review-R5`): the two 64^3 level-2 decks against Track E's smoke runs of the build before the review, cost of a cycle at 256^3 | **ran 2026-11-26** (job 5352, run core-20261126-040704-5c98bee), judged by core-20261126-115933-9fb0e47: (i) held, 66 of 66 files identical to Track E's smoke runs of the earlier executable; (ii) held, level 2 / level 0 on the mesh at 256^3 = 1.0014 in throughput (predicted at most 1.18; earlier executable 1.63) (`JOURNAL-noise-level2.md` entry 18) |
+| core/step-limit (5c4b644f) | queue entry q0036 (`step-limit-card`): Track A's refined periodic deck at `cfl_number` 1.0 without and with `dt_gauge`, and at 0.5 | **ran 2026-11-26** (job 5368, run core-20261126-080805-3a9a349), judged by core-20261126-121103-1070457: P4a, P4c held; P4b held in its test (step at most 0.577 cells, no jump, t = 6 reached, |H| at t = 6 equal to the run at 0.5) and failed in its time (the option takes over at t = 1.18, predicted 1.5 to 1.8), as on processors (`JOURNAL-step-limit.md` entry 17) |
 | core/gauge-2 (984110c3) | job F, run core-20261121-190709-8b205e5 | ran (2026-11-21): the 200 M vacuum run with the option, exit 0; numbers in OPEN.md item c |
 | core/clump-table (7cc6c7b9) | M2, run core-20261121-132629-47ccb97 (Slurm 4803) | ran (2026-11-21), judged in core-20261125-021225-382dbc7: held (above) |
+
+## Release builds against the candidate (batch 17, 2026-11-25)
+
+The clerk built `.work/build_cpu_v07` and `.work/build_gpu_v07` from main after the merge
+b399f946 (tag core-v0.7 on 5f75e5b9; `git diff 5f75e5b9 b399f946 -- athenak/src
+python/nrpic problems scripts` is empty [VERIFIED]). Checksums differ from the candidate's,
+as builds in other directories do (orch outbox 20261125T033027Z). Prediction R7: journal
+entry 2026-11-25T11:52Z.
+
+| Check | Run | Result |
+|---|---|---|
+| `.work/build_cpu_v07/src/athena` against the candidate `athena_cpu`, `regress_v04.py`, twelve set-ups, 3 cores | core-20261125-115428-3670218 (figure core-20261125-120456-07a671a) | 75 of 75 items identical, classes a, b, other empty: REGRESSION PASS (R7 held). Figure `fig_regress_v04.png` looked at: twelve bars, one colour |
+| `.work/build_gpu_v07/src/athena` | none | NOT DONE: a CUDA build does not run on processors. Same source tree as the candidate (above). Its card check is not queued: the list `card_v07.list` of q0039 can run it later (`ATHENA_EXE` of the batch), as G6 did for core-v0.6 |
 
 ## Known defects
 

@@ -30,7 +30,7 @@ and named), OPEN (not done).
 | 1. Geodesics on a fixed background | order and conserved quantities on fixed Kerr | PASS | G: `core-20261115-032625-45e1779`, 104 of 104 checks |
 | 2. Oppenheimer-Snyder collapse (CORE part) | horizon-mass error of the order of the paper's | PASS at 9328 lattice particles; random samples at 10^4 larger (0.3 to 0.5 percent) | O: `core-20261115-032614-45e1779`, 13 of 13 checks |
 | 3. Oblate and prolate collapse (CORE part) | prolate collapse | PARTIAL: horizon at the paper's time at two resolutions (32.00 M at M/16, 32.25 M at M/8); mass deficit 3.3 and 4.3 percent, falling with resolution; oblate blocked (needs an oblate component in `nrpic_cf`) | wave 2: `core-20261115-152845-5728b1d` (M/8), comparison `-162509-c691fb8` |
-| 4. Einstein-Vlasov steady states and stability threshold (CORE part) | stability of relativistic clusters | PARTIAL: fates of the five models as in the paper; wave-2 bisection at M/4 gave no bracket (mesh pushes clusters outward); on M/8 against unkicked controls, levels 1 and 2 (judged 2026-11-23 and 2026-11-24): collapse within 300 M BRACKETED between y_c = 0.7175 (member and control collapse, 294 M) and 0.73625 (stays, D = +0.0014), turning point 0.6796 below it; the stable pairs drift inward steadily (0.043 of the equilibrium lapse over 200-300 M at 0.73625), so the bracket may be set by the 300-M window; level 3 (0.726875 to 600 M; 0.73625 and 0.755 pairs continued to 600 M) queued; not converged in cell size or particle number; growing oscillation unexplained | M/8: fates `core-20261124-130055-9fc9901` (levels 1+2), `core-20261123-020318-e952741` (level 1), runs `core-20261121-204230-3bcb118` to `-204239-2be5ac2`, `core-20261123-020450-7e42037` to `-020500-9b192cd`; wave 2: `core-20261115-152842-5728b1d`, `-152843-5728b1d`, `-154726-37450f2`, `-155617-06f844b`, analysis `-170606-1c69507` |
+| 4. Einstein-Vlasov steady states and stability threshold (CORE part) | stability of relativistic clusters | PARTIAL: fates of the five models as in the paper; wave-2 bisection at M/4 gave no bracket (mesh pushes clusters outward); on M/8 against unkicked controls, levels 1 and 2 (judged 2026-11-23 and 2026-11-24): collapse within 300 M BRACKETED between y_c = 0.7175 (member and control collapse, 294 M) and 0.73625 (stays, D = +0.0014), turning point 0.6796 below it; the stable pairs drift inward steadily (0.043 of the equilibrium lapse over 200-300 M at 0.73625), so the bracket may be set by the 300-M window; level 3, two of six runs read (2026-11-25, fates `core-20261125-120724-246d2a5`): the 0.726875 member does not collapse by 300 M but does at 338.25 M, and the 0.73625 control, STABLE by the rule, collapses at 421.25 M; the bracket stands as written until the 0.726875 control (q0030) is read, and its meaning is collapse within 300 M, not a stability threshold [JUDGEMENT]; not converged in cell size or particle number; growing oscillation unexplained | M/8: fates `core-20261124-130055-9fc9901` (levels 1+2), `core-20261123-020318-e952741` (level 1), runs `core-20261121-204230-3bcb118` to `-204239-2be5ac2`, `core-20261123-020450-7e42037` to `-020500-9b192cd`; wave 2: `core-20261115-152842-5728b1d`, `-152843-5728b1d`, `-154726-37450f2`, `-155617-06f844b`, analysis `-170606-1c69507` |
 
 ## Row 1. Geodesics on a fixed background
 
@@ -311,6 +311,57 @@ chains core-20261124-130310-597d9ca (0.726875 member), -130340-31cf5e8 (control)
 (control, parent -020500-9b192cd), -130406-09319a0 (0.755 member, parent
 core-20261121-204232-f74c942), -130356-d9d09bf (control, parent -204237-ae00ca2);
 11.82 card-hours asked, about 5.1 expected.
+
+Level 3, partial reading 2026-11-25 (batch 17, journal entry 2026-11-25T11:52Z): two of the
+six runs have ended; fates by the same rule, run core-20261125-120724-246d2a5 (`row4_fate.py`
+as of commit 246d2a5a; the script now takes a model whose control has
+not run, `y=<member>,`, as AWAITS_CONTROL; figure `fig_row4_m8.png` looked at). Queue entries
+q0030-q0033 (the other four runs) wait.
+
+| Run (queue entry) | What it covers | Collapse | 50-M window means of alpha_c/alpha_c^eq |
+|---|---|---|---|
+| core-20261124-130310-597d9ca (q0028) | 0.726875 member, 0 to 405.25 M (chain cut by its segment cap after two preemptions, closed as stopped; the restart at 280 M recomputed 280-287.5 M, the later records are read) | none by 300 M; lapse < 0.3 at 338.25 M, AH 344.0 M | 0.9994, 0.9958, 0.9841, 0.9668, 0.9445, 0.8916 (0-300 M), 0.598 (300-350 M) |
+| core-20261125-080049-dcc9ea1 (q0029) | 0.73625 control continued from core-20261123-020500-9b192cd at 300 M to 600 M | lapse < 0.3 at 421.25 M, AH 427.0 M | 0.9124 (300-350 M), 0.830 (350-400 M), 0.336 (400-450 M) |
+
+By the rule (t <= 300 M) the model 0.726875 is not classified yet: its member does not
+collapse by 300 M and D needs the control (q0030). The bracket stays (0.7175, 0.73625),
+valid, with 0.726875 pending inside it. Beyond the window: the 0.73625 control, whose model
+the rule calls STABLE, collapses at 421.25 M; so a model on the STABLE side of the 300-M
+bracket is not stable over 600 M on this mesh [VERIFIED by core-20261125-120724-246d2a5 for
+this one run]. Predictions (journal 2026-11-24T13:05Z): P10 holds for the member (no collapse
+by 300 M), rest pending; P11 holds for the member (338.25 M in 300-420 M), the 30-M pairing
+pending; P12 holds for the control (421.25 M in 320-500 M), member pending (q0031); P13
+pending (q0032, q0033); P14 holds for the control's join (first continued record differs by
+4.4e-4 from the parent's at 300 M, largest step over 280-300 M 1.02e-3); P15 holds on the
+rate (dcc9ea1 2263 s of card time for 300 M, 7.54 s per M, one segment).
+
+Level 3, second reading 2026-11-26 (batch 23, journal entry 2026-11-26T02:25Z): four of the
+six runs have ended; fates by the same rule, run core-20261126-023040-b755cdc (figure
+`fig_row4_m8.png` looked at). q0032 (0.755 control, job 5346) and q0059 (0.755 member,
+queued after the four card checks) remain.
+
+| Run (queue entry) | What it covers | Collapse (lapse < 0.3) |
+|---|---|---|
+| core-20261125-180320-3dad12c (q0030) | 0.726875 control, 0 to 600 M (1.2981 card-hours, 4 jobs) | none by 300 M; 333.75 M |
+| core-20261125-225600-d2db1ed (q0031) | 0.73625 member continued from core-20261123-020458-dfc38d7 at 300 M to 600 M (0.6325 card-hours) | 405.0 M |
+
+By the rule (t <= 300 M) 0.726875 is STABLE (member STAYS, D = +0.0061, neither run
+collapses by 300 M): **bracket (0.7175, 0.726875)**, valid. Beyond the window every model
+from 0.605 to 0.73625 collapses on M/8, members at 180.5, 219.5, 244.25, 294.25, 338.25 and
+405.0 M; controls of 0.726875 and 0.73625 at 333.75 and 421.25 M. Predictions P10, P11, P12
+hold; P15 holds (7.6 to 7.8 s of card time per M); P13 waits for 0.755. The 300-M bracket is
+therefore the bracket of "collapse within 300 M", not of stability over any longer window
+[VERIFIED for the five models that collapse by 421 M; JUDGEMENT for what it means].
+
+Level 3, third reading 2026-11-26 (batch 27, journal entry 2026-11-26T12:15Z): q0032 closed
+(core-20261126-021633-50968b9, 0.755 control continued from core-20261121-204237-ae00ca2 at
+300 M to 600 M, 0.6403 card-hours, one job); fates run core-20261126-121143-aaae1b7 (figure
+looked at). Fates and bracket unchanged: **(0.7175, 0.726875)** by the 300-M rule. The 0.755
+control does not collapse by 600 M, but its central lapse keeps drifting: 50-M means of
+alpha_c / alpha_c^eq 0.9640 (250-300 M), 0.9345 (400-450 M), 0.8022 (550-600 M; minimum
+0.736). P13 holds for the control (no collapse before 450 M; 400-450 M mean 0.0295 below the
+250-300 M mean, at least 0.01 predicted). The member's continuation (q0059, job 5378) has not
+run.
 
 ## Supporting checks of the C2 steps (earlier, not re-run today)
 
