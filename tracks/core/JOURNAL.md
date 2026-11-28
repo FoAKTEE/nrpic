@@ -2647,3 +2647,14 @@ run core-20261128-021941-61b61a1 with the line of the batch-27 handoff (figure
 - P14 (joins) is still not computed by the script.
 - Fates and bracket unchanged, (0.7175, 0.726875) by the 300-M rule; next midpoint by the
   script 0.7221875. `verify/LADDER.md` row 4, fourth reading.
+
+## 2026-11-28T02:23Z: MPI build of the merged tree (for publication after q0094), prediction M9
+
+MPI build `.work/build_cpu_mpi_v09rc` (CMAKE_EXTRA=-DAthena_ENABLE_MPI=ON, as the v0.8 MPI
+build). Prediction before `analysis/release/mpi_smoke_v08.py` with `--serial` the R9 build:
+**M9a** the MPI build started without mpirun writes every output file of the serial build of
+the merged tree byte for byte (logs and restart files excluded); **M9b** on two ranks status
+0 and `cons.hst`, the tracker file and the mesh history as on one rank, every column within
+1e-6 relative (v0.8 gave 0.0). The deck has a uniform mesh, so the level-face kernel of
+change 2, which is not corrected between ranks, is not exercised. Refuted by any differing
+file in M9a or a column above 1e-6 in M9b. Not a publication: the executables wait for q0094.
